@@ -71,7 +71,7 @@ server_filter_tags = {"insight_" .. version}
 local translations = {}
 local english = {
 	-- description
-	update_info = "configuration localization; pollination & harvestable information; possible performance increase for more developed worlds; mactusk info, lureplant info, sinkhole coloring;",
+	update_info = "configuration localization; cooking speed; pollination & harvestable information; possible performance increase for more developed worlds; mactusk info, lureplant info, sinkhole coloring;",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",

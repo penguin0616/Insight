@@ -332,6 +332,8 @@ return {
 	-- stewer.lua
 	cooktime_remaining = "<icon=%s>(<color=HUNGER>%s</color>) %s",
 	--cooker = "Cooked by <color=%s>%s</color>.",
+	--cooktime_modifier_slower = "Cooks food <color=#DED15E>%s%%</color> slower.", -- some sort of double side-chevron (like a slow down sign) <<
+	--cooktime_modifier_faster = Cooks food <color=NATURE>%s%%</color> faster.",-- some sort of double side-chevron (like a speed up sign) >>
 
 	-- stickable.lua
 	stickable = "<icon=n> %s",

@@ -331,7 +331,9 @@ return {
 
 	-- stewer.lua
 	cooktime_remaining = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>) 会在 %s 秒后完成",
-	--cooker = "Cooked by <color=%s>%s</color>.",
+	cooker = "Cooked by <color=%s>%s</color>.",
+	cooktime_modifier_slower = "Cooks food <color=#DED15E>%s%%</color> slower.",
+	cooktime_modifier_faster = "Cooks food <color=NATURE>%s%%</color> faster.",
 
 	-- stickable.lua
 	stickable = "<color=FISH>贻贝</color>：%s",

@@ -52,8 +52,16 @@ local function GetChef(self)
 	return nil
 end
 
+local function GetCookTimeModifier(self)
+	if not self.cooktimemult then
+		return 0
+	end
+
+	return 1 - self.cooktimemult
+end
+
 local function Describe(self, context)
-	local description, food, chef_string
+	local description, food, chef_string, cook_time_string
 
 	local cooktime = self:GetTimeToCook()
 
@@ -61,34 +69,49 @@ local function Describe(self, context)
 		https://github.com/penguin0616/Insight/issues/13 bug report for mod https://steamcommunity.com/sharedfiles/filedetails/?id=907007729
 		they set cooktime fixed to 1 for whatever reason and replace components.stewer in their prefab to their deluxe thing 
 	]]
+
 	local is_authentic = self.GetTimeToCook == require("components/stewer").GetTimeToCook
 
 	if not (is_authentic) then
 		return
 	end
 
+	-- chef
 	local chef = context.config["stewer_chef"] and GetChef(self)
 	if chef and (self:IsDone() or cooktime > 0) then
 		chef_string = string.format(context.lstr.cooker, chef.colour, chef.name)
 	end
 
-	if not (cooktime > 0) then -- not using :IsCooking() because its not in DS
-		return { priority=0, description=chef_string }
+	-- cook time modifier
+	local cook_time_modifier = GetCookTimeModifier(self)
+	if cook_time_modifier < 0 then
+		-- 1 - 1.25 = -0.25 = you cook slower
+		-- slower
+		cook_time_string = string.format(context.lstr.cooktime_modifier_slower, math.abs(cook_time_modifier) * 100)
+	elseif cook_time_modifier > 0 then
+		-- 1 - 0.8 = 0.2 = you cook faster
+		-- faster
+		cook_time_string = string.format(context.lstr.cooktime_modifier_faster, cook_time_modifier * 100)
 	end
 
-	cooktime = math.ceil(cooktime)
+	-- food identification and cooking
+	if cooktime > 0 then -- not using :IsCooking() because its not in DS
+		cooktime = math.ceil(cooktime)
 
-	local recipe = GetRecipe(self.inst.prefab, self.product)
-	local stacksize = recipe and recipe.stacksize or 1
-		
-	if context.usingIcons and PrefabHasIcon(self.product) then
-		food = string.format(context.lstr.cooktime_remaining, self.product, stacksize, cooktime)
-	else
-		local name = STRINGS.NAMES[string.upper(self.product)] or ("\"" .. self.product .. "\"")
-		food = string.format(context.lstr.lang.cooktime_remaining, name, stacksize, cooktime)
+		local recipe = GetRecipe(self.inst.prefab, self.product)
+		local stacksize = recipe and recipe.stacksize or 1
+			
+		if context.usingIcons and PrefabHasIcon(self.product) then
+			food = string.format(context.lstr.cooktime_remaining, self.product, stacksize, cooktime)
+		else
+			local name = STRINGS.NAMES[string.upper(self.product)] or ("\"" .. self.product .. "\"")
+			food = string.format(context.lstr.lang.cooktime_remaining, name, stacksize, cooktime)
+		end
 	end
 
-	description = CombineLines(food, chef_string)
+	
+
+	description = CombineLines(food, chef_string, cook_time_string)
 
 	return {
 		priority = 0,
