@@ -1,0 +1,16 @@
+<Atlas>
+	<Texture filename="food_types.tex"/>
+    <Elements>
+        <Element name="Bugs.tex" u1="0.001953125" u2="0.24804688" v1="0.75195312" v2="0.99804688"/>
+        <Element name="Dairy.tex" u1="0.25195312" u2="0.49804688" v1="0.75195312" v2="0.99804688"/>
+        <Element name="Eggs.tex" u1="0.50195312" u2="0.74804688" v1="0.75195312" v2="0.99804688"/>
+        <Element name="Fat.tex" u1="0.75195312" u2="0.99804688" v1="0.75195312" v2="0.99804688"/>
+        <Element name="Fishes.tex" u1="0.001953125" u2="0.24804688" v1="0.50195312" v2="0.74804688"/>
+        <Element name="Fruit.tex" u1="0.25195312" u2="0.49804688" v1="0.50195312" v2="0.74804688"/>
+        <Element name="Inedible.tex" u1="0.50195312" u2="0.74804688" v1="0.50195312" v2="0.74804688"/>
+        <Element name="Meats.tex" u1="0.75195312" u2="0.99804688" v1="0.50195312" v2="0.74804688"/>
+        <Element name="Monster_Foods.tex" u1="0.001953125" u2="0.24804688" v1="0.25195312" v2="0.49804688"/>
+        <Element name="Sweetener.tex" u1="0.25195312" u2="0.49804688" v1="0.25195312" v2="0.49804688"/>
+        <Element name="Vegetable.tex" u1="0.50195312" u2="0.74804688" v1="0.25195312" v2="0.49804688"/>
+    </Elements>
+</Atlas>

@@ -1,0 +1,48 @@
+cave_open.pdn
+	- magic wand the arrow with 50% tolerance
+	- move it to a new layer
+	- saturation 200 for all of them unless otherwise stated
+
+1. cave_open_red
+	- literally just cave_open.pdn (0)
+
+2. cave_open_orange
+	- adjust hue +33 from cave_open_red (+33 from cave_open_red)
+	
+3. cave_open_yellow
+	- adjust hue +33 from cave_open_orange (+66 from cave_open_red)
+	
+4. cave_open_green
+	- adjust hue +66 from cave_open_yellow (+132 from cave_open_red)
+	
+5. cave_open_cyan
+	- adjust hue +50 from cave_open_green (+182 from cave_open_red)
+	
+6. cave_open_blue
+	- adjust hue +33 from cave_open_cyan (+215 from cave_open_red)
+	
+7. cave_open_purple
+	- adjust hue +66 from cave_open_blue (+281 from cave_open_red)
+	- lightness +10
+
+8. cave_open_pink
+	- same hue, saturation is what makes it pink
+	
+9. cave_open_white
+	- reset sliders, just set lightness to max
+	
+10. cave_open_black
+	- reset sliders, saturation to 0
+	
+
+cave_open2.pdn
+	- magic wand the arrow with 50% tolerance
+	- move to new layer
+	- get same arrow from cave_open.pdn
+	- magic wand it & seperate, flip layer, copy to same session as blue arrow, except new layer
+	- line up position
+	- delete blue arrow
+	- line up the gap in the arrow head on the right
+
+rest of these
+	- follow process and clean up as needed

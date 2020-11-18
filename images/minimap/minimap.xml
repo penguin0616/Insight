@@ -1,0 +1,25 @@
+<Atlas>
+	<Texture filename="minimap.tex"/>
+    <Elements>
+        <Element name="cave_open2_black.tex" u1="0.0009765625" u2="0.12402344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_blue.tex" u1="0.12597656" u2="0.24902344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_cyan.tex" u1="0.25097656" u2="0.37402344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_green.tex" u1="0.37597656" u2="0.49902344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_orange.tex" u1="0.50097656" u2="0.62402344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_pink.tex" u1="0.62597656" u2="0.74902344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_purple.tex" u1="0.75097656" u2="0.87402344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_red.tex" u1="0.87597656" u2="0.99902344" v1="0.75195312" v2="0.99804688"/>
+        <Element name="cave_open2_white.tex" u1="0.0009765625" u2="0.12402344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open2_yellow.tex" u1="0.12597656" u2="0.24902344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open_black.tex" u1="0.25097656" u2="0.37402344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open_blue.tex" u1="0.37597656" u2="0.49902344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open_cyan.tex" u1="0.50097656" u2="0.62402344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open_green.tex" u1="0.62597656" u2="0.74902344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open_orange.tex" u1="0.75097656" u2="0.87402344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open_pink.tex" u1="0.87597656" u2="0.99902344" v1="0.50195312" v2="0.74804688"/>
+        <Element name="cave_open_purple.tex" u1="0.0009765625" u2="0.12402344" v1="0.25195312" v2="0.49804688"/>
+        <Element name="cave_open_red.tex" u1="0.12597656" u2="0.24902344" v1="0.25195312" v2="0.49804688"/>
+        <Element name="cave_open_white.tex" u1="0.25097656" u2="0.37402344" v1="0.25195312" v2="0.49804688"/>
+        <Element name="cave_open_yellow.tex" u1="0.37597656" u2="0.49902344" v1="0.25195312" v2="0.49804688"/>
+    </Elements>
+</Atlas>

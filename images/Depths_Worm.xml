@@ -1,0 +1,6 @@
+<Atlas>
+	<Texture filename="Depths_Worm.tex"/>
+    <Elements>
+		<Element name="Depths_Worm.tex" u1="0" u2="1" v1="0" v2="1"/>
+	</Elements>
+</Atlas>
