@@ -43,7 +43,10 @@ local InsightServerCrash = Class(Screen, function(self, data)
 	end 
 
 	data.colour = colour
-	data.status = "This server has crashed.\n" .. data.status
+
+	local context = (localPlayer and GetPlayerContext(localPlayer)) or nil
+	local headerstring = context and context.lstr.server_crash or "[~STR] This server has crashed. The cause is unknown."
+	data.status = headerstring .. "\n" .. data.status
 
 	local ui = CrashReportStatus(data)
 

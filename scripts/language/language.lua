@@ -21,7 +21,7 @@ directory. If not, please refer to
 local languages = {
 	icons = "icons",
 	en = "english",
-	zh = "chinese"
+	zh = "chinese", ch = "chinese",
 }
 
 local __newindex = function(self) error(tostring(self) .. " is readonly") end

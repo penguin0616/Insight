@@ -801,7 +801,6 @@ function GetWorldInformation(player)
 	local is_dst = IsDST()
 
 	local world = TheWorld or GetWorld() -- implict game check
-	local worldprefab = (is_dst and world.worldprefab) or world.prefab
 	local context = GetPlayerContext(player)
 	assert(context, "how is context missing in GetWorldInformation for " .. player.name)
 
@@ -1872,7 +1871,12 @@ AddSimPostInit(function()
 		end
 
 		if not hunter then 
-			mprint("No hunter component???")
+			local worldprefab = (is_dst and world.worldprefab) or world.prefab
+			if worldprefab == "caves" then
+				mprint("Caves does not have a hunter component.")
+			else
+				mprint("No hunter component???")
+			end
 			return 
 		end
 		mprint("Hunter has been hooked")

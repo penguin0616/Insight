@@ -22,7 +22,7 @@ directory. If not, please refer to
 -- DST 2189004162
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.7.1" -- ds is 2.4.4_ds
+version = "2.7.2" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -1508,6 +1508,7 @@ local chinese = {
 	},
 }
 translations["zh"] = chinese
+translations["ch"] = chinese
 
 --=============================================================================================================================================================================================================================================
 --=================================================== DO NOT TRANSLATE PAST THIS LINE =========================================================================================================================================================

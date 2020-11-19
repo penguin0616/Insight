@@ -21,6 +21,9 @@ directory. If not, please refer to
 -- Translated by: https://steamcommunity.com/id/interesting28/
 
 return {
+	-- insightservercrash.lua
+	server_crash = "This server has crashed. The cause is unknown.",
+
 	-- modmain.lua
 	dragonfly_ready = "准备战斗",
 

@@ -21,6 +21,9 @@ directory. If not, please refer to
 -- me
 
 return {
+	-- insightservercrash.lua
+	server_crash = "This server has crashed. The cause is unknown.",
+	
 	-- modmain.lua
 	dragonfly_ready = "Ready to fight.",
 
