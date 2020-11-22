@@ -19,6 +19,49 @@ directory. If not, please refer to
 ]]
 
 -- weapon.lua
+local SLINGSHOT_AMMO_DATA = {}
+
+for i,v in pairs(_G.Prefabs) do
+	-- skins (glomling_winter) are missing .fn i think
+	if v.fn and debug.getinfo(v.fn, "S").source == "scripts/prefabs/slingshotammo.lua" then
+		if v.name:sub(-5) == "_proj" then
+			local ammo_data = util.getupvalue(v.fn, "v")
+			SLINGSHOT_AMMO_DATA[ammo_data.name] = ammo_data
+		end
+	end
+end
+
+local function GetSlingshotAmmoData(inst)
+	--mprint(require("/prefabs/slingshotammo"))
+	-- prefabs/slingshotammo.lua
+
+	--[[
+	local damage = "?"
+
+	if SLINGSHOT_AMMO_DATA[inst.prefab] then
+		damage = SLINGSHOT_AMMO_DATA[inst.prefab].damage or 0
+	end
+	--]]
+
+	--[[
+	if inst.prefab == "slingshotammo_rock" then
+		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_ROCKS or damage
+	elseif inst.prefab == "slingshotammo_gold" then
+		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_GOLD or damage
+	elseif inst.prefab == "slingshotammo_marble" then
+		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_MARBLE or damage
+	elseif inst.prefab == "slingshotammo_thulecite" then
+		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_THULECITE or damage
+	elseif inst.prefab == "slingshotammo_slow" then
+		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_SLOW or damage
+	elseif inst.prefab == "trinket_1" then
+		damage = TUNING.SLINGSHOT_AMMO_DAMAGE_TRINKET_1 or damage
+	end
+	--]]
+
+	return SLINGSHOT_AMMO_DATA[inst.prefab]
+end
+
 local function GetDamageModifier(combat, context)
 	if not combat or not context.config["account_combat_modifiers"] then
 		return 1
@@ -78,18 +121,10 @@ local function Describe(self, context)
 	if inst:HasTag("slingshot") then -- walter's slingshot
 		local ammo = inst.components.container:GetItemInSlot(1)
 		if ammo then
-			if ammo.prefab == "slingshotammo_rock" then
-				damage = TUNING.SLINGSHOT_AMMO_DAMAGE_ROCKS or damage
-			elseif ammo.prefab == "slingshotammo_gold" then
-				damage = TUNING.SLINGSHOT_AMMO_DAMAGE_GOLD or damage
-			elseif ammo.prefab == "slingshotammo_marble" then
-				damage = TUNING.SLINGSHOT_AMMO_DAMAGE_MARBLE or damage
-			elseif ammo.prefab == "slingshotammo_thulecite" then
-				damage = TUNING.SLINGSHOT_AMMO_DAMAGE_THULECITE or damage
-			elseif ammo.prefab == "slingshotammo_slow" then
-				damage = TUNING.SLINGSHOT_AMMO_DAMAGE_SLOW or damage
-			elseif ammo.prefab == "trinket_1" then
-				damage = TUNING.SLINGSHOT_AMMO_DAMAGE_TRINKET_1 or damage
+			local ammo_data = GetSlingshotAmmoData(ammo)
+
+			if ammo_data then
+				damage = ammo_data.damage or damage
 			end
 		end
 	end
@@ -114,5 +149,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetSlingshotAmmoData = GetSlingshotAmmoData
 }

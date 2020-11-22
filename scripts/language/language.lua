@@ -27,12 +27,12 @@ local languages = {
 local __newindex = function(self) error(tostring(self) .. " is readonly") end
 local __metatable = "[Insight] The metatable is locked."
 
-local function main(config)
+local function main(config, locale)
 	local usingIcons = config["info_style"] == "icon"
 
 	local selected = nil
 	if config["language"] == "automatic" then
-		selected = LOC.GetLocaleCode()
+		selected = locale
 		if languages[selected] == nil then
 			selected = "en"
 		end

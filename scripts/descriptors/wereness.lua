@@ -19,6 +19,14 @@ directory. If not, please refer to
 ]]
 
 -- wereness.lua
+local function GetData(self)
+	return {
+		weremode = self:GetWereMode(),
+		wereness = self.current,
+		max_wereness = self.max,
+	}
+end
+
 local function Describe(self, context)
 	if IsDS() then
 		return
@@ -35,14 +43,12 @@ local function Describe(self, context)
 	return {
 		priority = 0,
 		description = description,
-		weremode = self:GetWereMode(),
-		wereness = self.current,
-		max_wereness = self.max,
 	}
 end
 
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetData = GetData
 }

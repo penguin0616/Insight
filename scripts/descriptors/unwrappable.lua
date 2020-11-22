@@ -54,7 +54,7 @@ local function GetItems(self, context) -- ISSUE:PERFORMANCE
 			end
 
 			if slot.data.perishable then
-				local d = GetComponentDescriptor("perishable") or function() return {description = "FAILED TO LOAD PERISHABLE COMPONENT"} end
+				local d = Insight.descriptors.perishable.Describe or function() return {description = "FAILED TO LOAD PERISHABLE COMPONENT"} end
 				context.bundleitem = { bundle = self.inst, perishremainingtime = slot.data.perishable.time }
 
 				item.perishable = d(nil, context).description		

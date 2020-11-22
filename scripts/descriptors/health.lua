@@ -39,14 +39,20 @@ local function ShouldShowPlayerNaughtiness(context)
 	return not doesCombinedStatusDisplay
 end
 
+local function GetData(self)
+	local max_health = (self.GetMaxWithPenalty and self:GetMaxWithPenalty()) or self:GetMaxHealth()
 
-
+	return {
+		health = tonumber(Round(self.currenthealth, 1)),
+		max_health = tonumber(Round(max_health, 1)),
+	}
+end
 
 local function Describe(self, context)
 	local inst = self.inst
 	--local description = string.format("<color=HEALTH>Health</color>: <color=HEALTH><%s / %s></color>", Round(self.currenthealth, 1), Round(self:GetMaxHealth(), 1)) -- encompass whole
 	local description = nil
-	local max_health = (IsDST() and self:GetMaxWithPenalty()) or self:GetMaxHealth()
+	local max_health = (self.GetMaxWithPenalty and self:GetMaxWithPenalty()) or self:GetMaxHealth()
 
 	if context.config["display_health"] then
 		description = string.format(context.lstr.health, Round(self.currenthealth, 1), Round(max_health, 1))
@@ -91,13 +97,10 @@ local function Describe(self, context)
 		name = "health",
 		priority = 10,
 		description = description,
-		health = tonumber(Round(self.currenthealth, 1)),
-		max_health = tonumber(Round(max_health, 1)),
 	}, naughtiness_table
 end 
 
-
-
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetData = GetData
 }

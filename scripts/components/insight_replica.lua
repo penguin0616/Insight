@@ -216,14 +216,6 @@ local Insight = Class(function(self, inst)
 
 	if IsDST() then
 		self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
-		
-		--[[
-		self.net_entity_datas = {}
-
-		for i = 1, self.receivers do
-			table.insert(self.net_entity_datas, self:SetupReceiver(self.inst, i))
-		end
-		--]]
 			
 		-- net_string
 		self.net_world_data = net_string(self.inst.GUID, "insight_world_data", "insight_world_data_dirty")
@@ -245,12 +237,14 @@ local Insight = Class(function(self, inst)
 			self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
 				self.net_battlesong_active:set(player.components.singinginspiration:IsSinging())
 			end)
+			
 			--[[
-			self.inst.insight_classified = SpawnPrefab("insight_classified")
-			self.inst.insight_classified.entity:SetParent(self.inst.entity)
+			local function Send()
+				
+				self.inst:DoTaskInTime(0.07 * (self.performance_ratings:GetHost() + 1), Send)
+			end
 			--]]
 
-			
 			self.inst:DoPeriodicTask(0.07, function()
 				local to_send = {}
 				to_send = self.queue -- meh
@@ -264,9 +258,6 @@ local Insight = Class(function(self, inst)
 				end
 			end)
 			
-
-
-
 			--[[
 			self.inst:DoPeriodicTask(0.07, function()
 				for i, r in pairs(self.net_entity_datas) do
@@ -322,12 +313,6 @@ local Insight = Class(function(self, inst)
 				self.performance_ratings:Refresh()
 			end
 		end)
-
-		--[[
-		self.inst:DoTaskInTime(5, function()
-			rpcNetwork.SendModRPCToServer(GetModRPC(modname, "Ping"), "55")
-		end)
-		--]]
 	end
 end)
 
@@ -553,6 +538,7 @@ function Insight:RequestInformation(item, params)
 		local host = self.performance_ratings:GetHost()
 		local client = self.performance_ratings:GetClient()
 		local ents = math.floor(self:CountEntities() / 1000) -- (2000 - host * 500) -- host? client? who knows which is better.
+		local plrs = #TheNet:GetClientTable() / 4
 		-- min is 170, max seen is 3370
 		
 		delay = (0.50 * host) + (1/3 * client) + (0.125 * ents)
@@ -681,7 +667,7 @@ function Insight:Update()
 	end
 
 	if IsDST() then
-		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetShardPlayers"))
+		--rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetShardPlayers"))
 	end
 	
 	-- inventory

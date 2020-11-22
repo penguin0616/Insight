@@ -25,7 +25,7 @@ local function Describe(self, context)
 
 	if context.player.components.souleater and inst.prefab == "wortox_soul" then
 		local edible_description
-		local descriptor = GetComponentDescriptor("edible")
+		local descriptor = Insight.descriptors.edible
 		if descriptor then
 			local stats = {
 				fixed = true,
@@ -34,7 +34,7 @@ local function Describe(self, context)
 				health = 0,
 			}
 			context.stats = stats
-			edible_description = descriptor(self, context).description
+			edible_description = descriptor.Describe(self, context).description
 		end
 
 		description = CombineLines(edible_description, context.lstr.wortox_soul_heal)

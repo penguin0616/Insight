@@ -18,6 +18,27 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+local function GetData(self)
+	local lunacy = false
+	local max_sanity = 0
+
+	if IsDST() then
+		if self:IsLunacyMode() then
+			lunacy = true
+		end
+		
+		max_sanity = self:GetMaxWithPenalty()
+	else
+		max_sanity = self:GetMaxSanity()
+	end
+
+	return {
+		sanity = tonumber(Round(self.current, 0)),
+		max_sanity = math.floor(max_sanity),
+		lunacy = lunacy
+	}
+end
+
 -- sanity.lua
 local function Describe(self, context)
 	local inst = self.inst
@@ -45,14 +66,12 @@ local function Describe(self, context)
 	return {
 		priority = 0.1,
 		description = description,
-		sanity = tonumber(Round(self.current, 0)),
-		max_sanity = math.floor(max_sanity),
-		lunacy = lunacy
 	}
 end
 
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetData = GetData
 }

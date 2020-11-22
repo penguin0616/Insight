@@ -238,6 +238,39 @@ rpcNetwork.SendModRPCToClient = function(id_table, sender_list, ...)
 	--dprint("sender list fail")
 end
 
+rpcNetwork.SendModRPCToAllClients = function(id_table, ...)
+	--dprint(string.format("SEND MOD RPC CLIENT [namespace \"%s\", rpc \"%s\"]", id_table.namespace, GetRPCName(id_table)))
+
+	if IS_CLIENT_HOST == nil then
+		IS_CLIENT_HOST = IsClientHost()
+	end
+
+	local sender_list = {}
+
+	for _, player in pairs(AllPlayers) do
+		if player.userid ~= "" then
+			if IS_CLIENT_HOST and player.userid == localPlayer.userid then
+				local fn = CLIENT_MOD_RPC_HANDLERS[id_table.namespace][id_table.id]
+				if fn then
+					fn(...)
+				end
+			else
+				table.insert(sender_list, player.userid)
+			end
+		end
+	end
+	
+	if #sender_list > 0 then
+		--dprint("SENDING TO CLIENTS", unpack(sender_list))
+		-- empty sender_list is also "invalid sender list"
+		SendModRPCToClient(id_table, sender_list, ...)
+		return
+	end
+
+	--dprint("sender list fail")
+end
+
+
 
 
 return rpcNetwork

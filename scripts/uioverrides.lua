@@ -18,6 +18,8 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+local string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Basic ===========================================================================
@@ -119,6 +121,7 @@ end)
 -- Handler for ItemTile:SetPercent()
 -- created for issue #5
 local oldItemTile_SetPercent = ItemTile.SetPercent
+local ITEMTILE_DISPLAY = 2; AddLocalPlayerPostInit(function() ITEMTILE_DISPLAY = GetPlayerContext(localPlayer).config["itemtile_display"] end);
 function ItemTile:SetPercent(...)
 	if not localPlayer then
 		return
@@ -127,7 +130,7 @@ function ItemTile:SetPercent(...)
 	--dprint('yep', GetModConfigData("itemtile_display", true))
 	--dprint('yep', self.item, self, ...) 
 
-	local cfg = GetModConfigData("itemtile_display", true) 
+	local cfg = ITEMTILE_DISPLAY
 	
 	if (cfg == 2) or IsForge() then
 		return oldItemTile_SetPercent(self, ...)
@@ -371,7 +374,18 @@ end
 --======================================== Hoverer =========================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true); AddLocalPlayerPostInit(function() DEBUG_SHOW_PREFAB = GetPlayerContext(localPlayer).config["DEBUG_SHOW_PREFAB"] end);
 AddClassPostConstruct("widgets/hoverer", function(hoverer)
+	local TheSim = TheSim
+	local debug_getinfo = debug.getinfo
+	local math_clamp = math.clamp
+	local string_find = string.find
+	local string_sub = string.sub
+	local math_ceil = math.ceil
+
+	local Is_DS = IsDS()
+	local Is_DST = IsDST()
+
 	local oldSetString = hoverer.text.SetString
 	local oldOnUpdate = hoverer.OnUpdate
 	local oldHide = hoverer.secondarytext.Hide
@@ -383,14 +397,14 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	-- nothing like having to fix klei bugs myself because you literally can't report don't starve bugs
 
 	function hoverer.secondarytext:Hide()
-		if IsDS() then
-			util.replaceupvalue(debug.getinfo(2).func, "YOFFSETUP", 40)
-			util.replaceupvalue(debug.getinfo(2).func, "YOFFSETDOWN", 30)
+		if Is_DS then
+			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETUP", 40)
+			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETDOWN", 30)
 		end
 		oldHide(self)
 	end
 
-	if IsDST() then
+	if Is_DST then
 		function hoverer:UpdatePosition(x, y)
 			local YOFFSETUP = -80
 			local YOFFSETDOWN = -50
@@ -423,8 +437,8 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			--print(y, "LOWER:", h + YOFFSETDOWN * scale.y, "HIGHER:", scr_h - h - YOFFSETUP * scale.y)
 
 			self:SetPosition(
-				math.clamp(x, w + XOFFSET, scr_w - w - XOFFSET),
-				math.clamp(y, h + YOFFSETDOWN * scale.y, scr_h - h - YOFFSETUP * scale.y),
+				math_clamp(x, w + XOFFSET, scr_w - w - XOFFSET),
+				math_clamp(y, h + YOFFSETDOWN * scale.y, scr_h - h - YOFFSETUP * scale.y),
 				0)
 		end
 	end
@@ -460,11 +474,11 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		local item = GetMouseTargetItem()
 		local itemInfo = RequestEntityInformation(item, localPlayer, { fromInspection=true, ignore_worldly=true })
 
-		if item and GetModConfigData("DEBUG_SHOW_PREFAB", true) then
-			local pos = string.find(text, "\n")
+		if item and DEBUG_SHOW_PREFAB then
+			local pos = string_find(text, "\n")
 			local prefab = " [" .. item.prefab .. "]"
 			if pos then
-				text = string.sub(text, 1, pos - 1) .. prefab .. string.sub(text, pos)
+				text = string_sub(text, 1, pos - 1) .. prefab .. string_sub(text, pos)
 			else
 				text = text .. prefab
 			end
@@ -484,7 +498,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		-- misc
 		--local positionPadding = (cl(text) - 1) * 7.5
 
-		local x = math.ceil(dataHeight / 30)
+		local x = math_ceil(dataHeight / 30)
 		local r = cl(text) - 1
 
 		local textPadding
@@ -499,7 +513,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		local p1 = hoverer:GetPosition()
 		--mprint(p1.x, dataWidth, screenWidth)
 
-		if IsDST() then
+		if Is_DST then
 			local tp_bonus = (r == 2 and 0) or 1
 			textPadding = string.rep("\n ", x + r + tp_bonus)
 			
@@ -600,6 +614,8 @@ AddClassPostConstruct("widgets/inventorybar", function(inventoryBar)
 		end
 		
 		local inv_item, active_item = GetControllerSelectedInventoryItem(inventoryBar)
+		local selected = inv_item or active_item
+
 		local lineHeight = 25
 
 		local itemInfo = RequestEntityInformation(inv_item or active_item, localPlayer, { fromInspection=true, ignore_worldly=true })
@@ -656,7 +672,7 @@ local function init()
 		return i
 	end
 
-	TheGlobalInstance:DoPeriodicTask(.15, function()
+	TheGlobalInstance:DoPeriodicTask(0.20, function()
 		if not localPlayer then
 			return
 		end
@@ -779,7 +795,6 @@ if IsDST() then
 	end)
 end
 
-mprint("monty")
 AddClassPostConstruct("widgets/playerlist", function(playerList)
 	mprint("made: playerList", playerList)
 end)
@@ -817,22 +832,22 @@ local function UpdatePlayerListing(self)
 
 	local asd = {}
 
-	if data.special_data.health then
-		local f = ResolveColors(string.format("<icon=health> <color=HEALTH>%s</color> / <color=HEALTH>%s</color>", data.special_data.health.health, data.special_data.health.max_health))
+	if data.health then
+		local f = ResolveColors(string.format("<icon=health> <color=HEALTH>%s</color> / <color=HEALTH>%s</color>", data.health.health, data.health.max_health))
 		table.insert(asd, f)
 	end
 
-	if data.special_data.sanity then
-		local str = data.special_data.sanity.lunacy and "ENLIGHTENMENT" or "SANITY"
-		local f = ResolveColors(string.format("<icon=" .. str:lower() .. "> <color=" .. str .. ">%s</color> / <color=" .. str .. ">%s</color>", data.special_data.sanity.sanity, data.special_data.sanity.max_sanity))
+	if data.sanity then
+		local str = data.sanity.lunacy and "ENLIGHTENMENT" or "SANITY"
+		local f = ResolveColors(string.format("<icon=" .. str:lower() .. "> <color=" .. str .. ">%s</color> / <color=" .. str .. ">%s</color>", data.sanity.sanity, data.sanity.max_sanity))
 		table.insert(asd, f)
 	end
 
-	if data.special_data.wereness and data.special_data.wereness.weremode then
-		local f = ResolveColors(string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.special_data.hunger.hunger, data.special_data.hunger.max_hunger))
+	if data.wereness and data.wereness.weremode then
+		local f = ResolveColors(string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.hunger.hunger, data.hunger.max_hunger))
 		table.insert(asd, f)
-	elseif data.special_data.hunger then
-		local f = ResolveColors(string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.special_data.hunger.hunger, data.special_data.hunger.max_hunger))
+	elseif data.hunger then
+		local f = ResolveColors(string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.hunger.hunger, data.hunger.max_hunger))
 		table.insert(asd, f)
 	end
 
@@ -913,5 +928,11 @@ AddClassPostConstruct("screens/playerstatusscreen", function(playerStatusScreen)
 	playerStatusScreen.DoInit = function(self, ...)
 		oldDoInit(self, ...)
 		PlayerStatusScreenPostInit(self)
+	end
+end)
+
+AddClassPostConstruct("screens/chatinputscreen", function(self)
+	if TheNet:GetUserID() == MyKleiID then
+		mprint"hey!!!"
 	end
 end)

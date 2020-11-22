@@ -19,6 +19,13 @@ directory. If not, please refer to
 ]]
 
 -- hunger.lua
+local function GetData(self)
+	return {
+		hunger = tonumber(Round(self.current, 0)),
+		max_hunger = self.max
+	}
+end
+
 local function Describe(self, context)
 	local inst = self.inst
 	local verbosity = context.config["display_hunger"]
@@ -66,14 +73,13 @@ local function Describe(self, context)
 
 	return {
 		priority = 0,
-		description = description,
-		hunger = tonumber(Round(self.current, 0)),
-		max_hunger = self.max
+		description = description
 	}
 end
 
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetData = GetData
 }

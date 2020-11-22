@@ -74,7 +74,7 @@ local function Describe(self, context)
 
 	for i,v in pairs(GetContainerItems(self)) do
 		local stacksize = v.components.stackable and v.components.stackable:StackSize() or 1
-		local unwrappable_contents = v.components.unwrappable and GetComponentDescriptor("unwrappable") and GetComponentDescriptor("unwrappable")(v.components.unwrappable, context).contents or nil
+		local unwrappable_contents = v.components.unwrappable and Insight.descriptors.unwrappable.Describe(v.components.unwrappable, context).contents or nil
 		local name = v.components.named and v.name or nil
 		
 		local data = { prefab=v.prefab, stacksize=stacksize, contents=unwrappable_contents, name=name }

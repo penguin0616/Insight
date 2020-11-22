@@ -26,9 +26,9 @@ local function Describe(self, context)
 	if self:IsOccupied() then
 		--description = GetEntityInformation(self.occupant, context.player)
 		if self.occupant.components.perishable then
-			local descriptor = GetComponentDescriptor("perishable")
+			local descriptor = Insight.descriptors.perishable
 			if descriptor then
-				description = descriptor(self.occupant.components.perishable, context).description
+				description = descriptor.Describe(self.occupant.components.perishable, context).description
 			end
 		end
 	end

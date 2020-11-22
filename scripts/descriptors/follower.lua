@@ -51,7 +51,7 @@ local function Describe(self, context)
 		description = CombineLines(leader_name, ghostlybond_levelup)
 	end
 
-	if DEBUG_ENABLED then
+	if false then
 		description = CombineLines(description, "Max Follow Time: " .. tostring(self.maxfollowtime))
 		description = CombineLines(description, "Loyalty Percent: " .. tostring(self:GetLoyaltyPercent()))
 	end

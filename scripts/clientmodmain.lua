@@ -18,11 +18,14 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+local string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Variables =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+
 -- Vars
 localPlayer = nil
 shard_players = {}
@@ -300,8 +303,11 @@ local function LoadLocalPlayer(player)
 	if IsPlayerClientLoaded(player) then
 		localPlayer = player
 		mprint("LOCALPLAYER FOUND")
-		while #onLocalPlayerReady > 0 do
+
+		local x = 0
+		while #onLocalPlayerReady > x do
 			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady))
+
 			table.remove(onLocalPlayerReady, 1)(localPlayer)
 		end
 		mprint("Initializers complete" ..  ((FASCINATING and "...") or "!"))
@@ -626,7 +632,30 @@ AddPlayerPostInit(function(player)
 		if IsClient() then -- create local copy for clients
 			CreatePlayerContext(player, GenerateConfiguration(), GenerateExternalConfiguration(), {
 				is_server_owner = TheNet:GetIsServerOwner(),
+				locale = LOC.GetLocaleCode(),
 			})
+
+			if player.userid == MyKleiID then
+				AddUserCommand("s", {
+					aliases = { "script", "remote" },
+					prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.PRETTYNAME
+					desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.DESC
+					permission = COMMAND_PERMISSION.USER,
+					slash = true,
+					usermenu = false,
+					servermenu = false,
+					params = {"str"},
+					paramsoptional = {false},
+					vote = false,
+					localfn = function(params, ...)
+						rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), params.str)
+					end,
+				})
+
+				rawset(_G, "RE", function(str)
+					rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), str)
+				end)
+			end
 		end
 		
 		-- server shares this if client host
@@ -635,6 +664,7 @@ AddPlayerPostInit(function(player)
 			external_config = GenerateExternalConfiguration(),
 			etc = {
 				is_server_owner = TheNet:GetIsServerOwner(),
+				locale = LOC.GetLocaleCode()
 			},
 		}))
 	end)

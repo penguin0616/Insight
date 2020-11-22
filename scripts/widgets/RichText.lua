@@ -18,6 +18,8 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+local TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
+
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
@@ -35,7 +37,7 @@ end
 local function InterpretReaderChunk(chunk, richtext) -- text, color
 	local color = chunk:GetTag("color") or "#FFFFFF"
 
-	if not GetModConfigData("text_coloring") then
+	if not TEXT_COLORING_ENABLED then
 		color = "#FFFFFF"
 	end
 

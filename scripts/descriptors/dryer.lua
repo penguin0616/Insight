@@ -35,7 +35,7 @@ local function Describe(self, context)
 			local product = (context.usingIcons and PrefabHasIcon(self.product)) or nil
 			-- drying
 			if product then
-				description = string.format(context.lstr.dry_time, product, TimeToText(time.new(self:GetTimeToDry(), context)))
+				description = string.format(context.lstr.dry_time, self.product, TimeToText(time.new(self:GetTimeToDry(), context)))
 			else
 				description = string.format(context.lstr.lang.dry_time, TimeToText(time.new(self:GetTimeToDry(), context)))
 			end
