@@ -18,7 +18,7 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -488,6 +488,10 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			itemInfo = itemInfo.information
 		end
 
+		if item and DEBUG_ENABLED then
+			itemInfo = string.format("Active: %s\n", tostring(entityManager:IsEntityActive(item))) .. (itemInfo or "")
+		end
+
 		hoverer.insightText:SetString(itemInfo)
 
 		-- size info
@@ -587,7 +591,7 @@ AddClassPostConstruct("widgets/inventorybar", function(inventoryBar)
 	end
 
 	inventoryBar.insightText = inventoryBar.actionstring:AddChild(RichText())
-	inventoryBar.insightText:SetFontSize(25)
+	inventoryBar.insightText:SetSize(25)
 
 	local oldActionStringTitle_SetString = inventoryBar.actionstringtitle.SetString
 	inventoryBar.actionstringtitle.SetString = function(self, str)
@@ -733,7 +737,7 @@ AddClassPostConstruct("widgets/followtext", function(followText)
 
 	-- generated and then updated as needed
 	followText.insightText = followText:AddChild(RichText())
-	followText.insightText:SetFontSize(28)
+	followText.insightText:SetSize(28)
 
 	-- target
 	local oldSetTarget = followText.SetTarget
@@ -828,7 +832,7 @@ local function UpdatePlayerListing(self)
 		return
 	end
 
-	listing.insight_text:SetFontSize(font_size)
+	listing.insight_text:SetSize(font_size)
 
 	local asd = {}
 

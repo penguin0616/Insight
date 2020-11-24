@@ -70,7 +70,7 @@ local function Describe(self, context)
 	--mprint("new", self.inst)
 
 	local items = {} -- {prefab, amount}
-	context.onlyContents = true
+	context.onlyContents = true -- ISSUE: REFACTOR
 
 	for i,v in pairs(GetContainerItems(self)) do
 		local stacksize = v.components.stackable and v.components.stackable:StackSize() or 1

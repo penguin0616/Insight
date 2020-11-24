@@ -18,6 +18,13 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+--------------------------------------------------------------------------
+--[[ Private Variables ]]
+--------------------------------------------------------------------------
+-- 1632
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local IsPrefab, IsWidget, IsBundleWrap = IsPrefab, IsWidget, IsBundleWrap
+
 local highlightColorKey = "__insight:MultColor"
 local fuel_highlighting = GetModConfigData("fuel_highlighting", true)
 local highlighting_enabled = GetModConfigData("highlighting", true)
@@ -88,7 +95,69 @@ end)
 end)
 --]]
 
-function GetItemSlots()
+--------------------------------------------------------------------------
+--[[ Private Functions ]]
+--------------------------------------------------------------------------
+--- Returns prefab name from texture (used for UIs)
+-- @tparam string tex
+-- @treturn ?string|nil
+local function GetPrefabFromTexture(tex)
+	local prefab = string.match(tex, '[^/]+$'):gsub('%.tex$', '')
+
+	if prefab then
+		if GetWorldType() == 3 then
+			for normal, icon in pairs(PORK_ICONS) do
+				if icon == prefab then
+					return normal
+				end
+			end
+		end
+
+		if GetWorldType() == 3 or GetWorldType() == 2 then -- both Sw  and hamlet have SW_ICONS
+			for normal, icon in pairs(SW_ICONS) do
+				if icon == prefab then
+					return normal
+				end
+			end
+		end
+
+		return prefab
+	end
+end
+
+local function RemoveHighlight(inst)
+	if inst[highlightColorKey] then
+		if IsWidget(inst) then -- ItemTile
+			inst.image:SetTint(1, 1, 1, 1)
+			RemoveHighlight(inst.item) -- show the love further down too because why not
+		elseif IsPrefab(inst) then
+			inst.AnimState:SetMultColour(unpack(inst[highlightColorKey]))
+		else
+			error('big problem highlight')
+		end
+		inst[highlightColorKey] = nil
+	end
+end
+
+local function ApplyHighlight(inst, color)
+	RemoveHighlight(inst) -- preemptive strike
+
+	if IsWidget(inst) then -- ItemTile
+		inst[highlightColorKey] = "#compatability?"
+		inst.image:SetTint(unpack(color))
+
+		ApplyHighlight(inst.item, color) -- show the love further down too because why not
+
+	elseif IsPrefab(inst) then
+		-- apparently, AnimState doesn't exist for everything. I should have forseen that.
+		if inst.AnimState then
+			inst[highlightColorKey] = {inst.AnimState:GetMultColour()}
+			inst.AnimState:SetMultColour(unpack(color))
+		end
+	end
+end
+
+local function GetItemSlots()
 	if not localPlayer then return {} end
 
 	local slots = {} -- ISSUE:PERFORMANCE
@@ -119,7 +188,7 @@ function GetItemSlots()
 	-- open containers
 	--k, v = next(self.controls.containers) return v -- PlayerHud:GetFirstOpenContainerWidget
 	for _, c in pairs(localPlayer.HUD.controls.containers) do
-	if c and c.inv then
+		if c and c.inv then
 			for i, v in pairs(c.inv) do
 				if v then
 					table.insert(slots, v)
@@ -140,7 +209,7 @@ function GetItemSlots()
 	return slots
 end
 
-function Comparator(held, inst)
+local function Comparator(held, inst)
 	if not localPlayer then return end
 	local insight = (Is_DST and localPlayer.replica.insight) or localPlayer.components.insight
 	-- returned color applies to inst
@@ -206,7 +275,7 @@ function Comparator(held, inst)
 	return nil
 end
 
-function GetContainerRelevance(ctr)
+local function GetContainerRelevance(ctr)
 	local insight = (Is_DST and localPlayer.replica.insight) or localPlayer.components.insight
 	--mprint(ctr, ctr.classified, ctr.inst, activeItem, activeItem and ctr:Has(activeItem.prefab, 1))
 
@@ -243,39 +312,7 @@ function GetContainerRelevance(ctr)
 	return 0
 end
 
-function ApplyHighlight(inst, color)
-	RemoveHighlight(inst) -- preemptive strike
-
-	if IsWidget(inst) then -- ItemTile
-		inst[highlightColorKey] = "#compatability?"
-		inst.image:SetTint(unpack(color))
-
-		ApplyHighlight(inst.item, color) -- show the love further down too because why not
-
-	elseif IsPrefab(inst) then
-		-- apparently, AnimState doesn't exist for everything. I should have forseen that.
-		if inst.AnimState then
-			inst[highlightColorKey] = {inst.AnimState:GetMultColour()}
-			inst.AnimState:SetMultColour(unpack(color))
-		end
-	end
-end
-
-function RemoveHighlight(inst)
-	if inst[highlightColorKey] then
-		if IsWidget(inst) then -- ItemTile
-			inst.image:SetTint(1, 1, 1, 1)
-			RemoveHighlight(inst.item) -- show the love further down too because why not
-		elseif IsPrefab(inst) then
-			inst.AnimState:SetMultColour(unpack(inst[highlightColorKey]))
-		else
-			error('big problem highlight')
-		end
-		inst[highlightColorKey] = nil
-	end
-end
-
-function EvaluateRelevance(inst, isApplication)
+local function EvaluateRelevance(inst, isApplication)
 	if not localPlayer then
 		return
 	end
@@ -324,10 +361,10 @@ function EvaluateRelevance(inst, isApplication)
 	
 end
 
-function DoRelevanceChecks()
+local function DoRelevanceChecks()
 	local apply = ((activeItem or activeIngredientFocus) and true) or false
 
-	for v in pairs(entityManager.chests) do -- ISSUE:PERFORMANCE
+	for v in pairs(entityManager.active_entities) do -- ISSUE:PERFORMANCE
 		EvaluateRelevance(v, apply)
 	end
 
@@ -374,6 +411,7 @@ end
 
 function highlighting.SetEntityAwake(inst)
 	if inst:HasTag("INLIMBO") then -- most likely an inventory item
+		--mprint("@ LIMBO", inst)
 		for _, slot in pairs(GetItemSlots()) do
 			if slot.tile and slot.tile.item == inst then
 				EvaluateRelevance(slot.tile, true)
@@ -381,6 +419,7 @@ function highlighting.SetEntityAwake(inst)
 			end
 		end
 	else
+		--mprint("set awake", inst)
 		EvaluateRelevance(inst, true)
 	end
 end

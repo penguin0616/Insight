@@ -33,7 +33,7 @@ local function Describe(self, context)
 				sanity = -TUNING.SANITY_TINY,
 				health = 0,
 			}
-			context.stats = stats
+			context.stats = stats -- ISSUE: REFACTOR
 			edible_description = descriptor.Describe(self, context).description
 		end
 

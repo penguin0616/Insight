@@ -19,8 +19,15 @@ directory. If not, please refer to
 ]]
 
 setfenv(1, _G.Insight.env)
+--------------------------------------------------------------------------
+--[[ Private Variables ]]
+--------------------------------------------------------------------------
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local Indicators = import("indicators")
 
+--------------------------------------------------------------------------
+--[[ PerformanceRatings ]]
+--------------------------------------------------------------------------
 local PerformanceRatings = Class(function(self)
 	self.ratings = {}
 	self.client_id = nil
@@ -69,22 +76,11 @@ function PerformanceRatings:Refresh()
 	}
 end
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== Dirty & Etc =====================================================================
---==========================================================================================================================
---==========================================================================================================================
-
+--------------------------------------------------------------------------
+--[[ Private Functions ]]
+--------------------------------------------------------------------------
 local function GotEntityInformation(inst, data)
 	local insight = GetInsight(inst)
-
-	--[[
-	if not data.entity then
-		-- server sent a nil entity
-		dprint("Got nil entity from server")
-		return
-	end
-	--]]
 
 	local items = decompress(data.data) --json.decode(str)
 
@@ -173,8 +169,11 @@ local function OnHuntTargetDirty(inst, target)
 	--inst.HUD:AddTargetIndicator(target, {})
 end
 
+--------------------------------------------------------------------------
+--[[ Insight ]]
+--------------------------------------------------------------------------
 local Insight = Class(function(self, inst)
-	mprint("Registering Insight replica for", inst, "but I am", ThePlayer)
+	--mprint("Registering Insight replica for", inst, "but I am", ThePlayer)
 
 	if IsClient() then
 		assert(ThePlayer, "[Insight]: Failed to load replica since you're missing")
@@ -210,9 +209,11 @@ local Insight = Class(function(self, inst)
 	self.world_data = nil -- await
 	self.entity_data = setmetatable(createTable(500), { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = {}
+	
 	self.hunt_target = nil
 	self.tracked_entities = {}
-	
+	self.pipspook_toys = {}
+	self.pipspook_queue = setmetatable({}, { __mode="v" })
 
 	if IsDST() then
 		self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
@@ -315,6 +316,126 @@ local Insight = Class(function(self, inst)
 		end)
 	end
 end)
+
+function Insight:PipspookToyFound(inst) 
+	dprint("found", inst)
+	local network_id = GetEntityDebugData(inst).network_id
+
+	local toy_data = util.table_find(self.pipspook_toys, function(t) return t.network_id == network_id end)
+
+	if toy_data == nil then
+		if not table.contains(self.pipspook_queue, inst) then
+			table.insert(self.pipspook_queue, inst)
+		end
+		
+		-- assume its not ours
+		dprint("\tmissing toy data", inst)
+		return
+	end
+
+	if toy_data.owner ~= self.inst.name then
+		dprint("\ttoy not ours")
+		-- definitely not ours
+		return
+	end
+
+	local indicator = self.indicators:Get(toy_data.vector)
+	if indicator then
+		indicator.config_data.name = nil
+		indicator:SetTarget(inst)
+	else 
+		--mprint("can't find indicator with vector for pipspook")
+
+		--dprint("yessir", inst)
+		-- already exists
+		local img_data = ResolvePrefabToImageTable("trinket_" .. string.match(inst.prefab, "_(%d+)$"))
+		local yep = { tex=img_data.tex, atlas=img_data.atlas }
+
+		self:StartTrackingEntity(inst, yep)
+	end
+
+	inst.marker = SpawnPrefab("insight_range_indicator")
+	inst.marker:Attach(inst)
+	inst.marker:SetRadius(TUNING.GHOST_HUNT.TOY_FADE.IN / WALL_STUDS_PER_TILE)
+	--inst.marker:SetColour(Color.fromHex(Insight.COLORS.FROZEN))
+	inst.marker:SetVisible(true)
+
+
+	--[[
+	if util.table_find(self.pipspook_toys, function(q) return GetEntityDebugData(q).network_id == inst.network_id end) then
+		self:StartTrackingEntity(inst, ResolvePrefabToImageTable("trinket_" .. string.match(inst.prefab, "_(%d+)$")))
+
+		inst.marker = SpawnPrefab("insight_range_indicator")
+		inst.marker:Attach(inst)
+		inst.marker:SetRadius(3 / WALL_STUDS_PER_TILE)
+		--inst.marker:SetColour(Color.fromHex(Insight.COLORS.FROZEN))
+		inst.marker:SetVisible(true)
+	else
+		mprint("pipspook missing ref for", inst)
+	end
+	--]]
+
+	--mprint("spawned", inst, network_id, table.contains(GetInsight(localPlayer).pipspook_toys, network_id))
+end
+
+function Insight:HandlePipspookQuest(data, ...)
+	dprint("handle begin", data.state, ...)
+	if data.state == "begin" then
+		self.pipspook_toys = data.toys
+
+		for i,v in pairs(self.pipspook_toys) do
+			-- v { network_id=network_id, position=Vector3 }
+			local toy = util.table_find(self.pipspook_queue, function(q) return GetEntityDebugData(q).network_id == v.network_id end)
+
+			if toy then
+				-- toy already exists
+				--[[
+				local toy = table.remove(self.pipspook_queue, index)
+
+				local img_data = ResolvePrefabToImageTable("trinket_" .. string.match(toy.prefab, "_(%d+)$"))
+				local yep = { tex=img_data.tex, atlas=img_data.atlas }
+
+				self:StartTrackingEntity(toy, yep)
+				--]]
+
+				self:PipspookToyFound(toy) -- table.remove(self.pipspook_queue, index)
+			elseif v.owner == self.inst.name then
+				mprint("track vector:", v.prefab)
+				-- toy does not exist
+				local img_data = ResolvePrefabToImageTable("trinket_" .. string.match(v.prefab, "_(%d+)$"))
+				local yep = { tex=img_data.tex, atlas=img_data.atlas, name="<color=#aaaaaa>(Distant)</color> " .. v.display_name, vector=Vector3(v.position.x, v.position.y, v.position.z), max_distance=3000 }
+				v.vector = yep.vector
+
+				self:StartTrackingEntity(yep.vector, yep)
+			end
+		end
+
+		--[[
+		while #self.pipspook_queue > 0 do
+			local q = table.remove(self.pipspook_queue, 1)
+			
+			self:StartTrackingEntity
+		end
+		--]]
+
+		--[[
+		for i = 1, select("#", ...) - offset do
+			local toy = select(i, ...)
+
+			if toy then
+				local thing = ResolvePrefabToImageTable("trinket_" .. string.match(toy.prefab, "_(%d+)$"))
+				self:StartTrackingEntity(toy, thing)
+				mprint("tracking", toy)
+			else
+				mprint("missing toy")
+			end
+		end
+		--]]
+	elseif data.state == "end" then
+		self.pipspook_toys = {}
+		self.pipspook_queue = setmetatable({}, { __mode="v" })
+	end
+end
 
 function Insight:SetEntityData(entity, data)
 	assert(TheWorld.ismastersim, "Insight:SetEntityData called from client.")
@@ -538,10 +659,10 @@ function Insight:RequestInformation(item, params)
 		local host = self.performance_ratings:GetHost()
 		local client = self.performance_ratings:GetClient()
 		local ents = math.floor(self:CountEntities() / 1000) -- (2000 - host * 500) -- host? client? who knows which is better.
-		local plrs = #TheNet:GetClientTable() / 4
+		local plrs = math.floor(#(TheNet:GetClientTable() or {}) / 4)
 		-- min is 170, max seen is 3370
 		
-		delay = (0.50 * host) + (1/3 * client) + (0.125 * ents)
+		delay = (0.50 * host) + (1/3 * client) + (0.125 * ents) + (0.125 * plrs)
 	else
 		mprint("Delay set to 0 in weird case.", tostring(delay), type(delay))
 		--error("Delay set to 0 in weird case.")
@@ -592,6 +713,7 @@ function Insight:EntityActive(ent)
 	--self.entity_count = self.entity_count + 1
 
 	if ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit" then
+		mprint(ent:GetDebugString())
 		ent:DoTaskInTime(0, function()
 			self:RequestInformation(ent)
 		end)
@@ -623,12 +745,13 @@ function Insight:StartTrackingEntity(ent, data)
 
 	local img_data = data or {}
 	--local exists, tex, atlas = PrefabHasIcon(ent.prefab)
-	local tbl = ResolvePrefabToImageTable(ent.prefab)
+	if img_data.tex == nil and img_data.atlas == nil then
+		local tbl = ResolvePrefabToImageTable(ent.prefab)
 
-
-	if tbl then
-		img_data.image = tbl.tex
-		img_data.atlas = tbl.atlas
+		if tbl then
+			img_data.tex = tbl.tex
+			img_data.atlas = tbl.atlas
+		end
 	end
 
 	self.indicators:Add(ent, img_data)

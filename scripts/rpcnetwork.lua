@@ -23,6 +23,10 @@ directory. If not, please refer to
 --======================================== Declaration =====================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local select, unpack = select, unpack
+
+local function pack(...) return { n=select("#", ...), ...} end
+local function vararg(packed) return unpack(packed, 1, packed.n) end
 
 -- every optimization matters...?
 local SendModRPCToServer = SendModRPCToServer
@@ -110,7 +114,9 @@ rpcNetwork.AddShardModRPCHandler = function(namespace, name, fn)
 	return AddShardModRPCHandler(namespace, name, function(...)
 		--dprint(string.format("SHARD MOD RPC GOT [namespace \"%s\", rpc \"%s\"]", namespace, name))
 		-- assuming same situation as client mod rpc handler
-		local safe, res = pcall(fn, ...)
+		local args = pack(...)
+		local safe, res = xpcall(function() return fn(vararg(args)) end, debug.traceback)
+		
 		if not safe then
 			mprint(string.format("SHARD MOD RPC ERROR[namespace \"%s\", rpc \"%s\"]\n%s", namespace, name, res))
 			-- error properly :)
@@ -137,7 +143,8 @@ rpcNetwork.AddClientModRPCHandler = function(namespace, name, fn)
 	return AddClientModRPCHandler(namespace, name, function(...)
 		--dprint(string.format("CLIENT MOD RPC GOT [namespace \"%s\", rpc \"%s\"]", namespace, name))
 		-- TheNet call doesn't properly handle errors
-		local safe, res = pcall(fn, ...)
+		local args = pack(...)
+		local safe, res = xpcall(function() return fn(vararg(args)) end, debug.traceback)
 
 		--dprint("RESPONSE", safe, res)
 		

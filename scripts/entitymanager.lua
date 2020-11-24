@@ -18,6 +18,16 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+--------------------------------------------------------------------------
+--[[ Private Variables ]]
+--------------------------------------------------------------------------
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local Entity_HasTag = Entity.HasTag
+
+--------------------------------------------------------------------------
+--[[ Private Functions ]]
+--------------------------------------------------------------------------
+
 local function SetEntitySleep(manager, inst, rmv)
 	--manager.chests[inst] = nil
 	if manager.active_entities[inst] == nil then
@@ -39,9 +49,9 @@ local function SetEntityAwake(manager, inst)
 		return
 	end
 
-	if inst:HasTag("fx") or inst:HasTag("DECOR") or inst:HasTag("CLASSIFIED") then -- or inst:HasTag("INLIMBO") , but inventory items are INLIMBO in DST || search EntityScript:IsInLimbo
+	if Entity_HasTag(inst.entity, "fx") or Entity_HasTag(inst.entity, "DECOR") or Entity_HasTag(inst.entity, "CLASSIFIED") then -- or inst:HasTag("INLIMBO") , but inventory items are INLIMBO in DST || search EntityScript:IsInLimbo
 		return
-	elseif inst:HasTag("NOCLICK") then 
+	elseif Entity_HasTag(inst.entity, "NOCLICK") then 
 		if inst.replica then
 			if inst.replica.inventoryitem == nil then
 				return
@@ -61,7 +71,7 @@ local function SetEntityAwake(manager, inst)
 		end
 	end)
 	
-	manager.active_entities[inst] = true
+	manager.active_entities[inst] = GetEntityDebugData(inst)
 	manager.active_entity_lookup[inst.GUID] = inst
 	manager.entity_count = manager.entity_count + 1
 
@@ -69,12 +79,16 @@ local function SetEntityAwake(manager, inst)
 	manager:PushEvent("awake", inst)
 end
 
+--------------------------------------------------------------------------
+--[[ EntityManager ]]
+--------------------------------------------------------------------------
+
 local EntityManager = Class(function(self)
 	self.active_entities = setmetatable(createTable(1000), { __mode="k" })
 	self.active_entity_lookup = setmetatable(createTable(1000), { __mode="kv" })
 	self.entity_count = 0
 	self.listeners = {}
-	self.chests = setmetatable(createTable(200), { __mode="k" })
+	self.chests = setmetatable(createTable(250), { __mode="k" })
 end)
 
 function EntityManager:Count()
@@ -83,6 +97,10 @@ end
 
 function EntityManager:LookupGUID(GUID)
 	return self.active_entity_lookup[GUID]
+end
+
+function EntityManager:LookupNetworkID(networkID)
+	--return GetEntityByNetworkID(networkID)
 end
 
 function EntityManager:Manage(entity)
@@ -108,13 +126,7 @@ function EntityManager:Manage(entity)
 end
 
 function EntityManager:IsEntityActive(entity)
-	for _, ent in pairs(self.active_entities) do
-		if ent == entity then
-			return true
-		end
-	end
-
-	return false
+	return self.active_entities[entity] ~= nil
 end
 
 function EntityManager:AddListener(key, func)

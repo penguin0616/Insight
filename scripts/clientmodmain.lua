@@ -18,7 +18,7 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -210,7 +210,7 @@ local function OnHelperStateChange(inst, active, recipename, placerinst)
 end
 
 local function AttachWigfridSongRangeIndicator(player)
-	if not (IsDST() and player.prefab == "wathgrithr") then
+	if not player:HasTag("battlesinger") then
 		return
 	end
 
@@ -416,6 +416,48 @@ do
 		end
 	end
 end
+
+AddPrefabPostInitAny(function(inst)
+	if inst.prefab:sub(1, 9) == "lost_toy_" then
+		AddLocalPlayerPostInit(function()
+			if not localPlayer:HasTag("ghostlyfriend") then
+				return
+			end
+
+			inst:DoTaskInTime(0.1, function()
+				local insight = GetInsight(localPlayer)
+				insight:PipspookToyFound(inst)
+			end)
+		end)
+	end
+end)
+
+
+AddPrefabPostInit("cave_entrance_open", function(inst)
+	local cfg = GetModConfigData("sinkhole_marks", true)
+	if cfg == 0 then return end
+
+	--AddLocalPlayerPostInit(function() GetInsight(localPlayer):RequestInformation(inst) end)
+	--dprint('postinit', inst)
+	ListenForEventOnce(inst, "insight_ready", function(inst)
+		dprint(inst, "- migrator has loaded")
+		local info = GetInsight(localPlayer):GetInformation(inst)
+		local id = info.special_data.worldmigrator.receivedPortal
+		--dprint("id:", id)
+
+		if FOREST_MIGRATOR_IMAGES[id] then
+			inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
+
+			if cfg == 2 then
+				local clr = FOREST_MIGRATOR_IMAGES[id][2]
+				local new = Color.fromRGB(124, 26, 255)
+				inst.AnimState:SetMultColour(unpack(new))
+			end
+		else
+			--dprint("no icon for", id)
+		end
+	end)
+end)
 
 AddPrefabPostInit("cave_entrance_open", function(inst)
 	local cfg = GetModConfigData("sinkhole_marks", true)

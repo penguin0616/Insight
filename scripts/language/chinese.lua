@@ -316,6 +316,14 @@ return {
 	-- quaker.lua
 	next_quake = "<color=INEDIBLE>地震</color> 于%s后",
 
+	-- questowner.lua
+	questowner = {
+		pipspook = {
+			toys_remaining = "Toys remaining: %s",
+			assisted_by = "This pipspook is being assisted by %s.",
+		},
+	},
+
 	-- sanity.lua
 	sanity = "<color=SANITY>理智</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 	enlightenment = "<color=ENLIGHTENMENT>启蒙值</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",

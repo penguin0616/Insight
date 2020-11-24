@@ -18,14 +18,18 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+--------------------------------------------------------------------------
+--[[ Private Variables ]]
+--------------------------------------------------------------------------
 local TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
-
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
-
 local Reader = import("reader")
 
+--------------------------------------------------------------------------
+--[[ Private Functions ]]
+--------------------------------------------------------------------------
 local function _LookupIcon(icon) -- took me a minute but i remember that this is here for the prefabhasicon call 
 	if true then
 		PrefabHasIcon(icon)
@@ -35,7 +39,7 @@ local function _LookupIcon(icon) -- took me a minute but i remember that this is
 end
 
 local function InterpretReaderChunk(chunk, richtext) -- text, color
-	local color = chunk:GetTag("color") or "#FFFFFF"
+	local color = chunk:GetTag("color") or richtext.default_color
 
 	if not TEXT_COLORING_ENABLED then
 		color = "#FFFFFF"
@@ -63,7 +67,7 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 		end
 	else
 		-- text
-		obj = Text(UIFONT, richtext.font_size, chunk.text)
+		obj = Text(richtext.font, richtext.font_size, chunk.text)
 		obj:SetColour(color)
 
 		if chunk:HasTag("u") then
@@ -79,37 +83,74 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 	return obj
 end
 
-
-local RichText = Class(Widget, function(self)
+--------------------------------------------------------------------------
+--[[ RichText ]]
+--------------------------------------------------------------------------
+local RichText = Class(Widget, function(self, font, size, text, colour)
 	Widget._ctor(self, "RichText")
 
-	self.raw_text = nil
-	self.font_size = 30
 	self.lines = {}
 
+	self.font = UIFONT
+	self.font_size = 30
+	self.raw_text = nil
+	self.default_color = "#ffffff"
+
+	if font then
+		self:SetFont(font)
+	end
+
+	if size then
+		self:SetSize(30)
+	end
+	
+	if text then
+		self:SetString(text)
+	end
+
+	if colour then
+		self:SetColour(colour)
+	end
 end)
 
-function RichText:__tostring()
-	return string.format("%s - %s", self.name, self.raw_text or "<null>")
+function RichText:GetColour()
+	return Color.fromHex(self.default_color)
 end
 
-function RichText:SetFontSize(num)
-	assert(type(num) == "number", "RichText:SetFontSize expected arg #1 to be number")
+function RichText:SetColour(clr) -- Text::SetColour
+	if type(clr) == "string" then
+		assert(Color.IsValidHex(clr), "RichText:SetColour with invalid hex")
+	end
+
+	self.default_color = clr:ToHex()
+end
+
+function RichText:GetFont()
+	return self.font
+end
+
+function RichText:SetFont(font)
+	self.font = font
+	self:SetString(self:GetString(), true)
+end
+
+function RichText:SetSize(num)
+	assert(type(num) == "number", "RichText:SetSize expected arg #1 to be number")
 	
 	if self.font_size == num then
 		return
 	end
 
 	self.font_size = num
-	self:SetString(self:GetString()) -- shrug
+	self:SetString(self:GetString(), true)
 end
 
 function RichText:GetString()
 	return self.raw_text
 end
 
-function RichText:SetString(str)
-	if self.raw_text == str then
+function RichText:SetString(str, forced)
+	if not forced and self.raw_text == str then
 		-- why change?
 		return
 	end
@@ -162,8 +203,15 @@ function RichText:GetRegionSize()
 	return width, height
 end
 
--- ok time for the good stuf
+function RichText:SetRegionSize()
+	error("RichText does not support SetRegionSize.")
+end
 
+function RichText:ResetRegionSize()
+	error("RichText does not support ResetRegionSize.")
+end
+
+-- ok time for the good stuf
 function RichText:NewLine(pieces)
 	local container = self:AddChild(Widget("container" .. #self.lines + 1))
 	table.insert(self.lines, container)
@@ -394,5 +442,10 @@ function RichText:NewLine(pieces)
 
 	return container
 end
+
+function RichText:__tostring()
+	return string.format("%s - %s", self.name, self.raw_text or "<null>")
+end
+
 
 return RichText

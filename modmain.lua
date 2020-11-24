@@ -45,8 +45,27 @@ do
 	_G = GLOBAL
 end
 
-local string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
+DEFAULTFONT = "opensans"
+DIALOGFONT = "opensans"
+TITLEFONT = "bp100"
+UIFONT = "bp50"
+BUTTONFONT = "buttonfont"
+NEWFONT = "spirequal"
+NEWFONT_SMALL = "spirequal_small"
+NEWFONT_OUTLINE = "spirequal_outline"
+NEWFONT_OUTLINE_SMALL = "spirequal_outline_small"
+NUMBERFONT = "stint-ucr"
+TALKINGFONT = "talkingfont"
+TALKINGFONT_WORMWOOD = "talkingfont_wormwood"
+TALKINGFONT_HERMIT = "talkingfont_hermit"
+CHATFONT = "bellefair"
+HEADERFONT = "hammerhead"
+CHATFONT_OUTLINE = "bellefair_outline"
+SMALLNUMBERFONT = "stint-small"
+BODYTEXTFONT = "stint-ucr"
+CODEFONT = "ptmono"
 
 -- Mod table
 local Insight = {
@@ -517,6 +536,7 @@ function GetComponentDescriptor(name)
 				Insight.descriptors[name] = setmetatable(deepcopy(res), { __index = function(self, index) error(string.format("descriptor '%s' does not have index '%s'", name, index)) end })
 			else
 				--Insight.descriptors[name] = res
+				mprint(safe, res)
 				error(string.format("Attempt to return '%s' in descriptor '%s'", tostring(res), name))
 			end
 		else
@@ -1013,33 +1033,6 @@ function GetNaughtiness(inst, context)
 	end
 end
 
---- Returns prefab name from texture (used for UIs)
--- @tparam string tex
--- @treturn ?string|nil
-function GetPrefabFromTexture(tex)
-	local prefab = string.match(tex, '[^/]+$'):gsub('%.tex$', '')
-
-	if prefab then
-		if GetWorldType() == 3 then
-			for normal, icon in pairs(PORK_ICONS) do
-				if icon == prefab then
-					return normal
-				end
-			end
-		end
-
-		if GetWorldType() == 3 or GetWorldType() == 2 then -- both Sw  and hamlet have SW_ICONS
-			for normal, icon in pairs(SW_ICONS) do
-				if icon == prefab then
-					return normal
-				end
-			end
-		end
-
-		return prefab
-	end
-end
-
 local function sprint(c)
 	local x = c
 	while #x > 0 do
@@ -1309,6 +1302,9 @@ if IsDST() then
 		localPlayer:PushEvent("insight_entity_information", { data=data })
 	end)
 
+	rpcNetwork.AddClientModRPCHandler(modname, "PipspookQuest", function(data, ...)
+		GetInsight(localPlayer):HandlePipspookQuest(decompress(data), ...)
+	end)
 	
 	rpcNetwork.AddClientModRPCHandler(modname, "ServerError", function(data)
 		local InsightServerCrash = import("screens/insightservercrash")
@@ -1369,7 +1365,7 @@ if IsDST() then
 		data = decompress(data)
 
 		for _, migrator in pairs(data) do
-			local ent = GetEntityByNetworkId(migrator.network_id)
+			local ent = GetEntityByNetworkID(migrator.network_id)
 			if ent then
 				-- already spawned on the client
 			else
@@ -1440,6 +1436,22 @@ if IsDST() then
 	AddPrefabPostInit("beequeenhive", function(inst)
 		if not TheWorld.ismastersim then return end
 		TheWorld.shard.components.shard_insight:SetBeeQueenHive(inst)
+	end)
+
+	AddPrefabPostInit("smallghost", function(inst)
+		if not TheWorld.ismastersim then return end
+		
+		local oldLinkToPlayer = inst.LinkToPlayer
+		inst.LinkToPlayer = function(...)
+			Insight.descriptors.questowner.OnPipspookQuestBegin(...)
+			return oldLinkToPlayer(...)
+		end
+
+		local oldUnlinkFromPlayer = util.getupvalue(inst._on_leader_death, "unlink_from_player")
+		util.replaceupvalue(inst._on_leader_death, "unlink_from_player", function(...)
+			Insight.descriptors.questowner.OnPipspookQuestEnd(...)
+			oldUnlinkFromPlayer(...)
+		end)
 	end)
 
 	-- Post Init Functions
@@ -2328,17 +2340,21 @@ end
 -- "repairing" string.match, at least for me.
 -- due to https://steamcommunity.com/sharedfiles/filedetails/?id=1111711682 (Traditional Chinese Language Pack) and https://steamcommunity.com/sharedfiles/filedetails/?id=1418746242 (Chinese++) modifying string.match...............
 
-if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") then
+if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") then
 	if KnownModIndex:IsModEnabled("workshop-1111711682") then
 		mprint("'Traditional Chinese Language Pack' is enabled, restoring string.match for Insight")
 	end
 
-	if KnownModIndex:IsModEnabled("workshop-1111711682") then
-		mprint("'Chinese++ is enabled', restoring string.match for Insight")
+	if KnownModIndex:IsModEnabled("workshop-1418746242") then
+		mprint("'Chinese++' is enabled, restoring string.match for Insight")
+	end
+
+	if KnownModIndex:IsModEnabled("workshop-1301033176") then
+		mprint("'Chinese Language Pack for Server' is enabled, restoring string.match for Insight")
 	end
 
 	if pcall(string.dump, string.match) then
-		mprint("string.match has been modified by one of the previous mods")
+		mprint("string.match has been modified by:", debug.getinfo(string.match, "S").source or "?")
 		local string_match = util.getupvalue(string.match, "oldmatch") -- they both call it oldmatch
 
 		if type(string_match) ~= "function" then

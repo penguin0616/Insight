@@ -24,7 +24,7 @@ local function Describe(self, context)
 
 	-- HasKing checks if king is valid, getking gets it
 	if self:HasKing() and self:GetKing() then
-		local hunger_data = Insight.descriptors.hunger.Describe(self:GetKing().components.hunger, context) or nil
+		local hunger_data = Insight.descriptors.hunger.GetData(self:GetKing().components.hunger, context) or nil
 		if hunger_data then
 			description = string.format("<icon=hunger> %s / %s", hunger_data.hunger, hunger_data.max_hunger)
 		end

@@ -34,7 +34,9 @@ ATTACK_RANGE_PER_WALL_STUD = 2
 -- but i don't want to modify the original state if i can avoid it, even if it makes my life a bit harder
 
 local entity_network_cache = setmetatable({}, { __mode = "v" })
-function GetEntityByNetworkId(network_id, to_search)
+
+-- extremely expensive
+function GetEntityByNetworkID(network_id, to_search)
 	if entity_network_cache[network_id] then
 		return entity_network_cache[network_id]
 	end
@@ -74,6 +76,19 @@ Buffered Action: nil
 	}
 end
 
+function DoesEntityExistForClient(ent, client)
+	if not TheWorld.ismastersim then
+		return false
+	end
+	--if the entity is within 64 units of the client(ThePlayer), it will exist on the client; except, if its InLimbo, unless its Network:SetClassifiedTarget == ThePlayer
+
+	-- EntityScript:IsInLimbo() has note
+
+	if ent.inlimbo then
+		
+	end
+end
+
 function ListenForEventOnce(ent, event, eventfn, source)
 	local callback; callback = function(...)
 		eventfn(...)
@@ -105,7 +120,6 @@ function IsBundleWrap(inst)
 	return known_bundles[inst]
 end
 
-
 function AreEntityPrefabsEqual(inst1, inst2)
 	if inst1.prefab == inst2.prefab then
 		if inst1.components.named or inst1.replica.named then
@@ -117,6 +131,22 @@ function AreEntityPrefabsEqual(inst1, inst2)
 	end
 
 	return false
+end
+
+function ApplyColor(str, clr)
+	return string.format("<color=%s>%s</color>", clr, str)
+end
+
+function GetPlayerColor(arg)
+	if type(arg) == "string" then
+		for i,v in pairs(TheNet:GetClientTable()) do
+			if v.userid == arg or v.name == arg then
+				return Color.new(unpack(v.colour))
+			end
+		end
+	elseif IsPrefab(arg) and arg:HasTag("player") then
+		return Color.new(unpack(arg.Network:GetPlayerColour()))
+	end
 end
 
 -- functions i took out of modmain for organization reasons

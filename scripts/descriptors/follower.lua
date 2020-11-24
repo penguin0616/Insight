@@ -26,6 +26,11 @@ local function Describe(self, context)
 
 	local isAbigail = inst:HasTag("abigail") and IsDST()
 
+	if inst:HasTag("ghostkid") then
+		-- handled by questowner
+		return
+	end
+
 	if self.leader then
 		leader_name = string.format(context.lstr.leader, self.leader:GetDisplayName())
 

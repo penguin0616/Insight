@@ -1,19 +1,36 @@
--- only difference is this one checks that the target is valid and a size constraint
+--[[
+Copyright (C) 2020 penguin0616
+
+This file is part of Insight.
+
+The source code of this program is shared under the RECEX
+SHARED SOURCE LICENSE (version 1.0).
+The source code is shared for referrence and academic purposes
+with the hope that people can read and learn from it. This is not
+Free and Open Source software, and code is not redistributable
+without permission of the author. Read the RECEX SHARED
+SOURCE LICENSE for details
+The source codes does not come with any warranty including
+the implied warranty of merchandise.
+You should have received a copy of the RECEX SHARED SOURCE
+LICENSE in the form of a LICENSE file in the root of the source
+directory. If not, please refer to
+<https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
+]]
+-- Additional Note: Sections marked as me or klei continue until the next comment indicates or the function ends
+
+-- Me
+local Remap = Remap
+local Entity_IsValid = Entity.IsValid
+
 local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Text = require("widgets/text") --FIXED_TEXT
+local RichText = import("widgets/RichText")
 
 local MIN_INDICATOR_RANGE = TUNING.MIN_INDICATOR_RANGE or 20
 local MAX_INDICATOR_RANGE = TUNING.MAX_INDICATOR_RANGE or 50
 local PORTAL_TEXT_COLOUR = Color.new(unpack(PORTAL_TEXT_COLOUR or {243/255, 244/255, 243/255, 255/255}))
-
-local YOFFSETUP = 40
-local YOFFSETDOWN = 30
-local XOFFSET = 10
-
-local SHOW_DELAY = 0 --10
-
-local HEAD_SIZE = 60
 
 local ARROW_OFFSET = 65
 
@@ -28,22 +45,32 @@ local MIN_ALPHA = .35
 local DEFAULT_ATLAS = "images/dst/avatars.xml"
 local DEFAULT_AVATAR = "avatar_unknown.tex"
 
+local function IsVector3(arg)
+    -- Me
+    return arg ~= nil and arg.IsVector3 and arg.IsVector3 == Vector3.IsVector3
+end
+
 local function CancelIndicator(inst)
+    -- Klei
     inst.startindicatortask:Cancel()
     inst.startindicatortask = nil
     inst.OnRemoveEntity = nil
 end
 
 local function StartIndicator(target, self)
+    -- Klei
     self.inst.startindicatortask = nil
     self.inst.OnRemoveEntity = nil
+    -- Me
     self.colour = (target.playercolour and Color.new(unpack(target.playercolour))) or self.config_data.color or PORTAL_TEXT_COLOUR
+    -- Klei
     self:StartUpdating()
     self:OnUpdate()
     self:Show()
 end
 
 local TargetIndicator = Class(Widget, function(self, owner, target, data)
+    -- Klei
     Widget._ctor(self, "TargetIndicator")
     self.owner = owner
     self.isFE = false
@@ -54,36 +81,19 @@ local TargetIndicator = Class(Widget, function(self, owner, target, data)
 
     self.icon = self.root:AddChild(Widget("target"))
 
-    local USERFLAGS = USERFLAGS or {
-        IS_GHOST			= 1,
-        IS_AFK				= 2,
-        CHARACTER_STATE_1	= 4,
-        CHARACTER_STATE_2	= 8,
-        IS_LOADING			= 16,
-        CHARACTER_STATE_3   = 32,
-        -- = 64,
-        -- = 128,
-    }
-
-    --[[
-    self.userflags = target.Network ~= nil and target.Network:GetUserFlags() or 0
-    self.isGhost = checkbit(self.userflags, USERFLAGS.IS_GHOST)
-    self.isCharacterState1 = checkbit(self.userflags, USERFLAGS.CHARACTER_STATE_1)
-    self.isCharacterState2 = checkbit(self.userflags, USERFLAGS.CHARACTER_STATE_2)
-    self.isCharacterState3 = checkbit(self.userflags, USERFLAGS.CHARACTER_STATE_3)
-    --]]
-
+    -- Me
     self.userflags = 0
     self.isGhost = false
     self.isCharacterState1 = false
     self.isCharacterState2 = false
     self.isCharacterState3 = false
 
+    -- Klei
     self.is_mod_character = target ~= nil and target.prefab ~= nil and table.contains(MODCHARACTERLIST, target.prefab)
-	self.config_data = data or {}
-    self.target = target
+    self.config_data = data or {}
+    -- Me
+    self:SetTarget(target)
     self.colour = nil
-
     self.headbg = self.icon:AddChild(Image(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")) -- bg
     self.headbg:SetSize(95, 95) -- default is 95
 
@@ -98,31 +108,54 @@ local TargetIndicator = Class(Widget, function(self, owner, target, data)
     self.arrow = self.root:AddChild(Image("images/ui.xml", "scroll_arrow.tex"))
     self.arrow:SetScale(.5)
 
-    self.name = target:GetDisplayName()
-    self.name_label = self.icon:AddChild(Text(UIFONT, 45, self.name))
-    self.name_label:SetPosition(0, 80, 0)
+    --self.name = target:GetDisplayName() -- taken care of
+    self.name_label = self.icon:AddChild(RichText(UIFONT, 45, self.name)) -- Text(UIFONT, 45, self.name)
+    self.name_label:SetPosition(0, 80, 0) 
     self.name_label:Hide()
 
     self:Hide()
-    self.inst.startindicatortask = target:DoTaskInTime(0, StartIndicator, self)
+    self.inst.startindicatortask = self.inst:DoTaskInTime(0, StartIndicator, self)
     self.inst.OnRemoveEntity = CancelIndicator
 end)
 
 function TargetIndicator:OnGainFocus()
+    -- Klei
     TargetIndicator._base.OnGainFocus(self)
     self.name_label:Show()
+
 end
 
 function TargetIndicator:OnLoseFocus()
+    -- Klei
     TargetIndicator._base.OnLoseFocus(self)
     self.name_label:Hide()
 end
 
+function TargetIndicator:SetTarget(target)
+    -- Me
+    self.target = target
+    self.targetIsVector3 = IsVector3(self.target)
+
+    if self.config_data.name then
+        self.name = self.config_data.name
+    elseif self.targetIsVector3 then
+        self.name = "Vector3" .. tostring(self.target)
+    else
+        self.name = self.target:GetDisplayName()
+    end
+
+    if self.name_label then
+        self.name_label:SetString(self.name)
+    end
+end
+
 function TargetIndicator:GetTarget()
+    -- Klei
     return self.target
 end
 
 function TargetIndicator:GetTargetIndicatorAlpha(dist)
+    -- Klei
     if dist > MAX_INDICATOR_RANGE*2 then
         dist = MAX_INDICATOR_RANGE*2
     end
@@ -136,15 +169,17 @@ end
 function TargetIndicator:OnUpdate()
     -- figure out how far away they are and scale accordingly
     -- then grab the new position of the target and update the HUD elt's pos accordingly
-	-- kill on this is rough: it just pops in/out. would be nice if it faded in/out...
-	
-	if not self.target:IsValid() then
+    -- kill on this is rough: it just pops in/out. would be nice if it faded in/out...
+
+    -- Me
+	if self.target ~= nil and not self.targetIsVector3 and not Entity_IsValid(self.target.entity) then
 		-- wait to be cleaned up by Insight
-		dprint('cleanup waiting for', self.target)
+		--dprint('cleanup waiting for', self.target)
 		return
 	end
 
-    local userflags = self.target.Network ~= nil and self.target.Network:GetUserFlags() or 0
+    local userflags = self.target ~= nil and not self.targetIsVector3 and self.target.Network ~= nil and self.target.Network:GetUserFlags() or 0
+    -- Klei
     if self.userflags ~= userflags then
         self.userflags = userflags
         self.isGhost = checkbit(userflags, USERFLAGS.IS_GHOST)
@@ -155,7 +190,20 @@ function TargetIndicator:OnUpdate()
         self.head:SetTexture(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
     end
 
-    local dist = self.owner:GetDistanceSqToInst(self.target)
+    -- Me
+    local dist = 0
+    local target_pos
+
+    if self.targetIsVector3 then
+        dist = self.owner:GetDistanceSqToPoint(self.target)
+        target_pos = self.target
+    elseif self.target ~= nil then
+        dist = self.owner:GetDistanceSqToInst(self.target)
+        target_pos = self.target:GetPosition()
+    else
+        target_pos = Vector3(0, 0, 0)
+    end
+
     dist = math.sqrt(dist)
 
     local alpha = self:GetTargetIndicatorAlpha(dist)
@@ -163,11 +211,13 @@ function TargetIndicator:OnUpdate()
     --self.headbg:SetTint(0.5 + self.colour[1]/2, 0.5 + self.colour[2]/2, 0.5 + self.colour[3]/2, alpha)
     local bgclr = self.colour/2 + 0.5
     self.headbg:SetTint(bgclr.r, bgclr.g, bgclr.b, alpha)
+    self.name_label:SetColour(self.colour)
 
+    -- Klei
     self.head:SetTint(1, 1, 1, alpha)
     self.headframe:SetTint(self.colour[1], self.colour[2], self.colour[3], alpha)
     self.arrow:SetTint(self.colour[1], self.colour[2], self.colour[3], alpha)
-    self.name_label:SetColour(self.colour[1], self.colour[2], self.colour[3], alpha)
+    
 
     if dist < MIN_INDICATOR_RANGE then
         dist = MIN_INDICATOR_RANGE
@@ -177,7 +227,8 @@ function TargetIndicator:OnUpdate()
     local scale = Remap(dist, MIN_INDICATOR_RANGE, MAX_INDICATOR_RANGE, 1, MIN_SCALE)
     self:SetScale(scale)
 
-    local x, y, z = self.target.Transform:GetWorldPosition()
+    -- Me
+    local x, y, z = target_pos:Get()
     self:UpdatePosition(x, z)
 end
 
@@ -213,6 +264,7 @@ local function GetYCoord(angle, height)
 end
 
 function TargetIndicator:UpdatePosition(targX, targZ)
+    -- Klei
     local angleToTarget = self.owner:GetAngleToPoint(targX, 0, targZ)
     local downVector = TheCamera:GetDownVec()
     local downAngle = -math.atan2(downVector.z, downVector.x) / DEGREES
@@ -258,6 +310,7 @@ function TargetIndicator:UpdatePosition(targX, targZ)
 end
 
 function TargetIndicator:PositionArrow()
+    -- Klei
     if not self.x and self.y and self.angle then return end
 
     local angle = self.angle + 45
@@ -268,6 +321,7 @@ function TargetIndicator:PositionArrow()
 end
 
 function TargetIndicator:PositionLabel()
+    -- Klei
     if not self.x and self.y and self.angle then return end
 
     local angle = self.angle + 45 - 180
@@ -277,7 +331,9 @@ function TargetIndicator:PositionLabel()
 end
 
 function TargetIndicator:GetAvatarAtlas()
-    if self.is_mod_character then
+    -- Me
+    if self.is_mod_character and self.target ~= nil and not self.targetIsVector3 then
+        -- Klei
         local location = MOD_AVATAR_LOCATIONS["Default"]
         if MOD_AVATAR_LOCATIONS[self.target.prefab] ~= nil then
             location = MOD_AVATAR_LOCATIONS[self.target.prefab]
@@ -291,21 +347,29 @@ function TargetIndicator:GetAvatarAtlas()
 
         return location..starting..self.target.prefab..ending..".xml"
     end
+
+    -- Me
     return self.config_data.atlas or DEFAULT_ATLAS
 end
 
 function TargetIndicator:GetAvatar()
-	if self.config_data.image ~= nil then
-		return self.config_data.image
+    -- Me
+	if self.config_data.tex ~= nil then
+		return self.config_data.tex
 	end
 
+    -- Klei
     local starting = self.isGhost and "avatar_ghost_" or "avatar_"
     local ending =
         (self.isCharacterState1 and "_1" or "")..
         (self.isCharacterState2 and "_2" or "")..
         (self.isCharacterState3 and "_3" or "")
 
-    return self.target.prefab ~= nil
+    -- Me
+    return self.target ~= nil 
+        and not self.targetIsVector3
+        -- Klei
+        and self.target.prefab ~= nil
         and self.target.prefab ~= ""
         and (starting..self.target.prefab..ending..".tex")
         or (starting.."unknown.tex")

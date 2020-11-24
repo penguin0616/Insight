@@ -20,6 +20,15 @@ directory. If not, please refer to
 
 -- indicators.lua
 local InsightTargetIndicator = import("widgets/insight_targetindicator")
+local pairs, assert = pairs, assert
+local Entity_IsValid = Entity.IsValid
+local TheSim = TheSim
+local EntityScript_GetPosition = EntityScript.GetPosition
+
+local function IsVector3(arg)
+    -- Me
+    return arg ~= nil and arg.IsVector3 and arg.IsVector3 == Vector3.IsVector3
+end
 
 local function IsOnScreen(target)
 	--[[
@@ -42,9 +51,11 @@ local function IsOnScreen(target)
 		if (sum <= -plane.d) return false;
 	}
 	]]
+
+	--mprint("IsOnScreen", target)
 	
 	local screen_w, screen_h = TheSim:GetScreenSize()
-	local pos = target:GetPosition()
+	local pos = (IsVector3(target) and target) or EntityScript_GetPosition(target)
 	local u, v = TheSim:GetScreenPos(pos.x, pos.y, pos.z)
 
 	if (u >= 0 and u <= screen_w) and (v >= 0 and v <= screen_h) then
@@ -55,9 +66,9 @@ local function IsOnScreen(target)
 end
 
 
-local function ShouldShowIndicator(player, target)
+local function ShouldShowIndicator(player, target, targetIsVector3, max_range)
 	-- TUNING.MAX_INDICATOR_RANGE = 50
-	local max_range = 50 * 1.5
+	max_range = 999 or max_range or 50 * 1.5
 
 	--[[
 		frustum is a visibility check: target.entity:FrustumCheck()
@@ -66,21 +77,32 @@ local function ShouldShowIndicator(player, target)
 	--]]
 
 	local visible_check = function()
-		if not target.entity:IsValid() then
-			return true
-		end
+		if not targetIsVector3 then
+			if not Entity_IsValid(target.entity) then
+				return true
+			end
 
-		if target.entity.FrustumCheck then
-			return target.entity:FrustumCheck() -- so if FrustumCheck returns true, at least half of the entity is visible so we should remove the indicator
+			if target.entity.FrustumCheck then
+				return target.entity:FrustumCheck() -- so if FrustumCheck returns true, at least half of the entity is visible so we should remove the indicator
+			end
 		end
 
 		return IsOnScreen(target)
 	end
 
-    local PlayerTargetIndicator_ShouldRemoveIndicator = target:HasTag("noplayerindicator") or
-        target:HasTag("hiding") or
-        not target:IsNear(player, max_range) or
-        visible_check() --[[or
+	local has_tag = (not targetIsVector3) and (target:HasTag("noplayerindicator") or target:HasTag("hiding"))
+	local is_near = false do
+		if targetIsVector3 then
+			is_near = player:GetDistanceSqToPoint(target) < (max_range * max_range)
+		else
+			is_near = target:IsNear(player, max_range)
+		end
+	end
+
+	local PlayerTargetIndicator_ShouldRemoveIndicator = 
+		has_tag
+        or not is_near
+        or visible_check() --[[or
 		not CanEntitySeeTarget(player, target)--]]
 	
 	return not PlayerTargetIndicator_ShouldRemoveIndicator
@@ -119,16 +141,16 @@ function Indicators:OnUpdate()
 	--print'indicators onupdate'
 	local cleanup = {}
 	for _, indicator in pairs(self.indicators) do
-		if not indicator:GetTarget():IsValid() then
-			table.insert(cleanup, indicator:GetTarget()) -- mark bad indicators for cleanup
+		if not indicator.targetIsVector3 and not Entity_IsValid(indicator.target.entity) then
+			table.insert(cleanup, indicator.target) -- mark bad indicators for cleanup
 		else
-			local show = ShouldShowIndicator(self.owner, indicator:GetTarget())
+			local show = ShouldShowIndicator(self.owner, indicator.target, indicator.targetIsVector3)
 			if show then
 				indicator:Show()
 			else
 				if indicator.config_data.removeOnFound == true then
-					mprint'marked for cleanup'
-					table.insert(cleanup, indicator:GetTarget())
+					--dprint'marked for cleanup'
+					table.insert(cleanup, indicator.target)
 				else
 					indicator:Hide()
 				end

@@ -18,12 +18,22 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local Color = { __metatable = "Color" }
-setmetatable(Color, Color)
+local getmetatable, setmetatable, type, tonumber, tostring, assert = getmetatable, setmetatable, type, tonumber, tostring, assert
+local math_floor = math.floor
+local math_fmod = math.fmod
 
--- Functions
+--------------------------------------------------------------------------
+--[[ Private Functions ]]
+--------------------------------------------------------------------------
 local function isint(num)
-	return type(num) == "number" and num == math.floor(num)
+	return type(num) == "number" and num == math_floor(num)
+end
+
+local function IsValidHex(str)
+	return 
+		type(str) == "string"
+		and str:sub(1, 1) == "#"
+		and (#str == 7 or #str == 9)
 end
 
 --- Converts a hexadecimal number or string to it's RGBA components.
@@ -54,6 +64,13 @@ local function HexToRGBA(hex)
 	return r, g, b, a
 end
 
+
+--------------------------------------------------------------------------
+--[[ Color ]]
+--------------------------------------------------------------------------
+local Color = { IsValidHex=IsValidHex, __metatable="Color" }
+setmetatable(Color, Color)
+
 function Color.ToHex(self)
 	-- https://github.com/Perkovec/colorise-lua
 	local hexadecimal = '#'
@@ -62,15 +79,15 @@ function Color.ToHex(self)
 	local g = assert(self.g or self[2], "missing g in arg #1")
 	local b = assert(self.b or self[3], "missing b in arg #1")
 
-	local rgb = {math.floor(r * 255), math.floor(g * 255), math.floor(b * 255)}
+	local rgb = {math_floor(r * 255), math_floor(g * 255), math_floor(b * 255)}
 
 	for key = 1, #rgb do
 		local value = rgb[key] 
 		local hex = ''
 
 		while (value > 0) do
-			local index = math.fmod(value, 16) + 1
-			value = math.floor(value / 16)
+			local index = math_fmod(value, 16) + 1
+			value = math_floor(value / 16)
 			hex = string.sub('0123456789ABCDEF', index, index) .. hex			
 		end
 		
@@ -130,7 +147,7 @@ end
 -- @int b Blue (defaults to 0).
 -- @treturn Color
 function Color.fromRGB(r, g, b)
-	return Color.fromRGBA(r, g, b)
+	return Color.fromRGBA(r, g, b, 255)
 end
 
 function Color:Lerp(target, percent)
