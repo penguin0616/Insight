@@ -28,8 +28,8 @@ local Widget = require "widgets/widget"
 local Text = require("widgets/text") --FIXED_TEXT
 local RichText = import("widgets/RichText")
 
-local MIN_INDICATOR_RANGE = TUNING.MIN_INDICATOR_RANGE or 20
-local MAX_INDICATOR_RANGE = TUNING.MAX_INDICATOR_RANGE or 50
+local MIN_INDICATOR_RANGE = 20 --TUNING.MIN_INDICATOR_RANGE or 20 -- global positions messes with this
+local MAX_INDICATOR_RANGE = 50 --TUNING.MAX_INDICATOR_RANGE or 50 -- global positions messes with this
 local PORTAL_TEXT_COLOUR = Color.new(unpack(PORTAL_TEXT_COLOUR or {243/255, 244/255, 243/255, 255/255}))
 
 local ARROW_OFFSET = 65
@@ -69,9 +69,10 @@ local function StartIndicator(target, self)
     self:Show()
 end
 
-local TargetIndicator = Class(Widget, function(self, owner, target, data)
+local InsightTargetIndicator = Class(Widget, function(self, owner, target, data)
+    -- Me
+    Widget._ctor(self, "InsightTargetIndicator")
     -- Klei
-    Widget._ctor(self, "TargetIndicator")
     self.owner = owner
     self.isFE = false
     self:SetClickable(true)
@@ -118,20 +119,20 @@ local TargetIndicator = Class(Widget, function(self, owner, target, data)
     self.inst.OnRemoveEntity = CancelIndicator
 end)
 
-function TargetIndicator:OnGainFocus()
+function InsightTargetIndicator:OnGainFocus()
     -- Klei
-    TargetIndicator._base.OnGainFocus(self)
+    InsightTargetIndicator._base.OnGainFocus(self)
     self.name_label:Show()
 
 end
 
-function TargetIndicator:OnLoseFocus()
+function InsightTargetIndicator:OnLoseFocus()
     -- Klei
-    TargetIndicator._base.OnLoseFocus(self)
+    InsightTargetIndicator._base.OnLoseFocus(self)
     self.name_label:Hide()
 end
 
-function TargetIndicator:SetTarget(target)
+function InsightTargetIndicator:SetTarget(target)
     -- Me
     self.target = target
     self.targetIsVector3 = IsVector3(self.target)
@@ -149,12 +150,12 @@ function TargetIndicator:SetTarget(target)
     end
 end
 
-function TargetIndicator:GetTarget()
+function InsightTargetIndicator:GetTarget()
     -- Klei
     return self.target
 end
 
-function TargetIndicator:GetTargetIndicatorAlpha(dist)
+function InsightTargetIndicator:GetTargetIndicatorAlpha(dist)
     -- Klei
     if dist > MAX_INDICATOR_RANGE*2 then
         dist = MAX_INDICATOR_RANGE*2
@@ -166,12 +167,13 @@ function TargetIndicator:GetTargetIndicatorAlpha(dist)
     return alpha
 end
 
-function TargetIndicator:OnUpdate()
+function InsightTargetIndicator:OnUpdate()
     -- figure out how far away they are and scale accordingly
     -- then grab the new position of the target and update the HUD elt's pos accordingly
     -- kill on this is rough: it just pops in/out. would be nice if it faded in/out...
 
     -- Me
+    -- and not Entity_IsValid(self.inst.entity)
 	if self.target ~= nil and not self.targetIsVector3 and not Entity_IsValid(self.target.entity) then
 		-- wait to be cleaned up by Insight
 		--dprint('cleanup waiting for', self.target)
@@ -263,7 +265,7 @@ local function GetYCoord(angle, height)
     end
 end
 
-function TargetIndicator:UpdatePosition(targX, targZ)
+function InsightTargetIndicator:UpdatePosition(targX, targZ)
     -- Klei
     local angleToTarget = self.owner:GetAngleToPoint(targX, 0, targZ)
     local downVector = TheCamera:GetDownVec()
@@ -309,7 +311,7 @@ function TargetIndicator:UpdatePosition(targX, targZ)
     self:PositionLabel()
 end
 
-function TargetIndicator:PositionArrow()
+function InsightTargetIndicator:PositionArrow()
     -- Klei
     if not self.x and self.y and self.angle then return end
 
@@ -320,7 +322,7 @@ function TargetIndicator:PositionArrow()
     self.arrow:SetPosition(x, y, 0)
 end
 
-function TargetIndicator:PositionLabel()
+function InsightTargetIndicator:PositionLabel()
     -- Klei
     if not self.x and self.y and self.angle then return end
 
@@ -330,7 +332,7 @@ function TargetIndicator:PositionLabel()
     self.name_label:SetPosition(x, y, 0)
 end
 
-function TargetIndicator:GetAvatarAtlas()
+function InsightTargetIndicator:GetAvatarAtlas()
     -- Me
     if self.is_mod_character and self.target ~= nil and not self.targetIsVector3 then
         -- Klei
@@ -352,7 +354,7 @@ function TargetIndicator:GetAvatarAtlas()
     return self.config_data.atlas or DEFAULT_ATLAS
 end
 
-function TargetIndicator:GetAvatar()
+function InsightTargetIndicator:GetAvatar()
     -- Me
 	if self.config_data.tex ~= nil then
 		return self.config_data.tex
@@ -375,4 +377,4 @@ function TargetIndicator:GetAvatar()
         or (starting.."unknown.tex")
 end
 
-return TargetIndicator
+return InsightTargetIndicator

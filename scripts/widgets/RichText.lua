@@ -123,6 +123,7 @@ function RichText:SetColour(clr) -- Text::SetColour
 	end
 
 	self.default_color = clr:ToHex()
+	self:SetString(self:GetString(), true)
 end
 
 function RichText:GetFont()

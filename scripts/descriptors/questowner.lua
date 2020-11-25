@@ -56,11 +56,11 @@ local function OnPipspookQuestBegin(inst, doer)
 end
 
 local function OnPipspookQuestEnd(inst)
-	if inst._playerlink.userid and not HasPipspookQuest[inst._playerlink.userid] then
+	if inst._playerlink and not HasPipspookQuest[inst._playerlink] then
 		return
 	end
 
-	HasPipspookQuest[inst._playerlink.userid] = nil
+	HasPipspookQuest[inst._playerlink] = nil
 
 	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "PipspookQuest"), inst._playerlink.userid, compress({ state="end" }))
 end

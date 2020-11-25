@@ -78,8 +78,8 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	
 	controls.insight_menu = controls.top_root:AddChild(menu)
 
-	AddLocalPlayerPostInit(function(player)
-		GetInsight(player):MaintainMenu(menu)
+	AddLocalPlayerPostInit(function(insight)
+		insight:MaintainMenu(menu)
 	end)
 
 	local mb = InsightButton()
@@ -121,7 +121,7 @@ end)
 -- Handler for ItemTile:SetPercent()
 -- created for issue #5
 local oldItemTile_SetPercent = ItemTile.SetPercent
-local ITEMTILE_DISPLAY = 2; AddLocalPlayerPostInit(function() ITEMTILE_DISPLAY = GetPlayerContext(localPlayer).config["itemtile_display"] end);
+local ITEMTILE_DISPLAY = 2; AddLocalPlayerPostInit(function(_, context) ITEMTILE_DISPLAY = context.config["itemtile_display"] end);
 function ItemTile:SetPercent(...)
 	if not localPlayer then
 		return
@@ -374,7 +374,7 @@ end
 --======================================== Hoverer =========================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true); AddLocalPlayerPostInit(function() DEBUG_SHOW_PREFAB = GetPlayerContext(localPlayer).config["DEBUG_SHOW_PREFAB"] end);
+local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true); AddLocalPlayerPostInit(function(_, context) DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] end);
 AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	local TheSim = TheSim
 	local debug_getinfo = debug.getinfo
@@ -489,7 +489,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 
 		if item and DEBUG_ENABLED then
-			itemInfo = string.format("Active: %s\n", tostring(entityManager:IsEntityActive(item))) .. (itemInfo or "")
+			--itemInfo = string.format("Active: %s\n", tostring(entityManager:IsEntityActive(item))) .. (itemInfo or "")
 		end
 
 		hoverer.insightText:SetString(itemInfo)

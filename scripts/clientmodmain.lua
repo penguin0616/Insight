@@ -29,7 +29,7 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 -- Vars
 localPlayer = nil
 shard_players = {}
-local onLocalPlayerReady = setmetatable({}, { __newindex = function(self, index, value) assert(type(value)=="function", "onLocalPlayerReady invalid value"); if localPlayer then value(localPlayer) else rawset(self, index, value) end; end; })
+local onLocalPlayerReady = setmetatable({}, { __newindex = function(self, index, value) assert(type(value)=="function", "onLocalPlayerReady invalid value"); if localPlayer then value(GetInsight(localPlayer), GetPlayerContext(localPlayer)) else rawset(self, index, value) end; end; })
 local delayed_actives = {}
 local Is_DS = IsDS()
 
@@ -196,7 +196,7 @@ local function CanBlink(player)
 	local holding = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	local cursor = inventory:GetActiveItem()
 
-	return (holding and holding.components.blinkstaff ~= nil) or (cursor and cursor.components.blinkstaff ~= nil) or (player:HasTag("soulstealer") and inventory:Has("wortox_soul", 1))
+	return (holding and (holding.components.blinkstaff or holding:HasActionComponent("blinkstaff"))) or (cursor and (cursor.components.blinkstaff or cursor:HasActionComponent("blinkstaff") ~= nil)) or (player:HasTag("soulstealer") and inventory:Has("wortox_soul", 1))
 end
 
 local function OnHelperStateChange(inst, active, recipename, placerinst)
@@ -308,7 +308,7 @@ local function LoadLocalPlayer(player)
 		while #onLocalPlayerReady > x do
 			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady))
 
-			table.remove(onLocalPlayerReady, 1)(localPlayer)
+			table.remove(onLocalPlayerReady, 1)(GetInsight(localPlayer), GetPlayerContext(localPlayer))
 		end
 		mprint("Initializers complete" ..  ((FASCINATING and "...") or "!"))
 
@@ -350,6 +350,16 @@ do
 	local function AddBossIndicator(inst)
 		if not inst:IsValid() then return end
 		
+		AddLocalPlayerPostInit(function(insight, context)
+			if not context.config["boss_indicator"] then
+				return
+			end
+
+			local clr = Insight.COLORS.HEALTH
+			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
+		end)
+
+		--[[
 		if localPlayer then
 			local clr = Insight.COLORS.HEALTH
 			local insight = GetInsight(localPlayer)
@@ -360,10 +370,22 @@ do
 				AddBossIndicator(inst)
 			end)
 		end
+		--]]
 	end
 
 	local function AddNotableIndicator(inst)
 		if not inst:IsValid() then return end
+
+		AddLocalPlayerPostInit(function(insight, context)
+			if not context.config["notable_indicator"] then
+				return
+			end
+
+			local clr = Insight.COLORS.SWEETENER
+			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
+		end)
+
+		--[[
 		if localPlayer then
 			local clr = Insight.COLORS.SWEETENER
 			local insight = GetInsight(localPlayer)
@@ -374,6 +396,7 @@ do
 				AddNotableIndicator(inst)
 			end)
 		end
+		--]]
 	end
 
 	-- https://dontstarve.fandom.com/wiki/Category%3ABoss_Monsters
@@ -403,29 +426,24 @@ do
 	end)
 	--]]
 	 
-
-	if GetModConfigData("boss_indicator", true) == true then
-		for _, name in pairs(bosses) do 
-			AddPrefabPostInit(name, AddBossIndicator)
-		end
+	for _, name in pairs(bosses) do 
+		AddPrefabPostInit(name, AddBossIndicator)
 	end
 
-	if GetModConfigData("notable_indicator", true) == true then
-		for _, name in pairs(notable) do
-			AddPrefabPostInit(name, AddNotableIndicator)
-		end
+	for _, name in pairs(notable) do
+		AddPrefabPostInit(name, AddNotableIndicator)
 	end
+
 end
 
 AddPrefabPostInitAny(function(inst)
 	if inst.prefab:sub(1, 9) == "lost_toy_" then
-		AddLocalPlayerPostInit(function()
+		AddLocalPlayerPostInit(function(insight)
 			if not localPlayer:HasTag("ghostlyfriend") then
 				return
 			end
 
 			inst:DoTaskInTime(0.1, function()
-				local insight = GetInsight(localPlayer)
 				insight:PipspookToyFound(inst)
 			end)
 		end)
@@ -617,7 +635,11 @@ AddPlayerPostInit(function(player)
 	if IsDS() then
 		LoadLocalPlayer(player)
 
-		AttachBlinkRangeIndicator(player)
+		AddLocalPlayerPostInit(function(insight, context)
+			if context.config["blink_range"] then
+				AttachBlinkRangeIndicator(player)
+			end
+		end)
 
 		player:ListenForEvent("newactiveitem", function(...)
 			highlighting.SetActiveItem(...)
@@ -656,7 +678,13 @@ AddPlayerPostInit(function(player)
 		end)
 
 		LoadLocalPlayer(player)
-		AttachBlinkRangeIndicator(player)
+
+		AddLocalPlayerPostInit(function(insight, context)
+			if context.config["blink_range"] then
+				mprint"attaching"
+				AttachBlinkRangeIndicator(localPlayer)
+			end
+		end)
 
 		for ent in pairs(delayed_actives) do
 			GetInsight(player):EntityActive(ent)

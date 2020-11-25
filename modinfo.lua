@@ -22,7 +22,7 @@ directory. If not, please refer to
 -- DST 2189004162
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.7.6" -- ds is 2.4.4_ds
+version = "2.7.7" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -71,7 +71,7 @@ server_filter_tags = {"insight_" .. version}
 local translations = {}
 local english = {
 	-- description
-	update_info = "pipspook assistance; fixed highlighting; performance increases (for example: highlighting can process 1632 chests at once with minimal impact); bug fixes; made walter slingshot ammo more reliable; network optimization for player stats; ",
+	update_info = "bug fixes for indicators; pipspook assistance; fixed highlighting; performance increases (for example: highlighting can process 1632 chests at once with minimal impact); bug fixes; made walter slingshot ammo more reliable; network optimization for player stats; ",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",
@@ -805,7 +805,7 @@ translations["en"] = english
 
 local chinese = {
 	-- description
-	update_info = "传粉和可收获物品的信息; 不确切地对内容更多的世界的运行性能进行提升; 海象信息, 食人花信息, 落水洞染色;",
+	update_info = "添加了温蒂的小惊吓指示器；修复了高亮模式；提高模组运行性能（举例来说：高亮模式可同时运用于1632个木箱，而对游戏本身冲击非常小）；bug修复；优化沃尔特的弹弓使用；为玩家状态实施网络最优化。",
 	crashreporter_info = "**添加了崩溃报告器**, 你可以在客户端或服务器设置界面来开启它。",
 
 	mod_explanation = "以show me为基础，但功能更全面。",

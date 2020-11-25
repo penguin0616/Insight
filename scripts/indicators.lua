@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- indicators.lua
+local Widget = require("widgets/widget")
 local InsightTargetIndicator = import("widgets/insight_targetindicator")
 local pairs, assert = pairs, assert
 local Entity_IsValid = Entity.IsValid
@@ -111,6 +112,8 @@ end
 local Indicators = Class(function(self, owner)
 	self.owner = owner
 	self.indicators = {}
+	self.indicator_root = self.owner.HUD:AddChild(Widget("insight_indicator_root"))
+	mprint("dumbo", self.owner.HUD)
 end)
 
 function Indicators:Get(target)
@@ -123,7 +126,7 @@ end
 
 function Indicators:Add(target, data)
 	assert(self:Get(target) == nil, "Attempt to create multiple indicators for target")
-    local ti = self.owner.HUD.under_root:AddChild(InsightTargetIndicator(self.owner, target, data))
+    local ti = self.indicator_root:AddChild(InsightTargetIndicator(self.owner, target, data)) -- self.owner.HUD.under_root
     table.insert(self.indicators, ti)
 end
 
@@ -141,7 +144,8 @@ function Indicators:OnUpdate()
 	--print'indicators onupdate'
 	local cleanup = {}
 	for _, indicator in pairs(self.indicators) do
-		if not indicator.targetIsVector3 and not Entity_IsValid(indicator.target.entity) then
+		-- or not Entity_IsValid(indicator.inst.entity)
+		if not indicator.targetIsVector3 and (not Entity_IsValid(indicator.target.entity) ) then
 			table.insert(cleanup, indicator.target) -- mark bad indicators for cleanup
 		else
 			local show = ShouldShowIndicator(self.owner, indicator.target, indicator.targetIsVector3)
