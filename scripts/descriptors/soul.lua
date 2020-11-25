@@ -33,11 +33,14 @@ local function Describe(self, context)
 				sanity = -TUNING.SANITY_TINY,
 				health = 0,
 			}
-			context.stats = stats -- ISSUE: REFACTOR
+			context.stats = stats -- ISSUE: REFACTOR TO descriptor.SOMETHING
 			edible_description = descriptor.Describe(self, context).description
 		end
 
-		description = CombineLines(edible_description, context.lstr.wortox_soul_heal)
+		local heal_string = string.format(context.lstr.wortox_soul_heal, TUNING.HEALING_MED - 7, TUNING.HEALING_MED)
+		local heal_range = string.format(context.lstr.wortox_soul_heal_range, TUNING.WORTOX_SOULHEAL_RANGE / WALL_STUDS_PER_TILE)
+
+		description = CombineLines(edible_description, heal_string, heal_range)
 	end
 
 	return {

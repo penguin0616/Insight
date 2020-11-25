@@ -212,7 +212,7 @@ local descriptors_ignore = {
 	"werebeast", "named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "repairable", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
 	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "teacher", "heater", "tiletracker", "scenariorunner", "payable", "useableitem", "drawable", "shaver", -- don't care
 	"gridnudger", "entitytracker", "appeasable", "currency", "mateable", "sizetweener", "saltlicker", "sinkable", "sticker", "projectile", "hiddendanger", "deciduoustreeupdater", -- don't care
-	"geyserfx", -- don't care,
+	"geyserfx", "blinkstaff", -- don't care,
 
 	-- Worldly DS stuff
 	"ambientsoundmixer", "globalcolourmodifier", "moisturemanager", "inventorymoisture", -- world
@@ -537,6 +537,7 @@ function GetComponentDescriptor(name)
 			else
 				--Insight.descriptors[name] = res
 				mprint(safe, res)
+				mprint()
 				error(string.format("Attempt to return '%s' in descriptor '%s'", tostring(res), name))
 			end
 		else
@@ -1294,7 +1295,8 @@ if IsDST() then
 	
 	rpcNetwork.AddClientModRPCHandler(modname, "EntityInformation", function(data)
 		if not localPlayer then
-			--dprint("denied")
+			-- this check is in place to avoid additional function overhead so we only do it when needed
+			AddLocalPlayerPostInit(function() localPlayer:PushEvent("insight_entity_information", { data=data }) end) 
 			return
 		end
 
@@ -1302,8 +1304,10 @@ if IsDST() then
 		localPlayer:PushEvent("insight_entity_information", { data=data })
 	end)
 
-	rpcNetwork.AddClientModRPCHandler(modname, "PipspookQuest", function(data, ...)
-		GetInsight(localPlayer):HandlePipspookQuest(decompress(data), ...)
+	rpcNetwork.AddClientModRPCHandler(modname, "PipspookQuest", function(data)
+		AddLocalPlayerPostInit(function(insight)
+			insight:HandlePipspookQuest(decompress(data))
+		end)
 	end)
 	
 	rpcNetwork.AddClientModRPCHandler(modname, "ServerError", function(data)
@@ -1329,37 +1333,8 @@ if IsDST() then
 		shard_players = decompress(str)
 	end)
 
-	local fnc = function(...)
-		mprint(0, getfenv(0))
-		mprint(1, getfenv(1))
-		mprint(2, getfenv(2))
-		mprint(3, getfenv(3))
-		mprint(4, getfenv(4))
-	end
-
 	rpcNetwork.AddClientModRPCHandler(modname, "test", setmetatable({}, {__call = fnc}))
 
-	local modname = modname
-
-	_G.xf = function() 
-		--[[
-		local rf = { a = {}, b = {}, c = {}, [4] = {}, [5] = {}, [6] = {}, [7] = {}, [8] = {}, [9] = {} }
-		local function hx(x)
-			table.insert(rf[x], string.rep("abcxyz.", 1000))
-		end
-
-		hx('a') hx('b') hx('c') hx(4) hx(5) hx(6) hx(7) hx(8) hx(9)
-
-		local s = DataDumper(rf)
-
-		
-		-- string.rep("abcxyz.", 9000)
-
-		--]]
-		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "test"), AllPlayers[1].userid, 'hello there!') 
-	end
-
-	
 	--[[
 	rpcNetwork.AddClientModRPCHandler(modname, "Migrators", function(data)
 		data = decompress(data)
@@ -1395,19 +1370,25 @@ if IsDST() then
 		
 		self.inst:ListenForEvent("itemget", function()
 			for i,v in pairs(AllPlayers) do
-				SendContainerData(v, self.inst)
+				if v.userid ~= "" then
+					SendContainerData(v, self.inst)
+				end
 			end
 		end)
 
 		self.inst:ListenForEvent("itemlose", function()
 			for i,v in pairs(AllPlayers) do
-				SendContainerData(v, self.inst)
+				if v.userid ~= "" then
+					SendContainerData(v, self.inst)
+				end
 			end
 		end)
 
 		self.inst:ListenForEvent("onclose", function()
 			for i,v in pairs(AllPlayers) do
-				SendContainerData(v, self.inst)
+				if v.userid ~= "" then
+					SendContainerData(v, self.inst)
+				end
 			end
 		end)
 	end)
@@ -1463,11 +1444,11 @@ if IsDST() then
 		end
 
 		TheWorld:ListenForEvent("ms_playerjoined", function(_, player)
-			dprint("Player Joined:", player, player.userid)
+			--dprint("Player Joined:", player, player.userid)
 		end)
 
 		TheWorld:ListenForEvent("ms_playerleft", function(_, player)
-			dprint("Player Left:", player, player.userid)
+			--dprint("Player Left:", player, player.userid)
 			player_contexts[player] = nil
 		end)
 
@@ -1849,18 +1830,17 @@ else
 end
 
 AddPlayerPostInit(function(player)
-	if IsDS() or TheWorld.ismastersim then
+	if IsDS() then
 		player:AddComponent("insight")
 		mprint("Added Insight component for", player)
-		--[[
-		player:DoTaskInTime(1, function() 
-			local x = {}
-			for i,v in pairs(stuff) do
-				table.insert(x, {pos = v:GetPosition(), icon="cave_open_orange.tex", network_id = GetEntityDebugData(v).network_id })
-			end
-			rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Migrators"), player.userid, compress(x))
+		return
+	end
+
+	if TheWorld.ismastersim then
+		player:ListenForEvent("setowner", function(...) 
+			player:AddComponent("insight")
+			mprint("Added Insight component for", player)
 		end)
-		--]]
 	end
 end)
 

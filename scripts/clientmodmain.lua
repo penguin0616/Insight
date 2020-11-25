@@ -628,7 +628,6 @@ AddPrefabPostInit("wortox_soul_spawn", function(inst) -- the dropped one
 	yes2:SetRadius_Zark(TUNING.WORTOX_SOULSTEALER_RANGE / WALL_STUDS_PER_TILE - offset)
 	yes2:SetColour(0, 1, 0, 1)
 	--]]
-
 end)
 
 AddPlayerPostInit(function(player)
@@ -681,7 +680,6 @@ AddPlayerPostInit(function(player)
 
 		AddLocalPlayerPostInit(function(insight, context)
 			if context.config["blink_range"] then
-				mprint"attaching"
 				AttachBlinkRangeIndicator(localPlayer)
 			end
 		end)

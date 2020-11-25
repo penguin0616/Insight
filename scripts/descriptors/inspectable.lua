@@ -30,38 +30,46 @@ local function Describe(self, context)
 		return
 	end
 
-	if inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
-		local data = Insight.descriptors.weapon.GetSlingshotAmmoData(inst)
-		if data.damage then
-			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, data.damage)
+	if inst.prefab == "fossil_stalker" then
+		local needed_pieces = 5 - inst.moundsize
+		if needed_pieces > 0 then
+			description = string.format(context.lstr.fossil_stalker.pieces_needed, needed_pieces)
+		else
+			if inst.form == 1 then
+				description = context.lstr.fossil_stalker.correct
+			else
+				description = context.lstr.fossil_stalker.incorrect
+			end
 		end
 	end
 
-	if inst:HasTag("abigail_flower") and context.player.components.ghostlybond then
-		local ghostlybond = context.player.components.ghostlybond
-
-		if ghostlybond.bondleveltimer then
-			local ghostlybond_levelup_time = TimeToText(time.new(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer, context))
-			description = string.format(context.lstr.ghostlybond_self, ghostlybond.bondlevel, ghostlybond.maxbondlevel, ghostlybond_levelup_time)
+	if inst.prefab == "trap_starfish" then
+		local dmg, reset = string.format(context.lstr.damage, TUNING.STARFISH_TRAP_DAMAGE), nil
+		if inst._reset_task then
+			reset = string.format(context.lstr.trap_starfish_cooldown, TimeToText(time.new(GetTaskRemaining(inst._reset_task), context)))
 		end
+
+		description = CombineLines(dmg, reset)
 	end
 
 	if inst.prefab == "lureplant" then
 		if inst.hibernatetask and not TheWorld.state.iswinter then
-			description = string.format("Will become active in: %s", TimeToText(time.new(GetTaskRemaining(inst.hibernatetask), context)))
+			description = string.format(context.lstr.lureplant_active, TimeToText(time.new(GetTaskRemaining(inst.hibernatetask), context)))
 		end
 	end
 
-	if inst.prefab == "walrus_camp" and inst.data.regentime then
-		local strs = {}
-		for prefab, targettime in pairs(inst.data.regentime) do
-			local respawn_in = targettime - GetTime()
-			if respawn_in >= 0 then
-				respawn_in = TimeToText(time.new(respawn_in, context))
-				table.insert(strs, string.format("%s respawns in: %s", STRINGS.NAMES[string.upper(prefab)] or ("\"" .. prefab .. "\""), respawn_in))
+	if inst.prefab == "walrus_camp"  then
+		if inst.data.regentime then
+			local strs = {}
+			for prefab, targettime in pairs(inst.data.regentime) do
+				local respawn_in = targettime - GetTime()
+				if respawn_in >= 0 then
+					respawn_in = TimeToText(time.new(respawn_in, context))
+					table.insert(strs, string.format(context.lstr.walrus_camp_respawn, STRINGS.NAMES[string.upper(prefab)] or ("\"" .. prefab .. "\""), respawn_in))
+				end
 			end
+			description = table.concat(strs, "\n")
 		end
-		description = table.concat(strs, "\n")
 	end
 
 	if inst.prefab == "archive_lockbox" and inst.product_orchestrina then
@@ -114,6 +122,22 @@ local function Describe(self, context)
 		end
 
 		description = world_temperature
+	end
+
+	if inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
+		local data = Insight.descriptors.weapon.GetSlingshotAmmoData(inst)
+		if data.damage then
+			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, data.damage)
+		end
+	end
+
+	if inst:HasTag("abigail_flower") and context.player.components.ghostlybond then
+		local ghostlybond = context.player.components.ghostlybond
+
+		if ghostlybond.bondleveltimer then
+			local ghostlybond_levelup_time = TimeToText(time.new(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer, context))
+			description = string.format(context.lstr.ghostlybond_self, ghostlybond.bondlevel, ghostlybond.maxbondlevel, ghostlybond_levelup_time)
+		end
 	end
 
 	--[[

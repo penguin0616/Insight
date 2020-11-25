@@ -173,10 +173,9 @@ function InsightTargetIndicator:OnUpdate()
     -- kill on this is rough: it just pops in/out. would be nice if it faded in/out...
 
     -- Me
-    -- and not Entity_IsValid(self.inst.entity)
-	if self.target ~= nil and not self.targetIsVector3 and not Entity_IsValid(self.target.entity) then
+	if self.target ~= nil and not self.targetIsVector3 and (not Entity_IsValid(self.target.entity) or not Entity_IsValid(self.inst.entity)) then
 		-- wait to be cleaned up by Insight
-		--dprint('cleanup waiting for', self.target)
+        --dprint('cleanup waiting for', self.target)
 		return
 	end
 

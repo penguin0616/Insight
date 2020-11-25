@@ -248,6 +248,14 @@ return {
 	--hunger_paused = "<color=HUNGER>Hunger</color> decay paused.",
 
 	-- inspectable.lua
+	fossil_stalker = {
+		--pieces_needed = "20% chance of going wrong with %s more piece(s).",
+		--correct = "This is correctly assembled.",
+		--incorrect = "This is assembled wrong.",
+	},
+	--trap_starfish_cooldown = "Rearms in: %s",
+	--lureplant_active = "Will become active in: %s",
+	--walrus_camp_respawn = "<color=FROZEN>%s</color> respawns in: %s",
 	hunt_progress = "<icon=dirtpile> %s / %s",
 	--global_wetness = "<color=WET>Global Wetness</color>: <color=WET>%s</color>",
 	--precipitation_rate = "<color=WET>Precipitation Rate</color>: <color=WET>%s</color>",
@@ -335,7 +343,7 @@ return {
 	antlion_rage = "%s",
 
 	-- soul.lua
-	wortox_soul_heal = "<icon=health> <color=HEALTH>13</color> - <color=HEALTH>20</color>.",
+	wortox_soul_heal = "<icon=health> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>.",
 
 	-- spawner.lua
 	--spawner_next = "Will spawn a %s in %s.",

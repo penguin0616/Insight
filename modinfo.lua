@@ -71,7 +71,7 @@ server_filter_tags = {"insight_" .. version}
 local translations = {}
 local english = {
 	-- description
-	update_info = "bug fixes for indicators; pipspook assistance; fixed highlighting; performance increases (for example: highlighting can process 1632 chests at once with minimal impact); bug fixes; made walter slingshot ammo more reliable; network optimization for player stats; ",
+	update_info = "fuelweaver skeleton info; anenemy info; more wortox soul info; pipspook assistance;",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",

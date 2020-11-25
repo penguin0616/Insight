@@ -76,12 +76,6 @@ local function Describe(self, context)
 		return
 	end
 
-	-- chef
-	local chef = context.config["stewer_chef"] and GetChef(self)
-	if chef and (self:IsDone() or cooktime > 0) then
-		chef_string = string.format(context.lstr.cooker, chef.colour, chef.name)
-	end
-
 	-- cook time modifier
 	local cook_time_modifier = GetCookTimeModifier(self)
 	if cook_time_modifier < 0 then
@@ -94,8 +88,38 @@ local function Describe(self, context)
 		cook_time_string = string.format(context.lstr.cooktime_modifier_faster, cook_time_modifier * 100)
 	end
 
+	-- chef
+	if self:IsDone() or cooktime > 0 then
+		local chef = context.config["stewer_chef"] and GetChef(self)
+		if chef then
+			chef_string = string.format(context.lstr.cooker, chef.colour, chef.name)
+		end
+
+		cooktime = math.ceil(cooktime)
+
+		local recipe = GetRecipe(self.inst.prefab, self.product)
+		local stacksize = recipe and recipe.stacksize or 1
+
+		
+		local base_food_string = cooktime > 0 and context.lstr.cooktime_remaining or context.lstr.stewer_product
+
+		if context.usingIcons and PrefabHasIcon(self.product) then
+			food = string.format(base_food_string, self.product, stacksize, cooktime)
+		else
+			local name = STRINGS.NAMES[string.upper(self.product)] or ("\"" .. self.product .. "\"")
+			food = string.format(base_food_string, name, stacksize, cooktime)
+		end
+	end
+
+	--[[
+	
+	if chef and (self:IsDone() or cooktime > 0) then -- 
+		chef_string = string.format(context.lstr.cooker, chef.colour, chef.name)
+	end
+
+	
 	-- food identification and cooking
-	if cooktime > 0 then -- not using :IsCooking() because its not in DS
+	if self:IsDone() or cooktime > 0 then -- not using :IsCooking() because its not in DS
 		cooktime = math.ceil(cooktime)
 
 		local recipe = GetRecipe(self.inst.prefab, self.product)
@@ -108,8 +132,7 @@ local function Describe(self, context)
 			food = string.format(context.lstr.lang.cooktime_remaining, name, stacksize, cooktime)
 		end
 	end
-
-	
+	--]]
 
 	description = CombineLines(food, chef_string, cook_time_string)
 

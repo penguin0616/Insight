@@ -248,6 +248,14 @@ return {
 	hunger_paused = "<color=HUNGER>饥饿值</color>暂停",
 
 	-- inspectable.lua
+	fossil_stalker = {
+		pieces_needed = "20% chance of going wrong with %s more piece(s).",
+		correct = "This is correctly assembled.",
+		incorrect = "This is assembled wrong.",
+	},
+	trap_starfish_cooldown = "Rearms in: %s",
+	lureplant_active = "Will become active in: %s",
+	walrus_camp_respawn = "<color=FROZEN>%s</color> respawns in: %s",
 	hunt_progress = "追踪：%s / %s",
 	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
@@ -335,7 +343,7 @@ return {
 	antlion_rage = "%s",
 
 	-- soul.lua
-	wortox_soul_heal = "<color=HEALTH>治疗</color> <color=HEALTH>13</color> - <color=HEALTH>20</color>.",
+	wortox_soul_heal = "<color=HEALTH>治疗</color> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>.",
 
 	-- spawner.lua
 	spawner_next = "将生成 %s 于 %s后",

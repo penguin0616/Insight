@@ -69,7 +69,7 @@ end
 
 local function ShouldShowIndicator(player, target, targetIsVector3, max_range)
 	-- TUNING.MAX_INDICATOR_RANGE = 50
-	max_range = 999 or max_range or 50 * 1.5
+	max_range = max_range or (50 * 1.5)
 
 	--[[
 		frustum is a visibility check: target.entity:FrustumCheck()
@@ -112,8 +112,8 @@ end
 local Indicators = Class(function(self, owner)
 	self.owner = owner
 	self.indicators = {}
-	self.indicator_root = self.owner.HUD:AddChild(Widget("insight_indicator_root"))
-	mprint("dumbo", self.owner.HUD)
+	--self.indicator_root = self.owner.HUD:AddChild(Widget("insight_indicator_root")) -- HUD gone on init in non-caves 
+	self.cleanup = setmetatable({}, { __mode="v" })
 end)
 
 function Indicators:Get(target)
@@ -126,7 +126,7 @@ end
 
 function Indicators:Add(target, data)
 	assert(self:Get(target) == nil, "Attempt to create multiple indicators for target")
-    local ti = self.indicator_root:AddChild(InsightTargetIndicator(self.owner, target, data)) -- self.owner.HUD.under_root
+    local ti = self.owner.HUD.under_root:AddChild(InsightTargetIndicator(self.owner, target, data)) -- self.owner.HUD.under_root
     table.insert(self.indicators, ti)
 end
 
@@ -140,15 +140,23 @@ function Indicators:Remove(target)
 	end
 end
 
+function Indicators:RemoveNextUpdate(target)
+	if table.contains(self.cleanup, target) then
+		return
+	end
+
+	table.insert(self.cleanup, target)
+end
+
 function Indicators:OnUpdate()
 	--print'indicators onupdate'
 	local cleanup = {}
 	for _, indicator in pairs(self.indicators) do
 		-- or not Entity_IsValid(indicator.inst.entity)
-		if not indicator.targetIsVector3 and (not Entity_IsValid(indicator.target.entity) ) then
+		if indicator.kill == true or (not indicator.targetIsVector3 and (not Entity_IsValid(indicator.target.entity) or not Entity_IsValid(indicator.inst.entity))) then
 			table.insert(cleanup, indicator.target) -- mark bad indicators for cleanup
 		else
-			local show = ShouldShowIndicator(self.owner, indicator.target, indicator.targetIsVector3)
+			local show = ShouldShowIndicator(self.owner, indicator.target, indicator.targetIsVector3, indicator.config_data.max_distance)
 			if show then
 				indicator:Show()
 			else
@@ -164,6 +172,11 @@ function Indicators:OnUpdate()
 	-- clean them up
 	for _, target in pairs(cleanup) do
 		self:Remove(target)
+	end
+
+	while #self.cleanup > 0 do
+		local i = next(self.cleanup) -- in case gc takes one out
+		self:Remove(table.remove(self.cleanup, i))
 	end
 end
 

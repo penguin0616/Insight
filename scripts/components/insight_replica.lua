@@ -183,8 +183,49 @@ local Insight = Class(function(self, inst)
 		else
 			self.is_client = true
 		end
-	elseif IsClientHost() and ThePlayer == nil then
-		-- /shrug
+	elseif IsClientHost() and inst == ThePlayer then
+		-- now that im waiting for "SetOwner" to trigger on players, ThePlayer ~= nil whereas before ThePlayer == nil
+		--[[
+			-- apparent simplified process
+			function FN1(? this, int a2)
+				int v4;
+				if (a2) then
+					fn...(v4, -10002, "Ents")
+				else
+					-- ?
+				end
+
+				fn...(v4, -10002, ThePlayer) -- set
+			end
+
+			function FN2(char *this, int a2)
+				-- blah
+				BOOL result;
+				if (...) then
+					if (...) then
+						if (...) then
+						end
+						if (...) then
+							FN1(..., 0)
+						end
+					else
+						if (...) then
+							-- throw an error about existing owner?
+						end
+
+						if (...) then
+							if (...) then
+								FN1(..., ...) -- ThePlayer
+							end
+						end
+
+						result = fn...(..., "setowner", ...);
+					end
+				end
+
+				return result
+			end
+		]]
 		self.is_client = true
 	end
 
@@ -349,7 +390,7 @@ function Insight:PipspookToyFound(inst)
 		--dprint("yessir", inst)
 		-- already exists
 		local img_data = ResolvePrefabToImageTable("trinket_" .. string.match(inst.prefab, "_(%d+)$"))
-		local yep = { tex=img_data.tex, atlas=img_data.atlas }
+		local yep = { pipspook=true, tex=img_data.tex, atlas=img_data.atlas }
 
 		self:StartTrackingEntity(inst, yep)
 	end
@@ -403,7 +444,7 @@ function Insight:HandlePipspookQuest(data, ...)
 				mprint("track vector:", v.prefab)
 				-- toy does not exist
 				local img_data = ResolvePrefabToImageTable("trinket_" .. string.match(v.prefab, "_(%d+)$"))
-				local yep = { tex=img_data.tex, atlas=img_data.atlas, name="<color=#aaaaaa>(Distant)</color> " .. v.display_name, vector=Vector3(v.position.x, v.position.y, v.position.z), max_distance=3000 }
+				local yep = { pipspook=true, tex=img_data.tex, atlas=img_data.atlas, name="<color=#aaaaaa>(Distant)</color> " .. v.display_name, vector=Vector3(v.position.x, v.position.y, v.position.z), max_distance=3000 }
 				v.vector = yep.vector
 
 				self:StartTrackingEntity(yep.vector, yep)
@@ -432,6 +473,12 @@ function Insight:HandlePipspookQuest(data, ...)
 		end
 		--]]
 	elseif data.state == "end" then
+		for i,v in pairs(self.indicators.indicators) do
+			if v.config_data.pipspook then
+				self.indicators:RemoveNextUpdate(v.target)
+			end
+		end
+
 		self.pipspook_toys = {}
 		self.pipspook_queue = setmetatable({}, { __mode="v" })
 	end
@@ -612,6 +659,11 @@ function Insight:GetInformation(item)
 end
 
 function Insight:RequestInformation(item, params)
+	if not self.is_client then
+		mprint("insight for", self.inst, "tried to request information")
+		return
+	end
+
 	if TRACK_INFORMATION_REQUESTS then
 		dprint("Client requesting information for", item)
 	end
@@ -713,7 +765,6 @@ function Insight:EntityActive(ent)
 	--self.entity_count = self.entity_count + 1
 
 	if ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit" then
-		mprint(ent:GetDebugString())
 		ent:DoTaskInTime(0, function()
 			self:RequestInformation(ent)
 		end)
@@ -740,6 +791,7 @@ function Insight:StartTrackingEntity(ent, data)
 	end
 
 	if self.indicators:Get(ent) then
+		dprint("attempt to stack indicators for", ent)
 		return
 	end
 

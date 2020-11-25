@@ -47,12 +47,7 @@ local function OnPipspookQuestBegin(inst, doer)
 
 	HasPipspookQuest[doer] = true
 
-	dprint('begin quest', inst, doer)
-	inst:DoTaskInTime(1, function()
-	dprint"A"
-	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "PipspookQuest"), doer.userid, compress({ state="begin", toys=SerializeToys(inst, doer) }), nil) -- unpack(SerializeToys(inst)) -- ISSUE:RPC
-	dprint"B"
-	end)
+	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "PipspookQuest"), doer.userid, compress({ state="begin", toys=SerializeToys(inst, doer) })) -- unpack(SerializeToys(inst)) -- ISSUE:RPC
 end
 
 local function OnPipspookQuestEnd(inst)

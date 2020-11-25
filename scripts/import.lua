@@ -26,7 +26,12 @@ directory. If not, please refer to
 
 setfenv(1, _G.Insight.env)
 
+local select, unpack = select, unpack
+local function pack(...) return { n=select("#", ...), ...} end
+local function vararg(packed) return unpack(packed, 1, packed.n) end
+
 local import_cache = {}
+
 --local import_cache = package.loaded -- require's cache
 
 --- Importer function.
@@ -38,7 +43,7 @@ local function import(path)
 
 	-- as to behave like require
 	if (import_cache[path]) then
-		return unpack(import_cache[path])
+		return vararg(import_cache[path])
 	end
 
 	
@@ -57,8 +62,8 @@ local function import(path)
 		--]]
 		setfenv(fn, _G.Insight.env)
 
-		import_cache[path] = {fn()}
-		return unpack(import_cache[path])
+		import_cache[path] = pack(fn())
+		return vararg(import_cache[path])
 	end
 end
 

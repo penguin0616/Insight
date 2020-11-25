@@ -35,8 +35,8 @@ local function SetEntitySleep(manager, inst, rmv)
 	end
 
 	
-	--manager.active_entities[inst] = nil
-	--manager.active_entity_lookup[inst.GUID] = nil
+	manager.active_entities[inst] = nil
+	manager.active_entity_lookup[inst.GUID] = nil
 	manager.entity_count = manager.entity_count - 1
 	 
 	--mprint("sleep", inst, manager.entity_count)
@@ -65,11 +65,13 @@ local function SetEntityAwake(manager, inst)
 
 	--mprint("awake", inst, manager.entity_count)
 
+	--[[
 	inst:DoTaskInTime(0.01, function()
 		if inst.replica.container and inst:IsValid() then
 			manager.chests[inst] = true
 		end
 	end)
+	--]]
 	
 	manager.active_entities[inst] = GetEntityDebugData(inst)
 	manager.active_entity_lookup[inst.GUID] = inst
@@ -88,7 +90,7 @@ local EntityManager = Class(function(self)
 	self.active_entity_lookup = setmetatable(createTable(1000), { __mode="kv" })
 	self.entity_count = 0
 	self.listeners = {}
-	self.chests = setmetatable(createTable(250), { __mode="k" })
+	--self.chests = setmetatable(createTable(250), { __mode="k" })
 end)
 
 function EntityManager:Count()
