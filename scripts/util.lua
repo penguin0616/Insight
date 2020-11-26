@@ -65,7 +65,7 @@ Physics: Collision Group: 256 Mask: 32,64,128,512,8192, (ACTIVE) Vel: 0.00
 SoundEmitter: 
 Buffered Action: nil
 	]]
-	local str = ent:GetDebugString()
+	local str = ent.entity:GetDebugString() -- only need entity
 
 	local age = string.match(str, "age ([%d.]+)")
 	local network_id = string.match(str, "NetworkID=(%d+)")

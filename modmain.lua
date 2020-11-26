@@ -1360,8 +1360,13 @@ if IsDST() then
 	local function SendContainerData(player, inst)
 		-- clients need to be the one to request the information, server can't just send it to them. don't know what GUID they have for each entity.
 		--mprint("invalidating")
-		GetInsight(player).net_invalidate:set_local(nil) -- force next :set() to be dirty
-		GetInsight(player).net_invalidate:set(inst)
+		local insight = GetInsight(player)
+		if not insight then
+			return
+		end
+
+		insight.net_invalidate:set_local(nil) -- force next :set() to be dirty
+		insight.net_invalidate:set(inst)
 	end
 	
 	AddComponentPostInit("container", function(self)
@@ -1535,7 +1540,9 @@ if IsDST() then
 							--mprint("ON NAUGHTY ACTION AFTER", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
 							--mprint(playerdata.actions, playerdata.threshold)
 							-- while i could just pass in the playerdata........ i dont feel like it
-							GetInsight(playerdata.player):SendNaughtiness()
+							if GetInsight(playerdata.player) then
+								GetInsight(playerdata.player):SendNaughtiness()
+							end
 						end)
 					end
 
@@ -1837,6 +1844,7 @@ AddPlayerPostInit(function(player)
 	end
 
 	if TheWorld.ismastersim then
+		mprint("listening for player validation", player)
 		player:ListenForEvent("setowner", function(...) 
 			player:AddComponent("insight")
 			mprint("Added Insight component for", player)
@@ -2210,7 +2218,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 		local report_client = GetModConfigData("crash_reporter", true)
 
 		if IsClientHost() or IsClient() then -- non-cave world host || regular player
-			local is_server_owner = GetPlayerContext(ThePlayer).is_server_owner
+			local is_server_owner = TheNet:GetIsServerOwner() -- GetPlayerContext(ThePlayer).is_server_owner
 
 			if IsClient() then
 				if is_server_owner then
