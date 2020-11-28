@@ -151,8 +151,19 @@ return {
 	explosive_damage = "<color=LIGHT>Explosion Damage</color>: %s",
 	explosive_range = "<color=LIGHT>Explosion Range</color>: %s",
 
+	-- farmplantable.lua
+	farmplantable = "Will grow into a <color=NATURE>%s</color>.",
+
 	-- fertilizer.lua
-	growth_value = "Shortens <color=NATURE>growth time</color> by <color=NATURE>%s</color> seconds.",
+	fertilizer = {
+		growth_value = "Shortens <color=NATURE>growth time</color> by <color=NATURE>%s</color> seconds.",
+		nutrient_value = "Nutrients: [%s, %s, %s]",
+	},
+
+	-- fillable.lua
+	fillable = {
+		accepts_ocean_water = "Can be filled with ocean water.",
+	},
 
 	-- finiteuses.lua
 	action_uses = "<color=#aaaaee>%s</color>: %s",
@@ -388,8 +399,14 @@ return {
 	upgradeable_complete = "Upgrade %s%% complete.",
 	upgradeable_incomplete = "No upgrades possible.",
 
+	-- wateringcan.lua
+	wateringcan = "Increases soil moisture by <color=WET>%s</color>.",
+
 	-- waterproofer.lua
 	waterproofness = "<color=WET>Waterproofness</color>: <color=WET>%s%%</color>",
+	
+	-- watersource.lua
+	watersource = "This is a source of water.",
 
 	-- weapon.lua
 	weapon_damage_type = {

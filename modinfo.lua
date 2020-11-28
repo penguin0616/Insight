@@ -22,7 +22,7 @@ directory. If not, please refer to
 -- DST 2189004162
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.7.10" -- ds is 2.4.4_ds
+version = "2.7.13" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -71,7 +71,7 @@ server_filter_tags = {"insight_" .. version}
 local translations = {}
 local english = {
 	-- description
-	update_info = "fuelweaver skeleton info; anenemy info; more wortox soul info; pipspook assistance;",
+	update_info = "beta stuff; fuelweaver skeleton info; anenemy info; more wortox soul info; pipspook assistance;",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",

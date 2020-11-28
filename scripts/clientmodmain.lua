@@ -174,7 +174,7 @@ local function GenerateConfiguration()
 				end
 			end
 
-			if v.name == "boss_indicator" then
+			if v.name == "refresh_delay" then
 				dprint("heckler:", server_choice, client_choice, "| winner:", winner)
 			end
 

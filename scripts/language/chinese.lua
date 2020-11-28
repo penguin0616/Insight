@@ -151,8 +151,19 @@ return {
 	explosive_damage = "<color=LIGHT>爆炸伤害</color>: %s",
 	explosive_range = "<color=LIGHT>爆炸范围</color>: %s",
 
+	-- farmplantable.lua
+	farmplantable = "Will grow into a <color=NATURE>%s</color>.",
+
 	-- fertilizer.lua
-	growth_value = "缩短 <color=NATURE>%s</color> 秒<color=NATURE>生长时间</color>",
+	fertilizer = {
+		growth_value = "缩短 <color=NATURE>%s</color> 秒<color=NATURE>生长时间</color>",
+		nutrient_value = "Nutrients: [%s, %s, %s]",
+	},
+
+	-- fillable.lua
+	fillable = {
+		accepts_ocean_water = "Can be filled with ocean water.",
+	},
 
 	-- finiteuses.lua
 	action_uses = "<color=#aaaaee>%s</color>: %s",
@@ -249,7 +260,7 @@ return {
 
 	-- inspectable.lua
 	fossil_stalker = {
-		pieces_needed = "20% chance of going wrong with %s more piece(s).",
+		pieces_needed = "20%% chance of going wrong with %s more piece(s).",
 		correct = "This is correctly assembled.",
 		incorrect = "This is assembled wrong.",
 	},
@@ -344,11 +355,13 @@ return {
 
 	-- soul.lua
 	wortox_soul_heal = "<color=HEALTH>治疗</color> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>.",
+	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
 
 	-- spawner.lua
 	spawner_next = "将生成 %s 于 %s后",
 
 	-- stewer.lua
+	stewer_product = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>)",
 	cooktime_remaining = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>) 会在 %s 秒后完成",
 	cooker = "Cooked by <color=%s>%s</color>.",
 	cooktime_modifier_slower = "Cooks food <color=#DED15E>%s%%</color> slower.",
@@ -386,8 +399,14 @@ return {
 	upgradeable_complete = "升级 %s%% 完成",
 	upgradeable_incomplete = "不可升级",
 
+	-- wateringcan.lua
+	wateringcan = "Increases soil moisture by <color=WET>%s</color>.",
+
 	-- waterproofer.lua
 	waterproofness = "<color=WET>防水</color>: <color=WET>%s%%</color>",
+
+	-- watersource.lua
+	watersource = "This is a source of water.",
 
 	-- weapon.lua
 	weapon_damage_type = {

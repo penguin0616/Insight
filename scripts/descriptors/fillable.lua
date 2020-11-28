@@ -18,40 +18,19 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- fertilizer.lua
-local FERTILIZER_DEFS = {}
-
+-- fillable.lua
 local reap_and_sow = CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW")
-if reap_and_sow then
-	FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
-end
-
-local function GetNutrientValue(prefab)
-	for _prefab, data in pairs(FERTILIZER_DEFS) do
-		if _prefab == prefab then
-			return data.nutrients
-		end
-	end
-end
 
 local function Describe(self, context)
 	local description = nil
 
-	local growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
-	local nutrient_value_string
-
-	if reap_and_sow then
-		local nutrient_value = GetNutrientValue(self.inst:GetFertilizerKey())
-
-		if nutrient_value then
-			local missing = nil --"?"
-			nutrient_value_string = string.format(context.lstr.fertilizer.nutrient_value, nutrient_value[1] or missing, nutrient_value[2] or missing, nutrient_value[3] or missing)
-		else
-			nutrient_value_string = "Does not have nutrients?"
-		end
+	if not reap_and_sow then
+		return
 	end
 
-	description = CombineLines(growth_value_string, nutrient_value_string)
+	if self.acceptsoceanwater then
+		description = string.format(context.lstr.fillable.accepts_ocean_water)
+	end
 
 	return {
 		priority = 0,

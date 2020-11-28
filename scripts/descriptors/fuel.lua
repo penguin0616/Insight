@@ -29,6 +29,15 @@ local function Describe(self, context)
 
 	local value = self.fuelvalue
 
+	if not value then
+		description = string.format("Missing fuel value?:", tostring(self.inst), tostring(value))
+		if DEBUG_ENABLED then
+			table.foreach(self, dprint)
+			dprint'-----------------'
+		end
+		return
+	end
+
 	if IsDST() then
 		if inst:GetIsWet() then
 			value = value * TUNING.WET_FUEL_PENALTY

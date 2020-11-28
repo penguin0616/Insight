@@ -151,8 +151,19 @@ return {
 	--explosive_damage = "<color=LIGHT>Explosion Damage</color>: %s",
 	--explosive_range = "<color=LIGHT>Explosion Range</color>: %s",
 
+	-- farmplantable.lua
+	farmplantable = "<icon=%s>",
+
 	-- fertilizer.lua
-	growth_value = "<icon=poop> %ss",
+	fertilizer = {
+		growth_value = "<icon=poop> %ss",
+		--nutrient_value = "Nutrients: [%s, %s, %s]",
+	},
+
+	-- fillable.lua
+	fillable = {
+		--accepts_ocean_water = "Can be filled with ocean water.",
+	},
 
 	-- finiteuses.lua
 	action_uses = "<icon=%s> %s",
@@ -249,7 +260,7 @@ return {
 
 	-- inspectable.lua
 	fossil_stalker = {
-		--pieces_needed = "20% chance of going wrong with %s more piece(s).",
+		--pieces_needed = "20%% chance of going wrong with %s more piece(s).",
 		--correct = "This is correctly assembled.",
 		--incorrect = "This is assembled wrong.",
 	},
@@ -344,11 +355,13 @@ return {
 
 	-- soul.lua
 	wortox_soul_heal = "<icon=health> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>.",
+	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
 
 	-- spawner.lua
 	--spawner_next = "Will spawn a %s in %s.",
 
 	-- stewer.lua
+	stewer_product = "<icon=%s>(<color=HUNGER>%s</color>)",
 	cooktime_remaining = "<icon=%s>(<color=HUNGER>%s</color>) %s",
 	--cooker = "Cooked by <color=%s>%s</color>.",
 	--cooktime_modifier_slower = "Cooks food <color=#DED15E>%s%%</color> slower.", -- some sort of double side-chevron (like a slow down sign) <<
@@ -386,8 +399,14 @@ return {
 	--upgradeable_complete = "Upgrade %s%% complete.",
 	--upgradeable_incomplete = "No upgrades possible.",
 
+	-- wateringcan.lua
+	wateringcan = "Increases soil moisture by <color=WET>%s</color>.",
+
 	-- waterproofer.lua
 	waterproofness = "<icon=wetness> <color=WET>%s%%</color>",
+
+	-- watersource.lua
+	watersource = "This is a source of water.",
 
 	-- weapon.lua
 	weapon_damage_type = {

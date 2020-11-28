@@ -69,7 +69,7 @@ local function PipspookQuest(self, context)
 	end
 
 	if self.inst._playerlink ~= context.player then
-		description = string.format(context.lstr.questowner.pipspook.assisted_by, ApplyColor(self.inst._playerlink.name, GetPlayerColor(self.inst._playerlink):ToHex()))
+		description = string.format(context.lstr.questowner.pipspook.assisted_by, ApplyColour(self.inst._playerlink.name, GetPlayerColour(self.inst._playerlink):ToHex()))
 	else
 		description = string.format(context.lstr.questowner.pipspook.toys_remaining, GetTableSize(self.inst._toys))
 	end

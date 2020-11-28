@@ -133,11 +133,11 @@ function AreEntityPrefabsEqual(inst1, inst2)
 	return false
 end
 
-function ApplyColor(str, clr)
+function ApplyColour(str, clr)
 	return string.format("<color=%s>%s</color>", clr, str)
 end
 
-function GetPlayerColor(arg)
+function GetPlayerColour(arg)
 	if type(arg) == "string" then
 		for i,v in pairs(TheNet:GetClientTable()) do
 			if v.userid == arg or v.name == arg then

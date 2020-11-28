@@ -404,6 +404,16 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		oldHide(self)
 	end
 
+	-- count lines
+	local function cl(txt)
+		local i = 1
+		txt:gsub("\n", function() i = i + 1 end) -- i should probably bring this up to scratch with the other one, but i do not have the mental fortitude to handle it.
+		-- oh, how i hate working with UIs.
+		return i
+	end
+
+	-- TheInput:GetScreenPosition()
+
 	if Is_DST then
 		function hoverer:UpdatePosition(x, y)
 			local YOFFSETUP = -80
@@ -436,9 +446,23 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 			--print(y, "LOWER:", h + YOFFSETDOWN * scale.y, "HIGHER:", scr_h - h - YOFFSETUP * scale.y)
 
+			-- low = bottom
+			-- high = top
+			--print("max:", scr_h - h*2 - YOFFSETUP * scale.y) -- scr_h - h - YOFFSETUP * scale.y
+			--print("current:", y)
+			--print'-----------------------------------------'
+
+			local x_min = w + XOFFSET
+			local x_max = scr_w - w - XOFFSET
+
+			local r = cl(self.text:GetString())
+			local y_min = h + YOFFSETDOWN * scale.y + (30*.75)
+			-- y_max = scr_h - h - YOFFSETUP * scale.y
+			local y_max = scr_h - h*2 - YOFFSETUP * scale.y -- h*2 means harder for insight to go off bounds
+
 			self:SetPosition(
-				math_clamp(x, w + XOFFSET, scr_w - w - XOFFSET),
-				math_clamp(y, h + YOFFSETDOWN * scale.y, scr_h - h - YOFFSETUP * scale.y),
+				math_clamp(x, x_min, x_max),
+				math_clamp(y, y_min, y_max),
 				0)
 		end
 	end
@@ -449,14 +473,6 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 
 		oldOnUpdate(self, ...)
-	end
-
-	-- count lines
-	local function cl(txt)
-		local i = 1
-		txt:gsub("\n", function() i = i + 1 end) -- i should probably bring this up to scratch with the other one, but i do not have the mental fortitude to handle it.
-		-- oh, how i hate working with UIs.
-		return i
 	end
 
 	hoverer.text.SetString = function(self, text)
@@ -532,6 +548,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			hoverer.insightText:SetPosition(0, -7.5 + (-15 * r) + dataHeight / 2)
 		end
 
+		
 		return oldSetString(self, text .. textPadding)
 	end
 
@@ -565,7 +582,11 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		local dataWidth, dataHeight = hoverer.insightText:GetRegionSize()
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
-		self:SetPosition(0, dataPosition.y - dataHeight)
+		if hoverer.insightText.raw_text == nil then
+			self:SetPosition(0, -30)
+		else
+			self:SetPosition(0, dataPosition.y - dataHeight)
+		end
 
 		return oldSetString(self, text)
 	end

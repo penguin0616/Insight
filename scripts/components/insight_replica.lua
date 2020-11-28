@@ -702,7 +702,7 @@ function Insight:RequestInformation(item, params)
 
 	-- check for delays
 	--mprint("context", context)
-	--table.foreach(context, mprint)
+--table.foreach(context, mprint)
 	local delay = params.debounce or context.config["refresh_delay"]
 	
 	if type(delay) == "number" and delay >= 0 then
@@ -718,6 +718,7 @@ function Insight:RequestInformation(item, params)
 	else
 		mprint("Delay set to 0 in weird case.", tostring(delay), type(delay))
 		--error("Delay set to 0 in weird case.")
+		--delay = 0
 		return
 	end
 
@@ -750,7 +751,7 @@ end
 
 function Insight:EntityActive(ent)
 	if self.entity_data[ent] then
-		dprint("attempt to reawaken existing entity", ent)
+		--dprint("attempt to reawaken existing entity", ent)
 		return
 	end
 

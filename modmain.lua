@@ -233,6 +233,8 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
+	-- NEW:
+	"farmplanttendable",
 
 	-- TheWorld
 	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor",
@@ -1279,7 +1281,7 @@ if IsDST() then
 			local res = {pcall(fn)}
 
 			if not table.remove(res, 1) then
-				cprint("[REMOTE] Execution Error: \n" .. err)
+				cprint("[REMOTE] Execution Error: \n" .. tostring(table.remove(res, 1)))
 				return
 			end
 

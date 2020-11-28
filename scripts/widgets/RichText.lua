@@ -21,6 +21,8 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 --[[ Private Variables ]]
 --------------------------------------------------------------------------
+local CalculateSize = CalculateSize
+
 local TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT

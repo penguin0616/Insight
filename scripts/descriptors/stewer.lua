@@ -60,6 +60,32 @@ local function GetCookTimeModifier(self)
 	return 1 - self.cooktimemult
 end
 
+local function GetProductDisplayName(recipe, spice)
+	if not spice then
+		return STRINGS.NAMES[string.upper(product_prefab)] or ("\"" .. product_prefab.. "\"")
+	end
+
+	return subfmt(STRINGS.NAMES[spice.."_FOOD"], { food = STRINGS.NAMES[string.upper(data.basename)] })
+	--recipe.spice, recipe.basename
+end
+
+local function GetRecipeInfo(recipe)
+	local data = {
+		basename = recipe.basename or recipe.name,
+		name = recipe.name,
+		stacksize = recipe.stacksize or 1,
+		fancyname = nil
+	}
+
+	if recipe.spice then
+		data.fancyname = subfmt(STRINGS.NAMES[recipe.spice.."_FOOD"], { food = STRINGS.NAMES[string.upper(data.basename)] })
+	else
+		data.fancyname = STRINGS.NAMES[string.upper(data.name)]
+	end
+
+	return data
+end
+
 local function Describe(self, context)
 	local description, food, chef_string, cook_time_string
 
@@ -98,17 +124,21 @@ local function Describe(self, context)
 		cooktime = math.ceil(cooktime)
 
 		local recipe = GetRecipe(self.inst.prefab, self.product)
-		local stacksize = recipe and recipe.stacksize or 1
 
-		
-		local base_food_string = cooktime > 0 and context.lstr.cooktime_remaining or context.lstr.stewer_product
-
-		if context.usingIcons and PrefabHasIcon(self.product) then
-			food = string.format(base_food_string, self.product, stacksize, cooktime)
+		if not recipe then
+			food = string.format(context.lstr.stewer_product, "?", "???")
 		else
-			local name = STRINGS.NAMES[string.upper(self.product)] or ("\"" .. self.product .. "\"")
-			food = string.format(base_food_string, name, stacksize, cooktime)
+			local data = GetRecipeInfo(recipe)
+			if context.usingIcons and PrefabHasIcon(data.name) then -- self.product
+				local base_food_string = cooktime > 0 and context.lstr.cooktime_remaining or context.lstr.stewer_product
+				food = string.format(base_food_string, data.name, data.stacksize, cooktime)
+			else
+				local base_food_string = cooktime > 0 and context.lstr.lang.cooktime_remaining or context.lstr.lang.stewer_product
+				food = string.format(base_food_string, data.fancyname, data.stacksize, cooktime)
+			end
 		end
+		
+		
 	end
 
 	--[[
