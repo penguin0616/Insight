@@ -20,9 +20,10 @@ directory. If not, please refer to
 
 -- DS 2081254154
 -- DST 2189004162
+-- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.7.13" -- ds is 2.4.4_ds
+version = "2.7.16" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -71,7 +72,7 @@ server_filter_tags = {"insight_" .. version}
 local translations = {}
 local english = {
 	-- description
-	update_info = "beta stuff; fuelweaver skeleton info; anenemy info; more wortox soul info; pipspook assistance;",
+	update_info = "more beta stuff; fuelweaver skeleton info; anenemy info; more wortox soul info; pipspook assistance;",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",
@@ -89,8 +90,15 @@ local english = {
 	sectiontitle_miscellaneous = "Miscellaneous",
 	sectiontitle_debugging = "Debugging",
 
+	-- etc
+	undefined = "Undefined",
+	undefined_description = "Defaults to: ",
+
 	-- Formatting
 	language = {
+		--------------------------------------------------------------------------
+		--[[ Formatting ]]
+		--------------------------------------------------------------------------
 		LABEL = "Language",
 		HOVER = "The language you want information to display in.",
 		OPTIONS = {
@@ -212,6 +220,9 @@ local english = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Indicators ]]
+	--------------------------------------------------------------------------
 	boss_indicator = {
 		LABEL = "Boss Indicator",
 		HOVER = "Whether boss indicators are shown.",
@@ -340,6 +351,9 @@ local english = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Food Related ]]
+	--------------------------------------------------------------------------
 	food_style = {
 		LABEL = "Food style",
 		HOVER = "Food information length.",
@@ -441,6 +455,41 @@ local english = {
 				HOVER = "Will display the time until food reaches the next stage."
 			},
 		},
+	},
+	--------------------------------------------------------------------------
+	--[[ Information Control ]]
+	--------------------------------------------------------------------------
+	display_plant_stressors = {
+		LABEL = "Plant stress",
+		HOVER = "Determines whether plant stress is shown.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "Plant stress is not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "With Hat",
+				HOVER = "Plant stress will be shown if you have the Premier Gardeneer Hat.",
+			},
+			["2"] = {
+				DESCRIPTION = "Always",
+				HOVER = "Plant stress is always shown."
+			}
+		}
+	},
+	display_weighable = {
+		LABEL = "Item Weight",
+		HOVER = "Determines whether item weight is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Item weight is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Item weight is shown.",
+			},
+		}
 	},
 	show_world_events = {
 		LABEL = "Show World Events",
@@ -672,6 +721,9 @@ local english = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Miscellaneous ]]
+	--------------------------------------------------------------------------
 	account_combat_modifiers = {
 		LABEL = "Combat Modifiers",
 		HOVER = "Whether damage boosts and resistances are considered.",
@@ -698,11 +750,11 @@ local english = {
 				DESCRIPTION = "None",
 				HOVER = "Information is live."
 			},
-			["0.25"] = {
+			["0_25"] = {
 				DESCRIPTION = "0.25s",
 				HOVER = "Information updates every 0.25 seconds."
 			},
-			["0.5"] = {
+			["0_5"] = {
 				DESCRIPTION = "0.5s",
 				HOVER = "Information updates every 0.5 seconds."
 			},
@@ -716,6 +768,9 @@ local english = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Debugging ]]
+	--------------------------------------------------------------------------
 	log_reporter = {
 		LABEL = "Log Reporter",
 		HOVER = "Provides button in game for manual logs, attempts to automatically report crashes. Logs have debug, mods, world info.",
@@ -823,8 +878,15 @@ local chinese = {
 	sectiontitle_miscellaneous = "杂项",
 	sectiontitle_debugging = "调试",
 
+	-- etc
+	undefined = "默认",
+	undefined_description = "默认为：",
+
 	-- Formatting
 	language = {
+		--------------------------------------------------------------------------
+		--[[ Formatting ]]
+		--------------------------------------------------------------------------
 		LABEL = "语言",
 		HOVER = "也就是你想知道的信息以何种语言来显示。",
 		OPTIONS = {
@@ -946,6 +1008,9 @@ local chinese = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Indicators ]]
+	--------------------------------------------------------------------------
 	boss_indicator = {
 		LABEL = "Boss指示器",
 		HOVER = "是否开启Boss指示器功能",
@@ -1074,6 +1139,9 @@ local chinese = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Food Related ]]
+	--------------------------------------------------------------------------
 	food_style = {
 		LABEL = "食物属性格式",
 		HOVER = "食物属性信息详细或简短展示。",
@@ -1175,6 +1243,41 @@ local chinese = {
 				HOVER = "会显示食物进入下一阶段的具体时间。"
 			},
 		},
+	},
+	--------------------------------------------------------------------------
+	--[[ Information Control ]]
+	--------------------------------------------------------------------------
+	display_plant_stressors = {
+		LABEL = "植物压力值",
+		HOVER = "决定是否展示植物压力值",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "否",
+				HOVER = "植物压力值将不会显示",
+			},
+			["1"] = {
+				DESCRIPTION = "有园艺帽时",
+				HOVER = "如果你身上有，或戴上远古园艺帽时，显示植物的压力值。",
+			},
+			["2"] = {
+				DESCRIPTION = "总是",
+				HOVER = "总是显示植物的压力值"
+			}
+		}
+	},
+	display_weighable = {
+		LABEL = "物品的重量数值",
+		HOVER = "决定物品的重量值是否会显示",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "否",
+				HOVER = "不显示物品的重量值",
+			},
+			["true"] = {
+				DESCRIPTION = "是",
+				HOVER = "显示物品的重量值",
+			},
+		}
 	},
 	show_world_events = {
 		LABEL = "显示大世界事件",
@@ -1406,6 +1509,9 @@ local chinese = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Miscellaneous ]]
+	--------------------------------------------------------------------------
 	account_combat_modifiers = {
 		LABEL = "战斗信息",
 		HOVER = "显示伤害加成和减免信息。",
@@ -1432,11 +1538,11 @@ local chinese = {
 				DESCRIPTION = "无设定",
 				HOVER = "信息实时更新。"
 			},
-			["0.25"] = {
+			["0_25"] = {
 				DESCRIPTION = "0.25秒",
 				HOVER = "信息每0.25秒更新。"
 			},
-			["0.5"] = {
+			["0_5"] = {
 				DESCRIPTION = "0.5秒",
 				HOVER = "信息每0.5秒更新。"
 			},
@@ -1450,6 +1556,9 @@ local chinese = {
 			},
 		},
 	},
+	--------------------------------------------------------------------------
+	--[[ Debugging ]]
+	--------------------------------------------------------------------------
 	crash_reporter = {
 		LABEL = "崩溃报错器",
 		HOVER = "**尝试**自动上报你的崩溃（调试情况，模组，世界信息）至我的服务器。",
@@ -1557,7 +1666,7 @@ local function T(x) -- Translate
 	local current = (locale and translations[locale]) or translations.en
 	local backup = translations.en
 
-	for field in string_gmatch(x, "[^.]+") do
+	for field in string_gmatch(x, "[^%][^.]+") do
 		current = current[field]
 		backup = backup[field]
 	
@@ -1854,6 +1963,25 @@ configuration_options = {
 	},
 	AddSectionTitle(T"sectiontitle_informationcontrol"),
 	{
+		name = "display_plant_stressors",
+		options = {
+			{data = 0},
+			{data = 1},
+			{data = 2},
+		},
+		default = 2,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_weighable",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = false,
+		tags = {"dst_only", "undefined"},
+	},
+	{
 		name = "show_world_events",
 		options = {
 			{data = false},
@@ -2011,8 +2139,8 @@ configuration_options = {
 			{data = true},
 			{data = 0},
 			--{data = 0.1},
-			{data = 0.25},
-			{data = 0.5},
+			{data = "0_25"},
+			{data = "0_5"},
 			{data = 1},
 			{data = 3},
 		},
@@ -2084,7 +2212,7 @@ local function GetDefaultSetting(entry)
 		end
 	end
 
-	local msg = "MAJOR ERROR. UNABLE TO FIND DEFAULT OPTION FOR: " .. entry.name
+	local msg = "[DEFAULT???]: \n" .. entry.name .. "|" .. tostring(entry.default)
 	return { description = msg, data = false, hover = msg}
 end
 
@@ -2145,7 +2273,7 @@ if IsDST then
 		if HasTag(entry, "undefined") then -- Server doesn't have to specify
 			entry.original_default = entry.default
 			entry.default = "undefined"
-			entry.options[#entry.options+1] = { description = "Undefined", data = "undefined", hover = "Defaults to: " .. default.description}
+			entry.options[#entry.options+1] = { description = T"undefined", data = "undefined", hover = T"undefined_description" .. default.description}
 		end
 
 		--v.options[#v.options+1] = { description = "Undefined" , data = "undefined", hover = "Default: " .. default.description }

@@ -705,9 +705,7 @@ function Insight:RequestInformation(item, params)
 --table.foreach(context, mprint)
 	local delay = params.debounce or context.config["refresh_delay"]
 	
-	if type(delay) == "number" and delay >= 0 then
-		-- good
-	elseif delay == true then
+	if delay == true then
 		local host = self.performance_ratings:GetHost()
 		local client = self.performance_ratings:GetClient()
 		local ents = math.floor(self:CountEntities() / 1000) -- (2000 - host * 500) -- host? client? who knows which is better.
@@ -715,6 +713,11 @@ function Insight:RequestInformation(item, params)
 		-- min is 170, max seen is 3370
 		
 		delay = (0.50 * host) + (1/3 * client) + (0.125 * ents) + (0.125 * plrs)
+	elseif type(delay) == "string" then
+		delay = delay:gsub("_", ".")
+		delay = tonumber(delay)
+	elseif type(delay) == "number" and delay >= 0 then
+		-- good
 	else
 		mprint("Delay set to 0 in weird case.", tostring(delay), type(delay))
 		--error("Delay set to 0 in weird case.")

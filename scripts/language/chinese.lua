@@ -154,6 +154,11 @@ return {
 	-- farmplantable.lua
 	farmplantable = "Will grow into a <color=NATURE>%s</color>.",
 
+	-- farmplantstress.lua
+	farmplantstress = {
+		display = "Stressors: %s",
+	},
+
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "缩短 <color=NATURE>%s</color> 秒<color=NATURE>生长时间</color>",
@@ -418,7 +423,13 @@ return {
 	weapon_damage = "%s: <color=HEALTH>%s</color>",
 	attack_range = "范围：%s",
 
-	-- wereness
+	-- weighable.lua
+	weighable = {
+		weight = "Weight: %s (%s%%)",
+		owner_name = "Owner: %s"
+	},
+
+	-- wereness.lua
 	wereness_remaining = "木头值：%s / %s",
 
 	-- witherable.lua

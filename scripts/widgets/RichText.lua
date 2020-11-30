@@ -119,9 +119,11 @@ function RichText:GetColour()
 	return Color.fromHex(self.default_color)
 end
 
-function RichText:SetColour(clr) -- Text::SetColour
+function RichText:SetColour(clr, ...) -- Text::SetColour
 	if type(clr) == "string" then
 		assert(Color.IsValidHex(clr), "RichText:SetColour with invalid hex")
+	elseif type(clr) == "number" then
+		clr = Color.new(clr, ...)
 	end
 
 	self.default_color = clr:ToHex()

@@ -22,8 +22,36 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description = nil
 
+	if context.config["display_plant_stressors"] == 0 then
+		return
+	end
+
+	if context.config["display_plant_stressors"] == 1 then
+		local hat = false
+		-- when looking for hat prefab file, remove hat part
+
+		--if context.player.components.inventory:Has("nutrientsgoggleshat", 1) then
+		if context.player.components.inventory:HasItemWithTag("detailedplanthappiness", 1) then
+			hat = true
+		elseif context.player.components.inventory:EquipHasTag("detailedplanthappiness") then
+			hat = true
+		else
+			--[[
+			local head_item = context.player.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD)
+			if head_item and head_item.prefab == "nutrientsgoggleshat" then
+				hat = true
+			end
+			--]]
+		end
+
+		if not hat then
+			return
+		end
+	end
+
 	local strs = {}
 
+	--[[
 	for stressor, stressed in pairs(self.stressors) do
 		local x = ApplyColour(tostring(stressed), stressed and "#ff0000" or "#00ff00")
 		table.insert(strs, string.format("%s: %s", stressor, x))
@@ -31,6 +59,17 @@ local function Describe(self, context)
 
 	if #strs > 0 then
 		description = table.concat(strs, ", ")
+	end
+	--]]
+
+	for stressor, stressed in pairs(self.stressors) do
+		if stressed then
+			table.insert(strs, ApplyColour(stressor, "#dd5555"))
+		end
+	end
+
+	if #strs > 0 then
+		description = string.format(context.lstr.farmplantstress.display, table.concat(strs, ", "))
 	end
 
 	return {

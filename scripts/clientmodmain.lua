@@ -196,7 +196,7 @@ local function CanBlink(player)
 	local holding = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	local cursor = inventory:GetActiveItem()
 
-	return (holding and (holding.components.blinkstaff or holding:HasActionComponent("blinkstaff"))) or (cursor and (cursor.components.blinkstaff or cursor:HasActionComponent("blinkstaff") ~= nil)) or (player:HasTag("soulstealer") and inventory:Has("wortox_soul", 1))
+	return (holding and (holding.components.blinkstaff or holding:HasActionComponent("blinkstaff"))) or (cursor and (cursor.components.blinkstaff or cursor:HasActionComponent("blinkstaff"))) or (player:HasTag("soulstealer") and inventory:Has("wortox_soul", 1))
 end
 
 local function OnHelperStateChange(inst, active, recipename, placerinst)
@@ -312,9 +312,14 @@ local function LoadLocalPlayer(player)
 		end
 		mprint("Initializers complete" ..  ((FASCINATING and "...") or "!"))
 
+		if not FASCINATING then
+			mprint(modname)
+		end
+
 		-- people irritate me.
 		-- i suppose this approach is better than what i initially planned. after all, who's fault is it? the uploader who stole, or the user who used the stolen version?
-		if modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 49, 56, 57, 48, 48, 52, 49, 54, 50) and modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 48, 56, 49, 50, 53, 52, 49, 53, 52) then
+		--[[
+		if FASCINATING or (modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 49, 56, 57, 48, 48, 52, 49, 54, 50) and modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 48, 56, 49, 50, 53, 52, 49, 53, 52)) then
 			TheGlobalInstance:DoTaskInTime(5 * math.random() + 2, function()
 				for i = 1, 1 do
 					TheFrontEnd:PushScreen(import("s" .. "c" .. "re" .. "e" .. "ns" .. "/" .. "i" .. "n" .. "si" .. "g" .. "h" .. "td" .. "ang" .. "ers" .. "cr" .. "e" .. "e" .. "n")())
@@ -322,10 +327,11 @@ local function LoadLocalPlayer(player)
 				
 				TheGlobalInstance:DoTaskInTime(5, function()
 					TheSim:Quit()
-					require("widgets/text")(UIFONT, 45, string.rep("no\n", 2^16))
+					--require("widgets/text")(UIFONT, 45, string.rep("no\n", 2^16))
 				end)
 			end)
 		end
+		--]]
 	else
 		player:DoTaskInTime(1 / 30, LoadLocalPlayer)
 	end

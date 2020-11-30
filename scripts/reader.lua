@@ -37,7 +37,7 @@ directory. If not, please refer to
 local skip_closing = {icon=true}
 
 local function GenerateErrorString(rdr, desc)
-	return "parsing error" .. "\noriginal: " .. rdr.original .. "\nbuffer: " .. rdr.buffer .. "\nerror: " .. (desc or "not specified")
+	return "parsing error" .. "\noriginal: " .. rdr.original .. "\nbuffer (#" .. #rdr.buffer .. "): " .. rdr.buffer .. "\nerror: " .. (desc or "not specified")
 end
 
 local function SameContents(a, b)
@@ -206,7 +206,9 @@ function Reader:Read()
 	end
 	
 	if #self.currentTags > 0 then
-		GenerateErrorString(self, "reader terminated with tags not resolved")
+		local err = GenerateErrorString(self, "reader terminated with tags not resolved")
+		printtable(self.currentTags)
+		error(err, 0)
 		return
 	end
 	

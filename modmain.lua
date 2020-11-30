@@ -233,6 +233,7 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
+	"symbolswapdata",
 	-- NEW:
 	"farmplanttendable",
 
@@ -518,7 +519,11 @@ function cprint(...)
 	
 	local res = "[" .. ModInfoname(modname) .. " - SERVER]: " .. msg 
 
-	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), MyKleiID, res)
+	if IsClient() then
+		print(res)
+	else
+		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), MyKleiID, res)
+	end
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
@@ -2328,9 +2333,15 @@ end
 --==========================================================================================================================
 
 -- "repairing" string.match, at least for me.
--- due to https://steamcommunity.com/sharedfiles/filedetails/?id=1111711682 (Traditional Chinese Language Pack) and https://steamcommunity.com/sharedfiles/filedetails/?id=1418746242 (Chinese++) modifying string.match...............
+--[[ due to these people copying each-other and consistently replacing string.match......
+	https://steamcommunity.com/sharedfiles/filedetails/?id=1111711682 (Traditional Chinese Language Pack)
+	https://steamcommunity.com/sharedfiles/filedetails/?id=1418746242 (Chinese++)
+	https://steamcommunity.com/sharedfiles/filedetails/?id=1301033176 (Chinese Language Pack For Server)
+	https://steamcommunity.com/sharedfiles/filedetails/?id=1859406419 ([DST]Chinese translation Mod) -- also screws KnownModIndex:InitializeModInfo, but does it tolerably better. they also seem to like tampering with a whole bunch of stuff.
+--]]
 
-if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") then
+
+if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") or KnownModIndex:IsModEnabled("workshop-1859406419") then
 	if KnownModIndex:IsModEnabled("workshop-1111711682") then
 		mprint("'Traditional Chinese Language Pack' is enabled, restoring string.match for Insight")
 	end
@@ -2343,9 +2354,13 @@ if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabl
 		mprint("'Chinese Language Pack for Server' is enabled, restoring string.match for Insight")
 	end
 
+	if KnownModIndex:IsModEnabled("workshop-1859406419") then
+		mprint("'[DST]Chinese translation Mod' is enabled, restoring string.match for Insight")
+	end
+
 	if pcall(string.dump, string.match) then
 		mprint("string.match has been modified by:", debug.getinfo(string.match, "S").source or "?")
-		local string_match = util.getupvalue(string.match, "oldmatch") -- they both call it oldmatch
+		local string_match = util.getupvalue(string.match, "oldmatch") -- they all call it oldmatch
 
 		if type(string_match) ~= "function" then
 			local dbg = debug.getinfo(string.match, "S")
@@ -2482,6 +2497,51 @@ _G.tst = function()
 	local filename = KnownModIndex:GetModConfigurationPath("workshop-2189004162", true);
 
 	TheSim:GetPersistentString(filename, function()for i = 1, 15 do print("level", i, getfenv(i) == getfenv(0)) end end)
+end
+
+-- doesnt reset server config completely
+_G.c_insight_resetallconfigs = function()
+	if TheNet:IsDedicated() then
+		local function iter(i)
+			TheSim:SetPersistentStringInClusterSlot(i, "Master", "../modoverrides.lua", DataDumper({}), true, function(success, ...)
+				if success then
+					mprint("successfully processed slot Master:", i)
+					TheNet:Announce("successfully processed slot Master:"..i)
+					TheSim:SetPersistentStringInClusterSlot(i, "Caves", "../modoverrides.lua", DataDumper({}), false, function(success, ...)
+						if success then
+							mprint("slot ["..i .. "] caves processed")
+							TheNet:Announce("slot ["..i .. "] caves processed")
+						else
+							mprint("slot ["..i .. "] did not have caves")
+							TheNet:Announce("slot ["..i .. "] did not have caves")
+						end
+					end)
+					return iter(i + 1) -- tail call
+				else
+					mprint("finished/failed on slot:", i)
+					TheNet:Announce("finished/failed on slot:"..i)
+					return
+				end
+			end)
+		end
+		iter(1)
+	else
+		if IsClient() or IsClientHost() then
+		
+		else
+			mprint("isclient:", IsClient())
+			mprint("isclienthost:", IsClientHost())
+			mprint("mastersim:", TheWorld.ismastersim)
+			mprint("worldprefab:", TheWorld.worldprefab)
+		end
+
+		KnownModIndex:SaveConfigurationOptions(function(...) 
+			mprint("client config reset", ...)
+		end, _G.Insight.env.modname, {}, true)
+		KnownModIndex:SaveConfigurationOptions(function(...) 
+			mprint("server config reset", ...)
+		end, _G.Insight.env.modname, {}, false)
+	end
 end
 
 printtable = function(tbl)
