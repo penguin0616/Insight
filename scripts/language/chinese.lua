@@ -97,8 +97,11 @@ return {
 	disease_delay = "疾病延迟：%s",
 
 	-- domesticable.lua
-	domestication = "驯化值: %s%%",
-	obedience = "顺从值: %s%%",
+	domesticable = {
+		domestication = "驯化值: %s%%",
+		obedience = "顺从值: %s%%",
+		tendency = "Tendency: %s"
+	},
 
 	-- drivable.lua
 

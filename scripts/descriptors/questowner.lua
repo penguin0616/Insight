@@ -68,6 +68,11 @@ local function PipspookQuest(self, context)
 		return
 	end
 
+	-- need a linked player
+	if not self.inst._playerlink then
+		return
+	end
+
 	if self.inst._playerlink ~= context.player then
 		description = string.format(context.lstr.questowner.pipspook.assisted_by, ApplyColour(self.inst._playerlink.name, GetPlayerColour(self.inst._playerlink):ToHex()))
 	else

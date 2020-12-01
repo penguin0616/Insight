@@ -19,18 +19,40 @@ directory. If not, please refer to
 ]]
 
 -- domesticatable.lua
+local function GetHighestTendency(self)
+	if self.inst.tendency then
+		return self.inst.tendency:sub(1,1):upper() .. self.inst.tendency:sub(2):lower()
+	else
+		return
+	end
+
+	local a, b = nil, 0
+	for tendency, score in pairs(self.tendencies) do
+		if score > b then
+			a, b = tendency, score
+		end 
+	end
+
+	if a then
+		local name = TENDENCY[a] or (a .. "*")
+		name = name:sub(1,1):upper() .. name:sub(2):lower()
+		return name
+	end
+end
+
 local function Describe(self, context)
-	local inst = self.inst
 	local description = nil
 
 	if context.config["domestication_information"] then
 		local domestication = Round(self.domestication * 100, 1)
 		local obedience = Round(self.obedience * 100, 1)
+		local tendency = GetHighestTendency(self)
 
-		local x1 = domestication > 0 and string.format(context.lstr.domestication, domestication) or nil
-		local x2 = obedience > 0 and string.format(context.lstr.obedience, obedience) or nil
+		local x1 = domestication > 0 and string.format(context.lstr.domesticable.domestication, domestication) or nil
+		local x2 = obedience > 0 and string.format(context.lstr.domesticable.obedience, obedience) or nil
+		local x3 = tendency and string.format(context.lstr.domesticable.tendency, tendency) or nil
 
-		description = CombineLines(x1, x2) 
+		description = CombineLines(x1, x2, x3)
 	end
 
 	return {
