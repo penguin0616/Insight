@@ -30,6 +30,20 @@ local function Describe(self, context)
 		return
 	end
 
+	if inst.prefab == "winter_tree" then
+		if context.player.components.wintertreegiftable then
+			local days_remaining = Insight.descriptors.wintertreegiftable.GetDaysRemainingForRareGift(context.player.components.wintertreegiftable)
+
+			if days_remaining > 0 then
+				description = string.format(context.lstr.wintertreegiftable.not_ready, days_remaining)
+			--elseif not inst.components.container:IsFull() then
+				--description = context.lstr.winter_tree_needsstuff
+			else
+				description = context.lstr.wintertreegiftable.ready
+			end
+		end
+	end
+
 	if inst.prefab == "fossil_stalker" then
 		local needed_pieces = 5 - inst.moundsize
 		if needed_pieces > 0 then

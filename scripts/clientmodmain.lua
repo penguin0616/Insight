@@ -364,19 +364,19 @@ do
 			local clr = Insight.COLORS.HEALTH
 			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
 		end)
+	end
 
-		--[[
-		if localPlayer then
+	local function AddMiniBossIndicator(inst)
+		if not inst:IsValid() then return end
+		
+		AddLocalPlayerPostInit(function(insight, context)
+			if not context.config["boss_indicator"] then -- maybe add a config for mini bosses?
+				return
+			end
+
 			local clr = Insight.COLORS.HEALTH
-			local insight = GetInsight(localPlayer)
-			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
-		else
-			--table.insert(await, {inst, {color = Color.fromHex(Insight.COLORS.HEALTH)}})
-			inst:DoTaskInTime(1, function() 
-				AddBossIndicator(inst)
-			end)
-		end
-		--]]
+			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr) + Color.new(1, .3, .3)})
+		end)
 	end
 
 	local function AddNotableIndicator(inst)
@@ -390,32 +390,22 @@ do
 			local clr = Insight.COLORS.SWEETENER
 			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
 		end)
-
-		--[[
-		if localPlayer then
-			local clr = Insight.COLORS.SWEETENER
-			local insight = GetInsight(localPlayer)
-			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
-		else
-			--table.insert(await, {inst, {color = Color.fromHex(Insight.COLORS.SWEETENER)}})
-			inst:DoTaskInTime(1, function() 
-				AddNotableIndicator(inst)
-			end)
-		end
-		--]]
 	end
 
 	-- https://dontstarve.fandom.com/wiki/Category%3ABoss_Monsters
 	local bosses = {
 		"minotaur", "ancient_herald", "antlion", "bearger", "beequeen", "crabking", "deerclops", "dragonfly", "ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head", "ancient_hulk", "klaus",
-		"malbatross", "moose", "treeguard", "pugalisk", "kraken", "antqueen", "stalker_forest", "stalker", "stalker_atrium", "twister", "twister_seal", "spiderqueen", "tigershark", 
-		"toadstool", "leif", "leif_sparse",
+		"malbatross", "moose", "pugalisk", "kraken", "antqueen", "stalker_forest", "stalker", "stalker_atrium", "twister", "twister_seal", "tigershark", 
+		"toadstool", 
 		-- "shadow_knight", "shadow_bishop", "shadow_rook"
+	}
 
+	local mini_bosses = {
+		"warg", "claywarg", "gingerbreadwarg", "spat", "leif", "leif_sparse", "treeguard", "spiderqueen"
 	}
 
 	local notable = {
-		"hutch_fishbowl", "chester_eyebone", "atrium_key", "klaus_sack"
+		"hutch_fishbowl", "chester_eyebone", "atrium_key", "klaus_sack", "gingerbreadpig"
 	}
 
 	--[[
@@ -434,6 +424,10 @@ do
 	 
 	for _, name in pairs(bosses) do 
 		AddPrefabPostInit(name, AddBossIndicator)
+	end
+
+	for _, name in pairs(mini_bosses) do 
+		AddPrefabPostInit(name, AddMiniBossIndicator)
 	end
 
 	for _, name in pairs(notable) do
@@ -583,6 +577,8 @@ AddPrefabPostInit("eyeturret", function(inst)
 	inst.range:SetVisible(true)
 end)
 --]]
+
+
 
 AddPrefabPostInit("eyeturret_item_placer", function(inst)
 	placer_postinit_fn(inst, TUNING.EYETURRET_RANGE / WALL_STUDS_PER_TILE)

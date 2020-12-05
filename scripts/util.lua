@@ -380,7 +380,7 @@ end
 -- @tparam function func
 -- @string name
 -- @return
-function module.getupvalue(func, name) 
+function module.getupvalue(func, name)
 	local i = 1
 	while true do
 		local n, v = debug.getupvalue(func, i)
@@ -388,6 +388,35 @@ function module.getupvalue(func, name)
 		if n == name then return v end
 		i = i + 1
 	end
+end
+
+function module.recursive_getupvalues(func)
+	local checked = {}
+	local upvs = {}
+
+	local function scan(fn)
+		if checked[fn] then
+			return nil
+		end
+
+		checked[fn] = true
+
+		for i, upv in pairs(module.getupvalues(fn)) do
+			table.insert(upvs, upv)
+
+			if type(i) == "function" then -- in case some wise guy decides to store something with the index as a function.
+				scan(i)
+			elseif type(upv.value) == "function" then
+				scan(upv.value)
+			--elseif type(upv.name) == "function" then -- in case some wise guy decides to store something with the index as a function.
+				--scan(upv.name)
+			end
+		end
+	end
+
+	scan(func)
+
+	return upvs
 end
 
 function module.recursive_getupvalue(func, name)
@@ -401,7 +430,7 @@ function module.recursive_getupvalue(func, name)
 		checked[fn] = true
 
 		for _, upv in pairs(module.getupvalues(fn)) do
-			if (type(name) == 'function' and name(upv.value)) or upv.name == name then
+			if (type(name) == 'function' and name(upv.name, upv.value)) or upv.name == name then
 				return upv.value
 			elseif type(upv.value) == 'function' then
 				local res = scan(upv.value)

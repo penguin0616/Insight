@@ -81,7 +81,7 @@ local function MakeDescription(items, context)
 		local amount = item.amount
 		local name = item.name or STRINGS.NAMES[string.upper(item.prefab)] or "**" .. item.prefab
 
-		table.insert(items_string, string.format("%s(<color=DECORATION>%d</color>) %s", name, amount, perishable))
+		table.insert(items_string, string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable))
 	end
 
 	return table.concat(items_string, "\n")

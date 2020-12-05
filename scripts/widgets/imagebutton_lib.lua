@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 local ImageButton = require("widgets/imagebutton")
+local imageLib = import("widgets/image_lib")
 
 -- ImageButton functions from DST with modifications
 local function ImageButton_OnGainFocus(self)
@@ -29,7 +30,7 @@ local function ImageButton_OnGainFocus(self)
 	end
 
 	if self:IsEnabled() then
-        self.image:SetTexture(self.atlas, self.image_focus)
+        imageLib.SetTexture(self.image, self.atlas, self.image_focus)
 
         if self.size_x and self.size_y then 
             self.image:ScaleToSize(self.size_x, self.size_y)
@@ -45,7 +46,7 @@ local function ImageButton_OnLoseFocus(self)
 	end
 
 	if self:IsEnabled() then
-        self.image:SetTexture(self.atlas, self.image_normal)
+        imageLib.SetTexture(self.image, self.atlas, self.image_normal)
 
         if self.size_x and self.size_y then 
             self.image:ScaleToSize(self.size_x, self.size_y)
@@ -57,7 +58,7 @@ local function ImageButton_UseFocusOverlay(self, focus_selected_texture)
     if not self.hover_overlay then
         self.hover_overlay = self.image:AddChild(Image())
     end
-    self.hover_overlay:SetTexture(self.atlas, focus_selected_texture)
+    imageLib.SetTexture(self.hover_overlay, self.atlas, focus_selected_texture)
     self.hover_overlay:Hide()
     --self:_RefreshImageState()
 end

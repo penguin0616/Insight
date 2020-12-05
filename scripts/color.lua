@@ -21,6 +21,8 @@ directory. If not, please refer to
 local getmetatable, setmetatable, type, tonumber, tostring, assert = getmetatable, setmetatable, type, tonumber, tostring, assert
 local math_floor = math.floor
 local math_fmod = math.fmod
+local math_max = math.max
+local math_min = math.min
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -175,7 +177,11 @@ function Color.new(r, g, b, a)
 		__tostring = __tostring,
 		-- based on order executed
 		__mul = function(self, multiplier)
-			return Color.new(self.r * multiplier, self.g * multiplier, self.b * multiplier, self.a)
+			local nr = self.r * multiplier
+			local ng = self.g * multiplier
+			local nb = self.b  * multiplier
+
+			return Color.new(nr, ng, nb, self.a)
 		end,
 		__div = function(self, divisor)
 			return Color.new(self.r / divisor, self.g / divisor, self.b / divisor, a)
@@ -189,7 +195,11 @@ function Color.new(r, g, b, a)
 				ar, ag, ab = add.r, add.g, add.b
 			end
 
-			return Color.new(self.r + ar, self.g + ag, self.b + ab, self.a)
+			local nr = math_min(self.r + ar, 1)
+			local ng = math_min(self.g + ag, 1)
+			local nb = math_min(self.b + ab, 1)
+
+			return Color.new(nr, ng, nb, self.a)
 		end,
 		__sub = function(self, sub)
 			local ar, ag, ab
@@ -200,7 +210,11 @@ function Color.new(r, g, b, a)
 				ar, ag, ab = sub.r, sub.g, sub.b
 			end
 
-			return Color.new(self.r - ar, self.g - ag, self.b - ab, self.a)
+			local nr = math_max(self.r - ar, 0)
+			local ng = math_max(self.g - ag, 0)
+			local nb = math_max(self.b - ab, 0)
+
+			return Color.new(nr, ng, nb, self.a)
 		end,
 	})
 	-- this works because only metamethods are triggered and there's no __index to reference Color

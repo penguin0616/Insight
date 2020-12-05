@@ -27,6 +27,7 @@ local TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
+local imageLib = import("widgets/image_lib")
 local Reader = import("reader")
 
 --------------------------------------------------------------------------
@@ -61,7 +62,8 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 				--atlas = "images/White_Square.xml"
 				tex, atlas = _LookupIcon("blank")
 			end
-			obj = Image(atlas, tex)
+			obj = Image()
+			imageLib.SetTexture(obj, atlas, tex)
 			obj:SetSize(richtext.font_size - 2, richtext.font_size - 2) -- 30, 30 a bit too large
 			obj:SetTint(unpack(color))
 		else

@@ -27,6 +27,7 @@ local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Text = require("widgets/text") --FIXED_TEXT
 local RichText = import("widgets/RichText")
+local imageLib = import("widgets/image_lib")
 
 local MIN_INDICATOR_RANGE = 20 --TUNING.MIN_INDICATOR_RANGE or 20 -- global positions messes with this
 local MAX_INDICATOR_RANGE = 50 --TUNING.MAX_INDICATOR_RANGE or 50 -- global positions messes with this
@@ -95,18 +96,22 @@ local InsightTargetIndicator = Class(Widget, function(self, owner, target, data)
     -- Me
     self:SetTarget(target)
     self.colour = nil
-    self.headbg = self.icon:AddChild(Image(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")) -- bg
+    self.headbg = self.icon:AddChild(Image()) -- bg
+    imageLib.SetTexture(self.headbg, DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
     self.headbg:SetSize(95, 95) -- default is 95
 
-	self.head = self.icon:AddChild(Image(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)) -- icon
+    self.head = self.icon:AddChild(Image()) -- icon
+    imageLib.SetTexture(self.head, self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
     self.head:SetSize(64, 64)
     
-    self.headframe = self.icon:AddChild(Image(DEFAULT_ATLAS, "avatar_frame_white.tex")) -- ring
+    self.headframe = self.icon:AddChild(Image()) -- ring
+    imageLib.SetTexture(self.headframe, DEFAULT_ATLAS, "avatar_frame_white.tex")
     self.headframe:SetSize(95, 95) -- default is 95
 
     --self.icon:SetScale(0.8)
 
-    self.arrow = self.root:AddChild(Image("images/ui.xml", "scroll_arrow.tex"))
+    self.arrow = self.root:AddChild(Image())
+    imageLib.SetTexture(self.arrow, "images/ui.xml", "scroll_arrow.tex")
     self.arrow:SetScale(.5)
 
     --self.name = target:GetDisplayName() -- taken care of
@@ -187,8 +192,8 @@ function InsightTargetIndicator:OnUpdate()
         self.isCharacterState1 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_1)
         self.isCharacterState2 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_2)
         self.isCharacterState3 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_3)
-        self.headbg:SetTexture(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
-        self.head:SetTexture(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
+        imageLib.SetTexture(self.headbg, DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
+        imageLib.SetTexture(self.head, self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
     end
 
     -- Me

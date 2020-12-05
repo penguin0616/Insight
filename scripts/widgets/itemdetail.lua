@@ -23,6 +23,7 @@ directory. If not, please refer to
 local Widget = require("widgets/widget")
 local Image = require("widgets/image")
 local RichText = import("widgets/RichText")
+local resolvefilepath = resolvefilepath
 
 local function DEBUG() 
 	if false then
@@ -104,6 +105,13 @@ function ItemDetail:SetText(str)
 end
 
 function ItemDetail:SetIcon(atlas, tex)
+	-- atlas gets resolved so it doesnt match
+	if (self.icon.atlas == atlas or self.icon.atlas == resolvefilepath(atlas)) and self.icon.texture == tex then
+		-- optimize?
+		--dprint('optimized', atlas, tex, "|||||", self.icon.atlas, self.icon.texture, "|||||", atlas == self.icon.atlas, tex == self.icon.texture)
+		return
+	end
+
 	if atlas == nil and tex == nil then
 		self.icon_holder:Hide()
 		if self.icon_holder2 then
@@ -111,7 +119,7 @@ function ItemDetail:SetIcon(atlas, tex)
 		end
 	elseif tex and atlas then
 		self.icon_holder:Show()
-		self.icon:SetTexture(atlas, tex)
+		widgetLib.image.SetTexture(self.icon, atlas, tex)
 		if self.icon_holder2 then
 			self.icon_holder2:Show()
 		end

@@ -293,6 +293,9 @@ return {
 	-- leader.lua
 	--followers = "Followers: %s",
 
+	-- madsciencelab.lua
+	--madsciencelab_finish = "Will finish in: %s",
+
 	-- malbatrossspawner.lua
 	--malbatross_spawnsin = "%s",
 	--malbatross_waiting = "Waiting for someone to go to a shoal.",
@@ -434,6 +437,14 @@ return {
 
 	-- wereness.lua
 	wereness_remaining = "Wereness: %s / %s",
+
+	-- wintersfeasttable.lua
+
+	-- wintertreegiftable.lua
+	wintertreegiftable = {
+		--ready = "You are <color=#bbffbb>eligible</color> for <color=#DED15E>rare gifts</color>.",
+		--not_ready = "You must <color=#ffbbbb>wait %s more day(s)</color> before you can get another <color=#DED15E>rare gift</color>.",
+	},
 
 	-- witherable.lua
 	witherable = {

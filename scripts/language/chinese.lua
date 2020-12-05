@@ -293,6 +293,9 @@ return {
 	-- leader.lua
 	followers = "跟随者数量: %s",
 
+	-- madsciencelab.lua
+	madsciencelab_finish = "Will finish in: %s",
+
 	-- malbatrossspawner.lua
 	malbatross_spawnsin = "%s",
 	malbatross_waiting = "等待某人去到鱼群",
@@ -434,6 +437,14 @@ return {
 
 	-- wereness.lua
 	wereness_remaining = "木头值：%s / %s",
+
+	-- wintersfeasttable.lua
+
+	-- wintertreegiftable.lua
+	wintertreegiftable = {
+		ready = "You are <color=#bbffbb>eligible</color> for <color=#DED15E>rare gifts</color>.",
+		not_ready = "You must <color=#ffbbbb>wait %s more day(s)</color> before you can get another <color=#DED15E>rare gift</color>.",
+	},
 
 	-- witherable.lua
 	witherable = {

@@ -46,11 +46,12 @@ local action_icons = {
 
 	fish = "fishingrod",
 }
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
 
-	if context.config["display_finiteuses"] then
+	if context.finiteuses_forced or context.config["display_finiteuses"] then
 
 		local consumptions = {}
 		for i,v in pairs(self.consumption) do

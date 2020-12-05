@@ -77,19 +77,21 @@ local Insight = {
 	active_hunts = {},
 	descriptors = nil,
 	FUEL_TYPES = {
-		NONE = "Time", -- will never be refueled...............................
-
-		USAGE = "Durability",
-		SPIDERHAT = "Durability", -- Spider Hat
-		MOLEHAT = "Night vision", -- Moggles
-		CAVE = "Light", -- miner hat / lanterns, light bulbs n stuff
 		BURNABLE = "Fuel",
-		NIGHTMARE = "Nightmare fuel",
+		CAVE = "Light", -- miner hat / lanterns, light bulbs n stuff
+		CHEMICAL = "Fuel",
+		CORK = "Fuel",
+		GASOLINE = "Gasoline", -- DS: not actually used anywhere?
 		MAGIC = "Durability", -- amulets that aren't refuelable (ex. chilled amulet)
-
-		-- SW
-		TAR = "Tar",
-		MECHANICAL = "Durability", -- iron wind
+		MECHANICAL = "Durability", -- SW: iron wind
+		MOLEHAT = "Night vision", -- Moggles
+		NIGHTMARE = "Nightmare fuel",
+		NONE = "Time", -- will never be refueled...............................
+		ONEMANBAND = "Durability",
+		PIGTORCH = "Fuel",
+		SPIDERHAT = "Durability", -- Spider Hat
+		TAR = "Tar", -- SW
+		USAGE = "Durability",
 	},
 	COLORS = {
 		-- stats
@@ -177,6 +179,7 @@ entityManager = import("entitymanager")()
 rpcNetwork = import("rpcnetwork")
 
 widgetLib = {
+	image = import("widgets/image_lib"),
 	imagebutton = import("widgets/imagebutton_lib"),
 	text = import("widgets/text_lib"),
 }
@@ -233,7 +236,8 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata",
+	"symbolswapdata", "amphibiouscreature",
+
 	-- NEW:
 	"farmplanttendable",
 
@@ -544,7 +548,6 @@ function GetComponentDescriptor(name)
 			else
 				--Insight.descriptors[name] = res
 				mprint(safe, res)
-				mprint()
 				error(string.format("Attempt to return '%s' in descriptor '%s'", tostring(res), name))
 			end
 		else
@@ -688,7 +691,6 @@ function GetEntityInformation(item, player, params)
 				description = string.format("[%s] No information for: %s", origin, name)
 			end
 
-			--mprint('chunk', name, description)
 			table.insert(chunks, {priority = -1, name = name, description = description})
 		end
 	end
@@ -717,19 +719,9 @@ function GetEntityInformation(item, player, params)
 		if assembled.special_data[v.name] == nil then
 			assembled.special_data[v.name] = GetSpecialData(v)
 		end
-		--mprint('sorting', v.description)
-
-		-- collect non-default information and store it as special_data
-		--[[
-		for j,k in pairs(v) do
-			if j ~= 'name' and j ~= 'description' and j ~= 'priority' then
-				assembled.special_data[v.name][j] = k
-			end
-		end
-		--]]
 
 		-- collect the description if one was provided
-		if v.description ~= nil then
+		if type(v.description) == "string" then
 			v.description = ResolveColors(v.description) -- resolve any color tags that reference the Insight table's colors
 
 			assembled.information = assembled.information .. v.description
@@ -740,6 +732,9 @@ function GetEntityInformation(item, player, params)
 			if params.raw == true then
 				assembled.raw[v.name] = v.description
 			end
+		elseif v.description ~= nil then
+			-- should have been caught in the previous statement
+			error(string.format("invalid description: %s | Descriptor: %s", tostring(v.description), v.name))
 		end
 	end
 
@@ -1634,6 +1629,8 @@ if IsDST() then
 		_G.c_setseason = function(season) assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_setseason", season) end;
 		_G.c_insight_countactives = function() local plr = ConsoleCommandPlayer(); local str = string.format("Replica: %s, Manager: %s", GetInsight(plr):CountEntities(), _G.Insight.env.entityManager:Count()) if TheWorld.ismastersim then TheNet:Announce(str) else print(str) end end;
 
+		_G.c_setgiftday = function(n) assert(TheWorld.ismastersim, "need to be mastersim") ThePlayer.components.wintertreegiftable.previousgiftday = n end
+
 		_G.c_bring = function(inst) 
 			assert(TheWorld.ismastersim, "need to be mastersim")
 			if (inst.components.inventoryitem and not inst.components.inventoryitem:GetGrandOwner()) or not inst.components.inventoryitem then
@@ -2041,6 +2038,11 @@ AddSimPostInit(function()
 				return
 			else
 				--dprint("Sending", activeplayer, "on a hunt for:", target, "|", hunt.trackspawned, hunt.numtrackstospawn)
+			end
+
+			if target.prefab == "claywarg" or target.prefab == "warg" or target.prefab == "spat" then
+				dprint("skipped sending on a hunt for special hunt target:", target.prefab)
+				return
 			end
 
 			--mprint"-----------------"
@@ -2465,6 +2467,30 @@ if KnownModIndex:IsModEnabled("workshop-1378549454") then
 	error = real_error
 	mprint("Got real error from Gemcore")
 end
+
+
+
+--[[
+if KnownModIndex:IsModEnabled("workshop-2260439333") then
+	local Image = require("widgets/Image")
+
+	mprint("[DST]HD Item Icon - Shang is active, finding real Image::SetTexture")
+
+
+
+	local info = debug.getinfo(Image.SetTexture, "S")
+
+	local real_SetTexture = util.getupvalue(Image.SetTexture, "SetTexture_old")
+
+	if not real_SetTexture then
+		mprint("\tUnable to find the real SetTexture.")
+		mprint(debug.getinfo(Image.SetTexture, "S").source)
+		error("Unknown mod has modified Image::SetTexture")
+		return
+	end
+
+end
+--]]
 
 --==========================================================================================================================
 --==========================================================================================================================
