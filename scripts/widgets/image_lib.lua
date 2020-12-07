@@ -22,22 +22,50 @@ local Image = require("widgets/image")
 
 local lib = {}
 
-do
+lib.Initialize = function()
 	-- Image.SetTexture gets replaced, December 5, 2020: ([DST]HD Item Icon - Shang) https://steamcommunity.com/sharedfiles/filedetails/?id=2260439333
 	-- then i realized other mods, such as the reskinners, do the same thing.
 	-- oh boy.
 	-- honestly, if i ever make another mod of this complexity, i'm going to have to package all of my patches and hacks to deal with other mods into a library of its own. how lovely.
 	-- plus, it's really irritating i have to skip the syntatic sugar of : 
 
+	-- omg why didn't i think of this sooner
+	local DummyImage = loadfile("scripts/widgets/image.lua")()
+	lib.SetTexture = DummyImage.SetTexture
+	DummyImage = nil
+
+	--[[
+	if KnownModIndex:IsModEnabled("workshop-2260439333") then
+		print("[DST]HD Item Icon - Shang is active, finding real Image::SetTexture")
+		local info = debug.getinfo(Image.SetTexture, "S")
+
+		local real_SetTexture = getfenv(Image.SetTexture).SetTexture_old
+
+		if not real_SetTexture then
+			print("\tUnable to find the real SetTexture.")
+			print(debug.getinfo(Image.SetTexture, "S").source)
+			error("Unknown mod has modified Image::SetTexture")
+			return
+		end
+	end
+	--]]
+
+	--[[
 	local original_source = debug.getinfo(Image.SetTexture, "S")
 	if original_source.source ~= "scripts/widgets/image.lua" then
 		print("Insight ImageLib: SetTexture has been replaced. Source:", original_source.source)
 		--util.recursive_getupvalue(Image.SetTexture, function(_, v) return debug.getinfo(v.SetTexture, "S").source == "scripts/widgets/image.lua" end) 
-		for i,v in pairs(util.recursive_getupvalues(Image.SetTexture)) do
-			if type(v.value) == "function" and debug.getinfo(v.value, "S").source == "scripts/widgets/image.lua" then
-				print("\tImageLib: Found real SetTexture")
-				lib.SetTexture = v.value
-				break
+
+		if getfenv(Image.SetTexture).SetTexture_old then
+			-- Image.SetTexture gets replaced, December 5, 2020: ([DST]HD Item Icon - Shang) https://steamcommunity.com/sharedfiles/filedetails/?id=2260439333
+			lib.SetTexture = getfenv(Image.SetTexture).SetTexture_old
+		else
+			for i,v in pairs(util.recursive_getupvalues(Image.SetTexture)) do
+				if type(v.value) == "function" and debug.getinfo(v.value, "S").source == "scripts/widgets/image.lua" then
+					print("\tImageLib: Found real SetTexture")
+					lib.SetTexture = v.value
+					break
+				end
 			end
 		end
 
@@ -47,7 +75,9 @@ do
 	else
 		lib.SetTexture = Image.SetTexture
 	end
+	--]]
 end
 
 
+lib.Initialize()
 return lib

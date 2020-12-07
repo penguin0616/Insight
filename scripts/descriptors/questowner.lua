@@ -51,7 +51,11 @@ local function OnPipspookQuestBegin(inst, doer)
 end
 
 local function OnPipspookQuestEnd(inst)
-	if inst._playerlink and not HasPipspookQuest[inst._playerlink] then
+	if not inst._playerlink then
+		return
+	end
+
+	if not HasPipspookQuest[inst._playerlink] then
 		return
 	end
 

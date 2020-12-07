@@ -2471,25 +2471,7 @@ end
 
 
 --[[
-if KnownModIndex:IsModEnabled("workshop-2260439333") then
-	local Image = require("widgets/Image")
 
-	mprint("[DST]HD Item Icon - Shang is active, finding real Image::SetTexture")
-
-
-
-	local info = debug.getinfo(Image.SetTexture, "S")
-
-	local real_SetTexture = util.getupvalue(Image.SetTexture, "SetTexture_old")
-
-	if not real_SetTexture then
-		mprint("\tUnable to find the real SetTexture.")
-		mprint(debug.getinfo(Image.SetTexture, "S").source)
-		error("Unknown mod has modified Image::SetTexture")
-		return
-	end
-
-end
 --]]
 
 --==========================================================================================================================

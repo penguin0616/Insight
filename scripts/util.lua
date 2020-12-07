@@ -376,6 +376,49 @@ function module.getupvalues(func)
 	return upvs
 end
 
+--[[
+function module.getupvaluesandenvironment(func)
+	local checked = {}
+	local stuff = {}
+
+	local function scan(arg)
+		if checked[arg] then
+			return
+		end
+
+		checked[arg] = true
+
+		for i,v in pairs(getfenv(arg)) do
+			table.insert(stuff, {name=i, value=v})
+
+			if type(i) == "function" then
+				scan(i)
+			end
+			if type(v) == "function" then
+				scan(v)
+			end
+		end
+
+		for i, upv in pairs(module.getupvalues(fn)) do
+			table.insert(upvs, upv)
+
+			if type(i) == "function" then -- in case some wise guy decides to store something with the index as a function.
+				scan(i)
+			elseif type(upv.value) == "function" then
+				scan(upv.value)
+			--elseif type(upv.name) == "function" then -- in case some wise guy decides to store something with the index as a function.
+				--scan(upv.name)
+			end
+		end
+	end
+
+
+	scan(func)
+
+	return stuff
+end
+--]]
+
 --- Retrives the first upvalue that matches the arguments.
 -- @tparam function func
 -- @string name

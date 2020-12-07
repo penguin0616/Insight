@@ -106,7 +106,9 @@ end
 
 function ItemDetail:SetIcon(atlas, tex)
 	-- atlas gets resolved so it doesnt match
-	if (self.icon.atlas == atlas or self.icon.atlas == resolvefilepath(atlas)) and self.icon.texture == tex then
+	--local resolved = atlas ~= nil and resolvefilepath(atlas) or nil
+
+	if (self.icon.atlas == atlas) and self.icon.texture == tex then
 		-- optimize?
 		--dprint('optimized', atlas, tex, "|||||", self.icon.atlas, self.icon.texture, "|||||", atlas == self.icon.atlas, tex == self.icon.texture)
 		return

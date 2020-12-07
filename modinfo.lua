@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.7.18" -- ds is 2.4.4_ds
+version = "2.7.20" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -72,7 +72,7 @@ server_filter_tags = {"insight_" .. version}
 local translations = {}
 local english = {
 	-- description
-	update_info = "winters feast; bug fixes; more beta stuff; fuelweaver skeleton info; pipspook assistance;",
+	update_info = "bug fix; winters feast; bug fixes; more beta stuff; fuelweaver skeleton info; pipspook assistance;",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",
@@ -2063,7 +2063,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = false,
+		default = true,
 		tags = {"undefined"},
 	},
 	{
