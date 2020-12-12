@@ -31,6 +31,8 @@ local IngredientUI = require("widgets/ingredientui")
 local RecipePopup = require("widgets/recipepopup") 
 local InsightButton = import("widgets/insightbutton")
 local RichText = import("widgets/RichText")
+local Is_DS = IsDS()
+local Is_DST = IsDST()
 
 local SHIF_TASK = nil
 local function SetHighlightIngredientFocus(arg)
@@ -53,10 +55,10 @@ local function GetControllerSelectedInventoryItem(inventoryBar)
 	local inv_item = inventoryBar:GetCursorItem()
 	local active_item = inventoryBar.cursortile ~= nil and inventoryBar.cursortile.item or nil
 
-	if inv_item ~= nil and inv_item.replica.inventoryitem == nil then
+	if inv_item ~= nil and inv_item.components.inventoryitem == nil and (inv_item.replica == nil or inv_item.replica.inventoryitem == nil) then
 		inv_item = nil
 	end
-	if active_item ~= nil and active_item.replica.inventoryitem == nil then
+	if active_item ~= nil and active_item.components.inventoryitem == nil and (active_item.replica == nil or active_item.replica.inventoryitem == nil) then
 		active_item = nil
 	end
 
@@ -85,7 +87,23 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	local mb = InsightButton()
 	mb:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
 	mb:SetDraggable(true)
-	mb.allowcontroller = false
+	mb.allowcontroller = IsDS() -- false
+	mb:SetOnDragFinish(function(oldpos, newpos)
+		SavePersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
+			dprint("InsightButton -> DragFinish -> Save -> Callback:", ...)
+		end) -- i wonder if this will cause lag. ¯\_(ツ)_/¯ ISSUE:PERFORMANCE
+	end)
+
+	TheSim:GetPersistentString("insightmenubutton", function(load_success, str)
+		if not load_success then
+			mprint("Failed to load old menu button position:", str)
+			return
+		end
+
+		local pos = json.decode(str).position
+		dprint("Loaded old position:", pos.x, pos.y, pos.z)
+		mb:SetPosition(pos.x, pos.y, pos.z)
+	end)
 
 	controls.insight_menu_toggle = controls.bottomright_root:AddChild(mb)
 
@@ -124,7 +142,7 @@ local oldItemTile_SetPercent = ItemTile.SetPercent
 local ITEMTILE_DISPLAY = 2; AddLocalPlayerPostInit(function(_, context) ITEMTILE_DISPLAY = context.config["itemtile_display"] end);
 function ItemTile:SetPercent(...)
 	if not localPlayer then
-		return
+		return oldItemTile_SetPercent(self, ...)
 	end
 	
 	--dprint('yep', GetModConfigData("itemtile_display", true))
@@ -729,8 +747,10 @@ local function init()
 			local lineHeight = 28
 			local lines = cl(followText.text:GetString())
 
-			if lines > 1 then
+			if lines > 2 then
 				lines = lines - 1
+			else
+				lines = lines - 0.5
 			end
 
 			--local lines = itemInfo and cl(itemInfo) or 0
@@ -744,7 +764,6 @@ local function init()
 		end
 
 		for i,v in pairs(follows) do
-
 			if not processed[v] then
 				v.insightText:SetString(nil)
 			end
@@ -788,31 +807,32 @@ end)
 --==========================================================================================================================
 --==========================================================================================================================
 
-if IsDST() then
-	local InsightMenuScreen = import("screens/insightmenuscreen")
-	TheInput:AddControlHandler(CONTROL_OPEN_CRAFTING, function(down)
-		if down then
-			return
-		end
+local InsightMenuScreen = import("screens/insightmenuscreen")
+TheInput:AddControlHandler(IsDST() and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU, function(down) -- CONTROL_FOCUS_UP
+	if down then
+		return
+	end
 		
-		local screen_name = TheFrontEnd:GetActiveScreen().name
+	local screen_name = TheFrontEnd:GetActiveScreen().name
 
-		if screen_name == "PlayerStatusScreen" then
-			TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
-			local sc = InsightMenuScreen()
-			TheFrontEnd:PushScreen(sc)
-		elseif screen_name == "InsightMenuScreen" then
-			TheFrontEnd:GetActiveScreen():Close()
-		end
-	end)
+	if screen_name == "PlayerStatusScreen" or (Is_DS and screen_name == "PauseScreen") then
+		TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
+		local sc = InsightMenuScreen()
+		TheFrontEnd:PushScreen(sc)
+	elseif screen_name == "InsightMenuScreen" then
+		TheFrontEnd:GetActiveScreen():Close()
+	else
+		dprint(screen_name)
+	end
+end)
 
-
-	AddClassPostConstruct("screens/playerstatusscreen", function(playerStatusScreen)
-		local oldGetHelpText = playerStatusScreen.GetHelpText
-		playerStatusScreen.GetHelpText = function(self)
+if IsDS() then
+	AddClassPostConstruct("screens/pausescreen", function(pauseScreen)
+		local oldGetHelpText = pauseScreen.GetHelpText
+		pauseScreen.GetHelpText = function(self)
 			local str = ""
 			if TheInput:ControllerAttached() then
-				str = TheInput:GetLocalizedControl(TheInput:GetControllerID(), Insight.CONTROLS.TOGGLE_INSIGHT_MENU) .. " Insight Menu  " -- two spaces looks correct
+				str = TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_DEBUG_MENU) .. " Insight Menu  " -- two spaces looks correct
 			end
 
 			return str .. oldGetHelpText(self)
@@ -820,13 +840,19 @@ if IsDST() then
 	end)
 end
 
-AddClassPostConstruct("widgets/playerlist", function(playerList)
-	mprint("made: playerList", playerList)
-end)
+if IsDST() then
+	AddClassPostConstruct("screens/playerstatusscreen", function(playerStatusScreen)
+		local oldGetHelpText = playerStatusScreen.GetHelpText
+		playerStatusScreen.GetHelpText = function(self)
+			local str = ""
+			if TheInput:ControllerAttached() then
+				str = TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_CRAFTING) .. " Insight Menu  " -- two spaces looks correct
+			end
 
-AddClassPostConstruct("widgets/redux/playerlist", function(playerList)
-	mprint("made: redux playerList", playerList)
-end)
+			return str .. oldGetHelpText(self)
+		end
+	end)
+	
 
 --[[
 local function ClientToPlayer(name)
@@ -961,3 +987,5 @@ AddClassPostConstruct("screens/chatinputscreen", function(self)
 		mprint"hey!!!"
 	end
 end)
+
+end

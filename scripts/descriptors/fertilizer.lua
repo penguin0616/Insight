@@ -21,7 +21,7 @@ directory. If not, please refer to
 -- fertilizer.lua
 local FERTILIZER_DEFS = {}
 
-local reap_and_sow = CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW")
+local reap_and_sow = IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW")
 if reap_and_sow then
 	FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
 end

@@ -37,7 +37,12 @@ local function Describe(self, context)
 	end
 	--]]
 
-	local discomfort = self.discomfort > 0 and string.format(context.lstr.hatchable.discomfort, self.discomfort, self.hatchfailtime) or nil
+	local discomfort
+
+	if self.hatchfailtime then -- some things just can't die :(
+		discomfort = self.discomfort > 0 and string.format(context.lstr.hatchable.discomfort, self.discomfort, self.hatchfailtime) or nil
+	end
+
 	local progress = self.state == "comfy" and string.format(context.lstr.hatchable.progress, self.progress, self.hatchtime) or nil
 
 	description = CombineLines(progress, discomfort)

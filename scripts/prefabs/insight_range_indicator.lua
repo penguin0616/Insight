@@ -171,6 +171,8 @@ local function fn()
 		end
 	end
 
+	--inst:AddComponent"inspectable"
+
    	return inst
 end
 

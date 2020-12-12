@@ -25,13 +25,13 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 --======================================== Variables =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-
--- Vars
 localPlayer = nil
 shard_players = {}
+highlighting = import("highlighting")
 local onLocalPlayerReady = setmetatable({}, { __newindex = function(self, index, value) assert(type(value)=="function", "onLocalPlayerReady invalid value"); if localPlayer then value(GetInsight(localPlayer), GetPlayerContext(localPlayer)) else rawset(self, index, value) end; end; })
 local delayed_actives = {}
 local Is_DS = IsDS()
+local Is_DST = IsDST()
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -191,12 +191,20 @@ local function IsPlayerClientLoaded(player)
 end
 
 local function CanBlink(player)
-	local inventory = (IsDST() and player.replica and player.replica.inventory) or (IsDS() and player.components.inventory) or error("CanBlink called on entity missing inventory")
+	local inventory = (Is_DST and player.replica and player.replica.inventory) or (Is_DS and player.components.inventory) or error("CanBlink called on entity missing inventory")
 
 	local holding = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	local cursor = inventory:GetActiveItem()
 
-	return (holding and (holding.components.blinkstaff or holding:HasActionComponent("blinkstaff"))) or (cursor and (cursor.components.blinkstaff or cursor:HasActionComponent("blinkstaff"))) or (player:HasTag("soulstealer") and inventory:Has("wortox_soul", 1))
+	if holding and (holding.components.blinkstaff or (Is_DST and holding:HasActionComponent("blinkstaff"))) then
+		return true
+	elseif cursor and (cursor.components.blinkstaff or (Is_DST and cursor:HasActionComponent("blinkstaff"))) then
+		return true
+	end
+
+	return false
+
+	--return (holding and (holding.components.blinkstaff or holding:HasActionComponent("blinkstaff"))) or (cursor and (cursor.components.blinkstaff or cursor:HasActionComponent("blinkstaff"))) or (player:HasTag("soulstealer") and inventory:Has("wortox_soul", 1))
 end
 
 local function OnHelperStateChange(inst, active, recipename, placerinst)
@@ -312,7 +320,7 @@ local function LoadLocalPlayer(player)
 		end
 		mprint("Initializers complete" ..  ((FASCINATING and "...") or "!"))
 
-		if not FASCINATING then
+		if FASCINATING then
 			mprint(modname)
 		end
 
@@ -394,14 +402,16 @@ do
 
 	-- https://dontstarve.fandom.com/wiki/Category%3ABoss_Monsters
 	local bosses = {
-		"minotaur", "ancient_herald", "antlion", "bearger", "beequeen", "crabking", "deerclops", "dragonfly", "ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head", "ancient_hulk", "klaus",
+		"minotaur", "ancient_herald", "antlion", "bearger", "beequeen", "crabking", "deerclops", "dragonfly", "ancient_hulk", "klaus",
 		"malbatross", "moose", "pugalisk", "kraken", "antqueen", "stalker_forest", "stalker", "stalker_atrium", "twister", "twister_seal", "tigershark", 
 		"toadstool", 
 		-- "shadow_knight", "shadow_bishop", "shadow_rook"
 	}
 
 	local mini_bosses = {
-		"warg", "claywarg", "gingerbreadwarg", "spat", "leif", "leif_sparse", "treeguard", "spiderqueen"
+		"warg", "claywarg", "gingerbreadwarg", "spat", "leif", "leif_sparse", "treeguard", "spiderqueen", 
+		
+		"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head"
 	}
 
 	local notable = {
@@ -478,6 +488,7 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 end)
 
 AddPrefabPostInit("cave_entrance_open", function(inst)
+	if IsDS() then return end -- does this even exist in DS
 	local cfg = GetModConfigData("sinkhole_marks", true)
 	if cfg == 0 then return end
 
@@ -504,6 +515,7 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 end)
 
 AddPrefabPostInit("cave_exit", function(inst)
+	if IsDS() then return end
 	local cfg = GetModConfigData("sinkhole_marks", true)
 	if cfg == 0 then return end
 
@@ -807,5 +819,3 @@ if IsDS() then
 		return sizetbl[self]
 	end
 end
-
-highlighting = import("highlighting")

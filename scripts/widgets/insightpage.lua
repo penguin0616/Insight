@@ -252,7 +252,6 @@ function ScrollList:Refresh()
 		-- replicate grid behaviour
 		if data then
 			if data.icon and data.icon.atlas and data.icon.tex then
-				mprint(data.text, data.icon.atlas, data.icon.tex)
 				widget:SetIcon(data.icon.atlas, data.icon.tex)
 			else
 				widget:SetIcon(nil, nil)

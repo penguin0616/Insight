@@ -162,6 +162,9 @@ return {
 		display = "Stressors: %s",
 	},
 
+	-- farmsoildrinker.lua
+	--farmsoildrinker = "<color=WET>Water</color>: <color=WET>%s%%</color>",
+
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "<icon=poop> %ss",
@@ -352,6 +355,11 @@ return {
 			--toys_remaining = "Toys remaining: %s",
 			--assisted_by = "This pipspook is being assisted by %s.",
 		},
+	},
+
+	-- rocmanager.lua
+	rocmanager = {
+		--cant_spawn = "Unable to spawn."
 	},
 
 	-- sanity.lua

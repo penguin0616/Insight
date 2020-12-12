@@ -22,6 +22,13 @@ local Widget = require "widgets/widget"
 local Screen = require "widgets/screen"
 local InsightMenu = import("widgets/insightmenu")
 
+local CONTROL_TYPE = (IsDST() and "MOVE") or "INVENTORY" -- MOVE is the left joystick, INVENTORY is the right one
+local MOVE_UP = getfenv(1)[string.format("CONTROL_%s_UP", CONTROL_TYPE)]
+local MOVE_DOWN = getfenv(1)[string.format("CONTROL_%s_DOWN", CONTROL_TYPE)]
+local MOVE_LEFT = getfenv(1)[string.format("CONTROL_%s_LEFT", CONTROL_TYPE)]
+local MOVE_RIGHT = getfenv(1)[string.format("CONTROL_%s_RIGHT", CONTROL_TYPE)]
+local OPEN_MENU = IsDST() and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU
+
 local InsightMenuScreen = Class(Screen, function(self)
 	Screen._ctor(self, "InsightMenuScreen")
 
@@ -42,22 +49,23 @@ function InsightMenuScreen:GetHelpText()
 	local tips = {}
 
 	-- CONTROL_MENU_MISC_3
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), Insight.CONTROLS.TOGGLE_INSIGHT_MENU) .. " Go Back")
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_MOVE_LEFT) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_MOVE_RIGHT) .. " Switch Tabs")
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_MOVE_UP) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_MOVE_DOWN) .. " Scroll")
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), OPEN_MENU) .. " Go Back")
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_LEFT) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_RIGHT) .. " Switch Tabs")
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_UP) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_DOWN) .. " Scroll")
 
 	return table.concat(tips, "   ")
 end
 
 function InsightMenuScreen:OnControl(control, down)
+	print(control, down)
 	if down then
-		if control == CONTROL_MOVE_UP then
+		if control == MOVE_UP then
 			self.menu:GetCurrentPage().list:Scroll(-1) -- 1 entry
-		elseif control == CONTROL_MOVE_DOWN then
+		elseif control == MOVE_DOWN then
 			self.menu:GetCurrentPage().list:Scroll(1) -- 1 entry
-		elseif control == CONTROL_MOVE_LEFT then
+		elseif control == MOVE_LEFT then
 			self.menu:NextPage(-1)
-		elseif control == CONTROL_MOVE_RIGHT then
+		elseif control == MOVE_RIGHT then
 			self.menu:NextPage(1)
 		elseif control == CONTROL_PAUSE or control == CONTROL_CANCEL then
 			self:Close()

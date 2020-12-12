@@ -66,6 +66,7 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 			imageLib.SetTexture(obj, atlas, tex)
 			obj:SetSize(richtext.font_size - 2, richtext.font_size - 2) -- 30, 30 a bit too large
 			obj:SetTint(unpack(color))
+			--obj:SetTint(unpack(Color.fromHex("#")))
 		else
 			error("[Insight]: unrecognized object class: " .. tostring(chunk.object.class))
 		end

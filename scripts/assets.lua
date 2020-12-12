@@ -50,7 +50,7 @@ local atlas_inv = "images/inventoryimages.xml"
 --= Assets =======================================================================================================================================================--
 --================================================================================================================================================================--
 local BulkAssets = {
-	"Ancient_Herald", "Antlion", "Antqueen", "Arrow", "Arrow_Down", "Atrium_Gate", "Bearger", "Beequeen", "Blueprint", "Chester_Eyebone", "Claywarg", "Crabking", "Crocodog", "Crown", "Deerclops", "Depths_Worm", "Dirtpile", "Dragonfly", "Enlightenment_Meter", "Frog", "Gingerbreadpig", "Gingerbreadwarg", "Health_Meter", "Hound", "Hunger_Meter", "Hutch_Fishbowl", "Klaus", "Klaus_Sack", "Knightboat", "Koalefant_Summer", "Koalefant_Winter", "Kraken", "Krampus", "Leif", "Leif_Sparse", "Lightninggoat", "Magnifying_Glass", "Malbatross", "Mermking", "Minotaur", "Moose", "Nightmare_timepiece_dawn", "Oar", "Oar_Force", "Pigcrownhat", "Pocket_Scale", "Pugalisk", "Sanity_Arrow", "Sanity_Meter", "Spat", "Spiderqueen", "Stalker", "Stalker_Atrium", "Stalker_Forest", "Stopwatch", "Tigershark", "Toadstool", "Treeguard", "Twister", "Twister_Seal", "Volcano", "Volcano_Active", "Warg", "Wetness_Meter", "Whale_Blue", "Whale_Bubbles", "Whale_White", "White_Rounded", "White_Square"
+	"Ancient_Herald", "Ancient_Hulk", "Ancient_Robot_Claw", "Ancient_Robot_Head", "Ancient_Robot_Leg", "Ancient_Robot_Ribs", "Antlion", "Antqueen", "Aporkalypse_Clock", "Arrow", "Arrow_Down", "Atrium_Gate", "Bearger", "Beequeen", "Blueprint", "Chester_Eyebone", "Claywarg", "Crabking", "Crocodog", "Crown", "Deerclops", "Depths_Worm", "Dirtpile", "Dragonfly", "Enlightenment_Meter", "Frog", "Gingerbreadpig", "Gingerbreadwarg", "Health_Meter", "Hound", "Hunger_Meter", "Hutch_Fishbowl", "Klaus", "Klaus_Sack", "Knightboat", "Koalefant_Summer", "Koalefant_Winter", "Kraken", "Krampus", "Leif", "Leif_Sparse", "Lightninggoat", "Magnifying_Glass", "Malbatross", "Mermking", "Minotaur", "Moose", "Nightmare_timepiece_dawn", "Oar", "Oar_Force", "Pigcrownhat", "Pocket_Scale", "Pugalisk", "Roc", "Sanity_Arrow", "Sanity_Meter", "Spat", "Spiderqueen", "Stalker", "Stalker_Atrium", "Stalker_Forest", "Stopwatch", "Tigershark", "Toadstool", "Treeguard", "Twister", "Twister_Seal", "Vampirebat", "Volcano", "Volcano_Active", "Warg", "Wetness_Meter", "Whale_Blue", "Whale_Bubbles", "Whale_White", "White_Rounded", "White_Square"
 }
 
 Assets = {
@@ -130,7 +130,7 @@ end
 local BulkIcons = {"Bugs", "Dairy", "Eggs", "Fat", "Fishes", "Fruit", "Inedible", "Meats", "Monster_Foods", "Sweetener", "Vegetable"}
 
 local icon_list = {
-	--["blank"] = {"White_Square.tex", "images/White_Square.xml"},
+	["blank"] = {"White_Square.tex", "images/White_Square.xml"},
 
 	-- ["value"] = {tex, atlas}
 	-- from hud.tex
@@ -273,7 +273,6 @@ function PrefabHasIcon(prefab)
 	local tex = prefab .. ".tex"
 	local atlas = GetAtlasForTex(tex)
 	if atlas then
-		print("defined", prefab, tex, atlas)
 		DefineIcon(prefab, tex, atlas)
 		return true
 	end

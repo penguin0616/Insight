@@ -18,28 +18,33 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- krakener.lua
+-- rocmanager.lua
 local function Describe(self, context)
-	-- this is attached to player, but GetWorldInformation extracts it anyway
-	local description = nil
+	local description
 
-	local respawn_time = self:TimeUntilCanSpawn()
+	if not self.disabled and not self.roc then
+		local clock = GetClock()
 
-	if respawn_time > 0 then
-		description = TimeToText(time.new(respawn_time, context))
+		local remaining_time = self.nexttime - clock:GetTotalTime()
+		local should_spawn = not self.roc and clock:GetNormTime() < (clock.daysegs / 16) /2 and not TheCamera.interior
+		
+		if remaining_time >= 0 then
+			description = TimeToText(time.new(remaining_time, context))
+		elseif not should_spawn then -- don't use self:ShouldSpawn(), does modifications of its own
+			description = context.lstr.rocmanager.cant_spawn
+		end
 	end
 
 	return {
 		priority = 0,
 		description = description,
+		worldly = true,
 		icon = {
-			atlas = "images/Kraken.xml",
-			tex = "Kraken.tex",
+			atlas = "images/Roc.xml",
+			tex = "Roc.tex",
 		},
 	}
 end
-
-
 
 return {
 	Describe = Describe

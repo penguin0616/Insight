@@ -45,11 +45,17 @@ local InsightButton = Class(Widget, function(self)
 
 	self.drag_tolerance = 4
 	self:SetDraggable(false)
+	self:SetOnDragFinish(nil)
 end)
 
 function InsightButton:SetDraggable(bool)
 	self.draggable = bool
 end
+
+function InsightButton:SetOnDragFinish(fn)
+	self.ondragfinish = fn
+end
+
 
 function InsightButton:SetOnClick(fn)
 	self.onclick = fn
@@ -125,13 +131,18 @@ function InsightButton:BeginDrag()
 end
 
 function InsightButton:EndDrag()
-	if not self:IsDragging() then
+	if not self:IsDragging() then -- checks self._draghandler
 		return
 	end
 
 	self._draghandler:Remove()
-	self._draghandler = nil
+
+	if self.ondragfinish then
+		self.ondragfinish(self._dragorigin, self:GetPosition())
+	end
+
 	self._dragorigin = nil
+	self._draghandler = nil
 end
 
 

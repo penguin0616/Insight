@@ -17,29 +17,25 @@ LICENSE in the form of a LICENSE file in the root of the source
 directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
+-- batted.lua
 
--- krakener.lua
 local function Describe(self, context)
-	-- this is attached to player, but GetWorldInformation extracts it anyway
-	local description = nil
+	local description
 
-	local respawn_time = self:TimeUntilCanSpawn()
-
-	if respawn_time > 0 then
-		description = TimeToText(time.new(respawn_time, context))
+	if self.timetoattack then
+		description = TimeToText(time.new(self.timetoattack, context))
 	end
 
 	return {
 		priority = 0,
 		description = description,
+		worldly = true,
 		icon = {
-			atlas = "images/Kraken.xml",
-			tex = "Kraken.tex",
+			atlas = "images/Vampirebat.xml",
+			tex = "Vampirebat.tex",
 		},
 	}
 end
-
-
 
 return {
 	Describe = Describe

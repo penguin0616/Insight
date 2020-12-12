@@ -162,6 +162,14 @@ return {
 		display = "Stressors: %s",
 	},
 
+	-- farmsoildrinker.lua
+	farmsoildrinker ={
+		soil_only = "<color=WET>Water</color>: <color=WET>%s</color>",
+		soil_plant = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s/min</color>)",
+		soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s</color> [<color=#2f96c4>%s</color>])<color=WET>/min</color>",
+		soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s</color> [<color=#2f96c4>%s</color> + <color=SHALLOWS>%s</color> = <color=#DED15E>%+.1f</color>])<color=WET>/min</color>"
+	},
+
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "Shortens <color=NATURE>growth time</color> by <color=NATURE>%s</color> seconds.",
@@ -352,6 +360,11 @@ return {
 			toys_remaining = "Toys remaining: %s",
 			assisted_by = "This pipspook is being assisted by %s.",
 		},
+	},
+
+	-- rocmanager.lua
+	rocmanager = {
+		cant_spawn = "Unable to spawn."
 	},
 
 	-- sanity.lua

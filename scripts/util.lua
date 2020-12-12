@@ -195,10 +195,11 @@ function ResolveColors(str)
 	--return string.format("<color=%s>%s</color>", Insight.COLORS[c] or c, s)
 end
 
---- Formats a number into a string. Adds a + if positive.
+--- Formats a number into a string. Adds a + if positive. 
 -- @tparam number num
 -- @treturn string
 function FormatNumber(num)
+	--[[
 	num = tonumber(num)
 	local s = tostring(num)
 
@@ -207,6 +208,9 @@ function FormatNumber(num)
 	end
 
 	return s
+	--]]
+
+	return string.format("%+d", num)
 end
 
 -- didn't know rounding was this easy, thanks star/serp

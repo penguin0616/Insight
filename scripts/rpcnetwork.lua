@@ -256,7 +256,7 @@ rpcNetwork.SendModRPCToAllClients = function(id_table, ...)
 
 	for _, player in pairs(AllPlayers) do
 		if player.userid ~= "" then
-			if IS_CLIENT_HOST and player.userid == localPlayer.userid then
+			if IS_CLIENT_HOST and localPlayer and player.userid == localPlayer.userid then
 				local fn = CLIENT_MOD_RPC_HANDLERS[id_table.namespace][id_table.id]
 				if fn then
 					fn(...)

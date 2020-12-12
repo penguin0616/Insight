@@ -62,8 +62,8 @@ local function Describe(self, context)
 		end
 	else
 		local season = GetWorld().components.seasonmanager:GetSeason()
-
-		for name, data in pairs(self.hasslers) do
+		
+		for name, data in pairs(self.hasslers or {}) do -- someone had hasslers = nil, 12/8/2020
 			--if GetWorldType() == 3 then dprint(name, data.HASSLER_STATE, data.timer) end
 			if data.HASSLER_STATE ~= "DORMANT" and (data.activeseason == season or data.attackduringoffseason) then
 				--table.insert(hasslers, {name = data.prefab, text = TimeToText(time.new(data.timer, context)), icon=icons[data.prefab]})

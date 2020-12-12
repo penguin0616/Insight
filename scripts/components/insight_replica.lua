@@ -227,12 +227,14 @@ local Insight = Class(function(self, inst)
 			end
 		]]
 		self.is_client = true
+	elseif IsDS() then
+		self.is_client = true
 	end
 
 	--self.is_client = (self.is_client == nil and inst == ThePlayer) or self.is_client
 	self.inst = inst
 	
-	self.performance_ratings = self.is_client and PerformanceRatings()
+	self.performance_ratings = self.is_client and IsDST() and PerformanceRatings()
 
 	-- Exceeded maximum data length serializing entity channel for entity woodie[117470]......
 	-- could i possibly attach a secondary entity and listen to it?
@@ -331,7 +333,7 @@ local Insight = Class(function(self, inst)
 			--]]
 		end
 
-		if self.is_client then
+		if self.is_client and IsDST() then
 			-- client
 			self.inst:ListenForEvent("insight_invalidate_dirty", function(...)
 				local inst = GetInsight(...).net_invalidate:value()
@@ -342,7 +344,7 @@ local Insight = Class(function(self, inst)
 		end
 	end
 
-	if IsDS() or self.is_client then -- another check to make this is for us only
+	if self.is_client then -- another check to make this is for us only
 		mprint("\tInsight replica update loop has begun")
 		self.indicators = Indicators(inst)
 
@@ -660,7 +662,7 @@ end
 
 function Insight:RequestInformation(item, params)
 	if not self.is_client then
-		mprint("insight for", self.inst, "tried to request information")
+		dprint("insight for", self.inst, "tried to request information for", item)
 		return
 	end
 

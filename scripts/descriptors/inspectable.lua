@@ -82,7 +82,7 @@ local function Describe(self, context)
 					table.insert(strs, string.format(context.lstr.walrus_camp_respawn, STRINGS.NAMES[string.upper(prefab)] or ("\"" .. prefab .. "\""), respawn_in))
 				end
 			end
-			description = table.concat(strs, "\n")
+		description = table.concat(strs, "\n")
 		end
 	end
 

@@ -149,6 +149,8 @@ _G.Insight = Insight
 
 -- meh
 MyKleiID = "KU_md6wbcj2"
+WORKSHOP_ID_DS = "workshop-2081254154"
+WORKSHOP_ID_DST = "workshop-2189004162"
 
 -- declarations or module loading
 DEBUG_ENABLED = (
@@ -161,7 +163,7 @@ DEBUG_ENABLED = (
 	)
 	or GetModConfigData("DEBUG_ENABLED", true) or false 
 
-if DEBUG_ENABLED and false then
+if DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 1")
 	_G.VERBOSITY_LEVEL = VERBOSITY.DEBUG
 	print("VERBOSITY_LEVEL:", _G.VERBOSITY_LEVEL)
@@ -219,7 +221,8 @@ local descriptors_ignore = {
 
 	-- Worldly DS stuff
 	"ambientsoundmixer", "globalcolourmodifier", "moisturemanager", "inventorymoisture", -- world
-	"optionswatcher", "economy", "interiorspawner", "periodicpoopmanager", "roottrunkinventory", -- world (hamlet)
+	"optionswatcher", "giantgrubspawner", "flowerspawner_rainforest", "interiorspawner", "periodicpoopmanager", "roottrunkinventory", "bramblemanager", "canopymanager", "ripplemanager", "cloudpuffmanager", "shadowmanager", -- world (hamlet)
+	"economy", "cityalarms", "banditmanager", "quaker_interior", "glowflyspawner", -- world (hamlet) (might be interesting)
 	"nightmareambientsoundmixer", --gamelogic
 	"colourcubemanager", "seasonmanager", "bigfooter", "flowerspawner", "doydoyspawner", "debugger", "rainbowjellymigration", "globalsettings", "flooding", "mosquitospawner", -- specific world types
 	"volcanoambience", "volcanowave", "whalehunter", -- specific world types
@@ -239,7 +242,7 @@ local descriptors_ignore = {
 	"symbolswapdata", "amphibiouscreature",
 
 	-- NEW:
-	"farmplanttendable",
+	"farmplanttendable", "plantresearchable",
 
 	-- TheWorld
 	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor",
@@ -500,7 +503,15 @@ function mprint(...)
 		local v = select(i,...)
 		msg = msg .. tostring(v) .. ( (i < argnum) and "\t" or "" )
 	end
-	return print("[" .. ModInfoname(modname) .. "]:", msg)
+
+	local prefix = ""
+
+	if false then
+		local d = debug.getinfo(2, "Sl")
+		prefix = string.format("%s:%s:", d.source or "?", d.currentline or 0)
+	end
+
+	return print(prefix .. "[" .. ModInfoname(modname) .. "]:", msg)
 end
 
 function dprint(...)
@@ -855,17 +866,6 @@ function GetWorldInformation(player) -- refactor?
 	end
 
 	local data = GetEntityInformation(world, player, {raw = true})
-
-	--[[
-	for i = 1, 7 do
-		local x = "test" .. i
-		data.special_data[x] = { worldly=true }
-		data.raw[x] = x
-	end
-	--]]
-	
-
-
 	--[[
 		-- cant visualize this at the moment
 		{
@@ -877,6 +877,19 @@ function GetWorldInformation(player) -- refactor?
 			}
 		}
 	]]
+
+	for i,v in pairs(data.raw) do
+		data.special_data[i].worldly = true
+	end
+
+	--[[
+	for i = 1, 7 do
+		local x = "test" .. i
+		data.special_data[x] = { worldly=true }
+		data.raw[x] = x
+	end
+	--]]
+	
 
 	if GetWorldType() >= 2 then
 		local descriptor = GetComponentDescriptor("krakener")
@@ -1832,9 +1845,12 @@ else
 			_G.c_supergodmode = function() c_sethunger(1) c_setsanity(1) c_sethealth(1) c_godmode() end
 		end
 
-		dprint("adding quick day skip")
-		_G.c_nextday = function() GetClock():MakeNextDay() end
+		if not rawget(_G, "c_revealmap") then
+			dprint"adding revealmap"
+			_G.c_revealmap = function() GetWorld().minimap.MiniMap:ShowArea(0,0,0,10000) end
+		end
 
+		_G.c_nextday = function() GetClock():MakeNextDay() end
 		_G.c_tools = function() c_give('multitool_axe_pickaxe') c_give('nightsword', 2) c_give('fireflies', 5) c_give('minerhat', 1) end
 
 	end
@@ -2325,6 +2341,38 @@ end
 import("assets")
 
 if IsDS() or IsClient() or IsClientHost() then
+	if IsDS() then
+		-- oh god. why must I suffer.
+		-- alright, so the gist of this stuff is that I want to avoid tainting KnownModIndex as much as I can
+		local safeModIndex = loadfile("modindex") -- mostly safe anyway; getting a "pure" duplicate of modindex in case others have overriden significantly
+		setfenv(safeModIndex, setmetatable({}, {__index = getfenv(1)})) -- __newindex is nil so variables (KnownModIndex...) implicitly set to the empty table, __index to inherit from my environment
+		safeModIndex = getfenv(safeModIndex()).KnownModIndex -- safeModIndex() doesn't return anything, just declares KnownModIndex
+
+		local realInitializeModInfo = safeModIndex.InitializeModInfo -- as pure as I can get it.
+		safeModIndex = nil; -- i feel like it's a good idea.
+
+		-- override RunInEnvironment in our duplicate, avoid tampering with the one the game uses
+		local oldRunInEnvironment = RunInEnvironment
+		setfenv(realInitializeModInfo, setmetatable({
+			RunInEnvironment = function(arg, env)
+				env.folder_name = false
+				env.locale = LOC.GetLocaleCode() -- make people happy
+				return oldRunInEnvironment(arg, env)
+			end
+		}, {
+			__index = getfenv(1); -- once again inherit from my environment
+		}))
+
+		local oldInitializeModInfo = KnownModIndex.InitializeModInfo
+		KnownModIndex.InitializeModInfo = function(self, name, ...) -- who knows what crazy stuff people are doing
+			if name == WORKSHOP_ID_DS then
+				return realInitializeModInfo(self, name) -- only this mod gets the special initializer
+			end
+
+			return oldInitializeModInfo(self, name, ...) -- other mods get the whatever
+		end
+	end
+
 	import("clientmodmain")
 end
 
