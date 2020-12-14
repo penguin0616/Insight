@@ -130,6 +130,8 @@ local function fn()
 
 	-- tags
 	--inst:AddTag("FX") -- apparently DAR adds this, idk why
+	inst:AddTag("NOBLOCK") -- this mod [HM]Onikiri/鬼切 1.0.7 https://steamcommunity.com/sharedfiles/filedetails/?id=2241060736 was tampering with my indicators. they add "NOBLOCK", and replace all the functions in "inst" with a NOP.
+	-- was blocking placement next to the body (like when wormwood would go to plant a seed, the blocking of the indicator would stop him from doing so even though it looked valid)
 	inst:AddTag("NOCLICK")
 	inst:AddTag("CLASSIFIED")
 
@@ -157,6 +159,9 @@ local function fn()
 	inst.IsVisible = IsVisible
 	inst.Attach = Attach
 	inst.AddNetwork = AddNetwork
+
+	
+	
 
 	inst:SetVisible(true)
 

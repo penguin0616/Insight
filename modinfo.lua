@@ -21,15 +21,18 @@ directory. If not, please refer to
 -- DS 2081254154
 -- DST 2189004162
 -- loadstring is present
-local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
+local IsDST = folder_name ~= false -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.8.1" -- ds is 2.4.4_ds
+version = "2.8.4" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 id = "Insight"
-priority = -10000 --rezecib's Geometric Placement has -10, chinese++, has -9999
+priority = -10000 --[[ rezecib's Geometric Placement has -10, chinese++, has -9999. assuming the rest of the chinese translation mods use a similar enough priority.
+ideally, we come last in the mod loading order to make life easier.
+that way, I can try to be compatible with other mods without them having to worry about compatibility with Insight. after all, probably better if I handle it.
+--]]
 
 -- DS
 api_version = 6
@@ -1684,6 +1687,8 @@ local function tostring(arg)
 		return "true"
 	elseif arg == false then
 		return "false"
+	elseif arg == nil then
+		return "nil"
 	end
 
 	return arg .. ""
@@ -1714,9 +1719,8 @@ local function T(x) -- Translate
 	return current or backup
 end
 
-
-description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
-	locale or "?",
+description = string_format("[%s | %s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
+	locale or "?", tostring(IsDST),
 	T"mod_explanation", 
 	T"config_disclaimer", 
 

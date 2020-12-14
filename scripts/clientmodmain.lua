@@ -138,6 +138,8 @@ local function GenerateConfiguration()
 
 	--local mod_info = KnownModIndex:InitializeModInfo(modname)
 
+	
+
 	mprint("CALLED FOR CONFIG GEN")
 	local config_data = deepcopy(KnownModIndex:LoadModConfigurationOptions(modname, true))
 
@@ -148,6 +150,17 @@ local function GenerateConfiguration()
 
 	local local_config = {}
 
+	if IsDS() then
+		mprint("DS config generation")
+		for i,v in pairs(config_data) do
+			if not util.table_find(v.tags, "ignore") then 
+				local_config[v.name] = GetModConfigData(v.name)
+			end
+		end
+		return local_config
+	end
+	
+	-- should be on server but eh.
 	for i,v in pairs(config_data) do
 		if not util.table_find(v.tags, "ignore") then
 			local server_choice = GetModConfigData(v.name, false)
@@ -410,7 +423,7 @@ do
 
 	local mini_bosses = {
 		"warg", "claywarg", "gingerbreadwarg", "spat", "leif", "leif_sparse", "treeguard", "spiderqueen", 
-		
+
 		"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head"
 	}
 
@@ -539,19 +552,23 @@ AddPrefabPostInit("cave_exit", function(inst)
 	end)
 end)
 
---[[
+
 AddPrefabPostInit("redgem", function(inst) 
+	if not DEBUG_ENABLED then
+		return
+	end
+
 	-- tuning says default range is 15
 	inst.snowball_range = SpawnPrefab("insight_range_indicator")
 	inst.snowball_range:Attach(inst)
-	inst.snowball_range:SetRadius(TUNING.FIRE_DETECTOR_RANGE / WALL_STUDS_PER_TILE)
+	inst.snowball_range:SetRadius(12 / WALL_STUDS_PER_TILE)
 	inst.snowball_range:SetColour(Color.fromHex(Insight.COLORS.FROZEN))
 	inst.snowball_range:SetVisible(true)
 
-	inst:AddComponent("dst_deployhelper")
-	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+	--inst:AddComponent("dst_deployhelper")
+	--inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
 end)
---]]
+
 
 AddPrefabPostInit("mushroombomb", function(inst)
 	inst.explosion_range = SpawnPrefab("insight_range_indicator")

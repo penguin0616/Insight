@@ -119,7 +119,7 @@ local Insight = {
 		EGG = "#E4CFA5", -- egg icon
 		SWEETENER = "#DDA305", -- honeycomb
 		FROZEN = "#A3C3DF", -- ice icon
-		FAT = "#AF774D", -- literally only butter
+		FAT = "#AF774D", -- literally only butter (and coconuts)
 		DAIRY = "#A3C3DF", -- FROZEN; --"#EFF9EC", -- electric milk icon; ok this is indistinguishable
 		DECORATION = "#8C4041", -- literally only butterfly wings
 		MAGIC = "#9864F5", -- only mandrake. but they don't look magical, so royal purple it is.
@@ -2075,7 +2075,7 @@ end)
 if IsDST() then -- not in UI overrides because server needs access too
 	local CrashReportStatus = import("widgets/crashreportstatus")
 
-	-- extremely important: has to be opt IN
+	-- extremely important: has to be opt IN, so this is off by default. warnings and information are displayed in the option to enable it.
 	local function GetPlatform()
 		return PLATFORM
 		--[[
@@ -2238,7 +2238,6 @@ if IsDST() then -- not in UI overrides because server needs access too
 		triggered = true
 
 		-- erroring in a error handler, not a good idea i would think
-
 		local report_server = GetModConfigData("crash_reporter", false)
 		local report_client = GetModConfigData("crash_reporter", true)
 
@@ -2355,7 +2354,7 @@ if IsDS() or IsClient() or IsClientHost() then
 		local oldRunInEnvironment = RunInEnvironment
 		setfenv(realInitializeModInfo, setmetatable({
 			RunInEnvironment = function(arg, env)
-				env.folder_name = false
+				env.folder_name = false -- folder_name is normally nil in DS, and a string in DST. false helps in me in DS by making sure my changes are active, and if its ever nil, modinfo has been tampered with in DST (probably).
 				env.locale = LOC.GetLocaleCode() -- make people happy
 				return oldRunInEnvironment(arg, env)
 			end
