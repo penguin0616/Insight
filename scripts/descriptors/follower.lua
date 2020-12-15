@@ -44,7 +44,7 @@ local function Describe(self, context)
 		local leader = self:GetLeader()
 		local ghostlybond = leader.components.ghostlybond
 
-		if ghostlybond.bondleveltimer then
+		if ghostlybond and ghostlybond.bondleveltimer then
 			local ghostlybond_levelup_time = TimeToText(time.new(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer, context))
 			ghostlybond_levelup = string.format(context.lstr.ghostlybond, ghostlybond.bondlevel, ghostlybond.maxbondlevel, ghostlybond_levelup_time)
 		end

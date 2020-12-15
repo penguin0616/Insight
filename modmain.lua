@@ -2354,7 +2354,8 @@ if IsDS() or IsClient() or IsClientHost() then
 		local oldRunInEnvironment = RunInEnvironment
 		setfenv(realInitializeModInfo, setmetatable({
 			RunInEnvironment = function(arg, env)
-				env.folder_name = false -- folder_name is normally nil in DS, and a string in DST. false helps in me in DS by making sure my changes are active, and if its ever nil, modinfo has been tampered with in DST (probably).
+				--env.folder_name = false -- folder_name is normally nil in DS, and a string in DST. false helps in me in DS by making sure my changes are active, and if its ever nil, modinfo has been tampered with in DST (probably).
+				env.folder_name = nil
 				env.locale = LOC.GetLocaleCode() -- make people happy
 				return oldRunInEnvironment(arg, env)
 			end

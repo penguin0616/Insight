@@ -21,9 +21,9 @@ directory. If not, please refer to
 -- DS 2081254154
 -- DST 2189004162
 -- loadstring is present
-local IsDST = folder_name ~= false -- present in DST, not DS. big brain engaged
+local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.8.4" -- ds is 2.4.4_ds
+version = "2.8.5" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -74,7 +74,9 @@ server_filter_tags = {"insight_" .. version}
 
 local translations = {}
 local english = {
+
 	-- description
+	ds_not_enabled = "Mod must be enabled for functioning modinfo",
 	update_info = "plant moisture; bug fix; winters feast; bug fixes; more beta stuff; fuelweaver skeleton info; pipspook assistance;",
 	update_info_ds = "More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
@@ -82,7 +84,7 @@ local english = {
 	mod_explanation = "Basically Show Me but with more features.",
 	config_paths = "Server Configuration: Main Menu -> Host Game -> Mods -> Server Mods -> Insight -> Configure Mod\n-------------------------\nClient Configuration: Main Menu -> Mods -> Server Mods -> Insight -> Configure Mod",
 
-	config_disclaimer = "Make sure to check out the configuration options, especially if something is displaying/no longer displaying.",
+	config_disclaimer = "Make sure to check out the configuration options.",
 	version = "Version",
 	latest_update = "Latest update",
 
@@ -1719,8 +1721,9 @@ local function T(x) -- Translate
 	return current or backup
 end
 
-description = string_format("[%s | %s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
-	locale or "?", tostring(IsDST),
+description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
+	--locale or "?", tostring(folder_name), tostring(IsDST),
+	locale or T"ds_not_enabled", 
 	T"mod_explanation", 
 	T"config_disclaimer", 
 
