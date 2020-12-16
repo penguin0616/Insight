@@ -137,7 +137,7 @@ function InsightButton:EndDrag()
 
 	self._draghandler:Remove()
 
-	if self.ondragfinish then
+	if self.ondragfinish and self:HasMoved() then
 		self.ondragfinish(self._dragorigin, self:GetPosition())
 	end
 

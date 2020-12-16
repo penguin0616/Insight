@@ -20,7 +20,23 @@ directory. If not, please refer to
 
 -- forcecompostable.lua
 local function Describe(self, context)
-	local description = string.format("forcecompostable: %s | %s", self.green or "nil", self.brown or "nil")
+	local str = {}
+
+	if self.green then
+		table.insert(str, ApplyColour("Green", "NATURE"))
+	end
+
+	if self.brown then
+		table.insert(str, ApplyColour("Brown", "INEDIBLE"))
+	end
+
+	if not (#str > 0) then
+		return
+	end
+
+	local description = string.format(context.lstr.forcecompostable, table.concat(str, ", "))
+
+	--local description = string.format(context.lstr.forcecompostable, (self.green and "green") or "nil", (self.brown and "brown") or "nil")
 
 	return {
 		priority = 0,

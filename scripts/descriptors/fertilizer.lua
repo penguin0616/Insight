@@ -19,39 +19,53 @@ directory. If not, please refer to
 ]]
 
 -- fertilizer.lua
-local FERTILIZER_DEFS = {}
-
-local reap_and_sow = IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW")
-if reap_and_sow then
-	FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS
-end
-
-local function GetNutrientValue(prefab)
-	for _prefab, data in pairs(FERTILIZER_DEFS) do
-		if _prefab == prefab then
-			return data.nutrients
-		end
-	end
-end
+local Is_DS = IsDS()
+local farmingHelper = import("helpers/farming")
 
 local function Describe(self, context)
-	local description = nil
-
-	local growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
+	local description
+	local growth_value_string
 	local nutrient_value_string
 
-	if reap_and_sow then
-		local nutrient_value = GetNutrientValue(self.inst:GetFertilizerKey())
+	local formula_value_string
+	local compost_value_string
+	local health_value_string
 
-		if nutrient_value then
-			local missing = nil --"?"
-			nutrient_value_string = string.format(context.lstr.fertilizer.nutrient_value, nutrient_value[1] or missing, nutrient_value[2] or missing, nutrient_value[3] or missing)
-		else
-			nutrient_value_string = "Does not have nutrients?"
+	if farmingHelper.WorldHasOldGrowers() or Is_DS then
+		growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
+	end
+
+	local nutrient_value = farmingHelper.GetNutrientValue(self.inst:GetFertilizerKey())
+	if nutrient_value then
+		local missing = nil --"?"
+		nutrient_value_string = string.format(context.lstr.fertilizer.nutrient_value, nutrient_value[1] or missing, nutrient_value[2] or missing, nutrient_value[3] or missing)
+	else
+		nutrient_value_string = "Does not have nutrients?"
+	end
+
+	if context.player:HasTag("self_fertilizable") then
+		local formula, compost, manure = self.nutrients[TUNING.FORMULA_NUTRIENTS_INDEX], self.nutrients[TUNING.COMPOST_NUTRIENTS_INDEX], self.nutrients[TUNING.MANURE_NUTRIENTS_INDEX]
+
+		if formula > 0 then
+			-- bloomness
+			formula_value_string = string.format(context.lstr.fertilizer.wormwood.formula_growth, formula)
+		end
+
+		if compost > 0 then
+			-- healing over time
+			local healing = TUNING.WORMWOOD_COMPOST_HEAL_VALUES[math.ceil(compost / 8)] or TUNING.WORMWOOD_COMPOST_HEAL_VALUES[1]
+			local duration = healing * (TUNING.WORMWOOD_COMPOST_HEALOVERTIME_TICK / TUNING.WORMWOOD_COMPOST_HEALOVERTIME_HEALTH)
+			compost_value_string = string.format(context.lstr.fertilizer.wormwood.compost_heal, healing, duration)
+		end
+
+		if manure > 0 then
+			-- immediate heal
+			local health_amount = TUNING.WORMWOOD_MANURE_HEAL_VALUES[math.ceil(manure / 8)] or TUNING.WORMWOOD_MANURE_HEAL_VALUES[1]
+			health_value_string = string.format(context.lstr.heal, health_amount)
 		end
 	end
 
-	description = CombineLines(growth_value_string, nutrient_value_string)
+	description = CombineLines(growth_value_string, nutrient_value_string, formula_value_string, compost_value_string, health_value_string)
 
 	return {
 		priority = 0,

@@ -135,6 +135,8 @@ local Insight = {
 
 		-- misc
 		ROYAL_PURPLE = "#6225D1", -- r
+		LIGHT_PINK = "#ffb6c1",
+		CAMO = "#4D6B43"
 	},
 
 	CONTROLS = {
@@ -239,10 +241,10 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature",
+	"symbolswapdata", "amphibiouscreature", 
 
 	-- NEW:
-	"farmplanttendable", "plantresearchable",
+	"farmplanttendable", "plantresearchable", "fertilizerresearchable",
 
 	-- TheWorld
 	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor",
@@ -1383,6 +1385,16 @@ if IsDST() then
 		insight.net_invalidate:set_local(nil) -- force next :set() to be dirty
 		insight.net_invalidate:set(inst)
 	end
+
+	AddComponentPostInit("grower", function(self)
+		if not (TheWorld and TheWorld.ismastersim) then return end
+		import("helpers/farming").RegisterOldGrower(self)
+	end)
+
+	AddComponentPostInit("farming_manager", function(self)
+		if not (TheWorld and TheWorld.ismastersim) then return end
+		import("helpers/farming").Initialize(self)
+	end)
 	
 	AddComponentPostInit("container", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end -- implicit DST check

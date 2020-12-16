@@ -168,7 +168,11 @@ return {
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "缩短 <color=NATURE>%s</color> 秒<color=NATURE>生长时间</color>",
-		nutrient_value = "Nutrients: [%s, %s, %s]",
+		nutrient_value = "Nutrients: [<color=NATURE>%s</color>, <color=CAMO>%s</color>, <color=INEDIBLE>%s</color>]",
+		wormwood = {
+			formula_growth = "Accelerates your <color=LIGHT_PINK>blooming</color> by <color=LIGHT_PINK>%s</color>.",
+			compost_heal = "<color=HEALTH>Heals</color> you for <color=HEALTH>%+d</color> over <color=HEALTH>%s</color> second(s).",
+		},
 	},
 
 	-- fillable.lua
@@ -215,6 +219,9 @@ return {
 	ghostlybond = "等级: %s / %s. +1在%s后",
 	ghostlybond_self = "你的等级: %s / %s. +1在%s后", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+	-- forcecompostable.lua
+	forcecompostable = "Compost value: %s",
+
 	-- friendlevels.lua
 	friendlevel = "友善等级: %s / %s",
 
@@ -252,7 +259,7 @@ return {
 	},
 
 	-- healer.lua
-	heal = "生命: %+d",
+	heal = "<color=HEALTH>生命</color>: <color=HEALTH>%+d</color>",
 
 	-- health.lua
 	health = "<color=HEALTH>生命</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",

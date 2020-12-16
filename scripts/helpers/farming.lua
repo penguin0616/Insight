@@ -29,10 +29,16 @@ local SOIL_MIN_TEMP_DRY_RATE = TUNING.SOIL_MIN_TEMP_DRY_RATE
 local SOIL_MAX_TEMP_DRY_RATE = TUNING.SOIL_MAX_TEMP_DRY_RATE
 local MAX_SOIL_MOISTURE = TUNING.SOIL_MAX_MOISTURE_VALUE
 
+local FERTILIZER_DEFS = (IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS) or {}
+
+local farming_manager = nil
+local growers = {}
+local lib = nil
+
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
-local GetTileDataAtPoint = util.getupvalue(TheWorld.components.farming_manager.IsSoilMoistAtPoint, "GetTileDataAtPoint") --[[
+local GetTileDataAtPoint = nil --[[
 	belowsoiltile	7	
 	soil_drinkers	table: 4D9E3B20	
 	nutrients_overlay	100038 - nutrients_overlay	
@@ -40,6 +46,43 @@ local GetTileDataAtPoint = util.getupvalue(TheWorld.components.farming_manager.I
 	soilmoisture	90.558837890625	
 ]]
 
+--- Check if we are initialized or not
+local function IsInitialized()
+	return farming_manager ~= nil
+end
+
+--- Hook
+local function Initialize(self)
+	farming_manager = self
+	GetTileDataAtPoint = util.getupvalue(self.IsSoilMoistAtPoint, "GetTileDataAtPoint")
+	lib.GetTileDataAtPoint = GetTileDataAtPoint
+	mprint("Farming_Manager has been hooked")
+end
+
+local function RegisterOldGrower(grower)
+	if not grower.inst:IsValid() then
+		return
+	end
+
+	if table.contains(growers, grower.inst) then
+		return
+	end
+
+	table.insert(growers, grower.inst)
+	
+	grower.inst:ListenForEvent("onremove", function(inst)
+		local index = table.reverselookup(growers, inst)
+		if index then
+			table.remove(growers, index)
+		end
+	end)
+end
+
+local function WorldHasOldGrowers()
+	return #growers > 0
+end
+
+--- Gets tile moisture at point
 local function GetTileMoistureAtPoint(x, y, z)
 	return GetTileDataAtPoint(false, x, y, z).soilmoisture
 end
@@ -68,9 +111,57 @@ local function GetTileMoistureDelta(x, y, z)
 	return obj_rate
 end
 
-return {
+--- Gets fertilizer nutrient value for prefab
+local function GetNutrientValue(prefab)
+	for _prefab, data in pairs(FERTILIZER_DEFS) do
+		if _prefab == prefab then
+			return data.nutrients
+		end
+	end
+end
+
+local function GetTileNutrientsAtPoint(x, y, z)
+	--local tile_data = GetTileDataAtPoint(false, x, y, z);
+	-- farming_manager:GetTileNutrients
+
+	local x, y = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
+	local nutrients = {TheWorld.components.farming_manager:GetTileNutrients(x, y)}
+
+	-- NUTRIENT_1 = "Growth Formula",
+    -- NUTRIENT_2 = "Compost",
+	-- NUTRIENT_3 = "Manure",
+	
+	--[[
+		local nutrientlevels = inst.nutrientlevels:value()
+        local nutrients = {
+            bit.band(nutrientlevels, 7),
+            bit.band(bit.rshift(nutrientlevels, 3), 7),
+            bit.band(bit.rshift(nutrientlevels, 6), 7),
+        }
+        for num, nutrient in ipairs(nutrients) do
+            local nutrient_name = nutrient_prefix..tostring(num)
+	]]
+
+	return {
+		formula = nutrients[1],
+		compost = nutrients[2],
+		manure = nutrients[3]
+	}
+end
+
+lib = {
+	IsInitialized = IsInitialized,
+	Initialize = Initialize,
+	RegisterOldGrower = RegisterOldGrower,
+	WorldHasOldGrowers = WorldHasOldGrowers,
+
 	GetTileDataAtPoint = GetTileDataAtPoint,
 	GetTileMoistureAtPoint = GetTileMoistureAtPoint,
 	GetWorldMoistureDelta = GetWorldMoistureDelta,
 	GetTileMoistureDelta = GetTileMoistureDelta,
+
+	GetNutrientValue = GetNutrientValue,
+	GetTileNutrientsAtPoint = GetTileNutrientsAtPoint,
 }
+
+return setmetatable({}, {__index = lib})

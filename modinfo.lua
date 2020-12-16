@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.8.5" -- ds is 2.4.4_ds
+version = "2.8.8" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,7 +77,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "plant moisture; bug fix; winters feast; bug fixes; more beta stuff; fuelweaver skeleton info; pipspook assistance;",
+	update_info = "bug fixes; wormwood fertilizer info; drag & save insight button; nutrients; plant moisture; bug fix; winters feast;",
 	update_info_ds = "More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -465,6 +465,34 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	soil_nutrients = {
+		LABEL = "Soil Nutrients",
+		HOVER = "How soil/plant nutrients are displayed.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Off",
+				HOVER = "Soil nutrients are not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "Soil",
+				HOVER = "Only soil nutrients are shown.",
+			},
+			["2"] = {
+				DESCRIPTION = "Soil / Plant",
+				HOVER = "Soil nutrients and the plant consumption rate are shown.",
+			},
+			["3"] = {
+				DESCRIPTION = "Soil, Plant, Tile",
+				HOVER = "Soil nutrients, plant consumption, and the tile nutrients rate are all shown.",
+			},
+			--[[
+			["4"] = {
+				DESCRIPTION = "All",
+				HOVER = "Soil nutrients, plant consumption, and the **NET** tile nutrients rate is shown.",
+			}
+			--]]
+		}
+	},
 	soil_moisture = {
 		LABEL = "Soil Moisture",
 		HOVER = "How soil/plant moisture is displayed.",
@@ -475,7 +503,7 @@ local english = {
 			},
 			["1"] = {
 				DESCRIPTION = "Soil",
-				HOVER = "Only Soil moisture is shown.",
+				HOVER = "Only soil moisture is shown.",
 			},
 			["2"] = {
 				DESCRIPTION = "Soil / Plant",
@@ -1279,6 +1307,60 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	soil_nutrients = {
+		LABEL = "Soil Nutrients",
+		HOVER = "How soil/plant nutrients are displayed.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Off",
+				HOVER = "Soil nutrients are not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "Soil",
+				HOVER = "Only soil nutrients are shown.",
+			},
+			["2"] = {
+				DESCRIPTION = "Soil / Plant",
+				HOVER = "Soil nutrients and the plant consumption rate are shown.",
+			},
+			["3"] = {
+				DESCRIPTION = "Soil, Plant, Tile",
+				HOVER = "Soil nutrients, plant consumption, and the tile nutrients rate are all shown.",
+			},
+			--[[
+			["4"] = {
+				DESCRIPTION = "All",
+				HOVER = "Soil nutrients, plant consumption, and the **NET** tile nutrients rate is shown.",
+			}
+			--]]
+		}
+	},
+	soil_moisture = {
+		LABEL = "Soil Moisture",
+		HOVER = "How soil/plant moisture is displayed.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Off",
+				HOVER = "Soil moisture is not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "Soil",
+				HOVER = "Only soil moisture is shown.",
+			},
+			["2"] = {
+				DESCRIPTION = "Soil / Plant",
+				HOVER = "Soil moisture and the plant consumption rate is shown.",
+			},
+			["3"] = {
+				DESCRIPTION = "Soil, Plant, Tile",
+				HOVER = "Soil moisture, plant consumption, and the tile moisture rate is shown.",
+			},
+			["4"] = {
+				DESCRIPTION = "All",
+				HOVER = "Soil moisture, plant consumption, and the **NET** tile moisture rate is shown.",
+			}
+		}
+	},
 	display_plant_stressors = {
 		LABEL = "植物压力值",
 		HOVER = "决定是否展示植物压力值",
@@ -1995,7 +2077,20 @@ configuration_options = {
 		default = 2,
 		tags = {"undefined"},
 	},
-	AddSectionTitle(T"sectiontitle_informationcontrol"),
+	AddSectionTitle(T"sectiontitle_informationcontrol"), 
+	{
+		name = "soil_nutrients",
+		options = {
+			{data = 0},
+			{data = 1},
+			{data = 2},
+			{data = 3},
+			--{data = 4},
+		},
+		default = 2,
+		client = true,
+		tags = {"dst_only"},
+	},
 	{
 		name = "soil_moisture",
 		options = {

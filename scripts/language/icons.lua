@@ -168,7 +168,11 @@ return {
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "<icon=poop> %ss",
-		--nutrient_value = "Nutrients: [%s, %s, %s]",
+		--nutrient_value = "Nutrients: [<color=NATURE>%s</color>, <color=CAMO>%s</color>, <color=INEDIBLE>%s</color>]",
+		wormwood = {
+			--formula_growth = "Accelerates your <color=LIGHT_PINK>blooming</color> by <color=LIGHT_PINK>%s</color>.",
+			--compost_heal = "<color=HEALTH>Heals</color> you for <color=HEALTH>%+d</color> over <color=HEALTH>%s</color> second(s).",
+		},
 	},
 
 	-- fillable.lua
@@ -214,6 +218,9 @@ return {
 	loyalty_duration = "<icon=pigcrownhat><icon=pocket_scale> %s",
 	ghostlybond = "<icon=abigail_flower_level3> %s / %s. +1 in %s.",
 	ghostlybond_self = "<icon=abigail_flower_level3>Your sisterly bond: %s / %s. +1 in %s.",
+
+	-- forcecompostable.lua
+	--forcecompostable = "Compost value: %s",
 
 	-- friendlevels.lua
 	--friendlevel = "Friendliness level: %s / %s",

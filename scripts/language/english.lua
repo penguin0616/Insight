@@ -169,11 +169,21 @@ return {
 		soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s</color> [<color=#2f96c4>%s</color>])<color=WET>/min</color>",
 		soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s</color> [<color=#2f96c4>%s</color> + <color=SHALLOWS>%s</color> = <color=#DED15E>%+.1f</color>])<color=WET>/min</color>"
 	},
+	farmsoildrinker_nutrients ={
+		soil_only = "Nutrients: [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>]",
+		soil_plant = "Nutrients: [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>] ([<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>])",
+		soil_plant_tile = "Nutrients: [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, %+d</color>] ([<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>] + [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>] = [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>])",
+		soil_plant_tile_net = "[???]"
+	},
 
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "Shortens <color=NATURE>growth time</color> by <color=NATURE>%s</color> seconds.",
-		nutrient_value = "Nutrients: [%s, %s, %s]",
+		nutrient_value = "Nutrients: [<color=NATURE>%s</color>, <color=CAMO>%s</color>, <color=INEDIBLE>%s</color>]",
+		wormwood = {
+			formula_growth = "Accelerates your <color=LIGHT_PINK>blooming</color> by <color=LIGHT_PINK>%s</color>.",
+			compost_heal = "<color=HEALTH>Heals</color> you for <color=HEALTH>%+d</color> over <color=HEALTH>%s</color> second(s).",
+		},
 	},
 
 	-- fillable.lua
@@ -220,6 +230,9 @@ return {
 	ghostlybond = "Sisterly bond: %s / %s. +1 in %s.",
 	ghostlybond_self = "Your sisterly bond: %s / %s. +1 in %s.",
 
+	-- forcecompostable.lua
+	forcecompostable = "Compost value: %s",
+
 	-- friendlevels.lua
 	friendlevel = "Friendliness level: %s / %s",
 
@@ -257,7 +270,7 @@ return {
 	},
 
 	-- healer.lua
-	heal = "Health: %+d",
+	heal = "<color=HEALTH>Health</color>: <color=HEALTH>%+d</color>",
 
 	-- health.lua
 	health = "<color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
