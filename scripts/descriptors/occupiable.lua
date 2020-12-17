@@ -22,15 +22,26 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
+	local perishable_string = nil
+	local canary_string = nil
 	
 	if self:IsOccupied() then
 		--description = GetEntityInformation(self.occupant, context.player)
 		if self.occupant.components.perishable then
 			local descriptor = Insight.descriptors.perishable
 			if descriptor then
-				description = descriptor.Describe(self.occupant.components.perishable, context).description
+				perishable_string = descriptor.Describe(self.occupant.components.perishable, context).description
 			end
 		end
+
+		if self.occupant.prefab == "canary" then
+			local descriptor = Insight.descriptors.inspectable
+			if descriptor then
+				canary_string = descriptor.GetCanaryDescription(self.occupant, context)
+			end
+		end
+
+		description = CombineLines(perishable_string, canary_string)
 	end
 
 	return {

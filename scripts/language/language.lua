@@ -27,6 +27,18 @@ local languages = {
 local __newindex = function(self) error(tostring(self) .. " is readonly") end
 local __metatable = "[Insight] The metatable is locked."
 
+--[[
+local function set(tbl, target)
+	setmetatable(tbl, {__index = target, __newindex=__newindex, __metatable=__metatable})
+
+	for i,v in pairs(tbl) do
+		if type(v) == "tbl" then
+			set(v, rawget(tbl, i))
+		end
+	end
+end
+--]]
+
 local function main(config, locale)
 	local usingIcons = config["info_style"] == "icon"
 
@@ -47,13 +59,24 @@ local function main(config, locale)
 	secondaryLanguage = deepcopy(import("language/" .. secondaryLanguage))
 
 	if secondaryLanguage ~= tertiaryLanguage then
+		
 		for i,v in pairs(secondaryLanguage) do
 			if type(v) == "table" then
-				setmetatable(v, {__index = rawget(tertiaryLanguage, i), __newindex = __newindex, __metatable = __metatable })
+				setmetatable(v, { __index = rawget(tertiaryLanguage, i), __newindex = __newindex, __metatable = __metatable })
+
+				for j, k in pairs(v) do
+					if type(k) == "table" then
+						setmetatable(k, { __index = rawget(rawget(tertiaryLanguage, i), j), __newindex = __newindex, __metatable = __metatable })
+					end
+				end
+
 			end
 		end
+		
 
-		setmetatable(secondaryLanguage, {__index = tertiaryLanguage, __newindex = __newindex, __metatable = __metatable }) -- just in case
+	
+
+		setmetatable(secondaryLanguage, { __index = tertiaryLanguage, __newindex = __newindex, __metatable = __metatable }) -- just in case
 	end
 
 	primaryLanguage = deepcopy(import("language/" .. primaryLanguage))
@@ -61,11 +84,18 @@ local function main(config, locale)
 	if primaryLanguage ~= secondaryLanguage then
 		for i,v in pairs(primaryLanguage) do
 			if type(v) == "table" then
-				setmetatable(v, {__index = rawget(secondaryLanguage, i), __newindex = __newindex, __metatable = __metatable })
+				setmetatable(v, { __index = rawget(secondaryLanguage, i), __newindex = __newindex, __metatable = __metatable })
+
+				for j, k in pairs(v) do
+					if type(k) == "table" then
+						setmetatable(k, { __index = rawget(rawget(secondaryLanguage, i), j), __newindex = __newindex, __metatable = __metatable })
+					end
+				end
+
 			end
 		end
 
-		setmetatable(primaryLanguage, {__index = secondaryLanguage, __newindex = __newindex, __metatable = __metatable })
+		setmetatable(primaryLanguage, { __index = secondaryLanguage, __newindex = __newindex, __metatable = __metatable })
 	end
 
 	--[[

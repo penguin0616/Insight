@@ -277,6 +277,12 @@ return {
 	--hunger_paused = "<color=HUNGER>Hunger</color> decay paused.",
 
 	-- inspectable.lua
+	canary = {
+		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
+		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
+		gas_level_increase = "Increases in %s.",
+		gas_level_decrease = "Decreases in %s."
+	},
 	fossil_stalker = {
 		--pieces_needed = "20%% chance of going wrong with %s more piece(s).",
 		--correct = "This is correctly assembled.",
@@ -425,14 +431,16 @@ return {
 	--upgradeable_complete = "Upgrade %s%% complete.",
 	--upgradeable_incomplete = "No upgrades possible.",
 
-	-- wateringcan.lua
-	wateringcan = "Increases soil moisture by <color=WET>%s</color>.",
-
 	-- waterproofer.lua
 	waterproofness = "<icon=wetness> <color=WET>%s%%</color>",
 
 	-- watersource.lua
 	watersource = "This is a source of water.",
+
+	-- wateryprotection.lua
+	wateryprotection = {
+		--wetness = "Increases moisture by <color=WET>%s</color>."
+	},
 
 	-- weapon.lua
 	weapon_damage_type = {

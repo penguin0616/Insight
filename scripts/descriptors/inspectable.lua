@@ -21,6 +21,96 @@ directory. If not, please refer to
 -- inspectable.lua
 -- only using this for stuff i want information on but doesn't have any distinguishable components
 
+local base_canary_poison_chance = 10*(100 / 12)/100
+local function GetCanaryData(inst)
+	if inst._gaslevel == nil then
+		return nil
+	end
+
+	local data = { gas_level=inst._gaslevel }
+
+	if inst._gasuptask then
+		data.increasing = true
+		data.decreasing = false
+		data.time = GetTaskRemaining(inst._gasuptask)
+	elseif inst._gasdowntask then
+		data.increasing = false
+		data.decreasing = true
+		data.time = GetTaskRemaining(inst._gasdowntask)
+	end
+
+	return data
+end
+
+local function GetCanaryDescription(inst, context)
+    local description = nil
+    local data = GetCanaryData(inst)
+
+    -- gaslevel > 12 and math.random() * 12 < gaslevel - 12
+
+    --[[
+	math.random() <= 1
+		10% chance seems to be fair
+			
+	math.random() * 12 <= 1
+		* 12 means its harder to fall in <= 1 
+		
+	]]
+    -- math.random() <= 1== 1 / 10 == 10% chance
+    -- math.random() * 12 < 1, *12 means its harder to be under <1, which means lesser chance...
+    -- but how much less...?
+    -- perhaps i could argue that its 12 times less often
+
+    --[[
+		> x=0; for i = 1, 10000 do local r = math.random() if r <= .1 then x = x + 1 end end; print(x);
+		987
+
+		we'll call this 1.0
+
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		824
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		824
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		835
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		827
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		808
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		805
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		857
+		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+		836
+
+		-- we'll call it 0.8333
+	]]
+    if data.gas_level then
+        -- 0.8333 = 10*(100 / 12)/100
+        local strs = {}
+        local poison_string
+
+        table.insert(strs, string.format(context.lstr.canary.gas_level, data.gas_level, 13))
+        if data.increasing then
+            table.insert(strs, string.format(context.lstr.canary.gas_level_increase, TimeToText(time.new(data.time, context))))
+        elseif data.decreasing then
+            table.insert(strs, string.format(context.lstr.canary.gas_level_decrease, TimeToText(time.new(data.time, context))))
+        end
+
+        description = table.concat(strs, ", ")
+
+        if data.gas_level > 12 then
+            poison_string = string.format(context.lstr.canary.poison_chance, 10 * base_canary_poison_chance * (data.gas_level - 12))
+        end
+
+        description = CombineLines(description, poison_string)
+	end
+	
+	return description
+end
+
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
@@ -28,6 +118,11 @@ local function Describe(self, context)
 	if inst == context.player then
 		-- no thanks
 		return
+	end
+
+	if inst.prefab == "canary" then
+		description = GetCanaryDescription(inst, context)
+		--description = string.format("gas up: %s, gas down: %s, gas level: %s", up_time, down_time, inst._gaslevel or "?")
 	end
 
 	if inst.prefab == "winter_tree" then
@@ -177,5 +272,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetCanaryDescription = GetCanaryDescription
 }
