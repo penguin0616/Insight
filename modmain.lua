@@ -2634,3 +2634,32 @@ _G.printtable = printtable
 
 _G.cprint = cprint
 
+
+--[[
+	print("client:", GetModConfigData("giants", true))
+print("server:", GetModConfigData("giants", false))
+
+
+GLOBAL.check = function(client_config)
+	print("checking with client_config =", client_config)
+	local modname = "pengu";
+	local key = "giants"
+
+	print("GetModConfigData:", GetModConfigData(key, client_config))
+
+	local filename = GLOBAL.KnownModIndex:GetModConfigurationPath(modname, client_config);
+	print("\tFilename:", filename)
+
+	TheSim:GetPersistentString(filename, function(safe, res)
+		if not safe then return print('GetPersistentString fails to load the filename') end;
+		local axd, data = GLOBAL.RunInSandboxSafe(res); 
+		if not axd then return print('GetPersistentString fails to run the data in the sandbox') end;
+		for i,v in pairs(data) do 
+			if v.name == key then 
+				print("GetPersistentString:", v.label, ":", v.saved)
+			end;
+		end;
+	end);
+	print'-------------------------------'
+end
+]]

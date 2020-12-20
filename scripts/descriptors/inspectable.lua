@@ -24,7 +24,7 @@ directory. If not, please refer to
 local base_canary_poison_chance = 10*(100 / 12)/100
 local function GetCanaryData(inst)
 	if inst._gaslevel == nil then
-		return nil
+		return {}
 	end
 
 	local data = { gas_level=inst._gaslevel }
@@ -125,7 +125,7 @@ local function Describe(self, context)
 		--description = string.format("gas up: %s, gas down: %s, gas level: %s", up_time, down_time, inst._gaslevel or "?")
 	end
 
-	if inst.prefab == "winter_tree" then
+	if inst:HasTag("winter_tree") then
 		if context.player.components.wintertreegiftable then
 			local days_remaining = Insight.descriptors.wintertreegiftable.GetDaysRemainingForRareGift(context.player.components.wintertreegiftable)
 

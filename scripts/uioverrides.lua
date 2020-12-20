@@ -89,7 +89,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	mb:SetDraggable(true)
 	mb.allowcontroller = IsDS() -- false
 	mb:SetOnDragFinish(function(oldpos, newpos)
-		SavePersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
+		TheSim:SetPersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
 			dprint("InsightButton -> DragFinish -> Save -> Callback:", ...)
 		end) -- i wonder if this will cause lag. ¯\_(ツ)_/¯ ISSUE:PERFORMANCE
 	end)

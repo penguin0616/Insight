@@ -310,7 +310,10 @@ local function placer_postinit_fn(inst, radius)
 	inst.placer_range:SetRadius(radius)
 	inst.placer_range:AddTag("placer")
 	inst.placer_range:SetVisible(true)
-    inst.components.placer:LinkEntity(inst.placer_range)
+
+	if IsDST() or GetWorldType() == 3 then
+		inst.components.placer:LinkEntity(inst.placer_range) -- i don't remember why i need to do this
+	end
 end
 
 local function LoadLocalPlayer(player)

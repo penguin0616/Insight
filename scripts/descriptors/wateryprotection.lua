@@ -17,29 +17,25 @@ LICENSE in the form of a LICENSE file in the root of the source
 directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
--- aporkalypse.lua
-local Is_DS = IsDS()
+
+-- wateryprotection.lua
 local function Describe(self, context)
-	if not IS_DS then
-		return -- some mod created this component in DST, probably the SW port
+	local description = nil
+	local wetness_string = nil
+
+	if self.addwetness then
+		wetness_string = string.format(context.lstr.wateryprotection.wetness, self.addwetness)
 	end
 
-	local description
-
-	if not self.aporkalypse_active and self:GetBeginDate() then
-		description = TimeToText(time.new(self:GetBeginDate() - GetClock():GetTotalTime(), context))
-	end
+	description = CombineLines(wetness_string)
 
 	return {
 		priority = 0,
-		description = description,
-		worldly = true,
-		icon = {
-			atlas = "images/Aporkalypse_Clock.xml",
-			tex = "Aporkalypse_Clock.tex",
-		},
+		description = description
 	}
 end
+
+
 
 return {
 	Describe = Describe

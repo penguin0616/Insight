@@ -31,19 +31,21 @@ local function Describe(self, context)
 	local compost_value_string
 	local health_value_string
 
-	if farmingHelper.WorldHasOldGrowers() or Is_DS then
+	if Is_DS or farmingHelper.WorldHasOldGrowers() then
 		growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
 	end
 
-	local nutrient_value = farmingHelper.GetNutrientValue(self.inst:GetFertilizerKey())
-	if nutrient_value then
-		local missing = nil --"?"
-		nutrient_value_string = string.format(context.lstr.fertilizer.nutrient_value, nutrient_value[1] or missing, nutrient_value[2] or missing, nutrient_value[3] or missing)
-	else
-		nutrient_value_string = "Does not have nutrients?"
+	if not Is_DS then
+		local nutrient_value = farmingHelper.GetNutrientValue(self.inst:GetFertilizerKey())
+		if nutrient_value then
+			local missing = nil --"?"
+			nutrient_value_string = string.format(context.lstr.fertilizer.nutrient_value, nutrient_value[1] or missing, nutrient_value[2] or missing, nutrient_value[3] or missing)
+		else
+			nutrient_value_string = "Does not have nutrients?"
+		end
 	end
 
-	if context.player:HasTag("self_fertilizable") then
+	if not Is_DS and context.player:HasTag("self_fertilizable") then
 		local formula, compost, manure = self.nutrients[TUNING.FORMULA_NUTRIENTS_INDEX], self.nutrients[TUNING.COMPOST_NUTRIENTS_INDEX], self.nutrients[TUNING.MANURE_NUTRIENTS_INDEX]
 
 		if formula > 0 then

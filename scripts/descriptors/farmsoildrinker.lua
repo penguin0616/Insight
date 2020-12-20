@@ -25,7 +25,10 @@ local function DescribeMoisture(self, context, definition)
 	local verbosity = context.config.soil_moisture
 	local tile_moisture = farmingHelper.GetTileMoistureAtPoint(self.inst.Transform:GetWorldPosition())
 
-	if verbosity == 1 then
+	if not tile_moisture then
+		description = "Missing tile moisture data."
+
+	elseif verbosity == 1 then
 		-- tile moisture only
 		-- Water: 33%
 		description = string.format(context.lstr.farmsoildrinker.soil_only, Round(tile_moisture, 0))
