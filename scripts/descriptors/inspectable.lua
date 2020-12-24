@@ -21,6 +21,14 @@ directory. If not, please refer to
 -- inspectable.lua
 -- only using this for stuff i want information on but doesn't have any distinguishable components
 
+local function IsWinter()
+	if IsDST() then
+		return TheWorld.state.iswinter
+	else
+		return GetSeasonManager():IsWinter()
+	end
+end
+
 local base_canary_poison_chance = 10*(100 / 12)/100
 local function GetCanaryData(inst)
 	if inst._gaslevel == nil then
@@ -120,6 +128,28 @@ local function Describe(self, context)
 		return
 	end
 
+	if inst.prefab == "stagehand" and IsDST() then -- lots of stuff here done to make it make more sense / flow better
+		local mem = inst.sg.mem
+		local hits_left = mem.hits_left or TUNING.STAGEHAND_HITS_TO_GIVEUP -- something to display if no hits registered
+		local hit_string = nil
+		local reset_string = nil
+
+		if mem.prevtimeworked then
+			local offset = GetTime() - mem.prevtimeworked
+			local remaining_time = TUNING.SEG_TIME * 0.5 - offset
+
+			if remaining_time >= 0 then
+				reset_string = string.format(context.lstr.stagehand.time_to_reset, TimeToText(time.new(remaining_time, context)))
+			else
+				hits_left = TUNING.STAGEHAND_HITS_TO_GIVEUP -- we're technically reset to 86, though it doesn't take place until the next hit.
+			end
+		end
+		
+		hit_string = string.format(context.lstr.stagehand.hits_remaining, hits_left) 
+
+		description = CombineLines(hit_string, reset_string)
+	end
+
 	if inst.prefab == "canary" then
 		description = GetCanaryDescription(inst, context)
 		--description = string.format("gas up: %s, gas down: %s, gas level: %s", up_time, down_time, inst._gaslevel or "?")
@@ -162,12 +192,12 @@ local function Describe(self, context)
 	end
 
 	if inst.prefab == "lureplant" then
-		if inst.hibernatetask and not TheWorld.state.iswinter then
+		if inst.hibernatetask and not IsWinter() then
 			description = string.format(context.lstr.lureplant_active, TimeToText(time.new(GetTaskRemaining(inst.hibernatetask), context)))
 		end
 	end
 
-	if inst.prefab == "walrus_camp"  then
+	if inst.prefab == "walrus_camp" then
 		if inst.data.regentime then
 			local strs = {}
 			for prefab, targettime in pairs(inst.data.regentime) do

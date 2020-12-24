@@ -26,8 +26,9 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local IsPrefab, IsWidget, IsBundleWrap = IsPrefab, IsWidget, IsBundleWrap
 
 local highlightColorKey = "__insight:MultColor"
-local fuel_highlighting = GetModConfigData("fuel_highlighting", true)
-local highlighting_enabled = GetModConfigData("highlighting", true)
+local fuel_highlighting = nil
+local highlighting_enabled = nil
+local activated = false
 local Is_DST = IsDST()
 
 local colors = {
@@ -361,8 +362,11 @@ local function EvaluateRelevance(inst, isApplication)
 	
 end
 
-local function DoRelevanceChecks()
+local function DoRelevanceChecks(force_apply)
 	local apply = ((activeItem or activeIngredientFocus) and true) or false
+	if force_apply ~= nil then
+		apply = force_apply
+	end
 
 	for v in pairs(entityManager.active_entities) do -- ISSUE:PERFORMANCE
 		EvaluateRelevance(v, apply)
@@ -380,12 +384,19 @@ local function DoRelevanceChecks()
 end
 
 function highlighting.SetActiveItem(player, data)
+	if not activated then
+		return
+	end
 	activeItem = data.item
 
 	DoRelevanceChecks()
 end
 
 function highlighting.SetActiveIngredientUI(ui)
+	if not activated then
+		return
+	end
+
 	if activeIngredientFocus == ui then
 		return
 	end
@@ -406,10 +417,18 @@ function highlighting.SetActiveIngredientUI(ui)
 end
 
 function highlighting.SetEntitySleep(inst)
+	if not activated then
+		return
+	end
+	
 	RemoveHighlight(inst)
 end
 
 function highlighting.SetEntityAwake(inst)
+	if not activated then
+		return
+	end
+
 	if inst:HasTag("INLIMBO") then -- most likely an inventory item
 		--mprint("@ LIMBO", inst)
 		for _, slot in pairs(GetItemSlots()) do
@@ -422,6 +441,19 @@ function highlighting.SetEntityAwake(inst)
 		--mprint("set awake", inst)
 		EvaluateRelevance(inst, true)
 	end
+end
+
+highlighting.Activate = function(insight, context)
+	dprint("Highlighting activated")
+	fuel_highlighting = context.config["fuel_highlighting"]
+	highlighting_enabled = context.config["highlighting"]
+	activated = true
+end
+
+highlighting.Deactivate = function()
+	dprint("Highlighting deactivated")
+	activated = false
+	DoRelevanceChecks(false)
 end
 
 return highlighting

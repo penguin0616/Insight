@@ -19,8 +19,32 @@ directory. If not, please refer to
 ]]
 
 -- edible.lua
-
 local cooking = require("cooking")
+
+local function GetWereEaterData(inst, context)
+	local wereeater = context.player.components.wereeater
+	if not wereeater then
+		return
+	end
+
+	if not inst:HasTag("monstermeat") then
+		return
+	end
+
+	if wereeater.monster_count == 0 then
+		return
+	end
+
+	local forget_time = wereeater.forget_task and GetTaskRemaining(wereeater.forget_task)
+
+	if forget_time then
+		forget_time = TimeToText(time.new(forget_time, context))
+	else
+		forget_time = "?"
+	end
+
+	return string.format(context.lstr.wereeater, wereeater.monster_count, 2, forget_time)
+end
 
 local function GetFoodUnits(inst, context)
 	local ing = cooking.ingredients[inst.prefab]
@@ -282,6 +306,15 @@ local function Describe(self, context)
 		end
 	end
 
+	local wereeater_data = context.player.components.wereeater and GetWereEaterData(self.inst, context)
+	if wereeater_data then
+		wereeater_data = {
+			name = "edible_wereeater",
+			priority = 0.1,
+			description = wereeater_data
+		}
+	end
+
 	local effect_table = nil
 	if context.config["food_effects"] then
 		local effects = GetFoodEffects(self)
@@ -306,7 +339,7 @@ local function Describe(self, context)
 		name = "edible",
 		priority = 5,
 		description = description
-	}, effect_table, foodmemory_data
+	}, effect_table, foodmemory_data, wereeater_data
 end
 
 

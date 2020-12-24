@@ -22,7 +22,7 @@ directory. If not, please refer to
 
 return {
 	-- insightservercrash.lua
-	server_crash = "This server has crashed. The cause is unknown.",
+	server_crash = "由于未知原因，服务器崩溃",
 
 	-- modmain.lua
 	dragonfly_ready = "准备战斗",
@@ -100,7 +100,7 @@ return {
 	domesticable = {
 		domestication = "驯化值: %s%%",
 		obedience = "顺从值: %s%%",
-		tendency = "Tendency: %s"
+		tendency = "趋势：%s"
 	},
 
 	-- drivable.lua
@@ -141,6 +141,7 @@ return {
 		antihistamine = "花粉症延时：%ss",
 	},
 	foodmemory = "最近食用：%s / %s，会忘记于：%s后",
+	wereeater = "<color=MONSTER>Monster meat</color> eaten: %s / %s, will forget in: %s",
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
@@ -155,11 +156,12 @@ return {
 	explosive_range = "<color=LIGHT>爆炸范围</color>: %s",
 
 	-- farmplantable.lua
-	farmplantable = "Will grow into a <color=NATURE>%s</color>.",
+	farmplantable = "会长成<color=NATURE>%s</color>.",
 
 	-- farmplantstress.lua
 	farmplantstress = {
-		display = "Stressors: %s",
+		stress_points = "Stress Points: %s",
+		display = "压力源：%s",
 	},
 
 	-- farmsoildrinker.lua
@@ -177,7 +179,7 @@ return {
 
 	-- fillable.lua
 	fillable = {
-		accepts_ocean_water = "Can be filled with ocean water.",
+		accepts_ocean_water = "能被海水填充",
 	},
 
 	-- finiteuses.lua
@@ -249,7 +251,7 @@ return {
 	-- harvestable.lua
 	harvestable = {
 		product = "%s: %s / %s",
-		grow = "+1 in %s.",
+		grow = "+1于%s后",
 	},
 
 	-- hatchable.lua
@@ -277,6 +279,10 @@ return {
 	hunger_paused = "<color=HUNGER>饥饿值</color>暂停",
 
 	-- inspectable.lua
+	stagehand = {
+		hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
+		time_to_reset = "Will reset in %s." 
+	},
 	canary = {
 		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
 		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
@@ -284,13 +290,13 @@ return {
 		gas_level_decrease = "Decreases in %s."
 	},
 	fossil_stalker = {
-		pieces_needed = "20%% chance of going wrong with %s more piece(s).",
-		correct = "This is correctly assembled.",
-		incorrect = "This is assembled wrong.",
+		pieces_needed = "有20%%几率组装错误在组装上%s片后",
+		correct = "组装正确",
+		incorrect = "组装错误",
 	},
-	trap_starfish_cooldown = "Rearms in: %s",
-	lureplant_active = "Will become active in: %s",
-	walrus_camp_respawn = "<color=FROZEN>%s</color> respawns in: %s",
+	trap_starfish_cooldown = "重组于：%s后",
+	lureplant_active = "开始活动于: %s后",
+	walrus_camp_respawn = "<color=FROZEN>%s</color> 重生于: %s后",
 	hunt_progress = "追踪：%s / %s",
 	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
@@ -310,7 +316,7 @@ return {
 	followers = "跟随者数量: %s",
 
 	-- madsciencelab.lua
-	madsciencelab_finish = "Will finish in: %s",
+	madsciencelab_finish = "完成于: %s后",
 
 	-- malbatrossspawner.lua
 	malbatross_spawnsin = "%s",
@@ -346,7 +352,7 @@ return {
 	perishable_paused = "当前暂停腐烂",
 
 	-- petrifiable.lua
-	petrify = "Will become petrified in %s.",
+	petrify = "石化于：%s后",
 
 	-- pickable.lua
 	regrowth = "<color=NATURE>重新生长</color> 在: <color=NATURE>%s</color> 后", -- has grammar problem, left because too annoying
@@ -354,7 +360,7 @@ return {
 	pickable_cycles = "剩余收获次数：%s / %s",
 
 	-- pollinator.lua
-	pollination = "Flowers pollinated: (%s) / %s",
+	pollination = "花授粉：(%s) / %s",
 
 	-- preservative.lua
 	preservative = "Restores %s%% of freshness.",
@@ -365,14 +371,14 @@ return {
 	-- questowner.lua
 	questowner = {
 		pipspook = {
-			toys_remaining = "Toys remaining: %s",
-			assisted_by = "This pipspook is being assisted by %s.",
+			toys_remaining = "剩余玩具数：%s",
+			assisted_by = "这个小惊吓正在受到%s的帮助",
 		},
 	},
 
 	-- rocmanager.lua
 	rocmanager = {
-		cant_spawn = "Unable to spawn."
+		cant_spawn = "无法生成"
 	},
 
 	-- sanity.lua
@@ -395,7 +401,7 @@ return {
 	-- stewer.lua
 	stewer_product = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>)",
 	cooktime_remaining = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>) 会在 %s 秒后完成",
-	cooker = "Cooked by <color=%s>%s</color>.",
+	cooker = "由<color=%s>%s</color>烹饪",
 	cooktime_modifier_slower = "Cooks food <color=#DED15E>%s%%</color> slower.",
 	cooktime_modifier_faster = "Cooks food <color=NATURE>%s%%</color> faster.",
 

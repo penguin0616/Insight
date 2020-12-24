@@ -35,7 +35,7 @@ local function Describe(self, context)
 		growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
 	end
 
-	if not Is_DS then
+	if self.inst.GetFertilizerKey then
 		local nutrient_value = farmingHelper.GetNutrientValue(self.inst:GetFertilizerKey())
 		if nutrient_value then
 			local missing = nil --"?"

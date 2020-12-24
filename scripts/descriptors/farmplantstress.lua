@@ -19,8 +19,43 @@ directory. If not, please refer to
 ]]
 
 -- farmplantstress.lua
+local function GetPlantStressors(self) -- ISSUE:PERFORMANCE might be worth caching temporarily?
+	local stressors = {}
+	for stressor, testfn in pairs(self.stressors_testfns) do
+		if testfn(self.inst, self.stressors[stressor], false) then
+			table.insert(stressors, stressor)
+		end
+	end
+	return stressors
+end
+
+local function GetPlantStressState(self)
+	local stress = self.stress_points
+	local final_stress_state = stress <= 1 and FARM_PLANT_STRESS.NONE		-- allow one mistake
+							or stress <= 6 and FARM_PLANT_STRESS.LOW		-- one and half categories can fail, take your pick
+							or stress <= 11 and FARM_PLANT_STRESS.MODERATE  -- almost 3 categories can fail
+							or FARM_PLANT_STRESS.HIGH						-- you aren't even trying now, are you?
+
+	return final_stress_state
+end
+
+local GREEN = Color.fromHex("#00cc00")
+local RED = Color.fromHex("#dd5555")
+
+local STRESS_COLORS = {
+	[FARM_PLANT_STRESS.NONE] = GREEN:Lerp(RED, 0):ToHex(),
+	[FARM_PLANT_STRESS.LOW] = GREEN:Lerp(RED, 1/3):ToHex(),
+	[FARM_PLANT_STRESS.MODERATE] = GREEN:Lerp(RED, 2/3):ToHex(),
+	[FARM_PLANT_STRESS.HIGH] = RED:ToHex()
+}
+
 local function Describe(self, context)
 	local description = nil
+	--[[
+	if true then
+		return {priority=0, description="helloa\n\tbthere\nbthere"}
+	end
+	--]]
 
 	if context.config["display_plant_stressors"] == 0 then
 		return
@@ -31,7 +66,9 @@ local function Describe(self, context)
 		-- when looking for hat prefab file, remove hat part
 
 		--if context.player.components.inventory:Has("nutrientsgoggleshat", 1) then
-		if context.player.components.inventory:HasItemWithTag("detailedplanthappiness", 1) then
+		if context.player:HasTag("plantkin") then
+			hat = true
+		elseif context.player.components.inventory:HasItemWithTag("detailedplanthappiness", 1) then
 			hat = true
 		elseif context.player.components.inventory:EquipHasTag("detailedplanthappiness") then
 			hat = true
@@ -62,15 +99,25 @@ local function Describe(self, context)
 	end
 	--]]
 
+	--[[
 	for stressor, stressed in pairs(self.stressors) do
 		if stressed then
 			table.insert(strs, ApplyColour(stressor, "#dd5555"))
 		end
 	end
+	--]]
+
+	for _, stressor in pairs(GetPlantStressors(self)) do
+		table.insert(strs, ApplyColour(stressor, "#dd5555"))
+	end
+
+	description = string.format(context.lstr.farmplantstress.stress_points, ApplyColour(self.stress_points, STRESS_COLORS[GetPlantStressState(self)]))
 
 	if #strs > 0 then
-		description = string.format(context.lstr.farmplantstress.display, table.concat(strs, ", "))
+		description = CombineLines(description, string.format(context.lstr.farmplantstress.display, table.concat(strs, ", ")))
 	end
+
+	--description = ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.NONE]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.LOW]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.MODERATE]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.HIGH])
 
 	return {
 		priority = 0,

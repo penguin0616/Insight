@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.8.14" -- ds is 2.4.4_ds
+version = "2.8.20" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,8 +77,8 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "bug fixes; wormwood fertilizer info; drag & save insight button; nutrients; plant moisture; bug fix; winters feast;",
-	update_info_ds = "More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
+	update_info = "message bottle indicators; stagehand/werewoodie info; highlighting bug fix; plant stressors redone;  wormwood fertilizer info;",
+	update_info_ds = "bug fixes; More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",
@@ -254,6 +254,20 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Notable indicators shown."
+			},
+		},
+	},
+	bottle_indicator = {
+		LABEL = "Bottle Indicator",
+		HOVER = "Whether message bottle indicators are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Message indicators not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Message indicators shown."
 			},
 		},
 	},
@@ -1099,6 +1113,20 @@ local chinese = {
 			},
 		},
 	},
+	bottle_indicator = {
+		LABEL = "Bottle Indicator",
+		HOVER = "Whether message bottle indicators are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Message indicators not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Message indicators shown."
+			},
+		},
+	},
 	hunt_indicator = {
 		LABEL = "动物脚印指示器",
 		HOVER = "是否显示脚印指示器",
@@ -1925,6 +1953,16 @@ configuration_options = {
 	},
 	{
 		name = "notable_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "bottle_indicator",
 		options = {
 			{data = false},
 			{data = true},

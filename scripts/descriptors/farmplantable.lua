@@ -19,16 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- farmplantable.lua
-
-local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS
-
-local function GetPlantProduct(plant) -- farm_plant_...
-	for veggie, data in pairs(PLANT_DEFS) do
-		if data.prefab == plant then
-			return veggie
-		end
-	end
-end
+local farmingHelper = import("helpers/farming")
 
 local function Describe(self, context)
 	local description = nil
@@ -40,7 +31,7 @@ local function Describe(self, context)
 		return
 	end
 
-	local product = GetPlantProduct(self.plant)
+	local product = farmingHelper.GetPlantProduct(self.plant)
 
 	if not product then
 		product = "???"

@@ -141,6 +141,7 @@ return {
 		antihistamine = "Hayfever Delay: %ss",
 	},
 	foodmemory = "Recently eaten: %s / %s, will forget in: %s",
+	wereeater = "<color=MONSTER>Monster meat</color> eaten: %s / %s, will forget in: %s",
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
@@ -159,6 +160,7 @@ return {
 
 	-- farmplantstress.lua
 	farmplantstress = {
+		stress_points = "Stress Points: %s",
 		display = "Stressors: %s",
 	},
 
@@ -288,6 +290,10 @@ return {
 	hunger_paused = "<color=HUNGER>Hunger</color> decay paused.",
 
 	-- inspectable.lua
+	stagehand = {
+		hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
+		time_to_reset = "Will reset in %s." 
+	},
 	canary = {
 		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
 		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",

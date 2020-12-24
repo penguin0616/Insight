@@ -711,7 +711,7 @@ function Insight:RequestInformation(item, params)
 		local host = self.performance_ratings:GetHost()
 		local client = self.performance_ratings:GetClient()
 		local ents = math.floor(self:CountEntities() / 1000) -- (2000 - host * 500) -- host? client? who knows which is better.
-		local plrs = math.floor(#(TheNet:GetClientTable() or {}) / 4)
+		local plrs = math.ceil(#(TheNet:GetClientTable() or {}) / 4)
 		-- min is 170, max seen is 3370
 		
 		delay = (0.50 * host) + (1/3 * client) + (0.125 * ents) + (0.125 * plrs)

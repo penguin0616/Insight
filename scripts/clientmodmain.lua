@@ -28,7 +28,15 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 localPlayer = nil
 shard_players = {}
 highlighting = import("highlighting")
-local onLocalPlayerReady = setmetatable({}, { __newindex = function(self, index, value) assert(type(value)=="function", "onLocalPlayerReady invalid value"); if localPlayer then value(GetInsight(localPlayer), GetPlayerContext(localPlayer)) else rawset(self, index, value) end; end; })
+local onLocalPlayerReady = setmetatable({}, { __newindex = function(self, index, value) 
+	assert(type(value.fn)=="function", "onLocalPlayerReady invalid value"); 
+	if localPlayer then value.fn(GetInsight(localPlayer), GetPlayerContext(localPlayer)) end;
+	if value.persists or not localPlayer then rawset(self, index, value) end; 
+end; })
+local onLocalPlayerRemove = setmetatable({}, { __newindex = function(self, index, value) 
+	assert(type(value.fn)=="function", "onLocalPlayerRemove invalid value"); 
+	rawset(self, index, value) 
+end; })
 local delayed_actives = {}
 local Is_DS = IsDS()
 local Is_DST = IsDST()
@@ -39,10 +47,16 @@ local Is_DST = IsDST()
 --==========================================================================================================================
 --==========================================================================================================================
 
-function AddLocalPlayerPostInit(fn)
+function AddLocalPlayerPostInit(fn, persists)
 	-- table.insert uses rawset internally
-	onLocalPlayerReady[#onLocalPlayerReady+1] = fn
+	onLocalPlayerReady[#onLocalPlayerReady+1] = {fn = fn, persists = persists or false}
 end
+
+function AddLocalPlayerPostRemove(fn, persists)
+	-- table.insert uses rawset internally
+	onLocalPlayerRemove[#onLocalPlayerRemove+1] = {fn = fn, persists = persists or false}
+end
+
 
 --- Retrives the current selected item, be it from hud or world.
 -- @treturn ?Item|nil
@@ -316,8 +330,29 @@ local function placer_postinit_fn(inst, radius)
 	end
 end
 
+local function LocalPlayerRemoved()
+	localPlayer = nil
+	dprint("LOCALPLAYER REMOVED")
+
+	local x = 0
+	mprint(x, #onLocalPlayerRemove)
+	while #onLocalPlayerRemove > x do
+		mprint(string.format("Processing deconstructors with [%s] remaining.", #onLocalPlayerRemove))
+
+		local todo = onLocalPlayerRemove[x + 1]
+		todo.fn()
+			
+		if todo.persists then
+			x = x + 1
+			mprint("\tIt persists.")
+		else
+			table.remove(onLocalPlayerRemove, x + 1)
+		end
+	end
+end
+
 local function LoadLocalPlayer(player)
-	mprint("loadlocalplayer", player)
+	--mprint("loadlocalplayer", player)
 
 	if not player:IsValid() then
 		error("[INSIGHT]: PLAYER ENTITY INVALIDATED!!")
@@ -326,13 +361,22 @@ local function LoadLocalPlayer(player)
 
 	if IsPlayerClientLoaded(player) then
 		localPlayer = player
-		mprint("LOCALPLAYER FOUND")
+		player:ListenForEvent("onremove", LocalPlayerRemoved)
+		--mprint("LOCALPLAYER FOUND")
 
 		local x = 0
 		while #onLocalPlayerReady > x do
-			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady))
+			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady - x))
 
-			table.remove(onLocalPlayerReady, 1)(GetInsight(localPlayer), GetPlayerContext(localPlayer))
+			local todo = onLocalPlayerReady[x + 1]
+			todo.fn(GetInsight(localPlayer), GetPlayerContext(localPlayer))
+			
+			if todo.persists then
+				x = x + 1
+				mprint("\tIt persists.")
+			else
+				table.remove(onLocalPlayerReady, x + 1)
+			end
 		end
 		mprint("Initializers complete" ..  ((FASCINATING and "...") or "!"))
 
@@ -416,6 +460,20 @@ do
 		end)
 	end
 
+	-- 
+	local function AddBottleIndicator(inst)
+		if not inst:IsValid() then return end
+
+		AddLocalPlayerPostInit(function(insight, context)
+			if not context.config["bottle_indicator"] then
+				return
+			end
+
+			local clr = "#609779" or Insight.COLORS.FROZEN -- from message bottle scroll
+			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
+		end)
+	end
+
 	-- https://dontstarve.fandom.com/wiki/Category%3ABoss_Monsters
 	local bosses = {
 		"minotaur", "ancient_herald", "antlion", "bearger", "beequeen", "crabking", "deerclops", "dragonfly", "ancient_hulk", "klaus",
@@ -459,6 +517,8 @@ do
 	for _, name in pairs(notable) do
 		AddPrefabPostInit(name, AddNotableIndicator)
 	end
+
+	AddPrefabPostInit("messagebottle", AddBottleIndicator)
 
 end
 
@@ -705,11 +765,6 @@ AddPlayerPostInit(function(player)
 		_G._TRACEBACK = function() end
 		--]]
 
-		player:ListenForEvent("onremove", function(inst)
-			mprint("LOCALPLAYER REMOVED")
-			localPlayer = nil
-		end)
-
 		LoadLocalPlayer(player)
 
 		AddLocalPlayerPostInit(function(insight, context)
@@ -839,3 +894,7 @@ if IsDS() then
 		return sizetbl[self]
 	end
 end
+
+AddLocalPlayerPostInit(highlighting.Activate, true)
+AddLocalPlayerPostRemove(highlighting.Deactivate, true)
+AddLocalPlayerPostRemove(function() mprint"REMOVE ONCE" end)

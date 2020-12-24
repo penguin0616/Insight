@@ -30,6 +30,7 @@ local SOIL_MAX_TEMP_DRY_RATE = TUNING.SOIL_MAX_TEMP_DRY_RATE
 local MAX_SOIL_MOISTURE = TUNING.SOIL_MAX_MOISTURE_VALUE
 
 local FERTILIZER_DEFS = (IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS) or {}
+local PLANT_DEFS = (IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/farm_plant_defs").PLANT_DEFS) or {}
 
 local farming_manager = nil
 local growers = {}
@@ -78,6 +79,7 @@ local function RegisterOldGrower(grower)
 	end)
 end
 
+--- Old farming system is being used
 local function WorldHasOldGrowers()
 	return #growers > 0
 end
@@ -120,6 +122,7 @@ local function GetNutrientValue(prefab)
 	end
 end
 
+--- Get tile nutrients at point
 local function GetTileNutrientsAtPoint(x, y, z)
 	--local tile_data = GetTileDataAtPoint(false, x, y, z);
 	-- farming_manager:GetTileNutrients
@@ -149,6 +152,16 @@ local function GetTileNutrientsAtPoint(x, y, z)
 	}
 end
 
+--- Returns plant product
+local function GetPlantProduct(plant) -- farm_plant_...
+	for veggie, data in pairs(PLANT_DEFS) do
+		if data.prefab == plant then
+			return veggie
+		end
+	end
+end
+
+
 lib = {
 	IsInitialized = IsInitialized,
 	Initialize = Initialize,
@@ -162,6 +175,7 @@ lib = {
 
 	GetNutrientValue = GetNutrientValue,
 	GetTileNutrientsAtPoint = GetTileNutrientsAtPoint,
+	GetPlantProduct = GetPlantProduct,
 }
 
 return setmetatable({}, {__index = lib})

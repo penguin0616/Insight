@@ -141,6 +141,7 @@ return {
 		antihistamine = "<icon=cutnettle> %ss",
 	},
 	--foodmemory = "Recently eaten: %s / %s, will forget in: %s",
+	--wereeater = "<color=MONSTER>Monster meat</color> eaten: %s / %s, will forget in: %s",
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
@@ -159,7 +160,8 @@ return {
 
 	-- farmplantstress.lua
 	farmplantstress = {
-		display = "Stressors: %s",
+		--stress_points = "Stress Points: %s",
+		--display = "Stressors: %s",
 	},
 
 	-- farmsoildrinker.lua
@@ -277,11 +279,15 @@ return {
 	--hunger_paused = "<color=HUNGER>Hunger</color> decay paused.",
 
 	-- inspectable.lua
+	stagehand = {
+		--hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
+		--time_to_reset = "Will reset in %s." 
+	},
 	canary = {
-		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
-		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
-		gas_level_increase = "Increases in %s.",
-		gas_level_decrease = "Decreases in %s."
+		--gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
+		--poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
+		--gas_level_increase = "Increases in %s.",
+		--gas_level_decrease = "Decreases in %s."
 	},
 	fossil_stalker = {
 		--pieces_needed = "20%% chance of going wrong with %s more piece(s).",

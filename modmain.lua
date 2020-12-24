@@ -241,7 +241,7 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "farming_manager", "nutrients_visual_manager", -- don't care
+	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "farming_manager", "nutrients_visual_manager", "vase", "vasedecoration", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable",
