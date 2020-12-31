@@ -18,42 +18,43 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- rocmanager.lua
+
+-- bloomness.lua
+local WHITE = Color.new(1, 1, 1, 1)
+local LIGHT_PINK = Color.fromHex(Insight.COLORS.LIGHT_PINK)
+
 local function Describe(self, context)
-	local description
+	local description = nil
 
-	if not self.disabled and not self.roc then
+	if self.rate <= 0 then
+		return
+	end
 
-		local remaining_time
-		local should_spawn
+	local amount = self.timer / self.rate
 
-		if IsDS() then
-			local clock = GetClock()
-			remaining_time = self.nexttime - clock:GetTotalTime()
-			should_spawn = clock:GetNormTime() < (clock.daysegs / 16) /2 and not TheCamera.interior
-		else
-			remaining_time = self.nexttime
-			should_spawn = TheWorld.state.isday
-		end
+	local remaining_time = time.new(amount, context)
+	local next_stage = self.is_blooming and (self.level + 1) or (self.level - 1)
+
+	if self.is_blooming or self.level ~= 0 then
+		local clr1 = WHITE:Lerp(LIGHT_PINK, self.level / self.max):ToHex()
+		local clr2 = WHITE:Lerp(LIGHT_PINK, next_stage / self.max):ToHex()
+		--description = string.format("Will enter stage %s/<color=LIGHT_PINK>%s</color> in %s", ApplyColour(next_stage, clr), self.max, TimeToText(remaining_time))
 		
-		
-		if remaining_time >= 0 then
-			description = TimeToText(time.new(remaining_time, context))
-		elseif not should_spawn then -- don't use self:ShouldSpawn(), does modifications of its own
-			description = context.lstr.rocmanager.cant_spawn
-		end
+		description = string.format("Stage %s -> %s in %s", ApplyColour(self.level, clr1), ApplyColour(next_stage, clr2), TimeToText(remaining_time))
 	end
 
 	return {
 		priority = 0,
 		description = description,
-		worldly = true,
 		icon = {
-			atlas = "images/Roc.xml",
-			tex = "Roc.tex",
+			atlas = "images/hud.xml",
+			tex = "tab_nature.tex"
 		},
+		playerly = true
 	}
 end
+
+
 
 return {
 	Describe = Describe

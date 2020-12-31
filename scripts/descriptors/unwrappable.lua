@@ -20,8 +20,8 @@ directory. If not, please refer to
 
 -- unwrappable.lua
 local bundlingAlreadyHandled = nil -- caching to save time
-
 local processed_bundles = setmetatable({}, {__metatable = "k"})
+local NAMES = STRINGS.NAMES
 
 local function GetItems(self, context) -- ISSUE:PERFORMANCE
 	local itemdata = self.itemdata
@@ -65,6 +65,11 @@ local function GetItems(self, context) -- ISSUE:PERFORMANCE
 			end
 		end
 
+		if not item.name then
+			local upper = string.upper(item.prefab)
+			item.name = NAMES["KNOWN_" .. upper] or NAMES[upper]
+		end
+
 		table.insert(items, item)
 	end
 
@@ -79,7 +84,7 @@ local function MakeDescription(items, context)
 	for i,item in pairs(items) do
 		local perishable = item.perishable or ""
 		local amount = item.amount
-		local name = item.name or STRINGS.NAMES[string.upper(item.prefab)] or "**" .. item.prefab
+		local name = item.name or "**" .. item.prefab
 
 		table.insert(items_string, string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable))
 	end

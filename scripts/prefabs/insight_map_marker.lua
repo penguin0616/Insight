@@ -36,6 +36,7 @@ local function fn()
 	inst.entity:AddMiniMapEntity()
 
 	-- tags
+	inst:AddTag("NOBLOCK")
 	inst:AddTag("NOCLICK")
 	inst:AddTag("CLASSIFIED")
 

@@ -136,7 +136,7 @@ local function Describe(self, context)
 	end
 
 	_stimuli = _stimuli or "normal"
-	local damage_string = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type[_stimuli] or context.lstr.weapon_damage_type.normal, Round(damage * multiplier, 1))
+	local damage_string = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type[_stimuli] or context.lstr.weapon_damage_type.normal, Round(damage * multiplier, 1) or "?")
 
 	description = CombineLines(damage_string, attack_range)
 

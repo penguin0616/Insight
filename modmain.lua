@@ -1493,7 +1493,7 @@ if IsDST() then
 			mprint("Kramped has been hooked")
 
 			local _activeplayers = util.getupvalue(kramped.OnUpdate, "_activeplayers")
-			assert(_activeplayers, "[Insight]: Kramped failed to load _activeplayers")
+			assert(_activeplayers, "[Insight]: Kramped failed to load _activeplayers, are you using mods that affect krampii?")
 			Insight.kramped.players = _activeplayers
 			local OnKilledOther, oldOnNaughtyAction
 			local firstLoad = true

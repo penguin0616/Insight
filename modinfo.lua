@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.8.20" -- ds is 2.4.4_ds
+version = "2.8.24" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,7 +77,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "message bottle indicators; stagehand/werewoodie info; highlighting bug fix; plant stressors redone;  wormwood fertilizer info;",
+	update_info = "bloom info for wormwood in player tab; message bottle indicators; stagehand/werewoodie info; highlighting bug fix; plant stressors redone;  wormwood fertilizer info;",
 	update_info_ds = "bug fixes; More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
