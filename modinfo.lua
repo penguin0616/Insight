@@ -77,7 +77,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "bloom info for wormwood in player tab; message bottle indicators; stagehand/werewoodie info; highlighting bug fix; plant stressors redone;  wormwood fertilizer info;",
+	update_info = "beard info; bug fix for hamlet in tropical adventures; bloom info for wormwood in player tab; message bottle indicators;",
 	update_info_ds = "bug fixes; More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 

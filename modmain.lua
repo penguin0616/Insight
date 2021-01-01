@@ -208,7 +208,7 @@ local descriptors_ignore = {
 	"fixable", -- hamlet pig houses
 	
 	"repairer", "lootdropper", "workable", "childspawner", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
-	"thief", "characterspecific", "resurrector", "beard", "brushable", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
+	"thief", "characterspecific", "resurrector", "brushable", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
 
 	--notable
 	"bundlemaker", --used in bundling wrap before items

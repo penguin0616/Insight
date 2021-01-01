@@ -771,12 +771,12 @@ AddPlayerPostInit(function(player)
 			if context.config["blink_range"] then
 				AttachBlinkRangeIndicator(localPlayer)
 			end
-		end)
 
-		for ent in pairs(delayed_actives) do
-			GetInsight(player):EntityActive(ent)
-		end
-		delayed_actives = {}
+			for ent in pairs(delayed_actives) do
+				insight:EntityActive(ent)  -- apparently can be nil, though very rare.
+			end
+			delayed_actives = {}
+		end)
 			
 		-- [host] triggers for anyone that joins
 		-- [client] triggers for all current players (same time) and those that join 

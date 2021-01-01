@@ -45,6 +45,9 @@ return {
 	protection = "<color=HEALTH>保护程度</color>: <color=HEALTH>%s%%</color>",
 	durability = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
 
+	-- beard.lua
+	beard = "Your beard will improve in %s day(s).",
+
 	-- beargerspawner.lua
 	incoming_bearger_targeted = "<color=%s>目标: %s</color> -> %s",
 

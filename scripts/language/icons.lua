@@ -45,6 +45,9 @@ return {
 	protection = "<icon=armorwood> %s%%",
 	durability = "<icon=health> %s / %s",
 
+	-- beard.lua
+	--beard = "Your beard will improve in %s day(s).",
+
 	-- beargerspawner.lua
 	--incoming_bearger_targeted = "<color=%s>Target: %s</color> -> %s",
 
