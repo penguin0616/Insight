@@ -118,14 +118,31 @@ local function GetCanaryDescription(inst, context)
 	return description
 end
 
+local function PlayerDescribe(self, context)
+	local inst = self.inst
+	local description = nil
+
+	if inst.prefab == "wx78" and inst.charge_time then
+		description = string.format(context.lstr.wx78_charge, TimeToText(time.new(inst.charge_time, context)))
+	end
+
+	return {
+		priority = 1,
+		description = description,
+		icon = {
+			tex = "ladybolt.tex",
+			atlas = "images/ladybolt.xml"
+		},
+		playerly = true
+	}
+end
 
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
 
-	if inst == context.player then
-		-- no thanks
-		return
+	if inst:HasTag("player") then
+		return PlayerDescribe(self, context)
 	end
 
 	if inst.prefab == "stagehand" and IsDST() then -- lots of stuff here done to make it make more sense / flow better

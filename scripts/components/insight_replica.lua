@@ -575,7 +575,15 @@ function Insight:BundleHasPrefab(inst, prefab)
 end
 
 function Insight:ContainerHas(container, inst)
-	local prefab = inst.prefab or inst
+	local prefab = inst.prefab
+	if not prefab then
+		if type(inst) ~= "string" then
+			error("invalid container")
+			return
+		end
+		prefab = inst
+	end
+
 	local is_unwrappable = IsBundleWrap(inst)
 
 	local container_info, bundle_info = self:GetInformation(container)

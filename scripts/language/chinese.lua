@@ -282,6 +282,7 @@ return {
 	hunger_paused = "<color=HUNGER>饥饿值</color>暂停",
 
 	-- inspectable.lua
+	wx78_charge = "Remaining charge: %s",
 	stagehand = {
 		hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
 		time_to_reset = "Will reset in %s." 
