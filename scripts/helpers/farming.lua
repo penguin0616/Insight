@@ -22,6 +22,8 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 --[[ Private Variables ]]
 --------------------------------------------------------------------------
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+
 local SOIL_RAIN_MOD = TUNING.SOIL_RAIN_MOD
 local MIN_DRYING_TEMP = TUNING.SOIL_MIN_DRYING_TEMP
 local MAX_DRYING_TEMP = TUNING.SOIL_MAX_DRYING_TEMP
@@ -60,6 +62,7 @@ local function Initialize(self)
 	mprint("Farming_Manager has been hooked")
 end
 
+--- backwards compatibility yaaaaaaaaaaaaaaaaaaaaaaaay
 local function RegisterOldGrower(grower)
 	if not grower.inst:IsValid() then
 		return
@@ -131,24 +134,79 @@ local function GetTileNutrientsAtPoint(x, y, z)
 	local nutrients = {TheWorld.components.farming_manager:GetTileNutrients(x, y)}
 
 	-- NUTRIENT_1 = "Growth Formula",
-    -- NUTRIENT_2 = "Compost",
+	-- NUTRIENT_2 = "Compost",
 	-- NUTRIENT_3 = "Manure",
 	
 	--[[
 		local nutrientlevels = inst.nutrientlevels:value()
-        local nutrients = {
-            bit.band(nutrientlevels, 7),
-            bit.band(bit.rshift(nutrientlevels, 3), 7),
-            bit.band(bit.rshift(nutrientlevels, 6), 7),
-        }
-        for num, nutrient in ipairs(nutrients) do
-            local nutrient_name = nutrient_prefix..tostring(num)
+		local nutrients = {
+			bit.band(nutrientlevels, 7),
+			bit.band(bit.rshift(nutrientlevels, 3), 7),
+			bit.band(bit.rshift(nutrientlevels, 6), 7),
+		}
+		for num, nutrient in ipairs(nutrients) do
+			local nutrient_name = nutrient_prefix..tostring(num)
 	]]
 
 	return {
 		formula = nutrients[1],
 		compost = nutrients[2],
 		manure = nutrients[3]
+	}
+end
+
+--- Returns plant's nutrient modifiers for the tile 
+local function GetPlantNutrientModifier(plant_def)
+	local consume = plant_def.nutrient_consumption
+	local restore = plant_def.nutrient_restoration
+
+	local nutrient_modifier = {0, 0, 0} -- base nutrients 
+
+	local total_restore_count = 0
+	-- farming_manager, in the ipairs(consume) loop, treats consumptioncount as the lower of the tile's nutrient type or the actual amount
+	-- this is because it doesn't make sense to restore nutrients for less
+	-- however, we don't care because we don't take the real-world (ha) restoration into account, we care about the theoretical restoration
+	-- that means that total_restore_count should just be the added up consumed nutrients
+
+
+	-- now i don't like using ipairs, since it's slower than pairs, but i doubt we'll have more than 3 nutrients
+	-- i am tempted to just ``for i = 1, 3 do`` but who knows, maybe plants are rigged to consume more nutrients for some reason.
+	for nutrient_type, amount in ipairs(consume) do
+		nutrient_modifier[nutrient_type] = nutrient_modifier[nutrient_type] + -amount
+		total_restore_count = total_restore_count + amount
+	end
+
+	-- this math is taken from Farming_Manager's CycleNutrientsAtPoint
+	if restore then
+	   --amount of valid nutrient types to restore
+	 	local nutrients_to_restore_count = GetTableSize(restore)
+		--the amount of nutrients to restore to all nutrients in the restore table
+		local nutrient_restore_count = math.floor(total_restore_count/nutrients_to_restore_count) -- 8/3 = 2.66666 = 2
+
+		--if the number doesn't divide evenly between the nutrients, randomly restore the excess nutrients to a valid type
+		local excess_restore_count = total_restore_count - (nutrient_restore_count * nutrients_to_restore_count) -- 8 - (2 * 3) = 2
+		--if excess_restore_count is 0 we do nothing
+		--if excess_restore_count is 1, we add it to the nutrient determined by math.random
+		--if excess_restore_count is 2, we add it to all other nutrients except the one determined by math.random
+		--due to our total nutrient count, excess_restore_count will always come to be a valid number
+		local excess_restore_rand = math.random(nutrients_to_restore_count)
+
+		for n_type = 1, 3 do
+			if restore[n_type] then
+				nutrient_modifier[n_type] = nutrient_modifier[n_type] + nutrient_restore_count
+
+				excess_restore_rand = excess_restore_rand - 1
+				if (excess_restore_count == 1 and excess_restore_rand == 0) or (excess_restore_count == 2 and excess_restore_rand ~= 0) then
+					nutrient_modifier[n_type] = nutrient_modifier[n_type] + 1
+				end
+			end
+		end
+	end
+
+	return {
+		formula = nutrient_modifier[1],
+		compost = nutrient_modifier[2],
+		manure = nutrient_modifier[3],
 	}
 end
 
@@ -160,7 +218,6 @@ local function GetPlantProduct(plant) -- farm_plant_...
 		end
 	end
 end
-
 
 lib = {
 	IsInitialized = IsInitialized,
@@ -175,6 +232,8 @@ lib = {
 
 	GetNutrientValue = GetNutrientValue,
 	GetTileNutrientsAtPoint = GetTileNutrientsAtPoint,
+	GetPlantNutrientModifier = GetPlantNutrientModifier,
+
 	GetPlantProduct = GetPlantProduct,
 }
 

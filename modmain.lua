@@ -391,6 +391,7 @@ function CreatePlayerContext(player, config, external_config, etc)
 		usingIcons = config["info_style"] == "icon",
 		lstr = import("language/language")(config, etc.locale),
 		is_server_owner = etc.is_server_owner,
+		etc = etc
 	}
 
 	if context.is_server_owner then
@@ -728,7 +729,9 @@ function GetEntityInformation(item, player, params)
 
 	--fprint(item, "has some info")
 
-	for i,v in pairs(chunks) do
+	for i = 1, #chunks do
+	--for i,v in pairs(chunks) do
+		local v = chunks[i]
 		if assembled.special_data[v.name] == nil then
 			assembled.special_data[v.name] = GetSpecialData(v)
 		end

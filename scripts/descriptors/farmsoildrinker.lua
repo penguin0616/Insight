@@ -75,6 +75,8 @@ local function DescribeNutrients(self, context, definition)
 	local nutrient_consumption = definition.nutrient_consumption
 	local nutrient_restoration = definition.nutrient_restoration
 
+	local net_nutrients = farmingHelper.GetPlantNutrientModifier(definition)
+
 	if verbosity == 1 then
 		-- tile nutrients only
 		-- Nutrients: [2, 4, 8]
@@ -87,32 +89,19 @@ local function DescribeNutrients(self, context, definition)
 		-- Nutrients: [2, 4, 8] ([-1, +2, -3])
 		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant,
 			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
-			-nutrient_consumption[1], -nutrient_consumption[2], -nutrient_consumption[3]	
+			net_nutrients.formula, net_nutrients.compost, net_nutrients.manure	
 		)
 
 	elseif verbosity == 3 then
+		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant,
+			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
+			nutrient_consumption.formula, nutrient_consumption.compost, nutrient_consumption.manure	
+		)
+
+
 		--[[
 		-- tile nutrients, plant delta, entire tile delta
 		-- Nutrients: [2, 4, 8] ([-1, +2, -3] + [1, -2, 3] = [0, 0, 0])
-
-		local total_restore_count = 0
-		for n_type, count in ipairs(nutrient_consumption) do
-			total_restore_count = total_restore_count + count
-		end
-
-		--amount of valid nutrient types to restore
-		local nutrients_to_restore_count = GetTableSize(nutrient_restoration)
-		--the amount of nutrients to restore to all nutrients in the restore table
-		local nutrient_restore_count = math.floor(total_restore_count/nutrients_to_restore_count)
-
-		--if the number doesn't divide evenly between the nutrients, randomly restore the excess nutrients to a valid type
-		local excess_restore_count = total_restore_count - (nutrient_restore_count * nutrients_to_restore_count)
-		--if excess_restore_count is 0 we do nothing
-		--if excess_restore_count is 1, we add it to the nutrient determined by math.random
-		--if excess_restore_count is 2, we add it to all other nutrients except the one determined by math.random
-		---due to our total nutrient count, excess_restore_count will always come to be a valid number
-		local excess_restore_rand = math.random(nutrients_to_restore_count)
-
 
 		local net = {
 			nutrient_consumption[1] + restore[1], 
@@ -140,6 +129,11 @@ end
 -- local WEED_DEFS = require("prefabs/weed_defs").WEED_DEFS
 
 local function Describe(self, context)
+	if false then
+		
+		return { priority=0; description = "blue<sub>cow</sub> and the red<sub>cow</sub>\nmight be cool<sup>maybe*</sup>. okay"}
+	end
+
 	if not farmingHelper.IsInitialized() then
 		return { priority=0; description = "<color=#ff0000>Farming helper not initialized.</color>"}
 	end

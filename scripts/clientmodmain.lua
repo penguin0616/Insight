@@ -100,6 +100,18 @@ function GetMouseTargetItem()
 	return target
 end
 
+local function GetMorgueDeathsForWorld(name)
+	local deaths = {}
+
+	for i,v in pairs(Morgue:GetRows()) do
+		if v.server == name then
+			table.insert(deaths, deepcopy(v))
+		end
+	end
+
+	return deaths
+end
+
 local function GenerateExternalConfiguration()
 	local external_config = {}
 
@@ -744,7 +756,8 @@ AddPlayerPostInit(function(player)
 		delayed_actives = {}
 
 		CreatePlayerContext(player, GenerateConfiguration(), GenerateExternalConfiguration(), {
-			is_server_owner = true
+			is_server_owner = true,
+			locale = LOC.GetLocaleCode(),
 		})
 
 		return
@@ -821,7 +834,9 @@ AddPlayerPostInit(function(player)
 			external_config = GenerateExternalConfiguration(),
 			etc = {
 				is_server_owner = TheNet:GetIsServerOwner(),
-				locale = LOC.GetLocaleCode()
+				locale = LOC.GetLocaleCode(),
+				DEBUG_ENABLED = DEBUG_ENABLED,
+				server_deaths = GetMorgueDeathsForWorld(TheNet:GetServerName()),
 			},
 		}))
 	end)

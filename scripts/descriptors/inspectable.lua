@@ -118,23 +118,42 @@ local function GetCanaryDescription(inst, context)
 	return description
 end
 
-local function PlayerDescribe(self, context)
-	local inst = self.inst
-	local description = nil
-
-	if inst.prefab == "wx78" and inst.charge_time then
-		description = string.format(context.lstr.wx78_charge, TimeToText(time.new(inst.charge_time, context)))
-	end
-
+local function GetRobotChargeTime(self, context)
 	return {
 		priority = 1,
-		description = description,
+		description = string.format(context.lstr.wx78_charge, TimeToText(time.new(self.inst.charge_time, context))),
 		icon = {
 			tex = "ladybolt.tex",
 			atlas = "images/ladybolt.xml"
 		},
 		playerly = true
 	}
+end
+
+local function GetPlayerServerDeaths(context, amount)
+	return {
+		priority = 1,
+		description = string.format("<color=#ffdddd>This person has died </color><color=#ff9999>%s</color><color=#ffeeee> time(s).</color>", amount),
+		playerly = true
+	}
+end
+
+local function PlayerDescribe(self, context)
+	local inst = self.inst
+	local stuff = {}
+
+	if inst.prefab == "wx78" and inst.charge_time then
+		table.insert(stuff, GetRobotChargeTime(self, context))
+	end
+
+	if false and (DEBUG_ENABLED or inst ~= context.player) and inst.userid ~= "" then
+		local their_context = GetPlayerContext(inst)
+		if their_context and their_context.etc.server_deaths then
+			table.insert(stuff, GetPlayerServerDeaths(context, #their_context.etc.server_deaths))
+		end
+	end
+
+	return unpack(stuff)
 end
 
 local function Describe(self, context)

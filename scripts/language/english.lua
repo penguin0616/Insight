@@ -168,7 +168,7 @@ return {
 	},
 
 	-- farmsoildrinker.lua
-	farmsoildrinker ={
+	farmsoildrinker = {
 		soil_only = "<color=WET>Water</color>: <color=WET>%s</color>",
 		soil_plant = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s/min</color>)",
 		soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s</color> [<color=#2f96c4>%s</color>])<color=WET>/min</color>",
