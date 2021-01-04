@@ -72,9 +72,25 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 		end
 	else
 		-- text
-		obj = Text(richtext.font, richtext.font_size, chunk.text)
-		obj:SetColour(color)
+		local size = richtext.font_size
+		local modifiers = {}
+		if chunk:HasTag("sub") then -- this takes priority.
+			-- subscript
+			-- in microsoft word, subscript and superscript seem to be 2/3 of the size of normal text at the same font size. guess i'm using that. (12pt subscript = 8pt normal, 8 / 12 = 0.666)
+			size = size * 2/3
+			modifiers.sub = true
+		elseif chunk:HasTag("sup") then
+			-- superscript
+			size = size * 2/3
+			modifiers.sup = true
+		end
 
+		obj = Text(richtext.font, size, chunk.text)
+		obj:SetColour(color)
+		obj.modifiers = modifiers
+
+		--[[
+		-- note: if this is brought back, cannot apply when either sub or sup is active. stick it last in the elseif.
 		if chunk:HasTag("u") then
 			local w, h = obj:GetRegionSize()
 			local underline = obj:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
@@ -83,6 +99,7 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 			underline:SetPosition(-4, -15 + 3)
 			underline:MoveToBack()
 		end
+		--]]
 	end
 
 	return obj
@@ -308,86 +325,16 @@ function RichText:NewLine(pieces)
 					padding = padding - CalculateSize(string.rep(" ", end_spaces)) / 2
 				end
 			end
-
-
-			--[[
-			lp = prev:GetPosition().x
-			
-			lp = lp + prev:GetRegionSize() / 2
-
-			lp = lp - 2
-			padding = padding + 2
-
-			lp = lp + obj:GetRegionSize() / 2
-
-			local end_spaces = #string.match(prev:GetString(), "(%s*)$")
-
-			if end_spaces > 0 then
-				lp = lp - 1.6 
-				padding = padding + 1.6
-				lp = lp + CalculateSize(string.rep(" ", end_spaces)) - 0.8
-				padding = padding - CalculateSize(string.rep(" ", end_spaces)) + 0.8
-			end
-			--]]
-
-			--[[
-			if prev.name == "Image" then
-				x = prev:GetSize() / 2
-			else
-				x = prev:GetRegionSize() / 2
-				x = x - 2
-				padding = padding + 2
-			end
-
-			if obj.name == "Image" then
-				x = x + obj:GetSize() / 2
-			else
-				x = x + obj:GetRegionSize() / 2
-				x = x - 2
-				padding = padding + 2
-			end
-			--]]
 		end
 
-		--[[
-		if prev then
-			lp = prev:GetPosition().x
-
-			if prev.name == "Image" then
-				x = prev:GetSize() / 2
-			else
-				x = prev:GetRegionSize() / 2
+		-- subscript/superscript
+		if obj.name == "Text" then
+			if obj.modifiers.sub then -- subscript
+				y = y - (obj:InsightGetSize() * 1/3) -- 1/3 made sense, and it seems to match up perfectly with my test document. this was so.. nice? to add, after the hell this file has put me through.
+			elseif obj.modifiers.sup then
+				y = y + (obj:InsightGetSize() * 1/3)
 			end
-
-			if obj.name == "Image" then
-				x = x + obj:GetSize() / 2
-			else
-				x = x + obj:GetRegionSize() / 2
-			end
-
-			
-			if prev.name == "Text" then
-				local a = prev:GetString():sub(#prev:GetString())
-				local x1 = CalculateSize(a)
-
-				if true then
-					local r = x1 / 2 --6.5
-
-					if a == " " then
-						r = r / 2
-					else
-						r = r - 0.5
-					end
-
-					padding = padding + r
-
-					x = x - r
-				
-				end
-			end
-			
 		end
-		--]]
 		
 		obj:SetPosition(lp + x, y)
 	end

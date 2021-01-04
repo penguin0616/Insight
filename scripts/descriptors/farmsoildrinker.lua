@@ -130,8 +130,7 @@ end
 
 local function Describe(self, context)
 	if false then
-		
-		return { priority=0; description = "blue<sub>cow</sub> and the red<sub>cow</sub>\nmight be cool<sup>maybe*</sup>. okay"}
+		return { priority=0; description = "<color=#0000cc>blue<sub>cow</sub> and the <color=#cc0000>red<sub>cow</sub></color></color>\nmight be cool<sup>maybe*</sup>. okay"}
 	end
 
 	if not farmingHelper.IsInitialized() then

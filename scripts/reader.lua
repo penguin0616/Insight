@@ -65,11 +65,20 @@ function Chunk:GetTags()
 end
 
 function Chunk:GetTag(name)
+	for i = #self.tags, 1, -1 do
+		local tag = self.tags[i]
+		if tag.name == name then
+			return tag.value
+		end
+	end
+	
+	--[[
 	for _, tag in pairs(self.tags) do
 		if tag.name == name then
 			return tag.value
 		end
 	end
+	--]]
 end
 
 function Chunk:HasTag(name)
