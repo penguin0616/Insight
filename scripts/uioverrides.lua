@@ -519,7 +519,8 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 		
 		if itemInfo then
-			itemInfo = itemInfo.information
+			--print(TheInput:IsKeyDown(KEY_LALT)) -- not CONTROL_FORCE_INSPECT
+			itemInfo = (TheInput:IsKeyDown(KEY_LALT) and itemInfo.alt_information) or itemInfo.information or nil
 		end
 
 		if item and DEBUG_ENABLED then
@@ -811,6 +812,10 @@ local InsightMenuScreen = import("screens/insightmenuscreen")
 TheInput:AddControlHandler(IsDST() and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU, function(down) -- CONTROL_FOCUS_UP
 	if down then
 		return
+	end
+
+	if not TheInput:ControllerAttached() then
+		return -- turns out caps lock inside the tab menu. whoops.
 	end
 		
 	local screen_name = TheFrontEnd:GetActiveScreen().name

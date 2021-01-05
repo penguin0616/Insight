@@ -641,6 +641,7 @@ function GetEntityInformation(item, player, params)
 	local assembled = {
 		GUID = item.GUID,
 		information = "",
+		alt_information = "",
 		special_data = {},
 		raw = (params.raw and {}) or nil,
 	}
@@ -657,7 +658,6 @@ function GetEntityInformation(item, player, params)
 	if not player_context then
 		assembled.raw = nil
 		assembled.information = "missing player context for " .. player.name
-
 		return assembled
 	end
 
@@ -724,6 +724,7 @@ function GetEntityInformation(item, player, params)
 	-- if there's no data, why bother?
 	if #chunks == 0 then
 		assembled.information = nil
+		assembled.alt_information = nil
 		return assembled
 	end
 
@@ -741,9 +742,19 @@ function GetEntityInformation(item, player, params)
 			v.description = ResolveColors(v.description) -- resolve any color tags that reference the Insight table's colors
 
 			assembled.information = assembled.information .. v.description
+
+			if v.alt_description then
+				assembled.alt_information = assembled.alt_information .. v.alt_description
+			else
+				assembled.alt_information = assembled.alt_information .. v.description
+			end
+
 			if i < #chunks then
 				assembled.information = assembled.information .. "\n"
+				assembled.alt_information = assembled.alt_information .. "\n"
 			end
+
+			
 
 			if params.raw == true then
 				assembled.raw[v.name] = v.description

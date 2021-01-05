@@ -169,22 +169,22 @@ return {
 
 	-- farmsoildrinker.lua
 	farmsoildrinker = {
-		soil_only = "<color=WET>Water</color>: <color=WET>%s</color>",
-		soil_plant = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s/min</color>)",
-		soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s</color> [<color=#2f96c4>%s</color>])<color=WET>/min</color>",
-		soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s</color> (<color=WET>%s</color> [<color=#2f96c4>%s</color> + <color=SHALLOWS>%s</color> = <color=#DED15E>%+.1f</color>])<color=WET>/min</color>"
+		soil_only = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color>",
+		soil_plant = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s/min<sub>plant</sub></color>)",
+		soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color>])<color=WET>/min</color>",
+		soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color> + <color=SHALLOWS>%s<sub>world</sub></color> = <color=#DED15E>%+.1f<sub>net</sub></color>])<color=WET>/min</color>"
 	},
 	farmsoildrinker_nutrients ={
-		soil_only = "Nutrients: [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>]",
-		soil_plant = "Nutrients: [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>] ([<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>])",
-		soil_plant_tile = "Nutrients: [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, %+d</color>] ([<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>] + [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>] = [<color=NATURE>%+d</color>, <color=CAMO>%+d</color>, <color=INEDIBLE>%+d</color>])",
-		soil_plant_tile_net = "[???]"
+		soil_only = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]",
+		soil_plant = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] ([<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>])",
+		soil_plant_tile = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sup>tile</sup> ([<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sup>plantΔ</sup>   [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sup>tileΔ</sup>)",
+		soil_plant_tile_net = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] ([<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] + [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] = [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>])"
 	},
 
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "Shortens <color=NATURE>growth time</color> by <color=NATURE>%s</color> seconds.",
-		nutrient_value = "Nutrients: [<color=NATURE>%s</color>, <color=CAMO>%s</color>, <color=INEDIBLE>%s</color>]",
+		nutrient_value = "Nutrients: [<color=NATURE>%s<sub>Formula</sub></color>, <color=CAMO>%s<sub>Compost</sub></color>, <color=INEDIBLE>%s<sub>Manure</sub></color>]",
 		wormwood = {
 			formula_growth = "Accelerates your <color=LIGHT_PINK>blooming</color> by <color=LIGHT_PINK>%s</color>.",
 			compost_heal = "<color=HEALTH>Heals</color> you for <color=HEALTH>%+d</color> over <color=HEALTH>%s</color> second(s).",

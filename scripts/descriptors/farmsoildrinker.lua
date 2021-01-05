@@ -47,7 +47,7 @@ local function DescribeMoisture(self, context, definition)
 		description = string.format(context.lstr.farmsoildrinker.soil_plant_tile, Round(tile_moisture, 1), Round(plant_delta, 1), Round(tile_delta, 1))
 
 	elseif verbosity == 4 then
-		-- tile moisture, plant delta, entire tile delta
+		-- tile moisture, plant delta, entire tile delta, world delta w/ net
 		-- Water: 33% (-2 [-14 + 3 = 11])/min
 		local plant_delta = self:GetMoistureRate() * 60
 		local tile_delta = farmingHelper.GetTileMoistureDelta(self.inst.Transform:GetWorldPosition()) * 60
@@ -72,9 +72,6 @@ local function DescribeNutrients(self, context, definition)
 	local description = nil
 	local verbosity = context.config.soil_nutrients
 	local tile_nutrients = farmingHelper.GetTileNutrientsAtPoint(self.inst.Transform:GetWorldPosition())
-	local nutrient_consumption = definition.nutrient_consumption
-	local nutrient_restoration = definition.nutrient_restoration
-
 	local net_nutrients = farmingHelper.GetPlantNutrientModifier(definition)
 
 	if verbosity == 1 then
@@ -84,7 +81,7 @@ local function DescribeNutrients(self, context, definition)
 			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure
 		)
 
-	elseif verbosity == 2 or verbosity == 3 then
+	elseif verbosity == 2 then
 		-- tile nutrients and plant delta
 		-- Nutrients: [2, 4, 8] ([-1, +2, -3])
 		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant,
@@ -93,14 +90,19 @@ local function DescribeNutrients(self, context, definition)
 		)
 
 	elseif verbosity == 3 then
-		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant,
+		-- tile nutrients, plant delta, entire tile delta
+		-- Nutrients: [2, 4, 8] ([-1, +2, -3] + [1, -2, 3])
+		local tile_nutrient_delta = farmingHelper.GetTileNutrientDelta(self.inst.Transform:GetWorldPosition())
+
+		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant_tile,
 			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
-			nutrient_consumption.formula, nutrient_consumption.compost, nutrient_consumption.manure	
+			net_nutrients.formula, net_nutrients.compost, net_nutrients.manure,
+			tile_nutrient_delta.formula, tile_nutrient_delta.compost, tile_nutrient_delta.manure
 		)
 
 
 		--[[
-		-- tile nutrients, plant delta, entire tile delta
+		-- tile nutrients, plant delta, entire tile delta, net
 		-- Nutrients: [2, 4, 8] ([-1, +2, -3] + [1, -2, 3] = [0, 0, 0])
 
 		local net = {
@@ -129,10 +131,6 @@ end
 -- local WEED_DEFS = require("prefabs/weed_defs").WEED_DEFS
 
 local function Describe(self, context)
-	if false then
-		return { priority=0; description = "<color=#0000cc>blue<sub>cow</sub> and the <color=#cc0000>red<sub>cow</sub></color></color>\nmight be cool<sup>maybe*</sup>. okay"}
-	end
-
 	if not farmingHelper.IsInitialized() then
 		return { priority=0; description = "<color=#ff0000>Farming helper not initialized.</color>"}
 	end

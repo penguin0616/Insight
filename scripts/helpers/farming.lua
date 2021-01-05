@@ -38,6 +38,8 @@ local farming_manager = nil
 local growers = {}
 local lib = nil
 
+local DEFINITION_NUTRIENT_CALCULATION_CACHE = setmetatable({}, { __mode="k" })
+
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
@@ -157,6 +159,10 @@ end
 
 --- Returns plant's nutrient modifiers for the tile 
 local function GetPlantNutrientModifier(plant_def)
+	if DEFINITION_NUTRIENT_CALCULATION_CACHE[plant_def] then
+		return DEFINITION_NUTRIENT_CALCULATION_CACHE[plant_def]
+	end
+
 	local consume = plant_def.nutrient_consumption
 	local restore = plant_def.nutrient_restoration
 
@@ -203,11 +209,31 @@ local function GetPlantNutrientModifier(plant_def)
 		end
 	end
 
-	return {
+	DEFINITION_NUTRIENT_CALCULATION_CACHE[plant_def] = {
 		formula = nutrient_modifier[1],
 		compost = nutrient_modifier[2],
 		manure = nutrient_modifier[3],
 	}
+
+	return DEFINITION_NUTRIENT_CALCULATION_CACHE[plant_def]
+end
+
+--- Returns the total rate of all the soil nutrient drinkers.
+local function GetTileNutrientDelta(x, y, z)
+	local tile_data = GetTileDataAtPoint(false, x, y, z)
+	
+	local nutrient_delta = { formula=0, compost=0, manure=0}
+	if tile_data.soil_drinkers ~= nil then
+		for obj, _ in pairs(tile_data.soil_drinkers) do
+			local plant_def = obj.weed_def or obj.plant_def
+			local plant_nutrient_modifier = GetPlantNutrientModifier(plant_def)
+			nutrient_delta.formula = nutrient_delta.formula + plant_nutrient_modifier.formula
+			nutrient_delta.compost = nutrient_delta.compost + plant_nutrient_modifier.compost
+			nutrient_delta.manure = nutrient_delta.manure + plant_nutrient_modifier.manure
+		end
+	end
+
+	return nutrient_delta
 end
 
 --- Returns plant product
@@ -233,6 +259,7 @@ lib = {
 	GetNutrientValue = GetNutrientValue,
 	GetTileNutrientsAtPoint = GetTileNutrientsAtPoint,
 	GetPlantNutrientModifier = GetPlantNutrientModifier,
+	GetTileNutrientDelta = GetTileNutrientDelta,
 
 	GetPlantProduct = GetPlantProduct,
 }

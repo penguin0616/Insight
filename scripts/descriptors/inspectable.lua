@@ -164,6 +164,14 @@ local function Describe(self, context)
 		return PlayerDescribe(self, context)
 	end
 
+	if DEBUG_ENABLED and inst.prefab == "razor" then
+		return {
+			priority = 0,
+			description = "this has some damage*",
+			alt_description = "this has infinite damage."
+		}
+	end
+
 	if inst.prefab == "stagehand" and IsDST() then -- lots of stuff here done to make it make more sense / flow better
 		local mem = inst.sg.mem
 		local hits_left = mem.hits_left or TUNING.STAGEHAND_HITS_TO_GIVEUP -- something to display if no hits registered
