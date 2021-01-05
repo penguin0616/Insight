@@ -1878,7 +1878,7 @@ else
 
 		_G.c_nextday = function() GetClock():MakeNextDay() end
 		_G.c_tools = function() c_give('multitool_axe_pickaxe') c_give('nightsword', 2) c_give('fireflies', 5) c_give('minerhat', 1) end
-
+		_G.c_lightning = function() GetSeasonManager():DoLightningStrike(TheInput:GetWorldPosition():Get()) end
 	end
 end
 

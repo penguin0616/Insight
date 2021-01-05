@@ -86,6 +86,11 @@ local function Describe(self, context)
 	local description = "[why am i empty]"
 
 	local owner = context.player --GetPlayer()
+
+	if not owner.components.combat then
+		return
+	end
+
 	local multiplier = GetDamageModifier(owner.components.combat, context)
 
 	-- Add obsidian power to multiplier
@@ -96,7 +101,7 @@ local function Describe(self, context)
 	end
 
 	-- Get Damage
-	local damage
+	local damage = owner.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
 	if IsDST() or GetWorldType() >= 2 then
 		-- DS Weapon:GetDamage()
 		--DST Weapon:GetDamage(attacker, target)

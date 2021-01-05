@@ -32,6 +32,7 @@ cave_open.pdn
 	- reset sliders, just set lightness to max
 	
 10. cave_open_black
+	- base form is the cave_open_red
 	- reset sliders, saturation to 0
 	
 

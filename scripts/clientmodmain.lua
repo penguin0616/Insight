@@ -744,6 +744,10 @@ AddPlayerPostInit(function(player)
 			if context.config["blink_range"] then
 				AttachBlinkRangeIndicator(player)
 			end
+
+			if player.components.inspectable == nil then
+				player:AddComponent("inspectable")
+			end
 		end)
 
 		player:ListenForEvent("newactiveitem", function(...)
@@ -912,4 +916,3 @@ end
 
 AddLocalPlayerPostInit(highlighting.Activate, true)
 AddLocalPlayerPostRemove(highlighting.Deactivate, true)
-AddLocalPlayerPostRemove(function() mprint"REMOVE ONCE" end)
