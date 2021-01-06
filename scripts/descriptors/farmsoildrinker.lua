@@ -88,7 +88,7 @@ local function DescribeNutrients(self, context, definition)
 			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
 			net_nutrients.formula, net_nutrients.compost, net_nutrients.manure	
 		)
-
+		--
 	elseif verbosity == 3 then
 		-- tile nutrients, plant delta, entire tile delta
 		-- Nutrients: [2, 4, 8] ([-1, +2, -3] + [1, -2, 3])

@@ -150,6 +150,20 @@ local english = {
 			},
 		},
 	},
+	alt_only_information = {
+		LABEL = "Inspect Only",
+		HOVER = "Whether Insight will only show information when you hold Left Alt.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Information is displayed normally."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Information only displays on inspection."
+			},
+		},
+	},
 	itemtile_display = {
 		LABEL = "Inv Slot Info",
 		HOVER = "What kind of information shows instead of percentages on item slots.",
@@ -1003,6 +1017,20 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "文字着色功能将被启用。"
+			},
+		},
+	},
+	alt_only_information = {
+		LABEL = "Inspect Only",
+		HOVER = "Whether Insight will only show information when you hold Left Alt.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Information is displayed normally."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Information only displays on inspection."
 			},
 		},
 	},
@@ -1895,6 +1923,16 @@ configuration_options = {
 		tags = {},
 	},
 	{
+		name = "alt_only_information",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
+		client = true,
+		tags = {},
+	},
+	{
 		name = "itemtile_display",
 		options = {
 			{data = 0},
@@ -2289,7 +2327,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		tags = {"undefined"},
 	},
 	{

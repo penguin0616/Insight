@@ -408,6 +408,8 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	local oldOnUpdate = hoverer.OnUpdate
 	local oldHide = hoverer.secondarytext.Hide
 
+	local informationOnAltOnly
+
 	hoverer.insightText = hoverer:AddChild(RichText())
 
 	-- so, there's an issue where once you examine something, YOFFSETUP and YOFFSETDOWN are changed to compensate for that secondary text, but are never changed back
@@ -498,6 +500,10 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			return
 		end
 
+		if informationOnAltOnly == nil then
+			informationOnAltOnly = GetModConfigData("alt_only_information", true)
+		end
+
 		--YOFFSETUP = util.getupvalue(debug.getinfo(2).func, "YOFFSETUP")
 		--YOFFSETDOWN = util.getupvalue(debug.getinfo(2).func, "YOFFDOWN")
 		--mprint('t1:', text) -- main action or whatnot, including alt
@@ -520,7 +526,15 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		
 		if itemInfo then
 			--print(TheInput:IsKeyDown(KEY_LALT)) -- not CONTROL_FORCE_INSPECT
-			itemInfo = (TheInput:IsKeyDown(KEY_LALT) and itemInfo.alt_information) or itemInfo.information or nil
+			if TheInput:IsKeyDown(KEY_LALT) then
+				itemInfo = itemInfo.alt_information
+			elseif informationOnAltOnly then
+				itemInfo = nil
+			else
+				itemInfo = itemInfo.information
+			end
+
+			--itemInfo = (TheInput:IsKeyDown(KEY_LALT) and itemInfo.alt_information) or itemInfo.information or nil
 		end
 
 		if item and DEBUG_ENABLED then
