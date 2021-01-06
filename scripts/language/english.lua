@@ -165,6 +165,13 @@ return {
 	farmplantstress = {
 		stress_points = "Stress Points: %s",
 		display = "Stressors: %s",
+		stress_tier = "Stress level: %s",
+		tiers = {
+			[FARM_PLANT_STRESS.NONE] = "None",
+			[FARM_PLANT_STRESS.LOW] = "Low",
+			[FARM_PLANT_STRESS.MODERATE] = "Moderate",
+			[FARM_PLANT_STRESS.HIGH] = "High",
+		},
 	},
 
 	-- farmsoildrinker.lua

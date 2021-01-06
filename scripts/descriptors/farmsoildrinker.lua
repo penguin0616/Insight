@@ -17,13 +17,30 @@ LICENSE in the form of a LICENSE file in the root of the source
 directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
+
 -- farmsoildrinker.lua
 local farmingHelper = import("helpers/farming")
 
 local function DescribeMoisture(self, context, definition)
 	local description = nil
 	local verbosity = context.config.soil_moisture
+
+	if verbosity == 0 then
+		return
+	end
+
 	local tile_moisture = farmingHelper.GetTileMoistureAtPoint(self.inst.Transform:GetWorldPosition())
+	local plant_delta = self:GetMoistureRate() * 60
+	local tile_delta = farmingHelper.GetTileMoistureDelta(self.inst.Transform:GetWorldPosition()) * 60
+	local world_delta = farmingHelper.GetWorldMoistureDelta() * 60
+
+	local alt_description = string.format(context.lstr.farmsoildrinker.soil_plant_tile_net, 
+		Round(tile_moisture, 1), 
+		Round(plant_delta,  1), 
+		Round(tile_delta, 1),
+		Round(world_delta, 1),
+		world_delta + tile_delta -- rounded by the string
+	)
 
 	if not tile_moisture then
 		description = "Missing tile moisture data."
@@ -36,44 +53,68 @@ local function DescribeMoisture(self, context, definition)
 	elseif verbosity == 2 then
 		-- tile moisture and plant delta
 		-- Water: 33% (-2/min)
-		local plant_delta = self:GetMoistureRate() * 60
 		description = string.format(context.lstr.farmsoildrinker.soil_plant, Round(tile_moisture, 1), Round(plant_delta, 1))
 
 	elseif verbosity == 3 then
 		-- tile moisture, plant delta, entire tile delta
 		-- Water: 33% (-2 [-14])/min
-		local plant_delta = self:GetMoistureRate() * 60
-		local tile_delta = farmingHelper.GetTileMoistureDelta(self.inst.Transform:GetWorldPosition()) * 60
 		description = string.format(context.lstr.farmsoildrinker.soil_plant_tile, Round(tile_moisture, 1), Round(plant_delta, 1), Round(tile_delta, 1))
 
 	elseif verbosity == 4 then
 		-- tile moisture, plant delta, entire tile delta, world delta w/ net
 		-- Water: 33% (-2 [-14 + 3 = 11])/min
-		local plant_delta = self:GetMoistureRate() * 60
-		local tile_delta = farmingHelper.GetTileMoistureDelta(self.inst.Transform:GetWorldPosition()) * 60
-		local world_delta = farmingHelper.GetWorldMoistureDelta() * 60
-		description = string.format(context.lstr.farmsoildrinker.soil_plant_tile_net, 
-			Round(tile_moisture, 1), 
-			Round(plant_delta,  1), 
-			Round(tile_delta, 1),
-			Round(world_delta, 1),
-			world_delta + tile_delta -- rounded by the string
-		)
+		description = alt_description
+		description = nil
 	end
 
 	return {
 		name = "farmsoildrinker_moisture",
 		priority = 1,
-		description = description
+		description = description,
+		alt_description = alt_description
 	}
 end
 
 local function DescribeNutrients(self, context, definition)
 	local description = nil
 	local verbosity = context.config.soil_nutrients
+
+	if verbosity == 0 then
+		return
+	end
+
 	local tile_nutrients = farmingHelper.GetTileNutrientsAtPoint(self.inst.Transform:GetWorldPosition())
 	local net_nutrients = farmingHelper.GetPlantNutrientModifier(definition)
+	local tile_nutrient_delta = farmingHelper.GetTileNutrientDelta(self.inst.Transform:GetWorldPosition())
+	
+	local alt_description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant_tile,
+		tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
+		net_nutrients.formula, net_nutrients.compost, net_nutrients.manure,
+		tile_nutrient_delta.formula, tile_nutrient_delta.compost, tile_nutrient_delta.manure
+	)
+	
+	if verbosity == 1 then
+		-- tile nutrients only
+		-- Nutrients: [2, 4, 8]
+		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_only, 
+			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure
+		)
 
+	elseif verbosity == 2 then
+		-- tile nutrients and plant delta
+		-- Nutrients: [2, 4, 8] ([-1, +2, -3])
+		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant,
+			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
+			net_nutrients.formula, net_nutrients.compost, net_nutrients.manure	
+		)
+	elseif verbosity == 3 then
+		-- tile nutrients, plant delta, entire tile delta
+		-- Nutrients: [2, 4, 8] ([-1, +2, -3] + [1, -2, 3])
+		description = alt_description
+		alt_description = nil
+	end
+
+	--[[
 	if verbosity == 1 then
 		-- tile nutrients only
 		-- Nutrients: [2, 4, 8]
@@ -92,38 +133,19 @@ local function DescribeNutrients(self, context, definition)
 	elseif verbosity == 3 then
 		-- tile nutrients, plant delta, entire tile delta
 		-- Nutrients: [2, 4, 8] ([-1, +2, -3] + [1, -2, 3])
-		local tile_nutrient_delta = farmingHelper.GetTileNutrientDelta(self.inst.Transform:GetWorldPosition())
-
 		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant_tile,
 			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
 			net_nutrients.formula, net_nutrients.compost, net_nutrients.manure,
 			tile_nutrient_delta.formula, tile_nutrient_delta.compost, tile_nutrient_delta.manure
 		)
-
-
-		--[[
-		-- tile nutrients, plant delta, entire tile delta, net
-		-- Nutrients: [2, 4, 8] ([-1, +2, -3] + [1, -2, 3] = [0, 0, 0])
-
-		local net = {
-			nutrient_consumption[1] + restore[1], 
-			nutrient_consumption[2] + restore[2], 
-			nutrient_consumption[3] + restore[3]
-		}
-
-		description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant_tile, 
-			tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
-			nutrient_consumption[1], nutrient_consumption[2], nutrient_consumption[3],
-			restore[1], restore[2], restore[3],
-			net[1], net[2], net[3]
-		)
-		--]]
 	end
+	--]]
 
 	return {
 		name = "farmsoildrinker_nutrients",
 		priority = 1,
-		description = description
+		description = description,
+		alt_description = alt_description
 	}
 end
 

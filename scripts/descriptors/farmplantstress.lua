@@ -50,7 +50,6 @@ local STRESS_COLORS = {
 }
 
 local function Describe(self, context)
-	local description = nil
 	--[[
 	if true then
 		return {priority=0, description="helloa\n\tbthere\nbthere"}
@@ -86,42 +85,32 @@ local function Describe(self, context)
 		end
 	end
 
+	local stress_state = GetPlantStressState(self)
+
 	local strs = {}
-
-	--[[
-	for stressor, stressed in pairs(self.stressors) do
-		local x = ApplyColour(tostring(stressed), stressed and "#ff0000" or "#00ff00")
-		table.insert(strs, string.format("%s: %s", stressor, x))
-	end
-
-	if #strs > 0 then
-		description = table.concat(strs, ", ")
-	end
-	--]]
-
-	--[[
-	for stressor, stressed in pairs(self.stressors) do
-		if stressed then
-			table.insert(strs, ApplyColour(stressor, "#dd5555"))
-		end
-	end
-	--]]
-
 	for _, stressor in pairs(GetPlantStressors(self)) do
 		table.insert(strs, ApplyColour(stressor, "#dd5555"))
 	end
 
-	description = string.format(context.lstr.farmplantstress.stress_points, ApplyColour(self.stress_points, STRESS_COLORS[GetPlantStressState(self)]))
+	local stress_points = string.format(context.lstr.farmplantstress.stress_points, ApplyColour(self.stress_points, STRESS_COLORS[stress_state]))
+	local stress_points_extended = stress_points .. " - " .. string.format(context.lstr.farmplantstress.stress_tier, ApplyColour(context.lstr.farmplantstress.tiers[stress_state], STRESS_COLORS[stress_state]))
+	local stressors_string
 
 	if #strs > 0 then
-		description = CombineLines(description, string.format(context.lstr.farmplantstress.display, table.concat(strs, ", ")))
+		stressors_string = string.format(context.lstr.farmplantstress.display, table.concat(strs, ", "))
 	end
 
 	--description = ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.NONE]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.LOW]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.MODERATE]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.HIGH])
 
 	return {
+		name = "farmplantstress_stresspoints",
+		priority = 0.01,
+		description = stress_points,
+		alt_description = stress_points_extended
+	}, {
+		name = "farmplantstress_stressors",
 		priority = 0,
-		description = description
+		description = stressors_string
 	}
 end
 

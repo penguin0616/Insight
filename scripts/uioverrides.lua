@@ -394,12 +394,15 @@ end
 --==========================================================================================================================
 local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true); AddLocalPlayerPostInit(function(_, context) DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] end);
 AddClassPostConstruct("widgets/hoverer", function(hoverer)
+	local GetMouseTargetItem = GetMouseTargetItem
+	local RequestEntityInformation = RequestEntityInformation
 	local TheSim = TheSim
 	local debug_getinfo = debug.getinfo
 	local math_clamp = math.clamp
 	local string_find = string.find
 	local string_sub = string.sub
 	local math_ceil = math.ceil
+	local TheInput_IsKeyDown = TheInput.IsKeyDown
 
 	local Is_DS = IsDS()
 	local Is_DST = IsDST()
@@ -526,7 +529,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		
 		if itemInfo then
 			--print(TheInput:IsKeyDown(KEY_LALT)) -- not CONTROL_FORCE_INSPECT
-			if TheInput:IsKeyDown(KEY_LALT) then
+			if TheInput_IsKeyDown(TheInput, KEY_LALT) then
 				itemInfo = itemInfo.alt_information
 			elseif informationOnAltOnly then
 				itemInfo = nil

@@ -167,8 +167,8 @@ local function Describe(self, context)
 	if DEBUG_ENABLED and inst.prefab == "razor" then
 		return {
 			priority = 0,
-			description = "this has some damage*",
-			alt_description = "this has infinite damage."
+			description = "this has some  <color=#789789>damage</color>*",
+			alt_description = "this has infinite <color=#789789>damage</color>."
 		}
 	end
 

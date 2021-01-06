@@ -548,7 +548,7 @@ end
 --- Returns the descriptor method for an item. Returns false if descriptor failed to load or does not exist.
 -- @tparam string name
 -- @treturn ?function|false
-function GetComponentDescriptor(name)
+local function GetComponentDescriptor(name)
 	if descriptors[name] == nil then
 		-- never processed before
 		local safe, res = pcall(import, "descriptors/" .. name)
@@ -595,7 +595,7 @@ function GetComponentDescriptor(name)
 	end
 end
 
-function GetPrefabDescriptor(name)
+local function GetPrefabDescriptor(name)
 	if prefab_descriptors[name] == nil then
 		-- never processed before
 		local safe, res = pcall(import, "prefab_descriptors/" .. name)
@@ -620,7 +620,7 @@ function GetPrefabDescriptor(name)
 	end
 end
 
-function GetSpecialData(describe_data)
+local function GetSpecialData(describe_data)
 	local special_data = {}
 	for j, k in pairs(describe_data) do
 		if j ~= 'name' and j ~= 'description' and j ~= 'priority' then
@@ -634,13 +634,13 @@ end
 -- @tparam Prefab item
 -- @tparam Player player
 -- @treturn string
-function GetEntityInformation(item, player, params)
+local function GetEntityInformation(item, player, params)
 	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab
 	-- 5/2/2020
 
 	local assembled = {
 		GUID = item.GUID,
-		information = "",
+		information = "", --string.rep("hello there <color=HEALTH> monty python 123</color> dingo bongo\n" .. GetTime(), 4),
 		alt_information = "",
 		special_data = {},
 		raw = (params.raw and {}) or nil,
@@ -668,14 +668,14 @@ function GetEntityInformation(item, player, params)
 	local components = item.components
 
 	local chunks = {}
-	for name, component in pairs(components) do
-		
+	for name, component in pairs(components) do		
 		local descriptor = GetComponentDescriptor(name)
 		
 		if descriptor then
 			local datas = {descriptor(component, player_context)}
-
-			for i, d in pairs(datas) do
+			--for i, d in pairs(datas) do
+			for i = 1, #datas do
+				local d = datas[i]
 				if d and ((not params.ignore_worldly) or (params.ignore_worldly == true and not d.worldly)) then
 					assert(type(d.priority)=="number", "Invalid priority for:" .. name)
 
@@ -693,7 +693,6 @@ function GetEntityInformation(item, player, params)
 					end
 				end
 			end
-
 		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
 			table.insert(chunks, {priority = -2, name = name, description = "Disabled descriptor: " .. name})
 
@@ -744,7 +743,7 @@ function GetEntityInformation(item, player, params)
 			assembled.information = assembled.information .. v.description
 
 			if v.alt_description then
-				assembled.alt_information = assembled.alt_information .. v.alt_description
+				assembled.alt_information = assembled.alt_information .. ResolveColors(v.alt_description)
 			else
 				assembled.alt_information = assembled.alt_information .. v.description
 			end
@@ -768,6 +767,8 @@ function GetEntityInformation(item, player, params)
 	if assembled.information == "" then
 		assembled.information = nil
 	end
+
+	--]]
 
 	return assembled
 end
