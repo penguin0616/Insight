@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.8.28" -- ds is 2.4.4_ds
+version = "2.9.0" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,7 +77,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "alt information; nutrient restoration; beard info; bug fix for hamlet in tropical adventures; bloom info for wormwood in player tab; message bottle indicators;",
+	update_info = "item range on hover (beta-ish); alt information; nutrient restoration; beard info; ",
 	update_info_ds = "bug fixes; More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -243,6 +243,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
 	--------------------------------------------------------------------------
+	item_range_indicator = {
+		LABEL = "Item Range Hover",
+		HOVER = "Whether an item's range is shown upon hovering.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Item range is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Item range is shown."
+			},
+		},
+	},
 	boss_indicator = {
 		LABEL = "Boss Indicator",
 		HOVER = "Whether boss indicators are shown.",
@@ -1113,6 +1127,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
 	--------------------------------------------------------------------------
+	item_range_indicator = {
+		LABEL = "Item Range Hover",
+		HOVER = "Whether an item's range is shown upon hovering.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Item range is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Item range is shown."
+			},
+		},
+	},
 	boss_indicator = {
 		LABEL = "Boss指示器",
 		HOVER = "是否开启Boss指示器功能",
@@ -1979,6 +2007,16 @@ configuration_options = {
 		tags = {},
 	},
 	AddSectionTitle(T"sectiontitle_indicators"),
+	{
+		name = "item_range_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		client = true,
+		tags = {},
+	},
 	{
 		name = "boss_indicator",
 		options = {

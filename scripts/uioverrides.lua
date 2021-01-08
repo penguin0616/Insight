@@ -413,6 +413,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	local oldHide2 = hoverer.secondarytext.Hide
 
 	local informationOnAltOnly
+	local canShowItemRange
 
 	hoverer.insightText = hoverer:AddChild(RichText())
 
@@ -423,7 +424,11 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	-- this gets spam called
 	function hoverer.text.Hide(self)
 		if self.shown then
-			GetMouseTargetItem() -- i could probably do this better, eh?
+			--GetMouseTargetItem() -- i could probably do this better, eh?
+			if canShowItemRange and currentlySelectedItem ~= nil then
+				OnCurrentlySelectedItemChanged(currentlySelectedItem, nil)
+				currentlySelectedItem = nil
+			end
 			oldHide(self)
 		end
 	end
@@ -508,13 +513,16 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	end
 
 	hoverer.text.SetString = function(self, text)
-		print'a'
 		if not localPlayer then
 			return
 		end
 
 		if informationOnAltOnly == nil then
 			informationOnAltOnly = GetModConfigData("alt_only_information", true)
+		end
+
+		if canShowItemRange == nil then
+			canShowItemRange = GetModConfigData("item_range_indicator", true)
 		end
 
 		--YOFFSETUP = util.getupvalue(debug.getinfo(2).func, "YOFFSETUP")
@@ -525,7 +533,8 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		--
 		-- information
 		local item = GetMouseTargetItem()
-		local itemInfo = RequestEntityInformation(item, localPlayer, { fromInspection=true, ignore_worldly=true })
+		local entityInformation = RequestEntityInformation(item, localPlayer, { fromInspection=true, ignore_worldly=true })
+		local itemDescription = nil
 
 		if item and DEBUG_SHOW_PREFAB then
 			local pos = string_find(text, "\n")
@@ -537,24 +546,38 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			end
 		end
 		
-		if itemInfo then
+		if entityInformation then
 			--print(TheInput:IsKeyDown(KEY_LALT)) -- not CONTROL_FORCE_INSPECT
 			if TheInput_IsKeyDown(TheInput, KEY_LALT) then
-				itemInfo = itemInfo.alt_information
+				itemDescription = entityInformation.alt_information
 			elseif informationOnAltOnly then
-				itemInfo = nil
+				itemDescription = nil
 			else
-				itemInfo = itemInfo.information
+				itemDescription = entityInformation.information
 			end
 
 			--itemInfo = (TheInput:IsKeyDown(KEY_LALT) and itemInfo.alt_information) or itemInfo.information or nil
+		end
+
+		if canShowItemRange then
+			if item == nil or entityInformation == nil then
+				if currentlySelectedItem ~= nil then
+					OnCurrentlySelectedItemChanged(currentlySelectedItem, nil)
+					currentlySelectedItem = nil
+				end
+			elseif item and entityInformation and entityInformation.GUID then -- GUID presence means it is initialized
+				if currentlySelectedItem ~= item then
+					OnCurrentlySelectedItemChanged(currentlySelectedItem, item, entityInformation)
+					currentlySelectedItem = item
+				end
+			end
 		end
 
 		if item and DEBUG_ENABLED then
 			--itemInfo = string.format("Active: %s\n", tostring(entityManager:IsEntityActive(item))) .. (itemInfo or "")
 		end
 
-		hoverer.insightText:SetString(itemInfo)
+		hoverer.insightText:SetString(itemDescription)
 
 		-- size info
 		local dataWidth, dataHeight = hoverer.insightText:GetRegionSize()

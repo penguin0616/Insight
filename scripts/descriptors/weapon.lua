@@ -147,7 +147,8 @@ local function Describe(self, context)
 
 	return {
 		priority = 10,
-		description = description
+		description = description,
+		attack_range = self.attackrange
 	}
 end
 

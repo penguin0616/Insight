@@ -21,6 +21,65 @@ directory. If not, please refer to
 -- inspectable.lua
 -- only using this for stuff i want information on but doesn't have any distinguishable components
 
+local CUSTOM_RANGES = {
+	book_tentacles = {
+		range = 8,
+		color = "#3B2249"
+	},
+	book_birds = {
+		range = 10,
+		color = Insight.COLORS.EGG
+	},
+	book_brimstone = {
+		range = 15,
+		color = "#DED15E"
+	},
+	book_sleep = {
+		range = 30,
+		color = "#525EAC",
+	},
+	book_gardening = { -- old one
+		range = 30,
+		color = Insight.COLORS.NATURE
+	},
+
+	book_meteor = {
+		range = TUNING.VOLCANOBOOK_FIRERAIN_RADIUS, -- im hoping that when book_meteor exists, this exists. == 5 in SW anyway.
+		color = Insight.COLORS.VEGGIE
+	},
+
+	book_horticulture = { -- new one
+		range = 30,
+		color = Insight.COLORS.NATURE
+	},
+	book_silviculture = {
+		range = 30,
+		color = Insight.COLORS.INEDIBLE
+	},
+
+
+	horn = {
+		range = TUNING.HORN_RANGE,
+		color = Insight.COLORS.EGG
+	},
+	onemanband = {
+		range = TUNING.ONEMANBAND_RANGE,
+		color = Insight.COLORS.MONSTER
+	},
+	panflute = {
+		range = TUNING.PANFLUTE_SLEEPRANGE,
+		color = Insight.COLORS.SHALLOWS
+	},
+	gnarwail_horn = {
+		range = TUNING.GNARWAIL_HORN_FARM_PLANT_INTERACT_RANGE,
+		color = Insight.COLORS.WET
+	},
+	trident = {
+		range = TUNING.TRIDENT_FARM_PLANT_INTERACT_RANGE,
+		color = Insight.COLORS.WET
+	},
+}
+
 local function IsWinter()
 	if IsDST() then
 		return TheWorld.state.iswinter
@@ -156,6 +215,28 @@ local function PlayerDescribe(self, context)
 	return unpack(stuff)
 end
 
+local function HasRange(inst)
+	if CUSTOM_RANGES[inst.prefab] then
+		return true
+	end
+end
+
+local function RangedDescribe(self, context)
+	local inst = self.inst
+
+	local tool_range = CUSTOM_RANGES[inst.prefab].range
+	local tool_range_color = CUSTOM_RANGES[inst.prefab].color
+
+	return {
+		priority = 0,
+		description = nil,
+		tool_range = tool_range,
+		tool_range_color = tool_range_color
+	}
+end
+
+
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
@@ -164,6 +245,12 @@ local function Describe(self, context)
 		return PlayerDescribe(self, context)
 	end
 
+	--mprint("checking range", HasRange(inst))
+	if HasRange(inst) then
+		return RangedDescribe(self, context)
+	end
+
+	--[[
 	if DEBUG_ENABLED and inst.prefab == "razor" then
 		return {
 			priority = 0,
@@ -171,6 +258,7 @@ local function Describe(self, context)
 			alt_description = "this has infinite <color=#789789>damage</color>."
 		}
 	end
+	--]]
 
 	if inst.prefab == "stagehand" and IsDST() then -- lots of stuff here done to make it make more sense / flow better
 		local mem = inst.sg.mem
@@ -251,7 +339,7 @@ local function Describe(self, context)
 					table.insert(strs, string.format(context.lstr.walrus_camp_respawn, STRINGS.NAMES[string.upper(prefab)] or ("\"" .. prefab .. "\""), respawn_in))
 				end
 			end
-		description = table.concat(strs, "\n")
+			description = table.concat(strs, "\n")
 		end
 	end
 

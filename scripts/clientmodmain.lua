@@ -187,44 +187,7 @@ local function IsPlayerClientLoaded(player)
 	return (player and player.HUD and GetInsight(player) and GetPlayerContext(player) and true) or false
 end
 
-local WICKERBOTTOM_BOOK_STUFF = {
-	book_tentacles = {
-		range = 8,
-		color = Color.fromHex("#3B2249"),
-	},
-	book_birds = {
-		range = 10,
-		color = Color.fromHex(Insight.COLORS.EGG),
-	},
-	book_brimstone = {
-		range = 15,
-		color = Color.fromHex("#DED15E"),
-	},
-	book_sleep = {
-		range = 30,
-		color = Color.fromHex("#525EAC")
-	},
-	book_gardening = { -- old one
-		range = 30,
-		color = Color.fromHex(Insight.COLORS.NATURE),
-	},
-
-	book_meteor = {
-		range = TUNING.VOLCANOBOOK_FIRERAIN_RADIUS, -- im hoping that when book_meteor exists, this exists. == 5 in SW anyway.
-		color = Color.fromHex(Insight.COLORS.VEGGIE),
-	},
-
-	book_horticulture = { -- new one
-		range = 30,
-		color = Color.fromHex(Insight.COLORS.NATURE),
-	},
-	book_silviculture = {
-		range = 30,
-		color = Color.fromHex(Insight.COLORS.INEDIBLE),
-	},
-}
-
-local function OnCurrentlySelectedItemChanged(old, new)
+function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 	if old and old.insight_hover_range then
 		old.insight_hover_range:Remove()
 		old.insight_hover_range = nil
@@ -234,11 +197,21 @@ local function OnCurrentlySelectedItemChanged(old, new)
 		return
 	end
 
-	if WICKERBOTTOM_BOOK_STUFF[new.prefab] then
+	-- should i handle weapon range?
+	if not itemInfo.special_data.inspectable then
+		return
+	end
+
+	local range = itemInfo.special_data.inspectable.tool_range
+	local color = itemInfo.special_data.inspectable.tool_range_color
+
+	if range then
 		new.insight_hover_range = SpawnPrefab("insight_range_indicator")
 		new.insight_hover_range:Attach(ThePlayer)
-		new.insight_hover_range:SetRadius(WICKERBOTTOM_BOOK_STUFF[new.prefab].range / WALL_STUDS_PER_TILE)
-		new.insight_hover_range:SetColour(WICKERBOTTOM_BOOK_STUFF[new.prefab].color) -- default color
+		new.insight_hover_range:SetRadius(range / WALL_STUDS_PER_TILE)
+		if color then
+			new.insight_hover_range:SetColour(Color.fromHex(color))
+		end
 		new.insight_hover_range:SetVisible(true)
 	end
 end
@@ -278,11 +251,6 @@ function GetMouseTargetItem()
 	-- 5/2/2020
 	if target ~= nil and not IsPrefab(target) then
 		return nil
-	end
-
-	if currentlySelectedItem ~= target then
-		OnCurrentlySelectedItemChanged(currentlySelectedItem, target)
-		currentlySelectedItem = target
 	end
 
 	return target
