@@ -26,6 +26,7 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 --==========================================================================================================================
 --==========================================================================================================================
 localPlayer = nil
+currentlySelectedItem = nil
 shard_players = {}
 highlighting = import("highlighting")
 local onLocalPlayerReady = setmetatable({}, { __newindex = function(self, index, value) 
@@ -55,49 +56,6 @@ end
 function AddLocalPlayerPostRemove(fn, persists)
 	-- table.insert uses rawset internally
 	onLocalPlayerRemove[#onLocalPlayerRemove+1] = {fn = fn, persists = persists or false}
-end
-
-
---- Retrives the current selected item, be it from hud or world.
--- @treturn ?Item|nil
-function GetMouseTargetItem()
-	-- from show me
-	-- thanks star
-	local target = TheInput:GetHUDEntityUnderMouse()
-	-- target.widget.parent is ItemTile
-	
-	-- game prefers inventory items over world items
-	target = (target and target.widget and target.widget:GetParent() ~= nil and target.widget:GetParent().item) or TheInput:GetWorldEntityUnderMouse() or nil
-
-	--mprint('target', target, TheInput:GetWorldEntityUnderMouse())	
-	if target and target == localPlayer then
-		-- only way for this to happen is if they mouse over the player while an item is in the same spot, or if we are riding something
-
-		-- if someone else is riding something, will select player over mount
-		--[[
-		local mount
-		if localPlayer.replica and localPlayer.replica.rider then
-			mount = localPlayer.replica.rider:GetMount()
-		elseif localPlayer.components.rider then
-			mount = localPlayer.components.rider:GetMount()
-		end
-
-		mprint('mount', mount)
-
-		if mount then
-			return mount
-		end
-		--]]
-		return nil
-	end
-
-	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab
-	-- 5/2/2020
-	if not IsPrefab(target) then
-		return nil
-	end
-
-	return target
 end
 
 local function GetMorgueDeathsForWorld(name)
@@ -228,6 +186,108 @@ end
 local function IsPlayerClientLoaded(player)
 	return (player and player.HUD and GetInsight(player) and GetPlayerContext(player) and true) or false
 end
+
+local WICKERBOTTOM_BOOK_STUFF = {
+	book_tentacles = {
+		range = 8,
+		color = Color.fromHex("#3B2249"),
+	},
+	book_birds = {
+		range = 10,
+		color = Color.fromHex(Insight.COLORS.EGG),
+	},
+	book_brimstone = {
+		range = 15,
+		color = Color.fromHex("#DED15E"),
+	},
+	book_sleep = {
+		range = 30,
+		color = Color.fromHex("#525EAC")
+	},
+	book_gardening = { -- old one
+		range = 30,
+		color = Color.fromHex(Insight.COLORS.NATURE),
+	},
+
+	book_meteor = {
+		range = TUNING.VOLCANOBOOK_FIRERAIN_RADIUS, -- im hoping that when book_meteor exists, this exists. == 5 in SW anyway.
+		color = Color.fromHex(Insight.COLORS.VEGGIE),
+	},
+
+	book_horticulture = { -- new one
+		range = 30,
+		color = Color.fromHex(Insight.COLORS.NATURE),
+	},
+	book_silviculture = {
+		range = 30,
+		color = Color.fromHex(Insight.COLORS.INEDIBLE),
+	},
+}
+
+local function OnCurrentlySelectedItemChanged(old, new)
+	if old and old.insight_hover_range then
+		old.insight_hover_range:Remove()
+		old.insight_hover_range = nil
+	end
+
+	if not new then
+		return
+	end
+
+	if WICKERBOTTOM_BOOK_STUFF[new.prefab] then
+		new.insight_hover_range = SpawnPrefab("insight_range_indicator")
+		new.insight_hover_range:Attach(ThePlayer)
+		new.insight_hover_range:SetRadius(WICKERBOTTOM_BOOK_STUFF[new.prefab].range / WALL_STUDS_PER_TILE)
+		new.insight_hover_range:SetColour(WICKERBOTTOM_BOOK_STUFF[new.prefab].color) -- default color
+		new.insight_hover_range:SetVisible(true)
+	end
+end
+
+--- Retrives the current selected item, be it from hud or world.
+-- @treturn ?Item|nil
+function GetMouseTargetItem()
+	local target = TheInput:GetHUDEntityUnderMouse()
+	-- target.widget.parent is ItemTile
+	
+	-- game prefers inventory items over world items
+	target = (target and target.widget and target.widget:GetParent() ~= nil and target.widget:GetParent().item) or TheInput:GetWorldEntityUnderMouse() or nil
+
+	--mprint('target', target, TheInput:GetWorldEntityUnderMouse())	
+	if target and target == localPlayer then
+		-- only way for this to happen is if they mouse over the player while an item is in the same spot, or if we are riding something
+
+		-- if someone else is riding something, will select player over mount
+		--[[
+		local mount
+		if localPlayer.replica and localPlayer.replica.rider then
+			mount = localPlayer.replica.rider:GetMount()
+		elseif localPlayer.components.rider then
+			mount = localPlayer.components.rider:GetMount()
+		end
+
+		mprint('mount', mount)
+
+		if mount then
+			return mount
+		end
+		--]]
+		return nil
+	end
+
+	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab
+	-- 5/2/2020
+	if target ~= nil and not IsPrefab(target) then
+		return nil
+	end
+
+	if currentlySelectedItem ~= target then
+		OnCurrentlySelectedItemChanged(currentlySelectedItem, target)
+		currentlySelectedItem = target
+	end
+
+	return target
+end
+
 
 local function CanBlink(player)
 	local inventory = (Is_DST and player.replica and player.replica.inventory) or (Is_DS and player.components.inventory) or error("CanBlink called on entity missing inventory")
@@ -861,6 +921,18 @@ if IsDS() then
 			oldOnUpdate(...)
 		end
 	end)
+
+	local sizetbl = setmetatable({}, {__mode = "k"}) -- k, v, kv
+
+	local oldSetSize = TextWidget.SetSize
+	TextWidget.SetSize = function(self, sz)
+		sizetbl[self] = sz
+		return oldSetSize(self, sz)
+	end
+
+	TextWidget.GetSize = function(self, sz)
+		return sizetbl[self]
+	end
 end
 
 -- Misc
@@ -899,20 +971,15 @@ entityManager:AddListener("insight", function(self, event, inst)
 	end
 end)
 
-
-if IsDS() then
-	local sizetbl = setmetatable({}, {__mode = "k"}) -- k, v, kv
-
-	local oldSetSize = TextWidget.SetSize
-	TextWidget.SetSize = function(self, sz)
-		sizetbl[self] = sz
-		return oldSetSize(self, sz)
-	end
-
-	TextWidget.GetSize = function(self, sz)
-		return sizetbl[self]
-	end
-end
-
 AddLocalPlayerPostInit(highlighting.Activate, true)
 AddLocalPlayerPostRemove(highlighting.Deactivate, true)
+
+if IsDST() then
+	--[[
+	local oldLearnPlantStage = ThePlantRegistry.LearnPlantStage
+	ThePlantRegistry.LearnPlantStage = function(...)
+		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "PlantRegistry"), ThePlantRegistry)
+		return oldLearnPlantStage(...)
+	end
+	--]]
+end

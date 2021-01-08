@@ -235,12 +235,12 @@ local function GetTileNutrientDelta(x, y, z)
 
 	return nutrient_delta
 end
-
---- Returns plant product
-local function GetPlantProduct(plant) -- farm_plant_...
+--- Returns plant definition for prefab
+local function GetPlantDefinitionFromSeed(plant)
 	for veggie, data in pairs(PLANT_DEFS) do
+		-- data.prefab is seed prefab ( -- farm_plant_...)
 		if data.prefab == plant then
-			return veggie
+			return data
 		end
 	end
 end
@@ -261,7 +261,7 @@ lib = {
 	GetPlantNutrientModifier = GetPlantNutrientModifier,
 	GetTileNutrientDelta = GetTileNutrientDelta,
 
-	GetPlantProduct = GetPlantProduct,
+	GetPlantDefinitionFromSeed = GetPlantDefinitionFromSeed,
 }
 
 return setmetatable({}, {__index = lib})

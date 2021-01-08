@@ -23,14 +23,14 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.8.26" -- ds is 2.4.4_ds
+version = "2.8.28" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"
 id = "Insight"
 priority = -10000 --[[ rezecib's Geometric Placement has -10, chinese++, has -9999. assuming the rest of the chinese translation mods use a similar enough priority.
-ideally, we come last in the mod loading order to make life easier.
+ideally, we come last in the mod loading order to make life easier. 
 that way, I can try to be compatible with other mods without them having to worry about compatibility with Insight. after all, probably better if I handle it.
 --]]
 
@@ -77,7 +77,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "beard info; bug fix for hamlet in tropical adventures; bloom info for wormwood in player tab; message bottle indicators;",
+	update_info = "alt information; nutrient restoration; beard info; bug fix for hamlet in tropical adventures; bloom info for wormwood in player tab; message bottle indicators;",
 	update_info_ds = "bug fixes; More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -493,6 +493,32 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	soil_moisture = {
+		LABEL = "Soil Moisture",
+		HOVER = "How soil/plant moisture is displayed.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Off",
+				HOVER = "Soil moisture is not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "Soil",
+				HOVER = "Only soil moisture is shown.",
+			},
+			["2"] = {
+				DESCRIPTION = "Soil / Plant",
+				HOVER = "Soil moisture and the plant consumption rate is shown.",
+			},
+			["3"] = {
+				DESCRIPTION = "Soil, Plant, Tile",
+				HOVER = "Soil moisture, plant consumption, and the tile moisture rate is shown.",
+			},
+			["4"] = {
+				DESCRIPTION = "All",
+				HOVER = "Soil moisture, plant consumption, and the **NET** tile moisture rate is shown.",
+			}
+		}
+	},
 	soil_nutrients = {
 		LABEL = "Soil Nutrients",
 		HOVER = "How soil/plant nutrients are displayed.",
@@ -519,32 +545,6 @@ local english = {
 				HOVER = "Soil nutrients, plant consumption, and the **NET** tile nutrients rate is shown.",
 			}
 			--]]
-		}
-	},
-	soil_moisture = {
-		LABEL = "Soil Moisture",
-		HOVER = "How soil/plant moisture is displayed.",
-		OPTIONS = {
-			["0"] = {
-				DESCRIPTION = "Off",
-				HOVER = "Soil moisture is not shown.",
-			},
-			["1"] = {
-				DESCRIPTION = "Soil",
-				HOVER = "Only soil moisture is shown.",
-			},
-			["2"] = {
-				DESCRIPTION = "Soil / Plant",
-				HOVER = "Soil moisture and the plant consumption rate is shown.",
-			},
-			["3"] = {
-				DESCRIPTION = "Soil, Plant, Tile",
-				HOVER = "Soil moisture, plant consumption, and the tile moisture rate is shown.",
-			},
-			["4"] = {
-				DESCRIPTION = "All",
-				HOVER = "Soil moisture, plant consumption, and the **NET** tile moisture rate is shown.",
-			}
 		}
 	},
 	display_plant_stressors = {
@@ -1363,6 +1363,32 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	soil_moisture = {
+		LABEL = "Soil Moisture",
+		HOVER = "How soil/plant moisture is displayed.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Off",
+				HOVER = "Soil moisture is not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "Soil",
+				HOVER = "Only soil moisture is shown.",
+			},
+			["2"] = {
+				DESCRIPTION = "Soil / Plant",
+				HOVER = "Soil moisture and the plant consumption rate is shown.",
+			},
+			["3"] = {
+				DESCRIPTION = "Soil, Plant, Tile",
+				HOVER = "Soil moisture, plant consumption, and the tile moisture rate is shown.",
+			},
+			["4"] = {
+				DESCRIPTION = "All",
+				HOVER = "Soil moisture, plant consumption, and the **NET** tile moisture rate is shown.",
+			}
+		}
+	},
 	soil_nutrients = {
 		LABEL = "Soil Nutrients",
 		HOVER = "How soil/plant nutrients are displayed.",
@@ -1389,32 +1415,6 @@ local chinese = {
 				HOVER = "Soil nutrients, plant consumption, and the **NET** tile nutrients rate is shown.",
 			}
 			--]]
-		}
-	},
-	soil_moisture = {
-		LABEL = "Soil Moisture",
-		HOVER = "How soil/plant moisture is displayed.",
-		OPTIONS = {
-			["0"] = {
-				DESCRIPTION = "Off",
-				HOVER = "Soil moisture is not shown.",
-			},
-			["1"] = {
-				DESCRIPTION = "Soil",
-				HOVER = "Only soil moisture is shown.",
-			},
-			["2"] = {
-				DESCRIPTION = "Soil / Plant",
-				HOVER = "Soil moisture and the plant consumption rate is shown.",
-			},
-			["3"] = {
-				DESCRIPTION = "Soil, Plant, Tile",
-				HOVER = "Soil moisture, plant consumption, and the tile moisture rate is shown.",
-			},
-			["4"] = {
-				DESCRIPTION = "All",
-				HOVER = "Soil moisture, plant consumption, and the **NET** tile moisture rate is shown.",
-			}
 		}
 	},
 	display_plant_stressors = {
@@ -2155,19 +2155,6 @@ configuration_options = {
 	},
 	AddSectionTitle(T"sectiontitle_informationcontrol"), 
 	{
-		name = "soil_nutrients",
-		options = {
-			{data = 0},
-			{data = 1},
-			{data = 2},
-			{data = 3},
-			--{data = 4},
-		},
-		default = 2,
-		client = true,
-		tags = {"dst_only"},
-	},
-	{
 		name = "soil_moisture",
 		options = {
 			{data = 0},
@@ -2175,6 +2162,19 @@ configuration_options = {
 			{data = 2},
 			{data = 3},
 			{data = 4},
+		},
+		default = 2,
+		client = true,
+		tags = {"dst_only"},
+	},
+	{
+		name = "soil_nutrients",
+		options = {
+			{data = 0},
+			{data = 1},
+			{data = 2},
+			{data = 3},
+			--{data = 4},
 		},
 		default = 2,
 		client = true,

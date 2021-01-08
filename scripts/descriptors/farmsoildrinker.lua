@@ -33,38 +33,40 @@ local function DescribeMoisture(self, context, definition)
 	local plant_delta = self:GetMoistureRate() * 60
 	local tile_delta = farmingHelper.GetTileMoistureDelta(self.inst.Transform:GetWorldPosition()) * 60
 	local world_delta = farmingHelper.GetWorldMoistureDelta() * 60
-
-	local alt_description = string.format(context.lstr.farmsoildrinker.soil_plant_tile_net, 
-		Round(tile_moisture, 1), 
-		Round(plant_delta,  1), 
-		Round(tile_delta, 1),
-		Round(world_delta, 1),
-		world_delta + tile_delta -- rounded by the string
-	)
+	local alt_description
 
 	if not tile_moisture then
 		description = "Missing tile moisture data."
+	else
+		alt_description = string.format(context.lstr.farmsoildrinker.soil_plant_tile_net, 
+			Round(tile_moisture, 1), 
+			Round(plant_delta,  1), 
+			Round(tile_delta, 1),
+			Round(world_delta, 1),
+			world_delta + tile_delta -- rounded by the string
+		)
+		
+		if verbosity == 1 then
+			-- tile moisture only
+			-- Water: 33%
+			description = string.format(context.lstr.farmsoildrinker.soil_only, Round(tile_moisture, 0))
 
-	elseif verbosity == 1 then
-		-- tile moisture only
-		-- Water: 33%
-		description = string.format(context.lstr.farmsoildrinker.soil_only, Round(tile_moisture, 0))
+		elseif verbosity == 2 then
+			-- tile moisture and plant delta
+			-- Water: 33% (-2/min)
+			description = string.format(context.lstr.farmsoildrinker.soil_plant, Round(tile_moisture, 1), Round(plant_delta, 1))
 
-	elseif verbosity == 2 then
-		-- tile moisture and plant delta
-		-- Water: 33% (-2/min)
-		description = string.format(context.lstr.farmsoildrinker.soil_plant, Round(tile_moisture, 1), Round(plant_delta, 1))
+		elseif verbosity == 3 then
+			-- tile moisture, plant delta, entire tile delta
+			-- Water: 33% (-2 [-14])/min
+			description = string.format(context.lstr.farmsoildrinker.soil_plant_tile, Round(tile_moisture, 1), Round(plant_delta, 1), Round(tile_delta, 1))
 
-	elseif verbosity == 3 then
-		-- tile moisture, plant delta, entire tile delta
-		-- Water: 33% (-2 [-14])/min
-		description = string.format(context.lstr.farmsoildrinker.soil_plant_tile, Round(tile_moisture, 1), Round(plant_delta, 1), Round(tile_delta, 1))
-
-	elseif verbosity == 4 then
-		-- tile moisture, plant delta, entire tile delta, world delta w/ net
-		-- Water: 33% (-2 [-14 + 3 = 11])/min
-		description = alt_description
-		description = nil
+		elseif verbosity == 4 then
+			-- tile moisture, plant delta, entire tile delta, world delta w/ net
+			-- Water: 33% (-2 [-14 + 3 = 11])/min
+			description = alt_description
+			alt_description = nil
+		end
 	end
 
 	return {

@@ -409,7 +409,8 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 	local oldSetString = hoverer.text.SetString
 	local oldOnUpdate = hoverer.OnUpdate
-	local oldHide = hoverer.secondarytext.Hide
+	local oldHide = hoverer.text.Hide
+	local oldHide2 = hoverer.secondarytext.Hide
 
 	local informationOnAltOnly
 
@@ -419,12 +420,20 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	-- so whereas normally hover text is unable to follow below a certain height because of math.min, the new YOFFSETUP means it is free to roam wherever vertically
 	-- nothing like having to fix klei bugs myself because you literally can't report don't starve bugs
 
+	-- this gets spam called
+	function hoverer.text.Hide(self)
+		if self.shown then
+			GetMouseTargetItem() -- i could probably do this better, eh?
+			oldHide(self)
+		end
+	end
+
 	function hoverer.secondarytext:Hide()
 		if Is_DS then
 			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETUP", 40)
 			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETDOWN", 30)
 		end
-		oldHide(self)
+		oldHide2(self)
 	end
 
 	-- count lines
@@ -499,6 +508,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	end
 
 	hoverer.text.SetString = function(self, text)
+		print'a'
 		if not localPlayer then
 			return
 		end

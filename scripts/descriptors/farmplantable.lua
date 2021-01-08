@@ -22,8 +22,7 @@ directory. If not, please refer to
 local farmingHelper = import("helpers/farming")
 
 local function Describe(self, context)
-	local description = nil
-
+	-- self.plant
 	-- farm_plant_randomseed
 	-- farm_plant_potato
 
@@ -31,18 +30,25 @@ local function Describe(self, context)
 		return
 	end
 
-	local product = farmingHelper.GetPlantProduct(self.plant)
+	local definition = farmingHelper.GetPlantDefinitionFromSeed(self.plant)
 
-	if not product then
-		product = "???"
+	if not definition then
+		return
 	end
 
+	local description = nil
+	local nutrients = farmingHelper.GetPlantNutrientModifier(definition)
+
+	local product = definition.product or "???"
 	if context.usingIcons and PrefabHasIcon(product) then
-		description = string.format(context.lstr.farmplantable, product)
+		--description = string.format(context.lstr.farmplantable.product, product)
 	else
 		local name = STRINGS.NAMES[product:upper()] or ("\"" .. product .. "\"")
-		description = string.format(context.lstr.lang.farmplantable, name)
+		--description = string.format(context.lstr.lang.farmplantable.product, name)
 	end
+
+	local nutrient_string = string.format(context.lstr.farmplantable.nutrient_consumption, nutrients.formula, nutrients.compost, nutrients.manure)
+	description = CombineLines(description, nutrient_string)
 
 	return {
 		priority = 0,

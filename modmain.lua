@@ -1671,6 +1671,15 @@ if IsDST() then
 
 		_G.c_setgiftday = function(n) assert(TheWorld.ismastersim, "need to be mastersim") ThePlayer.components.wintertreegiftable.previousgiftday = n end
 
+		_G.c_killall = function(prefab) 
+			assert(TheWorld.ismastersim, "need to be mastersim");
+			for k,ent in pairs(Ents) do 
+				if ent.prefab == prefab and ent.components.health then 
+					c_kill(ent);
+				end;
+			end;
+		end;
+
 		_G.c_bring = function(inst) 
 			assert(TheWorld.ismastersim, "need to be mastersim")
 			if (inst.components.inventoryitem and not inst.components.inventoryitem:GetGrandOwner()) or not inst.components.inventoryitem then
