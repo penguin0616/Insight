@@ -414,6 +414,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 	local informationOnAltOnly
 	local canShowItemRange
+	local altOnlyIsVerbose
 
 	hoverer.insightText = hoverer:AddChild(RichText())
 
@@ -525,6 +526,10 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			canShowItemRange = GetModConfigData("item_range_indicator", true)
 		end
 
+		if altOnlyIsVerbose == nil then
+			altOnlyIsVerbose = GetModConfigData("alt_only_is_verbose", true)
+		end
+
 		--YOFFSETUP = util.getupvalue(debug.getinfo(2).func, "YOFFSETUP")
 		--YOFFSETDOWN = util.getupvalue(debug.getinfo(2).func, "YOFFDOWN")
 		--mprint('t1:', text) -- main action or whatnot, including alt
@@ -549,12 +554,25 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		if entityInformation then
 			--print(TheInput:IsKeyDown(KEY_LALT)) -- not CONTROL_FORCE_INSPECT
 			if TheInput_IsKeyDown(TheInput, KEY_LALT) then
-				itemDescription = entityInformation.alt_information
+				if informationOnAltOnly == true and altOnlyIsVerbose == false then
+					itemDescription = entityInformation.information
+				else
+					itemDescription = entityInformation.alt_information
+				end
 			elseif informationOnAltOnly then
 				itemDescription = nil
 			else
 				itemDescription = entityInformation.information
 			end
+
+			--[[
+				if altOnlyIsVerbose == true then
+					print'yeep'
+					itemDescription = entityInformation.alt_information
+				else
+					itemDescription = entityInformation.information
+				end
+			]]
 
 			--itemInfo = (TheInput:IsKeyDown(KEY_LALT) and itemInfo.alt_information) or itemInfo.information or nil
 		end

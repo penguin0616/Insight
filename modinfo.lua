@@ -164,6 +164,20 @@ local english = {
 			},
 		},
 	},
+	alt_only_is_verbose = {
+		LABEL = "Inspect Only Verbosity",
+		HOVER = "*ONLY MATTERS WHEN \"Inspect Only\" IS ENABLED.*\nWhether holding alt shows the standard or extended information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Standard",
+				HOVER = "Standard information is shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Extended",
+				HOVER = "Extended information is shown."
+			},
+		},
+	},
 	itemtile_display = {
 		LABEL = "Inv Slot Info",
 		HOVER = "What kind of information shows instead of percentages on item slots.",
@@ -1036,7 +1050,7 @@ local chinese = {
 	},
 	alt_only_information = {
 		LABEL = "Inspect Only",
-		HOVER = "Whether Insight will only show information when you hold Left Alt.",
+		HOVER = "Whether information only shows when you hold Left Alt.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "Disabled",
@@ -1044,7 +1058,7 @@ local chinese = {
 			},
 			["true"] = {
 				DESCRIPTION = "Enabled",
-				HOVER = "Information only displays on inspection."
+				HOVER = "Information only displays on inspection (Left Alt)."
 			},
 		},
 	},
@@ -1960,6 +1974,16 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
+	{
+		name = "alt_only_is_verbose",
+		options = {
+			{data = false},
+			{data = true}
+		},
+		default = false,
+		client = true,
+		tags = {},
+	},1
 	{
 		name = "itemtile_display",
 		options = {

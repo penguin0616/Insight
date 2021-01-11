@@ -742,18 +742,18 @@ local function GetEntityInformation(item, player, params)
 
 			assembled.information = assembled.information .. v.description
 
+			--[[
 			if v.alt_description then
 				assembled.alt_information = assembled.alt_information .. ResolveColors(v.alt_description)
 			else
 				assembled.alt_information = assembled.alt_information .. v.description
 			end
+			--]]
 
 			if i < #chunks then
 				assembled.information = assembled.information .. "\n"
-				assembled.alt_information = assembled.alt_information .. "\n"
+				--assembled.alt_information = assembled.alt_information .. "\n"
 			end
-
-			
 
 			if params.raw == true then
 				assembled.raw[v.name] = v.description
@@ -762,6 +762,27 @@ local function GetEntityInformation(item, player, params)
 			-- should have been caught in the previous statement
 			error(string.format("invalid description: %s | Descriptor: %s", tostring(v.description), v.name))
 		end
+
+
+		if type(v.alt_description) == "string" then
+			assembled.alt_information = assembled.alt_information .. ResolveColors(v.alt_description)
+			if i < #chunks then
+				assembled.alt_information = assembled.alt_information .. "\n"
+			end
+
+		elseif v.alt_description == nil and v.description ~= nil then
+			assembled.alt_information = assembled.alt_information .. v.description
+			if i < #chunks then
+				assembled.alt_information = assembled.alt_information .. "\n"
+			end
+
+		elseif v.alt_description ~= nil then
+			-- should have been caught in the previous statement
+			error(string.format("invalid alt_description: %s | Descriptor: %s", tostring(v.alt_description), v.name))
+		end
+
+		
+
 	end
 
 	if assembled.information == "" then
@@ -1669,6 +1690,15 @@ if IsDST() then
 		_G.c_setseason = function(season) assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_setseason", season) end;
 		_G.c_insight_countactives = function() local plr = ConsoleCommandPlayer(); local str = string.format("Replica: %s, Manager: %s", GetInsight(plr):CountEntities(), _G.Insight.env.entityManager:Count()) if TheWorld.ismastersim then TheNet:Announce(str) else print(str) end end;
 
+		_G.c_goportal = function(n) 
+			for i,v in pairs(Ents) do 
+				if (v.prefab == "cave_entrance_open" or v.prefab == "cave_exit") and v.components.worldmigrator.id == n then 
+					c_goto(v);
+					break;
+				end;
+			end;
+		end;
+
 		_G.c_setgiftday = function(n) assert(TheWorld.ismastersim, "need to be mastersim") ThePlayer.components.wintertreegiftable.previousgiftday = n end
 
 		_G.c_killall = function(prefab) 
@@ -1911,45 +1941,40 @@ end)
 local function GetSockets(main)
 	local x,y,z = main.Transform:GetWorldPosition()   
 	local ents = TheSim:FindEntities(x,y,z, 10, {"resonator_socket"})
-    
-    local sockets = {}
-    for i=#ents,1,-1 do
-        table.insert(sockets,ents[i])
-    end
+	
+	local sockets = {}
+	for i=#ents,1,-1 do
+		table.insert(sockets,ents[i])
+	end
 	table.sort(sockets, function(a,b) return a.GUID < b.GUID end)
 
 	return sockets
 end
 
 local function GetCorrectSocket(main, puzzle)
-	local current = main.numcount or 0
+	local current = main.numcount or 0 -- numcount = nil == its unlocking, or nothing stepped on yet
 	current = current + 1
 
 	local tbl = GetSockets(main)
 
 	for i,v in pairs(tbl) do
 		if puzzle[i] == current then
-			--v.indicator:SetVisible(true)
 			v.insight_active:set(true)
 		else
-			--v.indicator:SetVisible(false)
 			v.insight_active:set(false)
 		end
 	end
 end
 
 AddPrefabPostInit("archive_orchestrina_small", function(inst)
-	inst.indicator = SpawnPrefab("insight_range_indicator")
-	inst.indicator:Attach(inst)
-	inst.indicator:SetRadius(0.625)
-	--inst.indicator:SetColour(Color.new(0, 1, 0, 1))
-	inst.indicator:SetColour(Color.fromRGB(152, 100, 245))
-	inst.indicator:SetVisible(false)
-	inst.indicator:AddNetwork(true) -- not needed?
-
 	inst.insight_active = net_bool(inst.GUID, "insight_active", "insight_active_dirty")
 	inst:ListenForEvent("insight_active_dirty", function(inst)
-		inst.indicator:SetVisible(inst.insight_active:value())
+		--inst.indicator:SetVisible(inst.insight_active:value())
+		if inst.insight_active:value() then
+			inst.AnimState:SetHighlightColour(152/255, 100/255, 245/255, 1) --indicator was: 152/255, 100/255, 245/255
+		else
+			inst.AnimState:SetHighlightColour(0, 0, 0, 0)
+		end
 	end)
 end)
 
@@ -1961,7 +1986,7 @@ AddPrefabPostInit("archive_orchestrina_main", function(inst)
 		local lockboxes = findlockbox(inst)
 		local lockbox = lockboxes[1]
 
-		if lockbox then
+		if not inst.busy and lockbox then 
 			local puzzle = lockbox.puzzle
 			
 			GetCorrectSocket(inst, puzzle)
@@ -2639,17 +2664,17 @@ end
 printtable = function(tbl)
   local done = {}
   local function recurse(t, d)
-    if done[t] then return end
-    done[t] = true
-    for i,v in pairs(t) do
-      if type(v) == 'table' then
-      print(string.rep("\t", d), i, "{")
-       recurse(v, d + 1)
-      print(string.rep("\t", d), i, "}")
-      else
-        print(string.rep("\t", d), i, v)
-      end
-    end
+	if done[t] then return end
+	done[t] = true
+	for i,v in pairs(t) do
+	  if type(v) == 'table' then
+	  print(string.rep("\t", d), i, "{")
+	   recurse(v, d + 1)
+	  print(string.rep("\t", d), i, "}")
+	  else
+		print(string.rep("\t", d), i, v)
+	  end
+	end
   end
   recurse(tbl, 0)
 end

@@ -20,8 +20,11 @@ directory. If not, please refer to
 
 -- equippable.lua
 local function Describe(self, context)
+	local world_type = GetWorldType()
+
 	local inst = self.inst
 	local description = nil
+	local hunger_modifier_string = nil
 
 	local owner = context.player --GetPlayer() --GetItemPossessor(inst) or GetPlayer()
 	-- bug where one man band has .dapperfn and it needs leader component of holder, just assume owner is GetPlayer()
@@ -36,7 +39,7 @@ local function Describe(self, context)
 	speed_modifier = Round(speed_modifier, 2)
 	
 	if speed_modifier ~= 0 then
-		if IsDST() or GetWorldType() == 0 or GetWorldType() == 1 then -- same thing here
+		if world_type == -1 or world_type == 0 or world_type == 1 then -- same thing here
 			-- consistency
 			speed_modifier = speed_modifier - 1
 		end
@@ -66,17 +69,28 @@ local function Describe(self, context)
 	end
 
 	-- might modify hunger rate
-	local hunger_modifier = nil
-
 	if owner and owner.components.hunger then
-		if IsDST() then
-			--hunger_modifier = tostring(owner.components.hunger.burnratemodifiers:CalculateModifierFromSource(inst)) -- no
-			--hunger_modifier = owner.components.hunger.burn_rate_modifiers[inst.prefab] -- beargervest is -0.25
-			--mprint('a', hunger_modifier)
-			-- fallback
+		if world_type == -1 then
+			
 
-			--hunger_modifier = tostring(owner.components.hunger.burnratemodifiers:Get())
+			-- the problem with using CalculateModifierFromSource is that it has to be equipped to report the real number
+			--[[
+			-- example of total hunger modifier: 1 * (0.75 [from beargervest]) * (0.6 [from armorslurper]) = 0.45
+			local hunger_modifier = owner.components.hunger.burnratemodifiers._modifiers[inst] and owner.components.hunger.burnratemodifiers:CalculateModifierFromSource(inst)
+			if hunger_modifier then
+				hunger_modifier = (1 - hunger_modifier) -- 1 - 0.75 = 0.25
 
+				if hunger_modifier > 0 then -- slower
+					hunger_modifier_string = string.format(context.lstr.hunger_slow, hunger_modifier * 100)
+				elseif hunger_modifier < 0 then -- faster
+					hunger_modifier_string = string.format(context.lstr.hunger_drain, -hunger_modifier * 100)
+				else
+					hunger_modifier_string = "¯\\_(ツ)_/¯"
+				end
+			end
+
+			--]]
+			local hunger_modifier
 			if inst.prefab == "red_mushroomhat" or inst.prefab == "green_mushroomhat" or inst.prefab == "blue_mushroomhat" then
 				hunger_modifier = TUNING.MUSHROOMHAT_SLOW_HUNGER
 			elseif inst.prefab == "beargervest" then
@@ -85,57 +99,51 @@ local function Describe(self, context)
 				hunger_modifier = TUNING.ARMORSLURPER_SLOW_HUNGER
 			end
 
-			if hunger_modifier then hunger_modifier = hunger_modifier - 1 end
-			--[[
-			
-			if hunger_modifier == nil then
-				local name = (inst.prefab == "beargervest" and "armorbearger") or inst.prefab
-				hunger_modifier = -(1 - TUNING[name:upper() .. "_SLOW_HUNGER"])
-				--mprint('b', name, hunger_modifier)
+			if hunger_modifier then
+				hunger_modifier = 1 - hunger_modifier -- i used to do -1 instead of 1-
+				if hunger_modifier > 0 then -- slower
+					hunger_modifier_string = string.format(context.lstr.hunger_slow, hunger_modifier * 100)
+				elseif hunger_modifier < 0 then -- faster
+					hunger_modifier_string = string.format(context.lstr.hunger_drain, -hunger_modifier * 100)
+				else
+					hunger_modifier_string = "¯\\_(ツ)_/¯"
+				end
 			end
-			--]]
-		
 
-		elseif GetWorldType() == 0 or GetWorldType() == 1 then -- base game and RoG
+		elseif world_type == 0 or world_type == 1 then -- base game and RoG
 			-- hardcoding.jpg
-
 			if inst.prefab == "armorslurper" then
-				hunger_modifier = -0.4
+				hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORSLURPER_SLOW_HUNGER) * 100)
 			elseif inst.prefab == "beargervest" then
-				hunger_modifier = -0.25
+				hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORBEARGER_SLOW_HUNGER) * 100)
 			end
 
-			--hunger_modifier = -(1 - owner.components.hunger.burn_rate_modifiers[inst.prefab])
-			-- beargervest
-			
-		else -- hamlet and shipwrecked
-			hunger_modifier = owner.components.hunger.burn_rate_modifiers[inst.prefab] -- beargervest is -0.25
-			--mprint('a', hunger_modifier)
-			-- fallback
-			if hunger_modifier == nil then
-				local name = (inst.prefab == "beargervest" and "armorbearger") or inst.prefab
-				hunger_modifier = TUNING[name:upper() .. "_SLOW_HUNGER"]
-				--mprint('b', name, hunger_modifier)
-			end
-			
-		end
+		else -- SW and Hamlet, it is additive here
+			local hunger_modifier = owner.components.hunger.burn_rate_modifiers[inst.prefab] or owner.components.hunger.burn_rate_modifiers[inst] or owner.components.hunger.burn_rate_modifiers[inst.prefab:gsub("_", "")]-- beargervest is -0.25
 
-		if hunger_modifier ~= nil then
-			hunger_modifier = string.format(context.lstr.hunger_slow, -hunger_modifier * 100)
-			--hunger_modifier = hunger_modifier .. string.format("\n饥饿速度降低: %s%%", -hunger_modifier * 100)
+			if hunger_modifier then
+				if hunger_modifier < 0 then -- slower
+					hunger_modifier_string = string.format(context.lstr.hunger_slow, -hunger_modifier * 100)
+				elseif hunger_modifier > 0 then -- faster
+					hunger_modifier_string = string.format(context.lstr.hunger_drain, hunger_modifier * 100)
+				end 
+			end
+
 		end
 	end
 
 	local insulated
-	if (GetWorldType() > 0 or IsDST()) and self:IsInsulated() then
-		insulated = "Protects you from lightning."
+	if (world_type > 0 or world_type == -1) and self:IsInsulated() then
+		insulated = context.lstr.insulated
 	end
 
-	description = CombineLines(speed_modifier, dapperness, hunger_modifier, insulated)
+	description = CombineLines(speed_modifier, dapperness, hunger_modifier_string)
+	local alt_description = CombineLines(description, insulated)
 
 	return {
 		priority = 0.1,
-		description = description
+		description = description,
+		alt_description = alt_description
 	}
 end
 

@@ -150,6 +150,8 @@ return {
 	-- use 'dapperness' from 'dapperness'
 	speed = "<icon=cane> %s%%",
 	hunger_slow = "<icon=hunger> <color=HUNGER>-%s%%</color>",
+	hunger_drain = "<icon=hunger> <color=HUNGER>%s%%</color>",
+	--insulated = "Protects you from lightning.",
 
 	-- example.lua
 	--why = "[why am i empty]",
@@ -169,12 +171,12 @@ return {
 		stress_points = "Stress Points: %s",
 		display = "Stressors: %s",
 		stress_tier = "Stress level: %s",
-		tiers = {
+		tiers = (IsDST() and {
 			[FARM_PLANT_STRESS.NONE] = "None",
 			[FARM_PLANT_STRESS.LOW] = "Low",
 			[FARM_PLANT_STRESS.MODERATE] = "Moderate",
 			[FARM_PLANT_STRESS.HIGH] = "High",
-		},
+		} or {}),
 	},
 
 	-- farmsoildrinker.lua

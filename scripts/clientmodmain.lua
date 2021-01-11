@@ -576,33 +576,6 @@ AddPrefabPostInitAny(function(inst)
 	end
 end)
 
-
-AddPrefabPostInit("cave_entrance_open", function(inst)
-	local cfg = GetModConfigData("sinkhole_marks", true)
-	if cfg == 0 then return end
-
-	--AddLocalPlayerPostInit(function() GetInsight(localPlayer):RequestInformation(inst) end)
-	--dprint('postinit', inst)
-	ListenForEventOnce(inst, "insight_ready", function(inst)
-		dprint(inst, "- migrator has loaded")
-		local info = GetInsight(localPlayer):GetInformation(inst)
-		local id = info.special_data.worldmigrator.receivedPortal
-		--dprint("id:", id)
-
-		if FOREST_MIGRATOR_IMAGES[id] then
-			inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
-
-			if cfg == 2 then
-				local clr = FOREST_MIGRATOR_IMAGES[id][2]
-				local new = Color.fromRGB(124, 26, 255)
-				inst.AnimState:SetMultColour(unpack(new))
-			end
-		else
-			--dprint("no icon for", id)
-		end
-	end)
-end)
-
 AddPrefabPostInit("cave_entrance_open", function(inst)
 	if IsDS() then return end -- does this even exist in DS
 	local cfg = GetModConfigData("sinkhole_marks", true)
@@ -623,6 +596,8 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 				local clr = FOREST_MIGRATOR_IMAGES[id][2]
 				local new = clr
 				inst.AnimState:SetMultColour(unpack(new))
+				--inst.AnimState:SetHighlightColour(unpack(new))
+				--inst.AnimState:SetAddColour(unpack(new))
 			end
 		else
 			--dprint("no icon for", id)
@@ -648,6 +623,8 @@ AddPrefabPostInit("cave_exit", function(inst)
 				local clr = CAVE_MIGRATOR_IMAGES[id][2]
 				local new = clr
 				inst.AnimState:SetMultColour(unpack(new))
+				--inst.AnimState:SetHighlightColour(unpack(new))
+				--inst.AnimState:SetAddColour(unpack(new))
 			end
 		else
 			--dprint("no icon for", id)
@@ -655,7 +632,7 @@ AddPrefabPostInit("cave_exit", function(inst)
 	end)
 end)
 
-
+--[[
 AddPrefabPostInit("redgem", function(inst) 
 	if not DEBUG_ENABLED then
 		return
@@ -671,6 +648,7 @@ AddPrefabPostInit("redgem", function(inst)
 	--inst:AddComponent("dst_deployhelper")
 	--inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
 end)
+--]]
 
 
 AddPrefabPostInit("mushroombomb", function(inst)

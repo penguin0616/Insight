@@ -245,23 +245,38 @@ local SPECIAL_FOODS = {
 }
 
 local function Describe(self, context)
-	local description = nil
-	local strings = {}
+	local description, alt_description = nil, nil
 
-	local hunger, sanity, health
 	local owner = context.player --GetPlayer()
 	local foodmemory = owner.components.foodmemory
 	local stats = context.stats
+	local alt_description = nil
+	local world_type = GetWorldType()
+
+	if context.config["display_food"] == nil or context.config["display_food"] then
+		local hunger, sanity, health
+		if type(stats) == 'table' then
+			hunger, sanity, health = stats.hunger, stats.sanity, stats.health
+		else
+			hunger, sanity, health = self:GetHunger(), self:GetSanity(), self:GetHealth() 
+		end
+
+		hunger = (hunger >= 0 and "+" or "") .. hunger
+		sanity = (sanity >= 0 and "+" or "") .. sanity
+		health = (health >= 0 and "+" or "") .. health
+		alt_description = formatDescription(hunger, sanity, health, context)
+	end
 
 	if IsEdible(owner, self.inst) and context.config["display_food"] == nil or context.config["display_food"] then -- i think this filters out wurt's meat stats.
 		local eater = owner.components.eater
 
+		local hunger, sanity, health
 		if type(stats) == 'table' then
 			hunger, sanity, health = stats.hunger, stats.sanity, stats.health
 		else
 			hunger, sanity, health = self:GetHunger(owner), self:GetSanity(owner), self:GetHealth(owner) -- DST's food affinity is included in all 3
 
-			if GetWorldType() ~= 0 then -- accounting for strong stomach in anywhere except base game since no one cares there
+			if world_type ~= 0 then -- accounting for strong stomach in anywhere except base game since no one cares there
 				if sanity < 0 and eater:DoFoodEffects(self.inst) == false then
 					sanity = 0
 				end
@@ -278,6 +293,14 @@ local function Describe(self, context)
 				health * base_mult * eater.healthabsorption
 		end
 
+		if health < 0 and owner.components.health.absorb then
+			if world_type > 0 then -- RoG+
+				health = health - (health * owner.components.health.absorb)
+			elseif world_type == -1 then -- DST
+				health = health * math.clamp(1 - owner.components.health.absorb, 0, 1) * math.clamp(1 - owner.components.health.externalabsorbmodifiers:Get(), 0, 1)
+			end
+		end
+
 		local special_stats = SPECIAL_FOODS[self.inst.prefab] 
 		if special_stats then
 			if special_stats.SANITY then
@@ -286,11 +309,18 @@ local function Describe(self, context)
 		end
 		
 		hunger, sanity, health = formatNumber(hunger), formatNumber(sanity), formatNumber(health)
-		table.insert(strings, formatDescription(hunger, sanity, health, context)) -- .. "\nHunger: +25 / Sanity: +15 / Health: +20\nHunger: +25 / Sanity: +15 / Health: +20"
+		description = formatDescription(hunger, sanity, health, context) -- .. "\nHunger: +25 / Sanity: +15 / Health: +20\nHunger: +25 / Sanity: +15 / Health: +20"
 	end
 
+	local foodunit_data = nil
 	if context.config["food_units"] then
-		table.insert(strings, GetFoodUnits(self.inst, context))
+		local foodunits = GetFoodUnits(self.inst, context)
+		if foodunits then
+			foodunit_data = {
+				name = "edible_foodunit",
+				priority = 0.11
+			}
+		end
 	end
 
 	local foodmemory_data = nil
@@ -333,13 +363,12 @@ local function Describe(self, context)
 		end
 	end
 
-	description = (#strings > 0 and table.concat(strings, "\n")) or nil
-
 	return {
 		name = "edible",
 		priority = 5,
-		description = description
-	}, effect_table, foodmemory_data, wereeater_data
+		description = description,
+		alt_description = alt_description,
+	}, foodunit_data, effect_table, foodmemory_data, wereeater_data
 end
 
 
