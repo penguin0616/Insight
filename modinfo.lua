@@ -1983,7 +1983,7 @@ configuration_options = {
 		default = false,
 		client = true,
 		tags = {},
-	},1
+	},
 	{
 		name = "itemtile_display",
 		options = {

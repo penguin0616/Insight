@@ -590,7 +590,8 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 		--dprint("id:", id)
 
 		if FOREST_MIGRATOR_IMAGES[id] then
-			inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
+			--inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
+			--inst.MiniMapEntity:SetCanUseCache(false)
 
 			if cfg == 2 then
 				local clr = FOREST_MIGRATOR_IMAGES[id][2]
@@ -617,7 +618,7 @@ AddPrefabPostInit("cave_exit", function(inst)
 		--dprint("id:", id)
 
 		if CAVE_MIGRATOR_IMAGES[id] then
-			inst.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1])
+			--inst.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1])
 
 			if cfg == 2 then
 				local clr = CAVE_MIGRATOR_IMAGES[id][2]

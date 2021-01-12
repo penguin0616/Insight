@@ -241,7 +241,7 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "farming_manager", "nutrients_visual_manager", "vase", "vasedecoration", -- don't care
+	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable",
@@ -261,9 +261,9 @@ local descriptors_ignore = {
 	
 
 	-- Caves
-	"retrofitcavemap_anr", "caveins",
+	"retrofitcavemap_anr", "caveins", "grottowaterfallsoundcontroller", "grottowarmanager", "archivemanager", 
 	
-	
+
 
 	-- Misc
 	"ambientsound", -- forest, caves, forge, gorge
@@ -1386,28 +1386,48 @@ if IsDST() then
 		shard_players = decompress(str)
 	end)
 
-	rpcNetwork.AddClientModRPCHandler(modname, "test", setmetatable({}, {__call = fnc}))
+	_G.send_migrators = function()
+		local yes = {}
+		for i,v in pairs(c_selectall("cave_entrance_open")) do
+			local id = v.components.worldmigrator.receivedPortal
+			local pos = v:GetPosition()
 
-	--[[
+			table.insert(yes, {
+				network_id = GetEntityDebugData(v).network_id,
+				icon = FOREST_MIGRATOR_IMAGES[id][1],
+				pos = {x = v:GetPosition().x, y = v:GetPosition().y, z = v:GetPosition().z},
+			})
+
+			local f = SpawnPrefab("globalmapicon")
+			--f.Transform:SetPosition(pos.x, pos.y, pos.z)
+			--f.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
+			f:TrackEntity(v, nil, FOREST_MIGRATOR_IMAGES[id][1])
+			--v.MiniMapEntity:SetCanUseCache(false)
+			v.MiniMapEntity:SetEnabled(false)
+		end
+
+		
+
+		--rpcNetwork.SendModRPCToAllClients(GetClientModRPC(modname, "Migrators"), compress(yes))
+		cprint'sent'
+	end
+
+	
 	rpcNetwork.AddClientModRPCHandler(modname, "Migrators", function(data)
 		data = decompress(data)
 
 		for _, migrator in pairs(data) do
 			local ent = GetEntityByNetworkID(migrator.network_id)
-			if ent then
-				-- already spawned on the client
-			else
-				local x = SpawnPrefab("insight_map_marker")
-				x.Transform:SetPosition(migrator.pos.x + 1, migrator.pos.y, migrator.pos.z)
-				x.MiniMapEntity:SetIcon(migrator.icon)
-				x.MiniMapEntity:SetEnabled(true)
-				x.MiniMapEntity:SetCanUseCache(false)
-				x.MiniMapEntity:SetDrawOverFogOfWar(true)
-				mprint('made', x)
-			end
+			local x = SpawnPrefab("globalmapicon")
+			x.Transform:SetPosition(migrator.pos.x, migrator.pos.y, migrator.pos.z)
+			x.MiniMapEntity:SetIcon(migrator.icon)
+			--x.MiniMapEntity:SetEnabled(true)
+			--x.MiniMapEntity:SetCanUseCache(false)
+			--x.MiniMapEntity:SetDrawOverFogOfWar(true)
+			mprint('made', x)
 		end
 	end)
-	--]]
+	
 	--======================= PostInits =======================================================================================
 
 	local function SendContainerData(player, inst)

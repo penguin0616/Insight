@@ -33,9 +33,9 @@ local function Describe(self, context)
 		if IsDST() or GetWorldType() >= 2 then
 			-- DS Weapon:GetDamage()
 			--DST Weapon:GetDamage(attacker, target)
-			damage = weapon.components.weapon:GetDamage(inst, player)
+			damage = weapon.components.weapon:GetDamage(inst, player) or damage
 		else
-			damage = weapon.components.weapon.damage
+			damage = weapon.components.weapon.damage or damage
 		end
 	end
 	

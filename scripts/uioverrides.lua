@@ -70,6 +70,7 @@ end
 --======================================== Post Constructs =================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+--AddClassPostConstruct("widgets/")
 AddClassPostConstruct("widgets/controls", function(controls)
 	local InsightButton = import("widgets/insightbutton")
 	local InsightMenu = import("widgets/insightmenu")

@@ -104,10 +104,10 @@ local function Describe(self, context)
 	local damage = owner.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
 	if IsDST() or GetWorldType() >= 2 then
 		-- DS Weapon:GetDamage()
-		--DST Weapon:GetDamage(attacker, target)
-		damage = self:GetDamage(owner)
+		-- DST Weapon:GetDamage(attacker, target)
+		damage = self:GetDamage(owner) or damage
 	else
-		damage = self.damage
+		damage = self.damage or damage
 	end
 
 	local _stimuli = self.stimuli
