@@ -19,6 +19,12 @@ directory. If not, please refer to
 ]]
 
 -- worldmigrator.lua
+local colors = {}
+
+for i,v in pairs(FOREST_MIGRATOR_IMAGES) do
+	colors[i] = v[2]:ToHex()
+end
+
 local function Describe(self, context)
 	local description = nil
 
@@ -27,9 +33,16 @@ local function Describe(self, context)
 	-- self.receivedPortal = int, migrator on shard that brings to here
 	
 	if not self.enabled then
-		description = string.format("Worldmigrator disabled.") -- if rocks are blocking it
+		description = context.lstr.worldmigrator.disabled -- if rocks are blocking it
 	else
-		description = string.format("Target Shard: %s, Shard Migrator: %s, This #: %s", self.linkedWorld or "", self.receivedPortal or "", self.id or "")
+		local clr = colors[self.receivedPortal] or "#ffffff"
+
+		local target = string.format(context.lstr.worldmigrator.target_shard, ApplyColour(self.linkedWorld or "", clr))
+		local received = string.format(context.lstr.worldmigrator.received_portal, ApplyColour(self.receivedPortal or "", clr))
+		local id = string.format(context.lstr.worldmigrator.id, ApplyColour(self.id or "", clr))
+		--Shard Migrator: %s, This #: %s", self.linkedWorld or "", self.receivedPortal or "", self.id or "")
+
+		description = target .. ", " .. received .. ", " .. id
 	end
 
 	return {

@@ -70,7 +70,29 @@ end
 --======================================== Post Constructs =================================================================
 --==========================================================================================================================
 --==========================================================================================================================
---AddClassPostConstruct("widgets/")
+--[[
+local yes = MiniMap
+AddClassPostConstruct("widgets/mapwidget", function(mapWidget)
+	mprint("a b c d")
+	local w, h = TheSim:GetScreenSize()
+
+	local txt = mapWidget:AddChild(import("widgets/RichText")(UIFONT, 20))
+	
+	txt:SetPosition(w * 0.5, h * 0.5)
+
+	local oldOffset = mapWidget.Offset
+	mapWidget.Offset = function(self, dx, dy)
+		oldOffset(self, dx, dy)
+		local a, b = txt:GetPosition():Get()
+		local scale = self:GetScale()
+
+		txt:SetPosition(a + dx, b + dy)
+	end
+
+	txt:SetString("hello there!")
+end)
+--]]
+
 AddClassPostConstruct("widgets/controls", function(controls)
 	local InsightButton = import("widgets/insightbutton")
 	local InsightMenu = import("widgets/insightmenu")
@@ -820,7 +842,10 @@ local function init()
 			if lines > 2 then
 				lines = lines - 1
 			else
-				lines = lines - 0.5
+				--lines = lines - 0.5 -- just this, but attack + only health (ancient furniture) = clipping
+				if itemInfo and cl(itemInfo) > 1 then
+					lines = lines - 0.5
+				end
 			end
 
 			--local lines = itemInfo and cl(itemInfo) or 0

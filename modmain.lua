@@ -1259,12 +1259,31 @@ end)
 --]]
 
 --[[
-stuff = {}
-AddPrefabPostInit("cave_entrance_open", function(inst)
-	table.insert(stuff, inst)
-	mprint("asdf", inst)
+AddPrefabPostInit("bat", function(inst)
+	if not (IsDST() and TheWorld.ismastersim) then return end
+	if not DEBUG_ENABLED then return end
+	inst:Remove() -- these things annoy me to no end while im testing
 end)
 --]]
+
+AddPrefabPostInit("cave_entrance_open", function(inst)
+	inst:ListenForEvent("migration_available", function()
+		local id = inst.components.worldmigrator.receivedPortal
+		if not FOREST_MIGRATOR_IMAGES[id] then
+			dprint(string.format("Migrator [%s] does not have anything color bound to it.", id or "nil"))
+			return
+		end
+
+		local marker = SpawnPrefab("insight_map_marker")
+		marker:TrackEntity(inst)
+		marker.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
+		inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1]) -- since marker gets removed when it enters vision, this is used.
+		--marker.MiniMapEntity:SetCanUseCache(false) -- default true
+		--marker.MiniMapEntity:SetIsProxy(false) -- default false
+		inst.marker = marker
+		dprint(string.format("Migrator [%s] activated.", id))
+	end)
+end)
 
 if IsDST() then 
 	-- replicable
@@ -1386,6 +1405,7 @@ if IsDST() then
 		shard_players = decompress(str)
 	end)
 
+	--[[
 	_G.send_migrators = function()
 		local yes = {}
 		for i,v in pairs(c_selectall("cave_entrance_open")) do
@@ -1405,6 +1425,7 @@ if IsDST() then
 			--v.MiniMapEntity:SetCanUseCache(false)
 			v.MiniMapEntity:SetEnabled(false)
 		end
+
 
 		
 
@@ -1427,6 +1448,7 @@ if IsDST() then
 			mprint('made', x)
 		end
 	end)
+	--]]
 	
 	--======================= PostInits =======================================================================================
 

@@ -115,7 +115,7 @@ local function Describe(self, context)
 	end
 
 	-- chef
-	if self:IsDone() or cooktime > 0 then
+	if self.done or cooktime > 0 then -- IsDone() missing in DS, exists in DLC
 		local chef = context.config["stewer_chef"] and GetChef(self)
 		if chef then
 			chef_string = string.format(context.lstr.cooker, chef.colour, chef.name)
@@ -137,8 +137,6 @@ local function Describe(self, context)
 				food = string.format(base_food_string, data.fancyname, data.stacksize, cooktime)
 			end
 		end
-		
-		
 	end
 
 	--[[

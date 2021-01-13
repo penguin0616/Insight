@@ -510,5 +510,13 @@ return {
 		delay = "State change is delayed for %s",
 		wither = "Will wither in %s",
 		rejuvenate = "Will rejuvenate in %s"
-	}
+	},
+
+	-- worldmigrator.lua
+	worldmigrator = {
+		disabled = "Worldmigrator disabled.",
+		target_shard = "Target Shard: %s",
+		received_portal = "Shard Migrator: %s",
+		id = "This #: %s",
+	},
 }
