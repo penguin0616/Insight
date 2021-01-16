@@ -202,8 +202,8 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		return
 	end
 
-	local range = itemInfo.special_data.inspectable.tool_range
-	local color = itemInfo.special_data.inspectable.tool_range_color
+	local range = itemInfo.special_data.inspectable.tool_range or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range)
+	local color = itemInfo.special_data.inspectable.tool_range_color or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range_color)
 
 	if range then
 		new.insight_hover_range = SpawnPrefab("insight_range_indicator")
@@ -575,6 +575,32 @@ AddPrefabPostInitAny(function(inst)
 		end)
 	end
 end)
+
+--[[
+AddPrefabPostInit("klaus_sack", function(inst)
+	inst:DoTaskInTime(0, function()
+	local x, y, z = inst.Transform:GetWorldPosition() -- located at 0,0,0 on postinit
+	local found = TheSim:FindEntities(x, y, z, 8, {"insight_map_marker", "possible_klaus_sack", "classified"})
+	if #found > 0 then
+		--inst.MiniMapEntity:SetEnabled(false)
+		for i,v in pairs(found) do
+			v.MiniMapEntity:SetEnabled(false)
+		end
+		inst:ListenForEvent("onremove", function()
+			for i,v in pairs(found) do
+				if v:IsValid() then
+					v.MiniMapEntity:SetEnabled(true)
+				end
+			end
+		end)
+		inst:ListenForEvent("entitysleep", function() mprint'entitysleep' end)
+	else
+		--inst.MiniMapEntity:SetEnabled(true)
+		mprint'empty'
+	end
+	end)
+end)
+--]]
 
 AddPrefabPostInit("cave_entrance_open", function(inst)
 	if IsDS() then return end -- does this even exist in DS

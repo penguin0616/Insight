@@ -158,6 +158,7 @@ WORKSHOP_ID_DST = "workshop-2189004162"
 DEBUG_ENABLED = (
 	TheSim:GetGameID() == "DST" and (
 		TheNet:GetUserID() == MyKleiID or -- me
+		TheNet:GetUserID() == "OU_76561198277438128" or
 		false --TheNet:GetUserID() == "KU_or9kA0Ka"	
 	) and true)
 	or TheSim:GetGameID() == "DS" and (
@@ -276,8 +277,8 @@ local descriptors_ignore = {
 
 
 	--"caveweather", "quaker", "nightmareclock" -- Caves (Network)
-	"weather", 
-	"caveweather",
+	--"weather", 
+	--"caveweather",
 	"shardstate", -- idk
 	"worldreset", -- when no one left alive
 	"seasons", -- seasons
@@ -565,6 +566,7 @@ local function GetComponentDescriptor(name)
 				error(string.format("Attempt to return '%s' in descriptor '%s'", tostring(res), name))
 			end
 		else
+			dprint("?????", safe, res)
 			Insight.descriptors[name] = false
 		end
 
@@ -1227,7 +1229,16 @@ function decompress2(str)
 	return res()
 end
 
-
+local function CheckForKlausSack(inst)
+	-- klaussacklock
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local found = TheSim:FindEntities(x, y, z, 2, {"klaussacklock"})
+	if #found > 0 then
+		inst.MiniMapEntity:SetEnabled(false)
+	else
+		inst.MiniMapEntity:SetEnabled(true)
+	end
+end
 
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
@@ -1278,6 +1289,25 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 		marker:TrackEntity(inst)
 		marker.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
 		inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1]) -- since marker gets removed when it enters vision, this is used.
+		--marker.MiniMapEntity:SetCanUseCache(false) -- default true
+		--marker.MiniMapEntity:SetIsProxy(false) -- default false
+		inst.marker = marker
+		dprint(string.format("Migrator [%s] activated.", id))
+	end)
+end)
+
+AddPrefabPostInit("cave_exit", function(inst)
+	inst:ListenForEvent("migration_available", function()
+		local id = inst.components.worldmigrator.receivedPortal
+		if not FOREST_MIGRATOR_IMAGES[id] then
+			dprint(string.format("Migrator [%s] does not have anything color bound to it.", id or "nil"))
+			return
+		end
+
+		local marker = SpawnPrefab("insight_map_marker")
+		marker:TrackEntity(inst)
+		marker.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1])
+		inst.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1]) -- since marker gets removed when it enters vision, this is used.
 		--marker.MiniMapEntity:SetCanUseCache(false) -- default true
 		--marker.MiniMapEntity:SetIsProxy(false) -- default false
 		inst.marker = marker
@@ -1545,8 +1575,79 @@ if IsDST() then
 		end)
 	end)
 
+	AddPrefabPostInit("deerspawningground", function(inst)
+		--dprint('prefabpostinitdeer', inst)
+	end)
+
+	AddPrefabPostInit("klaus_sack", function(inst)
+		--inst.MiniMapEntity:SetPriority(105)
+	end)
+
+
+	_G.mark_klaus_areas = function()
+		for _, inst in pairs(c_selectall("deerspawningground")) do
+			local marker1 = SpawnPrefab("insight_map_marker") -- within vision
+			marker1:AddTag("possible_klaus_sack")
+			marker1.MiniMapEntity:SetIcon("Possible_Klaus_Sack.tex")
+			marker1:SetIsProxy(false)
+			marker1:SetCanUseCache(false)
+			marker1:TrackEntity(inst)
+			--marker1:DoPeriodicTask(5, CheckForKlausSack)
+			--marker1.Transform:SetPosition(inst.Transform:GetWorldPosition()) -- doesn't work properly for some reason
+			
+			local marker2 = SpawnPrefab("insight_map_marker") -- outside of vision
+			marker2:AddTag("possible_klaus_sack")
+			marker2.MiniMapEntity:CopyIcon(marker1.MiniMapEntity)
+			--marker2.MiniMapEntity:SetIcon("cave_open_red.tex")
+			--marker2:SetIsProxy(true)
+			--marker2:SetCanUseCache(false)
+			marker2:TrackEntity(inst)
+			--marker2:DoPeriodicTask(5, CheckForKlausSack)
+			dprint("Registered deer spawning ground:", inst)
+		end
+	end
+
+	AddPrefabPostInit("world", function(inst)
+		-- called before inst loads [TheWorld == inst]
+		if not TheWorld.ismastersim then
+			return
+		end
+
+		TheWorld:ListenForEvent("ms_registerdeerspawningground", function(_, inst)
+			local marker1 = SpawnPrefab("insight_map_marker") -- within vision
+			marker1:AddTag("possible_klaus_sack")
+			marker1.MiniMapEntity:SetIcon("Possible_Klaus_Sack.tex")
+			marker1:SetIsProxy(false)
+			marker1:SetCanUseCache(false)
+			marker1:TrackEntity(inst)
+			--marker1:DoPeriodicTask(5, CheckForKlausSack)
+			--marker1.Transform:SetPosition(inst.Transform:GetWorldPosition()) -- doesn't work properly for some reason
+			
+			local marker2 = SpawnPrefab("insight_map_marker") -- outside of vision
+			marker2:AddTag("possible_klaus_sack")
+			marker2.MiniMapEntity:CopyIcon(marker1.MiniMapEntity)
+			--marker2.MiniMapEntity:SetIcon("cave_open_red.tex")
+			--marker2:SetIsProxy(true)
+			--marker2:SetCanUseCache(false)
+			marker2:TrackEntity(inst)
+			--marker2:DoPeriodicTask(5, CheckForKlausSack)
+			dprint("Registered deer spawning ground:", inst)
+		end)
+	end)
+
 	-- Post Init Functions
 	AddSimPostInit(function(player)
+		--[[
+			Reconstructing topology	
+			[00:05:31]: 	...Sorting points	
+			[00:05:31]: 	...Sorting edges	
+			[00:05:31]: 	...Connecting nodes	
+			[00:05:31]: 	...Validating connections	
+			[00:05:31]: 	...Housekeeping	
+			[00:05:31]: 	...Done!
+			
+			--> now SimPostInit gets called
+		]]
 		mprint("[Insight DEBUG MODE]:", DEBUG_ENABLED)
 		-- figure out naughtiness chart
 		if not TheWorld.ismastersim then
@@ -1715,6 +1816,7 @@ if IsDST() then
 	
 	if true then
 		_G.c_nohounds = function() assert(TheWorld.ismastersim, "need to be mastersim") c_removeall'firehound' c_removeall'icehound' c_removeall'hound' end
+		_G.c_noshadows = function(x) assert(TheWorld.ismastersim, "need to be mastersim") c_removeall'terrorbeak' c_removeall'crawlinghorror' if x then c_removeall'nightmarebeak' c_removeall'crawlingnightmare' end end
 		_G.c_rain = function(bool) assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_forceprecipitation", bool) end
 		_G.c_lightning = function() assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_sendlightningstrike", ConsoleWorldPosition()) end
 		_G.c_nextnightmarephase = function() assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_nextnightmarephase") end
@@ -1731,7 +1833,7 @@ if IsDST() then
 		_G.c_say = function(...) TheNet:Say(tostring(...)) end
 		_G.c_setseason = function(season) assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_setseason", season) end;
 		_G.c_insight_countactives = function() local plr = ConsoleCommandPlayer(); local str = string.format("Replica: %s, Manager: %s", GetInsight(plr):CountEntities(), _G.Insight.env.entityManager:Count()) if TheWorld.ismastersim then TheNet:Announce(str) else print(str) end end;
-
+		_G.c_pickupgems = function() for i,v in pairs({"purple","blue","red","orange","yellow","green","opalprecious"}) do c_pickupall(v .. "gem") end end
 		_G.c_goportal = function(n) 
 			for i,v in pairs(Ents) do 
 				if (v.prefab == "cave_entrance_open" or v.prefab == "cave_exit") and v.components.worldmigrator.id == n then 

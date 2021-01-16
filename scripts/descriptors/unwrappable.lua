@@ -22,6 +22,7 @@ directory. If not, please refer to
 local bundlingAlreadyHandled = nil -- caching to save time
 local processed_bundles = setmetatable({}, {__metatable = "k"})
 local NAMES = STRINGS.NAMES
+local subfmt = subfmt
 
 local function GetItems(self, context) -- ISSUE:PERFORMANCE
 	local itemdata = self.itemdata
@@ -66,8 +67,21 @@ local function GetItems(self, context) -- ISSUE:PERFORMANCE
 		end
 
 		if not item.name then
+			--[[
+				SPICE_GARLIC_FOOD = "Garlic {food}",
+        		SPICE_SUGAR_FOOD = "Sweet {food}",
+       			SPICE_CHILI_FOOD = "Spicy {food}",
+        		SPICE_SALT_FOOD = "Salty {food}",
+			]]
 			local upper = string.upper(item.prefab)
-			item.name = NAMES["KNOWN_" .. upper] or NAMES[upper]
+			--local spice = string.match(item.prefab, "SPICE_(%w+)_(%w+)")
+			local prefab, spice = string.match(upper, "(%w+)_SPICE_(%w+)") -- meatballs_spice_chili
+
+			if spice then
+				item.name = subfmt(NAMES["SPICE_" .. spice .. "_FOOD"], { food = NAMES[prefab] })
+			else
+				item.name = NAMES["KNOWN_" .. upper] or NAMES[upper]
+			end
 		end
 
 		table.insert(items, item)

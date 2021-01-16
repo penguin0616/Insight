@@ -260,6 +260,12 @@ local function Describe(self, context)
 	end
 	--]]
 
+	if inst.prefab == "chester_eyebone" or inst.prefab == "hutch_fishbowl" then
+		if inst.respawntask and inst.respawntime then
+			description = string.format("Will respawn in: %s", inst.respawntime - GetTime())
+		end
+	end
+
 	if inst.prefab == "stagehand" and IsDST() then -- lots of stuff here done to make it make more sense / flow better
 		local mem = inst.sg.mem
 		local hits_left = mem.hits_left or TUNING.STAGEHAND_HITS_TO_GIVEUP -- something to display if no hits registered

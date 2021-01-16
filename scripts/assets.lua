@@ -50,7 +50,7 @@ local atlas_inv = "images/inventoryimages.xml"
 --= Assets =======================================================================================================================================================--
 --================================================================================================================================================================--
 local BulkAssets = {
-	"Ancient_Herald", "Ancient_Hulk", "Ancient_Robot_Claw", "Ancient_Robot_Head", "Ancient_Robot_Leg", "Ancient_Robot_Ribs", "Antlion", "Antqueen", "Aporkalypse_Clock", "Arrow", "Arrow_Down", "Atrium_Gate", "Bearger", "Beequeen", "Blueprint", "Chester_Eyebone", "Claywarg", "Crabking", "Crocodog", "Crown", "Deerclops", "Depths_Worm", "Dirtpile", "Dragonfly", "Enlightenment_Meter", "Frog", "Gingerbreadpig", "Gingerbreadwarg", "Health_Meter", "Hound", "Hunger_Meter", "Hutch_Fishbowl", "Klaus", "Klaus_Sack", "Knightboat", "Koalefant_Summer", "Koalefant_Winter", "Kraken", "Krampus", "ladybolt", "Leif", "Leif_Sparse", "Lightninggoat", "Lordfruitfly", "Magnifying_Glass", "Malbatross", "Mermking", "Minotaur", "Moose", "Nightmare_timepiece_dawn", "Oar", "Oar_Force", "Pigcrownhat", "Pocket_Scale", "Pugalisk", "Roc", "Sanity_Arrow", "Sanity_Meter", "Spat", "Spiderqueen", "Stalker", "Stalker_Atrium", "Stalker_Forest", "Stopwatch", "Tigershark", "Toadstool", "Treeguard", "Twister", "Twister_Seal", "Vampirebat", "Volcano", "Volcano_Active", "Warg", "Wetness_Meter", "Whale_Blue", "Whale_Bubbles", "Whale_White", "White_Rounded", "White_Square"
+	"Ancient_Herald", "Ancient_Hulk", "Ancient_Robot_Claw", "Ancient_Robot_Head", "Ancient_Robot_Leg", "Ancient_Robot_Ribs", "Antlion", "Antqueen", "Aporkalypse_Clock", "Arrow", "Arrow_Down", "Atrium_Gate", "Bearger", "Beequeen", "Blueprint", "Chester_Eyebone", "Claywarg", "Crabking", "Crocodog", "Crown", "Deerclops", "Depths_Worm", "Dirtpile", "Dragonfly", "Enlightenment_Meter", "Frog", "Gingerbreadpig", "Gingerbreadwarg", "Health_Meter", "Hound", "Hunger_Meter", "Hutch_Fishbowl", "Klaus", "Klaus_Sack", "Knightboat", "Koalefant_Summer", "Koalefant_Winter", "Kraken", "Krampus", "ladybolt", "Leif", "Leif_Sparse", "Lightninggoat", "Lordfruitfly", "Magnifying_Glass", "Malbatross", "Mermking", "Minotaur", "Moose", "Nightmare_timepiece_dawn", "Oar", "Oar_Force", "Pigcrownhat", "Pocket_Scale", "Pugalisk", "Roc", "Sanity_Arrow", "Sanity_Meter", "Spat", "Spiderqueen", "Stalker", "Stalker_Atrium", "Stalker_Forest", "Stopwatch", "Tigershark", "Toadstool", "Treeguard", "Twister", "Twister_Seal", "Vampirebat", "Volcano", "Volcano_Active", "Warg", "Weather_Settings_Icon", "Wetness_Meter", "Whale_Blue", "Whale_Bubbles", "Whale_White", "White_Rounded", "White_Square"
 }
 
 Assets = {
@@ -70,8 +70,11 @@ Assets = {
 	Asset("ATLAS", "images/food_types/food_types.xml"),
 	Asset("IMAGE", "images/food_types/food_types.tex"),
 
-	Asset("ATLAS", "images/minimap/minimap.xml"),
-	Asset("IMAGE", "images/minimap/minimap.tex"),
+	Asset("ATLAS", "images/minimap/sinkholes/sinkholes.xml"),
+	Asset("IMAGE", "images/minimap/sinkholes/sinkholes.tex"),
+
+	Asset("ATLAS", "images/minimap/Possible_Klaus_Sack.xml"),
+	Asset("IMAGE", "images/minimap/Possible_Klaus_Sack.tex"),
 	--Asset("MINIMAP_IMAGE", "cave_open_red")
 
 	--Asset("MINIMAP_IMAGE", "images/Volcano.png")
@@ -117,7 +120,8 @@ CAVE_MIGRATOR_IMAGES = {
 }
 
 --AddMinimapAtlas("images/Volcano.xml")
-AddMinimapAtlas("images/minimap/minimap.xml")
+AddMinimapAtlas("images/minimap/sinkholes/sinkholes.xml")
+AddMinimapAtlas("images/minimap/Possible_Klaus_Sack.xml")
 
 for i,v in pairs(BulkAssets) do
 	table.insert(Assets, Asset("ATLAS", string.format("images/%s.xml", v)))

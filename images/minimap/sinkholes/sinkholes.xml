@@ -1,5 +1,5 @@
 <Atlas>
-	<Texture filename="minimap.tex"/>
+	<Texture filename="sinkholes.tex"/>
     <Elements>
         <Element name="cave_open2_black.tex" u1="0.0009765625" u2="0.12402344" v1="0.75195312" v2="0.99804688"/>
         <Element name="cave_open2_blue.tex" u1="0.12597656" u2="0.24902344" v1="0.75195312" v2="0.99804688"/>

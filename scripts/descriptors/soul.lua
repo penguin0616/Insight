@@ -45,7 +45,9 @@ local function Describe(self, context)
 
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		soul_heal_range = TUNING.WORTOX_SOULHEAL_RANGE,
+		soul_heal_range_color = Insight.COLORS.HEALTH
 	}
 end
 
