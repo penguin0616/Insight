@@ -262,7 +262,7 @@ local function Describe(self, context)
 
 	if inst.prefab == "chester_eyebone" or inst.prefab == "hutch_fishbowl" then
 		if inst.respawntask and inst.respawntime then
-			description = string.format("Will respawn in: %s", inst.respawntime - GetTime())
+			description = string.format("Will respawn in: %s", TimeToText(time.new(inst.respawntime - GetTime(), context)))
 		end
 	end
 

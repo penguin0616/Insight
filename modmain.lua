@@ -208,7 +208,7 @@ local descriptors_ignore = {
 	"bloomable", -- hamlet trees
 	"fixable", -- hamlet pig houses
 	
-	"repairer", "lootdropper", "workable", "childspawner", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
+	"lootdropper", "workable", "childspawner", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
 	"thief", "characterspecific", "resurrector", "brushable", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
 
 	--notable
@@ -566,7 +566,7 @@ local function GetComponentDescriptor(name)
 				error(string.format("Attempt to return '%s' in descriptor '%s'", tostring(res), name))
 			end
 		else
-			dprint("?????", safe, res)
+			--dprint("?????", safe, res)
 			Insight.descriptors[name] = false
 		end
 
@@ -1575,14 +1575,21 @@ if IsDST() then
 		end)
 	end)
 
+	AddPrefabPostInit("meteorspawner", function(inst)
+		if not TheWorld.ismastersim then
+			return
+		end
+
+		--local yep = 
+	end)
+
 	AddPrefabPostInit("deerspawningground", function(inst)
 		--dprint('prefabpostinitdeer', inst)
 	end)
 
 	AddPrefabPostInit("klaus_sack", function(inst)
-		--inst.MiniMapEntity:SetPriority(105)
+		inst.MiniMapEntity:SetPriority(105)
 	end)
-
 
 	_G.mark_klaus_areas = function()
 		for _, inst in pairs(c_selectall("deerspawningground")) do
@@ -1613,6 +1620,7 @@ if IsDST() then
 			return
 		end
 
+		--[[
 		TheWorld:ListenForEvent("ms_registerdeerspawningground", function(_, inst)
 			local marker1 = SpawnPrefab("insight_map_marker") -- within vision
 			marker1:AddTag("possible_klaus_sack")
@@ -1633,6 +1641,7 @@ if IsDST() then
 			--marker2:DoPeriodicTask(5, CheckForKlausSack)
 			dprint("Registered deer spawning ground:", inst)
 		end)
+		--]]
 	end)
 
 	-- Post Init Functions
@@ -1649,7 +1658,7 @@ if IsDST() then
 			--> now SimPostInit gets called
 		]]
 		mprint("[Insight DEBUG MODE]:", DEBUG_ENABLED)
-		-- figure out naughtiness chart
+		
 		if not TheWorld.ismastersim then
 			return
 		end
@@ -2130,7 +2139,7 @@ AddPrefabPostInit("archive_orchestrina_main", function(inst)
 		local lockboxes = findlockbox(inst)
 		local lockbox = lockboxes[1]
 
-		if not inst.busy and lockbox then 
+		if not inst.busy and lockbox and not lockbox.AnimState:IsCurrentAnimation("activation") then 
 			local puzzle = lockbox.puzzle
 			
 			GetCorrectSocket(inst, puzzle)

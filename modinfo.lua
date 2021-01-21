@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.9.3" -- ds is 2.4.4_ds
+version = "2.9.4" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -521,6 +521,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	repair_values = {
+		LABEL = "Repair Values",
+		HOVER = "Whether repair information is displayed.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "Repair information is not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Repair information is shown.",
+			},
+		}
+	},
 	soil_moisture = {
 		LABEL = "Soil Moisture",
 		HOVER = "How soil/plant moisture is displayed.",
@@ -2215,7 +2229,16 @@ configuration_options = {
 		default = 2,
 		tags = {"undefined"},
 	},
-	AddSectionTitle(T"sectiontitle_informationcontrol"), 
+	AddSectionTitle(T"sectiontitle_informationcontrol"),
+	{
+		name = "repair_values",
+		options = {
+			{data = 0},
+			{data = 1},
+		},
+		default = 0,
+		tags = {"undefined"},
+	},
 	{
 		name = "soil_moisture",
 		options = {

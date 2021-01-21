@@ -586,6 +586,14 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 				itemDescription = nil
 			else
 				itemDescription = entityInformation.information
+				if entityInformation.information ~= entityInformation.alt_information then
+					local pos = string_find(text, "\n")
+					if pos then
+						text = string_sub(text, 1, pos - 1) .. "*" .. string_sub(text, pos)
+					else
+						text = text .. "*"
+					end
+				end
 			end
 
 			--[[

@@ -318,7 +318,8 @@ local function Describe(self, context)
 		if foodunits then
 			foodunit_data = {
 				name = "edible_foodunit",
-				priority = 0.11
+				priority = 4,
+				description = foodunits
 			}
 		end
 	end

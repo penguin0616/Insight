@@ -19,8 +19,9 @@ directory. If not, please refer to
 ]]
 
 -- weather.lua
-local OnUpdate = TheWorld.net.components[((TheWorld.worldprefab == "forest" and "") or (TheWorld.worldprefab == "cave" and "cave") or "").."weather"].OnUpdate
-if debug.getinfo(OnUpdate, "S").source ~= "scripts/components/weather.lua" then
+local world_prefix = ((TheWorld.worldprefab == "forest" and "") or (TheWorld.worldprefab == "cave" and "cave") or TheWorld.worldprefab)
+local OnUpdate = TheWorld.net.components[world_prefix.."weather"].OnUpdate
+if debug.getinfo(OnUpdate, "S").source ~= "scripts/components/" .. world_prefix .. "weather.lua" then
 	mprint("Weather.OnUpdate has been replaced by:", debug.getinfo(OnUpdate, "S").source, "@", debug.getinfo(OnUpdate, "l").currentline)
 	
 	if KnownModIndex:IsModEnabled("workshop-1589856657") then -- https://steamcommunity.com/sharedfiles/filedetails/?id=1589856657 replaces it
@@ -39,12 +40,12 @@ if debug.getinfo(OnUpdate, "S").source ~= "scripts/components/weather.lua" then
 end
 
 --local _moisture = util.getupvalue(TheWorld.net.components.weather.OnUpdate, "_moisture")
-local _preciptype = util.getupvalue(OnUpdate, "_preciptype")
-local _moisturefloor = util.getupvalue(OnUpdate, "_moisturefloor")
-local _moistureceil = util.getupvalue(OnUpdate, "_moistureceil")
-local _moisturerate = util.getupvalue(OnUpdate, "_moisturerate")
-local PRECIP_TYPES = util.getupvalue(OnUpdate, "PRECIP_TYPES")
-local PRECIP_RATE_SCALE = util.getupvalue(OnUpdate, "PRECIP_RATE_SCALE")
+local _preciptype = OnUpdate and util.getupvalue(OnUpdate, "_preciptype")
+local _moisturefloor = OnUpdate and util.getupvalue(OnUpdate, "_moisturefloor")
+local _moistureceil = OnUpdate and util.getupvalue(OnUpdate, "_moistureceil")
+local _moisturerate = OnUpdate and util.getupvalue(OnUpdate, "_moisturerate")
+local PRECIP_TYPES = OnUpdate and util.getupvalue(OnUpdate, "PRECIP_TYPES")
+local PRECIP_RATE_SCALE = OnUpdate and util.getupvalue(OnUpdate, "PRECIP_RATE_SCALE")
 --local CalculatePrecipitationRate = util.getupvalue(OnUpdate, "CalculatePrecipitationRate")
 --local precipitation_rate = CalculatePrecipitationRate()
 

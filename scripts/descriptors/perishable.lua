@@ -192,7 +192,7 @@ local function GetPerishModifier(...)
 end
 
 local function Describe(self, context) 
-	local description = nil
+	local description, alt_description
 
 	local formatType = context.config["perishable_format"]
 
@@ -246,12 +246,15 @@ local function Describe(self, context)
 				-- i don't think I'll need to change nextUpdateIn
 				-- 5/4/2020
 				
-				remaining_time = remaining_time / modifier
-				remaining_time = remaining_time + nextUpdateIn
+				remaining_time = remaining_time / modifier + nextUpdateIn
+				local percent = (self.perishremainingtime and self.perishtime and self.perishtime > 0 and math.min(1, (self.perishremainingtime / modifier + nextUpdateIn) / self.perishtime)) or 0 -- do percent ourself because perishable is periodic
 
 				remaining_time = time.new(math.abs(remaining_time), context)
+				remaining_time = TimeToText(remaining_time)
 
-				description = string.format(context.lstr.perishable_transition, str, TimeToText(remaining_time))
+				description = string.format(context.lstr.perishable_transition, str, remaining_time)
+				
+				alt_description = string.format(context.lstr.perishable_transition_extended, str, remaining_time, Round(percent * 100, 1))
 			else
 				if self.updatetask and self.updatetask:NextTime() == nil then
 					-- if the update task is missing, I don't think I actually want to classify this as "perishable"
@@ -275,7 +278,8 @@ local function Describe(self, context)
 
 	return {
 		priority = 1,
-		description = description
+		description = description,
+		alt_description = (description and alt_description) or nil,
 	}
 end
 
