@@ -19,7 +19,10 @@ directory. If not, please refer to
 ]]
 
 -- edible.lua
+local debuffHelper = import("helpers/debuff")
 local cooking = require("cooking")
+local world_type = GetWorldType()
+
 
 local function GetWereEaterData(inst, context)
 	local wereeater = context.player.components.wereeater
@@ -144,100 +147,6 @@ local function IsEdible(owner, inst)
 	return false
 end
 
-local function GetFoodEffects(self)
-	local bonuses = {}
-
-	if GetWorldType() == 0 then
-		return bonuses
-	end
-
-	-- temperature
-	local delta_multiplier = 1
-	local duration_multiplier = 1
-
-	if IsDST() and self.spice and TUNING.SPICE_MULTIPLIERS[self.spice] then
-		if TUNING.SPICE_MULTIPLIERS[self.spice].TEMPERATUREDELTA then
-			delta_multiplier = delta_multiplier + TUNING.SPICE_MULTIPLIERS[self.spice].TEMPERATUREDELTA
-		end
-
-		if TUNING.SPICE_MULTIPLIERS[self.spice].TEMPERATUREDURATION then
-			duration_multiplier = duration_multiplier + TUNING.SPICE_MULTIPLIERS[self.spice].TEMPERATUREDURATION
-		end
-	end
-
-	-- @Reign of Giants & @Don't Starve Together
-	-- Food is an implicit heater/cooler if it has temperature
-	if self.temperaturedelta and self.temperatureduration and self.temperaturedelta ~= 0 and self.temperatureduration ~= 0 and (self.chill == nil or self.chill < 1) then
-		bonuses.temperature = { 
-			delta = self.temperaturedelta * (1 - (self.chill or 0)) * delta_multiplier,
-			duration = self.temperatureduration * duration_multiplier
-		}
-	end
-
-	-- @Shipwrecked
-	-- Food is an implicit speed booster if it has caffeine
-	if self.caffeinedelta and self.caffeineduration and self.caffeinedelta ~= 0 and self.caffeineduration ~= 0 then
-		-- eater.components.locomotor:AddSpeedModifier_Additive("CAFFEINE", self.caffeinedelta, self.caffeineduration)
-		bonuses.caffeine = {
-			delta = self.caffeinedelta,
-			duration = self.caffeineduration
-		}
-	end
-
-	-- Other food based speed modifiers
-	if self.surferdelta and self.surferduration and self.surferdelta ~= 0 and self.surferduration ~= 0 then
-		--eater.components.locomotor:AddSpeedModifier_Additive("SURF", self.surferdelta, self.surferduration)
-		bonuses.surf = {
-			delta = self.surferdelta,
-			duration = self.surferduration
-		}
-	end
-
-	if self.autodrydelta and self.autodryduration and self.autodrydelta ~= 0 and self.autodryduration ~= 0 then
-		--eater.components.locomotor:AddSpeedModifier_Additive("AUTODRY", self.autodrydelta, self.autodryduration)
-		bonuses.autodry = {
-			delta = self.autodrydelta,
-			duration = self.autodryduration
-		}
-	end
-
-	-- immediate cooling
-	if self.autocooldelta and self.autocooldelta ~= 0 then
-		bonuses.instant_temperature = {
-			delta = self.autocooldelta, 
-			duration = false,
-		}
-		--[[
-		local current_temp = eater.components.temperature:GetCurrent()
-		local new_temp = math.max(current_temp - self.autocooldelta, TUNING.STARTING_TEMP)
-		eater.components.temperature:SetTemperature(new_temp)
-		--]]
-	end
-
-	-- @Hamlet
-	if self.antihistamine then
-		bonuses.antihistamine = {
-			delta = self.antihistamine,
-			duration = false
-		}
-		--[[
-		if eater.components.hayfever and eater.components.hayfever.enabled then
-			eater.components.hayfever:SetNextSneezeTime(self.antihistamine)			
-		end
-		--]]
-	end
-
-	if self.temperaturebump and self.temperaturebump ~= 0 then
-		assert(bonuses.instant_temperature == nil, "[Insight]: attempt to overwrite existing autocooldelta")
-		bonuses.instant_temperature = {
-			delta = self.temperaturebump,
-			duration = false
-		}
-	end
-
-	return bonuses
-end
-
 local SPECIAL_FOODS = {
 	["petals_evil"] = {
 		SANITY = -TUNING.SANITY_TINY,
@@ -251,9 +160,8 @@ local function Describe(self, context)
 	local foodmemory = owner.components.foodmemory
 	local stats = context.stats
 	local alt_description = nil
-	local world_type = GetWorldType()
 
-	if context.config["display_food"] == nil or context.config["display_food"] then
+	if context.config["display_food"] then
 		local hunger, sanity, health
 		if type(stats) == 'table' then
 			hunger, sanity, health = stats.hunger, stats.sanity, stats.health
@@ -267,7 +175,7 @@ local function Describe(self, context)
 		alt_description = formatDescription(hunger, sanity, health, context)
 	end
 
-	if IsEdible(owner, self.inst) and context.config["display_food"] == nil or context.config["display_food"] then -- i think this filters out wurt's meat stats.
+	if IsEdible(owner, self.inst) and context.config["display_food"] then -- i think this filters out wurt's meat stats.
 		local eater = owner.components.eater
 
 		local hunger, sanity, health
@@ -347,8 +255,9 @@ local function Describe(self, context)
 	end
 
 	local effect_table = nil
+	local advanced_effect_table = nil
 	if context.config["food_effects"] then
-		local effects = GetFoodEffects(self)
+		local effects = debuffHelper.GetFoodEffects(self)
 		local effect_description = {}
 
 		for name, data in pairs(effects) do
@@ -358,8 +267,19 @@ local function Describe(self, context)
 		if #effect_description > 0 then
 			effect_table = {
 				name = "edible_foodeffects",
-				priority = 0,
+				priority = 1.9, 
 				description = table.concat(effect_description, "\n")
+			}
+		end
+
+		local advanced_effects = debuffHelper.GetItemEffects(self.inst, context)
+		--mprint(advanced_effects, advanced_effects and #advanced_effects)
+		if advanced_effects and #advanced_effects > 0 then
+			--mprint'its returned'
+			advanced_effect_table = {
+				name = "edible_advancedfoodeffects",
+				priority = 1.8, 
+				alt_description = table.concat(advanced_effects, "\n")
 			}
 		end
 	end
@@ -369,7 +289,7 @@ local function Describe(self, context)
 		priority = 5,
 		description = description,
 		alt_description = alt_description,
-	}, foodunit_data, effect_table, foodmemory_data, wereeater_data
+	}, foodunit_data, effect_table, advanced_effect_table, foodmemory_data, wereeater_data
 end
 
 

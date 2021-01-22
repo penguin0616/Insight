@@ -18,13 +18,28 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- citypossession.lua
+-- repairable.lua
 local function Describe(self, context)
-	local alt_description = "This belongs to a pig city."
+	local description, alt_description
+
+	if not (context.config["repair_values"] > 0) then
+		return
+	end
+
+	local workable = self.inst.components.workable
+
+	if workable == nil then -- don't care about health too?
+		return
+	end
+
+	if self.inst:HasTag("chess") then
+		-- ok
+		description = string.format(context.lstr.repairable.chess, 6 - workable.workleft)
+	end
 
 	return {
 		priority = 0,
-		description = nil,
+		description = description,
 		alt_description = alt_description
 	}
 end

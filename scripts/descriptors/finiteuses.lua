@@ -47,12 +47,15 @@ local action_icons = {
 	fish = "fishingrod",
 }
 
+local function FormatUses(uses, context)
+	return string.format(context.lstr.action_uses, context.lstr.action_uses_plain, uses)
+end
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
 
 	if context.finiteuses_forced or context.config["display_finiteuses"] then
-
 		local consumptions = {}
 		for i,v in pairs(self.consumption) do
 			consumptions[i] = v
@@ -110,7 +113,7 @@ local function Describe(self, context)
 		end
 
 		if #actions == 0 then
-			table.insert(actions, string.format(context.lstr.lang.action_uses, "Uses", self:GetUses()))
+			table.insert(actions, string.format(context.lstr.lang.action_uses, context.lstr.lang.action_uses_plain, self:GetUses()))
 		end
 
 		description = table.concat(actions, ", ")
@@ -127,5 +130,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	FormatUses = FormatUses
 }

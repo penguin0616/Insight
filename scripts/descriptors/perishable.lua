@@ -277,7 +277,7 @@ local function Describe(self, context)
 	-- self.updatetask
 
 	return {
-		priority = 1,
+		priority = 2,
 		description = description,
 		alt_description = (description and alt_description) or nil,
 	}

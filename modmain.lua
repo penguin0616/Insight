@@ -169,7 +169,7 @@ DEBUG_ENABLED = (
 if DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 1")
 	_G.VERBOSITY_LEVEL = VERBOSITY.DEBUG
-	print("VERBOSITY_LEVEL:", _G.VERBOSITY_LEVEL)
+	print("INSIGHT - GAME VERBOSITY_LEVEL:", _G.VERBOSITY_LEVEL)
 
 	Print(VERBOSITY.DEBUG, "hello world 2")
 end
@@ -217,7 +217,7 @@ local descriptors_ignore = {
 
 	"inventoryitem", "moisturelistener", "propagator", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", "book", -- don't care
 	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", "inventory", -- don't care
-	"werebeast", "named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "repairable", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
+	"werebeast", "named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
 	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "teacher", "heater", "tiletracker", "scenariorunner", "payable", "useableitem", "drawable", "shaver", -- don't care
 	"gridnudger", "entitytracker", "appeasable", "currency", "mateable", "sizetweener", "saltlicker", "sinkable", "sticker", "projectile", "hiddendanger", "deciduoustreeupdater", -- don't care
 	"geyserfx", "blinkstaff", -- don't care,
@@ -669,15 +669,17 @@ local function GetEntityInformation(item, player, params)
 
 	local components = item.components
 
+
+
 	local chunks = {}
 	for name, component in pairs(components) do		
 		local descriptor = GetComponentDescriptor(name)
 		
 		if descriptor then
 			local datas = {descriptor(component, player_context)}
-			--for i, d in pairs(datas) do
-			for i = 1, #datas do
-				local d = datas[i]
+			for i, d in pairs(datas) do
+			--for i = 1, #datas do -- doesn't account for nils
+				--local d = datas[i]
 				if d and ((not params.ignore_worldly) or (params.ignore_worldly == true and not d.worldly)) then
 					assert(type(d.priority)=="number", "Invalid priority for:" .. name)
 
@@ -791,7 +793,9 @@ local function GetEntityInformation(item, player, params)
 		assembled.information = nil
 	end
 
-	--]]
+	if assembled.alt_information == "" then
+		assembled.alt_information = nil
+	end
 
 	return assembled
 end
@@ -1506,7 +1510,6 @@ if IsDST() then
 	
 	AddComponentPostInit("container", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end -- implicit DST check
-		--if true then return end
 		
 		self.inst:ListenForEvent("itemget", function()
 			for i,v in pairs(AllPlayers) do
@@ -2284,8 +2287,6 @@ AddSimPostInit(function()
 	Hunter()
 end)
 
-
-
 if IsDST() then -- not in UI overrides because server needs access too
 	local CrashReportStatus = import("widgets/crashreportstatus")
 
@@ -2506,7 +2507,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 	end)
 end
 
-do
+if IsDST() then
 	local select = select
 	--local toarray = toarray
 	local tostring = tostring
@@ -2536,8 +2537,8 @@ do
 	Sim.LuaPrint = function(self, ...)
 		log_buffer = log_buffer .. packstring(...) .. "\n";
 
-		if #log_buffer > LOG_LIMIT then
-			log_buffer = log_buffer:sub(LOG_LIMIT)
+		if #log_buffer > (LOG_LIMIT / 2) then
+			log_buffer = log_buffer:sub(LOG_LIMIT / 2)
 		end
 
 		return oldLuaPrint(self, ...)
@@ -2549,7 +2550,6 @@ end
 --======================================== Post Imports ====================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-
 -- import assets
 import("assets")
 

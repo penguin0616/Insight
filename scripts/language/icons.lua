@@ -44,6 +44,7 @@ return {
 	-- armor.lua
 	protection = "<icon=armorwood> %s%%",
 	durability = "<icon=health> %s / %s",
+	durability_unwrappable = "<icon=armorwood> %s",
 
 	-- beard.lua
 	--beard = "Your beard will improve in %s day(s).",
@@ -90,6 +91,19 @@ return {
 
 	-- debuffable.lua
 	--buff_text = "<color=MAGIC>Buff</color>: <color=MAGIC>%s</color>, %s",
+	debuffs = { -- ugh
+		["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
+		["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
+		["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
+		
+		["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
+		["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
+		["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
+		
+		["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
+	},
 
 	-- deerclopsspawner.lua
 	--incoming_deerclops_targeted = "<color=%s>Target: %s</color> -> %s",
@@ -213,7 +227,8 @@ return {
 
 	-- finiteuses.lua
 	action_uses = "<icon=%s> %s",
-	--[[action_sleepin = "Sleep",
+	--[[action_uses_plain = "Uses",
+	action_sleepin = "Sleep",
 	action_fan = "Fan",
 	action_play = "Play", -- beefalo horn
 	action_hammer = "Hammer",
@@ -264,6 +279,7 @@ return {
 	fueled_time = "<icon=fire> %s%%: %s",
 	fueled_time_verbose = "<icon=fire> (<color=LIGHT>'%s'</color>) %s%%: %s", -- type, percent, time
 	--fuel_efficiency = "<color=#FF9300><icon=fire> %s%%</color>", -- no good way i can think of for this
+	fuel_units = "<icon=fire> %s,
 
 	-- growable.lua
 	--growth_stage = "Stage '%s': %s / %s: ",
@@ -379,6 +395,7 @@ return {
 	--spoil = "Spoils",
 	--dies = "Dies",
 	--perishable_transition = "<color=MONSTER>%s</color> in: %s",
+	--perishable_transition_extended = "<color=MONSTER>%s</color> in: %s (<color=MONSTER>%s%%</color>)",
 	--perishable_paused = "Currently not decaying.",
 
 	-- petrifiable.lua
@@ -390,7 +407,7 @@ return {
 	--pickable_cycles = "Remaining harvests: %s / %s",
 
 	-- pollinator.lua
-	pollination = "Flowers pollinated: (%s) / %s",
+	--pollination = "Flowers pollinated: (%s) / %s",
 
 	-- preservative.lua
 	--preservative = "Restores %s%% of freshness.",
@@ -404,6 +421,35 @@ return {
 			--toys_remaining = "Toys remaining: %s",
 			--assisted_by = "This pipspook is being assisted by %s.",
 		},
+	},
+
+	-- repairer.lua
+	repairer = {
+		type = "Repair material: <color=#aaaaaa>%s</color>",
+		health = "<color=HEALTH>Health restore</color>: <color=HEALTH>%s</color> + <color=HEALTH>%s%%</color>",
+		health2 = "<color=HEALTH>%s<sub>flat HP</sub></color> + <color=HEALTH>%s%%<sub>percent HP</sub></color>",
+		work = "<color=#DED15E>Work repair</color>: <color=#DED15E>%s</color>",
+		work2 = "<color=#DED15E>%s<sub>work</sub></color>",
+		perish = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
+		perish2 = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
+		materials = (IsDST() and {
+			[MATERIALS.WOOD] =  "Wood",
+			[MATERIALS.STONE] =  "Stone",
+			[MATERIALS.HAY] =  "Hay",
+			[MATERIALS.THULECITE] =  "Thulecite",
+			[MATERIALS.GEM] =  "Gem",
+			[MATERIALS.GEARS] =  "Gears",
+			[MATERIALS.MOONROCK] =  "Moonrock",
+			[MATERIALS.ICE] =  "Ice",
+			[MATERIALS.SCULPTURE] =  "Sculpture",
+			[MATERIALS.FOSSIL] =  "Fossil",
+			[MATERIALS.MOON_ALTAR] =  "Moon Altar",
+		} or {}),
+	},
+
+	-- repairable.lua
+	repairable = {
+		chess = "<color=#99635D>Gears</color> needed: <color=#99635D>%s</color>",
 	},
 
 	-- rocmanager.lua
@@ -426,7 +472,8 @@ return {
 	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
 
 	-- spawner.lua
-	--spawner_next = "Will spawn a %s in %s.",
+	--spawner_next = "Will spawn a <color=#ee6666>%s</color> in %s.",
+	--spawner_child = "Spawns a <color=#ff9999>%s</color>",
 
 	-- stewer.lua
 	stewer_product = "<icon=%s>(<color=HUNGER>%s</color>)",

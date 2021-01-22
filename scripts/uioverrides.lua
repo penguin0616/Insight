@@ -393,7 +393,11 @@ if KnownModIndex:IsModEnabled("workshop-727774324") or KnownModIndex:IsModEnable
 		-- typ = "name" || "tag"
 
 		if typ == "name" then
-			SetHighlightIngredientFocus({ prefab=arg })
+			if type(arg) ~= "string" then
+				mprint("foodingredientui hook error", arg, type(arg), typ)
+			else
+				SetHighlightIngredientFocus({ prefab=arg })
+			end
 		end
 		
 		if oldOnGainFocus then
@@ -538,7 +542,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 	hoverer.text.SetString = function(self, text)
 		if not localPlayer then
-			return
+			return oldSetString(self, text)
 		end
 
 		if informationOnAltOnly == nil then

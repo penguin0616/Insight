@@ -20,16 +20,23 @@ directory. If not, please refer to
 
 -- unwrappable.lua
 local bundlingAlreadyHandled = nil -- caching to save time
-local processed_bundles = setmetatable({}, {__metatable = "k"})
+local processed_bundles = setmetatable({}, {__mode = "kv"}) -- {player = { [bundle]={} }}
 local NAMES = STRINGS.NAMES
 local subfmt = subfmt
 
 local function GetItems(self, context) -- ISSUE:PERFORMANCE
-	local itemdata = self.itemdata
+	if not processed_bundles[context.player] then
+		processed_bundles[context.player] = {}
+	end
 
+	if processed_bundles[context.player][self.inst] then
+		return processed_bundles[context.player][self.inst]
+	end
+
+	local itemdata = self.itemdata
 	if not itemdata then
 		--mprint(self.inst.prefab)
-		processed_bundles[self.inst] = {}
+		processed_bundles[context.player][self.inst] = {}
 		return {}
 	end
 
@@ -64,6 +71,21 @@ local function GetItems(self, context) -- ISSUE:PERFORMANCE
 			if slot.data.named then
 				item.name = slot.data.named.name
 			end
+
+			if slot.data.finiteuses then
+				local d = Insight.descriptors.finiteuses.FormatUses or function() return {description = "FAILED TO LOAD FINITEUSES COMPONENT"} end
+				item.uses = d(slot.data.finiteuses.uses, context)
+			end
+
+			if slot.data.fueled then
+				local d = Insight.descriptors.fueled.FormatFuel or function() return {description = "FAILED TO LOAD FUELED COMPONENT"} end
+				item.fuel = d(slot.data.fueled.fuel, context)
+			end
+
+			if slot.data.armor then
+				local d = Insight.descriptors.armor.FormatCondition or function() return {description = "FAILED TO LOAD CONDITION COMPONENT"} end
+				item.condition = d(slot.data.armor.condition, context)
+			end
 		end
 
 		if not item.name then
@@ -87,27 +109,62 @@ local function GetItems(self, context) -- ISSUE:PERFORMANCE
 		table.insert(items, item)
 	end
 
-	processed_bundles[self.inst] = items
+	processed_bundles[context.player][self.inst] = setmetatable(items, { __mode="kv"})
 
 	return items
 end
 
 local function MakeDescription(items, context)
-	local items_string = {}
-
+	if #items == 0 then
+		return
+	end
+	
+	local description, alt_description = "", ""
 	for i,item in pairs(items) do
-		local perishable = item.perishable or ""
+		local perishable = item.perishable and (item.perishable .. " ") or ""
 		local amount = item.amount
 		local name = item.name or "**" .. item.prefab
+		local bonus = {}
 
+		--[[
 		table.insert(items_string, string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable))
+		if uses then
+			table.insert(bonus[i], uses)
+		end
+		--]]
+		
+		local basic = string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable)
+		description = description .. basic
+		alt_description = alt_description .. basic
+
+		if item.uses then bonus[#bonus+1] = item.uses end
+		if item.fuel then bonus[#bonus+1] = item.fuel end
+		if item.condition then bonus[#bonus+1] = item.condition end
+
+		if #bonus > 0 then
+			alt_description = alt_description .. "- " .. table.concat(bonus, ", ")
+		end
+
+		if i < #items then
+			description = description .. "\n"
+			alt_description = alt_description .. "\n"
+		end
 	end
 
-	return table.concat(items_string, "\n")
+
+	--[[
+	local description = table.concat(items_string, "\n")
+	
+
+
+	return table.concat(items_string, "\n"), (#bonus > 0 and table.concat(bonus, ", ") or nil)
+	--]]
+
+	return description, alt_description
 end
 
 local function Describe(self, context)
-	local description = nil
+	local description, alt_description
 
 	if bundlingAlreadyHandled == nil then
 		-- https://steamcommunity.com/sharedfiles/filedetails/?id=1916988643 shows bundle information in a much nicer way, also requested in https://github.com/penguin0616/insight/issues/10
@@ -123,7 +180,7 @@ local function Describe(self, context)
 	local contents = GetItems(self, context)
 
 	if not context.onlyContents and bundlingAlreadyHandled == false then
-		description = MakeDescription(contents, context)
+		description, alt_description = MakeDescription(contents, context)
 	end
 
 	--[[
@@ -135,6 +192,7 @@ local function Describe(self, context)
 	return {
 		priority = 0,
 		description = description,
+		alt_description = alt_description,
 		contents = contents,
 	}
 end

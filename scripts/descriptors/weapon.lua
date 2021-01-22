@@ -83,7 +83,11 @@ local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison", }
 
 local function Describe(self, context)
 	local inst = self.inst
-	local description = "[why am i empty]"
+	local description = nil
+
+	if not context.config["weapon_damage"] then
+		return
+	end
 
 	local owner = context.player --GetPlayer()
 

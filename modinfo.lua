@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.9.4" -- ds is 2.4.4_ds
+version = "2.9.5" -- ds is 2.4.4_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,7 +77,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "bug fixes; klaus sack stuff; weather; sinkhole icon fix; item range on hover (beta-ish); alt information; nutrient restoration; beard info; ",
+	update_info = "food effect info (hold alt), more info, cleaned info, more config, bug fixes; ",
 	update_info_ds = "bug fixes; More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -416,6 +416,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Food Related ]]
 	--------------------------------------------------------------------------
+	display_food = {
+		LABEL = "Food Information",
+		HOVER = "Whether food information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Food information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Food information is shown."
+			},
+		},
+	},
 	food_style = {
 		LABEL = "Food style",
 		HOVER = "Food information length.",
@@ -521,9 +535,23 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	weapon_damage = {
+		LABEL = "Weapon Damage",
+		HOVER = "Whether weapon damage is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Weapon damage is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Weapon damage is shown."
+			},
+		},
+	},
 	repair_values = {
 		LABEL = "Repair Values",
-		HOVER = "Whether repair information is displayed.",
+		HOVER = "Whether repair information is displayed (on inspection).",
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "No",
@@ -1314,6 +1342,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Food Related ]]
 	--------------------------------------------------------------------------
+	display_food = {
+		LABEL = "Food Information",
+		HOVER = "Whether food information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Food information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Food information is shown."
+			},
+		},
+	},
 	food_style = {
 		LABEL = "食物属性格式",
 		HOVER = "食物属性信息详细或简短展示。",
@@ -1419,6 +1461,34 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	weapon_damage = {
+		LABEL = "Weapon Damage",
+		HOVER = "Whether weapon damage is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Weapon damage is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Weapon damage is shown."
+			},
+		},
+	},
+	repair_values = {
+		LABEL = "Repair Values",
+		HOVER = "Whether repair information is displayed (on inspection).",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "Repair information is not shown.",
+			},
+			["1"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Repair information is shown.",
+			},
+		}
+	},
 	soil_moisture = {
 		LABEL = "Soil Moisture",
 		HOVER = "How soil/plant moisture is displayed.",
@@ -2040,7 +2110,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		client = true,
 		tags = {},
 	},
@@ -2149,7 +2219,6 @@ configuration_options = {
 		tags = {"dst_only"},
 	},
 	AddSectionTitle(T"sectiontitle_foodrelated"),
-	--[[
 	{
 		name = "display_food",
 		options = {
@@ -2159,7 +2228,6 @@ configuration_options = {
 		default = true,
 		tags = {"undefined"},
 	},
-	--]]
 	{
 		name = "food_style",
 		options = {
@@ -2230,6 +2298,15 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_informationcontrol"),
+	{
+		name = "weapon_damage",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
 	{
 		name = "repair_values",
 		options = {

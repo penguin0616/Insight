@@ -44,15 +44,15 @@ local function Describe(self, context)
 	local strs = {}
 
 	if #normal > 0 then
-		strs[#strs+1] = string.format("<color=SWEETENER>%s</color>", #normal)
+		strs[#strs+1] = string.format("<color=SWEETENER>%s<sub>normal</sub></color>", #normal)
 	end
 
 	if #evil > 0 then
-		strs[#strs+1] = string.format("<color=#764979>%s</color>", #evil)
+		strs[#strs+1] = string.format("<color=#764979>%s<sub>evil</sub></color>", #evil)
 	end
 
 	if #strs > 0 then
-		description = string.format(context.lstr.pollination, table.concat(strs, "|"), self.collectcount) 
+		description = string.format(context.lstr.pollination, table.concat(strs, " + "), self.collectcount) 
 	end
 
 	return {

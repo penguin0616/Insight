@@ -22,6 +22,10 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description, alt_description
 
+	if not (context.config["repair_values"] > 0) then
+		return
+	end
+
 	if not self.repairmaterial then
 		return
 	end
@@ -34,25 +38,26 @@ local function Describe(self, context)
 		self.repairmaterial = nil
 	]]
 
+	local stuff = {}
 	-- repairable only allows you to repair one aspect thanks to elseif's. order: health, workable, perishable
+	-- that being said, it looks like some materials are versatile repairers (such as moonrockcrater, moonrocknugget, thulecute (and pieces))
 	if (self.healthrepairvalue and self.healthrepairvalue ~= 0) or (self.healthrepairperent and self.healthrepairperent ~= 0) then
-		description = string.format(context.lstr.repairer.health, self.healthrepairvalue or 0, Round(self.healthrepairpercent * 100, 0) or 0)
-	elseif (self.workrepairvalue and self.workrepairvalue ~= 0) then
-		description = string.format(context.lstr.repairer.work, self.workrepairvalue)
-	elseif (self.perishrepairpercent and self.perishrepairpercent ~= 0) then
-		description = string.format(context.lstr.repairer.perish, Round(self.perishrepairpercent * 100, 0))
-	else
-		-- useless
-		alt_description = "???"
+		stuff[#stuff+1] = string.format(context.lstr.repairer.health2, self.healthrepairvalue or 0, Round(self.healthrepairpercent * 100, 0) or 0)
+	end
+	if (self.workrepairvalue and self.workrepairvalue ~= 0) then
+		stuff[#stuff+1] = string.format(context.lstr.repairer.work2, self.workrepairvalue)
+	end
+	if (self.perishrepairpercent and self.perishrepairpercent ~= 0) then
+		stuff[#stuff+1] = string.format(context.lstr.repairer.perish2, Round(self.perishrepairpercent * 100, 0))
 	end
 
-	if description then
-		description = string.format(context.lstr.repairer.type, context.lstr.repairer.materials[self.repairmaterial] or ("\"" .. self.repairmaterial .. "\"")) .. "\n" .. description
+	if #stuff > 0 then
+		alt_description = string.format(context.lstr.repairer.type, context.lstr.repairer.materials[self.repairmaterial] or ("\"" .. self.repairmaterial .. "\"")) .. ", " ..  table.concat(stuff, ", ")
 	end
 
 	return {
 		priority = 0,
-		description = description,
+		description = nil,
 		alt_description = alt_description
 	}
 end

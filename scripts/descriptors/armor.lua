@@ -20,6 +20,10 @@ directory. If not, please refer to
 
 
 -- armor.lua
+local function FormatCondition(condition, context)
+	return string.format(context.lstr.durability_unwrappable, condition)
+end
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
@@ -49,5 +53,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	FormatCondition = FormatCondition
 }

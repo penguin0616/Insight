@@ -20,11 +20,12 @@ directory. If not, please refer to
 
 -- watersource.lua
 local function Describe(self, context)
-	local description = context.lstr.watersource
+	local alt_description = context.lstr.watersource
 
 	return {
 		priority = 0,
-		description = description
+		description = nil,
+		alt_description = alt_description
 	}
 end
 

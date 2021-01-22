@@ -21,15 +21,18 @@ directory. If not, please refer to
 -- spawner.lua
 local function Describe(self, context)
 	local inst = self.inst
-	local description = nil
+	local description, alt_description
 
 	if self.nextspawntime then
-		description = string.format(context.lstr.spawner_next, STRINGS.NAMES[self.childname] or ("\"" .. self.childname .."\""), TimeToText(time.new(self.nextspawntime - GetTime(), context)))
+		description = string.format(context.lstr.spawner_next, STRINGS.NAMES[self.childname:upper()] or ("\"" .. self.childname .."\""), TimeToText(time.new(self.nextspawntime - GetTime(), context)))
+	else
+		alt_description = string.format(context.lstr.spawner_child, STRINGS.NAMES[self.childname:upper()] or ("\"" .. self.childname .."\""))
 	end
 
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		alt_description = alt_description
 	}
 end
 

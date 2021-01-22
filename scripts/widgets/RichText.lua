@@ -23,7 +23,7 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 local CalculateSize = CalculateSize
 
-local TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
+local TEXT_COLORING_ENABLED = nil
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
@@ -44,6 +44,10 @@ end
 local function InterpretReaderChunk(chunk, richtext) -- text, color
 	local color = chunk:GetTag("color") or richtext.default_color
 
+	if TEXT_COLORING_ENABLED == nil then
+		TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
+	end
+	
 	if not TEXT_COLORING_ENABLED then
 		color = "#FFFFFF"
 	end

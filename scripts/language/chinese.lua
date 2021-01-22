@@ -44,6 +44,7 @@ return {
 	-- armor.lua
 	protection = "<color=HEALTH>保护程度</color>: <color=HEALTH>%s%%</color>",
 	durability = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
+	durability_unwrappable = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color>",
 
 	-- beard.lua
 	beard = "Your beard will improve in %s day(s).",
@@ -90,6 +91,19 @@ return {
 
 	-- debuffable.lua
 	buff_text = "<color=MAGIC>Buff</color>: <color=MAGIC>%s</color>, %s",
+	debuffs = { -- ugh
+		["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
+		["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
+		["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
+		
+		["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
+		["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
+		["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
+		
+		["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
+	},
 
 	-- deerclopsspawner.lua
 	incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
@@ -213,6 +227,7 @@ return {
 
 	-- finiteuses.lua
 	action_uses = "<color=#aaaaee>%s</color>: %s",
+	action_uses_plain = "Uses",
 	action_sleepin = "睡觉",
 	action_fan = "扇风",
 	action_play = "演奏", -- beefalo horn
@@ -264,6 +279,7 @@ return {
 	fueled_time = "<color=LIGHT>燃料</color> 持续时间 (<color=LIGHT>%s%%</color>): %s", -- percent, time
 	fueled_time_verbose = "<color=LIGHT>%s</color> 持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 	fuel_efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
+	fuel_units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
 
 	-- growable.lua
 	growth_stage = "阶段 '%s': %s / %s: ",
@@ -379,6 +395,7 @@ return {
 	spoil = "变质",
 	dies = "死",
 	perishable_transition = "<color=MONSTER>%s</color>于: %s后",
+	perishable_transition_extended = "<color=MONSTER>%s</color>于: %s后 (<color=MONSTER>%s%%</color>)",
 	perishable_paused = "当前暂停腐烂",
 
 	-- petrifiable.lua
@@ -406,6 +423,35 @@ return {
 		},
 	},
 
+	-- repairer.lua
+	repairer = {
+		type = "Repair material: <color=#aaaaaa>%s</color>",
+		health = "<color=HEALTH>Health restore</color>: <color=HEALTH>%s</color> + <color=HEALTH>%s%%</color>",
+		health2 = "<color=HEALTH>%s<sub>flat HP</sub></color> + <color=HEALTH>%s%%<sub>percent HP</sub></color>",
+		work = "<color=#DED15E>Work repair</color>: <color=#DED15E>%s</color>",
+		work2 = "<color=#DED15E>%s<sub>work</sub></color>",
+		perish = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
+		perish2 = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
+		materials = (IsDST() and {
+			[MATERIALS.WOOD] =  "Wood",
+			[MATERIALS.STONE] =  "Stone",
+			[MATERIALS.HAY] =  "Hay",
+			[MATERIALS.THULECITE] =  "Thulecite",
+			[MATERIALS.GEM] =  "Gem",
+			[MATERIALS.GEARS] =  "Gears",
+			[MATERIALS.MOONROCK] =  "Moonrock",
+			[MATERIALS.ICE] =  "Ice",
+			[MATERIALS.SCULPTURE] =  "Sculpture",
+			[MATERIALS.FOSSIL] =  "Fossil",
+			[MATERIALS.MOON_ALTAR] =  "Moon Altar",
+		} or {}),
+	},
+
+	-- repairable.lua
+	repairable = {
+		chess = "<color=#99635D>Gears</color> needed: <color=#99635D>%s</color>",
+	},
+
 	-- rocmanager.lua
 	rocmanager = {
 		cant_spawn = "无法生成"
@@ -426,7 +472,8 @@ return {
 	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
 
 	-- spawner.lua
-	spawner_next = "将生成 %s 于 %s后",
+	spawner_next = "将生成 <color=#ee6666>%s</color> 于 %s后",
+	spawner_child = "Spawns a <color=#ff9999>%s</color>",
 
 	-- stewer.lua
 	stewer_product = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>)",

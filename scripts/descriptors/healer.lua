@@ -19,9 +19,18 @@ directory. If not, please refer to
 ]]
 
 -- healer.lua
+local debuffHelper = import("helpers/debuff")
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = string.format(context.lstr.heal, self.health)
+
+	if inst.prefab == "tillweedsalve" then
+		local effects = debuffHelper.GetItemEffects(self.inst, context)
+		if effects and #effects > 0 then
+			description = CombineLines(description, table.concat(effects, "\n"))
+		end
+	end
 
 	return {
 		priority = 0,

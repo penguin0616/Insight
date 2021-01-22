@@ -44,6 +44,7 @@ return {
 	-- armor.lua
 	protection = "<color=HEALTH>Protection</color>: <color=HEALTH>%s%%</color>",
 	durability = "<color=#C0C0C0>Durability</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
+	durability_unwrappable = "<color=#C0C0C0>Durability</color>: <color=#C0C0C0>%s</color>",
 
 	-- beard.lua
 	beard = "Your beard will improve in %s day(s).",
@@ -90,6 +91,19 @@ return {
 
 	-- debuffable.lua
 	buff_text = "<color=MAGIC>Buff</color>: %s, %s",
+	debuffs = { -- ugh
+		["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
+		["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
+		["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
+		
+		["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
+		["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
+		["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
+		
+		["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
+	},
 
 	-- deerclopsspawner.lua
 	incoming_deerclops_targeted = "<color=%s>Target: %s</color> -> %s",
@@ -213,6 +227,7 @@ return {
 
 	-- finiteuses.lua
 	action_uses = "<color=#aaaaee>%s</color>: %s",
+	action_uses_plain = "Uses",
 	action_sleepin = "Sleep",
 	action_fan = "Fan",
 	action_play = "Play", -- beefalo horn
@@ -264,6 +279,7 @@ return {
 	fueled_time = "<color=LIGHT>Fuel</color> remaining (<color=LIGHT>%s%%</color>): %s", -- percent, time
 	fueled_time_verbose = "<color=LIGHT>%s</color> remaining (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 	fuel_efficiency = "<color=LIGHT>Fuel efficiency</color>: <color=LIGHT>%s%%</color>",
+	fuel_units = "<color=LIGHT>Fuel</color>: <color=LIGHT>%s</color>",
 
 	-- growable.lua
 	growth_stage = "Stage '%s': %s / %s: ",
@@ -431,6 +447,11 @@ return {
 		} or {}),
 	},
 
+	-- repairable.lua
+	repairable = {
+		chess = "<color=#99635D>Gears</color> needed: <color=#99635D>%s</color>",
+	},
+
 	-- rocmanager.lua
 	rocmanager = {
 		cant_spawn = "Unable to spawn."
@@ -451,7 +472,8 @@ return {
 	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
 
 	-- spawner.lua
-	spawner_next = "Will spawn a %s in %s.",
+	spawner_next = "Will spawn a <color=#ee6666>%s</color> in %s.",
+	spawner_child = "Spawns a <color=#ff9999>%s</color>",
 
 	-- stewer.lua
 	stewer_product = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>)",

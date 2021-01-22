@@ -19,6 +19,10 @@ directory. If not, please refer to
 ]]
 
 -- fueled.lua
+local function FormatFuel(fuel, context)
+	return string.format(context.lstr.fuel_units, TimeToText(time.new(fuel, context)))
+end
+
 local function Describe(self, context)
 	local description = nil
 
@@ -97,5 +101,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	FormatFuel = FormatFuel
 }

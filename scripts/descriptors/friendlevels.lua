@@ -20,8 +20,9 @@ directory. If not, please refer to
 
 -- friendlevels.lua
 local function Describe(self, context)
-	local inst = self.inst
 	local description = string.format(context.lstr.friendlevel, self:GetLevel(), self:GetMaxLevel())
+
+	
 
 	return {
 		priority = 0,
