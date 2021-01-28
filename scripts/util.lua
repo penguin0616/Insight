@@ -111,7 +111,9 @@ function IsBundleWrap(inst)
 		known_bundles[inst] = true
 	else
 		if inst.HasTag and inst:HasTag("unwrappable") then
-			error("[Insight]: Attempt to disable known bundle")
+			if not inst.prefab:sub(1, #("quagmire_seedpacket")) == "quagmire_seedpacket" then
+				error("[Insight]: Attempt to disable known bundle") --quagmire_seedpacket
+			end
 		end
 
 		known_bundles[inst] = false

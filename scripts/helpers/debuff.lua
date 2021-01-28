@@ -26,10 +26,9 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local TUNING = TUNING
 local cooking = require("cooking")
 local preparedfoods = require("preparedfoods")
-local preparedfoods_warly = require("preparedfoods_warly")
-local spicedfoods = require("spicedfoods")
+local preparedfoods_warly = IsDST() and require("preparedfoods_warly") or {}
+local spicedfoods = IsDST() and require("spicedfoods") or {}
 local world_type = GetWorldType()
-local Is_DST = IsDST()
 local debuff_effects = {}
 
 --------------------------------------------------------------------------
@@ -224,6 +223,16 @@ debuff_effects["shroomcake"] = {
 
 
 
+local this = {
+	GetFoodEffects = GetFoodEffects,
+	GetItemEffects = GetItemEffects,
+}
+
+if not IsDST() then
+	return this
+end
+
+
 local SPICES = util.getupvalue(GenerateSpicedFoods, "SPICES")
 
 local SPICES_STATS = {
@@ -253,7 +262,4 @@ for prefab, data in pairs(spicedfoods) do
 	end
 end
 
-return {
-	GetFoodEffects = GetFoodEffects,
-	GetItemEffects = GetItemEffects,
-}
+return this

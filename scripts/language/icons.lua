@@ -279,7 +279,7 @@ return {
 	fueled_time = "<icon=fire> %s%%: %s",
 	fueled_time_verbose = "<icon=fire> (<color=LIGHT>'%s'</color>) %s%%: %s", -- type, percent, time
 	--fuel_efficiency = "<color=#FF9300><icon=fire> %s%%</color>", -- no good way i can think of for this
-	fuel_units = "<icon=fire> %s,
+	fuel_units = "<icon=fire> %s",
 
 	-- growable.lua
 	--growth_stage = "Stage '%s': %s / %s: ",
