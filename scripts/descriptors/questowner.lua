@@ -1,5 +1,5 @@
 --[[
-Copyright (C) 2020, 2021 penguin0616
+Copyright (C) 2020 penguin0616
 
 This file is part of Insight.
 
@@ -26,6 +26,11 @@ local HasPipspookQuest = setmetatable({}, { __mode="k" })
 local function SerializeToys(inst, doer)
 	local toys = {}
 
+	if not inst._toys then
+		mprint("pipspook missing toys", inst) -- https://forums.kleientertainment.com/klei-bug-tracker/dont-starve-together/pipspook-toys-dont-spawn-r28456/
+		return {}
+	end
+
 	for toy in pairs(inst._toys) do
 		table.insert(toys, {
 			network_id = GetEntityDebugData(toy).network_id,
@@ -40,8 +45,19 @@ local function SerializeToys(inst, doer)
 	return toys
 end
 
+-- see ConsoleStuff for a quick script to accelerate pipspook spawning
 local function OnPipspookQuestBegin(inst, doer)
 	if HasPipspookQuest[doer] then
+		return
+	end
+
+	local context = GetPlayerContext(doer)
+	if not context then
+		dprint("pipspook quest missing player context, trying again in 1 second.") -- could i just pass contexts between shards?
+		return inst:DoTaskInTime(1, function() OnPipspookQuestBegin(inst, doer) end)
+	end
+
+	if not context.config["pipspook_indicator"] then
 		return
 	end
 

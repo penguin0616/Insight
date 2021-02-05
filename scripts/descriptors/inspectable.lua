@@ -178,6 +178,10 @@ local function GetCanaryDescription(inst, context)
 end
 
 local function GetRobotChargeTime(self, context)
+	if self.inst.charge_time <= 0 then
+		return
+	end
+	
 	return {
 		priority = 1,
 		description = string.format(context.lstr.wx78_charge, TimeToText(time.new(self.inst.charge_time, context))),

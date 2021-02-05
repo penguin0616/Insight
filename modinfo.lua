@@ -281,7 +281,7 @@ local english = {
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Boss indicators shown."
+				HOVER = "Boss indicators are shown."
 			},
 		},
 	},
@@ -295,7 +295,21 @@ local english = {
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Notable indicators shown."
+				HOVER = "Notable indicators are shown."
+			},
+		},
+	},
+	pipspook_indicator = {
+		LABEL = "Pipspook toy indicators",
+		HOVER = "Whether pipspook toy indicators are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Pipspook toy indicators not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Pipspook toy indicators are shown."
 			},
 		},
 	},
@@ -309,7 +323,7 @@ local english = {
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Message indicators shown."
+				HOVER = "Message indicators are shown."
 			},
 		},
 	},
@@ -323,7 +337,7 @@ local english = {
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Hunt indicators shown."
+				HOVER = "Hunt indicators are shown."
 			},
 		},
 	},
@@ -1236,6 +1250,20 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "指示器将被显示。"
+			},
+		},
+	},
+	pipspook_indicator = {
+		LABEL = "Pipspook toy indicators",
+		HOVER = "Whether pipspook toy indicators are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Pipspook toy indicators not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Pipspook toy indicators are shown."
 			},
 		},
 	},
@@ -2171,6 +2199,15 @@ configuration_options = {
 		}, 
 		default = true,
 		client = true,
+		tags = {},
+	},
+	{
+		name = "pipspook_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
 		tags = {},
 	},
 	{
