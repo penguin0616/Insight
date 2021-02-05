@@ -909,7 +909,7 @@ function GetWorldInformation(player) -- refactor?
 	local context = GetPlayerContext(player)
 	assert(context, "how is context missing in GetWorldInformation for " .. player.name)
 
-	if is_dst and not context.config["show_world_events"] then
+	if is_dst and not context.config["display_world_events"] then
 		return {
 			GUID = world.GUID,
 			information = nil,

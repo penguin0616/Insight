@@ -347,7 +347,7 @@ return {
 			},
 		},
 	},
-	show_world_events = {
+	display_world_events = {
 		LABEL = "Show World Events",
 		HOVER = "Determines whether world events are shown.\nWorld Events: Hounds/Worms, Bosses, Earthquakes, etc.",
 		OPTIONS = {

@@ -649,17 +649,31 @@ local english = {
 			},
 		}
 	},
-	show_world_events = {
-		LABEL = "Show World Events",
-		HOVER = "Determines whether world events are shown.\nWorld Events: Hounds/Worms, Bosses, Earthquakes, etc.",
+	display_world_events = {
+		LABEL = "Show World Data",
+		HOVER = "Determines whether world data is shown.\nExamples: Hounds/Worms, Bosses, Earthquakes, etc.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "World events are not shown."
+				HOVER = "World data is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "World events are shown."
+				HOVER = "World data is shown."
+			},
+		},
+	},
+	display_weather = {
+		LABEL = "Show weather information",
+		HOVER = "Determines whether weather information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Weather is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Weather is shown."
 			},
 		},
 	},
@@ -1575,7 +1589,7 @@ local chinese = {
 			},
 		}
 	},
-	show_world_events = {
+	display_world_events = {
 		LABEL = "显示大世界事件",
 		HOVER = "此选项决定世界事件是否会被显示。世界事件有：猎犬/蠕虫，世界Boss，地震和其他事件。",
 		OPTIONS = {
@@ -1586,6 +1600,20 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示大世界事件。"
+			},
+		},
+	},
+	display_weather = {
+		LABEL = "Show weather information",
+		HOVER = "Determines whether weather information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Weather is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Weather is shown."
 			},
 		},
 	},
@@ -2362,7 +2390,16 @@ configuration_options = {
 		tags = {"dst_only", "undefined"},
 	},
 	{
-		name = "show_world_events",
+		name = "display_world_events",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_weather",
 		options = {
 			{data = false},
 			{data = true},

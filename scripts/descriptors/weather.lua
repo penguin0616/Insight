@@ -64,6 +64,10 @@ local function Describe(self, context)
 	if not OnUpdate then
 		return
 	end
+	
+	if not context.config["display_weather"] then
+		return
+	end
 	--[[
 	if not _preciptype then
 		return

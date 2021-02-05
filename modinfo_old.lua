@@ -367,7 +367,7 @@ configuration_options = {
 	},
 	AddSectionTitle("Information Control"),
 	{
-		name = "show_world_events",
+		name = "display_world_events",
 		label = "Show World Events",
 		hover = "Determines whether world events are shown.\nWorld Events: Hounds/Worms, Bosses, Earthquakes, etc.",
 		options = {
