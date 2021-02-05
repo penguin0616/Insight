@@ -46,7 +46,9 @@ do
 end
 
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 
+--[[
 DEFAULTFONT = "opensans"
 DIALOGFONT = "opensans"
 TITLEFONT = "bp100"
@@ -66,6 +68,7 @@ CHATFONT_OUTLINE = "bellefair_outline"
 SMALLNUMBERFONT = "stint-small"
 BODYTEXTFONT = "stint-ucr"
 CODEFONT = "ptmono"
+--]]
 
 -- Mod table
 local Insight = {
@@ -412,7 +415,7 @@ end
 --- Returns the component's origin. 
 -- @string componentname
 -- @treturn ?string|nil nil if it is native, string is mod's fancy name
-function GetComponentOrigin(componentname)
+local function GetComponentOrigin(componentname)
 	if IsDS() then
 		return false
 	end
@@ -672,6 +675,7 @@ local function GetEntityInformation(item, player, params)
 
 
 	local chunks = {}
+	local len_chunks = 0
 	for name, component in pairs(components) do		
 		local descriptor = GetComponentDescriptor(name)
 		
@@ -693,12 +697,14 @@ local function GetEntityInformation(item, player, params)
 
 					if isForge == false or (isForge == true and name == "health") then
 						--fprint(item, "component", name, d.description)
-						table.insert(chunks, d)
+						--table.insert(chunks, d)
+						chunks[len_chunks+1] = d; len_chunks = len_chunks + 1;
 					end
 				end
 			end
 		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
-			table.insert(chunks, {priority = -2, name = name, description = "Disabled descriptor: " .. name})
+			--table.insert(chunks, {priority = -2, name = name, description = "Disabled descriptor: " .. name})
+			chunks[len_chunks+1] = {priority = -2, name = name, description = "Disabled descriptor: " .. name}; len_chunks = len_chunks + 1;
 
 		elseif player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not table.contains(descriptors_ignore, name) then
 			local description = "No information for: " .. name
@@ -708,7 +714,9 @@ local function GetEntityInformation(item, player, params)
 				description = string.format("[%s] No information for: %s", origin, name)
 			end
 
-			table.insert(chunks, {priority = -1, name = name, description = description})
+			--table.insert(chunks, {priority = -1, name = name, description = description})
+			chunks[len_chunks+1] = {priority = -1, name = name, description = description}; len_chunks = len_chunks + 1;
+
 		end
 	end
 
@@ -725,7 +733,8 @@ local function GetEntityInformation(item, player, params)
 
 	-- assembly time
 	-- if there's no data, why bother?
-	if #chunks == 0 then
+	--if #chunks == 0 then
+	if len_chunks == 0 then
 		assembled.information = nil
 		assembled.alt_information = nil
 		return assembled
@@ -1375,7 +1384,8 @@ if IsDST() then
 			end
 
 			setfenv(fn, setmetatable({
-				tostr = tostr
+				tostr = tostr,
+				me = UserToPlayer(MyKleiID),
 			}, {
 				__index = Insight.env,
 				__newindex = Insight.env,
@@ -1394,6 +1404,7 @@ if IsDST() then
 			mprint(string.format("Hmmm, %s is very suspicious.", player.name))
 		end
 	end)
+	rawset(_G, "RE", function(str) rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), str) end)
 
 	rpcNetwork.AddShardModRPCHandler(modname, "WorldData", function(sending_shard_id, data)
 		TheWorld:PushEvent("insight_gotworlddata", { sending_shard_id=sending_shard_id, data=data })

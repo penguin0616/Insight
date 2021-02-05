@@ -241,7 +241,7 @@ function RichText:ResetRegionSize()
 end
 
 -- ok time for the good stuf
-function RichText:NewLine(pieces)
+function RichText:NewLine(pieces) -- ISSUE:PERFORMANCE
 	local container = self:AddChild(Widget("container" .. #self.lines + 1))
 	table.insert(self.lines, container)
 

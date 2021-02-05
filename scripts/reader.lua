@@ -155,7 +155,7 @@ function Reader:ReadTag()
 				self:SaveObject(tag, value)
 			else -- descriptor tag
 				--print('inserting tag', tag, value)
-				table.insert(self.currentTags, {name=tag, value=value})
+				table.insert(self.currentTags, {name=tag, value=value}) -- ISSUE:PERFORMANCE (TEST#12)
 			end
 			
 			self.buffer = string.sub(self.buffer, fin)
@@ -175,6 +175,7 @@ function Reader:Save(str)
 		end
 	end
 
+	-- ISSUE:PERFORMANCE (TEST#12)
 	table.insert(self.chunks, Chunk:new{
 		text = str,
 		tags = {unpack(self.currentTags)}
@@ -182,6 +183,7 @@ function Reader:Save(str)
 end
 
 function Reader:SaveObject(class, value)
+	-- ISSUE:PERFORMANCE (TEST#12)
 	table.insert(self.chunks, Chunk:new{
 		object = {class=class, value=value},
 		tags = {unpack(self.currentTags)}

@@ -250,7 +250,7 @@ function CombineLines(...)
 		
 		if v ~= nil then
 			lines = lines or {}
-			table.insert(lines, tostring(v))
+			table.insert(lines, tostring(v)) -- ISSUE:PERFORMANCE (TEST#12)
 		end
 	end
 
@@ -376,7 +376,7 @@ function module.getupvalues(func)
 	while true do
 		local n, v = debug.getupvalue(func, i)
 		if not n then return upvs end
-		table.insert(upvs, {name=n, value=v})
+		table.insert(upvs, {name=n, value=v}) -- ISSUE:PERFORMANCE (TEST#12)
 		i = i + 1
 	end
 	return upvs
@@ -451,7 +451,7 @@ function module.recursive_getupvalues(func)
 		checked[fn] = true
 
 		for i, upv in pairs(module.getupvalues(fn)) do
-			table.insert(upvs, upv)
+			table.insert(upvs, upv) 
 
 			if type(i) == "function" then -- in case some wise guy decides to store something with the index as a function.
 				scan(i)

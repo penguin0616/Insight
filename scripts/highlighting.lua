@@ -23,6 +23,7 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 -- 1632 chests
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local IsPrefab, IsWidget, IsBundleWrap = IsPrefab, IsWidget, IsBundleWrap
 
 local highlightColorKey = "__insight:MultColor"
@@ -175,24 +176,24 @@ local function GetItemSlots()
 	-- main inventory
 	for i,v in pairs(inventoryBar.inv) do
 		if v then
-			table.insert(slots, v)
+			table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
 		end
 	end
 
 	-- equipped items
 	for i,v in pairs(inventoryBar.equip) do
 		if v then
-			table.insert(slots, v)
+			table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
 		end
 	end
 
 	-- open containers
 	--k, v = next(self.controls.containers) return v -- PlayerHud:GetFirstOpenContainerWidget
-	for _, c in pairs(localPlayer.HUD.controls.containers) do
+	for _, c in pairs(localPlayer.HUD.controls.containers) do -- ISSUE:PERFORMANCE
 		if c and c.inv then
 			for i, v in pairs(c.inv) do
 				if v then
-					table.insert(slots, v)
+					table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
 				end
 			end
 		end
@@ -203,7 +204,7 @@ local function GetItemSlots()
 
 	for i,v in pairs(backpackInventory) do
 		if v then
-			table.insert(slots, v)
+			table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
 		end
 	end
 

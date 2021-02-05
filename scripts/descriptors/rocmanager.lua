@@ -30,6 +30,7 @@ local function Describe(self, context)
 		if IsDS() then
 			local clock = GetClock()
 			remaining_time = self.nexttime - clock:GetTotalTime()
+			-- will only spawn before the first half of daylight, and not while player is indoors
 			should_spawn = clock:GetNormTime() < (clock.daysegs / 16) /2 and not TheCamera.interior
 		else
 			remaining_time = self.nexttime

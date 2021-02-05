@@ -19,12 +19,14 @@ directory. If not, please refer to
 ]]
 
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Variables =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+import("helpers/controls")
 localPlayer = nil
 currentlySelectedItem = nil
 shard_players = {}
@@ -841,28 +843,6 @@ AddPlayerPostInit(function(player)
 				is_server_owner = TheNet:GetIsServerOwner(),
 				locale = LOC.GetLocaleCode(),
 			})
-
-			if player.userid == MyKleiID then
-				AddUserCommand("s", {
-					aliases = { "script", "remote" },
-					prettyname = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.PRETTYNAME
-					desc = nil, --default to STRINGS.UI.BUILTINCOMMANDS.EMOTE.DESC
-					permission = COMMAND_PERMISSION.USER,
-					slash = true,
-					usermenu = false,
-					servermenu = false,
-					params = {"str"},
-					paramsoptional = {false},
-					vote = false,
-					localfn = function(params, ...)
-						rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), params.str)
-					end,
-				})
-
-				rawset(_G, "RE", function(str)
-					rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), str)
-				end)
-			end
 		end
 		
 		-- server shares this if client host

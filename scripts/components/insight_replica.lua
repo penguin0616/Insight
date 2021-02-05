@@ -23,6 +23,7 @@ setfenv(1, _G.Insight.env)
 --[[ Private Variables ]]
 --------------------------------------------------------------------------
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local Indicators = import("indicators")
 
 --------------------------------------------------------------------------
@@ -364,7 +365,7 @@ function Insight:PipspookToyFound(inst)
 	dprint("found", inst)
 	local network_id = GetEntityDebugData(inst).network_id
 
-	local toy_data = util.table_find(self.pipspook_toys, function(t) return t.network_id == network_id end)
+	local toy_data = util.table_find(self.pipspook_toys, function(t) return t.network_id == network_id end) -- ISSUE:PERFORMANCE (TEST#8)
 
 	if toy_data == nil then
 		if not table.contains(self.pipspook_queue, inst) then
@@ -428,7 +429,7 @@ function Insight:HandlePipspookQuest(data, ...)
 
 		for i,v in pairs(self.pipspook_toys) do
 			-- v { network_id=network_id, position=Vector3 }
-			local toy = util.table_find(self.pipspook_queue, function(q) return GetEntityDebugData(q).network_id == v.network_id end)
+			local toy = util.table_find(self.pipspook_queue, function(q) return GetEntityDebugData(q).network_id == v.network_id end) -- ISSUE:PERFORMANCE (TEST#8)
 
 			if toy then
 				-- toy already exists
@@ -492,7 +493,7 @@ function Insight:SetEntityData(entity, data)
 	if self.queue_tracker[entity] then -- tracks index
 		self.queue[self.queue_tracker[entity]] = data -- replace old index
 	else
-		table.insert(self.queue, data)
+		table.insert(self.queue, data) -- ISSUE:PERFORMANCE (TEST#12)
 		self.queue_tracker[entity] = #self.queue
 	end
 end

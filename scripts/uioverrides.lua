@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
-
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Basic ===========================================================================
@@ -430,9 +430,11 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	local string_sub = string.sub
 	local math_ceil = math.ceil
 	local TheInput_IsKeyDown = TheInput.IsKeyDown
+	local TheInputProxy_GetLocalizedControl = TheInputProxy.GetLocalizedControl
 
 	local Is_DS = IsDS()
 	local Is_DST = IsDST()
+	local CONTROL_FORCE_INSPECT = CONTROL_FORCE_INSPECT
 
 	local oldSetString = hoverer.text.SetString
 	local oldOnUpdate = hoverer.OnUpdate
@@ -451,7 +453,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 	-- this gets spam called
 	function hoverer.text.Hide(self)
-		if self.shown then
+		if self.shown then 
 			--GetMouseTargetItem() -- i could probably do this better, eh?
 			if canShowItemRange and currentlySelectedItem ~= nil then
 				OnCurrentlySelectedItemChanged(currentlySelectedItem, nil)
@@ -461,12 +463,15 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 	end
 
-	function hoverer.secondarytext:Hide()
+	function hoverer.secondarytext.Hide(self)
 		if Is_DS then
 			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETUP", 40)
 			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETDOWN", 30)
 		end
-		oldHide2(self)
+
+		if self.shown then
+			oldHide2(self)
+		end
 	end
 
 	-- count lines
@@ -579,8 +584,17 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 		
 		if entityInformation then
+			-- CONTROL_FORCE_INSPECT
+			-- optionsscreen.lua (can be redux or not)
+			-- TheInputProxy:HasMappingChanged(0, CONTROL_FORCE_INSPECT) -- true/false
+			-- TheInput:GetLocalizedControl(0, CONTROL_FORCE_INSPECT) --> "Left Alt"
 			--print(TheInput:IsKeyDown(KEY_LALT)) -- not CONTROL_FORCE_INSPECT
-			if TheInput_IsKeyDown(TheInput, KEY_LALT) then
+			-- KEY_LALT
+			--print("A")
+			-- print(keycode, KEY_LALT, TheInput:IsKeyDown(KEY_LALT), TheInput:IsKeyDown(keycode), TheInput:IsControlPressed(KEY_LALT), TheInput:IsControlPressed(keycode))
+			-- use_default_mapping should not be false or it will always return the correct keycode. in this case, we want the modified one if it's there.
+			local _, _, keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_INSPECT, false, false) -- deviceId, controlId, use_default_mapping, use_control_mapper
+			if TheInput_IsKeyDown(TheInput, keycode) then
 				if informationOnAltOnly == true and altOnlyIsVerbose == false then
 					itemDescription = entityInformation.information
 				else
