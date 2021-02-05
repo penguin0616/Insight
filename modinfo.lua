@@ -649,6 +649,7 @@ local english = {
 			}
 		}
 	},
+	
 	display_weighable = {
 		LABEL = "Item Weight",
 		HOVER = "Determines whether item weight is shown.",
@@ -843,8 +844,36 @@ local english = {
 			},
 		},
 	},
+	display_pollination = {
+		LABEL = "Pollination",
+		HOVER = "Whether pollination information is displayed.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display pollination information."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display pollination information."
+			},
+		},
+	},
+	display_spawner = {
+		LABEL = "Spawners",
+		HOVER = "Whether spawner information is displayed.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display spawner information."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display spawner information."
+			},
+		},
+	},
 	display_hunger = {
-		LABEL = "Entity Hunger",
+		LABEL = "Hunger",
 		HOVER = "How much hunger detail is shown.",
 		OPTIONS = {
 			["0"] = {
@@ -858,6 +887,20 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "All",
 				HOVER = "Will display all hunger information."
+			},
+		},
+	},
+	display_sanityaura = {
+		LABEL = "Sanity Auras",
+		HOVER = "Whether sanity auras are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity auras."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity auras."
 			},
 		},
 	},
@@ -1797,6 +1840,34 @@ local chinese = {
 			},
 		},
 	},
+	display_pollination = {
+		LABEL = "Pollination",
+		HOVER = "Whether pollination information is displayed.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display pollination information."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display pollination information."
+			},
+		},
+	},
+	display_spawner = {
+		LABEL = "Spawners",
+		HOVER = "Whether spawner information is displayed.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display spawner information."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display spawner information."
+			},
+		},
+	},
 	display_hunger = {
 		LABEL = "物品的饥饿值",
 		HOVER = "物品饥饿值的具体信息将会显示。",
@@ -1812,6 +1883,20 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "所有",
 				HOVER = "将会显示所有物品的具体饥饿值。"
+			},
+		},
+	},
+	display_sanityaura = {
+		LABEL = "Sanity Auras",
+		HOVER = "Whether sanity auras are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity auras."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity auras."
 			},
 		},
 	},
@@ -2539,6 +2624,24 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	{
+		name = "display_pollination",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_spawner",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
+	{
 		name = "display_hunger",
 		options = {
 			{data = 0},
@@ -2546,6 +2649,15 @@ configuration_options = {
 			{data = 2},
 		}, 
 		default = 1,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_sanityaura",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
 		tags = {"undefined"},
 	},
 	{

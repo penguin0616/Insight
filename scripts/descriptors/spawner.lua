@@ -20,6 +20,10 @@ directory. If not, please refer to
 
 -- spawner.lua
 local function Describe(self, context)
+	if not context.config["spawner_information"] then
+		return
+	end
+	
 	local inst = self.inst
 	local description, alt_description
 

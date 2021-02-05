@@ -20,6 +20,10 @@ directory. If not, please refer to
 
 -- sanityaura.lua
 local function Describe(self, context)
+	if not context.config["display_sanityaura"] then
+		return
+	end
+	
 	local inst = self.inst
 	local description = nil
 	

@@ -38,6 +38,10 @@ end
 -- #715147 evil
 
 local function Describe(self, context)
+	if not context.config["display_pollination"] then
+		return
+	end
+	
 	local description = nil
 
 	local normal, evil = ProcessFlowers(self.flowers)

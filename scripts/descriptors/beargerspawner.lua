@@ -52,7 +52,14 @@ local function ProcessInformation(context, time_to_attack, target)
 		return time_string
 	else
 		local target_string = string.format("%s - %s", target.name, target.prefab)
-		return string.format(context.lstr.incoming_bearger_targeted, Color.ToHex(TheNet:GetClientTableForUser(target.userid).colour), target_string, time_string)
+		return string.format(
+			context.lstr.incoming_bearger_targeted, 
+			Color.ToHex(
+				TheNet:GetClientTableForUser(target.userid).colour
+			), 
+			target_string, 
+			time_string
+		)
 	end
 end
 

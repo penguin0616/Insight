@@ -64,7 +64,7 @@ local function Describe(self, context)
 	
 
 	return {
-		priority = 0.1,
+		priority = 29,
 		description = description,
 	}
 end

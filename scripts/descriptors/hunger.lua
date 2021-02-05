@@ -72,7 +72,7 @@ local function Describe(self, context)
 	description = CombineLines(hunger_str, burn_str)
 
 	return {
-		priority = 0,
+		priority = 28,
 		description = description
 	}
 end

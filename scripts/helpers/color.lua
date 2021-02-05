@@ -74,6 +74,10 @@ local Color = { IsValidHex=IsValidHex, __metatable="Color" }
 setmetatable(Color, Color)
 
 function Color.ToHex(self)
+	if self.hex then
+		return self.hex
+	end
+
 	-- https://github.com/Perkovec/colorise-lua
 	local hexadecimal = '#'
 
@@ -101,6 +105,8 @@ function Color.ToHex(self)
 		hexadecimal = hexadecimal .. hex
 	end
 
+	self.hex = hexadecimal
+
 	return hexadecimal
 end
 
@@ -109,7 +115,9 @@ end
 -- @treturn Color
 function Color.fromHex(hex)
 	local r, g, b, a = HexToRGBA(hex)
-	return Color.fromRGBA(r, g, b, a)
+	local self = Color.fromRGBA(r, g, b, a)
+	self.hex = hex
+	return self
 end
 
 --- Creates a new Color 'object' from RGBA.

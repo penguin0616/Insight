@@ -182,7 +182,7 @@ string = setmetatable({}, {__index = function(self, index) local x = _G.string[i
 import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 time = import("time")
 util = import("util")
-Color = import("color")
+Color = import("helpers/color")
 entityManager = import("entitymanager")()
 rpcNetwork = import("rpcnetwork")
 

@@ -538,6 +538,7 @@ return {
 	-- weighable.lua
 	weighable = {
 		--weight = "Weight: %s (%s%%)",
+		--weight_bounded = "Weight: %s <= %s (%s) <= %s",
 		--owner_name = "Owner: %s"
 	},
 

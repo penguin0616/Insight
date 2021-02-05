@@ -18,26 +18,52 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+local Color = Color
+--local GREEN = Color.fromHex("#00cc00")
+--local RED = Color.fromHex("#dd5555")
+-- https://i.stack.imgur.com/UgYCc.png
+-- "#5B63D2"
+local bottom = Color.fromHex("#66CC00") -- "#EEFC53" 
+local top = Color.fromHex("#5B63D2")
+
 -- weighable.lua
 local function Describe(self, context)
-	local description = nil
+	local description, alt_description = nil, nil
 
 	if not context.config["display_weighable"] then
 		return
 	end
 
-	if not self:GetWeight() then
+	local weight = self:GetWeight() 
+	if not weight then
 		return
 	end
 
-	local weight_percent = (self:GetWeightPercent() or 0) * 100
+	local weight_percent
+	local owner_name = (self.owner_name and "\t" .. string.format(context.lstr.weighable.owner_name, self.owner_name or "?")) or ""
 
-	local owner_name = string.format(context.lstr.weighable.owner_name, self.owner_name or "?")
-	description = string.format(context.lstr.weighable.weight, self:GetWeight(), Round(weight_percent, 2)) .. "\t" .. owner_name
+	-- bounded
+	if self.min_weight and self.max_weight then
+		weight_percent = self:GetWeightPercent()
+		local weight_color = bottom:Lerp(top, weight_percent)
+		
+		--local function ApplyColour(s) return s end;
+
+		alt_description = string.format(context.lstr.weighable.weight_bounded, 
+			ApplyColour(self.min_weight, bottom),
+			ApplyColour(weight, weight_color),
+			ApplyColour(Round(weight_percent * 100, 2) .. "%", weight_color),
+			ApplyColour(self.max_weight, top)
+		) .. owner_name
+	end
+
+	weight_percent = 0
+	description = string.format(context.lstr.weighable.weight, weight, "?") .. owner_name
 
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		alt_description = alt_description
 	}
 end
 
