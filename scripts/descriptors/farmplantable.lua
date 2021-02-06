@@ -21,6 +21,32 @@ directory. If not, please refer to
 -- farmplantable.lua
 local farmingHelper = import("helpers/farming")
 
+local function StringifyPlantGoodSeasons(seasons, context)
+	local str = ""
+	if seasons.autumn then
+		str = str .. context.lstr.seasons.autumn .. ", "
+	end
+	
+	if seasons.winter then
+		str = str .. context.lstr.seasons.winter .. ", "
+	end
+
+	if seasons.spring then
+		str = str .. context.lstr.seasons.spring .. ", "
+	end
+
+	if seasons.summer then
+		str = str .. context.lstr.seasons.summer .. ", "
+	end
+
+	if #str > 0 then
+		str = string.sub(str, 1, -3)
+	end
+
+	return str
+end
+	
+
 local function Describe(self, context)
 	-- self.plant
 	-- farm_plant_randomseed
@@ -36,23 +62,25 @@ local function Describe(self, context)
 		return
 	end
 
-	local description = nil
+	local alt_description = nil
 	local nutrients = farmingHelper.GetPlantNutrientModifier(definition)
 
 	local product = definition.product or "???"
 	if context.usingIcons and PrefabHasIcon(product) then
-		--description = string.format(context.lstr.farmplantable.product, product)
+		--alt_description = string.format(context.lstr.farmplantable.product, product)
 	else
 		local name = STRINGS.NAMES[product:upper()] or ("\"" .. product .. "\"")
-		--description = string.format(context.lstr.lang.farmplantable.product, name)
+		--alt_description = string.format(context.lstr.lang.farmplantable.product, name)
 	end
 
+	local season_string = string.format(context.lstr.farmplantable.good_seasons, StringifyPlantGoodSeasons(definition.good_seasons, context))
+
 	local nutrient_string = string.format(context.lstr.farmplantable.nutrient_consumption, nutrients.formula, nutrients.compost, nutrients.manure)
-	description = CombineLines(description, nutrient_string)
+	alt_description = CombineLines(season_string, nutrient_string)
 
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 end
 

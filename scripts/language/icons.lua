@@ -35,6 +35,15 @@ return {
 	time_minutes = "%s minute(s), ",
 	time_hours = "%s hour(s), ",--]]
 
+	-- meh
+	seasons = {
+		--autumn = "Autumn",
+		--winter = "Winter",
+		--spring = "Spring",
+		--summer = "Summer",
+	},
+
+
 	-------------------------------------------------------------------------------------------------------------------------
 
 	-- appeasement.lua
@@ -178,6 +187,7 @@ return {
 	farmplantable = {
 		product = "<icon=%s>",
 		--nutrient_consumption = "Plant consumes: [<color=NATURE>%d<sub>Formula</sub></color>, <color=CAMO>%d<sub>Compost</sub></color>, <color=INEDIBLE>%d<sub>Manure</sub></color>]",
+		good_seasons = "Seasons: %s",
 	},
 
 	-- farmplantstress.lua
