@@ -215,7 +215,8 @@ rpcNetwork.SendModRPCToClient = function(id_table, sender_list, ...)
 	end
 
 	if IS_CLIENT_HOST and localPlayer then
-		for i,v in pairs(sender_list) do
+		for i = 1, #sender_list do
+			local v = sender_list[i]
 			if v == localPlayer.userid then
 				table.remove(sender_list, i)
 				--mprint("TO CLIENT")
@@ -254,7 +255,8 @@ rpcNetwork.SendModRPCToAllClients = function(id_table, ...)
 
 	local sender_list = {}
 
-	for _, player in pairs(AllPlayers) do
+	for i = 1, #AllPlayers do
+		local player = AllPlayers[i]
 		if player.userid ~= "" then
 			if IS_CLIENT_HOST and localPlayer and player.userid == localPlayer.userid then
 				local fn = CLIENT_MOD_RPC_HANDLERS[id_table.namespace][id_table.id]
@@ -262,7 +264,7 @@ rpcNetwork.SendModRPCToAllClients = function(id_table, ...)
 					fn(...)
 				end
 			else
-				table.insert(sender_list, player.userid)
+				sender_list[#sender_list+1] = player.userid
 			end
 		end
 	end

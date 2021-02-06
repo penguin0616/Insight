@@ -24,7 +24,7 @@ local processed_bundles = setmetatable({}, {__mode = "kv"}) -- {player = { [bund
 local NAMES = STRINGS.NAMES
 local subfmt = subfmt
 
-local function GetItems(self, context) -- ISSUE:PERFORMANCE
+local function GetItems(self, context)
 	if not processed_bundles[context.player] then
 		processed_bundles[context.player] = {}
 	end
@@ -46,7 +46,7 @@ local function GetItems(self, context) -- ISSUE:PERFORMANCE
 
 
 	-- data, prefab, x, y, z
-	for _, slot in pairs(itemdata) do
+	for _, slot in pairs(itemdata) do -- deal with nils
 		local item = {}
 		
 		item.prefab = slot.prefab
@@ -106,7 +106,7 @@ local function GetItems(self, context) -- ISSUE:PERFORMANCE
 			end
 		end
 
-		table.insert(items, item)
+		items[#items+1] = item
 	end
 
 	processed_bundles[context.player][self.inst] = setmetatable(items, { __mode="kv"})
@@ -120,7 +120,9 @@ local function MakeDescription(items, context)
 	end
 	
 	local description, alt_description = "", ""
-	for i,item in pairs(items) do
+	for i = 1, #items do
+		local item = items[i]
+		
 		local perishable = item.perishable and (item.perishable .. " ") or ""
 		local amount = item.amount
 		local name = item.name or "**" .. item.prefab

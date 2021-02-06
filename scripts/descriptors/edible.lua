@@ -60,9 +60,9 @@ local function GetFoodUnits(inst, context)
 			local unit = context.lstr.edible_foodtype[name:lower()] or name .. "*"
 			
 			if context.usingIcons and PrefabHasIcon(unit) then
-				table.insert(units, string.format(context.lstr.food_unit, color, value, unit))
+				units[#units+1] = string.format(context.lstr.food_unit, color, value, unit)
 			else
-				table.insert(units, string.format(context.lstr.lang.food_unit, color, value, color, unit))
+				units[#units+1] = string.format(context.lstr.lang.food_unit, color, value, color, unit)
 			end
 			--[[
 			local clr = name:upper()
@@ -261,7 +261,7 @@ local function Describe(self, context)
 		local effect_description = {}
 
 		for name, data in pairs(effects) do
-			table.insert(effect_description, string.format(context.lstr.edible_foodeffect[name], data.delta and FormatNumber(Round(data.delta, 1)) or ("MISSING DELTA FOR [" .. name .. "]"), data.duration and TimeToText(time.new(data.duration, context), "realtime_short") or "[YOU SHOULDN'T SEE THIS]"))
+			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], data.delta and FormatNumber(Round(data.delta, 1)) or ("MISSING DELTA FOR [" .. name .. "]"), data.duration and TimeToText(time.new(data.duration, context), "realtime_short") or "[YOU SHOULDN'T SEE THIS]")
 		end
 
 		if #effect_description > 0 then

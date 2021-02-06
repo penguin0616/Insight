@@ -30,7 +30,7 @@ local function Describe(self, context)
 		for name in pairs(self.timers) do
 			local time = time.new(self:GetTimeLeft(name), context)
 			local timeStr = self:IsPaused(name) and context.lstr.timer_paused or TimeToText(time)
-			table.insert(timers, string.format(context.lstr.timer, name, timeStr))
+			timers[#timers+1] = string.format(context.lstr.timer, name, timeStr)
 		end
 
 		if #timers > 0 then

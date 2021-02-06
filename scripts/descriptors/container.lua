@@ -61,6 +61,10 @@ local function GetContainerItems(self)
 	end
 end
 
+local function PopContainer(inst)
+	containers[inst] = nil
+end
+
 local function Describe(self, context)
 	if containers[self.inst] then
 		--mprint("reusing old index")
@@ -72,20 +76,23 @@ local function Describe(self, context)
 	local items = {} -- {prefab, amount}
 	context.onlyContents = true -- ISSUE: REFACTOR
 
-	for i,v in pairs(GetContainerItems(self)) do
+	local container_items = GetContainerItems(self)
+	for i = 1, #container_items do
+		local v = container_items[i]
+
 		local stacksize = v.components.stackable and v.components.stackable:StackSize() or 1
 		local unwrappable_contents = v.components.unwrappable and Insight.descriptors.unwrappable.Describe(v.components.unwrappable, context).contents or nil
 		local name = v.components.named and v.name or nil
 		
 		local data = { prefab=v.prefab, stacksize=stacksize, contents=unwrappable_contents, name=name }
 
-		table.insert(items, data)
+		items[i] = data -- table.insert(items, data)
 	end
 
 	containers[self.inst] = items
 
-	self.inst:ListenForEvent("itemget", function(inst) containers[inst]=nil end)
-	self.inst:ListenForEvent("itemlose", function(inst) containers[inst]=nil end)
+	self.inst:ListenForEvent("itemget", PopContainer)
+	self.inst:ListenForEvent("itemlose", PopContainer)
 
 
 	--[[

@@ -31,6 +31,9 @@ local fuel_highlighting = nil
 local highlighting_enabled = nil
 local activated = false
 local Is_DST = IsDST()
+local world_type = GetWorldType()
+
+local texturePrefabCache = {}
 
 local colors = {
 	fuel = {1, 0.4, 0.4, 1}, -- red
@@ -104,20 +107,26 @@ end)
 -- @tparam string tex
 -- @treturn ?string|nil
 local function GetPrefabFromTexture(tex)
+	if texturePrefabCache[tex] then
+		return texturePrefabCache[tex]
+	end
+
 	local prefab = string.match(tex, '[^/]+$'):gsub('%.tex$', '')
 
 	if prefab then
-		if GetWorldType() == 3 then
+		if world_type == 3 then
 			for normal, icon in pairs(PORK_ICONS) do
 				if icon == prefab then
+					texturePrefabCache[tex] = normal
 					return normal
 				end
 			end
 		end
 
-		if GetWorldType() == 3 or GetWorldType() == 2 then -- both Sw  and hamlet have SW_ICONS
+		if world_type == 3 or world_type == 2 then -- both Sw  and hamlet have SW_ICONS
 			for normal, icon in pairs(SW_ICONS) do
 				if icon == prefab then
+					texturePrefabCache[tex] = normal
 					return normal
 				end
 			end
@@ -162,7 +171,9 @@ end
 local function GetItemSlots()
 	if not localPlayer then return {} end
 
-	local slots = {} -- ISSUE:PERFORMANCE
+	-- performance-ing
+	local slots = {}
+	local len_slots = 0
 
 	
 	if not localPlayer.HUD then
@@ -174,26 +185,31 @@ local function GetItemSlots()
 	local inventoryBar = localPlayer.HUD.controls.inv
 
 	-- main inventory
-	for i,v in pairs(inventoryBar.inv) do
+	for i = 1, #inventoryBar.inv do
+		local v = inventoryBar.inv[i]
 		if v then
-			table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
+			len_slots = len_slots + 1
+			slots[len_slots] = v
 		end
 	end
 
 	-- equipped items
-	for i,v in pairs(inventoryBar.equip) do
-		if v then
-			table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
+	for equipname, slot in pairs(inventoryBar.equip) do
+		if slot then
+			len_slots = len_slots + 1
+			slots[len_slots] = slot
 		end
 	end
 
 	-- open containers
 	--k, v = next(self.controls.containers) return v -- PlayerHud:GetFirstOpenContainerWidget
-	for _, c in pairs(localPlayer.HUD.controls.containers) do -- ISSUE:PERFORMANCE
+	for _, c in pairs(localPlayer.HUD.controls.containers) do
 		if c and c.inv then
-			for i, v in pairs(c.inv) do
+			for i = 1, #c.inv do
+				local v = c.inv[i]
 				if v then
-					table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
+					len_slots = len_slots + 1
+					slots[len_slots] = v
 				end
 			end
 		end
@@ -202,9 +218,11 @@ local function GetItemSlots()
 	-- backpack inventory
 	local backpackInventory = inventoryBar.backpackinv -- DST: Profile:GetIntegratedBackpack() -> true/false : is a thing
 
-	for i,v in pairs(backpackInventory) do
+	for i = 1, #backpackInventory do
+		local v = backpackInventory[i]
 		if v then
-			table.insert(slots, v) -- ISSUE:PERFORMANCE (TEST#12)
+			len_slots = len_slots + 1
+			slots[len_slots] = v
 		end
 	end
 
@@ -226,7 +244,9 @@ local function Comparator(held, inst)
 
 	-- fuel highlighting
 	if held_prefab == held and inst_prefab == inst then -- IsPrefab(held) and IsPrefab(inst)
+		mprint("checking", 1)
 		if fuel_highlighting and insight:DoesFuelMatchFueled(held, inst) then
+			mprint("checking", 2)
 			return colors.fuel
 		end
 	end
@@ -377,7 +397,9 @@ local function DoRelevanceChecks(force_apply)
 	-- ItemSlot.tile.item
 	-- ItemSlot always there
 	-- tile and tile.item exist at same time
-	for _, slot in pairs(GetItemSlots()) do
+	local slots = GetItemSlots()
+	for i = 1, #slots do
+		local slot = slots[i]
 		if slot.tile then
 			EvaluateRelevance(slot.tile, apply)
 		end

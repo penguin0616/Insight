@@ -114,7 +114,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	mb:SetOnDragFinish(function(oldpos, newpos)
 		TheSim:SetPersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
 			dprint("InsightButton -> DragFinish -> Save -> Callback:", ...)
-		end) -- i wonder if this will cause lag. ¯\_(ツ)_/¯ ISSUE:PERFORMANCE
+		end) -- i wonder if this will cause lag. ¯\_(ツ)_/¯
 	end)
 
 	TheSim:GetPersistentString("insightmenubutton", function(load_success, str)
@@ -539,7 +539,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	
 	function hoverer.OnUpdate(self, ...)
 		if not self.text.shown then
-			self.insightText:SetString(nil)
+			self.insightText:SetString(nil) -- this ends up causing some delay for text positioning?
 		end
 
 		oldOnUpdate(self, ...)
@@ -645,7 +645,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 
 		hoverer.insightText:SetString(itemDescription)
-
+		
 		-- size info
 		local dataWidth, dataHeight = hoverer.insightText:GetRegionSize()
 		--local headerWidth, headerHeight = CalculateSize(text) --self:GetRegionSize()
@@ -654,11 +654,10 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		-- misc
 		--local positionPadding = (cl(text) - 1) * 7.5
 
-		local x = math_ceil(dataHeight / 30)
+		local x = math_ceil(dataHeight / hoverer.insightText.font_size)
 		local r = cl(text) - 1
 
-		local textPadding
-
+		local textPadding 
 		
 
 		--local textPadding = string.rep("\n ", math.ceil(dataHeight / 30) + 0)
@@ -884,7 +883,8 @@ local function init()
 			end
 		end
 
-		for i,v in pairs(follows) do
+		for i = 1, #follows do
+			local v = follows[i]
 			if not processed[v] then
 				v.insightText:SetString(nil)
 			end
@@ -893,7 +893,7 @@ local function init()
 end
 
 AddClassPostConstruct("widgets/followtext", function(followText)
-	table.insert(follows, followText)
+	follows[#follows+1] = followText
 	init();init=function() end;
 
 	-- generated and then updated as needed

@@ -51,6 +51,10 @@ local function FormatUses(uses, context)
 	return string.format(context.lstr.action_uses, context.lstr.action_uses_plain, uses)
 end
 
+local function SortActions(a, b)
+	return a[1].id:lower() < b[1].id:lower()
+end
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
@@ -84,10 +88,10 @@ local function Describe(self, context)
 
 		local consumptions2 = {}
 		for action, amount in pairs(consumptions) do
-			table.insert(consumptions2, {action, amount})
+			consumptions2[#consumptions2+1] = {action, amount}
 		end
 
-		table.sort(consumptions2, function(a, b) return a[1].id:lower() < b[1].id:lower() end)
+		table.sort(consumptions2, SortActions)
 
 		--[[
 		for action, amount in pairs(consumptions) do
@@ -100,20 +104,21 @@ local function Describe(self, context)
 		end
 		--]]
 
-		for i, v in pairs(consumptions2) do
+		for i = 1, #consumptions2 do
+			local v = consumptions2[i]
 			local action, amount = v[1], v[2]
 			local action_id = action.id:lower()
 
 			local uses = math.ceil(self.current / amount)
 			if context.usingIcons and action_icons[action_id] and PrefabHasIcon(action_icons[action_id]) then
-				table.insert(actions, string.format(context.lstr.action_uses, action_icons[action_id], uses))
+				actions[#actions+1] = string.format(context.lstr.action_uses, action_icons[action_id], uses)
 			else
-				table.insert(actions, string.format(context.lstr.lang.action_uses, context.lstr["action_" .. action_id] or ("\"" .. action_id .. "\""), uses))
+				actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr["action_" .. action_id] or ("\"" .. action_id .. "\""), uses)
 			end
 		end
 
 		if #actions == 0 then
-			table.insert(actions, string.format(context.lstr.lang.action_uses, context.lstr.lang.action_uses_plain, self:GetUses()))
+			actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.action_uses_plain, self:GetUses())
 		end
 
 		description = table.concat(actions, ", ")

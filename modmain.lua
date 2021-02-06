@@ -178,7 +178,7 @@ if DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 end
 
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
-string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end}) -- ISSUE:PERFORMANCE
+string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end})
 import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 time = import("time")
 util = import("util")
@@ -2105,15 +2105,19 @@ AddPlayerPostInit(function(player)
 	end
 end)
 
+local function SortSockets(a, b) 
+	return a.GUID < b.GUID 
+end
+
 local function GetSockets(main)
 	local x,y,z = main.Transform:GetWorldPosition()   
 	local ents = TheSim:FindEntities(x,y,z, 10, {"resonator_socket"})
 	
 	local sockets = {}
 	for i=#ents,1,-1 do
-		table.insert(sockets,ents[i])
+		sockets[#sockets+1] = ents[i]
 	end
-	table.sort(sockets, function(a,b) return a.GUID < b.GUID end)
+	table.sort(sockets, SortSockets)
 
 	return sockets
 end
@@ -2158,9 +2162,10 @@ AddPrefabPostInit("archive_orchestrina_main", function(inst)
 			
 			GetCorrectSocket(inst, puzzle)
 		else
-			for i,v in pairs(GetSockets(inst)) do
+			local sockets = GetSockets(inst)
+			for i = 1, #sockets do
 				--v.indicator:SetVisible(false)
-				v.insight_active:set(false)
+				sockets[i].insight_active:set(false)
 			end
 		end
 	end)

@@ -23,7 +23,7 @@ local function GetPlantStressors(self) -- ISSUE:PERFORMANCE might be worth cachi
 	local stressors = {}
 	for stressor, testfn in pairs(self.stressors_testfns) do
 		if testfn(self.inst, self.stressors[stressor], false) then
-			table.insert(stressors, stressor)
+			stressors[#stressors+1] = stressor
 		end
 	end
 	return stressors
@@ -86,10 +86,13 @@ local function Describe(self, context)
 	end
 
 	local stress_state = GetPlantStressState(self)
+	local plant_stressors = GetPlantStressors(self)
 
 	local strs = {}
-	for _, stressor in pairs(GetPlantStressors(self)) do
-		table.insert(strs, ApplyColour(stressor, "#dd5555"))
+
+	for i = 1, #plant_stressors do
+		local stressor = plant_stressors[i]
+		strs[i] = ApplyColour(stressor, "#dd5555")
 	end
 
 	local stress_points = string.format(context.lstr.farmplantstress.stress_points, ApplyColour(self.stress_points, STRESS_COLORS[stress_state]))

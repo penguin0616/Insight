@@ -21,7 +21,8 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 --[[ Private Variables ]]
 --------------------------------------------------------------------------
-local CalculateSize = CalculateSize
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 
 local TEXT_COLORING_ENABLED = nil
 local Image = require("widgets/image")
@@ -29,6 +30,9 @@ local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
 local imageLib = import("widgets/image_lib")
 local Reader = import("reader")
+
+local CalculateSize = CalculateSize
+local Is_DST = IsDST()
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -42,7 +46,7 @@ local function _LookupIcon(icon) -- took me a minute but i remember that this is
 end
 
 local function InterpretReaderChunk(chunk, richtext) -- text, color
-	local color = chunk:GetTag("color") or richtext.default_color
+	local color = chunk:GetTag("color") or richtext.default_colour
 
 	if TEXT_COLORING_ENABLED == nil then
 		TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
@@ -120,7 +124,8 @@ local RichText = Class(Widget, function(self, font, size, text, colour)
 	self.font = UIFONT
 	self.font_size = 30
 	self.raw_text = nil
-	self.default_color = "#ffffff"
+	self.default_colour = "#ffffff"
+	self._colour = Color.fromHex(self.default_colour)
 
 	if font then
 		self:SetFont(font)
@@ -140,17 +145,25 @@ local RichText = Class(Widget, function(self, font, size, text, colour)
 end)
 
 function RichText:GetColour()
-	return Color.fromHex(self.default_color)
+	return self._colour
 end
 
 function RichText:SetColour(clr, ...) -- Text::SetColour
 	if type(clr) == "string" then
 		assert(Color.IsValidHex(clr), "RichText:SetColour with invalid hex")
+
+		self._colour = Color.fromHex(clr)
+		self.default_colour = clr
+
 	elseif type(clr) == "number" then
-		clr = Color.new(clr, ...)
+		self._colour = Color.new(clr, ...)
+		self.default_colour = self._colour:ToHex()
+
+	else
+		self._colour = clr
+		self.default_colour = clr:ToHex()
 	end
 
-	self.default_color = clr:ToHex()
 	self:SetString(self:GetString(), true)
 end
 
@@ -203,32 +216,42 @@ function RichText:SetString(str, forced)
 	--]]
 
 	if str == nil then
+		self._width = 0
+		self._height = 0
 		return
 	end
 
-	
+	self._width = nil
+	self._height = nil
+
 	local lines = {}
 
 	for line in string.gmatch(str, "([^\n]+)\n*") do
-		table.insert(lines, Reader:new(line):Read())
+		lines[#lines+1] = Reader:new(line):Read()
 	end
 
-	for _, l in pairs(lines) do
-		self:NewLine(l)
+	for i = 1, #lines do
+		self:NewLine(lines[i])
 	end
-	
 end
 
 function RichText:GetRegionSize()
+	if self._width and self._height then
+		return self._width, self._height
+	end
+
 	local width, height = 0, 0
 
-	for i,v in pairs(self.lines) do
+	for i = 1, #self.lines do
+		local v = self.lines[i]
 		height = height + v.height
 		if v.width > width then
 			width = v.width
 		end
 	end
 
+	self._width = width
+	self._height = height
 	return width, height
 end
 
@@ -241,20 +264,22 @@ function RichText:ResetRegionSize()
 end
 
 -- ok time for the good stuf
-function RichText:NewLine(pieces) -- ISSUE:PERFORMANCE
+function RichText:NewLine(pieces)
 	local container = self:AddChild(Widget("container" .. #self.lines + 1))
-	table.insert(self.lines, container)
+	self.lines[#self.lines+1] = container
 
 	-- create text objects
-	local texts = {}
-	for _, piece in pairs(pieces) do
-		table.insert(texts, container:AddChild(InterpretReaderChunk(piece, self)))
+	local len_pieces = #pieces
+	local texts = createTable(len_pieces)
+	for i = 1, len_pieces do
+		texts[#texts+1] = container:AddChild(InterpretReaderChunk(pieces[i], self))
 	end
 
 	local padding = 0
 
 	-- position them
-	for i, obj in pairs(texts) do
+	for i = 1, len_pieces do -- same as texts
+		local obj = texts[i]
 		local prev = texts[i-1]
 		local lp = 0
 		local x = 0
@@ -292,7 +317,7 @@ function RichText:NewLine(pieces) -- ISSUE:PERFORMANCE
 			else
 				lp = lp + prev:GetRegionSize() / 2
 
-				if IsDST() then
+				if Is_DST then
 					lp = lp - 2
 					padding = padding + 2
 				end
@@ -306,7 +331,7 @@ function RichText:NewLine(pieces) -- ISSUE:PERFORMANCE
 			else
 				lp = lp + obj:GetRegionSize() / 2
 
-				if IsDS() and prev.name ~= "Image" then
+				if not Is_DST and prev.name ~= "Image" then
 					lp = lp - 3.9
 					padding = padding + 3.9
 				end
@@ -316,7 +341,7 @@ function RichText:NewLine(pieces) -- ISSUE:PERFORMANCE
 				--lp = lp - 1.6
 				--padding = padding + 1.6
 
-				if IsDST() then
+				if Is_DST then
 					-- commented when was fiddling with icon mode
 					--lp = lp - 1.6 -- space width at end
 					--padding = padding + 1.6
@@ -345,7 +370,8 @@ function RichText:NewLine(pieces) -- ISSUE:PERFORMANCE
 
 	local width = 0
 
-	for i,v in pairs(texts) do
+	for i = 1, len_pieces do
+		local v = texts[i]
 		if i > 1 then
 			
 			local w = (v.name == "Image" and v:GetSize()) or v:GetRegionSize()
@@ -380,7 +406,8 @@ function RichText:NewLine(pieces) -- ISSUE:PERFORMANCE
 	)
 	
 	local wax = 0
-	for i,v in pairs(texts) do
+	for i = 1, len_pieces do
+		local v = texts[i]
 		local w = (v.name == "Image" and v:GetSize()) or v:GetRegionSize()
 		wax = wax + w
 	end

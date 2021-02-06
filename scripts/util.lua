@@ -145,7 +145,9 @@ end
 
 function GetPlayerColour(arg)
 	if type(arg) == "string" then
-		for i,v in pairs(TheNet:GetClientTable()) do
+		local client_table = TheNet:GetClientTable()
+		for i = 1, #client_table do
+			local v = client_table[i]
 			if v.userid == arg or v.name == arg then
 				return Color.new(unpack(v.colour))
 			end
@@ -249,12 +251,13 @@ end
 -- @treturn string
 function CombineLines(...)
 	local lines, argnum = nil, select("#",...)
+
 	for i = 1, argnum do
 		local v = select(i, ...)
 		
 		if v ~= nil then
 			lines = lines or {}
-			table.insert(lines, tostring(v)) -- ISSUE:PERFORMANCE (TEST#12)
+			lines[#lines+1] = tostring(v)
 		end
 	end
 

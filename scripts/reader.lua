@@ -49,7 +49,8 @@ local function SameContents(a, b)
 		return false
 	end
 	
-	for i,v in pairs(a) do
+	for i = 1, #a do
+		local v = a[i]
 		if not (v.name == b[i].name and v.value == b[i].value) then
 			return false
 		end
@@ -71,18 +72,11 @@ function Chunk:GetTag(name)
 			return tag.value
 		end
 	end
-	
-	--[[
-	for _, tag in pairs(self.tags) do
-		if tag.name == name then
-			return tag.value
-		end
-	end
-	--]]
 end
 
 function Chunk:HasTag(name)
-	for _, tag in pairs(self.tags) do
+	for i = 1, #self.tags do
+		local tag = self.tags[i]
 		if tag.name == name then
 			return true
 		end
@@ -155,7 +149,7 @@ function Reader:ReadTag()
 				self:SaveObject(tag, value)
 			else -- descriptor tag
 				--print('inserting tag', tag, value)
-				table.insert(self.currentTags, {name=tag, value=value}) -- ISSUE:PERFORMANCE (TEST#12)
+				self.currentTags[#self.currentTags+1] = { name=tag, value=value }
 			end
 			
 			self.buffer = string.sub(self.buffer, fin)
@@ -175,19 +169,17 @@ function Reader:Save(str)
 		end
 	end
 
-	-- ISSUE:PERFORMANCE (TEST#12)
-	table.insert(self.chunks, Chunk:new{
+	self.chunks[#self.chunks+1] = Chunk:new{
 		text = str,
 		tags = {unpack(self.currentTags)}
-	})
+	}
 end
 
 function Reader:SaveObject(class, value)
-	-- ISSUE:PERFORMANCE (TEST#12)
-	table.insert(self.chunks, Chunk:new{
+	self.chunks[#self.chunks+1] = Chunk:new{
 		object = {class=class, value=value},
 		tags = {unpack(self.currentTags)}
-	})
+	}
 end
 
 function Reader:Seek()
@@ -248,13 +240,15 @@ end
 function Reader.Stringify(chunks)
 	local rebuilt = ""
 
-	for i, chunk in pairs(chunks) do
+	for i = 1, #chunks do
+		local chunk = chunks[i]
 		if chunk:IsObject() then
 			rebuilt = rebuilt .. string.format("<%s=%s>", chunk.class, chunk.value)
 		else
 			local str = chunk.text
 
-			for i,v in pairs(chunk.tags) do
+			for x = 1, #chunks.tags do
+				local v = chunk.tags[x]
 				str = string.format("<%s=%s>%s</%s>", v.name, v.value, str, v.name)
 			end
 

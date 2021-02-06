@@ -54,7 +54,9 @@ function PerformanceRatings:Refresh()
 	local host_performance, my_performance
 
 	if self.client_id == nil or self.host_id == nil then
-		for i,v in pairs(TheNet:GetClientTable() or {}) do
+		local client_table = TheNet:GetClientTable() or {}
+		for i = 1, #client_table do
+			local v = client_table[i]
 			if v.performance then
 				self.host_id = v.userid
 			elseif v.userid == TheNet:GetUserID() then
@@ -85,7 +87,8 @@ local function GotEntityInformation(inst, data)
 
 	local items = decompress(data.data) --json.decode(str)
 
-	for _, data in pairs(items) do
+	for i = 1, #items do
+		local data = items[i]
 		-- GUIDs are numbers. not strings. 
 		local guid = tonumber(data.GUID)
 		local ent = entityManager:LookupGUID(guid)
@@ -493,7 +496,7 @@ function Insight:SetEntityData(entity, data)
 	if self.queue_tracker[entity] then -- tracks index
 		self.queue[self.queue_tracker[entity]] = data -- replace old index
 	else
-		table.insert(self.queue, data) -- ISSUE:PERFORMANCE (TEST#12)
+		self.queue[#self.queue+1] = data
 		self.queue_tracker[entity] = #self.queue
 	end
 end
@@ -565,7 +568,9 @@ function Insight:BundleHasPrefab(inst, prefab)
 		return nil
 	end
 
-	for i,v in pairs(info.special_data["unwrappable"].contents) do
+	local contents = info.special_data["unwrappable"].contents
+	for i = 1, #contents do
+		local v = contents[i]
 		--if AreEntityPrefabsEqual(inst, prefab) then
 		if v.prefab == prefab then
 			return true
@@ -615,11 +620,14 @@ function Insight:ContainerHas(container, inst)
 	local things = {}
 
 	-- i check for is_unwrappable to provide the opportunity for non-bundles to terminate faster
-	for i,v in pairs(container_info.special_data["container"].contents) do
+	local contents = container_info.special_data["container"].contents
+	for i = 1, #contents do
+		local v = contents[i]
 		-- v { prefab=v.prefab, stacksize=stacksize, contents=unwrappable_contents, name=name } 
 		if v.contents then
 			-- only check the contents of the bundle
-			for j,k in pairs(v.contents) do
+			for j = 1, #v.contents do
+				local k = v.contents[j]
 				if is_unwrappable then
 					things[k.prefab .. (k.name or "")] = true
 				else
@@ -642,7 +650,9 @@ function Insight:ContainerHas(container, inst)
 
 	
 	if is_unwrappable then
-		for i,v in pairs(bundle_info.special_data["unwrappable"].contents) do
+		local bundle_contents = bundle_info.special_data["unwrappable"].content
+		for i = 1, #bundle_contents do
+			local v = bundle_contents[i]
 			if things[v.prefab .. (v.name or "")] then
 				return true
 			end

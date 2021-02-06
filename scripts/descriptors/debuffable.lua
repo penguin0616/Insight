@@ -143,7 +143,7 @@ local function Describe(self, context)
 					--]]
 				end
 
-				table.insert(list, {name = debuffPrefab, text = text, icon=icon})
+				list[#list+1] = {name = debuffPrefab, text = text, icon=icon}
 			end
 		end
 

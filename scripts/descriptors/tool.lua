@@ -47,20 +47,26 @@ local action_icons = {
 	fish = "fishingrod",
 }
 
+local Is_DST = IsDST()
+
+local function SortActions(a, b)
+	return a[1].id:lower() < b[1].id:lower()
+end
+
 local function Describe(self, context)
 	local description = nil
 
 	-- https://dontstarve.fandom.com/wiki/Pick/Axe
-	local tbl = (IsDST() and self.actions) or (IsDS() and self.action)
+	local tbl = (Is_DST and self.actions) or (not Is_DST and self.action)
 	if tbl then
 		local actions = {}
 
 		local effs = {}
 		for action, effectiveness in pairs(tbl) do
-			table.insert(effs, {action, effectiveness})
+			effs[#effs+1] = {action, effectiveness}
 		end
 
-		table.sort(effs, function(a, b) return a[1].id:lower() < b[1].id:lower() end)
+		table.sort(effs, SortActions)
 
 		--[[
 		for action, effectiveness in pairs(tbl) do
@@ -72,13 +78,14 @@ local function Describe(self, context)
 		end
 		--]]
 
-		for i, v in pairs(effs) do
+		for i = 1, #effs do
+			local v = effs[i]
 			local action, effectiveness = v[1], v[2]
 			local name = action.id
 
 			-- #aaaaee
 			if effectiveness ~= 1 then
-				table.insert(actions, string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", tostring(effectiveness * 100)))
+				actions[#actions+1] = string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", tostring(effectiveness * 100))
 			end
 		end
 
