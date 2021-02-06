@@ -386,6 +386,35 @@ function module.getupvalues(func)
 	return upvs
 end
 
+function module.recursive_getupvalues(func)
+	local checked = {}
+	local upvs = {}
+
+	local function scan(fn)
+		if checked[fn] then
+			return nil
+		end
+
+		checked[fn] = true
+
+		for i, upv in pairs(module.getupvalues(fn)) do
+			table.insert(upvs, upv) 
+
+			if type(i) == "function" then -- in case some wise guy decides to store something with the index as a function.
+				scan(i)
+			elseif type(upv.value) == "function" then
+				scan(upv.value)
+			--elseif type(upv.name) == "function" then -- in case some wise guy decides to store something with the index as a function.
+				--scan(upv.name)
+			end
+		end
+	end
+
+	scan(func)
+
+	return upvs
+end
+
 --[[
 function module.getupvaluesandenvironment(func)
 	local checked = {}
@@ -433,6 +462,7 @@ end
 -- @tparam function func
 -- @string name
 -- @return
+--[[
 function module.getupvalue(func, name)
 	local i = 1
 	while true do
@@ -442,34 +472,31 @@ function module.getupvalue(func, name)
 		i = i + 1
 	end
 end
+--]]
+function module.getupvalue(func, ...)
+	local last = func
+	local end_pos = nil
+	local args = {...}
+	local argn = select("#", ...)
 
-function module.recursive_getupvalues(func)
-	local checked = {}
-	local upvs = {}
-
-	local function scan(fn)
-		if checked[fn] then
-			return nil
-		end
-
-		checked[fn] = true
-
-		for i, upv in pairs(module.getupvalues(fn)) do
-			table.insert(upvs, upv) 
-
-			if type(i) == "function" then -- in case some wise guy decides to store something with the index as a function.
-				scan(i)
-			elseif type(upv.value) == "function" then
-				scan(upv.value)
-			--elseif type(upv.name) == "function" then -- in case some wise guy decides to store something with the index as a function.
-				--scan(upv.name)
+	for n = 1, argn do
+		local i = 1
+		while last ~= nil do
+			local name, value = debug.getupvalue(last, i)
+			if not name then
+				last = nil
+				end_pos = args[n]
+				break
 			end
+			if name == args[n] then 
+				last = value					
+				break
+			end
+			i = i + 1
 		end
 	end
 
-	scan(func)
-
-	return upvs
+	return last, end_pos
 end
 
 function module.recursive_getupvalue(func, name)

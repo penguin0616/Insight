@@ -60,7 +60,7 @@ local function Describe(self, context)
 	-- playerdamagepercent
 
 	return {
-		priority = 1,
+		priority = 49,
 		description = description
 	}
 end

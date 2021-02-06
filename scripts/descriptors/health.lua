@@ -51,18 +51,24 @@ end
 local function Describe(self, context)
 	local inst = self.inst
 	--local description = string.format("<color=HEALTH>Health</color>: <color=HEALTH><%s / %s></color>", Round(self.currenthealth, 1), Round(self:GetMaxHealth(), 1)) -- encompass whole
-	local description = nil
+	local description, alt_description = nil, nil
 	local max_health = (self.GetMaxWithPenalty and self:GetMaxWithPenalty()) or self:GetMaxHealth()
 
 	if context.config["display_health"] then
 		description = string.format(context.lstr.health, Round(self.currenthealth, 1), Round(max_health, 1))
+		local percent = self.currenthealth / max_health
+		alt_description = description .. string.format(" (<color=HEALTH>%s%%</color>)", Round(percent * 100, 0))
 
 		if self.regen then -- regeneration
-			description = description .. string.format(context.lstr.health_regeneration, Round(self.regen.amount, 1), Round(self.regen.period, 1))
+			local regen = string.format(context.lstr.health_regeneration, Round(self.regen.amount, 1), Round(self.regen.period, 1))
+			description = description .. regen
+			alt_description = alt_description .. regen
 		end
 
 		if self.absorb > 0 then -- damage absorption
-			description = description .. string.format(context.lstr.absorption, Round(self.absorb * 100, 0))
+			local absorb = string.format(context.lstr.absorption, Round(self.absorb * 100, 0))
+			description = description .. absorb
+			alt_description = alt_description .. absorb
 		end
 	end
 
@@ -95,8 +101,9 @@ local function Describe(self, context)
 
 	return {
 		name = "health",
-		priority = 30,
+		priority = 50,
 		description = description,
+		alt_description = alt_description,
 	}, naughtiness_table
 end 
 
