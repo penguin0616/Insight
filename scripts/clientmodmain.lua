@@ -525,7 +525,7 @@ do
 	}
 
 	local mini_bosses = {
-		"warg", "claywarg", "gingerbreadwarg", "spat", "leif", "leif_sparse", "treeguard", "spiderqueen", 
+		"warg", "claywarg", "gingerbreadwarg", "spat", "leif", "leif_sparse", "treeguard", "spiderqueen", "lordfruitfly",
 
 		"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head"
 	}
