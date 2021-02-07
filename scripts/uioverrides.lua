@@ -993,7 +993,9 @@ local function UpdatePlayerListing(self)
 	local font_size = 16
 	local listing = self.widget
 
-	if not localPlayer then
+	local context = localPlayer and GetPlayerContext(localPlayer)
+
+	if not localPlayer or not context or not context.config["display_shared_stats"] then
 		listing.insight_text:SetString(nil)
 		return
 	end
@@ -1055,7 +1057,7 @@ local function PlayerStatusScreenPostInit(playerStatusScreen)
 		--local char = TheNet:GetClientTableForUser()
 		if v.insight_text == nil then
 			v.insight_text = v.name:AddChild(RichText())
-			v.inst:DoPeriodicTask(1 / 3, UpdatePlayerListing)
+			v.inst:DoPeriodicTask(1, UpdatePlayerListing)
 		end
 	end
 end

@@ -1811,6 +1811,10 @@ if IsDST() then
 		--]]
 
 		TheWorld:DoPeriodicTask(1, function()
+			if not GetModConfigData("display_shared_stats") then -- forbidden by server
+				return
+			end
+
 			local shard_players = {}
 			for _, player in pairs(AllPlayers) do
 				local ist = GetInsight(player)

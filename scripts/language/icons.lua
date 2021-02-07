@@ -43,7 +43,6 @@ return {
 		--summer = "Summer",
 	},
 
-
 	-------------------------------------------------------------------------------------------------------------------------
 
 	-- appeasement.lua
@@ -282,14 +281,19 @@ return {
 	--friendlevel = "Friendliness level: %s / %s",
 
 	-- fuel.lua
-	fuel = "<icon=fire> %ss",
-	fuel_verbose = "<icon=fire> %ss (<color=LIGHT>'%s'</color>)",
+	fuel = {
+		fuel = "<icon=fire> %ss",
+		fuel_verbose = "<icon=fire> %ss (<color=LIGHT>%s</color>)",
+		--type = "Fueltype: %s",
+	},
 
 	-- fueled.lua
-	fueled_time = "<icon=fire> %s%%: %s",
-	fueled_time_verbose = "<icon=fire> (<color=LIGHT>'%s'</color>) %s%%: %s", -- type, percent, time
-	--fuel_efficiency = "<color=#FF9300><icon=fire> %s%%</color>", -- no good way i can think of for this
-	fuel_units = "<icon=fire> %s",
+	fueled = {
+		time = "<icon=fire> %s%%: %s",
+		time_verbose = "<icon=fire> (<color=LIGHT>'%s'</color>) %s%%: %s", -- type, percent, time
+		--efficiency = "<color=LIGHT>Fuel efficiency</color>: <color=LIGHT>%s%%</color>", -- no good way i can think of for this
+		units = "<icon=fire> %s"",
+	},
 
 	-- growable.lua
 	--growth_stage = "Stage '%s': %s / %s: ",

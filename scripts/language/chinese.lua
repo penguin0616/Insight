@@ -281,14 +281,19 @@ return {
 	friendlevel = "友善等级: %s / %s",
 
 	-- fuel.lua
-	fuel = "<color=LIGHT>%s</color> 秒的燃料.",
-	fuel_verbose = "<color=LIGHT>%s</color> 秒的 <color=LIGHT>'%s'</color>",
+	fuel = {
+		fuel = "<color=LIGHT>%s</color> 秒的燃料.",
+		fuel_verbose = "<color=LIGHT>%s</color> 秒的 <color=LIGHT>%s</color>",
+		type = "Fueltype: %s",
+	},
 
 	-- fueled.lua
-	fueled_time = "<color=LIGHT>燃料</color> 持续时间 (<color=LIGHT>%s%%</color>): %s", -- percent, time
-	fueled_time_verbose = "<color=LIGHT>%s</color> 持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
-	fuel_efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
-	fuel_units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
+	fueled = {
+		time = "<color=LIGHT>燃料</color> 持续时间 (<color=LIGHT>%s%%</color>): %s", -- percent, time
+		time_verbose = "<color=LIGHT>%s</color> 持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
+		efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
+		units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
+	},
 
 	-- growable.lua
 	growth_stage = "阶段 '%s': %s / %s: ",

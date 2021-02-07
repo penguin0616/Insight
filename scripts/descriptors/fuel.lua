@@ -19,9 +19,12 @@ directory. If not, please refer to
 ]]
 
 -- fuel.lua
+
+local world_type = GetWorldType()
+
 local function Describe(self, context)
 	local inst = self.inst
-	local description = nil
+	local description, alt_description = nil, nil
 
 	-- self.fuelvalue is SECONDS_PER_SEGMENT (30) * whatever balancing thing
 	-- self.fueltype
@@ -38,25 +41,39 @@ local function Describe(self, context)
 		return
 	end
 
-	if IsDST() then
+	-- fuel penalty
+	if world_type == -1 then -- IsDST()
 		if inst:GetIsWet() then
 			value = value * TUNING.WET_FUEL_PENALTY
 		end
-	elseif IsDS() and GetWorldType() >= 1 then
+	elseif world_type >= 1 then
 		if not GetWorld().components.moisturemanager:IsEntityDry(inst) then
 			value = value * TUNING.WET_FUEL_PENALTY
 		end
 	end
 
-	if context.config["fuel_verbosity"] == 1 then
-		description = string.format(context.lstr.fuel, value)
-	elseif context.config["fuel_verbosity"] == 2 then
-		description = string.format(context.lstr.fuel_verbose, value, Insight.FUEL_TYPES[self.fueltype] or "Fuel")
+	local fuel_type_string = "'" .. (Insight.FUEL_TYPES[self.fueltype] or "Fuel") .. "'"
+	if self.secondaryfueltype then
+		fuel_type_string = fuel_type_string .. "/'" .. (Insight.FUEL_TYPES[self.secondaryfueltype] or "?") .. "'"
 	end
+
+	-- format
+	local fuel_string_verbose = string.format(context.lstr.fuel.fuel_verbose, value, fuel_type_string)
+	local fuel_string
+
+	if context.config["fuel_verbosity"] == 1 then
+		fuel_string = string.format(context.lstr.fuel.fuel, value)
+	elseif context.config["fuel_verbosity"] == 2 then
+		fuel_string = fuel_string_verbose
+	end
+
+	description = fuel_string
+	alt_description = fuel_string_verbose
 	
 	return {
 		priority = 0.8,
 		description = description,
+		alt_description = alt_description,
 		fueltype = self.fueltype
 	}
 end

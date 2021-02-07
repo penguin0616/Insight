@@ -281,14 +281,19 @@ return {
 	friendlevel = "Friendliness level: %s / %s",
 
 	-- fuel.lua
-	fuel = "<color=LIGHT>%s</color> second(s) of fuel.",
-	fuel_verbose = "<color=LIGHT>%s</color> second(s) of <color=LIGHT>'%s'</color>.",
+	fuel = {
+		fuel = "<color=LIGHT>%s</color> second(s) of fuel.",
+		fuel_verbose = "<color=LIGHT>%s</color> second(s) of <color=LIGHT>%s</color>.",
+		type = "Fueltype: %s",
+	},
 
 	-- fueled.lua
-	fueled_time = "<color=LIGHT>Fuel</color> remaining (<color=LIGHT>%s%%</color>): %s", -- percent, time
-	fueled_time_verbose = "<color=LIGHT>%s</color> remaining (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
-	fuel_efficiency = "<color=LIGHT>Fuel efficiency</color>: <color=LIGHT>%s%%</color>",
-	fuel_units = "<color=LIGHT>Fuel</color>: <color=LIGHT>%s</color>",
+	fueled = {
+		time = "<color=LIGHT>Fuel</color> remaining (<color=LIGHT>%s%%</color>): %s", -- percent, time
+		time_verbose = "<color=LIGHT>%s</color> remaining (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
+		efficiency = "<color=LIGHT>Fuel efficiency</color>: <color=LIGHT>%s%%</color>",
+		units = "<color=LIGHT>Fuel</color>: <color=LIGHT>%s</color>",
+	},
 
 	-- growable.lua
 	growth_stage = "Stage '%s': %s / %s: ",

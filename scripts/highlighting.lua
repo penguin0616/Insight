@@ -243,10 +243,8 @@ local function Comparator(held, inst)
 	inst_name = (inst_name and inst.name) or ""
 
 	-- fuel highlighting
-	if held_prefab == held and inst_prefab == inst then -- IsPrefab(held) and IsPrefab(inst)
-		mprint("checking", 1)
+	if held.prefab and inst.prefab then -- IsPrefab(held) and IsPrefab(inst)
 		if fuel_highlighting and insight:DoesFuelMatchFueled(held, inst) then
-			mprint("checking", 2)
 			return colors.fuel
 		end
 	end

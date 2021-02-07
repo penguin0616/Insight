@@ -26,6 +26,9 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local Indicators = import("indicators")
 
+local Is_DST = IsDST()
+local Is_DS = IsDS()
+
 --------------------------------------------------------------------------
 --[[ PerformanceRatings ]]
 --------------------------------------------------------------------------
@@ -95,7 +98,7 @@ local function GotEntityInformation(inst, data)
 		--dprint("SAVING FOR:", ent, guid)
 		if ent then
 			insight.entity_data[ent] = data
-			if ent.replica.container or IsBundleWrap(ent) then
+			if data.special_data.fuel or data.special_data.fueled or ent.replica.container or IsBundleWrap(ent) then
 				--dprint("set entity awake", ent)
 				highlighting.SetEntityAwake(ent)
 			elseif data.special_data.worldmigrator then
@@ -147,12 +150,12 @@ local function OnNaughtinessDirty(inst)
 end
 
 local function OnHuntTargetDirty(inst, target)
-	if IsDST() and not GetInsight(inst).is_client then
+	if Is_DST and not GetInsight(inst).is_client then
 		--dprint("[OnHuntTargetDirty]: Rejected for nonclient")
 		return
 	end
 
-	if IsDS() and target == nil then
+	if Is_DS and target == nil then
 		error("[Insight]: OnHuntTargetDirty(DS) missing target.")
 	end
 
@@ -231,14 +234,14 @@ local Insight = Class(function(self, inst)
 			end
 		]]
 		self.is_client = true
-	elseif IsDS() then
+	elseif Is_DS then
 		self.is_client = true
 	end
 
 	--self.is_client = (self.is_client == nil and inst == ThePlayer) or self.is_client
 	self.inst = inst
 	
-	self.performance_ratings = self.is_client and IsDST() and PerformanceRatings()
+	self.performance_ratings = self.is_client and Is_DST and PerformanceRatings()
 
 	-- Exceeded maximum data length serializing entity channel for entity woodie[117470]......
 	-- could i possibly attach a secondary entity and listen to it?
@@ -262,7 +265,7 @@ local Insight = Class(function(self, inst)
 	self.pipspook_toys = {}
 	self.pipspook_queue = setmetatable({}, { __mode="v" })
 
-	if IsDST() then
+	if Is_DST then
 		self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
 			
 		-- net_string
@@ -337,7 +340,7 @@ local Insight = Class(function(self, inst)
 			--]]
 		end
 
-		if self.is_client and IsDST() then
+		if self.is_client and Is_DST then
 			-- client
 			self.inst:ListenForEvent("insight_invalidate_dirty", function(...)
 				local inst = GetInsight(...).net_invalidate:value()
@@ -519,7 +522,7 @@ function Insight:SendNaughtiness()
 end
 
 function Insight:HuntFor(target)
-	if IsDST() then
+	if Is_DST then
 		assert(TheWorld.ismastersim, "Insight:Hunt() called on client")
 		self.net_hunt_target:set(target)
 	else
@@ -528,18 +531,20 @@ function Insight:HuntFor(target)
 end
 
 function Insight:DoesFuelMatchFueled(fuel, fueled)
-	if IsDS() then
+	if Is_DS then
 		if fuel.components.fuel and fueled.components.fueled then
 			return fueled.components.fueled:CanAcceptFuelItem(fuel)
 		end
 	else
 		local ed_fuel = self.entity_data[fuel]
+		--local ed_fuel = self:GetInformation(fuel)
 		local ed_fueled = self.entity_data[fueled]
+		--local ed_fueled = self:GetInformation(fueled)
 
-		if ed_fuel == nil then
+		if not ed_fuel or not ed_fuel.GUID then
 			self:RequestInformation(fuel)
 		end
-		if ed_fueled == nil then
+		if not ed_fueled or not ed_fueled.GUID then
 			self:RequestInformation(fueled)
 		end
 
@@ -552,8 +557,11 @@ function Insight:DoesFuelMatchFueled(fuel, fueled)
 
 		-- so much repetion makes this harder to read
 		if ed_fuel and ed_fuel.special_data.fuel and ed_fueled and ed_fueled.special_data.fueled then
-			--dprint(fuel, fueled)
-			return ed_fueled.accepting and ed_fuel.special_data.fuel.fueltype == ed_fueled.special_data.fueled.fueltype or ed_fuel.special_data.fuel.fueltype == ed_fueled.special_data.fueled.secondaryfueltype
+			return 
+				ed_fueled.special_data.fueled.accepting and 
+				(ed_fuel.special_data.fuel.fueltype == ed_fueled.special_data.fueled.fueltype or ed_fuel.special_data.fuel.fueltype == ed_fueled.special_data.fueled.secondaryfueltype)
+
+			
 		end
 	end
 
@@ -663,7 +671,7 @@ function Insight:ContainerHas(container, inst)
 end
 
 function Insight:GetWorldInformation()
-	if IsDST() then
+	if Is_DST then
 		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetWorldInformation"))
 	else
 		--mprint("DS Get World Information")
@@ -694,9 +702,13 @@ function Insight:RequestInformation(item, params)
 	local params = params or { raw=false }
 	params.id = item.GUID
 
-	if IsDS() then
+	if Is_DS then
 		-- we don't care about the rest of this in DS
 		RequestEntityInformation(item, self.inst, params)
+		return
+	end
+
+	if item.Network == nil then -- not networked
 		return
 	end
 
@@ -767,7 +779,7 @@ function Insight:EntityInactive(ent)
 	end
 	--]]
 
-	assert(IsDST(), "Insight:EntityInactive called outside DST")
+	assert(Is_DST, "Insight:EntityInactive called outside DST")
 	
 	--self.entity_data[ent] = nil
 	--self.entity_count = self.entity_count - 1
@@ -779,7 +791,7 @@ function Insight:EntityActive(ent)
 		return
 	end
 
-	assert(IsDST(), "Insight:EntityActive called outside DST")
+	assert(Is_DST, "Insight:EntityActive called outside DST")
 
 	self.entity_data[ent] = {
 		GUID = nil,
@@ -866,17 +878,17 @@ function Insight:Update()
 		end	
 	end
 
-	if IsDST() then
+	if Is_DST then
 		--rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetShardPlayers"))
 	end
 	
 	-- inventory
-	if IsDST() and HUD.controls.inv then
+	if Is_DST and HUD.controls.inv then
 		-- self.inv:Hide()
 		HUD.controls.inv:Refresh()
 	end
 	
-	if IsDST() and HUD.controls.insight_menu and TheInput:ControllerAttached() then
+	if Is_DST and HUD.controls.insight_menu and TheInput:ControllerAttached() then
 		if HUD.controls.insight_menu.shown then
 			HUD.controls.insight_menu:Hide()
 		end
