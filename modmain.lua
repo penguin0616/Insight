@@ -36,9 +36,7 @@ do
 	local rawget, setmetatable = GLOBAL.rawget, GLOBAL.setmetatable
 	setmetatable(modEnv, {
 		__index = function(self, index)
-			local value = rawget(GLOBAL, index)
-
-			return value
+			return rawget(GLOBAL, index)
 		end
 	})
 
@@ -2622,6 +2620,7 @@ end
 	https://steamcommunity.com/sharedfiles/filedetails/?id=1418746242 (Chinese++)
 	https://steamcommunity.com/sharedfiles/filedetails/?id=1301033176 (Chinese Language Pack For Server)
 	https://steamcommunity.com/sharedfiles/filedetails/?id=1859406419 ([DST]Chinese translation Mod) -- also screws KnownModIndex:InitializeModInfo, but does it tolerably better. they also seem to like tampering with a whole bunch of stuff.
+	https://steamcommunity.com/sharedfiles/filedetails/?id=2111490085 (Keeth Client) probably the most egregious offender i have laid eyes on.
 --]]
 
 
@@ -2640,6 +2639,10 @@ if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabl
 
 	if KnownModIndex:IsModEnabled("workshop-1859406419") then
 		mprint("'[DST]Chinese translation Mod' is enabled, restoring string.match for Insight")
+	end
+
+	if KnownModIndex:IsModEnabled("workshop-2111490085") then
+		mprint("'Keeth Client' is enabled, restoring string.match for Insight")
 	end
 
 	if pcall(string.dump, string.match) then

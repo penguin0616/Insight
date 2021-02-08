@@ -292,7 +292,7 @@ return {
 		time = "<icon=fire> %s%%: %s",
 		time_verbose = "<icon=fire> (<color=LIGHT>'%s'</color>) %s%%: %s", -- type, percent, time
 		--efficiency = "<color=LIGHT>Fuel efficiency</color>: <color=LIGHT>%s%%</color>", -- no good way i can think of for this
-		units = "<icon=fire> %s"",
+		units = "<icon=fire> %s",
 	},
 
 	-- growable.lua
