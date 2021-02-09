@@ -52,6 +52,7 @@ local function GetContainerItems(self)
 	if IsDST() then
 		-- November 11, 2020; workshop-1467214795 messes with container somehow, don't care to investigate atm
 		if self.GetAllItems == nil then
+			--cprint("GetAllItems is nil?")
 			return {}
 		end
 
@@ -76,17 +77,21 @@ local function Describe(self, context)
 	local items = {} -- {prefab, amount}
 	context.onlyContents = true -- ISSUE: REFACTOR
 
-	local container_items = GetContainerItems(self)
-	for i = 1, #container_items do
-		local v = container_items[i]
+	-- so this might not process the container slots in order, but that doesn't really matter here
+	--local container_items = GetContainerItems(self)
 
-		local stacksize = v.components.stackable and v.components.stackable:StackSize() or 1
-		local unwrappable_contents = v.components.unwrappable and Insight.descriptors.unwrappable.Describe(v.components.unwrappable, context).contents or nil
-		local name = v.components.named and v.name or nil
-		
-		local data = { prefab=v.prefab, stacksize=stacksize, contents=unwrappable_contents, name=name }
+	for i = 1, self.numslots do
+		local v = self.slots[i]
 
-		items[i] = data -- table.insert(items, data)
+		if v ~= nil then
+			local stacksize = v.components.stackable and v.components.stackable:StackSize() or 1
+			local unwrappable_contents = v.components.unwrappable and Insight.descriptors.unwrappable.Describe(v.components.unwrappable, context).contents or nil
+			local name = v.components.named and v.name or nil
+			
+			local data = { prefab=v.prefab, stacksize=stacksize, contents=unwrappable_contents, name=name }
+
+			items[#items+1] = data -- table.insert(items, data)
+		end
 	end
 
 	containers[self.inst] = items

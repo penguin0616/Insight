@@ -629,22 +629,28 @@ function Insight:ContainerHas(container, inst)
 
 	-- i check for is_unwrappable to provide the opportunity for non-bundles to terminate faster
 	local contents = container_info.special_data["container"].contents
-	for i = 1, #contents do
+	for i = 1, #contents do -- explore the inside of the container
 		local v = contents[i]
 		-- v { prefab=v.prefab, stacksize=stacksize, contents=unwrappable_contents, name=name } 
-		if v.contents then
-			-- only check the contents of the bundle
+
+		if v.contents then -- there is a bundle for this slot
+			--print("hey this chest", container, "has a bundle", v)
+
+			-- check the contents of the bundle
 			for j = 1, #v.contents do
 				local k = v.contents[j]
-				if is_unwrappable then
+				if is_unwrappable then -- if what the original thing we were searching for is a bundle
 					things[k.prefab .. (k.name or "")] = true
-				else
-					if (k.prefab .. (k.name or "")) == (prefab .. inst_name) then
+				else 
+					-- if the original thing we were searching for is an inventoryitem
+					--print(k.prefab .. (k.name or ""), prefab .. inst_name)
+					if (k.prefab .. (k.name or "")) == (prefab .. inst_name) then -- compare to see if inventoryitem.prefab .. inventoryitem.name == search_for.prefab .. search_for.name
 						return true
 					end
 				end
 			end
-		else
+		else -- there is a inventoryitem for this slot
+
 			-- only check the inst
 			if is_unwrappable then
 				things[v.prefab .. (v.name or "")] = true
@@ -658,7 +664,9 @@ function Insight:ContainerHas(container, inst)
 
 	
 	if is_unwrappable then
-		local bundle_contents = bundle_info.special_data["unwrappable"].content
+		local bundle_contents = bundle_info.special_data["unwrappable"].contents
+		--mprint(DataDumper(bundle_info.special_data["unwrappable"]))
+
 		for i = 1, #bundle_contents do
 			local v = bundle_contents[i]
 			if things[v.prefab .. (v.name or "")] then
