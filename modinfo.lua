@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.9.7" -- ds is 2.9.7_ds
+version = "2.10.0" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,8 +77,8 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "many config options, many bug fixes;",
-	update_info_ds = "bug fixes; More Hamlet info; saving icon movement; Bug fixes; Updated to maintain features with DST.",
+	update_info = "YOTB, performance increase, more weighable info, seed seasons, many config options, many bug fixes;",
+	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
 	mod_explanation = "Basically Show Me but with more features.",
@@ -549,6 +549,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	display_yotb_appraisal = {
+		LABEL = "Appraisal Values [YOTB]",
+		HOVER = "Whether appraisal values are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The appraisal values are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The appraisal values are shown."
+			},
+		},
+	},
 	display_shared_stats = {
 		LABEL = "Playerlist Stats",
 		HOVER = "Whether the stats of other players in the server are shown in the playerlist.",
@@ -1560,6 +1574,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	display_yotb_appraisal = {
+		LABEL = "Appraisal Values [YOTB]",
+		HOVER = "Whether appraisal values are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The appraisal values are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The appraisal values are shown."
+			},
+		},
+	},
 	display_shared_stats = {
 		LABEL = "Playerlist Stats",
 		HOVER = "Whether the stats of other players in the server are shown in the playerlist.",
@@ -2477,13 +2505,22 @@ configuration_options = {
 	},
 	AddSectionTitle(T"sectiontitle_informationcontrol"),
 	{
+		name = "display_yotb_appraisal",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"dst_only", "undefined"},
+	},
+	{
 		name = "display_shared_stats",
 		options = {
 			{data = false},
 			{data = true},
 		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "weapon_damage",

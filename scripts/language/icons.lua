@@ -49,6 +49,9 @@ return {
 	appease_good = "<icon=volcano> %s segment(s).",
 	appease_bad = "<icon=volcano_active> -%s segment(s).",
 
+	-- appraisable.lua
+	--appraisable = "Fearsome: %s, Festive: %s, Formal: %s",
+
 	-- armor.lua
 	protection = "<icon=armorwood> %s%%",
 	durability = "<icon=health> %s / %s",
@@ -481,6 +484,9 @@ return {
 	-- sinkholespawner.lua
 	antlion_rage = "%s",
 
+	-- skinner_beefalo.lua
+	skinner_beefalo = "Fearsome: %s, Festive: %s, Formal: %s",
+
 	-- soul.lua
 	wortox_soul_heal = "<icon=health> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>.",
 	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
@@ -581,4 +587,7 @@ return {
 		--received_portal = "Shard Migrator: %s",
 		--id = "This #: %s",
 	},
+
+	-- yotb_sewer.lua
+	--yotb_sewer = "Will finish sewing in: %s",
 }

@@ -49,6 +49,9 @@ return {
 	appease_good = "延迟火山喷发 %s 个时段",
 	appease_bad = "加速火山喷发 %s 个时段",
 
+	-- appraisable.lua
+	appraisable = "Fearsome: %s, Festive: %s, Formal: %s",
+
 	-- armor.lua
 	protection = "<color=HEALTH>保护程度</color>: <color=HEALTH>%s%%</color>",
 	durability = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
@@ -481,6 +484,9 @@ return {
 	-- sinkholespawner.lua
 	antlion_rage = "%s",
 
+	-- skinner_beefalo.lua
+	skinner_beefalo = "Fearsome: %s, Festive: %s, Formal: %s",
+
 	-- soul.lua
 	wortox_soul_heal = "<color=HEALTH>治疗</color> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>.",
 	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
@@ -581,4 +587,7 @@ return {
 		received_portal = "Shard Migrator: %s",
 		id = "This #: %s",
 	},
+
+	-- yotb_sewer.lua
+	yotb_sewer = "Will finish sewing in: %s",
 }
