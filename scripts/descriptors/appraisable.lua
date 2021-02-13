@@ -23,39 +23,8 @@ if not IsDST() then
 	return { Describe = function() end }
 end
 
--- todo: this could use improvement
--- Fetch LoadComponent
-local LoadComponent = util.getupvalue(EntityScript.AddComponent, "LoadComponent")
-if not LoadComponent then
-	return { Describe = function() return {priority=0, description="<color=#FF0000>WHERE IS LOADCOMPONENT?</color"} end }
-end
+local yotbHelper = import("helpers/yotb")
 
--- Fetch yotb_stager
-local safe, yotb_stager = pcall(LoadComponent, "yotb_stager")
-if not safe then
-	return { Describe = function() return {priority=0, description="<color=#FF0000>WHERE IS yotb_stager?</color"} end }
-end
-
--- get set data
-local set_data = require("yotb_costumes")
-
--- get target thresholds
-local target_thresholds = util.getupvalue(yotb_stager.GetParameterLine, "target_thresholds")
-if not target_thresholds then
-	return { Describe = function() return {priority=0, description="<color=#FF0000>WHERE ARE target_thresholds?</color"} end }
-end
-
-local function GetThreshold(doll_value_for_category, category)
-	for i, v in ipairs(target_thresholds) do -- ISSUE:PERFORMANCE
-	    if doll_value_for_category > v.threshold then
-	    	return v, i
-	    end
-	end
-
-	return target_thresholds[#target_thresholds], #target_thresholds
-end
-
--- finally
 local function Describe(self, context)
 	if not context.config["display_yotb_appraisal"] then
 		return
@@ -68,23 +37,23 @@ local function Describe(self, context)
 
 	if not inst.category then
 		description = "This doll does not have a category?"
-	elseif not set_data.costumes[inst.category] then
+	elseif not yotbHelper.set_data.costumes[inst.category] then
 		description = "This doll has an unknown costume for its category."
 	else -- good to go
 		--local qualities = {
-		local FEARSOME = set_data.categories[inst.category].FEARSOME * 5 or "?"
-		local FESTIVE = set_data.categories[inst.category].FESTIVE * 5 or "?"
-		local FORMAL = set_data.categories[inst.category].FORMAL * 5 or "?"
+		local FEARSOME = yotbHelper.set_data.categories[inst.category].FEARSOME * 5 or "?"
+		local FESTIVE = yotbHelper.set_data.categories[inst.category].FESTIVE * 5 or "?"
+		local FORMAL = yotbHelper.set_data.categories[inst.category].FORMAL * 5 or "?"
 		--}
 
 		-- fear threshold, fear threshold index
-		local tfear, tifear = GetThreshold(FEARSOME, "FEARSOME")
+		--local tfear, tifear = GetThreshold(FEARSOME, "FEARSOME")
 
 		-- festive threshold, festive threshold index
-		local tfest, tifest = GetThreshold(FESTIVE, "FESTIVE")
+		--local tfest, tifest = GetThreshold(FESTIVE, "FESTIVE")
 
 		-- formal threshold, formal threshold index
-		local tform, tiform = GetThreshold(FORMAL, "FORMAL")
+		--local tform, tiform = GetThreshold(FORMAL, "FORMAL")
 
 		-- Fearsome: 6/6 (15/14)
 		-- Festive: 1/6, (5/14)

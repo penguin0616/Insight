@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.10.2" -- ds is 2.9.7_ds
+version = "2.10.3" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -551,6 +551,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	display_yotb_winners = {
+		LABEL = "Pageant Winners [YOTB]",
+		HOVER = "Whether Pageant winners are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The pageant winners are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The pageant winners  are shown."
+			},
+		},
+	},
 	display_yotb_appraisal = {
 		LABEL = "Appraisal Values [YOTB]",
 		HOVER = "Whether appraisal values are shown.",
@@ -1590,6 +1604,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	display_yotb_winners = {
+		LABEL = "Pageant Winners [YOTB]",
+		HOVER = "Whether Pageant winners are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The pageant winners are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The pageant winners are shown."
+			},
+		},
+	},
 	display_yotb_appraisal = {
 		LABEL = "Appraisal Values [YOTB]",
 		HOVER = "Whether appraisal values are shown.",
@@ -2536,6 +2564,15 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_informationcontrol"),
+	{
+		name = "display_yotb_winners",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = false,
+		tags = {"dst_only", "undefined"},
+	},
 	{
 		name = "display_yotb_appraisal",
 		options = {
