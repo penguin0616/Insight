@@ -227,6 +227,10 @@ local function Describe(self, context)
 					remaining_time = self.perishremainingtime
 					str = context.lstr.dies
 
+				elseif inst:HasTag("critter") then
+					remaining_time = self.perishremainingtime
+					str = context.lstr.starves
+
 				elseif self:IsSpoiled() or formatType == 1 then -- spoiled or only until rot
 					remaining_time = self.perishremainingtime
 					str = context.lstr.rot
@@ -275,7 +279,6 @@ local function Describe(self, context)
 	end
 
 	-- self.updatetask
-
 	return {
 		priority = 2,
 		description = description,

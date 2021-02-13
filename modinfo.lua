@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.10.0" -- ds is 2.9.7_ds
+version = "2.10.2" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -164,6 +164,7 @@ local english = {
 			},
 		},
 	},
+	--[[
 	alt_only_is_verbose = {
 		LABEL = "Inspect Only Verbosity",
 		HOVER = "*ONLY MATTERS WHEN \"Inspect Only\" IS ENABLED.*\nWhether holding alt shows the standard or extended information.",
@@ -178,6 +179,7 @@ local english = {
 			},
 		},
 	},
+	--]]
 	itemtile_display = {
 		LABEL = "Inv Slot Info",
 		HOVER = "What kind of information shows instead of percentages on item slots.",
@@ -574,6 +576,20 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The stats are shown."
+			},
+		},
+	},
+	display_spawner_information = {
+		LABEL = "Spawner information",
+		HOVER = "Whether creature spawners have information shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The spawner information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The spawner information is shown."
 			},
 		},
 	},
@@ -1602,6 +1618,20 @@ local chinese = {
 			},
 		},
 	},
+	display_spawner_information = {
+		LABEL = "Spawner information",
+		HOVER = "Whether creature spawners have information shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The spawner information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The spawner information is shown."
+			},
+		},
+	},
 	weapon_damage = {
 		LABEL = "武器伤害值",
 		HOVER = "是否显示武器的伤害值。",
@@ -2255,6 +2285,7 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
+	--[[
 	{
 		name = "alt_only_is_verbose",
 		options = {
@@ -2265,6 +2296,7 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
+	--]]
 	{
 		name = "itemtile_display",
 		options = {
@@ -2349,7 +2381,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		tags = {},
+		tags = {"dst_only"},
 	},
 	{
 		name = "bottle_indicator",
@@ -2521,6 +2553,15 @@ configuration_options = {
 		},
 		default = true,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_spawner_information",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
 	},
 	{
 		name = "weapon_damage",

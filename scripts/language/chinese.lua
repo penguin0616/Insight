@@ -411,6 +411,7 @@ return {
 	stale = "不新鲜",
 	spoil = "变质",
 	dies = "死",
+	starves = "Starves",
 	perishable_transition = "<color=MONSTER>%s</color>于: %s后",
 	perishable_transition_extended = "<color=MONSTER>%s</color>于: %s后 (<color=MONSTER>%s%%</color>)",
 	perishable_paused = "当前暂停腐烂",

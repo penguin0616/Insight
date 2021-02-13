@@ -435,6 +435,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	local Is_DS = IsDS()
 	local Is_DST = IsDST()
 	local CONTROL_FORCE_INSPECT = CONTROL_FORCE_INSPECT
+	local CONTROL_FORCE_TRADE = CONTROL_FORCE_TRADE
 
 	local oldSetString = hoverer.text.SetString
 	local oldOnUpdate = hoverer.OnUpdate
@@ -443,7 +444,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 	local informationOnAltOnly
 	local canShowItemRange
-	local altOnlyIsVerbose
+	--local altOnlyIsVerbose
 
 	hoverer.insightText = hoverer:AddChild(RichText())
 
@@ -558,9 +559,11 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			canShowItemRange = GetModConfigData("item_range_indicator", true)
 		end
 
+		--[[
 		if altOnlyIsVerbose == nil then
 			altOnlyIsVerbose = GetModConfigData("alt_only_is_verbose", true)
 		end
+		--]]
 
 		--YOFFSETUP = util.getupvalue(debug.getinfo(2).func, "YOFFSETUP")
 		--YOFFSETDOWN = util.getupvalue(debug.getinfo(2).func, "YOFFDOWN")
@@ -592,9 +595,11 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			-- KEY_LALT
 			--print("A")
 			-- print(keycode, KEY_LALT, TheInput:IsKeyDown(KEY_LALT), TheInput:IsKeyDown(keycode), TheInput:IsControlPressed(KEY_LALT), TheInput:IsControlPressed(keycode))
-			-- use_default_mapping should not be false or it will always return the correct keycode. in this case, we want the modified one if it's there.
-			local _, _, keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_INSPECT, false, false) -- deviceId, controlId, use_default_mapping, use_control_mapper
-			if TheInput_IsKeyDown(TheInput, keycode) then
+			-- use_default_mapping should be false or it will always return the correct keycode. in this case, we want the modified one if it's there.
+			local _, _, alt_keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_INSPECT, false, false) -- deviceId, controlId, use_default_mapping, use_control_mapper
+			local _, _, shift_keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_TRADE, false, false)
+			if TheInput_IsKeyDown(TheInput, alt_keycode) then
+				local altOnlyIsVerbose = TheInput_IsKeyDown(TheInput, shift_keycode)
 				if informationOnAltOnly == true and altOnlyIsVerbose == false then
 					itemDescription = entityInformation.information
 				else

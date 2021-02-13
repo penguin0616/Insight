@@ -205,7 +205,7 @@ local function PlayerDescribe(self, context)
 	local inst = self.inst
 	local stuff = {}
 
-	if inst.prefab == "wx78" and inst.charge_time then -- inspectable manually added in DS
+	if inst.prefab == "wx78" and inst.charge_time and inst.charge_time > 0 then -- inspectable manually added in DS
 		table.insert(stuff, GetRobotChargeTime(self, context))
 	end
 

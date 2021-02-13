@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- spawner.lua
 local function Describe(self, context)
-	if not context.config["spawner_information"] then
+	if not context.config["display_spawner_information"] then
 		return
 	end
 	

@@ -411,6 +411,7 @@ return {
 	--stale = "Stale",
 	--spoil = "Spoils",
 	--dies = "Dies",
+	--starves = "Starves",
 	--perishable_transition = "<color=MONSTER>%s</color> in: %s",
 	--perishable_transition_extended = "<color=MONSTER>%s</color> in: %s (<color=MONSTER>%s%%</color>)",
 	--perishable_paused = "Currently not decaying.",

@@ -167,7 +167,7 @@ DEBUG_ENABLED = (
 	)
 	or GetModConfigData("DEBUG_ENABLED", true) or false 
 
-if DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
+if false and DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 1")
 	_G.VERBOSITY_LEVEL = VERBOSITY.DEBUG
 	print("INSIGHT - GAME VERBOSITY_LEVEL:", _G.VERBOSITY_LEVEL)
@@ -2624,7 +2624,7 @@ end
 --]]
 
 
-if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") or KnownModIndex:IsModEnabled("workshop-1859406419") then
+if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") or KnownModIndex:IsModEnabled("workshop-1859406419") or KnownModIndex:IsModEnabled("workshop-2111490085") then
 	if KnownModIndex:IsModEnabled("workshop-1111711682") then
 		mprint("'Traditional Chinese Language Pack' is enabled, restoring string.match for Insight")
 	end

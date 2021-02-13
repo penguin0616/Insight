@@ -88,7 +88,10 @@ end
 local function GotEntityInformation(inst, data)
 	local insight = GetInsight(inst)
 
-	local items = decompress(data.data) --json.decode(str)
+	local safe, items = pcall(function() return decompress(data.data) end)--json.decode(str)
+	if not safe then
+		return
+	end
 
 	for i = 1, #items do
 		local data = items[i]
