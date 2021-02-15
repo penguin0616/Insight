@@ -447,6 +447,19 @@ local function LoadLocalPlayer(player)
 	end
 end
 
+function SendConfigurationToServer()
+	rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ProcessConfiguration"), json.encode({
+		config = GenerateConfiguration(),
+		external_config = GenerateExternalConfiguration(),
+		etc = {
+			is_server_owner = TheNet:GetIsServerOwner(),
+			locale = LOC.GetLocaleCode(),
+			DEBUG_ENABLED = DEBUG_ENABLED,
+			server_deaths = GetMorgueDeathsForWorld(TheNet:GetServerName()),
+		},
+	}))
+end
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== UI Overrides ====================================================================
@@ -846,16 +859,7 @@ AddPlayerPostInit(function(player)
 		end
 		
 		-- server shares this if client host
-		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ProcessConfiguration"), json.encode({
-			config = GenerateConfiguration(),
-			external_config = GenerateExternalConfiguration(),
-			etc = {
-				is_server_owner = TheNet:GetIsServerOwner(),
-				locale = LOC.GetLocaleCode(),
-				DEBUG_ENABLED = DEBUG_ENABLED,
-				server_deaths = GetMorgueDeathsForWorld(TheNet:GetServerName()),
-			},
-		}))
+		SendConfigurationToServer()
 	end)
 end)
 

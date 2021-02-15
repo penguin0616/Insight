@@ -1701,6 +1701,8 @@ if IsDST() then
 			-- i can't begin to describe how much this hurt me (Basements) https://steamcommunity.com/sharedfiles/filedetails/?id=1349799880 
 			-- they call ms_playerjoined and ms_playerleft manually on functions that have an _activeplayers upvalue. 
 			-- i shouldnt have to do this for a variety of reasons, but here we are...
+			-- note: because of how this works, entering/leaving one of those basements no longer resets your naughtiness.
+			
 			local OnPlayerLeft, OnPlayerJoined
 			for i,v in pairs(TheWorld.event_listening.ms_playerleft[TheWorld]) do 
 				if debug.getinfo(v, "S").source == "scripts/components/kramped.lua" then 
@@ -2276,7 +2278,18 @@ AddSimPostInit(function()
 				error("[Insight]: something weird happened during a hunt, please report")
 			end
 
-			if not activeplayer or not GetPlayerContext(activeplayer).config["hunt_indicator"] then
+			local context = activeplayer and GetPlayerContext(activeplayer)
+			if not context or not context.config then
+				mprint("player context is invalid. player:", activeplayer)
+				if context then
+					mprint(DataDumper(context))
+				else
+					mprint("\tcontext is nil")
+				end
+				return
+			end
+
+			if not context.config["hunt_indicator"] then
 				return
 			end
 

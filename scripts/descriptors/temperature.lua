@@ -19,16 +19,74 @@ directory. If not, please refer to
 ]]
 
 -- temperature.lua
+local relative_temperature_thresholds = { -30, -10, 10, 30 } -- world ambient temperature is 0
+local colors = { [1]=Color.fromHex("#00C6FF"), [5]=Color.fromRGB(255, 0, 0) }
+for i = 1, 3 do
+	colors[i+1] = colors[1]:Lerp(colors[5], i / 4)
+end
+--[[
+colors[2] = colors[1]:Lerp(colors[5], .25)
+colors[3] = colors[1]:Lerp(colors[5], .5)
+colors[4] = colors[1]:Lerp(colors[5], .75)
+--]]
+
+
+
+local function GetTemperatureThresholds(temp, ambient)
+	local min, max, next_threshold
+
+	for i = 1, #relative_temperature_thresholds do
+		if temp < ambient + relative_temperature_thresholds[i] then -- have we not crossed the threshold?
+			next_threshold = i
+			break 
+		end
+	end
+
+	local level = nil
+
+	if next_threshold == 1 then -- didn't even make it pass the first threshold
+		max = relative_temperature_thresholds[next_threshold] + ambient
+		level = 1 -- frozen
+
+	elseif next_threshold == nil then -- made it past all the thresholds
+		min = relative_temperature_thresholds[#relative_temperature_thresholds] + ambient
+		level = 5 -- scorching
+	else
+		min = relative_temperature_thresholds[next_threshold - 1] + ambient -- our current threshold which we have passed
+		max = relative_temperature_thresholds[next_threshold] + ambient -- next threshold, not passed
+		level = next_threshold
+	end
+
+	return min, max, level
+end
+
 local function Describe(self, context)
-	local inst = self.inst
-	local description = nil
-	local temperatureValue = Round(self:GetCurrent(), 1)
+	local description, alt_description
+
+	local temp = self:GetCurrent()
+	local temperatureValue = Round(temp, 1)
 
 	description = string.format(context.lstr.temperature, temperatureValue)
+
+	if self.inst.prefab == "heatrock" then
+		local min, max, level = GetTemperatureThresholds(temp, TheWorld.state.temperature)
+		min = min or self.mintemp
+		max = max or self.maxtemp
+
+		local percent = math.clamp((temp - min) / (max - min), 0, 1) -- during testing, appears that this never goes past 0 or 1. 
+
+		alt_description = string.format(context.lstr.temperature, string.format("%s < %s < %s", 
+			ApplyColour(Round(min, 1), colors[level]), -- 1
+			--ApplyColour(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(colors[level+1], percent)),
+			ApplyColour("<sub>" .. level .. " </sub>" .. temperatureValue .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>", colors[level]:Lerp(colors[level+1], percent)),
+			ApplyColour(Round(max, 1), colors[level+1]) -- 4
+		))
+	end
 
 	return {
 		priority = 0,
 		description = description,
+		alt_description = alt_description,
 		temperatureValue = temperatureValue
 	}
 end
