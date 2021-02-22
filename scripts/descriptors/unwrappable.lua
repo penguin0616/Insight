@@ -77,7 +77,7 @@ local function GetItems(self, context)
 				item.uses = d(slot.data.finiteuses.uses, context)
 			end
 
-			if slot.data.fueled then
+			if slot.data.fueled and slot.data.fueled.fuel then -- SW&Hamlet don't save fuel if it matches maxfuel
 				local d = Insight.descriptors.fueled.FormatFuel or function() return {description = "FAILED TO LOAD FUELED COMPONENT"} end
 				item.fuel = d(slot.data.fueled.fuel, context)
 			end

@@ -905,7 +905,10 @@ function GetWorldInformation(player) -- refactor?
 
 	local world = TheWorld or GetWorld() -- implict game check
 	local context = GetPlayerContext(player)
-	assert(context, "how is context missing in GetWorldInformation for " .. player.name)
+	if not context then
+		return
+	end
+	--assert(context, "how is context missing in GetWorldInformation for " .. player.name)
 
 	if is_dst and not context.config["display_world_events"] then
 		return {

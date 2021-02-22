@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- temperature.lua
+local world_type = GetWorldType()
+
 local relative_temperature_thresholds = { -30, -10, 10, 30 } -- world ambient temperature is 0
 local colors = { [1]=Color.fromHex("#00C6FF"), [5]=Color.fromRGB(255, 0, 0) }
 for i = 1, 3 do
@@ -68,7 +70,7 @@ local function Describe(self, context)
 
 	description = string.format(context.lstr.temperature, temperatureValue)
 
-	if self.inst.prefab == "heatrock" then
+	if world_type == -1 and self.inst.prefab == "heatrock" then
 		local min, max, level = GetTemperatureThresholds(temp, TheWorld.state.temperature)
 		min = min or self.mintemp
 		max = max or self.maxtemp
