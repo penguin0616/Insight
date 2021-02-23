@@ -19,12 +19,24 @@ directory. If not, please refer to
 ]]
 
 -- beargerspawner.lua [Worldly]
+local BEARGER_TIMERNAME
 local function GetBeargerData(self)
 	if not self.inst.updatecomponents[self] then
 		return {}
 	end
 
-	local time_to_attack = self:OnSave().timetospawn
+	local time_to_attack
+
+	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+		if BEARGER_TIMERNAME == nil then
+			BEARGER_TIMERNAME = assert(util.getupvalue(TheWorld.components.beargerspawner.GetDebugString, "BEARGER_TIMERNAME"), "Unable to find \"BEARGER_TIMERNAME\"") --"bearger_timetospawn"
+		end
+
+		time_to_attack = TheWorld.components.worldsettingstimer:GetTimeLeft(BEARGER_TIMERNAME)
+	else
+		time_to_attack = self:OnSave().timetospawn
+	end
+	
 	if not (time_to_attack and time_to_attack > 0) then
 		return {}
 	end

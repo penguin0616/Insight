@@ -246,7 +246,7 @@ local descriptors_ignore = {
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", -- don't care
 
 	-- NEW:
-	"farmplanttendable", "plantresearchable", "fertilizerresearchable",
+	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
 
 	-- TheWorld
 	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor",
@@ -572,14 +572,14 @@ local function GetComponentDescriptor(name)
 		end
 
 		if not safe then
+			-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
+			local _, en = string.find(res, ":%d+:%s")
+			res = string.sub(res, (en or 0)+1)
 			if not res:find("not exist") then
-				-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua	
-				local _, en = string.find(res, ":%d+:%s")
-				res = string.sub(res, (en or 0)+1)
-				descriptors[name] = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end
+				descriptors[name] = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end
 			end
 
-			dprint("FAILED TO LOAD DESCRIPTOR:", res)
+			dprint(string.format("FAILED TO LOAD DESCRIPTOR %s: %s", name, res))
 		end
 
 		-- reprocess
@@ -606,9 +606,9 @@ local function GetPrefabDescriptor(name)
 
 		if not safe then
 			if res:find("loading") then
-				prefab_descriptors[name] = function() return {priority = -0.5, description = "ERROR LOADING DESCRIPTOR \"" .. name .. "\": " .. res} end
+				prefab_descriptors[name] = function() return {priority = -0.5, description = "ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\": " .. res} end
 			else
-				--descriptors[name] = function() return {priority = -0.5, description = "ERROR LOADING DESCRIPTOR \"" .. name .. "\": " .. res} end
+				--descriptors[name] = function() return {priority = -0.5, description = "ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\": " .. res} end
 			end
 		end
 
@@ -968,7 +968,8 @@ function GetWorldInformation(player) -- refactor?
 		local helper = world.shard.components.shard_insight
 
 		-- antlion
-		local antlion_timer = helper:GetAntlionRageTimer() or -1
+		--[[
+		local antlion_timer = helper:GetAntlionData() or -1
 		if antlion_timer >= 0 then
 			data.special_data["antlion"] = {
 				icon = {
@@ -980,6 +981,16 @@ function GetWorldInformation(player) -- refactor?
 			}
 
 			data.raw["antlion"] = TimeToText(time.new(antlion_timer, context))
+		end
+		--]]
+		
+
+		-- antlion (could use sinkholespawner)
+		if data.raw["antlion"] == nil and helper:GetAntlionData() then
+			context.antlion_data = helper:GetAntlionData()
+			local res = Insight.descriptors.sinkholespawner.Describe(nil, context)
+			data.special_data["antlion"] = GetSpecialData(res)
+			data.raw["antlion"] = res.description
 		end
 
 		-- ancient gateway
@@ -1574,6 +1585,11 @@ if IsDST() then
 		TheWorld.shard.components.shard_insight:SetBeeQueenHive(inst)
 	end)
 
+	AddPrefabPostInit("crabking_spawner", function(inst)
+		if not TheWorld.ismastersim then return end
+		TheWorld.shard.components.shard_insight:SetCrabKingSpawner(inst)
+	end)
+
 	AddPrefabPostInit("smallghost", function(inst)
 		if not TheWorld.ismastersim then return end
 		
@@ -1790,7 +1806,8 @@ if IsDST() then
 		
 
 		TheWorld:DoPeriodicTask(0.5, function()
-			local data = TheWorld.shard.components.shard_insight:GetWorldData()
+			local data = TheWorld.shard.components.shard_insight:UpdateLocalWorldData()
+
 			for id, shard in pairs(Shard_GetConnectedShards()) do
 				--mprint("sending data to:", id)
 				rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "WorldData"), id, compress(data))
@@ -1866,7 +1883,7 @@ if IsDST() then
 		_G.c_pickupgems = function() for i,v in pairs({"purple","blue","red","orange","yellow","green","opalprecious"}) do c_pickupall(v .. "gem") end end
 		_G.c_goportal = function(n) 
 			for i,v in pairs(Ents) do 
-				if (v.prefab == "cave_entrance_open" or v.prefab == "cave_exit") and v.components.worldmigrator.id == n then 
+				if (v.prefab == "cave_entrance" or v.prefab == "cave_entrance_open" or v.prefab == "cave_exit") and v.components.worldmigrator.id == n then 
 					c_goto(v);
 					break;
 				end;

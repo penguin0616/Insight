@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- klaussackspawner.lua [Worldly]
+local KLAUSSACK_TIMERNAME
 local function sack_can_despawn(inst)
     if not IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) and
         inst.components.entitytracker:GetEntity("klaus") == nil and
@@ -33,11 +34,18 @@ local function GetKlausSackData(self)
 	local time_to_spawn = nil
 	local sack = util.getupvalue(self.GetDebugString, "_sack")
 	local save_data = self:OnSave()
-
 	if sack and sack.despawnday and sack_can_despawn(sack) then
 		despawn_day = sack.despawnday
-	elseif save_data.timetorespawn then
-		time_to_spawn = save_data.timetorespawn
+	else
+		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+			if KLAUSSACK_TIMERNAME == nil then
+				KLAUSSACK_TIMERNAME = assert(util.getupvalue(TheWorld.components.klaussackspawner.GetDebugString, "KLAUSSACK_TIMERNAME"), "Unable to find \"KLAUSSACK_TIMERNAME\"") --"klaussack_spawntimer"
+			end
+
+			time_to_spawn = TheWorld.components.worldsettingstimer:GetTimeLeft(KLAUSSACK_TIMERNAME)
+		elseif save_data.timetorespawn then
+			time_to_spawn = save_data.timetorespawn
+		end
 	end
 
 	return {

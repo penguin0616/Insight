@@ -19,7 +19,19 @@ directory. If not, please refer to
 ]]
 
 -- toadstoolspawner.lua [Worldly]
+local TOADSTOOL_TIMERNAME = nil
+
 local function GetToadstoolData(self)
+	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+		if TOADSTOOL_TIMERNAME == nil then
+			TOADSTOOL_TIMERNAME = assert(util.getupvalue(TheWorld.components.toadstoolspawner.GetDebugString, "TOADSTOOL_TIMERNAME"), "Unable to find \"TOADSTOOL_TIMERNAME\"") --"toadstool_respawntask"
+		end
+
+		return {
+			time_to_respawn = TheWorld.components.worldsettingstimer:GetTimeLeft(TOADSTOOL_TIMERNAME)
+		}
+	end
+
 	local time_to_respawn = (self:OnSave() or {}).timetorespawn
 
 	return {

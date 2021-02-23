@@ -65,7 +65,9 @@ local notables = {
 	atrium_gate = nil,
 	dragonfly_spawner = nil,
 	beequeenhive = nil,
+	crabking_spawner = nil,
 }
+local DRAGONFLY_SPAWNTIMER = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(_G.Prefabs.dragonfly_spawner.fn, "DRAGONFLY_SPAWNTIMER"), "Unable to find \"DRAGONFLY_SPAWNTIMER\"") --"regen_dragonfly"
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -75,10 +77,7 @@ local function OnNotableRemove(inst)
 end
 
 local function GetWorldData()
-	local antlion_timer
-	if notables.antlion then
-		antlion_timer = notables.antlion.components.timer:GetTimeLeft("rage")
-	end
+	local antlion = notables.antlion and notables.antlion.components.sinkholespawner and _G.Insight.descriptors.sinkholespawner.GetAntlionData(notables.antlion) or nil
 
 	local atriumgate_timer
 	if notables.atrium_gate then
@@ -90,7 +89,11 @@ local function GetWorldData()
 
 	local dragonfly_spawner_timer
 	if notables.dragonfly_spawner then
-		dragonfly_spawner_timer = notables.dragonfly_spawner.components.timer:GetTimeLeft("regen_dragonfly")
+		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+			dragonfly_spawner_timer = notables.dragonfly_spawner.components.worldsettingstimer:GetTimeLeft(DRAGONFLY_SPAWNTIMER)
+		else
+			dragonfly_spawner_timer = notables.dragonfly_spawner.components.timer:GetTimeLeft("regen_dragonfly")
+		end
 	end
 
 	local beequeenhive_timer
@@ -119,7 +122,12 @@ local function GetWorldData()
 	end
 	--]]
 
-	local crabking = TheWorld.components.crabkingspawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(TheWorld.components.crabkingspawner) or nil
+	local crabking = nil
+	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+		crabking = TheWorld.components.crabkingspawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(notables.crabking_spawner) or nil
+	else
+		crabking = TheWorld.components.crabkingspawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(TheWorld.components.crabkingspawner) or nil
+	end
 
 	local deerclops = TheWorld.components.deerclopsspawner and _G.Insight.descriptors.deerclopsspawner.GetDeerclopsData(TheWorld.components.deerclopsspawner) or nil
 
@@ -130,7 +138,7 @@ local function GetWorldData()
 	local toadstool = TheWorld.components.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner.GetToadstoolData(TheWorld.components.toadstoolspawner) or nil
 
 	return {
-		antlion_timer = antlion_timer,
+		antlion = antlion,
 		atriumgate_timer = atriumgate_timer,
 		dragonfly_spawner_timer = dragonfly_spawner_timer,
 		beequeenhive_timer = beequeenhive_timer,
@@ -148,13 +156,21 @@ end
 --[[ Event Handlers ]]
 --------------------------------------------------------------------------
 
-local function OnWorldDataDirty(src, event_data)
+local function OnWorldDataDirty(src, event_data, world_data)
 	local self = src.shard.components.shard_insight
 
-	local sending_shard_id = event_data.sending_shard_id
-	local data = decompress(event_data.data)
+	local data
+	local sending_shard_id
+	
+	if not world_data then
+		sending_shard_id = event_data.sending_shard_id
+		data = decompress(event_data.data)
+	else
+		sending_shard_id = TheShard:GetShardId()
+		data = world_data
+	end
 
-	self.antlion_timer = data.antlion_timer
+	self.antlion = data.antlion
 	self.atriumgate_timer = data.atriumgate_timer
 	self.dragonfly_spawner_timer = data.dragonfly_spawner_timer
 	self.beequeenhive_timer = data.beequeenhive_timer
@@ -165,6 +181,20 @@ local function OnWorldDataDirty(src, event_data)
 	self.klaussack = data.klaussack
 	self.malbatross = data.malbatross
 	self.toadstool = data.toadstool
+
+	--[[
+	self.antlion = data.antlion or self.antlion
+	self.atriumgate_timer = data.atriumgate_timer or self.atriumgate_timer
+	self.dragonfly_spawner_timer = data.dragonfly_spawner_timer or self.dragonfly_spawner_timer
+	self.beequeenhive_timer = data.beequeenhive_timer or self.beequeenhive_timer
+
+	self.bearger = data.bearger or self.bearger
+	self.crabking = data.crabking or self.crabking
+	self.deerclops = data.deerclops or self.deerclops
+	self.klaussack = data.klaussack or self.klaussack
+	self.malbatross = data.malbatross or self.malbatross
+	self.toadstool = data.toadstool or self.toadstool
+	--]]
 end
 
 --------------------------------------------------------------------------
@@ -175,7 +205,7 @@ local Shard_Insight = Class(function(self, inst)
 	assert(TheWorld.ismastersim, "Shard_Insight should not exist on client")
 	self.inst = inst
 
-	self.antlion_timer = nil -- time until antlion rages
+	self.antlion = nil
 	self.atriumgate_timer = nil -- time until the ancient gateway can be reactivated
 	self.dragonfly_spawner_timer = nil -- time until dragonfly respawns
 	self.beequeenhive_timer = nil -- time until bee queen's hive respawns
@@ -187,6 +217,8 @@ local Shard_Insight = Class(function(self, inst)
 	self.malbatross = nil
 	self.toadstool = nil
 
+	self.notables = notables
+
 	self.inst:ListenForEvent("insight_gotworlddata", OnWorldDataDirty, TheWorld)
 end)
 
@@ -195,8 +227,15 @@ end)
 --------------------------------------------------------------------------
 Shard_Insight.GetWorldData = GetWorldData
 
-function Shard_Insight:GetAntlionRageTimer()
-	return self.antlion_timer or GetWorldData().antlion_timer
+function Shard_Insight:UpdateLocalWorldData()
+	local data = GetWorldData()
+	--OnWorldDataDirty(TheWorld, nil, data)
+
+	return data
+end
+
+function Shard_Insight:GetAntlionData()
+	return self.antlion or GetWorldData().antlion
 end
 
 function Shard_Insight:GetAtriumGateCooldown()
@@ -284,6 +323,18 @@ function Shard_Insight:SetBeeQueenHive(entity)
 
 	entity:ListenForEvent("onremove", OnNotableRemove)
 	mprint("Got beequeenhive")
+end
+
+function Shard_Insight:SetCrabKingSpawner(entity)
+	if notables.crabking_spawner then
+		mprint("Attempt to replace crabking_spawner")
+		return
+	end
+
+	notables.crabking_spawner = entity
+
+	entity:ListenForEvent("onremove", OnNotableRemove)
+	mprint("Got crabking_spawner")
 end
 
 --------------------------------------------------------------------------

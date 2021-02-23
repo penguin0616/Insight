@@ -19,7 +19,20 @@ directory. If not, please refer to
 ]]
 
 -- crabkingspawner.lua [Worldly]
-local function GetCrabKingData(self)	
+local CRABKING_SPAWNTIMER = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(_G.Prefabs.crabking_spawner.fn, "CRABKING_SPAWNTIMER"), "Unable to find \"CRABKING_SPAWNTIMER\"") --"regen_crabking"
+
+
+local function GetCrabKingData(self)
+	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+		if type(self) == "table" and self.inst == TheWorld then -- for modmain
+			self = TheWorld.shard.components.shard_insight.notables.crabking_spawner
+		end
+
+		return {
+			time_to_respawn = self.components.worldsettingstimer:GetTimeLeft(CRABKING_SPAWNTIMER)
+		}
+	end
+
 	return {
 		time_to_respawn = self:OnSave().timetorespawn
 	}
@@ -28,6 +41,9 @@ end
 local function Describe(self, context)
 	local description = nil
 	local data = {}
+
+	-- in QoL beta, self == [inst] crabking_spawner
+	-- otherwise, self == [component] crabkingspawner
 
 	if self == nil and context.crabking_data then
 		data = context.crabking_data

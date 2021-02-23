@@ -18,17 +18,40 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- farming_manager.lua
+-- farming_manager.lua [Worldly]
+local LORDFRUITFLY_TIMERNAME = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(TheWorld.components.farming_manager.GetDebugString, "LORDFRUITFLY_TIMERNAME"), "Unable to find \"LORDFRUITFLY_TIMERNAME\"") --"bearger_timetospawn"
+
+local function GetLordFruitFlyData(self)
+	local lordfruitfly_spawntime
+
+	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+		lordfruitfly_spawntime = TheWorld.components.worldsettingstimer:GetTimeLeft(LORDFRUITFLY_TIMERNAME)
+	else
+		lordfruitfly_spawntime = util.getupvalue(self.OnSave, "lordfruitfly_spawntime")
+		if lordfruitfly_spawntime then
+			lordfruitfly_spawntime = lordfruitfly_spawntime.end_time
+		end
+	end
+
+	if not (lordfruitfly_spawntime) then
+		return {}
+	end
+
+	return {
+		lordfruitfly_spawntime = lordfruitfly_spawntime
+	}
+end
+
 local function Describe(self, context)
 	local description = nil
 
-	local lordfruitfly_spawntime = util.getupvalue(self.OnSave, "lordfruitfly_spawntime")
+	local data = GetLordFruitFlyData(self)
 
-	if lordfruitfly_spawntime == nil then
-		return -- is available
+	if not data.lordfruitfly_spawntime then
+		return
 	end
 
-	local remaining_time = lordfruitfly_spawntime.end_time - GetTime()
+	local remaining_time = data.lordfruitfly_spawntime - GetTime()
 	remaining_time = TimeToText(time.new(remaining_time, context))
 
 	description = remaining_time
