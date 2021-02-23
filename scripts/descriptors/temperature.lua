@@ -22,14 +22,15 @@ directory. If not, please refer to
 local world_type = GetWorldType()
 
 local relative_temperature_thresholds = { -30, -10, 10, 30 } -- world ambient temperature is 0
-local colors = { [1]=Color.fromHex("#00C6FF"), [5]=Color.fromRGB(255, 0, 0) }
-for i = 1, 3 do
-	colors[i+1] = colors[1]:Lerp(colors[5], i / 4)
+local colors = { [1]=Color.fromHex("#00C6FF"), [6]=Color.fromRGB(255, 0, 0) }
+for i = 1, 4 do
+	colors[i+1] = colors[1]:Lerp(colors[6], i / 5)
 end
 --[[
-colors[2] = colors[1]:Lerp(colors[5], .25)
-colors[3] = colors[1]:Lerp(colors[5], .5)
-colors[4] = colors[1]:Lerp(colors[5], .75)
+colors[2] = colors[1]:Lerp(colors[6], .2)
+colors[3] = colors[1]:Lerp(colors[6], .4)
+colors[4] = colors[1]:Lerp(colors[6], .6)
+colors[5] = colors[1]:Lerp(colors[6], .8)
 --]]
 
 
@@ -77,11 +78,19 @@ local function Describe(self, context)
 
 		local percent = math.clamp((temp - min) / (max - min), 0, 1) -- during testing, appears that this never goes past 0 or 1. 
 
+		local target_color = colors[level+1]
+
 		alt_description = string.format(context.lstr.temperature, string.format("%s < %s < %s", 
 			ApplyColour(Round(min, 1), colors[level]), -- 1
-			--ApplyColour(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(colors[level+1], percent)),
-			ApplyColour("<sub>" .. level .. " </sub>" .. temperatureValue .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>", colors[level]:Lerp(colors[level+1], percent)),
-			ApplyColour(Round(max, 1), colors[level+1]) -- 4
+			--ApplyColour(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(target_color, percent)),
+			ApplyColour(
+				"<sub>" .. level .. " </sub>" .. temperatureValue .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>", 
+				(
+					colors[level]:Lerp(target_color, percent)
+				) or 
+				"#ffffff"
+			),
+			ApplyColour(Round(max, 1), target_color) -- 4
 		))
 	end
 
