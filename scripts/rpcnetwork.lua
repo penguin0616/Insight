@@ -112,6 +112,8 @@ rpcNetwork.AddShardModRPCHandler = function(namespace, name, fn)
 	end
 
 	return AddShardModRPCHandler(namespace, name, function(...)
+		return fn(...)
+		--[[
 		--dprint(string.format("SHARD MOD RPC GOT [namespace \"%s\", rpc \"%s\"]", namespace, name))
 		-- assuming same situation as client mod rpc handler
 		local args = pack(...)
@@ -128,6 +130,7 @@ rpcNetwork.AddShardModRPCHandler = function(namespace, name, fn)
 		end
 
 		return res
+		--]]
 	end)
 end
 
@@ -141,6 +144,8 @@ rpcNetwork.AddClientModRPCHandler = function(namespace, name, fn)
 	--]]
 
 	return AddClientModRPCHandler(namespace, name, function(...)
+		return fn(...)
+		--[[
 		--dprint(string.format("CLIENT MOD RPC GOT [namespace \"%s\", rpc \"%s\"]", namespace, name))
 		-- TheNet call doesn't properly handle errors
 		local args = pack(...)
@@ -160,6 +165,7 @@ rpcNetwork.AddClientModRPCHandler = function(namespace, name, fn)
 		end
 
 		return res -- don't actually know if returning does anything
+		--]]
 	end)
 end
 

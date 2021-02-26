@@ -219,7 +219,7 @@ local descriptors_ignore = {
 	"inventoryitem", "moisturelistener", "propagator", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", "book", -- don't care
 	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", "inventory", -- don't care
 	"werebeast", "named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
-	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "teacher", "heater", "tiletracker", "scenariorunner", "payable", "useableitem", "drawable", "shaver", -- don't care
+	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", "tiletracker", "scenariorunner", "payable", "useableitem", "drawable", "shaver", -- don't care
 	"gridnudger", "entitytracker", "appeasable", "currency", "mateable", "sizetweener", "saltlicker", "sinkable", "sticker", "projectile", "hiddendanger", "deciduoustreeupdater", -- don't care
 	"geyserfx", "blinkstaff", -- don't care,
 
@@ -399,6 +399,10 @@ function CreatePlayerContext(player, config, external_config, etc)
 	if context.is_server_owner then
 		if context.config["crash_reporter"] then
 			SERVER_OWNER_HAS_OPTED_IN = true
+			for id, shard in pairs(Shard_GetConnectedShards()) do
+				--mprint("sending data to:", id)
+				rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "CrashReporter"), id, compress({ server_owner_enabled=true }))
+			end
 		end
 	end
 
@@ -1417,6 +1421,12 @@ if IsDST() then
 		end
 	end)
 	rawset(_G, "RE", function(str) rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), str) end)
+
+	rpcNetwork.AddShardModRPCHandler(modname, "CrashReporter", function(sending_shard_id, data)
+		if data.server_owner_enabled then
+			SERVER_OWNER_HAS_OPTED_IN = true
+		end
+	end)
 
 	rpcNetwork.AddShardModRPCHandler(modname, "WorldData", function(sending_shard_id, data)
 		TheWorld:PushEvent("insight_gotworlddata", { sending_shard_id=sending_shard_id, data=data })

@@ -84,7 +84,11 @@ local function GetWorldData()
 		-- destabilizing = time before reset
 		-- cooldown = time before can resocket the key
 		-- destabilizedelay = time before can pulse on rejoin
-		atriumgate_timer = notables.atrium_gate.components.timer:GetTimeLeft("cooldown")
+		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+			atriumgate_timer = notables.atrium_gate.components.worldsettingstimer:GetTimeLeft("cooldown")
+		else
+			atriumgate_timer = notables.atrium_gate.components.timer:GetTimeLeft("cooldown")
+		end
 	end
 
 	local dragonfly_spawner_timer
