@@ -203,6 +203,19 @@ function ResolveColors(str)
 	--return string.format("<color=%s>%s</color>", Insight.COLORS[c] or c, s)
 end
 
+function GetPrefabNameOrElse(prefab, other)
+	local upper = prefab:upper()
+	if STRINGS.NAMES[upper] then
+		return STRINGS.NAMES[upper]
+	end
+
+	if other then
+		return string.format(other, prefab)
+	end
+
+	return "no_name:" .. prefab
+end
+
 function FormatDecimal(num, places)
 	if not places then
 		local x = string.match(num, "%.(.+)")

@@ -86,6 +86,15 @@ return {
 	chessnavy_timer = "%s",
 	chessnavy_ready = "等待你回到犯罪地点",
 
+	-- childspawner.lua
+	childspawner = {
+		children = "<color=#ee6666>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		emergency_children = "*<color=#ee6666>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		both_regen = "<color=#ee6666>%s</color> & <color=#ee6666>%s</color>",
+		regenerating = "Regenerating %s in: %s",
+		--entity = "<color=#ee6666>%s</color>",
+	},
+
 	-- combat.lua
 	damage = "<color=HEALTH>伤害</color>: <color=HEALTH>%s</color>",
 	damageToYou = " (对你的伤害 <color=HEALTH>%s</color>)",

@@ -72,7 +72,7 @@ local function Describe(self, context)
 		--mprint(delta, delta * 60) 
 		local delta = sanityfn(context.player, self.inst)
 		if delta >= 0.01 or delta <= -0.01 then -- has to be at least 0.01 to get picked up by Sanity
-			if self.inst.prefab == "lighter" then
+			if self.inst.components.inventoryitem then -- self.inst.prefab == "lighter"
 				context.burnable_sanity_aura_round = 1
 			else
 				delta = Round(delta, 2)

@@ -36,14 +36,15 @@ local function Describe(self, context)
 	-- probabaly why it was commented out anyway.
 	local speed_modifier = self.walkspeedmult or 0.0
 
-	speed_modifier = Round(speed_modifier, 2)
-	
+	--speed_modifier = Round(speed_modifier, 2) -- Round is leaving hidden floating point error? (Round(1.2) - 1 ~= 1.2 - 1); precision error isn't shown unless you use FormatNumber's formatting pattern
+	-- precision errors somewhere
+
 	if speed_modifier ~= 0 then
 		if world_type == -1 or world_type == 0 or world_type == 1 then -- same thing here
 			-- consistency
 			speed_modifier = speed_modifier - 1
 		end
-		speed_modifier = string.format(context.lstr.speed, FormatNumber(speed_modifier * 100))
+		speed_modifier = string.format(context.lstr.speed, FormatDecimal(speed_modifier * 100, 0)) -- FormatNumber had a precision error too. FormatNumber((1.2-1)*100) == +19
 	else
 		speed_modifier = nil
 	end
@@ -59,10 +60,10 @@ local function Describe(self, context)
 
 	elseif self.GetDapperness then -- does not exist in RoG
 		dapperness = self:GetDapperness(owner)
-		dapperness = Round(dapperness * 60, 1)
+		dapperness = dapperness * 60
 
 		if dapperness ~= 0 then
-			dapperness = string.format(context.lstr.dapperness, FormatNumber(dapperness))
+			dapperness = string.format(context.lstr.dapperness, FormatDecimal(dapperness, 1))
 		else
 			dapperness = nil
 		end

@@ -86,6 +86,15 @@ return {
 	--chessnavy_timer = "%s",
 	--chessnavy_ready = "Waiting for you to return to a crime scene.",
 
+	-- childspawner.lua
+	childspawner = {
+		--children = "<color=#ee6666>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		--emergency_children = "*<color=#ee6666>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		--both_regen = "<color=#ee6666>%s</color> & <color=#ee6666>%s</color>",
+		--regenerating = "Regenerating %s in: %s",
+		--entity = "<color=#ee6666>%s</color>",
+	},
+
 	-- combat.lua
 	damage = "<icon=swords> <color=HEALTH>%s</color>",
 	--damageToYou = " (<color=HEALTH>%s</color> to you)",

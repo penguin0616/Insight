@@ -704,17 +704,29 @@ end)
 
 
 AddPrefabPostInit("mushroombomb", function(inst)
+	local c = localPlayer and GetPlayerContext(localPlayer) 
+	if not (c and c.config["display_attack_range"]) then
+		return
+	end
+
 	inst.explosion_range = SpawnPrefab("insight_range_indicator")
 	inst.explosion_range:Attach(inst)
 	inst.explosion_range:SetRadius(TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS / WALL_STUDS_PER_TILE) 
 	inst.explosion_range:SetColour(Color.fromHex(Insight.COLORS.HEALTH))
+	inst.explosion_range:SetVisible(true)
 end)
 
 AddPrefabPostInit("mushroombomb_dark", function(inst) -- misery
+	local c = localPlayer and GetPlayerContext(localPlayer) 
+	if not (c and c.config["display_attack_range"]) then
+		return
+	end
+
 	inst.explosion_range = SpawnPrefab("insight_range_indicator")
 	inst.explosion_range:Attach(inst)
 	inst.explosion_range:SetRadius(TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS / WALL_STUDS_PER_TILE) 
 	inst.explosion_range:SetColour(Color.fromHex(Insight.COLORS.HEALTH))
+	inst.explosion_range:SetVisible(true)
 end)
 
 AddPrefabPostInit("firesuppressor", function(inst) 

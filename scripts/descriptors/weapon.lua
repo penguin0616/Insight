@@ -150,7 +150,7 @@ local function Describe(self, context)
 	description = CombineLines(damage_string, attack_range)
 
 	return {
-		priority = 10,
+		priority = 49,
 		description = description,
 		attack_range = self.attackrange
 	}

@@ -209,7 +209,7 @@ local descriptors_ignore = {
 	"bloomable", -- hamlet trees
 	"fixable", -- hamlet pig houses
 	
-	"lootdropper", "childspawner", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
+	"lootdropper", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
 	"thief", "characterspecific", "resurrector", "brushable", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
 
 	--notable
@@ -1287,6 +1287,26 @@ for i,v in pairs(descriptors_ignore) do
 	descriptors[v] = false
 	Insight.descriptors[v] = false
 end
+
+
+--[[
+AddPrefabPostInit("redgem", function(inst) 
+	if not DEBUG_ENABLED then
+		return
+	end
+
+	-- tuning says default range is 15
+	inst.snowball_range = SpawnPrefab("insight_range_indicator")
+	inst.snowball_range:Attach(inst)
+	inst.snowball_range:SetRadius(12 / WALL_STUDS_PER_TILE)
+	inst.snowball_range:SetColour(Color.fromHex(Insight.COLORS.FROZEN))
+	inst.snowball_range:SetVisible(true)
+
+	--inst:AddComponent("dst_deployhelper")
+	--inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+end)
+--]]
+
 
 --[[
 AddPrefabPostInit("forest_network", function(inst)

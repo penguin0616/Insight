@@ -91,7 +91,7 @@ local EntityManager = Class(function(self)
 	self.active_entity_lookup = setmetatable(createTable(1000), { __mode="kv" })
 	self.entity_count = 0
 	self.listeners = {}
-	--self.chests = setmetatable(createTable(250), { __mode="k" })
+	--self.chests = setmetatable(createTable(250), { __mode="k" }) -- used for highlighting, and that meant item highlighting didnt work since it only considered chests
 end)
 
 function EntityManager:Count()

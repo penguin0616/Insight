@@ -69,6 +69,10 @@ local function SetRadius_Zark(inst, radius)
 	inst.AnimState:SetScale(x, y)
 end
 
+
+
+
+
 local function SetColour(inst, ...)
 	-- yeah i don't know how SetAddColour and SetMultColour work, i just know SetMultColour is what i've used before
 	if type(...) == "table" then
@@ -80,7 +84,11 @@ local function SetColour(inst, ...)
 	end
 end
 
-local function SetVisible(inst, bool)
+
+
+
+
+local function ChangeIndicatorVisibility(inst, bool)
 	-- so i looked at bee queen's :Hide("honey0") and stuff, broke it down in spriter. didn't show up at all, so i edited anim.bin in n++ to see if references to that string was there, they were.
 	-- looked at my thing's anim.bin, tried a few of the strings, and apparently this is the winner.
 	-- https://forums.kleientertainment.com/forums/topic/122312-finding-an-animation-element-to-hideshow/
@@ -92,12 +100,26 @@ local function SetVisible(inst, bool)
 		inst.AnimState:Hide("firefighter_placemen")
 		--inst.AnimState:HideSymbol("firefighter_placement01") -- Does not exist in DS
 	end
+end
 
+local function SetVisible(inst, bool)
 	inst._isvisible = bool
+	
+	if inst.net_visible then
+		inst.net_visible:set(bool)
+	end
+
+	if TheSim:GetGameID() == "DS" or TheNet:IsDedicated() == false then
+		ChangeIndicatorVisibility(inst, bool)
+	end
 end
 
 local function IsVisible(inst)
 	return inst._isvisible
+end
+
+local function OnVisibleDirty(inst)
+	ChangeIndicatorVisibility(inst, inst.net_visible:value())
 end
 
 local function Attach(inst, to)
@@ -171,13 +193,12 @@ local function fn()
 	inst.Attach = Attach
 	inst.AddNetwork = AddNetwork
 
-	
-	
-
-	inst:SetVisible(true)
-
+	inst:SetVisible(false)
 
 	if IsDST() then
+		inst.net_visible = net_bool(inst.GUID, "indicator_visible", "indicator_visible_dirty")
+		inst.net_visible:set_local(false)
+		inst:ListenForEvent("indicator_visible_dirty", OnVisibleDirty)
 		-- :AddNetwork() means the entity gets replicated
 		-- inst.entity:AddNetwork()
 		inst.entity:SetPristine()
@@ -186,7 +207,6 @@ local function fn()
 			return inst
 		end
 	end
-
 	--inst:AddComponent"inspectable"
 
    	return inst

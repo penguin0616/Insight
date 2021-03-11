@@ -101,7 +101,7 @@ local function Describe(self, context)
 
 	return {
 		name = "health",
-		priority = 50,
+		priority = 1000,
 		description = description,
 		alt_description = alt_description,
 	}, naughtiness_table
