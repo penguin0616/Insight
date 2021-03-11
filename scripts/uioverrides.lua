@@ -431,6 +431,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	local math_ceil = math.ceil
 	local TheInput_IsKeyDown = TheInput.IsKeyDown
 	local TheInputProxy_GetLocalizedControl = TheInputProxy.GetLocalizedControl
+	local TheInput_IsControlPressed = TheInput.IsControlPressed
 
 	local Is_DS = IsDS()
 	local Is_DST = IsDST()
@@ -587,21 +588,9 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 		
 		if entityInformation then
-			-- CONTROL_FORCE_INSPECT
-			-- optionsscreen.lua (can be redux or not)
-			-- TheInputProxy:HasMappingChanged(0, CONTROL_FORCE_INSPECT) -- true/false
-			-- TheInput:GetLocalizedControl(0, CONTROL_FORCE_INSPECT) --> "Left Alt"
-			--print(TheInput:IsKeyDown(KEY_LALT)) -- not CONTROL_FORCE_INSPECT
-			-- KEY_LALT
-			--print("A")
-			-- print(keycode, KEY_LALT, TheInput:IsKeyDown(KEY_LALT), TheInput:IsKeyDown(keycode), TheInput:IsControlPressed(KEY_LALT), TheInput:IsControlPressed(keycode))
-			-- use_default_mapping should be false or it will always return the correct keycode. in this case, we want the modified one if it's there.
-			local _, _, alt_keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_INSPECT, false, false) -- deviceId, controlId, use_default_mapping, use_control_mapper
-			local _, _, shift_keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_TRADE, false, false)
-
-			-- need to work this out some more. seems like inspect is missing while the game says the key is down.
-			if TheInput_IsKeyDown(TheInput, alt_keycode) then
-				local altOnlyIsVerbose = TheInput_IsKeyDown(TheInput, shift_keycode)
+			-- control pressed doesn't have the game focus issues (alt+tab keeps the key down) and handles the changed keybinds in control menu. 
+			if TheInput_IsControlPressed(TheInput, CONTROL_FORCE_INSPECT) then
+				local altOnlyIsVerbose = TheInput_IsKeyDown(TheInput, CONTROL_FORCE_TRADE)
 				if informationOnAltOnly == true and altOnlyIsVerbose == false then
 					itemDescription = entityInformation.information
 				else
