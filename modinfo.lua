@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.10.9" -- ds is 2.9.7_ds
+version = "2.10.11" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -259,6 +259,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
 	--------------------------------------------------------------------------
+	display_attack_range = {
+		LABEL = "Attack Ranges (Limited)",
+		HOVER = "Whether attack ranges are shown (currently only applies to boomshrooms and anenemies).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Attack range is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Attack range is shown."
+			},
+		},
+	},
 	item_range_indicator = {
 		LABEL = "Item Range Hover",
 		HOVER = "Whether an item's range is shown upon hovering.",
@@ -1312,6 +1326,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
 	--------------------------------------------------------------------------
+	display_attack_range = {
+		LABEL = "Attack Ranges (Limited)",
+		HOVER = "Whether attack ranges are shown (currently only applies to boomshrooms and anenemies).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Attack range is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Attack range is shown."
+			},
+		},
+	},
 	item_range_indicator = {
 		LABEL = "鼠标放置显示物品生效范围",
 		HOVER = "将鼠标放置于物品上时该物品的生效范围是否显示。",
@@ -2372,6 +2400,15 @@ configuration_options = {
 		tags = {},
 	},
 	AddSectionTitle(T"sectiontitle_indicators"),
+	{
+		name = "display_attack_range",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
 	{
 		name = "item_range_indicator",
 		options = {

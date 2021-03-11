@@ -76,6 +76,12 @@ return {
 	breeder_nextfishtime = "Additional fish in: %s",
 	breeder_possiblepredatortime = "May spawn a predator in: %s",
 
+	-- burnable.lua
+	burnable = {
+		smolder_time = "Will <color=LIGHT>ignite</color> in: <color=LIGHT>%s</color>",
+		burn_time = "Remaining <color=LIGHT>burn time</color>: <color=LIGHT>%s</color>",
+	},
+
 	-- chessnavy.lua
 	chessnavy_timer = "%s",
 	chessnavy_ready = "Waiting for you to return to a crime scene.",
@@ -239,30 +245,33 @@ return {
 
 	-- finiteuses.lua
 	action_uses = "<color=#aaaaee>%s</color>: %s",
-	action_uses_plain = "Uses",
-	action_sleepin = "Sleep",
-	action_fan = "Fan",
-	action_play = "Play", -- beefalo horn
-	action_hammer = "Hammer",
-	action_chop = "Chop",
-	action_mine = "Mine",
-	action_net = "Catch",
-	action_hack = "Hack", -- sw
-	action_terraform = "Terraform",
-	action_dig = "Dig",
-	action_brush = "Brush",
-	action_gas = "Gas", -- hamlet
-	action_disarm = "Disarm", -- hamlet
-	action_pan = "Pan", -- hamlet
-	action_dislodge = "Chisel", -- hamlet
-	action_spy = "Investigate", -- hamlet
-	action_throw = "Throw", -- sw -- Action string is "Throw At"
-	action_unsaddle = "Unsaddle",
-	action_shear = "Shear",
-	action_attack = "Attack",
-	action_fish = "Fish",
-	action_row = "Row",
-	action_row_fail = "Failed row",
+	actions = {
+		uses_plain = "Uses",
+		sleepin = "Sleep",
+		fan = "Fan",
+		play = "Play", -- beefalo horn
+		hammer = "Hammer",
+		chop = "Chop",
+		mine = "Mine",
+		net = "Catch",
+		hack = "Hack", -- sw
+		terraform = "Terraform",
+		dig = "Dig",
+		brush = "Brush",
+		gas = "Gas", -- hamlet
+		disarm = "Disarm", -- hamlet
+		pan = "Pan", -- hamlet
+		dislodge = "Chisel", -- hamlet
+		spy = "Investigate", -- hamlet
+		throw = "Throw", -- sw -- Action string is "Throw At"
+		unsaddle = "Unsaddle",
+		shear = "Shear",
+		attack = "Attack",
+		fish = "Fish",
+		row = "Row",
+		row_fail = "Failed row",
+		till = "Till",
+	},
 
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>Fish</color>: <color=WET>%s</color> / <color=WET>%s</color>",
@@ -579,6 +588,11 @@ return {
 		delay = "State change is delayed for %s",
 		wither = "Will wither in %s",
 		rejuvenate = "Will rejuvenate in %s"
+	},
+
+	-- workable.lua
+	workable = {
+		chance = "<color=#636C5C>Treeguard chance</color>: %s%%<sub>You</sub> & %s%%<sub>NPC</sub>"
 	},
 
 	-- worldmigrator.lua

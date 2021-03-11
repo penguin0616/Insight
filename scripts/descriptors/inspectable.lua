@@ -78,6 +78,12 @@ local CUSTOM_RANGES = {
 		range = TUNING.TRIDENT_FARM_PLANT_INTERACT_RANGE,
 		color = Insight.COLORS.WET
 	},
+
+	fruitflyfruit = {
+		range = 20, --upvalue in behaviours/findfarmplant
+		color = "#C46A99",
+		attach_player = false
+	},
 }
 
 local function IsWinter()
@@ -230,12 +236,15 @@ local function RangedDescribe(self, context)
 
 	local tool_range = CUSTOM_RANGES[inst.prefab].range
 	local tool_range_color = CUSTOM_RANGES[inst.prefab].color
+	local attach_player = CUSTOM_RANGES[inst.prefab].attach_player
 
 	return {
+		name = "insight_ranged",
 		priority = 0,
 		description = nil,
-		tool_range = tool_range,
-		tool_range_color = tool_range_color
+		range = tool_range,
+		color = tool_range_color,
+		attach_player = attach_player
 	}
 end
 
@@ -385,7 +394,11 @@ local function Describe(self, context)
 
 			local frog_rain = TheWorld.components.frograin
 			if frog_rain and TheWorld.state.isspring then
-				frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(frog_rain:OnSave().chance * 100, 1))
+				if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+					frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(TUNING.FROG_RAIN_CHANCE * 100, 1))
+				else
+					frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(frog_rain:OnSave().chance * 100, 1))
+				end
 			end
 		end
 

@@ -19,33 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- finiteuses.lua
-local action_icons = {
-	sleepin = "bedroll_straw",
-	fan = "featherfan",
-	play = "horn", -- beefalo horn
-	hammer = "hammer",
-	chop = "axe",
-	mine = "pickaxe",
-	net = "bugnet",
-	hack = "machete", -- sw
-	terraform = "pitchfork",
-	dig = "shovel",
-	brush = "brush",
-	gas = "bugrepellant", -- hamlet
-	disarm = "disarmingkit", -- hamlet
-	pan = "goldpan", -- hamlet
-	dislodge = "littlehammer", -- hamlet
-	spy = "magnifying_glass", -- hamlet
-	throw = "monkeyball", -- sw
-	unsaddle = "saddlehorn",
-	shear = "shears",
-
-	row = "oar",
-
-	attack = "spear",
-
-	fish = "fishingrod",
-}
+local rawget = rawget
 
 local function FormatUses(uses, context)
 	return string.format(context.lstr.action_uses, context.lstr.action_uses_plain, uses)
@@ -59,6 +33,7 @@ local function Describe(self, context)
 	local inst = self.inst
 	local description = nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
 
+	local uses = self:GetUses()
 	if context.finiteuses_forced or context.config["display_finiteuses"] then
 		local consumptions = {}
 		for i,v in pairs(self.consumption) do
@@ -84,11 +59,13 @@ local function Describe(self, context)
 			end
 		end
 
-		local actions = {}
+		
 
 		local consumptions2 = {}
+		local num_actions = 0
 		for action, amount in pairs(consumptions) do
-			consumptions2[#consumptions2+1] = {action, amount}
+			num_actions = num_actions + 1
+			consumptions2[num_actions] = {action, amount}
 		end
 
 		table.sort(consumptions2, SortActions)
@@ -104,21 +81,22 @@ local function Describe(self, context)
 		end
 		--]]
 
-		for i = 1, #consumptions2 do
+		local actions = createTable(num_actions)
+		for i = 1, num_actions do
 			local v = consumptions2[i]
 			local action, amount = v[1], v[2]
 			local action_id = action.id:lower()
 
 			local uses = math.ceil(self.current / amount)
-			if context.usingIcons and action_icons[action_id] and PrefabHasIcon(action_icons[action_id]) then
+			if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(action_icons[action_id]) then
 				actions[#actions+1] = string.format(context.lstr.action_uses, action_icons[action_id], uses)
 			else
-				actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr["action_" .. action_id] or ("\"" .. action_id .. "\""), uses)
+				actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.actions[action_id] or ("\"" .. action_id .. "\""), uses)
 			end
 		end
 
 		if #actions == 0 then
-			actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.action_uses_plain, self:GetUses())
+			actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses)
 		end
 
 		description = table.concat(actions, ", ")
@@ -128,7 +106,7 @@ local function Describe(self, context)
 	return {
 		priority = 1,
 		description = description,
-		uses = math.ceil(self:GetUses())
+		uses = math.ceil(uses)
 	}
 end
 

@@ -20,6 +20,7 @@ directory. If not, please refer to
 
 -- sanityaura.lua
 local function Describe(self, context)
+	-- note: this gets called by burnable.lua with self == burnable, so be careful about adding specifics to burnable
 	if not context.config["display_sanityaura"] then
 		return
 	end
@@ -31,13 +32,15 @@ local function Describe(self, context)
 		return
 	end
 	
-	local delta = Round(self:GetAura(context.player) * 60, 1)
+	local aura = context.burnable_sanity_aura or self:GetAura(context.player)
+	local delta = Round(aura * 60, 1)
 
 	if delta ~= 0 then
-		description = string.format(context.lstr.sanityaura, FormatNumber(delta))
+		description = string.format(context.lstr.sanityaura, FormatDecimal(delta, context.burnable_sanity_aura_round or 0))
 	end
 
 	return {
+		name = "sanityaura",
 		priority = 0,
 		description = description
 	}

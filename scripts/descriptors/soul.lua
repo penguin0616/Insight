@@ -44,10 +44,16 @@ local function Describe(self, context)
 	end
 
 	return {
+		name = "soul",
 		priority = 0,
-		description = description,
-		soul_heal_range = TUNING.WORTOX_SOULHEAL_RANGE,
-		soul_heal_range_color = Insight.COLORS.HEALTH
+		description = description
+	}, {
+		name = "insight_ranged",
+		priority = 0,
+		description = nil,
+		range = TUNING.WORTOX_SOULHEAL_RANGE,
+		color = Insight.COLORS.HEALTH,
+		attach_player = true
 	}
 end
 

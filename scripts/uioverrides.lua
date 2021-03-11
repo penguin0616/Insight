@@ -598,6 +598,8 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			-- use_default_mapping should be false or it will always return the correct keycode. in this case, we want the modified one if it's there.
 			local _, _, alt_keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_INSPECT, false, false) -- deviceId, controlId, use_default_mapping, use_control_mapper
 			local _, _, shift_keycode = TheInputProxy_GetLocalizedControl(TheInputProxy, 0, CONTROL_FORCE_TRADE, false, false)
+
+			-- need to work this out some more. seems like inspect is missing while the game says the key is down.
 			if TheInput_IsKeyDown(TheInput, alt_keycode) then
 				local altOnlyIsVerbose = TheInput_IsKeyDown(TheInput, shift_keycode)
 				if informationOnAltOnly == true and altOnlyIsVerbose == false then
@@ -1116,7 +1118,7 @@ end)
 
 AddClassPostConstruct("screens/chatinputscreen", function(self)
 	if TheNet:GetUserID() == MyKleiID then
-		mprint"hey!!!"
+		--mprint"hey!!!"
 	end
 end)
 

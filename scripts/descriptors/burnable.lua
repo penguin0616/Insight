@@ -59,30 +59,37 @@ local function sanityfn(inst, target) -- inst is player
 end
 
 local function Describe(self, context)
-	local description = nil
+	local description, sanityaura = nil, nil
 
-	if context.player.prefab ~= "willow" then -- willow only
-		return nil
+	if self.smoldering and self.smoldertimeremaining and self.smolder_task then
+		description = string.format(context.lstr.burnable.smolder_time, Round(self.smoldertimeremaining + 0, 1)) -- task inconsistent meeeh
+	elseif self.burning and self.task then
+		description = string.format(context.lstr.burnable.burn_time, Round(GetTaskRemaining(self.task), 1))
 	end
 
-	local delta = sanityfn(context.player, self.inst)
 
-	--mprint(delta, delta * 60) 
-	if delta >= 0.01 or delta <= -0.01 then -- has to be at least 0.01 to get picked up by Sanity
-		delta = delta * 60
-		if self.inst.prefab == "lighter" then
-			
-		else
-			delta = Round(delta, 2)
+	if context.player.prefab == "willow" then -- willow only
+		--mprint(delta, delta * 60) 
+		local delta = sanityfn(context.player, self.inst)
+		if delta >= 0.01 or delta <= -0.01 then -- has to be at least 0.01 to get picked up by Sanity
+			if self.inst.prefab == "lighter" then
+				context.burnable_sanity_aura_round = 1
+			else
+				delta = Round(delta, 2)
+			end
+
+			context.burnable_sanity_aura = delta
+			sanityaura = Insight.descriptors.sanityaura.Describe(self, context)
 		end
-
-		description = string.format(context.lstr.sanityaura, FormatNumber(delta))
 	end
+
+	
 
 	return {
+		name = "burnable",
 		priority = 0,
 		description = description
-	}
+	}, sanityaura
 end
 
 

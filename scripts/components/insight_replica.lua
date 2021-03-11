@@ -188,7 +188,7 @@ local Insight = Class(function(self, inst)
 	if IsClient() then
 		assert(ThePlayer, "[Insight]: Failed to load replica since you're missing")
 		if inst ~= ThePlayer then
-			mprint("\tRejected Insight replica for non-localplayer")
+			--mprint("\tRejected Insight replica for non-localplayer")
 			self.is_client = false
 		else
 			self.is_client = true

@@ -52,15 +52,17 @@ local function Describe(self, context)
 	end
 
 	-- fuel type
+	--[[
 	local fuel_type_string = self.fueltype
 	if self.secondaryfueltype then
 		fuel_type_string = fuel_type_string .. " & " .. self.secondaryfueltype
 	end
 	fuel_type_string = string.format(context.lstr.fuel.type, fuel_type_string)
+	--]]
 
 	-- combine
 	description = CombineLines(time_string, efficiency_string)
-	alt_description = CombineLines(time_string_verbose, fuel_type_string, efficiency_string)
+	alt_description = CombineLines(time_string_verbose, efficiency_string)
 
 	return {
 		priority = 1,

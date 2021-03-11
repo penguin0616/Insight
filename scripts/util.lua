@@ -203,6 +203,15 @@ function ResolveColors(str)
 	--return string.format("<color=%s>%s</color>", Insight.COLORS[c] or c, s)
 end
 
+function FormatDecimal(num, places)
+	if not places then
+		local x = string.match(num, "%.(.+)")
+		places = x and #x or 1
+	end
+	
+	return string.format("%+." .. places .. "f", num)
+end
+
 --- Formats a number into a string. Adds a + if positive. 
 -- @tparam number num
 -- @treturn string

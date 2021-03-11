@@ -102,7 +102,18 @@ end
 
 local function Attach(inst, to)
 	-- setting a player's parent to itself is an immediate crash with no error
-	inst.entity:SetParent(to.entity) -- am i just lazy??
+	inst.attached_to = to
+	inst.entity:SetParent(to.entity)
+
+	--[[
+	to:ListenForEvent("enterlimbo", function()
+
+	end)
+
+	to:ListenForEvent("exitlimbo", function()
+		
+	end)
+	--]]
 end
 
 local function AddNetwork(inst, pristine)

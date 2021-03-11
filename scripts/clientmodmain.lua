@@ -200,16 +200,26 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 	end
 
 	-- should i handle weapon range?
-	if not itemInfo.special_data.inspectable then
+	if not itemInfo.special_data.insight_ranged then
 		return
 	end
 
-	local range = itemInfo.special_data.inspectable.tool_range or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range)
-	local color = itemInfo.special_data.inspectable.tool_range_color or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range_color)
+	local range = itemInfo.special_data.insight_ranged.range-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range)
+	local color = itemInfo.special_data.insight_ranged.color-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range_color)
 
 	if range then
 		new.insight_hover_range = SpawnPrefab("insight_range_indicator")
-		new.insight_hover_range:Attach(ThePlayer)
+		if itemInfo.special_data.insight_ranged.attach_player == false then
+			if new:HasTag("INLIMBO") then
+				--print'moved to player'
+				new.insight_hover_range:Attach(ThePlayer)
+			else
+				--print'moved to self'
+				new.insight_hover_range:Attach(new)
+			end
+		else
+			new.insight_hover_range:Attach(ThePlayer)
+		end
 		new.insight_hover_range:SetRadius(range / WALL_STUDS_PER_TILE)
 		if color then
 			new.insight_hover_range:SetColour(Color.fromHex(color))

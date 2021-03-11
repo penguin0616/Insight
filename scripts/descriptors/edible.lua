@@ -88,7 +88,7 @@ local function formatNumber(num)
 	return FormatNumber(Round(num, 1))
 end
 
-local function formatDescription(hunger, sanity, health, context)
+local function FormatFoodStats(hunger, sanity, health, context)
 
 	-- for handling different styles
 	local style = context.config["food_style"]
@@ -161,6 +161,8 @@ local function Describe(self, context)
 	local stats = context.stats
 	local alt_description = nil
 
+	local safe_food = true
+
 	if context.config["display_food"] then
 		local hunger, sanity, health
 		if type(stats) == 'table' then
@@ -169,13 +171,17 @@ local function Describe(self, context)
 			hunger, sanity, health = self:GetHunger(), self:GetSanity(), self:GetHealth() 
 		end
 
-		hunger = (hunger >= 0 and "+" or "") .. hunger
-		sanity = (sanity >= 0 and "+" or "") .. sanity
-		health = (health >= 0 and "+" or "") .. health
-		alt_description = formatDescription(hunger, sanity, health, context)
+		if hunger then hunger = (hunger >= 0 and "+" or "") .. hunger else safe_food = false hunger = "?" end
+		if sanity then sanity = (sanity >= 0 and "+" or "") .. sanity else safe_food = false sanity = "?" end
+		if health then health = (health >= 0 and "+" or "") .. health else safe_food = false health = "?" end
+		alt_description = FormatFoodStats(hunger, sanity, health, context)
+
+		if not safe_food then
+			description = alt_description -- .. " ! Missing stats due to a broken mod !" -- won't be processed by advanced food stat calculations
+		end
 	end
 
-	if IsEdible(owner, self.inst) and context.config["display_food"] then -- i think this filters out wurt's meat stats.
+	if safe_food and IsEdible(owner, self.inst) and context.config["display_food"] then -- i think this filters out wurt's meat stats.
 		local eater = owner.components.eater
 
 		local hunger, sanity, health
@@ -217,7 +223,7 @@ local function Describe(self, context)
 		end
 		
 		hunger, sanity, health = formatNumber(hunger), formatNumber(sanity), formatNumber(health)
-		description = formatDescription(hunger, sanity, health, context) -- .. "\nHunger: +25 / Sanity: +15 / Health: +20\nHunger: +25 / Sanity: +15 / Health: +20"
+		description = FormatFoodStats(hunger, sanity, health, context) -- .. "\nHunger: +25 / Sanity: +15 / Health: +20\nHunger: +25 / Sanity: +15 / Health: +20"
 	end
 
 	local foodunit_data = nil

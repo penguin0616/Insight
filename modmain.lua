@@ -209,7 +209,7 @@ local descriptors_ignore = {
 	"bloomable", -- hamlet trees
 	"fixable", -- hamlet pig houses
 	
-	"lootdropper", "workable", "childspawner", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
+	"lootdropper", "childspawner", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
 	"thief", "characterspecific", "resurrector", "brushable", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
 
 	--notable
@@ -249,7 +249,7 @@ local descriptors_ignore = {
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
 
 	-- TheWorld
-	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor",
+	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor", "sisturnregistry", 
 
 	-- Forest & Caves
 	"yotc_raceprizemanager", "shadowhandspawner", "desolationspawner", "ambientlighting", "worldoverseer", "forestresourcespawner", "shadowcreaturespawner", "chessunlocks", "feasts", 
@@ -1402,6 +1402,7 @@ if IsDST() then
 			setfenv(fn, setmetatable({
 				tostr = tostr,
 				me = UserToPlayer(MyKleiID),
+				player_contexts = player_contexts,
 			}, {
 				__index = Insight.env,
 				__newindex = Insight.env,
@@ -1629,7 +1630,7 @@ if IsDST() then
 	end)
 
 	AddPrefabPostInit("klaus_sack", function(inst)
-		inst.MiniMapEntity:SetPriority(105)
+		--inst.MiniMapEntity:SetPriority(105)
 	end)
 
 	_G.mark_klaus_areas = function()
@@ -1722,6 +1723,11 @@ if IsDST() then
 			mprint("Kramped has been hooked")
 
 			local _activeplayers = util.getupvalue(kramped.OnUpdate, "_activeplayers")
+			if not _activeplayers then
+				local d = debug.getinfo(kramped.OnUpdate, "Sl")
+				mprint("Kramped::OnUpdate ->", d.source, d.currentline)
+			end
+
 			assert(_activeplayers, "[Insight]: Kramped failed to load _activeplayers, are you using mods that affect krampii?")
 			Insight.kramped.players = _activeplayers
 			local OnKilledOther, oldOnNaughtyAction

@@ -81,9 +81,10 @@ local function Describe(self, context)
             elseif context.player:HasTag("woodcutter") then
                 player_chance = player_chance * TUNING.WOODCUTTER_LEIF_CHANCE_MOD
             end
+			--print(player_chance, player_chance * 100, Round(player_chance * 100, 0))
 		end
 
-		if npc_chance >= TUNING.LEIF_MIN_DAY then
+		if npc_days >= TUNING.LEIF_MIN_DAY then
 			npc_chance = TUNING.LEIF_PERCENT_CHANCE
 		end
 	end
@@ -92,7 +93,7 @@ local function Describe(self, context)
 		return
 	end
 
-	alt_description = string.format(context.lstr.workable.chance, Round(player_chance * 100, 0), Round(npc_chance * 100, 0))
+	alt_description = string.format(context.lstr.workable.chance, Round(player_chance * 100, 2), Round(npc_chance * 100, 2))
 
 	return {
 		priority = 0,

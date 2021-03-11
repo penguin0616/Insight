@@ -76,6 +76,12 @@ return {
 	breeder_nextfishtime = "加鱼在：%s后",
 	breeder_possiblepredatortime = "可能生成捕食者在: %s后",
 
+	-- burnable.lua
+	burnable = {
+		smolder_time = "Will <color=LIGHT>ignite</color> in: <color=LIGHT>%s</color>",
+		burn_time = "Remaining <color=LIGHT>burn time</color>: <color=LIGHT>%s</color>",
+	},
+
 	-- chessnavy.lua
 	chessnavy_timer = "%s",
 	chessnavy_ready = "等待你回到犯罪地点",
@@ -238,31 +244,34 @@ return {
 	},
 
 	-- finiteuses.lua
-	action_uses = "<color=#aaaaee>%s</color>: %s",
-	action_uses_plain = "Uses",
-	action_sleepin = "睡觉",
-	action_fan = "扇风",
-	action_play = "演奏", -- beefalo horn
-	action_hammer = "锤",
-	action_chop = "砍",
-	action_mine = "开采",
-	action_net = "抓",
-	action_hack = "劈", -- sw
-	action_terraform = "铲地",
-	action_dig = "挖",
-	action_brush = "刷",
-	action_gas = "喷", -- hamlet
-	action_disarm = "拆", -- hamlet
-	action_pan = "淘", -- hamlet
-	action_dislodge = "凿", -- hamlet
-	action_spy = "调查", -- hamlet
-	action_throw = "扔", -- sw
-	action_unsaddle = "解鞍",
-	action_shear = "剪",
-	action_attack = "攻击",
-	action_fish = "钓",
-	action_row = "划",
-	action_row_fail = "划（失败）",
+	action_uses = "<color=#aaaaee>%s</col or>: %s",
+	actions = {
+		uses_plain = "Uses",
+		sleepin = "睡觉",
+		fan = "扇风",
+		play = "演奏", -- beefalo horn
+		hammer = "锤",
+		chop = "砍",
+		mine = "开采",
+		net = "抓",
+		hack = "劈", -- sw
+		terraform = "铲地",
+		dig = "挖",
+		brush = "刷",
+		gas = "喷", -- hamlet
+		disarm = "拆", -- hamlet
+		pan = "淘", -- hamlet
+		dislodge = "凿", -- hamlet
+		spy = "调查", -- hamlet
+		throw = "扔", -- sw
+		unsaddle = "解鞍",
+		shear = "剪",
+		attack = "攻击",
+		fish = "钓",
+		row = "划",
+		row_fail = "划（失败）",
+		till = "Till",
+	},
 
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
@@ -579,6 +588,11 @@ return {
 		delay = "State change is delayed for %s",
 		wither = "Will wither in %s",
 		rejuvenate = "Will rejuvenate in %s"
+	},
+
+	-- workable.lua
+	workable = {
+		chance = "<color=#636C5C>Treeguard chance</color>: %s%%<sub>You</sub> & %s%%<sub>NPC</sub>"
 	},
 
 	-- worldmigrator.lua
