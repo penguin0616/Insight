@@ -20,21 +20,32 @@ directory. If not, please refer to
 
 -- fishable.lua
 local function Describe(self, context)
-	local inst = self.inst
 	local description = nil
 	
-	if not self:IsFrozenOver() then
-		description = string.format(context.lstr.fish_count, self.fishleft, self.maxfish)
+	if self:IsFrozenOver() then
+		return
+	end
 
-		-- normally i would just check for the respawn task, but it's possible for the task to exist with full fish capacity.
-		if self.fishleft < self.maxfish and self.respawntask and context.config["time_style"] ~= "none" then
-			local time_remaining = time.new(self.respawntask:NextTime() - GetTime(), context) -- (self.respawntask.nexttick - TheSim:GetTick()) but in seconds
-			description = description .. string.format(context.lstr.fish_recharge, TimeToText(time_remaining))
-		end
+	-- fish count
+	local fish_count = string.format(context.lstr.fish_count, self.fishleft, self.maxfish)
+
+	-- normally i would just check for the respawn task, but it's possible for the task to exist with full fish capacity.
+	if self.fishleft < self.maxfish and self.respawntask and context.config["time_style"] ~= "none" then
+		local time_remaining = time.new(GetTaskRemaining(self.respawntask), context) -- (self.respawntask.nexttick - TheSim:GetTick()) but in seconds
+		fish_count = fish_count .. string.format(context.lstr.fish_recharge, TimeToText(time_remaining))
+	end
+
+	-- time to catch a fish
+	local held = context.player.components.inventory and context.player.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+	if held and held.components.fishingrod and self.fishleft > 0 then
+		local nibbletime = self.fishleft + (1 - self:GetFishPercent()) * (held.components.fishingrod.maxwaittime - held.components.fishingrod.minwaittime)
+		description = fish_count .. "\n" .. string.format(context.lstr.fish_wait_time, Round(nibbletime, 1))
+	else
+		description = fish_count
 	end
 
 	return {
-		priority = 0,
+		priority = 100,
 		description = description
 	}
 end

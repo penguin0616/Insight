@@ -20,7 +20,14 @@ directory. If not, please refer to
 
 -- fishingrod.lua
 local function Describe(self, context)
-	local description = string.format(context.lstr.fishingrod_waittimes, self.minwaittime, self.maxwaittime)
+	local description, alt_description
+	local rodlosetime = self.minstraintime + self.inst.components.finiteuses:GetPercent() * (self.maxstraintime - self.minstraintime)
+
+	local wait_times = string.format(context.lstr.fishingrod_waittimes, self.minwaittime, self.maxwaittime)
+	local rod_lose_string = string.format(context.lstr.fishingrod_loserodtime, Round(rodlosetime, 1))
+
+	description = wait_times
+	alt_description = wait_times .. "\n" .. rod_lose_string
 
 	return {
 		priority = 0,

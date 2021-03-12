@@ -285,9 +285,11 @@ return {
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>Fish</color>: <color=WET>%s</color> / <color=WET>%s</color>",
 	fish_recharge = ": +1 fish in: %s",
+	fish_wait_time = "Will take <color=SHALLOWS>%s seconds</color> to catch a fish.",
 
 	-- fishingrod.lua
 	fishingrod_waittimes = "Wait time: <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
+	fishingrod_loserodtime = "Max wrangle time: <color=SHALLOWS>%s</color>",
 
 	-- follower.lua
 	leader = "Leader: %s",
