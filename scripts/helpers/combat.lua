@@ -340,7 +340,9 @@ local function OnIndicatorStateDirty(inst)
 		--mprint("LOCAL STATE - TARGETTING")
 		AdjustIndicator(inst, Color.fromHex("#888888"), true)
 	else -- attacking
-		
+		inst.hide_task = inst:DoTaskInTime(8, function()
+			AdjustIndicator(inst, nil, false)
+		end)
 		
 		local range 
 

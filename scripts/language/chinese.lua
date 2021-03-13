@@ -253,7 +253,7 @@ return {
 	},
 
 	-- finiteuses.lua
-	action_uses = "<color=#aaaaee>%s</col or>: %s",
+	action_uses = "<color=#aaaaee>%s</color>: %s",
 	actions = {
 		uses_plain = "Uses",
 		sleepin = "睡觉",

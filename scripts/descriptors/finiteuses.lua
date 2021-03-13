@@ -22,7 +22,10 @@ directory. If not, please refer to
 local rawget = rawget
 
 local function FormatUses(uses, context)
-	return string.format(context.lstr.action_uses, context.lstr.action_uses_plain, uses)
+	mprint("formatuses:", uses)
+	mprint(context.lstr.action_uses, context.lstr.actions.uses_plain)
+	mprint(string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses))
+	return string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses)
 end
 
 local function SortActions(a, b)
@@ -88,10 +91,13 @@ local function Describe(self, context)
 			local action_id = action.id:lower()
 
 			local uses = math.ceil(self.current / amount)
-			if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(action_icons[action_id]) then
-				actions[#actions+1] = string.format(context.lstr.action_uses, action_icons[action_id], uses)
+			print('action_id', action_id)
+			if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(context.lstr.actions[action_id]) then
+				print'\ta'
+				actions[#actions+1] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
 			else
-				actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.actions[action_id] or ("\"" .. action_id .. "\""), uses)
+				print'\tb'
+				actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses)
 			end
 		end
 
