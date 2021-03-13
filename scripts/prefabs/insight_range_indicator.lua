@@ -19,75 +19,27 @@ directory. If not, please refer to
 ]]
 
 setfenv(1, _G.Insight.env)
+
+-- see notes/rangenotes.txt
+--------------------------------------------------------------------------
+--[[ Private Variables ]]
+--------------------------------------------------------------------------
 local assets = {
 	--Asset("ANIM", "anim/firefighter_placement.zip") -- bank: firefighter_placement, build: firefighter_placement
 	--Asset("ANIM", "anim/range_old.zip") -- bank: firefighter_placement, build: range_old
 	Asset("ANIM", "anim/range_tweak.zip") -- bank: bank_rt, build: range_tweak
 }
 
---[[
-	Transform:SetScale affects stuff like Physics, AnimState ect.
-AnimState:SetScale purely affects the visuals and only the visuals of the animation
-]]
-
---local PLACER_SCALE = TUNING.WORTOX_SOULSTEALER_RANGE --1.55 -- 0.001
--- attack range points / 2
--- deerclops range = 8, equal to 4 walls, which is 1 tile
--- wortox soul pickup is 2 tiles away, but listed as 8 in tuning
--- so that would mean its 8 wall studs away?
--- default range is 15
-
--- so thus, ratios are as listed
--- 1 tile = 4 walls = 8 units of attack range
-
 local PLACER_SCALE = 1.55 -- from firesuppressor
 local ratio = 1 / PLACER_SCALE -- "s" in placer_postinit_fn in firesuppressor
 
--- math.sqrt((1 / 1.55) * (15 / 4)) = 1.555... 15 being default firesuppressor range, 4 being the wall studs -> tile ratio
+--------------------------------------------------------------------------
+--[[ Private Functions ]]
+--------------------------------------------------------------------------
 
-local function CalculateRadius(radius)
-	return math.sqrt(ratio * radius)
-end
-
-local function SetRadius(inst, radius)
-	--assert(inst.entity:GetParent(), "attempt to call SetRadius with no entity parent")
-
-	-- radius should be # of tiles
-	local scale = math.sqrt(ratio * radius)  -- the math.sqrt is a lucky guess. i was thinking along the lines of how SOMETHING (wortox soul detector but also the firefighter radius) needed to be reduced
-	-- and i guess i thought of how it was a square/circle thing. nice!
-
-	inst.Transform:SetScale(scale, scale, scale)
-	
-end
-
--- has a similar accuracy to transform, but is shorter. zark said it has to do with scale of parent as well?
-local function SetRadius_Zark(inst, radius)
-	local parent = inst.AnimState:GetScale()
-
-	local x = radius * 4 / PixelsToCoords(1024)
-	local y = radius * 4 / PixelsToCoords(1024)
-	inst.AnimState:SetScale(x, y)
-end
-
-
-
-
-
-local function SetColour(inst, ...)
-	-- yeah i don't know how SetAddColour and SetMultColour work, i just know SetMultColour is what i've used before
-	if type(...) == "table" then
-		inst.AnimState:SetMultColour(unpack(...))
-	elseif select("#", ...) == 4 then
-		inst.AnimState:SetMultColour(...)
-	else
-		error("SetColour not done properly: " .. tostring(inst) .. " | ")
-	end
-end
-
-
-
-
-
+--- Changes the visibility of the indicator.
+-- @param inst The indicator
+-- @tparam bool visibility
 local function ChangeIndicatorVisibility(inst, bool)
 	-- so i looked at bee queen's :Hide("honey0") and stuff, broke it down in spriter. didn't show up at all, so i edited anim.bin in n++ to see if references to that string was there, they were.
 	-- looked at my thing's anim.bin, tried a few of the strings, and apparently this is the winner.
@@ -102,9 +54,45 @@ local function ChangeIndicatorVisibility(inst, bool)
 	end
 end
 
-local function SetVisible(inst, bool)
-	inst._isvisible = bool
+--- Changes the radius of the indicator.
+-- @param inst The indicator
+-- @number radius The radius the indicator will be set to. Interpreted as number of tiles.
+local function SetRadius(inst, radius)
+	if not inst.entity:GetParent() then
+		error("attempt to call SetRadius with no entity parent")
+		return
+	end
+	-- radius should be # of tiles
+
+	local scale = math.sqrt(ratio * radius)  -- the math.sqrt is a lucky guess. i was thinking along the lines of how SOMETHING (wortox soul detector but also the firefighter radius) needed to be reduced
+	-- and i guess i thought of how it was a square/circle thing. nice!
+
+
+	local a, b, c = inst.entity:GetParent().Transform:GetScale()
+
+	inst.Transform:SetScale(scale / a, scale / b, scale / c)
 	
+end
+
+--- Changes the colour of the indicator.
+-- @param inst The indicator
+-- @tparam ?Color|table|{r,g,b,a} The colour the indicator will be set to. Interpreted as number of tiles.
+local function SetColour(inst, ...)
+	-- yeah i don't know how SetAddColour and SetMultColour work, i just know SetMultColour is what i've used before
+	if type(...) == "table" then
+		inst.AnimState:SetMultColour(unpack(...))
+	elseif select("#", ...) == 4 then
+		inst.AnimState:SetMultColour(...)
+	else
+		error("SetColour not done properly: " .. tostring(inst) .. " | ")
+	end
+end
+
+local function OnVisibleDirty(inst)
+	ChangeIndicatorVisibility(inst, inst.net_visible:value())
+end
+
+local function SetVisible(inst, bool)
 	if inst.net_visible then
 		inst.net_visible:set(bool)
 	end
@@ -114,13 +102,25 @@ local function SetVisible(inst, bool)
 	end
 end
 
-local function IsVisible(inst)
-	return inst._isvisible
+
+local function OnCombatIndicatorStateDirty(inst, ...)
+	if inst.OnStateDirty then
+		inst.OnStateDirty(inst, ...)
+	end
 end
 
-local function OnVisibleDirty(inst)
-	ChangeIndicatorVisibility(inst, inst.net_visible:value())
+local function OnCombatIndicatorAttackRangeDirty(inst, ...)
+	if inst.OnAttackRangeDirty then
+		inst.OnAttackRangeDirty(inst, ...)
+	end
 end
+
+local function OnCombatIndicatorHitRangeDirty(inst, ...)
+	if inst.OnHitRangeDirty then
+		inst.OnHitRangeDirty(inst, ...)
+	end
+end
+
 
 local function Attach(inst, to)
 	-- setting a player's parent to itself is an immediate crash with no error
@@ -138,20 +138,33 @@ local function Attach(inst, to)
 	--]]
 end
 
+
+local function SetState(inst, state)
+	if inst.net_state then
+		--inst.net_state:set_local(state)
+		inst._laststate = inst.net_state:value()
+		inst.net_state:set(state)
+	else
+		error("missing inst net_state")
+	end
+end
+
 local function AddNetwork(inst, pristine)
 	if IsDS() then
 		return
 	end
 
-	--inst.entity:AddNetwork()
+	inst.entity:AddNetwork()
 	if pristine then
 		inst.entity:SetPristine()
 	end
 	-- pristine?
 end
 
-local function fn()
+local function base_fn()
 	local inst = CreateEntity()
+
+	
 
 	-- non-networked...?
 	inst.entity:SetCanSleep(false) -- parent sleep takes precedence
@@ -162,7 +175,7 @@ local function fn()
 	inst.entity:AddAnimState()
 
 	-- tags
-	--inst:AddTag("FX") -- apparently DAR adds this, idk why
+	inst:AddTag("FX") -- apparently DAR adds this, idk why
 	inst:AddTag("NOBLOCK") -- this mod [HM]Onikiri/鬼切 1.0.7 https://steamcommunity.com/sharedfiles/filedetails/?id=2241060736 was tampering with my indicators. they add "NOBLOCK", and replace all the functions in "inst" with a NOP.
 	-- was blocking placement next to the body (like when wormwood would go to plant a seed, the blocking of the indicator would stop him from doing so even though it looked valid)
 	inst:AddTag("NOCLICK")
@@ -186,33 +199,55 @@ local function fn()
 	--inst.AnimState:SetMultColour(.63, .16, .13, 1)
 
 	inst.SetRadius = SetRadius
-	inst.SetRadius_Zark = SetRadius_Zark
 	inst.SetColour = SetColour
 	inst.SetVisible = SetVisible
-	inst.IsVisible = IsVisible
 	inst.Attach = Attach
 	inst.AddNetwork = AddNetwork
 
 	inst:SetVisible(false)
 
-	if IsDST() then
-		inst.net_visible = net_bool(inst.GUID, "indicator_visible", "indicator_visible_dirty")
-		inst.net_visible:set_local(false)
-		inst:ListenForEvent("indicator_visible_dirty", OnVisibleDirty)
-		-- :AddNetwork() means the entity gets replicated
-		-- inst.entity:AddNetwork()
-		inst.entity:SetPristine()
-
-		if not TheWorld.ismastersim then
-			return inst
-		end
-	end
-	--inst:AddComponent"inspectable"
-
    	return inst
 end
 
-return Prefab("insight_range_indicator", fn, assets) 
+local function normal_fn()
+	return base_fn()
+end
+
+local function combat_fn()
+	local inst = base_fn()
+
+	inst._laststate = 0
+	inst.SetState = SetState
+
+	if IsDST() then
+		inst.entity:AddNetwork() -- only net vars made after network work properly
+
+		inst.net_state = net_tinybyte(inst.GUID, "insight_indicator_state", "insight_indicator_state_dirty") -- 0-7
+		inst:ListenForEvent("insight_indicator_state_dirty", OnCombatIndicatorStateDirty)
+
+		inst.net_attack_range = net_float(inst.GUID, "insight_combat_attack_range", "insight_combat_attack_range")
+		inst:ListenForEvent("insight_combat_attack_range", OnCombatIndicatorAttackRangeDirty)
+
+		inst.net_hit_range = net_float(inst.GUID, "insight_combat_hit_range", "insight_combat_hit_range")
+
+		inst:ListenForEvent("insight_combat_hit_range", OnCombatIndicatorHitRangeDirty)
+
+		--[[
+		inst.net_radius = net_float(inst.GUID, "indicator_radius", "indicator_radius_dirty")
+		inst.net_radius:set_local(PLACER_SCALE)
+		inst:ListenForEvent("indicator_radius_dirty", OnRadiusDirty)
+		--]]
+		
+		
+		if TheWorld.ismastersim then
+			return inst
+		end
+	end
+
+	return inst
+end
+
+return Prefab("insight_range_indicator", normal_fn, assets), Prefab("insight_combat_range_indicator", combat_fn, assets)
 
 --[[
 			SetLayer	function: 95B46798	

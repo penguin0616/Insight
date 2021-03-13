@@ -183,6 +183,7 @@ util = import("util")
 Color = import("helpers/color")
 entityManager = import("entitymanager")()
 rpcNetwork = import("rpcnetwork")
+combatHelper = import("helpers/combat")
 
 widgetLib = {
 	image = import("widgets/image_lib"),
@@ -218,7 +219,7 @@ local descriptors_ignore = {
 
 	"inventoryitem", "moisturelistener", "propagator", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", "book", -- don't care
 	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", "inventory", -- don't care
-	"werebeast", "named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
+	"named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
 	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", "tiletracker", "scenariorunner", "payable", "useableitem", "drawable", "shaver", -- don't care
 	"gridnudger", "entitytracker", "appeasable", "currency", "mateable", "sizetweener", "saltlicker", "sinkable", "sticker", "projectile", "hiddendanger", "deciduoustreeupdater", -- don't care
 	"geyserfx", "blinkstaff", -- don't care,
@@ -243,7 +244,7 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", -- don't care
+	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -1307,6 +1308,11 @@ AddPrefabPostInit("redgem", function(inst)
 end)
 --]]
 
+AddComponentPostInit("combat", function(self)
+	if IsDS() or (IsDST() and TheWorld.ismastersim) then
+		combatHelper.HookCombat(self)
+	end
+end)
 
 --[[
 AddPrefabPostInit("forest_network", function(inst)
@@ -2571,7 +2577,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 				local log = (successful and data) or nil
 				SendReport(self, from, log)
 			end)
-		elseif TheWorld.ismastersim then -- server by itself
+		elseif TheNet:GetIsMasterSimulation() == true then -- server by itself
 			mprint("SERVER_OWNER_HAS_OPTED_IN:", SERVER_OWNER_HAS_OPTED_IN)
 			dprint("report_server:", report_server)
 			dprint("report_client:", report_client)

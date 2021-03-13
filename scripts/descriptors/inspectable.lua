@@ -273,6 +273,22 @@ local function Describe(self, context)
 	end
 	--]]
 
+	if inst.prefab == "catcoonden" then
+		if inst.lives_left then
+			description = string.format(context.lstr.catcoonden.lives, inst.lives_left, 9)
+
+			if inst.lives_left <= 0 and inst.delay_end then
+				local remaining_time = inst.delay_end - GetTime()
+
+				if remaining_time > 0 then
+					description = description .. "\n" .. string.format(context.lstr.catcoonden.regenerate, TimeToText(time.new(remaining_time, context)))
+				else
+					description = description .. "\n" .. context.lstr.catcoonden.waiting_for_sleep
+				end
+			end
+		end
+	end
+
 	if inst.prefab == "chester_eyebone" or inst.prefab == "hutch_fishbowl" then
 		if inst.respawntask and inst.respawntime then
 			description = string.format("Will respawn in: %s", TimeToText(time.new(inst.respawntime - GetTime(), context)))

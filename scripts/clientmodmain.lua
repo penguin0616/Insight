@@ -602,6 +602,48 @@ AddPrefabPostInitAny(function(inst)
 end)
 
 --[[
+AddPrefabPostInit("redgem", function(inst)
+	-- tuning says default range is 15
+	a = SpawnPrefab("insight_range_indicator")
+	a:Attach(inst)
+	a:SetRadius(8 / WALL_STUDS_PER_TILE)
+	a:SetColour(Color.fromHex("#ff0000"))
+	a:SetVisible(true)
+
+
+	b = SpawnPrefab("insight_range_indicator")
+	b:Attach(inst)
+	b:SetRadius(15 / WALL_STUDS_PER_TILE)
+	b:SetColour(Color.fromHex("#ffffff"))
+	b:SetVisible(true)
+
+	--inst:AddComponent("dst_deployhelper")
+	--inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+end)
+
+AddPrefabPostInit("deerclops", function(inst)
+	-- tuning says default range is 15
+	f = SpawnPrefab("insight_range_indicator")
+	f:Attach(inst)
+	f:SetRadius(8 / WALL_STUDS_PER_TILE)
+	f:SetColour(Color.fromHex("#00ff00"))
+	f:SetVisible(true)
+
+
+	g = SpawnPrefab("insight_range_indicator")
+	g:Attach(inst)
+	g:SetRadius(15 / WALL_STUDS_PER_TILE)
+	g:SetColour(Color.fromHex("#0000ff"))
+	g:SetVisible(true)
+
+	--inst:AddComponent("dst_deployhelper")
+	--inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+end)
+--]]
+
+AddPrefabPostInit("insight_combat_range_indicator", import("helpers/combat").HookClientIndicator)
+
+--[[
 AddPrefabPostInit("klaus_sack", function(inst)
 	inst:DoTaskInTime(0, function()
 	local x, y, z = inst.Transform:GetWorldPosition() -- located at 0,0,0 on postinit
@@ -952,6 +994,8 @@ end)
 
 AddLocalPlayerPostInit(highlighting.Activate, true)
 AddLocalPlayerPostRemove(highlighting.Deactivate, true)
+AddLocalPlayerPostInit(combatHelper.Activate, true)
+--AddLocalPlayerPostRemove(combatHelper.Deactivate, true)
 
 if IsDST() then
 	--[[

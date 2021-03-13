@@ -82,7 +82,6 @@ local function Describe(self, context)
 	end
 	--]]
 
-	print(DataDumper(recipe_cache))
 	alt_description = "Unknown by: " .. table.concat(GetDumbPlayers(self.recipe), ", ")
 	
 

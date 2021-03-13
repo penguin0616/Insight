@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "2.10.11" -- ds is 2.9.7_ds
+version = "3.0.0" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,7 +77,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "QoL Beta Support; OTB, performance increase, more weighable info, seed seasons, many config options, many bug fixes;",
+	update_info = "Attack Ranges, Child Spawners, Treeguard chance, More Item Hover Ranges, Catcoon Den Info, Pig Wereness, Burning Info, Fish Wrangle & Catch Time, Bug Fixes",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -260,8 +260,8 @@ local english = {
 	--[[ Indicators ]]
 	--------------------------------------------------------------------------
 	display_attack_range = {
-		LABEL = "Attack Ranges (Limited)",
-		HOVER = "Whether attack ranges are shown (currently only applies to boomshrooms and anenemies).",
+		LABEL = "Attack Ranges",
+		HOVER = "Whether attack ranges are shown.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
@@ -270,6 +270,24 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Attack range is shown."
+			},
+		},
+	},
+	attack_range_type = {
+		LABEL = "Attack Range Type",
+		HOVER = "Type of attack range to be displayed.",
+		OPTIONS = {
+			["hit"] = {
+				DESCRIPTION = "Hit",
+				HOVER = "Hit range is shown."
+			},
+			["attack"] = {
+				DESCRIPTION = "Attack",
+				HOVER = "Attack range is shown."
+			},
+			["both"] = {
+				DESCRIPTION = "Both",
+				HOVER = "Both hit and attack range are shown."
 			},
 		},
 	},
@@ -1340,6 +1358,25 @@ local chinese = {
 			},
 		},
 	},
+	attack_range_type = {
+		LABEL = "Attack Range Type",
+		HOVER = "Type of attack range to be displayed.",
+		OPTIONS = {
+			["hit"] = {
+				DESCRIPTION = "Hit",
+				HOVER = "Hit range is shown."
+			},
+			["attack"] = {
+				DESCRIPTION = "Attack",
+				HOVER = "Attack range is shown."
+			},
+			["both"] = {
+				DESCRIPTION = "Both",
+				HOVER = "Both hit and attack range are shown."
+			},
+
+		},
+	},
 	item_range_indicator = {
 		LABEL = "鼠标放置显示物品生效范围",
 		HOVER = "将鼠标放置于物品上时该物品的生效范围是否显示。",
@@ -2407,6 +2444,17 @@ configuration_options = {
 			{data = true},
 		},
 		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "attack_range_type",
+		options = {
+			{data = "hit"},
+			{data = "attack"},
+			{data = "both"},
+		},
+		default = "hit",
+		client = true,
 		tags = {"undefined"},
 	},
 	{

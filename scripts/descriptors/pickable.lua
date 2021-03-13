@@ -19,17 +19,25 @@ directory. If not, please refer to
 ]]
 
 -- pickable.lua
+local wsth = import("helpers/worldsettingstimer")
+
 local function Describe(self, context)
 	local description = nil
 	local remaining_harvests = nil
 
-	if self.targettime and self.product then 
-		local remaining_time = self.targettime - GetTime()
+	local remaining_time
 
+	if self.useexternaltimer then
+		remaining_time = self.inst.components.worldsettingstimer and self.inst.components.worldsettingstimer:GetTimeLeft(wsth.PICKABLE_REGENTIME_TIMERNAME)
+	else
+		remaining_time = self.targettime and (self.targettime - GetTime()) or nil
+	end
+
+	if remaining_time then 
 		if not self.paused and remaining_time > 0 then
 			remaining_time = time.new(remaining_time, context)
 
-			if context.usingIcons and PrefabHasIcon(self.product) then
+			if context.usingIcons and self.product and PrefabHasIcon(self.product) then
 				description = string.format(context.lstr.regrowth, self.product, TimeToText(remaining_time))
 			else
 				description = string.format(context.lstr.lang.regrowth, TimeToText(remaining_time))

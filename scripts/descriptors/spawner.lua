@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- spawner.lua
+local wsth = import("helpers/worldsettingstimer")
+
 local function Describe(self, context)
 	if not context.config["display_spawner_information"] then
 		return
@@ -27,8 +29,17 @@ local function Describe(self, context)
 	local inst = self.inst
 	local description, alt_description
 
-	if self.nextspawntime then
-		description = string.format(context.lstr.spawner_next, STRINGS.NAMES[self.childname:upper()] or ("\"" .. self.childname .."\""), TimeToText(time.new(self.nextspawntime - GetTime(), context)))
+	local respawn_time
+
+	-- SPAWNER_STARTDELAY_TIMERNAME
+	if self.useexternaltimer then
+		respawn_time = self.inst.components.worldsettingstimer and self.inst.components.worldsettingstimer:GetTimeLeft(wsth.SPAWNER_STARTDELAY_TIMERNAME)
+	else
+		respawn_time = self.nextspawntime and (self.nextspawntime - GetTime()) or nil
+	end
+
+	if respawn_time then
+		description = string.format(context.lstr.spawner_next, STRINGS.NAMES[self.childname:upper()] or ("\"" .. self.childname .."\""), TimeToText(time.new(respawn_time, context)))
 	else
 		alt_description = string.format(context.lstr.spawner_child, STRINGS.NAMES[self.childname:upper()] or ("\"" .. self.childname .."\""))
 	end

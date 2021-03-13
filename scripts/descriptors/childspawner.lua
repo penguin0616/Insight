@@ -20,6 +20,7 @@ directory. If not, please refer to
 
 -- childspawner.lua
 local NO_NAME_PREFAB = "\"%s\""
+local wsth = import("helpers/worldsettingstimer")
 
 local function Describe(self, context)
 	if not context.config["display_spawner_information"] then
@@ -76,11 +77,20 @@ local function Describe(self, context)
 				to_regen = string.format(context.lstr.childspawner.entity, GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB))
 			end
 
-			local regen_time = self.timetonextregen
-			if self.task then
-				regen_time = regen_time + GetTaskRemaining(self.task)
+			
+			local regen_time
+			
+			if self.useexternaltimer then
+				regen_time = self.inst.components.worldsettingstimer and self.inst.components.worldsettingstimer:GetTimeLeft(wsth.CHILDSPAWNER_REGENPERIOD_TIMERNAME)
+			else
+				regen_time = self.timetonextregen
+				if self.task then -- lightflower_flower had the task running, but regen_time was 0 already. oh well.
+					regen_time = regen_time + GetTaskRemaining(self.task)
+				end
 			end
-			regen = string.format(context.lstr.childspawner.regenerating, to_regen, TimeToText(time.new(regen_time, context)))
+
+			regen_time = regen_time and TimeToText(time.new(regen_time, context)) or "?"
+			regen = string.format(context.lstr.childspawner.regenerating, to_regen, regen_time)
 		end
 	end
 

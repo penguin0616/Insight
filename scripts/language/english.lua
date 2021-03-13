@@ -361,6 +361,11 @@ return {
 	hunger_paused = "<color=HUNGER>Hunger</color> decay paused.",
 
 	-- inspectable.lua
+	catcoonden = {
+		lives = "Cat lives: %s / %s",
+		regenerate = "Cats regenerate in: %s",
+		waiting_for_sleep = "Waiting for nearby players to go away.",
+	},
 	wx78_charge = "Remaining charge: %s",
 	stagehand = {
 		hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
@@ -582,6 +587,9 @@ return {
 		weight_bounded = "Weight: %s <= %s (%s) <= %s",
 		owner_name = "Owner: %s"
 	},
+
+	-- werebeast.lua
+	werebeast = "Wereness: %s / %s",
 
 	-- wereness.lua
 	wereness_remaining = "Wereness: %s / %s",

@@ -23,6 +23,14 @@ directory. If not, please refer to
 -- @module util
 -- @author penguin0616
 
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
+
+local module = {}
+
+
+local LoadComponent
+
 local Text = require("widgets/text") --FIXED_TEXT
 local known_bundles = setmetatable({}, {__mode = "k"})
 
@@ -193,6 +201,13 @@ function TimeToText(arg, override)
 	end
 end
 
+function pack(...) 
+	return { n=select("#", ...), ...} 
+end
+function vararg(packed) 
+	return unpack(packed, 1, packed.n) 
+end
+
 --- best description
 function ResolveColors(str)
 	local res = str:gsub("<color=([#%w_]+)>", function(clr, str)
@@ -285,9 +300,6 @@ function CombineLines(...)
 
 	return (lines and table.concat(lines, "\n")) or nil
 end
-
-
-local module = {}
 
 --- Clamps a math value.
 -- @number num (required) The number to clamp.

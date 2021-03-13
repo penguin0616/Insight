@@ -25,8 +25,8 @@ directory. If not, please refer to
 --==========================================================================================================================
 local select, unpack = select, unpack
 
-local function pack(...) return { n=select("#", ...), ...} end
-local function vararg(packed) return unpack(packed, 1, packed.n) end
+local pack = pack
+local vararg = vararg
 
 -- every optimization matters...?
 local SendModRPCToServer = SendModRPCToServer
