@@ -19,22 +19,12 @@ directory. If not, please refer to
 ]]
 
 -- crabkingspawner.lua [Worldly]
-local CRABKING_SPAWNTIMER = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(_G.Prefabs.crabking_spawner.fn, "CRABKING_SPAWNTIMER"), "Unable to find \"CRABKING_SPAWNTIMER\"") --"regen_crabking"
+local CRABKING_SPAWNTIMER = assert(util.getupvalue(_G.Prefabs.crabking_spawner.fn, "CRABKING_SPAWNTIMER"), "Unable to find \"CRABKING_SPAWNTIMER\"") --"regen_crabking"
 
 
-local function GetCrabKingData(self)
-	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
-		if type(self) == "table" and self.inst == TheWorld then -- for modmain
-			self = TheWorld.shard.components.shard_insight.notables.crabking_spawner
-		end
-
-		return {
-			time_to_respawn = self.components.worldsettingstimer:GetTimeLeft(CRABKING_SPAWNTIMER)
-		}
-	end
-
+local function GetCrabKingData(inst)
 	return {
-		time_to_respawn = self:OnSave().timetorespawn
+		time_to_respawn = inst and inst.components.worldsettingstimer:GetTimeLeft(CRABKING_SPAWNTIMER) or nil
 	}
 end
 
@@ -48,7 +38,7 @@ local function Describe(self, context)
 	if self == nil and context.crabking_data then
 		data = context.crabking_data
 	elseif self and context.crabking_data == nil then
-		data = GetCrabKingData(self)
+		data = GetCrabKingData(TheWorld.shard.components.shard_insight.notables.crabking_spawner)
 	else
 		error(string.format("crabkingspawner.Describe improperly called with self=%s & crabking_data=%s", tostring(self), tostring(context.crabking_data)))
 	end

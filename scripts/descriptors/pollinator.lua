@@ -56,7 +56,7 @@ local function Describe(self, context)
 	end
 
 	if #strs > 0 then
-		description = string.format(context.lstr.pollination, table.concat(strs, " + "), self.collectcount) 
+		description = string.format(context.lstr.pollination, table.concat(strs, " + "), self.collectcount + 1) 
 	end
 
 	return {

@@ -88,12 +88,9 @@ local function Describe(self, context)
 			local action_id = action.id:lower()
 
 			local uses = math.ceil(self.current / amount)
-			print('action_id', action_id)
 			if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(context.lstr.actions[action_id]) then
-				print'\ta'
 				actions[#actions+1] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
 			else
-				print'\tb'
 				actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses)
 			end
 		end

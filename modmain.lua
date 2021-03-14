@@ -250,7 +250,7 @@ local descriptors_ignore = {
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
 
 	-- TheWorld
-	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor", "sisturnregistry", 
+	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor", "sisturnregistry", "singingshellmanager",
 
 	-- Forest & Caves
 	"yotc_raceprizemanager", "shadowhandspawner", "desolationspawner", "ambientlighting", "worldoverseer", "forestresourcespawner", "shadowcreaturespawner", "chessunlocks", "feasts", 
@@ -320,6 +320,8 @@ function IsClientHost()
 	--return IsDST() and TheNet:IsDedicated() == false and TheWorld.ismastersim == true
 end
 
+--- Checks whether the mod is running in The Forge.
+-- @treturn boolean
 function IsForge()
 	return IsDST() and TheNet:GetDefaultGameMode() == "lavaarena"
 end
@@ -338,7 +340,7 @@ function IsPrefab(arg)
 	return type(arg) == 'table' and arg.GUID and arg.prefab and true
 end
 
---- Return player's Insight
+--- Return player's Insight component.
 -- @tparam Player player
 -- @treturn ?Insight|nil
 function GetInsight(player)
@@ -372,8 +374,10 @@ function GetPlayerContext(player)
 end
 
 --- Creates player's insight context.
--- @tparam Player player
--- @tparam table config
+-- @tparam Player player Player to create context for.
+-- @tparam table config Insight configuration.
+-- @tparam table external_config Configuration from client mods.
+-- @tparam table etc
 function CreatePlayerContext(player, config, external_config, etc)
 	assert(player, "[Insight]: Player is missing!")
 	assert(config, "[Insight]: Config is missing!")
@@ -486,7 +490,7 @@ function GetItemPossessor(item)
 end
 
 --- Returns the current world type (DLCs and base game) that is active.
--- @treturn Integer (0 = Base Game, 1 = Reign of Giants, 2 = Shipwrecked, 3 = Hamlet)
+-- @treturn Integer (0 = Base Game, 1 = Reign of Giants, 2 = Shipwrecked, 3 = Hamlet, -1 = DST)
 function GetWorldType()
 	if TheSim:GetGameID() == "DST" then
 		return -1 -- Don't Starve Together
@@ -641,6 +645,7 @@ end
 --- Retrives our information for an item.
 -- @tparam Prefab item
 -- @tparam Player player
+-- @tparam table params
 -- @treturn string
 local function GetEntityInformation(item, player, params)
 	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab
@@ -2539,6 +2544,16 @@ if IsDST() then -- not in UI overrides because server needs access too
 	local triggered = false
 	AddClassPostConstruct("widgets/scripterrorwidget", function(self)
 		mprint("A crash has occured.")
+		if self.title then
+			mprint("Title:", self.title:GetString())
+		end
+		if self.text then
+			mprint("Text:", self.text:GetString())
+		end
+		if self.additionaltext then
+			mprint("Additionaltext:", self.additionaltext:GetString())
+		end
+
 		if triggered then
 			mprint("Preventing crash overflow.")
 			return

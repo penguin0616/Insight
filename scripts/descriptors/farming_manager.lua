@@ -29,7 +29,7 @@ local function GetLordFruitFlyData(self)
 	else
 		lordfruitfly_spawntime = util.getupvalue(self.OnSave, "lordfruitfly_spawntime")
 		if lordfruitfly_spawntime then
-			lordfruitfly_spawntime = lordfruitfly_spawntime.end_time
+			lordfruitfly_spawntime = lordfruitfly_spawntime.end_time - GetTime()
 		end
 	end
 
@@ -51,7 +51,7 @@ local function Describe(self, context)
 		return
 	end
 
-	local remaining_time = data.lordfruitfly_spawntime - GetTime()
+	local remaining_time = data.lordfruitfly_spawntime
 	remaining_time = TimeToText(time.new(remaining_time, context))
 
 	description = remaining_time

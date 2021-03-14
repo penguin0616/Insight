@@ -46,7 +46,7 @@ local function Describe(self, context)
 	end
 
 	return {
-		priority = 0,
+		priority = 100,
 		description = description,
 		linkedWorld = self.linkedWorld,
 		receivedPortal = self.receivedPortal,

@@ -91,7 +91,7 @@ local function GetWorldData()
 		end
 	end
 
-	local dragonfly_spawner_timer
+	local dragonfly_spawner_timer = notables.dragonfly_spawner and notables.dragonfly_spawner.components.worldsettingstimer:GetTimeLeft(DRAGONFLY_SPAWNTIMER) or nil
 	if notables.dragonfly_spawner then
 		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 			dragonfly_spawner_timer = notables.dragonfly_spawner.components.worldsettingstimer:GetTimeLeft(DRAGONFLY_SPAWNTIMER)
@@ -126,12 +126,7 @@ local function GetWorldData()
 	end
 	--]]
 
-	local crabking = nil
-	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
-		crabking = TheWorld.components.crabkingspawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(notables.crabking_spawner) or nil
-	else
-		crabking = TheWorld.components.crabkingspawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(TheWorld.components.crabkingspawner) or nil
-	end
+	local crabking = TheWorld.components.crabkingspawner and notables.crabking_spawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(notables.crabking_spawner) or nil
 
 	local deerclops = TheWorld.components.deerclopsspawner and _G.Insight.descriptors.deerclopsspawner.GetDeerclopsData(TheWorld.components.deerclopsspawner) or nil
 

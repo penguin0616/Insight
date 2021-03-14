@@ -18,12 +18,17 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+---------------------------------------
+-- Mod information for the game to process.
+-- @script modinfo
+-- @author penguin0616
+
 -- DS 2081254154
 -- DST 2189004162
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.0.2" -- ds is 2.9.7_ds
+version = "3.0.3" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
