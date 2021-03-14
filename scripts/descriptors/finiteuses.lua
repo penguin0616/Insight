@@ -22,9 +22,6 @@ directory. If not, please refer to
 local rawget = rawget
 
 local function FormatUses(uses, context)
-	mprint("formatuses:", uses)
-	mprint(context.lstr.action_uses, context.lstr.actions.uses_plain)
-	mprint(string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses))
 	return string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses)
 end
 

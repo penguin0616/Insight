@@ -590,7 +590,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		if entityInformation then
 			-- control pressed doesn't have the game focus issues (alt+tab keeps the key down) and handles the changed keybinds in control menu. 
 			if TheInput_IsControlPressed(TheInput, CONTROL_FORCE_INSPECT) then
-				local altOnlyIsVerbose = TheInput_IsKeyDown(TheInput, CONTROL_FORCE_TRADE)
+				local altOnlyIsVerbose = TheInput_IsControlPressed(TheInput, CONTROL_FORCE_TRADE)
 				if informationOnAltOnly == true and altOnlyIsVerbose == false then
 					itemDescription = entityInformation.information
 				else

@@ -338,7 +338,7 @@ local function OnIndicatorStateDirty(inst)
 		end)
 
 		--mprint("LOCAL STATE - TARGETTING")
-		AdjustIndicator(inst, Color.fromHex("#888888"), true)
+		AdjustIndicator(inst, Color.fromHex("#60ffff"), true)
 	else -- attacking
 		inst.hide_task = inst:DoTaskInTime(8, function()
 			AdjustIndicator(inst, nil, false)
@@ -370,8 +370,8 @@ local function OnIndicatorStateDirty(inst)
 			range = range or inst.net_attack_range:value()
 			--mprint("attack range:", range)
 			
-			AdjustIndicator(inst, Color.fromHex("#4444ff"), true, range + localPlayer:GetPhysicsRadius(0)) -- #b0593a
-			inst.AnimState:SetAddColour(0, 0, 0.05, 1)
+			AdjustIndicator(inst, Color.fromHex("#60ffff"), true, range + localPlayer:GetPhysicsRadius(0)) -- #b0593a
+			inst.AnimState:SetAddColour(0, 0, 0, 1)
 		end
 	end
 end
