@@ -21,18 +21,10 @@ directory. If not, please refer to
 -- sinkholespawner.lua
 local ANTLION_RAGE_TIMER = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(_G.Prefabs.antlion.fn, "ANTLION_RAGE_TIMER"), "Unable to find \"ANTLION_RAGE_TIMER\"") --"rage"
 
-local function GetAntlionData(self)
-	local time_to_rage
-
-	local inst = self.inst or self
-	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
-		time_to_rage = inst.components.worldsettingstimer:GetTimeLeft(ANTLION_RAGE_TIMER)
-	else
-		time_to_rage = inst.components.timer:GetTimeLeft("rage")
-	end
+local function GetAntlionData(inst)
 
 	return {
-		time_to_rage = time_to_rage
+		time_to_rage = inst.components.worldsettingstimer:GetTimeLeft(ANTLION_RAGE_TIMER)
 	}
 end
 
@@ -43,7 +35,7 @@ local function Describe(self, context)
 	if self == nil and context.antlion_data then
 		data = context.antlion_data
 	elseif self and context.antlion_data == nil then
-		data = GetAntlionData(self)
+		data = GetAntlionData(self.inst)
 	else
 		error(string.format("sinkholespawner.Describe improperly called with self=%s & antlion_data=%s", tostring(self), tostring(context.bearger_data)))
 	end

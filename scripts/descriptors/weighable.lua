@@ -57,8 +57,8 @@ local function Describe(self, context)
 		) .. owner_name
 	end
 
-	weight_percent = 0
-	description = string.format(context.lstr.weighable.weight, weight, "?") .. owner_name
+	
+	description = string.format(context.lstr.weighable.weight, weight, weight_percent or "?") .. owner_name
 
 	return {
 		priority = 0,

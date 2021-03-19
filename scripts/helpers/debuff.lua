@@ -209,7 +209,7 @@ debuff_effects["voltgoatjelly"] = {
 	["buff_electricattack"] = {
 		prefab = "buff_electricattack",
 		data = {
-			duration = TUNING.SWEETTEA_DURATION,
+			duration = TUNING.BUFF_ELECTRICATTACK_DURATION,
 		}
 	}
 }

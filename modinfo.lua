@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.0.3" -- ds is 2.9.7_ds
+version = "3.0.5" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -270,11 +270,11 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Attack range is not shown."
+				HOVER = "Attack ranges are not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Attack range is shown."
+				HOVER = "Attack ranges are shown."
 			},
 		},
 	},
@@ -953,20 +953,6 @@ local english = {
 			},
 		},
 	},
-	display_spawner = {
-		LABEL = "Spawners",
-		HOVER = "Whether spawner information is displayed.",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "Disabled",
-				HOVER = "Will not display spawner information."
-			},
-			["true"] = {
-				DESCRIPTION = "Enabled",
-				HOVER = "Will display spawner information."
-			},
-		},
-	},
 	display_hunger = {
 		LABEL = "Hunger",
 		HOVER = "How much hunger detail is shown.",
@@ -1350,16 +1336,16 @@ local chinese = {
 	--[[ Indicators ]]
 	--------------------------------------------------------------------------
 	display_attack_range = {
-		LABEL = "Attack Ranges (Limited)",
-		HOVER = "Whether attack ranges are shown (currently only applies to boomshrooms and anenemies).",
+		LABEL = "Attack Ranges",
+		HOVER = "Whether attack ranges are shown.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Attack range is not shown."
+				HOVER = "Attack ranges are not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Attack range is shown."
+				HOVER = "Attack ranges are shown."
 			},
 		},
 	},
@@ -1717,16 +1703,16 @@ local chinese = {
 		},
 	},
 	display_spawner_information = {
-		LABEL = "Spawner information",
-		HOVER = "Whether creature spawners have information shown.",
+		LABEL = "生物生成计时器",
+		HOVER = "是否显示生物生成计时信息（猪人、兔人等）。",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The spawner information is not shown.",
+				DESCRIPTION = "关闭",
+				HOVER = "不显示生物生成计时信息。"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The spawner information is shown."
+				DESCRIPTION = "开启",
+				HOVER = "显示生物生成计时信息。"
 			},
 		},
 	},
@@ -2035,20 +2021,6 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "开启",
 				HOVER = "将显示授粉信息。"
-			},
-		},
-	},
-	display_spawner = {
-		LABEL = "生物生成计时器",
-		HOVER = "是否显示生物生成计时信息（猪人、兔人等）。",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "关闭",
-				HOVER = "不显示生物生成计时信息。"
-			},
-			["true"] = {
-				DESCRIPTION = "开启",
-				HOVER = "显示生物生成计时信息。"
 			},
 		},
 	},
@@ -2867,15 +2839,6 @@ configuration_options = {
 	},
 	{
 		name = "display_pollination",
-		options = {
-			{data = false},
-			{data = true},
-		},
-		default = true,
-		tags = {"undefined"},
-	},
-	{
-		name = "display_spawner",
 		options = {
 			{data = false},
 			{data = true},

@@ -1632,20 +1632,36 @@ if IsDST() then
 		TheWorld.shard.components.shard_insight:SetCrabKingSpawner(inst)
 	end)
 
+	local oldLinkToPlayer
+	local function InsightLink(...)
+		Insight.descriptors.questowner.OnPipspookQuestBegin(...)
+		return oldLinkToPlayer(...)
+	end
+
+	local oldUnlinkFromPlayer
+	local function InsightUnlink(...)
+		Insight.descriptors.questowner.OnPipspookQuestEnd(...)
+		oldUnlinkFromPlayer(...)
+	end
+
 	AddPrefabPostInit("smallghost", function(inst)
 		if not TheWorld.ismastersim then return end
 		
-		local oldLinkToPlayer = inst.LinkToPlayer
-		inst.LinkToPlayer = function(...)
-			Insight.descriptors.questowner.OnPipspookQuestBegin(...)
-			return oldLinkToPlayer(...)
+		-- linking
+		if oldLinkToPlayer == nil then
+			oldLinkToPlayer = inst.LinkToPlayer
 		end
 
-		local oldUnlinkFromPlayer = util.getupvalue(inst._on_leader_death, "unlink_from_player")
-		util.replaceupvalue(inst._on_leader_death, "unlink_from_player", function(...)
-			Insight.descriptors.questowner.OnPipspookQuestEnd(...)
-			oldUnlinkFromPlayer(...)
-		end)
+		if inst.LinkToPlayer ~= InsightLink then
+			inst.LinkToPlayer = InsightLink
+		end
+
+		-- unlinking
+		if oldUnlinkFromPlayer == nil then
+			oldUnlinkFromPlayer = util.getupvalue(inst._on_leader_death, "unlink_from_player")
+			util.replaceupvalue(inst._on_leader_death, "unlink_from_player", InsightUnlink)
+		end
+
 	end)
 
 	AddPrefabPostInit("meteorspawner", function(inst)
@@ -1981,6 +1997,47 @@ if IsDST() then
 			end
 		end
 
+		_G.c_prefabring = function(prefab)
+			assert(TheWorld.ismastersim, "need to be mastersim")
+			local items = {prefab} --Which items spawn. 
+			local player = ConsoleCommandPlayer() --DebugKeyPlayer()
+			if player == nil then
+				return true
+			end
+			local pt = Vector3(player.Transform:GetWorldPosition())
+			local theta = math.random() * 2 * PI
+			local numrings = 10 --How many rings of stuff you spawn
+			local radius = 2 --Initial distance from player
+			local radius_step_distance = 1 --How much the radius increases per ring.
+			local itemdensity = 1 --(X items per unit)
+			local map = TheWorld.Map
+			
+			local finalRad = (radius + (radius_step_distance * numrings))
+			local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, finalRad + 2)
+
+			local numspawned = 0
+			-- Walk the circle trying to find a valid spawn point
+			for i = 1, numrings do
+				local circ = 2*PI*radius
+				local numitems = circ * itemdensity
+
+				for i = 1, numitems do
+					numspawned = numspawned + 1
+					local offset = Vector3(radius * math.cos( theta ), 0, -radius * math.sin( theta ))
+					local wander_point = pt + offset
+				
+					if map:IsPassableAtPoint(wander_point:Get()) then
+						local spawn = SpawnPrefab(GetRandomItem(items))
+						spawn.Transform:SetPosition(wander_point:Get())
+					end
+					theta = theta - (2 * PI / numitems)
+				end
+				radius = radius + radius_step_distance
+			end
+			print("Made: ".. numspawned .." items")
+			return true
+		end
+
 		_G.c_flowerring = function()
 			assert(TheWorld.ismastersim, "need to be mastersim")
 			local items = {"flower"} --Which items spawn. 
@@ -2271,7 +2328,7 @@ AddSimPostInit(function()
 
 		if not hunter then 
 			local worldprefab = (is_dst and world.worldprefab) or world.prefab
-			if worldprefab == "caves" then
+			if worldprefab == "cave" then
 				mprint("Caves does not have a hunter component.")
 			else
 				mprint("No hunter component???")

@@ -89,6 +89,7 @@ local function GotEntityInformation(inst, data)
 	local insight = GetInsight(inst)
 
 	local safe, items = pcall(function() return decompress(data.data) end)--json.decode(str)
+	--local safe, items = true, decompress(data.data)
 	if not safe then
 		return
 	end
@@ -97,7 +98,7 @@ local function GotEntityInformation(inst, data)
 		local data = items[i]
 		-- GUIDs are numbers. not strings. 
 		local guid = tonumber(data.GUID)
-		local ent = entityManager:LookupGUID(guid)
+		local ent = entityManager.active_entity_lookup[guid] --entityManager:LookupGUID(guid)
 		--dprint("SAVING FOR:", ent, guid)
 		if ent then
 			insight.entity_data[ent] = data
@@ -371,7 +372,6 @@ local Insight = Class(function(self, inst)
 end)
 
 function Insight:PipspookToyFound(inst) 
-	dprint("found", inst)
 	local network_id = GetEntityDebugData(inst).network_id
 
 	local toy_data = util.table_find(self.pipspook_toys, function(t) return t.network_id == network_id end) -- ISSUE:PERFORMANCE (TEST#8)
@@ -817,7 +817,12 @@ function Insight:EntityActive(ent)
 			self:RequestInformation(ent)
 		end)
 	else
-		ent:DoTaskInTime(math.random() * 3, function()
+		ent:DoTaskInTime(math.random(1, 8) / 10, function()
+			--[[
+			if self.entity_data[ent] and self.entity_data[ent].GUID ~= nil then
+				return
+			end
+			--]]
 			if not TheWorld.ismastersim then
 				if ent.replica.container then
 					self:RequestInformation(ent)

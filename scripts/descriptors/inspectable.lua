@@ -78,6 +78,10 @@ local CUSTOM_RANGES = {
 		range = TUNING.TRIDENT_FARM_PLANT_INTERACT_RANGE,
 		color = Insight.COLORS.WET
 	},
+	featherfan = {
+		range = TUNING.FEATHERFAN_RADIUS,
+		color = Insight.COLORS.FROZEN
+	},
 
 	fruitflyfruit = {
 		range = 20, --upvalue in behaviours/findfarmplant
@@ -247,8 +251,6 @@ local function RangedDescribe(self, context)
 		attach_player = attach_player
 	}
 end
-
-
 
 local function Describe(self, context)
 	local inst = self.inst

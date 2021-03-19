@@ -351,6 +351,7 @@ local function EvaluateRelevance(inst, isApplication)
 	local container = prefab and ((Is_DST and inst.replica.container) or inst.components.container)
 
 	if prefab and container then
+		--local a = os.clock()
 		local relevance = GetContainerRelevance(container)
 
 		if isApplication and relevance > 0 then
@@ -358,7 +359,9 @@ local function EvaluateRelevance(inst, isApplication)
 		else
 			RemoveHighlight(inst)
 		end
+		--print("evaluating container", inst, os.clock() - a)
 	elseif isApplication and (activeItem or activeIngredientFocus) then
+		--local a = os.clock()
 		local item = (widget and inst.item) or inst -- If widget, inst is ItemTile
 
 		local color
@@ -374,6 +377,7 @@ local function EvaluateRelevance(inst, isApplication)
 		else
 			RemoveHighlight(inst)
 		end
+		--print("evaluating otherwise", inst, os.clock() - a)
 	else
 		RemoveHighlight(inst)
 	end
@@ -382,14 +386,25 @@ local function EvaluateRelevance(inst, isApplication)
 end
 
 local function DoRelevanceChecks(force_apply)
+	--print'------------------------'
+	--local a = os.clock()
+	--print('relevance_check_start')
 	local apply = ((activeItem or activeIngredientFocus) and true) or false
 	if force_apply ~= nil then
 		apply = force_apply
 	end
 
+	if not highlighting_enabled then
+		return
+	end
+
+	
 	for v in pairs(entityManager.active_entities) do -- ISSUE:PERFORMANCE
 		EvaluateRelevance(v, apply)
 	end
+
+	--local b = os.clock()
+	
 
 	-- {index, ItemSlot}
 	-- ItemSlot.tile.item
@@ -402,6 +417,14 @@ local function DoRelevanceChecks(force_apply)
 			EvaluateRelevance(slot.tile, apply)
 		end
 	end
+
+	--local c = os.clock()
+
+	--print(a, b, c)
+	--print('active_entities:', b - a)
+	--print('item slots:', c - b)
+
+	--print('total:', c - a)
 end
 
 function highlighting.SetActiveItem(player, data)

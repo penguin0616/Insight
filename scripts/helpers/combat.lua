@@ -267,7 +267,7 @@ local function HookCombat(self)
 		return
 	end
 
-	if self.inst:HasTag("player") then
+	if self.inst:HasTag("player") or self.inst:HasTag("wall") then
 		--[[
 		self.SetTarget = oldSetTarget or self.SetTarget
 		self.TryRetarget = oldTryRetarget or self.TryRetarget
