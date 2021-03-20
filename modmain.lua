@@ -137,7 +137,8 @@ local Insight = {
 		-- misc
 		ROYAL_PURPLE = "#6225D1", -- r
 		LIGHT_PINK = "#ffb6c1",
-		CAMO = "#4D6B43"
+		CAMO = "#4D6B43",
+		MOB_SPAWN = "#ee6666",
 	},
 
 	CONTROLS = {
@@ -220,7 +221,7 @@ local descriptors_ignore = {
 	"inventoryitem", "moisturelistener", "propagator", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", "book", -- don't care
 	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", "inventory", -- don't care
 	"named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
-	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", "tiletracker", "scenariorunner", "payable", "useableitem", "drawable", "shaver", -- don't care
+	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", "tiletracker", "payable", "useableitem", "drawable", "shaver", -- don't care
 	"gridnudger", "entitytracker", "appeasable", "currency", "mateable", "sizetweener", "saltlicker", "sinkable", "sticker", "projectile", "hiddendanger", "deciduoustreeupdater", -- don't care
 	"geyserfx", "blinkstaff", -- don't care,
 
@@ -2079,7 +2080,7 @@ if IsDST() then
 			return true
 		end
 
-		_G.c_chestring = function(prefab)
+		_G.c_chestring = function(prefabs)
 			assert(TheWorld.ismastersim, "need to be mastersim")
 			local items = {"treasurechest"} --Which items spawn. 
 			local player = ConsoleCommandPlayer() --DebugKeyPlayer()
@@ -2111,8 +2112,10 @@ if IsDST() then
 					if map:IsPassableAtPoint(wander_point:Get()) then
 						local spawn = SpawnPrefab(GetRandomItem(items))
 						spawn.Transform:SetPosition(wander_point:Get())
-						if prefab then
-							spawn.components.container:GiveItem(SpawnPrefab(prefab))
+						if prefabs then
+							for _, b in pairs(prefabs) do
+								spawn.components.container:GiveItem(SpawnPrefab(b))
+							end
 						end
 					end
 					theta = theta - (2 * PI / numitems)

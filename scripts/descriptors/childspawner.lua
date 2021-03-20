@@ -35,7 +35,7 @@ local function Describe(self, context)
 
 	if self.childname then
 		--[[
-		kids = string.format("<color=#ee6666>%s</color>: %s / %s", -- %s<sub>inside</sub> + %s<sub>outside</sub> 
+		kids = string.format("<color=MOB_SPAWN>%s</color>: %s / %s", -- %s<sub>inside</sub> + %s<sub>outside</sub> 
 			GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
 			self.childreninside + self.numchildrenoutside, 
 			self.maxchildren

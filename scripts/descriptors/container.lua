@@ -66,7 +66,7 @@ local function PopContainer(inst)
 	containers[inst] = nil
 end
 
-local function Describe(self, context)
+local function GetContainerContents(self, context)
 	if containers[self.inst] then
 		--mprint("reusing old index")
 		return { priority=0, description=nil, contents=containers[self.inst] }
@@ -99,22 +99,24 @@ local function Describe(self, context)
 	self.inst:ListenForEvent("itemget", PopContainer)
 	self.inst:ListenForEvent("itemlose", PopContainer)
 
+	return containers[self.inst]
+end
 
-	--[[
-	for i,v in pairs(self:GetAllItems()) do
-		if refs[v.prefab] == nil then
-			local data = {v.prefab, v.components.stackable and v.components.stackable:StackSize() or 1}
-			table.insert(items, data)
-			refs[v.prefab] = data
+local function Describe(self, context)
+	local description
+	local items = GetContainerContents(self, context)
+
+	if context.fromInspection and self.inst.prefab == "pandoraschest" then
+		if self.inst.components.scenariorunner == nil then
+			description = context.lstr.scenariorunner.opened_already
 		else
-			refs[v.prefab][2] = refs[v.prefab][2] + (v.components.stackable and v.components.stackable:StackSize() or 1)
-		end
+			description = Insight.descriptors.scenariorunner.RuinsChest(self, context)
+		end	
 	end
-	--]]
 
 	return {
 		priority = 0,
-		description = nil,
+		description = description,
 		contents = items
 	}
 end

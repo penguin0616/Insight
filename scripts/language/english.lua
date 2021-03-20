@@ -88,16 +88,21 @@ return {
 
 	-- childspawner.lua
 	childspawner = {
-		children = "<color=#ee6666>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
-		emergency_children = "*<color=#ee6666>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
-		both_regen = "<color=#ee6666>%s</color> & <color=#ee6666>%s</color>",
+		children = "<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		emergency_children = "*<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		both_regen = "<color=MOB_SPAWN>%s</color> & <color=MOB_SPAWN>%s</color>",
 		regenerating = "Regenerating %s in: %s",
-		entity = "<color=#ee6666>%s</color>",
+		entity = "<color=MOB_SPAWN>%s</color>",
 	},
 
 	-- combat.lua
 	damage = "<color=HEALTH>Damage</color>: <color=HEALTH>%s</color>",
 	damageToYou = " (<color=HEALTH>%s</color> to you)",
+
+	-- container.lua
+	container = {
+		
+	},
 
 	-- cooldown.lua
 	cooldown = "Cooldown: %s",
@@ -507,6 +512,18 @@ return {
 	-- sanityaura.lua
 	sanityaura = "<color=SANITY>Sanity Aura</color>: <color=SANITY>%s/min</color>",
 
+	-- scenariorunner.lua
+	scenariorunner = {
+		opened_already = "This has been opened already.",
+		chest_labyrinth = {
+			sanity = "66% chance to change <color=SANITY>sanity</color> by <color=SANITY>-20</color> to <color=SANITY>20</color>.",
+			hunger = "66% chance to change <color=HUNGER>hunger</color> by <color=HUNGER>-20</color> to <color=HUNGER>20</color>.",
+			health = "66% chance to change <color=HEALTH>health</color> by <color=HEALTH>0</color> to <color=HEALTH>20</color>.",
+			inventory = "66% chance to change <color=LIGHT>durability</color> or <color=MONSTER>freshness</color> by 20%.",
+			summonmonsters = "66% chance to summon 1-3 <color=MOB_SPAWN>Depth Dwellers</color>.",
+		},
+	},
+
 	-- sinkholespawner.lua
 	antlion_rage = "%s",
 
@@ -518,7 +535,7 @@ return {
 	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
 
 	-- spawner.lua
-	spawner_next = "Will spawn a <color=#ee6666>%s</color> in %s.",
+	spawner_next = "Will spawn a <color=MOB_SPAWN>%s</color> in %s.",
 	spawner_child = "Spawns a <color=#ff9999>%s</color>",
 
 	-- stewer.lua
