@@ -368,7 +368,7 @@ return {
 	},
 	wx78_charge = "剩余充能: %s",
 	stagehand = {
-		hits_remaining = "剩余<color=#aaaaee>击打</color>: <color=#aaaaee>%s</color>",
+		hits_remaining = "剩余<color=#aaaaee>敲击</color>: <color=#aaaaee>%s</color>",
 		time_to_reset = "将重置于 %s." 
 	},
 	canary = {
