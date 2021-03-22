@@ -73,7 +73,7 @@ return {
 	breeder_fish4 = "<color=#DED15E>小丑鱼</color>",
 	breeder_fish5 = "<color=#9ADFDE>霓虹鱼</color>",
 	breeder_fishstring = "%s: %s / %s",
-	breeder_nextfishtime = "额外的鱼：%s",
+	breeder_nextfishtime = "额外的鱼: %s",
 	breeder_possiblepredatortime = "可能生成捕食者: %s",
 
 	-- burnable.lua
@@ -135,15 +135,15 @@ return {
 	incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
 
 	-- diseaseable.lua
-	disease_in = "感染疾病在：%s后",
-	disease_spread = "传播疾病在：%s后",
-	disease_delay = "疾病延迟：%s",
+	disease_in = "感染疾病在: %s后",
+	disease_spread = "传播疾病在: %s后",
+	disease_delay = "疾病延迟: %s",
 
 	-- domesticable.lua
 	domesticable = {
 		domestication = "驯化值: %s%%",
 		obedience = "顺从值: %s%%",
-		tendency = "趋势：%s"
+		tendency = "趋势: %s"
 	},
 
 	-- drivable.lua
@@ -153,7 +153,7 @@ return {
 	dry_time = "完成还需: %s",
 
 	-- edible.lua
-	food_unit = "<color=%s>%s</color> 个 <color=%s>%s</color>",
+	food_unit = "<color=%s>%s</color> 个单位的 <color=%s>%s</color>",
 	edible_interface = "<color=HUNGER>饥饿</color>: <color=HUNGER>%s</color> / <color=SANITY>理智</color>: <color=SANITY>%s</color> / <color=HEALTH>生命</color>: <color=HEALTH>%s</color>",
 	edible_wiki = "<color=HEALTH>生命</color>: <color=HEALTH>%s</color> / <color=HUNGER>饥饿</color>: <color=HUNGER>%s</color> / <color=SANITY>理智</color>: <color=SANITY>%s</color>",
 	edible_foodtype = {
@@ -176,25 +176,25 @@ return {
 		seed = "种子"
 	},
 	edible_foodeffect = {
-		temperature = "温度变化：%s, %s",
-		caffeine = "速度：%s, %s",
+		temperature = "温度变化: %s, %s",
+		caffeine = "速度: %s, %s",
 		surf = "船只速度: %s, %s",
-		autodry = "干燥：%s, %s",
-		instant_temperature = "温度变化：%s, (瞬间)",
-		antihistamine = "花粉症延时：%ss",
+		autodry = "干燥: %s, %s",
+		instant_temperature = "温度变化: %s, (瞬间)",
+		antihistamine = "花粉症延时: %ss",
 	},
-	foodmemory = "最近食用：%s / %s，会忘记于：%s后",
-	wereeater = "<color=MONSTER>怪兽肉</color> eaten: %s / %s, will forget in: %s",
+	foodmemory = "最近食用: %s / %s，会忘记于: %s后",
+	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消失于: %s",
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
 	speed = "<color=DAIRY>移速</color>: %s%%",
 	hunger_slow = "<color=HUNGER>饥饿速度降低</color>: <color=HUNGER>%s%%</color>",
-	hunger_drain = "<color=HUNGER>Hunger drain</color>: <color=HUNGER>%s%%</color>",
+	hunger_drain = "<color=HUNGER>饥饿度降低</color>: <color=HUNGER>%s%%</color>",
 	insulated = "保护你免遭雷击.",
 
 	-- example.lua
-	--why = "[why am i empty]",
+	why = "[为什么我是空的]",
 
 	-- explosive.lua
 	explosive_damage = "<color=LIGHT>爆炸伤害</color>: %s",
@@ -202,15 +202,15 @@ return {
 
 	-- farmplantable.lua
 	farmplantable = {
-		product = "会长成<color=NATURE>%s</color>.",
-		nutrient_consumption = "Plant consumes: [<color=NATURE>%d<sub>Formula</sub></color>, <color=CAMO>%d<sub>Compost</sub></color>, <color=INEDIBLE>%d<sub>Manure</sub></color>]",
-		good_seasons = "季节: %s",
+		product = "会长成 <color=NATURE>%s</color>.",
+		nutrient_consumption = "植物消耗: [<color=NATURE>%d<sub>施法</sub></color>, <color=CAMO>%d<sub>肥料</sub></color>, <color=INEDIBLE>%d<sub>便便</sub></color>]",
+		good_seasons = "生长季节: %s",
 	},
 
 	-- farmplantstress.lua
 	farmplantstress = {
 		stress_points = "压力点: %s",
-		display = "压力源：%s",
+		display = "压力源: %s",
 		stress_tier = "压力等级: %s",
 		tiers = (IsDST() and {
 			[FARM_PLANT_STRESS.NONE] = "无",
@@ -229,21 +229,21 @@ return {
 	},
 
 	farmsoildrinker_nutrients = {
-		soil_only = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]",
-		soil_plant = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] ([<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>])",
+		soil_only = "养分: [<color=NATURE>%+d<sub>法</sub></color>, <color=CAMO>%+d<sub>肥</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>]",
+		soil_plant = "养分: [<color=NATURE>%+d<sub>法</sub></color>, <color=CAMO>%+d<sub>肥</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>] ([<color=NATURE>%+d<sub>法</sub></color>, <color=CAMO>%+d<sub>肥</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>])",
 		--soil_plant_tile = "Nutrients: [%+d<color=NATURE><sub>F</sub></color>, %+d<color=CAMO><sub>C</sub></color>, %+d<color=INEDIBLE><sub>M</sub></color>]<sup>tile</sup> ([<color=#bee391>%+d<sub>F</sub></color>, <color=#7a9c6e>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sup>plantΔ</sup>   [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sup>tileΔ</sup>)",
 		--soil_plant_tile = "Nutrients: [%+d<color=NATURE><sub>F</sub></color>, %+d<color=CAMO><sub>C</sub></color>, %+d<color=INEDIBLE><sub>M</sub></color>]<sup>tile</sup> ([<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sup>plantΔ</sup>   [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sup>tileΔ</sup>)",
-		soil_plant_tile = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sub>tile</sub>   (Δ[<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sub>Δplant</sub> [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>]<sub>Δtile</sub>)",
+		soil_plant_tile = "养分: [<color=NATURE>%+d<sub>法</sub></color>, <color=CAMO>%+d<sub>肥</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>]<sub>tile</sub>   (Δ[<color=NATURE>%+d<sub>法</sub></color>, <color=CAMO>%+d<sub>肥</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>]<sub>植物</sub> [<color=NATURE>%+d<sub>法</sub></color>, <color=CAMO>%+d<sub>肥</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>]<sub>Δ格</sub>)",
 		--soil_plant_tile_net = "Nutrients: [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] ([<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] + [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>] = [<color=NATURE>%+d<sub>F</sub></color>, <color=CAMO>%+d<sub>C</sub></color>, <color=INEDIBLE>%+d<sub>M</sub></color>])"
 	},
 	
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "缩短 <color=NATURE>%s</color> 秒<color=NATURE>生长时间</color>",
-		nutrient_value = "Nutrients: [<color=NATURE>%s</color>, <color=CAMO>%s</color>, <color=INEDIBLE>%s</color>]",
+		nutrient_value = "养分: [<color=NATURE>%s</color>, <color=CAMO>%s</color>, <color=INEDIBLE>%s</color>]",
 		wormwood = {
-			formula_growth = "Accelerates your <color=LIGHT_PINK>blooming</color> by <color=LIGHT_PINK>%s</color>.",
-			compost_heal = "<color=HEALTH>Heals</color> you for <color=HEALTH>%+d</color> over <color=HEALTH>%s</color> second(s).",
+			formula_growth = "加速<color=LIGHT_PINK>开花</color> <color=LIGHT_PINK>%s</color>.",
+			compost_heal = "<color=HEALTH>回复</color> 你 <color=HEALTH>%+d</color> 于 <color=HEALTH>%s</color> 秒.",
 		},
 	},
 
@@ -284,7 +284,7 @@ return {
 
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
-	fish_recharge = ": +1 条鱼于：%s",
+	fish_recharge = ": +1 条鱼于: %s",
 	--fish_wait_time = "Will take <color=SHALLOWS>%s seconds</color> to catch a fish.",
 
 	-- fishingrod.lua
@@ -307,7 +307,7 @@ return {
 	fuel = {
 		fuel = "<color=LIGHT>%s</color> 秒的燃料.",
 		fuel_verbose = "<color=LIGHT>%s</color> 秒的 <color=LIGHT>%s</color>",
-		type = "Fueltype: %s",
+		type = "燃料类型: %s",
 	},
 
 	-- fueled.lua
@@ -338,8 +338,8 @@ return {
 
 	-- hatchable.lua
 	hatchable = {
-		discomfort = "不舒适感：%s / %s",
-		progress = "孵化过程：%s / %s",
+		discomfort = "不舒适感: %s / %s",
+		progress = "孵化过程: %s / %s",
 	},
 
 	-- healer.lua
@@ -362,14 +362,14 @@ return {
 
 	-- inspectable.lua
 	catcoonden = {
-		lives = "Cat lives: %s / %s",
-		regenerate = "Cats regenerate in: %s",
-		waiting_for_sleep = "Waiting for nearby players to go away.",
+		lives = "浣熊猫寿命: %s / %s",
+		regenerate = "浣熊猫将复活于: %s",
+		waiting_for_sleep = "等待附近的玩家走开.",
 	},
-	wx78_charge = "Remaining charge: %s",
+	wx78_charge = "剩余充能: %s",
 	stagehand = {
-		hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
-		time_to_reset = "Will reset in %s." 
+		hits_remaining = "剩余<color=#aaaaee>击打</color>: <color=#aaaaee>%s</color>",
+		time_to_reset = "将重置于 %s." 
 	},
 	canary = {
 		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
@@ -378,19 +378,19 @@ return {
 		gas_level_decrease = "Decreases in %s."
 	},
 	fossil_stalker = {
-		pieces_needed = "有20%%几率组装错误在组装上%s片后",
+		pieces_needed = "有 20%% 几率组装错误在组装上 %s 片后",
 		correct = "组装正确",
 		incorrect = "组装错误",
 	},
-	trap_starfish_cooldown = "重组于：%s后",
+	trap_starfish_cooldown = "重组于: %s后",
 	lureplant_active = "开始活动于: %s后",
 	walrus_camp_respawn = "<color=FROZEN>%s</color> 重生于: %s后",
-	hunt_progress = "追踪：%s / %s",
+	hunt_progress = "追踪: %s / %s",
 	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
 	frog_rain_chance = "<color=FROG>青蛙雨几率</color>: <color=FROG>%s%%</color>",
 	world_temperature = "<color=LIGHT>世界温度</color>: <color=LIGHT>%s</color>",
-	unlocks = "Unlocks: %s",
+	unlocks = "解锁: %s",
 
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
@@ -398,7 +398,7 @@ return {
 
 	-- klaussackspawner.lua
 	klaussack_spawnsin = "%s",
-	klaussack_despawn = "消失在天数：%s",
+	klaussack_despawn = "消失在第 %s 天",
 
 	-- leader.lua
 	followers = "跟随者数量: %s",
@@ -415,13 +415,13 @@ return {
 	mast_max_velocity = "最高速度: %s",
 
 	-- mermcandidate.lua
-	mermcandidate = "卡路里：%s / %s",
+	mermcandidate = "卡路里: %s / %s",
 
 	-- moisture.lua
 	moisture = "<color=WET>潮湿度</color>: <color=WET>%s%%</color>",
 
 	-- nightmareclock.lua
-	nightmareclock = "<color=%s>时期: %s</color>, %s",
+	nightmareclock = "<color=%s>阶段: %s</color>, %s",
 	nightmareclock_lock = "被<color=#CE3D45>远古钥匙</color>锁住",
 
 	-- oar.lua
@@ -433,24 +433,24 @@ return {
 
 	-- perishable.lua
 	rot = "腐烂",
-	stale = "不新鲜",
+	stale = "陈旧",
 	spoil = "变质",
-	dies = "死",
-	starves = "Starves",
-	perishable_transition = "<color=MONSTER>%s</color>于: %s后",
-	perishable_transition_extended = "<color=MONSTER>%s</color>于: %s后 (<color=MONSTER>%s%%</color>)",
+	dies = "死亡",
+	starves = "饿死",
+	perishable_transition = "<color=MONSTER>%s</color>于: %s",
+	perishable_transition_extended = "<color=MONSTER>%s</color>于: %s (<color=MONSTER>%s%%</color>)",
 	perishable_paused = "当前暂停腐烂",
 
 	-- petrifiable.lua
-	petrify = "石化于：%s后",
+	petrify = "石化于: %s",
 
 	-- pickable.lua
-	regrowth = "<color=NATURE>重新生长</color> 在: <color=NATURE>%s</color> 后", -- has grammar problem, left because too annoying
+	regrowth = "<color=NATURE>重新生长</color> 于: <color=NATURE>%s</color>", -- has grammar problem, left because too annoying
 	regrowth_paused = "重生暂停",
-	pickable_cycles = "剩余收获次数：%s / %s",
+	pickable_cycles = "剩余收获次数: %s / %s",
 
 	-- pollinator.lua
-	pollination = "花朵授粉：(%s) / %s",
+	pollination = "花朵授粉: (%s) / %s",
 
 	-- preservative.lua
 	preservative = "恢复 %s%% 新鲜度.",
@@ -461,7 +461,7 @@ return {
 	-- questowner.lua
 	questowner = {
 		pipspook = {
-			toys_remaining = "剩余玩具数：%s",
+			toys_remaining = "剩余玩具数: %s",
 			assisted_by = "这个小惊吓正在受到 %s 的帮助",
 		},
 	},
@@ -529,7 +529,7 @@ return {
 	cooktime_modifier_faster = "烹调食物 <color=NATURE>%s%%</color> 加快.",
 
 	-- stickable.lua
-	stickable = "<color=FISH>贻贝</color>：%s",
+	stickable = "<color=FISH>贻贝</color>: %s",
 
 	-- temperature.lua
 	temperature = "温度: %s",
@@ -556,7 +556,7 @@ return {
 	-- handled by klei?
 
 	-- upgradeable.lua
-	upgradeable_stage = "阶段：%s / %s: ",
+	upgradeable_stage = "阶段: %s / %s: ",
 	upgradeable_complete = "升级 %s%% 完成",
 	upgradeable_incomplete = "不可升级",
 
@@ -579,7 +579,7 @@ return {
 		thorns = "<color=HEALTH>(反弹)</color> <color=HEALTH>伤害</color>"
 	},
 	weapon_damage = "%s: <color=HEALTH>%s</color>",
-	attack_range = "范围：%s",
+	attack_range = "范围: %s",
 
 	-- weighable.lua
 	weighable = {
@@ -589,10 +589,10 @@ return {
 	},
 
 	-- werebeast.lua
-	werebeast = "Wereness: %s / %s",
+	werebeast = "木头值: %s / %s",
 
 	-- wereness.lua
-	wereness_remaining = "木头值：%s / %s",
+	wereness_remaining = "木头值: %s / %s",
 
 	-- wintersfeasttable.lua
 
@@ -618,7 +618,7 @@ return {
 	worldmigrator = {
 		disabled = "切换世界已被禁用.",
 		target_shard = "目标世界: %s",
-		received_portal = "传送口: %s",
+		received_portal = "传送门: %s",
 		id = "这是 #: %s",
 	},
 
