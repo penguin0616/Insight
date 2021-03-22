@@ -135,9 +135,9 @@ return {
 	incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
 
 	-- diseaseable.lua
-	disease_in = "感染疾病在: %s后",
-	disease_spread = "传播疾病在: %s后",
-	disease_delay = "疾病延迟: %s",
+	disease_in = "将感染疾病于: %s",
+	disease_spread = "将传播疾病于: %s",
+	disease_delay = "疾病被延迟: %s",
 
 	-- domesticable.lua
 	domesticable = {
@@ -184,11 +184,11 @@ return {
 		antihistamine = "花粉症延时: %ss",
 	},
 	foodmemory = "最近食用: %s / %s，会忘记于: %s后",
-	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消失于: %s",
+	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消逝于: %s",
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
-	speed = "<color=DAIRY>移速</color>: %s%%",
+	speed = "<color=DAIRY>移动速度</color>: %s%%",
 	hunger_slow = "<color=HUNGER>饥饿速度降低</color>: <color=HUNGER>%s%%</color>",
 	hunger_drain = "<color=HUNGER>饥饿度降低</color>: <color=HUNGER>%s%%</color>",
 	insulated = "保护你免遭雷击.",
