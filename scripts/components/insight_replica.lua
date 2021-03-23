@@ -29,6 +29,84 @@ local Indicators = import("indicators")
 local Is_DST = IsDST()
 local Is_DS = IsDS()
 
+--[[
+	c_chestring({'spear', 'thulecite', 'redgem', 'bluegem', 'yellowgem', 'orangegem', 'purplegem', 'rocks', 'flint'})
+	5 of c_prefabring('spear') in the center of the chestring
+	
+	highlighting went from 0.2 to 0.019
+	aWOOOOOOOOOgah
+]]
+--------------------------------------------------------------------------
+--[[ Queuer ]]
+--------------------------------------------------------------------------
+local Queuer = Class(function(self, queues)
+	self.last_added_queue = 1
+	self.queue_count = queues
+
+	assert(self.queue_count >= self.last_added_queue)
+
+	self.queues = {}
+	
+
+	self.entity_to_queue = {} -- {{queue_id=queue_id, queue_position=queue_position}}
+
+	for i = 1, self.queue_count do
+		-- lua_getn has logarithmic cost (in 5.2 anyway)
+		self.queues[i] = {
+			length = 0,
+			items = {}
+		}
+	end
+end)
+
+function Queuer:Add(entity, data)
+	--mprint('add', entity, data)
+	local place = self.entity_to_queue[entity]
+	if place then
+		--mprint('tweaking', entity)
+		-- existing in a queue
+		self.queues[place.queue_id].items[place.queue_position] = data
+		return
+	end
+
+	self.last_added_queue = self.last_added_queue + 1
+	if self.last_added_queue > self.queue_count then
+		self.last_added_queue = 1
+	end
+
+	local selected = self.queues[self.last_added_queue] 
+	selected.length = selected.length + 1
+	selected.items[selected.length] = data
+
+	self.entity_to_queue[entity] = {queue_id = self.last_added_queue, queue_position = selected.length}
+
+	--mprint(string.format("Queue %s Length: %s", self.last_added_queue, selected.length))
+	
+	-- could just keep track of last queue added and pick next queue?
+	--[[
+	local min, q = math.huge, nil
+	for i = 1, self.queue_count do
+		local v = self.queue_count[i]
+
+		local len = #v
+		if len < min then
+			min = len, q = v
+		end 
+	end
+	--]]
+end
+
+function Queuer:Flush()
+	self.entity_to_queue = {}
+	for i = 1, self.queue_count do
+		self.queues[i] = {
+			length = 0,
+			items = {}
+		}
+	end
+end
+
+
 --------------------------------------------------------------------------
 --[[ PerformanceRatings ]]
 --------------------------------------------------------------------------
@@ -88,8 +166,10 @@ end
 local function GotEntityInformation(inst, data)
 	local insight = GetInsight(inst)
 
-	local safe, items = pcall(function() return decompress(data.data) end)--json.decode(str)
-	--local safe, items = true, decompress(data.data)
+
+	--mprint("got:", #data.data, data.data:sub(1, 128))
+	local safe, items = true, decompress(data.data)
+
 	if not safe then
 		return
 	end
@@ -180,6 +260,19 @@ local function OnHuntTargetDirty(inst, target)
 	--inst.HUD:AddTargetIndicator(target, {})
 end
 
+local function OnEntityNetworkActive(ent, self)
+	--[[
+	if self.entity_data[ent] == nil then -- outside our range of caring about.
+		return
+	elseif self.entity_data[ent].GUID ~= nil then -- has gotten info already.
+		return
+	end
+	--]]
+	if (ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") or not TheWorld.ismastersim then
+		self:RequestInformation(ent, (ent == ThePlayer and {raw = true}) or nil)
+	end
+end
+
 --------------------------------------------------------------------------
 --[[ Insight ]]
 --------------------------------------------------------------------------
@@ -250,19 +343,24 @@ local Insight = Class(function(self, inst)
 	-- Exceeded maximum data length serializing entity channel for entity woodie[117470]......
 	-- could i possibly attach a secondary entity and listen to it?
 	
-	--self.receivers = 5
-	self.queue_pop_count = 4
-	--self.queue_threshold = 15 + self.receivers * self.queue_pop_count
-	self.queue_flushing = false
 	
-	self.queue_tracker = {}
-	self.queue = createTable(100)
 	self.menus = setmetatable({}, { __mode="kv" })
 
 	self.entity_count = 0
 	self.world_data = nil -- await
 	self.entity_data = setmetatable(createTable(500), { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = {}
+
+	self.queuer = Queuer(7)
+	--[[
+		with the above listed setup, 
+			5 queues: had text lengths of roughly 14000-18000
+			6 queues: had text lengths of roughly 10000-15000
+		
+		ideally want to keep it around 10000 i think
+		
+		RPC was cutting off around 40k iirc
+	]]
 	
 	self.hunt_target = nil
 	self.tracked_entities = {}
@@ -300,7 +398,16 @@ local Insight = Class(function(self, inst)
 			end
 			--]]
 
-			self.inst:DoPeriodicTask(0.07, function()
+			self.inst:DoPeriodicTask(0.07, function() -- 0.07 normally
+				for i = 1, self.queuer.queue_count do
+					--print("queue [server]", i, ":::::", compress(self.queuer.queues[i].items))
+					local queue = self.queuer.queues[i]
+					if queue.length > 0 then
+						rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "EntityInformation"), self.inst.userid, compress(queue.items))
+					end
+				end
+				self.queuer:Flush()
+				--[[
 				local to_send = {}
 				to_send = self.queue -- meh
 
@@ -311,6 +418,7 @@ local Insight = Class(function(self, inst)
 					self.queue = {}
 					self.queue_tracker = {}
 				end
+				--]]
 			end)
 			
 			--[[
@@ -372,7 +480,7 @@ local Insight = Class(function(self, inst)
 end)
 
 function Insight:PipspookToyFound(inst) 
-	local network_id = GetEntityDebugData(inst).network_id
+	local network_id = inst.Network:GetNetworkID()
 
 	local toy_data = util.table_find(self.pipspook_toys, function(t) return t.network_id == network_id end) -- ISSUE:PERFORMANCE (TEST#8)
 
@@ -438,7 +546,7 @@ function Insight:HandlePipspookQuest(data, ...)
 
 		for i,v in pairs(self.pipspook_toys) do
 			-- v { network_id=network_id, position=Vector3 }
-			local toy = util.table_find(self.pipspook_queue, function(q) return GetEntityDebugData(q).network_id == v.network_id end) -- ISSUE:PERFORMANCE (TEST#8)
+			local toy = util.table_find(self.pipspook_queue, function(q) return q.Network:GetNetworkID() == v.network_id end) -- ISSUE:PERFORMANCE (TEST#8)
 
 			if toy then
 				-- toy already exists
@@ -499,12 +607,16 @@ end
 function Insight:SetEntityData(entity, data)
 	assert(TheWorld.ismastersim, "Insight:SetEntityData called from client.")
 
+	self.queuer:Add(entity, data)
+
+	--[==[
 	if self.queue_tracker[entity] then -- tracks index
 		self.queue[self.queue_tracker[entity]] = data -- replace old index
 	else
 		self.queue[#self.queue+1] = data
 		self.queue_tracker[entity] = #self.queue
 	end
+	--]==]
 end
 
 function Insight:SendNaughtiness()
@@ -812,24 +924,8 @@ function Insight:EntityActive(ent)
 
 	--self.entity_count = self.entity_count + 1
 
-	if ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit" then
-		ent:DoTaskInTime(0, function()
-			self:RequestInformation(ent)
-		end)
-	else
-		ent:DoTaskInTime(math.random(1, 8) / 10, function()
-			--[[
-			if self.entity_data[ent] and self.entity_data[ent].GUID ~= nil then
-				return
-			end
-			--]]
-			if not TheWorld.ismastersim then
-				if ent.replica.container then
-					self:RequestInformation(ent)
-				end
-			end
-		end)
-	end
+	local delay = ((ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") and 0) or math.random(1, 8) / 10
+	ent:DoTaskInTime(delay, OnEntityNetworkActive, self)
 end
 
 function Insight:CountEntities()
