@@ -1179,6 +1179,7 @@ function decompress(str)
 	return json.decode(str)
 end
 
+
 function compress2(tbl)
 	--if true then return json.encode(tbl) end
 
@@ -1513,7 +1514,7 @@ if IsDST() then
 			local pos = v:GetPosition()
 
 			table.insert(yes, {
-				network_id = GetEntityDebugData(v).network_id,
+				network_id = v.Network:GetNetworkID(),
 				icon = FOREST_MIGRATOR_IMAGES[id][1],
 				pos = {x = v:GetPosition().x, y = v:GetPosition().y, z = v:GetPosition().z},
 			})

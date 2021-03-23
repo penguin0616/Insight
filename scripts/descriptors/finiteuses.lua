@@ -26,7 +26,16 @@ local function FormatUses(uses, context)
 end
 
 local function SortActions(a, b)
-	return a[1].id:lower() < b[1].id:lower()
+	--[[
+	print(a, b)
+	print(a[1], b[1])
+	print(a[1].id, b[1].id)
+	--]]
+	if a[1] and a[1].id and b[1] and b[1].id then
+		return a[1].id:lower() < b[1].id:lower()
+	end
+
+	return false
 end
 
 local function Describe(self, context)

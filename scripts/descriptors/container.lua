@@ -69,7 +69,7 @@ end
 local function GetContainerContents(self, context)
 	if containers[self.inst] then
 		--mprint("reusing old index")
-		return { priority=0, description=nil, contents=containers[self.inst] }
+		return containers[self.inst]
 	end
 
 	--mprint("new", self.inst)

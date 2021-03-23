@@ -45,6 +45,8 @@ local entity_network_cache = setmetatable({}, { __mode = "v" })
 
 -- extremely expensive
 function GetEntityByNetworkID(network_id, to_search)
+	assert(false, "I should not be using GetEntityByNetworkID.")
+
 	if entity_network_cache[network_id] then
 		return entity_network_cache[network_id]
 	end
@@ -52,14 +54,14 @@ function GetEntityByNetworkID(network_id, to_search)
 	to_search = to_search or Ents
 
 	for i,v in pairs(to_search) do
-		if GetEntityDebugData(v).network_id == network_id then
+		if v.Network:GetNetworkID() == network_id then
 			entity_network_cache[network_id] = v
 			return v
 		end
 	end
 end
 
-
+--[==[
 function GetEntityDebugData(ent)
 	--[[
 		116786 - purplemooneye age 1220.57
@@ -83,6 +85,7 @@ Buffered Action: nil
 		network_id = tonumber(network_id)
 	}
 end
+--]==]
 
 function DoesEntityExistForClient(ent, client)
 	if not TheWorld.ismastersim then

@@ -33,13 +33,12 @@ local function SerializeToys(inst, doer)
 
 	for toy in pairs(inst._toys) do
 		table.insert(toys, {
-			network_id = GetEntityDebugData(toy).network_id,
+			network_id = toy.Network:GetNetworkID(),
 			position = toy:GetPosition(),
 			prefab = toy.prefab,
 			display_name = toy:GetDisplayName(),
 			owner = doer.name
 		})
-		--table.insert(toys, toy)
 	end
 
 	return toys

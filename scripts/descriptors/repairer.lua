@@ -22,7 +22,7 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description, alt_description
 
-	if not (context.config["repair_values"] > 0) then
+	if context.config["repair_values"] == 0 or context.config["repair_values"] == false then
 		return
 	end
 

@@ -74,7 +74,7 @@ local function SetEntityAwake(manager, inst)
 	end)
 	--]]
 	
-	manager.active_entities[inst] = GetEntityDebugData(inst)
+	manager.active_entities[inst] = 0 -- ~.02 improvement --GetEntityDebugData(inst)
 	manager.active_entity_lookup[inst.GUID] = inst
 	manager.entity_count = manager.entity_count + 1
 
@@ -100,10 +100,6 @@ end
 
 function EntityManager:LookupGUID(GUID)
 	return self.active_entity_lookup[GUID]
-end
-
-function EntityManager:LookupNetworkID(networkID)
-	--return GetEntityByNetworkID(networkID)
 end
 
 function EntityManager:Manage(entity)

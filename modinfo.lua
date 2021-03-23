@@ -662,11 +662,11 @@ local english = {
 		LABEL = "Repair Values",
 		HOVER = "Whether repair information is displayed (on inspection).",
 		OPTIONS = {
-			["0"] = {
+			["false"] = {
 				DESCRIPTION = "No",
 				HOVER = "Repair information is not shown.",
 			},
-			["1"] = {
+			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Repair information is shown.",
 			},
@@ -1734,11 +1734,11 @@ local chinese = {
 		LABEL = "修补数值",
 		HOVER = "是否显示物品的修复信息（需要检查）。",
 		OPTIONS = {
-			["0"] = {
+			["false"] = {
 				DESCRIPTION = "否",
 				HOVER = "不显示物品的修复信息",
 			},
-			["1"] = {
+			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示物品的修复信息。",
 			},
@@ -2674,10 +2674,10 @@ configuration_options = {
 	{
 		name = "repair_values",
 		options = {
-			{data = 0},
-			{data = 1},
+			{data = false},
+			{data = true},
 		},
-		default = 0,
+		default = false,
 		tags = {"undefined"},
 	},
 	{
