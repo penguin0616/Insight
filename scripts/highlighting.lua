@@ -383,7 +383,7 @@ local function EvaluateRelevance(inst, isApplication)
 end
 
 local function DoRelevanceChecks(force_apply)
-	--local a = os.clock()
+	local a = os.clock()
 	--print('relevance_check_start')
 
 	local apply = ((activeItem or activeIngredientFocus) and true) or false
@@ -399,7 +399,7 @@ local function DoRelevanceChecks(force_apply)
 		EvaluateRelevance(v, apply)
 	end
 
-	--local b = os.clock()
+	local b = os.clock()
 	
 
 	-- {index, ItemSlot}
@@ -414,12 +414,12 @@ local function DoRelevanceChecks(force_apply)
 		end
 	end
 
-	--local c = os.clock()
+	local c = os.clock()
 
-	print('active_entities:', b - a)
-	print('item slots:', c - b)
-	print('total:', c - a)
-	print'--------------------------------'
+	--dprint('active_entities:', b - a)
+	--dprint('item slots:', c - b)
+	--dprint('total:', c - a)
+	--dprint'--------------------------------'
 end
 
 function highlighting.SetActiveItem(player, data)

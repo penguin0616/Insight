@@ -23,10 +23,16 @@ local function Describe(self, context)
 	local description = nil
 
 	-- HasKing checks if king is valid, getking gets it
-	if self:HasKing() and self:GetKing() then
-		local hunger_data = Insight.descriptors.hunger.GetData(self:GetKing().components.hunger, context) or nil
+	local king = self:HasKing() and self:GetKing()
+	if king then
+		local hunger_data = Insight.descriptors.hunger.GetData(king.components.hunger, context) or nil
 		if hunger_data then
-			description = string.format("<icon=hunger> %s / %s", hunger_data.hunger, hunger_data.max_hunger)
+			local time_to_decay = Insight.descriptors.hunger.GetTimeToEmpty(king.components.hunger)
+			local time_to_die = king.components.health and king.components.health.currenthealth / king.components.hunger.hurtrate
+
+			local remaining = Round(time_to_decay + time_to_die, 0)
+
+			description = string.format("<icon=hunger> %s / %s, dies in: %s", hunger_data.hunger, hunger_data.max_hunger, TimeToText(time.new(remaining, context), "both_short"))
 		end
 	end
 

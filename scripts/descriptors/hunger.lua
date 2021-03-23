@@ -19,11 +19,32 @@ directory. If not, please refer to
 ]]
 
 -- hunger.lua
+local world_type = GetWorldType()
+
 local function GetData(self)
 	return {
 		hunger = tonumber(Round(self.current, 0)),
 		max_hunger = self.max
 	}
+end
+
+local function GetBurnRate(self)
+	local burn_rate
+	if world_type == -1 then
+		burn_rate = self.burnratemodifiers:Get()
+	elseif world_type == 0 or world_type == 1 then -- base game and rog
+		burn_rate = self.burnrate
+	else
+		burn_rate = self:GetBurnRate()
+	end
+
+	return burn_rate
+end
+
+local function GetTimeToEmpty(self)
+	local decay_per_moment = GetBurnRate(self) * self.hungerrate * (self.period or 1)
+
+	return self.current / decay_per_moment
 end
 
 local function Describe(self, context)
@@ -42,16 +63,9 @@ local function Describe(self, context)
 		if self.burning == false then
 			burn_rate = 0
 		else
-			if IsDST() then
-				burn_rate = self.burnratemodifiers:Get()
-			elseif GetWorldType() == 0 or GetWorldType() == 1 then -- base game and rog
-				burn_rate = self.burnrate
-			else
-				burn_rate = self:GetBurnRate()
-			end
+			burn_rate = GetBurnRate(self)
 
 			if not burn_rate then
-				ReportToCustomLog(GetWorldType(), self.GetBurnRate, self.burnrate)
 				error("you moused over a: " .. self.inst:GetDisplayName() .. ", please report this to penguin (PLEASE ATTACH MOD LOG!).")
 			end
 		end
@@ -81,5 +95,6 @@ end
 
 return {
 	Describe = Describe,
-	GetData = GetData
+	GetData = GetData,
+	GetTimeToEmpty = GetTimeToEmpty
 }
