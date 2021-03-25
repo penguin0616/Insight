@@ -46,7 +46,7 @@ local function SetHighlightIngredientFocus(arg)
 		return
 	end
 
-	SHIF_TASK = TheGlobalInstance:DoTaskInTime(0.08, function()
+	SHIF_TASK = TheGlobalInstance:DoTaskInTime(0.09, function()
 		highlighting.SetActiveIngredientUI(arg)
 	end)
 end
@@ -397,6 +397,12 @@ if KnownModIndex:IsModEnabled("workshop-727774324") or KnownModIndex:IsModEnable
 				mprint("foodingredientui hook error", arg, type(arg), typ)
 			else
 				SetHighlightIngredientFocus({ prefab=arg })
+			end
+		elseif typ == "tag" then
+			if type(arg) ~= "string" then
+				mprint("foodingredientui hook error", arg, type(arg), typ)
+			else
+				SetHighlightIngredientFocus({ prefab=nil, ingredient_tag=arg })
 			end
 		end
 		

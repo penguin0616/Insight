@@ -84,10 +84,6 @@ local function GetFoodUnits(inst, context)
 	return table.concat(units, ", ")
 end
 
-local function formatNumber(num)
-	return FormatNumber(Round(num, 1))
-end
-
 local function FormatFoodStats(hunger, sanity, health, context)
 
 	-- for handling different styles
@@ -171,9 +167,9 @@ local function Describe(self, context)
 			hunger, sanity, health = self:GetHunger(), self:GetSanity(), self:GetHealth() 
 		end
 
-		if hunger then hunger = (hunger >= 0 and "+" or "") .. hunger else safe_food = false hunger = "?" end
-		if sanity then sanity = (sanity >= 0 and "+" or "") .. sanity else safe_food = false sanity = "?" end
-		if health then health = (health >= 0 and "+" or "") .. health else safe_food = false health = "?" end
+		if hunger then hunger = (hunger > 0 and "+" or "") .. hunger else safe_food = false hunger = "?" end
+		if sanity then sanity = (sanity > 0 and "+" or "") .. sanity else safe_food = false sanity = "?" end
+		if health then health = (health > 0 and "+" or "") .. health else safe_food = false health = "?" end
 		alt_description = FormatFoodStats(hunger, sanity, health, context)
 
 		if not safe_food then
@@ -221,8 +217,11 @@ local function Describe(self, context)
 				sanity = special_stats.SANITY
 			end
 		end
+
+		hunger = (hunger ~= 0 and FormatDecimal(hunger, hunger%1==0 and 0 or 1)) or hunger
+		sanity = (sanity ~= 0 and FormatDecimal(sanity, sanity%1==0 and 0 or 1)) or sanity
+		health = (health ~= 0 and FormatDecimal(health, health%1==0 and 0 or 1)) or health
 		
-		hunger, sanity, health = formatNumber(hunger), formatNumber(sanity), formatNumber(health)
 		description = FormatFoodStats(hunger, sanity, health, context) -- .. "\nHunger: +25 / Sanity: +15 / Health: +20\nHunger: +25 / Sanity: +15 / Health: +20"
 	end
 
@@ -267,7 +266,7 @@ local function Describe(self, context)
 		local effect_description = {}
 
 		for name, data in pairs(effects) do
-			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], data.delta and FormatNumber(Round(data.delta, 1)) or ("MISSING DELTA FOR [" .. name .. "]"), data.duration and TimeToText(time.new(data.duration, context), "realtime_short") or "[YOU SHOULDN'T SEE THIS]")
+			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], data.delta and FormatDecimal(data.delta, 1) or ("MISSING DELTA FOR [" .. name .. "]"), data.duration and TimeToText(time.new(data.duration, context), "realtime_short") or "[YOU SHOULDN'T SEE THIS]")
 		end
 
 		if #effect_description > 0 then

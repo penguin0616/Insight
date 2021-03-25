@@ -1000,6 +1000,9 @@ end)
 AddLocalPlayerPostInit(highlighting.Activate, true)
 AddLocalPlayerPostRemove(highlighting.Deactivate, true)
 AddLocalPlayerPostInit(combatHelper.Activate, true)
+AddLocalPlayerPostInit(function(insight_replica, context) 
+	insight_replica.context = context
+end, true)
 --AddLocalPlayerPostRemove(combatHelper.Deactivate, true)
 
 if IsDST() then

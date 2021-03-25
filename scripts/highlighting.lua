@@ -21,10 +21,11 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 --[[ Private Variables ]]
 --------------------------------------------------------------------------
--- 1632 chests
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local IsPrefab, IsWidget, IsBundleWrap = IsPrefab, IsWidget, IsBundleWrap
+
+local cooking = require("cooking")
 
 local highlightColorKey = "__insight:MultColor"
 local fuel_highlighting = nil
@@ -44,6 +45,7 @@ local colors = {
 
 local activeIngredientFocus = nil
 local activeItem = nil
+local isSearchingForFoodTag = false
 
 local highlighting = {}
 
@@ -243,28 +245,32 @@ local function Comparator(held, inst)
 	inst_name = (inst_name and inst.name) or ""
 
 	-- fuel highlighting
-	if held.prefab and inst.prefab then -- IsPrefab(held) and IsPrefab(inst)
+	if isSearchingForFoodTag == false and held.prefab and inst.prefab then -- IsPrefab(held) and IsPrefab(inst)
 		if fuel_highlighting and insight:DoesFuelMatchFueled(held, inst) then
 			return colors.fuel
 		end
 	end
 
 	-- ignore dual bundle highlighting, not interested in doing a full match
-	if IsBundleWrap(held) and IsBundleWrap(inst) then
+	if isSearchingForFoodTag == false and IsBundleWrap(held) and IsBundleWrap(inst) then
 		return nil
 	end
 
-	--mprint(held, held_prefab, held_name, inst, inst_prefab, inst_name)
+	if isSearchingForFoodTag == true and cooking.ingredients and cooking.ingredients[inst_prefab] and cooking.ingredients[inst_prefab].tags then
+		if cooking.ingredients[inst_prefab].tags[held] then
+			return colors.match
+		end
+	end
 
 	-- same prefabs easy peasy
-	if held_prefab == inst_prefab then
+	if isSearchingForFoodTag == false and held_prefab == inst_prefab then
 		if held_name == inst_name then
 			return colors.match
 		end
 	end
 	
 	if IsBundleWrap(held) then -- holding a bundle of berries
-		local matchy = insight:BundleHasPrefab(held, inst_prefab)
+		local matchy = insight:BundleHasPrefab(held, inst_prefab, isSearchingForFoodTag)
 		if matchy == nil then
 			-- my bundle hasn't loaded for some reason
 
@@ -278,7 +284,7 @@ local function Comparator(held, inst)
 		end
 
 	elseif IsBundleWrap(inst) then -- holding berries and searching bundles for some
-		local matchy = insight:BundleHasPrefab(inst, held_prefab)
+		local matchy = insight:BundleHasPrefab(inst, held_prefab, isSearchingForFoodTag)
 
 		if matchy == nil then
 			-- bundle hasn't loaded for some reason
@@ -309,7 +315,7 @@ local function GetContainerRelevance(ctr)
 	--]]
 	
 	if activeIngredientFocus then
-		local res = insight:ContainerHas(ctr.inst, activeIngredientFocus)
+		local res = insight:ContainerHas(ctr.inst, activeIngredientFocus, isSearchingForFoodTag)
 		
 		if res == nil then
 			return 1
@@ -319,7 +325,7 @@ local function GetContainerRelevance(ctr)
 
 		
 	elseif activeItem then
-		local res = insight:ContainerHas(ctr.inst, activeItem)
+		local res = insight:ContainerHas(ctr.inst, activeItem, isSearchingForFoodTag)
 		--dprint("activeItem_check", activeItem, res)
 		
 		if res == nil then
@@ -426,6 +432,8 @@ function highlighting.SetActiveItem(player, data)
 	if not activated then
 		return
 	end
+
+	isSearchingForFoodTag = false
 	activeItem = data.item
 
 	DoRelevanceChecks()
@@ -440,6 +448,8 @@ function highlighting.SetActiveIngredientUI(ui)
 		return
 	end
 
+	isSearchingForFoodTag = false
+
 	if IsWidget(ui) then
 		local prefab = ui.ing and ui.ing.texture and GetPrefabFromTexture(string.match(ui.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 		if prefab then
@@ -447,7 +457,12 @@ function highlighting.SetActiveIngredientUI(ui)
 			DoRelevanceChecks()
 		end
 	elseif type(ui) == "table" then
-		activeIngredientFocus = ui.prefab
+		if ui.prefab then
+			activeIngredientFocus = ui.prefab
+		elseif ui.ingredient_tag then
+			activeIngredientFocus = ui.ingredient_tag
+			isSearchingForFoodTag = true
+		end
 		DoRelevanceChecks()
 	elseif ui == nil then
 		activeIngredientFocus = nil

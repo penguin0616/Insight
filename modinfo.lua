@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.0.6" -- ds is 2.9.7_ds
+version = "3.0.8" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -379,6 +379,20 @@ local english = {
 				HOVER = "Hunt indicators are shown."
 			},
 		},
+	},
+	orchestrina_indicator = {
+		LABEL = "Archive Puzzle Helper",
+		HOVER = "Whether the solution to the puzzle is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The solution is not displayed."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The solution is displayed."
+			}
+		}
 	},
 	lightningrod_range = {
 		LABEL = "Lightningrod range",
@@ -1048,6 +1062,24 @@ local english = {
 			},
 		},
 	},
+	info_preload = {
+		LABEL = "Information preloading",
+		HOVER = "Whether information is preloaded when entities become visible. Trades network usage for faster performance. Recommended to use \"All\".",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "SEVERE FPS DROP! NOT RECOMMENDED!" -- most severe fps drop
+			},
+			["1"] = {
+				DESCRIPTION = "Containers",
+				HOVER = "POSSIBLE FPS DROP. NOT RECOMMENDED. CAN USE FOR SMALL, CLEAN BASES."
+			},
+			["2"] = {
+				DESCRIPTION = "All",
+				HOVER = "FASTEST. RECOMMENDED."
+			},
+		},
+	},
 	refresh_delay = {
 		LABEL = "Refresh delay",
 		HOVER = "How often clients can re-request information for the same item.",
@@ -1451,6 +1483,20 @@ local chinese = {
 				HOVER = "脚印指示器会被显示。"
 			},
 		},
+	},
+	orchestrina_indicator = {
+		LABEL = "Archive Puzzle Helper",
+		HOVER = "Whether the solution to the puzzle is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The solution is not displayed."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The solution is displayed."
+			}
+		}
 	},
 	lightningrod_range = {
 		LABEL = "避雷针范围",
@@ -2119,6 +2165,24 @@ local chinese = {
 			},
 		},
 	},
+	info_preload = {
+		LABEL = "Information preloading",
+		HOVER = "Whether information is preloaded when entities become visible. Trades network usage for faster performance. Recommended to use \"All\".",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "SEVERE FPS DROP! NOT RECOMMENDED!" -- most severe fps drop
+			},
+			["1"] = {
+				DESCRIPTION = "Containers",
+				HOVER = "POSSIBLE FPS DROP. NOT RECOMMENDED. CAN USE FOR SMALL, CLEAN BASES."
+			},
+			["2"] = {
+				DESCRIPTION = "All",
+				HOVER = "FASTEST. RECOMMENDED."
+			},
+		},
+	},
 	refresh_delay = {
 		LABEL = "信息刷新延时",
 		HOVER = "设定对同一物品的信息多久一次更新。",
@@ -2491,6 +2555,15 @@ configuration_options = {
 		}, 
 		default = true,
 		tags = {"undefined"},
+	},
+	{
+		name = "orchestrina_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "lightningrod_range",
@@ -2903,6 +2976,16 @@ configuration_options = {
 		default = true,
 		client = true,
 		tags = {},
+	},
+	{
+		name = "info_preload",
+		options = {
+			--{data = 0}, -- probably not going to let people use this one
+			{data = 1},
+			{data = 2},
+		},
+		default = 2,
+		tags = {"undefined"},
 	},
 	{
 		name = "refresh_delay",

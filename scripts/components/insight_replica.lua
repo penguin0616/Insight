@@ -25,6 +25,7 @@ setfenv(1, _G.Insight.env)
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local Indicators = import("indicators")
+local cooking = require("cooking")
 
 local Is_DST = IsDST()
 local Is_DS = IsDS()
@@ -167,7 +168,7 @@ local function GotEntityInformation(inst, data)
 	local insight = GetInsight(inst)
 
 
-	--mprint("got:", #data.data, data.data:sub(1, 128))
+	--mprint("got:", #data.data, data.data:sub(#data.data-32))
 	local safe, items = true, decompress(data.data)
 
 	if not safe then
@@ -268,7 +269,9 @@ local function OnEntityNetworkActive(ent, self)
 		return
 	end
 	--]]
-	if (ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") or not TheWorld.ismastersim then
+	local config_enabled = self.context and (self.context.config["info_preload"] == 2 or (self.context.config["info_preload"] == 1 and ent.replica.container)) 
+
+	if (ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") or (not TheWorld.ismastersim and config_enabled) then
 		self:RequestInformation(ent, (ent == ThePlayer and {raw = true}) or nil)
 	end
 end
@@ -351,15 +354,17 @@ local Insight = Class(function(self, inst)
 	self.entity_data = setmetatable(createTable(500), { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = {}
 
-	self.queuer = Queuer(7)
+	self.queuer = Queuer(8) -- shouldn't encounter crashes with this
 	--[[
 		with the above listed setup, 
 			5 queues: had text lengths of roughly 14000-18000
 			6 queues: had text lengths of roughly 10000-15000
 		
-		ideally want to keep it around 10000 i think
+		ideally want to keep it around 10000 i think, so 7 probably works.
 		
 		RPC was cutting off around 40k iirc
+
+		when setting info_preload to 0, (nothing), massive strings
 	]]
 	
 	self.hunt_target = nil
@@ -622,7 +627,7 @@ end
 function Insight:SendNaughtiness()
 	assert(TheWorld.ismastersim, "Insight:DidNaughty() called on client")
 
-	local tbl = GetNaughtiness(self.inst, GetPlayerContext(self.inst))
+	local tbl = GetNaughtiness(self.inst, self.context)
 	if not tbl or not tbl.actions or not tbl.threshold then
 		mprint("GetNaughtiness failed:", tbl)
 		if tbl then
@@ -665,7 +670,7 @@ function Insight:DoesFuelMatchFueled(fuel, fueled)
 
 		--[[
 			function Fueled:CanAcceptFuelItem(item)
-    			return self.accepting and item and item.components.fuel and (item.components.fuel.fueltype == self.fueltype or item.components.fuel.fueltype == self.secondaryfueltype)
+				return self.accepting and item and item.components.fuel and (item.components.fuel.fueltype == self.fueltype or item.components.fuel.fueltype == self.secondaryfueltype)
 			end
 
 		]]
@@ -683,7 +688,7 @@ function Insight:DoesFuelMatchFueled(fuel, fueled)
 	return false
 end
 
-function Insight:BundleHasPrefab(inst, prefab)
+function Insight:BundleHasPrefab(inst, prefab, isSearchingForFoodTag)
 	local info = self:GetInformation(inst)
 
 	if not info then
@@ -694,8 +699,12 @@ function Insight:BundleHasPrefab(inst, prefab)
 	local contents = info.special_data["unwrappable"].contents
 	for i = 1, #contents do
 		local v = contents[i]
-		--if AreEntityPrefabsEqual(inst, prefab) then
-		if v.prefab == prefab then
+		if isSearchingForFoodTag == true then
+			-- prefab arg is the food tag here
+			if cooking.ingredients and cooking.ingredients[v.prefab] and cooking.ingredients[v.prefab].tags and cooking.ingredients[v.prefab].tags[prefab] then
+				return true
+			end
+		elseif (not isSearchingForFoodTag and v.prefab == prefab) then --if AreEntityPrefabsEqual(inst, prefab) then
 			return true
 		end
 	end
@@ -703,7 +712,7 @@ function Insight:BundleHasPrefab(inst, prefab)
 	return false
 end
 
-function Insight:ContainerHas(container, inst)
+function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 	local prefab = inst.prefab
 	if not prefab then
 		if type(inst) ~= "string" then
@@ -713,7 +722,7 @@ function Insight:ContainerHas(container, inst)
 		prefab = inst
 	end
 
-	local is_unwrappable = IsBundleWrap(inst)
+	local is_unwrappable = not isSearchingForFoodTag and IsBundleWrap(inst)
 
 	local container_info, bundle_info = self:GetInformation(container)
 	--dprint("container:", container, container_info)
@@ -757,9 +766,15 @@ function Insight:ContainerHas(container, inst)
 				if is_unwrappable then -- if what the original thing we were searching for is a bundle
 					things[k.prefab .. (k.name or "")] = true
 				else 
+					if isSearchingForFoodTag == true then
+						-- k.prefab == inventoryitem
+						-- prefab == food_tag
+						if cooking.ingredients and cooking.ingredients[k.prefab] and cooking.ingredients[k.prefab].tags and cooking.ingredients[k.prefab].tags[prefab] then
+							return true
+						end
 					-- if the original thing we were searching for is an inventoryitem
 					--print(k.prefab .. (k.name or ""), prefab .. inst_name)
-					if (k.prefab .. (k.name or "")) == (prefab .. inst_name) then -- compare to see if inventoryitem.prefab .. inventoryitem.name == search_for.prefab .. search_for.name
+					elseif not isSearchingForFoodTag and (k.prefab .. (k.name or "")) == (prefab .. inst_name) then -- compare to see if inventoryitem.prefab .. inventoryitem.name == search_for.prefab .. search_for.name
 						return true
 					end
 				end
@@ -770,7 +785,13 @@ function Insight:ContainerHas(container, inst)
 			if is_unwrappable then
 				things[v.prefab .. (v.name or "")] = true
 			else
-				if (v.prefab .. (v.name or "")) == (prefab .. inst_name) then
+				if isSearchingForFoodTag == true then
+					-- v.prefab == inventoryitem
+					-- prefab == food_tag
+					if cooking.ingredients and cooking.ingredients[v.prefab] and cooking.ingredients[v.prefab].tags and cooking.ingredients[v.prefab].tags[prefab] then
+						return true
+					end
+				elseif not isSearchingForFoodTag and (v.prefab .. (v.name or "")) == (prefab .. inst_name) then
 					return true
 				end
 			end
@@ -842,7 +863,7 @@ function Insight:RequestInformation(item, params)
 	end
 
 	-- check context
-	local context = GetPlayerContext(self.inst)
+	local context = self.context
 	if not context then
 		-- cant do anything without context
 		mprint('Insight:RequestEntityInformation missing context')
@@ -858,7 +879,7 @@ function Insight:RequestInformation(item, params)
 
 	-- check for delays
 	--mprint("context", context)
---table.foreach(context, mprint)
+	--table.foreach(context, mprint)
 	local delay = params.debounce or context.config["refresh_delay"]
 	
 	if delay == true then

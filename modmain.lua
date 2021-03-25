@@ -245,7 +245,7 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", -- don't care
+	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", "murderable", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -259,7 +259,7 @@ local descriptors_ignore = {
 
 	-- Forest
 	"squidspawner", "moosespawner", "birdspawner", "worldwind", "retrofitforestmap_anr", "deerherdspawner", "deerherding", "wildfires", "flotsamgenerator", "brightmarespawner", 
-	"sandstorms", "messagebottlemanager", "forestpetrification", "penguinspawner", "hunter", "sharklistener", "frograin", "waterphysics", "butterflyspawner", "worldmeteorshower",
+	"sandstorms", "messagebottlemanager", "forestpetrification", "penguinspawner", "sharklistener", "frograin", "waterphysics", "butterflyspawner", "worldmeteorshower",
 	"worlddeciduoustreeupdater", "schoolspawner", "specialeventsetup", "playerspawner", "walkableplatformmanager", "lureplantspawner", "wavemanager",
 	
 	
@@ -2241,7 +2241,7 @@ local function SortSockets(a, b)
 	return a.GUID < b.GUID 
 end
 
-local function GetSockets(main)
+local function GetSockets(main) -- ISSUE:PERFORMANCE
 	local x,y,z = main.Transform:GetWorldPosition()   
 	local ents = TheSim:FindEntities(x,y,z, 10, {"resonator_socket"})
 	
@@ -2260,7 +2260,8 @@ local function GetCorrectSocket(main, puzzle)
 
 	local tbl = GetSockets(main)
 
-	for i,v in pairs(tbl) do
+	for i = 1, #tbl do
+		local v = tbl[i]
 		if puzzle[i] == current then
 			v.insight_active:set(true)
 		else
@@ -2271,7 +2272,17 @@ end
 
 AddPrefabPostInit("archive_orchestrina_small", function(inst)
 	inst.insight_active = net_bool(inst.GUID, "insight_active", "insight_active_dirty")
+
+	if TheNet:IsDedicated() then
+		return
+	end
+
 	inst:ListenForEvent("insight_active_dirty", function(inst)
+		local context = localPlayer and GetPlayerContext(localPlayer)
+
+		if not context.config["orchestrina_indicator"] then
+			return
+		end
 		--inst.indicator:SetVisible(inst.insight_active:value())
 		if inst.insight_active:value() then
 			inst.AnimState:SetHighlightColour(152/255, 100/255, 245/255, 1) --indicator was: 152/255, 100/255, 245/255
