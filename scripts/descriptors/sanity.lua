@@ -18,6 +18,14 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+-- sanity.lua
+--[[
+	was looking around at sanity, turns out willow has sanity.rate_modifier of 1.1, which affects over time sanity (Sanity::Recalc)
+
+	dapperness_mult (default 1, no characters use this) multiplies dapperness from equippables. i assume this is what walter used before they fixed stuff.
+
+]]
+
 local function GetData(self)
 	local lunacy = false
 	local max_sanity = 0
@@ -39,7 +47,6 @@ local function GetData(self)
 	}
 end
 
--- sanity.lua
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil

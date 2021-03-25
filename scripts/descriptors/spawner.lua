@@ -39,9 +39,9 @@ local function Describe(self, context)
 	end
 
 	if respawn_time then
-		description = string.format(context.lstr.spawner_next, STRINGS.NAMES[self.childname:upper()] or ("\"" .. self.childname .."\""), TimeToText(time.new(respawn_time, context)))
+		description = string.format(context.lstr.spawner_next, GetPrefabNameOrElse(self.childname, "\"%s\""), TimeToText(time.new(respawn_time, context)))
 	else
-		alt_description = string.format(context.lstr.spawner_child, STRINGS.NAMES[self.childname:upper()] or ("\"" .. self.childname .."\""))
+		alt_description = string.format(context.lstr.spawner_child, GetPrefabNameOrElse(self.childname, "\"%s\""))
 	end
 
 	return {

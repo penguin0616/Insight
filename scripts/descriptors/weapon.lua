@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- weapon.lua
+local world_type = GetWorldType()
+
 local SLINGSHOT_AMMO_DATA = {}
 
 for i,v in pairs(_G.Prefabs) do
@@ -66,10 +68,8 @@ local function GetDamageModifier(combat, context)
 	if not combat or not context.config["account_combat_modifiers"] then
 		return 1
 	end
-	
-	local world_type = GetWorldType()
 
-	if IsDST() then
+	if world_type == -1 then
 		return (combat.damagemultiplier or 1) * combat.externaldamagemultipliers:Get()
 		--return combat.externaldamagemultipliers:Get()
 	elseif world_type == 0 or world_type == 1 then
@@ -106,7 +106,7 @@ local function Describe(self, context)
 
 	-- Get Damage
 	local damage = owner.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
-	if IsDST() or GetWorldType() >= 2 then
+	if world_type == -1 or world_type >= 2 then
 		-- DS Weapon:GetDamage()
 		-- DST Weapon:GetDamage(attacker, target)
 		damage = self:GetDamage(owner) or damage

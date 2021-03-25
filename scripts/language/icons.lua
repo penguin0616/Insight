@@ -365,6 +365,13 @@ return {
 	--hunger_burn = "<color=HUNGER>Hunger</color> decay: <color=HUNGER>%+d/day</color> (<color=HUNGER>%+d/s</color>)",
 	--hunger_paused = "<color=HUNGER>Hunger</color> decay paused.",
 
+	-- hunter.lua
+	hunter = {
+		hunt_progress = "<icon=dirtpile> %s / %s",
+		--impending_ambush = "There is an ambush waiting on the next track.",
+		--alternate_beast_chance = "<color=#b51212>%s%% chance</color> for a <color=MOB_SPAWN>Varg</color> or <color=MOB_SPAWN>Ewecus</color>.",
+	},
+
 	-- inspectable.lua
 	catcoonden = {
 		--lives = "Cat lives: %s / %s",
@@ -390,7 +397,6 @@ return {
 	--trap_starfish_cooldown = "Rearms in: %s",
 	--lureplant_active = "Will become active in: %s",
 	--walrus_camp_respawn = "<color=FROZEN>%s</color> respawns in: %s",
-	hunt_progress = "<icon=dirtpile> %s / %s",
 	--global_wetness = "<color=WET>Global Wetness</color>: <color=WET>%s</color>",
 	--precipitation_rate = "<color=WET>Precipitation Rate</color>: <color=WET>%s</color>",
 	frog_rain_chance = "<icon=frog> <color=FROG>%s%%</color>", -- icon is screwed up with white bg

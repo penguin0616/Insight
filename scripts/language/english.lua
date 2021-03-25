@@ -365,6 +365,13 @@ return {
 	hunger_burn = "<color=HUNGER>Hunger decay</color>: <color=HUNGER>%+d/day</color> (<color=HUNGER>%s/s</color>)",
 	hunger_paused = "<color=HUNGER>Hunger</color> decay paused.",
 
+	-- hunter.lua
+	hunter = {
+		hunt_progress = "Track: %s / %s",
+		impending_ambush = "There is an ambush waiting on the next track.",
+		alternate_beast_chance = "<color=#b51212>%s%% chance</color> for a <color=MOB_SPAWN>Varg</color> or <color=MOB_SPAWN>Ewecus</color>.",
+	},
+
 	-- inspectable.lua
 	catcoonden = {
 		lives = "Cat lives: %s / %s",
@@ -390,7 +397,6 @@ return {
 	trap_starfish_cooldown = "Rearms in: %s",
 	lureplant_active = "Will become active in: %s",
 	walrus_camp_respawn = "<color=FROZEN>%s</color> respawns in: %s",
-	hunt_progress = "Track: %s / %s",
 	global_wetness = "<color=FROZEN>Global Wetness</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>Precipitation Rate</color>: <color=WET>%s</color>",
 	frog_rain_chance = "<color=FROG>Frog rain chance</color>: <color=FROG>%s%%</color>",

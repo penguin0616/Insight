@@ -19,6 +19,26 @@ directory. If not, please refer to
 ]]
 
 -- equippable.lua
+local function GetDappernessForPlayer(self, player)
+	if not self.GetDapperness then
+		return nil
+	end
+
+	local sanity = player.components.sanity
+	if not sanity then
+		return nil
+	end
+
+	if sanity.only_magic_dapperness and not self.is_magic_dapperness then
+		return 0
+	end
+
+	local dapperness = self:GetDapperness(player, sanity and sanity.no_moisture_penalty or false)
+	dapperness = dapperness * (sanity.dapperness_mult or 1) * (TUNING.SANITY_DAPPERNESS or 1) * (sanity.rate_modifier or 1)
+
+	return dapperness
+end
+
 local function Describe(self, context)
 	local world_type = GetWorldType()
 
@@ -52,14 +72,26 @@ local function Describe(self, context)
 
 	-- expressed as sanity gain/loss per SECOND. we want it per MINUTE.
 
-	local dapperness = nil
+	local dapperness = GetDappernessForPlayer(self, owner)
 
+	if not dapperness or dapperness == 0 then
+		dapperness = nil
+	else
+		dapperness = string.format(context.lstr.dapperness, FormatDecimal(dapperness * 60, 1))
+	end
+
+	--[[
 	if (inst.components.dapperness) then
 		-- dapperness is seperated from equippable in the base game
 		-- let dapperness.lua take care of this, maybe other mods are using the component as well
 
 	elseif self.GetDapperness then -- does not exist in RoG
-		dapperness = self:GetDapperness(owner)
+		local sanity = context.player.components.sanity
+		if sanity and sanity.only_magic_dapperness then
+			
+		end
+
+		dapperness = self:GetDapperness(owner, sanity and sanity.no_moisture_penalty)
 		dapperness = dapperness * 60
 
 		if dapperness ~= 0 then
@@ -68,6 +100,7 @@ local function Describe(self, context)
 			dapperness = nil
 		end
 	end
+	--]]
 
 	-- might modify hunger rate
 	if owner and owner.components.hunger then

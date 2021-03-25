@@ -365,6 +365,13 @@ return {
 	hunger_burn = "<color=HUNGER>饥饿速度</color>: <color=HUNGER>%+d/天</color> (<color=HUNGER>%s/秒</color>)",
 	hunger_paused = "<color=HUNGER>饥饿值</color>暂停",
 
+	-- hunter.lua
+	hunter = {
+		hunt_progress = "追踪：%s / %s",
+		impending_ambush = "There is an ambush waiting on the next track.",
+		alternate_beast_chance = "<color=#b51212>%s%% chance</color> for a <color=MOB_SPAWN>Varg</color> or <color=MOB_SPAWN>Ewecus</color>.",
+	},
+
 	-- inspectable.lua
 	catcoonden = {
 		lives = "Cat lives: %s / %s",
@@ -390,7 +397,6 @@ return {
 	trap_starfish_cooldown = "重组于：%s后",
 	lureplant_active = "开始活动于: %s后",
 	walrus_camp_respawn = "<color=FROZEN>%s</color> 重生于: %s后",
-	hunt_progress = "追踪：%s / %s",
 	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
 	frog_rain_chance = "<color=FROG>青蛙雨几率</color>: <color=FROG>%s%%</color>",

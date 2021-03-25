@@ -19,18 +19,22 @@ directory. If not, please refer to
 ]]
 
 -- dapperness.lua
+-- only exists in base game DS
+
+local world_type = GetWorldType()
+
 local function Describe(self, context)
-	local inst = self.inst
+	if world_type ~= 0 then
+		return
+	end
+
 	local description = nil
 
-	local owner = context.player --GetPlayer() --GetItemPossessor(inst) or GetPlayer()
-	-- see equippable
-
-	description = self:GetDapperness(owner)
+	local owner = context.player
+	description = self:GetDapperness(context.player)
 	description = Round(description * 60, 1)
 
 	if description ~= 0 then
-		--local prefix = usingIcons and "<icon=sanity> " or "<color=SANITY>Sanity</color>: "
 		description = string.format(context.lstr.dapperness, FormatNumber(description))
 	else
 		description = nil

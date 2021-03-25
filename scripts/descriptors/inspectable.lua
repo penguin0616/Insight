@@ -381,21 +381,11 @@ local function Describe(self, context)
 	end
 
 	if inst.prefab == "archive_lockbox" and inst.product_orchestrina then
-		description = string.format(context.lstr.unlocks, STRINGS.NAMES[inst.product_orchestrina:upper()] or ("\"" .. inst.product_orchestrina .. "\""))
+		description = string.format(context.lstr.unlocks, GetPrefabNameOrElse(inst.product_orchestrina, "\"%s\""))
 	end
 	
 	if inst.prefab == "dirtpile" or inst.prefab == "whale_bubbles" then
-		for _, hunt in pairs(Insight.active_hunts) do
-			if hunt.lastdirt == inst then
-				local ambush_track_num = hunt.ambush_track_num
-				description = string.format(context.lstr.hunt_progress, hunt.trackspawned + 1, hunt.numtrackstospawn)
-
-				if ambush_track_num == hunt.trackspawned + 1 then
-					description = CombineLines(description, "There is an ambush waiting on the next track.")
-				end
-				break
-			end
-		end
+		return Insight.descriptors.hunter.DescribeTrack(inst, context)
 	end
 
 	if inst.prefab == "rainometer" then

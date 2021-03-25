@@ -69,7 +69,7 @@ local function Describe(self, context)
 	if context.usingIcons and PrefabHasIcon(product) then
 		--alt_description = string.format(context.lstr.farmplantable.product, product)
 	else
-		local name = STRINGS.NAMES[product:upper()] or ("\"" .. product .. "\"")
+		local name = GetPrefabNameOrElse(product, "\"%s\"")
 		--alt_description = string.format(context.lstr.lang.farmplantable.product, name)
 	end
 

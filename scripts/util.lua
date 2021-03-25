@@ -204,6 +204,14 @@ function TimeToText(arg, override)
 	end
 end
 
+--- Checks if number is an integer.
+-- @number num
+-- @treturn boolean
+function IsInt(num)
+	-- http://web.archive.org/web/20210325065927/http://lua.2524044.n2.nabble.com/Fastest-way-to-determine-number-is-integer-in-plain-Lua-td7639129.html
+	return num%1 == 0
+end
+
 function pack(...) 
 	return { n=select("#", ...), ...} 
 end
@@ -395,20 +403,13 @@ function module.table_extract(tbl, index)
 
 	local value = tbl[index]
 	if value then
-		if module.isint(index) then
+		if type(index)=="number" and IsInt(index) then
 			table.remove(index)
 		else
 			tbl[index] = nil
 		end
 	end
 	return value
-end
-
---- Checks if number is an integer.
--- @number num
--- @treturn boolean
-function module.isint(num)
-	return type(num) == "number" and num == math.floor(num)
 end
 
 --- Retrieves all of a function's upvalues.

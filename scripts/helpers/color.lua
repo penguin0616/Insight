@@ -28,7 +28,7 @@ local math_min = math.min
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
 local function isint(num)
-	return type(num) == "number" and num == math_floor(num)
+	return type(num) == "number" and num%1==0 -- see util -> IsInt
 end
 
 local function IsValidHex(str)

@@ -37,9 +37,16 @@ local function Describe(self, context)
 
 	-- time to catch a fish
 	local held = context.player.components.inventory and context.player.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if held and held.components.fishingrod and self.fishleft > 0 then
-		local nibbletime = self.fishleft + (1 - self:GetFishPercent()) * (held.components.fishingrod.maxwaittime - held.components.fishingrod.minwaittime)
-		description = fish_count .. "\n" .. string.format(context.lstr.fish_wait_time, Round(nibbletime, 1))
+	local fishingrod = held and held.components.fishingrod
+
+	if fishingrod and self.fishleft > 0 then
+		if fishingrod.target == self.inst and fishingrod.fisherman and fishingrod.fishtask then
+			-- is fishing
+			description = fish_count .. "\n" .. string.format(context.lstr.fish_wait_time, Round(GetTaskRemaining(fishingrod.fishtask), 1))
+		else
+			local nibbletime = fishingrod.minwaittime + (1 - self:GetFishPercent()) * (fishingrod.maxwaittime - fishingrod.minwaittime)
+			description = fish_count .. "\n" .. string.format(context.lstr.fish_wait_time, Round(nibbletime, 1))
+		end
 	else
 		description = fish_count
 	end
