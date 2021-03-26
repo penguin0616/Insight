@@ -581,21 +581,17 @@ local english = {
 			},
 		},
 	},
-	perishable_format = {
-		LABEL = "Perish formatting",
-		HOVER = "How perishable information should be displayed.",
+	display_perishable = {
+		LABEL = "Perishing",
+		HOVER = "Whether perishable information is displayed.",
 		OPTIONS = {
-			["0"] = {
-				DESCRIPTION = "Don't display at all.",
-				HOVER = "Will not display perish information."
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Perishable information is not shown."
 			},
-			["1"] = {
-				DESCRIPTION = "Only until rot",
-				HOVER = "Will display the time until the food rots."
-			},
-			["2"] = {
-				DESCRIPTION = "In stages",
-				HOVER = "Will display the time until food reaches the next stage."
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Perishable information is shown."
 			},
 		},
 	},
@@ -1685,21 +1681,17 @@ local chinese = {
 			},
 		},
 	},
-	perishable_format = {
-		LABEL = "食物腐烂显示",
-		HOVER = "也就是食物腐烂将以何种格式来显示。",
+	display_perishable = {
+		LABEL = "Perishing",
+		HOVER = "Whether perishable information is displayed.",
 		OPTIONS = {
-			["0"] = {
-				DESCRIPTION = "不显示",
-				HOVER = "不展示食物腐烂的信息。"
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Perishable information is not shown."
 			},
-			["1"] = {
-				DESCRIPTION = "仅在腐烂时显示",
-				HOVER = "直到食物腐烂时才会显示。"
-			},
-			["2"] = {
-				DESCRIPTION = "按阶段显示",
-				HOVER = "会显示食物进入下一阶段的具体时间。"
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Perishable information is shown."
 			},
 		},
 	},
@@ -2689,13 +2681,12 @@ configuration_options = {
 		tags = {"undefined", "dst_only"},
 	},
 	{
-		name = "perishable_format",
+		name = "display_perishable",
 		options = {
-			{data = 0},
-			{data = 1},
-			{data = 2},
+			{data = false},
+			{data = true},
 		}, 
-		default = 2,
+		default = true,
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_informationcontrol"),

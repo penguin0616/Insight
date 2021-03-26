@@ -443,14 +443,16 @@ return {
 	worms_incoming_danger = "<color=HEALTH>%s</color>",
 
 	-- perishable.lua
-	rot = "Rots",
-	stale = "Stale",
-	spoil = "Spoils",
-	dies = "Dies",
-	starves = "Starves",
-	perishable_transition = "<color=MONSTER>%s</color> in: %s",
-	perishable_transition_extended = "<color=MONSTER>%s</color> in: %s (<color=MONSTER>%s%%</color>)",
-	perishable_paused = "Currently not decaying.",
+	perishable = {
+		rot = "Rots",
+		stale = "Stale",
+		spoil = "Spoils",
+		dies = "Dies",
+		starves = "Starves",
+		transition = "<color=MONSTER>%s</color> in: %s",
+		transition_extended = "<color=MONSTER>%s</color> in: %s (<color=MONSTER>%s%%</color>)",
+		paused = "Currently not decaying.",
+	},
 
 	-- petrifiable.lua
 	petrify = "Will become petrified in %s.",

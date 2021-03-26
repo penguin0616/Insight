@@ -53,16 +53,17 @@ end
 
 local function ProcessInformation(context, time_to_attack, target)
 	local time_string = TimeToText(time.new(time_to_attack, context))
+	local client_table = target and TheNet:GetClientTableForUser(target.userid)
 
-	if not target then
+	if not client_table then
 		return time_string
 	else
 		local target_string = string.format("%s - %s", target.name, target.prefab)
-		local ctable = TheNet:GetClientTableForUser(target.userid)
-		local clr = Color.ToHex(ctable.colour)
 		return string.format(
 			context.lstr.incoming_deerclops_targeted, 
-			clr, 
+			Color.ToHex(
+				client_table.colour
+			),
 			target_string, 
 			time_string
 		)

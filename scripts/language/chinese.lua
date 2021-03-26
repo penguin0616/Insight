@@ -443,14 +443,16 @@ return {
 	worms_incoming_danger = "<color=HEALTH>%s</color>",
 
 	-- perishable.lua
-	rot = "腐烂",
-	stale = "不新鲜",
-	spoil = "变质",
-	dies = "死",
-	starves = "Starves",
-	perishable_transition = "<color=MONSTER>%s</color>于: %s后",
-	perishable_transition_extended = "<color=MONSTER>%s</color>于: %s后 (<color=MONSTER>%s%%</color>)",
-	perishable_paused = "当前暂停腐烂",
+	perishable = {
+		rot = "腐烂",
+		stale = "不新鲜",
+		spoil = "变质",
+		dies = "死",
+		starves = "Starves",
+		transition = "<color=MONSTER>%s</color>于: %s后",
+		transition_extended = "<color=MONSTER>%s</color>于: %s后 (<color=MONSTER>%s%%</color>)",
+		paused = "当前暂停腐烂",
+	},
 
 	-- petrifiable.lua
 	petrify = "石化于：%s后",

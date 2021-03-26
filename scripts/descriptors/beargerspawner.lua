@@ -59,22 +59,22 @@ end
 
 local function ProcessInformation(context, time_to_attack, target)
 	local time_string = TimeToText(time.new(time_to_attack, context))
+	local client_table = target and TheNet:GetClientTableForUser(target.userid)
 
-	if not target then
+	if not client_table then
 		return time_string
 	else
 		local target_string = string.format("%s - %s", target.name, target.prefab)
 		return string.format(
 			context.lstr.incoming_bearger_targeted, 
 			Color.ToHex(
-				TheNet:GetClientTableForUser(target.userid).colour
+				client_table.colour
 			), 
 			target_string, 
 			time_string
 		)
 	end
 end
-
 
 local function Describe(self, context)
 	local description = nil
