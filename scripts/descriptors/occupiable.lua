@@ -30,7 +30,8 @@ local function Describe(self, context)
 		if self.occupant.components.perishable then
 			local descriptor = Insight.descriptors.perishable
 			if descriptor then
-				perishable_string = descriptor.Describe(self.occupant.components.perishable, context).description
+				local res = descriptor.Describe(self.occupant.components.perishable, context)
+				perishable_string = res and res.description or nil
 			end
 		end
 

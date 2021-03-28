@@ -32,7 +32,7 @@ local function IsAuraImmune(inst, player)
 
 	if sanity.sanity_aura_immunities ~= nil then
 		for tag in pairs(sanity.sanity_aura_immunities) do
-			if v:HasTag(tag) then
+			if inst:HasTag(tag) then
 				return true
 			end
 		end

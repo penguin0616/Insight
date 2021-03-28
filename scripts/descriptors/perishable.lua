@@ -223,7 +223,7 @@ local function Describe(self, context)
 	local inst = self.inst
 	local is_critter = inst:HasTag("critter")
 
-	if (inst.components.health and inst.components.inventoryitem and not inst.components.inventoryitem:IsHeld()) then
+	if (inst.components.occupier == nil or inst.components.occupier:GetOwner() == nil) and (inst.components.health and inst.components.inventoryitem and not inst.components.inventoryitem:IsHeld()) then
 		-- no description for non-held creatures, or critters
 		return nil
 	end
@@ -311,7 +311,7 @@ local function Describe(self, context)
 		description = string.format(context.lstr.perishable.transition, perish_type, time_to_perish)
 		alt_description = string.format(context.lstr.perishable.transition_extended, alt_perish_type, alt_time_to_perish, Round(percent * 100, 1))
 	end
-	
+
 	return {
 		priority = 2,
 		description = description,

@@ -66,7 +66,7 @@ local function GetItems(self, context)
 				context.bundleitem = { bundle = self.inst, perishremainingtime = slot.data.perishable.time }
 
 				local res = d(nil, context)
-				item.perishable = d and d.description or nil
+				item.perishable = res and res.description or nil
 			end
 
 			if slot.data.named then
@@ -77,21 +77,21 @@ local function GetItems(self, context)
 				local d = Insight.descriptors.finiteuses.FormatUses or function() return {description = "FAILED TO LOAD FINITEUSES COMPONENT"} end
 
 				local res = d(slot.data.finiteuses.uses, context)
-				item.uses = d and d.description or nil
+				item.uses = res
 			end
 
 			if slot.data.fueled and slot.data.fueled.fuel then -- SW&Hamlet don't save fuel if it matches maxfuel
 				local d = Insight.descriptors.fueled.FormatFuel or function() return {description = "FAILED TO LOAD FUELED COMPONENT"} end
 
 				local res = d(slot.data.fueled.fuel, context)
-				item.fuel = d and d.description or nil
+				item.fuel = res
 			end
 
 			if slot.data.armor then
 				local d = Insight.descriptors.armor.FormatCondition or function() return {description = "FAILED TO LOAD CONDITION COMPONENT"} end
 
 				local res = d(slot.data.armor.condition, context)
-				item.condition = d and d.description or nil
+				item.condition = res
 			end
 		end
 
