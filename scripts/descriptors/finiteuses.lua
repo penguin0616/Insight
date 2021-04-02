@@ -44,27 +44,29 @@ local function Describe(self, context)
 
 	local uses = self:GetUses()
 	if context.finiteuses_forced or context.config["display_finiteuses"] then
+		local efficientuser = context.player.components.efficientuser
+
 		local consumptions = {}
-		for i,v in pairs(self.consumption) do
-			consumptions[i] = v
+		for action, uses_consumed in pairs(self.consumption) do
+			consumptions[action] = uses_consumed * (efficientuser and efficientuser:GetMultiplier(action) or 1)
 		end
 
 		-- for weapons
 		if inst.components.weapon then
 			local whack_wear = 1
 			whack_wear = inst.components.weapon.attackwear or whack_wear
-			consumptions[ACTIONS.ATTACK] = whack_wear
+			consumptions[ACTIONS.ATTACK] = whack_wear * (efficientuser and efficientuser:GetMultiplier(ACTIONS.ATTACK) or 1)
 		end
 
 		-- for fishingrod
 		if inst.components.fishingrod then
-			consumptions[ACTIONS.FISH] = 1
+			consumptions[ACTIONS.FISH] = 1 * (efficientuser and efficientuser:GetMultiplier(ACTIONS.FISH) or 1)
 		end
 		
 		-- sleeping stuff
 		if inst.components.sleepingbag then
 			if not consumptions[ACTIONS.SLEEPIN] then
-				consumptions[ACTIONS.SLEEPIN] = 1
+				consumptions[ACTIONS.SLEEPIN] = 1 * (efficientuser and efficientuser:GetMultiplier(ACTIONS.SLEEPIN) or 1)
 			end
 		end
 

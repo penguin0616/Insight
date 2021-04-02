@@ -245,7 +245,7 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", "murderable", -- don't care
+	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", "murderable", "poppable", "balloonmaker", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -1771,10 +1771,10 @@ if IsDST() then
 			end
 			mprint("Kramped has been hooked")
 
-			local _activeplayers = util.getupvalue(kramped.OnUpdate, "_activeplayers")
+			local _activeplayers = util.getupvalue(kramped.GetDebugString, "_activeplayers")
 			if not _activeplayers then
-				local d = debug.getinfo(kramped.OnUpdate, "Sl")
-				mprint("Kramped::OnUpdate ->", d.source, d.currentline)
+				local d = debug.getinfo(kramped.GetDebugString, "Sl")
+				mprint("Kramped::GetDebugString ->", d.source, d.linedefined)
 			end
 
 			assert(_activeplayers, "[Insight]: Kramped failed to load _activeplayers, are you using mods that affect krampii?")

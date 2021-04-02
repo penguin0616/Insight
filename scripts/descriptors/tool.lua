@@ -58,40 +58,44 @@ local function Describe(self, context)
 
 	-- https://dontstarve.fandom.com/wiki/Pick/Axe
 	local tbl = (Is_DST and self.actions) or (not Is_DST and self.action)
-	if tbl then
-		local actions = {}
+	if not tbl then
+		return
+	end
 
-		local effs = {}
-		for action, effectiveness in pairs(tbl) do
-			effs[#effs+1] = {action, effectiveness}
+	local actions = {}
+
+	local effs = {}
+
+	local workmultiplier = context.player.components.workmultiplier
+	for action, effectiveness in pairs(tbl) do
+		effs[#effs+1] = {action, effectiveness * (workmultiplier ~= nil and workmultiplier:GetMultiplier(action) or 1)}
+	end
+
+	table.sort(effs, SortActions)
+
+	--[[
+	for action, effectiveness in pairs(tbl) do
+		local name = action.id
+
+		-- #aaaaee
+		table.insert(actions, string.format("<color=#DED15E>%s</color>: %s%%", STRINGS.ACTIONS[name] or name .. "*", tostring(effectiveness * 100)))
+		--description = description .. name .. "=" .. tostring(effectiveness) .. ","
+	end
+	--]]
+
+	for i = 1, #effs do
+		local v = effs[i]
+		local action, effectiveness = v[1], v[2]
+		local name = action.id
+
+		-- #aaaaee
+		if effectiveness ~= 1 then
+			actions[#actions+1] = string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", tostring(effectiveness * 100))
 		end
+	end
 
-		table.sort(effs, SortActions)
-
-		--[[
-		for action, effectiveness in pairs(tbl) do
-			local name = action.id
-
-			-- #aaaaee
-			table.insert(actions, string.format("<color=#DED15E>%s</color>: %s%%", STRINGS.ACTIONS[name] or name .. "*", tostring(effectiveness * 100)))
-			--description = description .. name .. "=" .. tostring(effectiveness) .. ","
-		end
-		--]]
-
-		for i = 1, #effs do
-			local v = effs[i]
-			local action, effectiveness = v[1], v[2]
-			local name = action.id
-
-			-- #aaaaee
-			if effectiveness ~= 1 then
-				actions[#actions+1] = string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", tostring(effectiveness * 100))
-			end
-		end
-
-		if #actions > 0 then
-			description = string.format(context.lstr.tool_efficiency, table.concat(actions, "<color=#aaaaee>,</color> "))
-		end
+	if #actions > 0 then
+		description = string.format(context.lstr.tool_efficiency, table.concat(actions, "<color=#aaaaee>,</color> "))
 	end
 
 	return {

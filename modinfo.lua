@@ -1044,6 +1044,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	unrandomizer = {
+		LABEL = "Unrandomizer",
+		HOVER = "[Server Only] \"Solves\" the randomness of some situations.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Off"
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "On"
+			}
+		}
+	},
 	account_combat_modifiers = {
 		LABEL = "Combat Modifiers",
 		HOVER = "Whether damage boosts and resistances are considered.",
@@ -2143,6 +2157,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	unrandomizer = {
+		LABEL = "Unrandomizer",
+		HOVER = "[Server Only] \"Solves\" the randomness of some situations.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Off"
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "On"
+			}
+		}
+	},
 	account_combat_modifiers = {
 		LABEL = "战斗信息",
 		HOVER = "显示伤害加成和减免信息。",
@@ -2958,6 +2986,17 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_miscellaneous"),
+	--[[
+	{
+		name = "unrandomizer",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"server_only"},
+	},
+	--]]
 	{
 		name = "account_combat_modifiers",
 		options = {
