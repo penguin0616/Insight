@@ -1574,6 +1574,13 @@ if IsDST() then
 		if not (TheWorld and TheWorld.ismastersim) then return end
 		import("helpers/farming").Initialize(self)
 	end)
+
+	--[[
+	AddComponentPostInit("klaussackloot", function(self)
+		if not (TheWorld and TheWorld.ismastersim) then return end
+		Insight.descriptors.klaussackloot.Initialize(self)
+	end)
+	--]]
 	
 	AddComponentPostInit("container", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end -- implicit DST check

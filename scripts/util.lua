@@ -25,6 +25,7 @@ directory. If not, please refer to
 
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
+local STRINGS = STRINGS
 
 local module = {}
 
@@ -231,8 +232,60 @@ end
 
 function GetPrefabNameOrElse(prefab, other)
 	local upper = prefab:upper()
+
+	-- a seed?
+	if STRINGS.NAMES["KNOWN_" .. upper] then
+		return STRINGS.NAMES["KNOWN_" .. upper]
+	end
+
+	-- easy peasy
 	if STRINGS.NAMES[upper] then
 		return STRINGS.NAMES[upper]
+	end
+	
+	-- ornament?
+	local ornament_type = string.match(upper, "WINTER_ORNAMENT_(%a+)")
+	if ornament_type then
+		ornament_type = ((ornament_type == "FANCY" or ornament_type=="PLAIN") and "") or ornament_type
+		if ornament_type == "FESTIVALEVENTS" then
+			if tonumber(upper:sub(-1)) <= 3 then
+				ornament_type = "FORGE"
+			else
+				ornament_type = "GORGE"
+			end
+		end
+		
+		local name = STRINGS.NAMES["WINTER_ORNAMENT" .. ornament_type]
+		if name then
+			return name
+		end
+	end
+
+	--[[
+		table.insert(ornament, MakeOrnament("festivalevents1", "winter_ornamentforge", nil, "winter_ornaments2018", 0.95))
+table.insert(ornament, MakeOrnament("festivalevents2", "winter_ornamentforge", nil, "winter_ornaments2018", 0.95))
+table.insert(ornament, MakeOrnament("festivalevents3", "winter_ornamentforge", nil, "winter_ornaments2018", 1.00))
+table.insert(ornament, MakeOrnament("festivalevents4", "winter_ornamentgorge", nil, "winter_ornaments2018", 0.80))
+table.insert(ornament, MakeOrnament("festivalevents5", "winter_ornamentgorge", nil, "winter_ornaments2018", 0.80))
+	]]
+
+	-- blueprint? (blueprint.lua onload)
+	local blueprint_match = string.match(upper, "([%w_]+)_BLUEPRINT")
+	if blueprint_match then
+		return GetPrefabNameOrElse(blueprint_match, other) .. " " .. STRINGS.NAMES.BLUEPRINT
+	end
+
+	-- spiced food?
+	local spiced, spice = string.match(upper, "(%w+)_SPICE_(%w+)") -- meatballs_spice_chili
+	if spice then
+		-- yep its spiced
+		--[[
+			SPICE_GARLIC_FOOD = "Garlic {food}",
+        	SPICE_SUGAR_FOOD = "Sweet {food}",
+       		SPICE_CHILI_FOOD = "Spicy {food}",
+        	SPICE_SALT_FOOD = "Salty {food}",
+		--]]
+		return subfmt(STRINGS.NAMES["SPICE_" .. spice .. "_FOOD"], { food = GetPrefabNameOrElse(spiced, other) })
 	end
 
 	if other then
@@ -276,7 +329,7 @@ end
 -- @treturn number
 function Round(num, places)
 	places = places or 1
-	return tonumber(string.format("%." .. places .. "f", num))
+	return tonumber(string.format("%." .. places .. "f", num)) or 0
 end
 
 --- Calculates Region Size of a Text Widget

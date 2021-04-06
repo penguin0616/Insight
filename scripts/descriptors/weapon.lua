@@ -20,9 +20,13 @@ directory. If not, please refer to
 
 -- weapon.lua
 local world_type = GetWorldType()
-
 local SLINGSHOT_AMMO_DATA = {}
+local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison", }
+local WEAPON_CACHE = {
+	-- ["prefab"] = true/false (safe or not)
+}
 
+-- load slingshot ammo damages from prefab upvalues
 for i,v in pairs(_G.Prefabs) do
 	-- skins (glomling_winter) are missing .fn i think
 	if v.fn and debug.getinfo(v.fn, "S").source == "scripts/prefabs/slingshotammo.lua" then
@@ -79,7 +83,34 @@ local function GetDamageModifier(combat, context)
 	end
 end
 
-local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison", }
+local function GetDamage(self, attacker, target)
+	-- attacker is the weapon owner
+	local damage = attacker.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
+
+	if world_type == -1 then -- DST
+		-- DST is Weapon:GetDamage(attacker, target)
+		-- in DST, some modded weapons don't put a nil check for targets. right now, April 5 2021, no vanilla weapons care about the target.
+		if WEAPON_CACHE[self.inst.prefab] == nil then 
+			WEAPON_CACHE[self.inst.prefab] = pcall(self.GetDamage, self, attacker, target)
+		end
+
+		if WEAPON_CACHE[self.inst.prefab] == true then -- we know the GetDamage was safe to call.
+			damage = self:GetDamage(attacker, target) or damage
+
+		elseif WEAPON_CACHE[self.inst.prefab] == false then -- some mods just overwrite Weapon::GetDamage
+			damage = (type(self.damage) == "number" and self.damage) or damage
+		end
+
+	elseif world_type >= 2 then -- SW+
+		-- SW+ uses Weapon:GetDamage() and falls back to self.damage if no function for damage is present
+		damage = self:GetDamage() or damage
+	else -- DS, RoG
+		-- flat value only
+		damage = self.damage or damage
+	end
+
+	return damage
+end
 
 local function Describe(self, context)
 	local inst = self.inst
@@ -105,14 +136,7 @@ local function Describe(self, context)
 	end
 
 	-- Get Damage
-	local damage = owner.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
-	if world_type == -1 or world_type >= 2 then
-		-- DS Weapon:GetDamage()
-		-- DST Weapon:GetDamage(attacker, target)
-		damage = self:GetDamage(owner) or damage
-	else
-		damage = self.damage or damage
-	end
+	local damage = GetDamage(self, owner, nil)
 
 	local _stimuli = self.stimuli
 	-- Weapon type

@@ -407,6 +407,9 @@ return {
 	insulation_winter = "<icon=beargervest> <color=FROZEN>%s</color>",
 	insulation_summer = "<icon=icehat> <color=FROZEN>%s</color>",
 
+	-- klaussackloot.lua
+	klaussackloot = "Notable loot:",
+
 	-- klaussackspawner.lua
 	--klaussack_spawnsin = "%s",
 	--klaussack_despawn = "Despawns on day: %s",

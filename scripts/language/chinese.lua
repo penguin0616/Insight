@@ -407,6 +407,9 @@ return {
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>隔热效果</color>: <color=FROZEN>%s</color>",
 
+	-- klaussackloot.lua
+	klaussackloot = "Notable loot:",
+
 	-- klaussackspawner.lua
 	klaussack_spawnsin = "%s",
 	klaussack_despawn = "消失在天数：%s",

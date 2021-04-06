@@ -96,21 +96,7 @@ local function GetItems(self, context)
 		end
 
 		if not item.name then
-			--[[
-				SPICE_GARLIC_FOOD = "Garlic {food}",
-        		SPICE_SUGAR_FOOD = "Sweet {food}",
-       			SPICE_CHILI_FOOD = "Spicy {food}",
-        		SPICE_SALT_FOOD = "Salty {food}",
-			]]
-			local upper = string.upper(item.prefab)
-			--local spice = string.match(item.prefab, "SPICE_(%w+)_(%w+)")
-			local prefab, spice = string.match(upper, "(%w+)_SPICE_(%w+)") -- meatballs_spice_chili
-
-			if spice then
-				item.display_name = subfmt(NAMES["SPICE_" .. spice .. "_FOOD"], { food = NAMES[prefab] })
-			else
-				item.display_name = NAMES["KNOWN_" .. upper] or NAMES[upper]
-			end
+			item.display_name = GetPrefabNameOrElse(item.prefab, "**%s")
 		end
 
 		items[#items+1] = item
@@ -132,7 +118,7 @@ local function MakeDescription(items, context)
 		
 		local perishable = item.perishable and (item.perishable .. " ") or ""
 		local amount = item.amount
-		local name = item.name or item.display_name or ("**" .. item.prefab)
+		local name = item.name or item.display_name or ("uh oh...." .. item.prefab)
 		local bonus = {}
 
 		--[[
