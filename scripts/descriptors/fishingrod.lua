@@ -21,6 +21,11 @@ directory. If not, please refer to
 -- fishingrod.lua
 local function Describe(self, context)
 	local description, alt_description
+
+	if not context.config["display_fishing_information"] then
+		return
+	end
+
 	local rodlosetime = self.inst.components.finiteuses and (self.minstraintime + self.inst.components.finiteuses:GetPercent() * (self.maxstraintime - self.minstraintime)) or nil
 
 	local wait_times = string.format(context.lstr.fishingrod_waittimes, self.minwaittime, self.maxwaittime)

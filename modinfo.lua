@@ -640,6 +640,20 @@ local english = {
 			},
 		},
 	},
+	display_fishing_information = {
+		LABEL = "Fishing information",
+		HOVER = "Whether fishing information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Fishing information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Fishing information is shown."
+			},
+		},
+	},
 	display_spawner_information = {
 		LABEL = "Spawner information",
 		HOVER = "Whether creature spawners have information shown.",
@@ -1754,6 +1768,20 @@ local chinese = {
 			},
 		},
 	},
+	display_fishing_information = {
+		LABEL = "Fishing information",
+		HOVER = "Whether fishing information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Fishing information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Fishing information is shown."
+			},
+		},
+	},
 	display_spawner_information = {
 		LABEL = "生物生成计时器",
 		HOVER = "是否显示生物生成计时信息（猪人、兔人等）。",
@@ -2744,6 +2772,15 @@ configuration_options = {
 		},
 		default = true,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_fishing_information",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
 	},
 	{
 		name = "display_spawner_information",

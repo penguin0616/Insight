@@ -26,6 +26,10 @@ local function Describe(self, context)
 		return
 	end
 
+	if not context.config["display_fishing_information"] then
+		return
+	end
+
 	-- fish count
 	local fish_count = string.format(context.lstr.fish_count, self.fishleft, self.maxfish)
 
