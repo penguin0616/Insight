@@ -93,7 +93,7 @@ local function Describe(self, context)
 		return
 	end
 
-	alt_description = string.format(context.lstr.workable.chance, Round(player_chance * 100, 2), Round(npc_chance * 100, 2))
+	alt_description = string.format(context.lstr.workable.treeguard_chance, Round(player_chance * 100, 2), Round(npc_chance * 100, 2))
 
 	return {
 		priority = 0,

@@ -2548,6 +2548,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 		-- basic stuff
 		report.user = {
 			name = TheSim:GetUsersName() or "nil", -- 317172400@steam
+			steam_id = TheSim:GetSteamIDNumber() or "nil", -- 317172400
 			klei_id = TheNet:GetUserID() or "nil", -- KU_md6wbcj2
 			player_name = TheNet:GetLocalUserName() or "nil", -- penguin0616
 			language = TheNet:GetLanguageCode(), -- english

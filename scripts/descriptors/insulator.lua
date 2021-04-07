@@ -21,7 +21,7 @@ directory. If not, please refer to
 -- insulator.lua
 local function Describe(self, context)
 	local inst = self.inst
-	local description = "[why am i empty]"
+	local description = nil
 
 	-- self.cooling is not used
 

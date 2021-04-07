@@ -5,7 +5,7 @@
 
 ### 背景信息
 
-以show me为根本，但是内容更加全面。
+以 Show Me 为根本，但是内容更加全面。
 原因在于我喜欢知道所有东西的细节。show me是不错，但是却没有满足我对于更多信息的需求。代码编写并不严谨，我本来是为单机版做的。我把它挪到联机版来了!
 
 [点击这里以获取单机版本](https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154)
@@ -58,4 +58,5 @@
 非常感谢[rezecib](https://steamcommunity.com/id/rezecib)帮助我让淘气值选项在Combined Status中生效。
 非常感谢[licet_insanire](https://steamcommunity.com/profiles/76561198870384878)帮我在测试版里的帮助。
 非常感谢[Maxwell](https://steamcommunity.com/profiles/76561198319567131)做的中文翻译。
+非常感谢[Cloudy Young](https://steamcommunity.com/id/cloudyyoung)做的中文翻译。
 非常感谢[interesting28](https://steamcommunity.com/id/interesting28)做的中文翻译。

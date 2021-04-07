@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- example.lua
 local function Describe(self, context)
-	local description = "[why am i empty]"
+	local description = context.lstr.why
 
 	return {
 		priority = 0,

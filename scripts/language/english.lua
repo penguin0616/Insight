@@ -58,7 +58,7 @@ return {
 	durability_unwrappable = "<color=#C0C0C0>Durability</color>: <color=#C0C0C0>%s</color>",
 
 	-- beard.lua
-	beard = "Your beard will improve in %s day(s).",
+	beard = "Beard will improve in %s day(s).",
 
 	-- beargerspawner.lua
 	incoming_bearger_targeted = "<color=%s>Target: %s</color> -> %s",
@@ -639,7 +639,7 @@ return {
 
 	-- workable.lua
 	workable = {
-		chance = "<color=#636C5C>Treeguard chance</color>: %s%%<sub>You</sub> & %s%%<sub>NPC</sub>"
+		treeguard_chance = "<color=#636C5C>Treeguard chance</color>: %s%%<sub>You</sub> & %s%%<sub>NPC</sub>"
 	},
 
 	-- worldmigrator.lua

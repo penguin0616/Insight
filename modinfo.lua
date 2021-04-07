@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.0.11" -- ds is 2.9.7_ds
+version = "3.0.12" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Significant performance increase, Time to king death, Labyrinth Chest Info, Attack Ranges, Child Spawners",
+	update_info = "Klaus sack loot information (press alt), mod compatibility fixes, efficiency and use modifiers for Wes, fishing configuration, chinese translations, item lookup supports modded items.",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -428,15 +428,15 @@ local english = {
 	},
 	wortox_soul_range = {
 		LABEL = "Wortox Soul range",
-		HOVER = "Whether you can see the ranges wortox has for his souls.",
+		HOVER = "Whether you can see the pickup range Wortox has for his souls.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Soul ranges not shown."
+				HOVER = "Soul pickup ranges not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Soul ranges shown."
+				HOVER = "Soul pickup ranges shown."
 			},
 		},
 	},
@@ -1213,11 +1213,11 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Will not display information for disabled descriptors."
+				HOVER = "Insight will not show debugging information."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Will display information for disabled descriptors."
+				HOVER = "Insight will show debugging information."
 			},
 		},
 	},
@@ -1226,15 +1226,15 @@ translations["en"] = english
 
 local chinese = {
 	-- description
-	update_info = "添加了温蒂的小惊吓指示器；修复了高亮模式；提高模组运行性能（举例来说：高亮模式可同时运用于1632个木箱，而对游戏本身冲击非常小）；bug修复；优化沃尔特的弹弓使用；为玩家状态实施网络最优化。",
+	update_info = "",
 	crashreporter_info = "**添加了崩溃报告器**, 你可以在客户端或服务器设置界面来开启它。",
 
-	mod_explanation = "以show me为基础，但功能更全面。",
+	mod_explanation = "以 Show Me 为基础，但功能更全面",
 	config_paths = "服务器设置方法: 主界面 -> 创建世界-> 模组 -> 服务器模组 -> Insight -> 模组设置\n-------------------------\n客户端设置方法: 主界面 -> 模组 -> 服务器模组 -> Insight -> 模组设置",
 
 	config_disclaimer = "请确认你设置的各个选项, 尤其是设置好显示的和设置不再显示的信息，需要格外注意。",
 	version = "版本",
-	latest_update = "最近的更新",
+	latest_update = "最新更新",
 
 	-- section titles
 	sectiontitle_formatting = "格式",
@@ -1254,11 +1254,11 @@ local chinese = {
 		--[[ Formatting ]]
 		--------------------------------------------------------------------------
 		LABEL = "语言",
-		HOVER = "也就是你想知道的信息以何种语言来显示。",
+		HOVER = "以何种语言来显示",
 		OPTIONS = {
 			["automatic"] = {
 				DESCRIPTION = "自动",
-				HOVER = "使用你当前的语言设定"
+				HOVER = "使用游戏当前的语言设定"
 			},
 			["en"] = {
 				DESCRIPTION = "英语",
@@ -1392,34 +1392,34 @@ local chinese = {
 	--[[ Indicators ]]
 	--------------------------------------------------------------------------
 	display_attack_range = {
-		LABEL = "Attack Ranges",
-		HOVER = "Whether attack ranges are shown.",
+		LABEL = "攻击范围",
+		HOVER = "是否显示攻击范围.",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Attack ranges are not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示攻击范围"
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Attack ranges are shown."
+				HOVER = "显示攻击范围"
 			},
 		},
 	},
 	attack_range_type = {
-		LABEL = "Attack Range Type",
-		HOVER = "Type of attack range to be displayed.",
+		LABEL = "攻击范围类型",
+		HOVER = "显示攻击范围的类型",
 		OPTIONS = {
 			["hit"] = {
-				DESCRIPTION = "Hit",
-				HOVER = "Hit range is shown."
+				DESCRIPTION = "敲击",
+				HOVER = "显示敲击范围"
 			},
 			["attack"] = {
-				DESCRIPTION = "Attack",
-				HOVER = "Attack range is shown."
+				DESCRIPTION = "攻击",
+				HOVER = "显示攻击范围"
 			},
 			["both"] = {
-				DESCRIPTION = "Both",
-				HOVER = "Both hit and attack range are shown."
+				DESCRIPTION = "两者",
+				HOVER = "同时显示敲击和攻击范围"
 			},
 
 		},
@@ -1439,8 +1439,8 @@ local chinese = {
 		},
 	},
 	boss_indicator = {
-		LABEL = "Boss指示器",
-		HOVER = "是否开启Boss指示器功能。",
+		LABEL = "Boss 指示器",
+		HOVER = "是否开启 Boss 指示器功能。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -1454,7 +1454,7 @@ local chinese = {
 	},
 	notable_indicator = {
 		LABEL = "其他物品的指示器",
-		HOVER = "其他物品（切斯特，哈奇等等）指示器是否显示。",
+		HOVER = "是否显示其他物品（切斯特，哈奇等等）的指示器",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -1585,8 +1585,8 @@ local chinese = {
 				HOVER = "显示你被战歌鼓舞的生效范围。"
 			},
 			["both"] = {
-				DESCRIPTION = "双模式",
-				HOVER = "两种范围都将被显示。"
+				DESCRIPTION = "两者",
+				HOVER = "同时显示脱离战歌和被战歌鼓舞的生效范围"
 			},
 		},
 	},
@@ -1603,8 +1603,8 @@ local chinese = {
 				HOVER = "只会显示在地图图标上。"
 			},
 			["2"] = {
-				DESCRIPTION = "落水洞和地图双模式",
-				HOVER = "地图图标和落水洞本身都会被显示。"
+				DESCRIPTION = "两者",
+				HOVER = "同时显示在地图图标和落水洞本身上"
 			},
 		},
 	},
@@ -1654,8 +1654,8 @@ local chinese = {
 		},
 	},
 	food_units = {
-		LABEL = "显示食物的度",
-		HOVER = "是否展示食物属于哪个度（果、菜、蛋等等）。",
+		LABEL = "食物系数显示",
+		HOVER = "是否显示食物的系数（果、菜、蛋度等等）",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -1755,16 +1755,16 @@ local chinese = {
 		},
 	},
 	display_shared_stats = {
-		LABEL = "Playerlist Stats",
-		HOVER = "Whether the stats of other players in the server are shown in the playerlist.",
+		LABEL = "玩家列表中的数据",
+		HOVER = "是否将服务器中其他玩家的数据显示在玩家列表中",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The stats are not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示数据"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The stats are shown."
+				DESCRIPTION = "是",
+				HOVER = "显示数据"
 			},
 		},
 	},
@@ -1930,11 +1930,11 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "天气信息不显示。"
+				HOVER = "不显示天气信息"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "天气信息显示。"
+				HOVER = "显示天气信息"
 			},
 		},
 	},
@@ -1962,11 +1962,11 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "生命值信息不会被显示。"
+				HOVER = "不显示生命值信息"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "生命值信息会被显示。"
+				HOVER = "显示生命值信息"
 			},
 		},
 	},
@@ -1994,11 +1994,11 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不开启工具耐久度显示。"
+				HOVER = "不显示跟随者的信息"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示工具的耐久度。"
+				HOVER = "显示跟随者的信息"
 			},
 		},
 	},
@@ -2170,15 +2170,15 @@ local chinese = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "无",
-				HOVER = "燃料信息将不会被显示。"
+				HOVER = "不显示燃料信息"
 			},
 			["1"] = {
 				DESCRIPTION = "标准化",
-				HOVER = "标准化的燃料信息将会展示。"
+				HOVER = "显示标准的燃料信息"
 			},
 			["2"] = {
 				DESCRIPTION = "最大化",
-				HOVER = "全面的燃料信息将会展示。"
+				HOVER = "显示全面的燃料信息"
 			},
 		},
 	},
@@ -2320,17 +2320,17 @@ local chinese = {
 			},
 		},
 	},
-	DEBUG_ENABLED = {
+	DEBUG_ENABLED = { -- this will need revision at some point. dunno why i wrote the original like that.
 		LABEL = "开启调试功能",
 		HOVER = "打开你的Insight的调试功能。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "禁用的描述选项不会显示任何信息。"
+				HOVER = "不显示禁用的描述选项"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "禁用的描述选项将会显示信息。"
+				HOVER = "显示禁用的描述选项"
 			},
 		},
 	},
