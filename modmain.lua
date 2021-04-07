@@ -2556,7 +2556,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 			input_devices = TheInput:GetInputDevices(),
 		}
 
-		--report.game_version = nil
+		report.game_version = APP_VERSION
 		report.mods = GetMods() -- in case of compatability issues
 		report.platform = GetPlatform() -- please be steam on windows
 		report.log_type = from -- "client" or "server" 
@@ -2577,6 +2577,14 @@ if IsDST() then -- not in UI overrides because server needs access too
 			report.log = report.log:sub(#report.log - LOG_LIMIT + 1, #report.log)
 		end
 
+		-- game seems to have a problem encoding some characters with the messed up json implementation they have
+		-- but it'll handle b64 alright, so i'll just compress it and handle stuff properly on my end
+		--print("#log before:", #report.log) -- 137261
+		report.log = TheSim:ZipAndEncodeString(report.log) -- DS: TheSim:SetPersistentString(path, data, ENCODE_SAVES) (ENCODE_SAVES=true)
+		--print("#log after:", #report.log) -- 23408
+		report = json.encode_compliant(report)
+
+		
 		--[[
 		if not log then
 			ShowStatus(widget, { state=1, status="Unable to complete report." })
@@ -2616,7 +2624,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 				ShowStatus(widget, { state=state, status=status })
 			end,
 			"POST",
-			json.encode_compliant(report)
+			report
 		)
 	end
 

@@ -311,6 +311,45 @@ end
 --======================================== Recipe Popup ====================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local function GetRecipeURL(recipe)
+	if not _G.Prefabs[recipe.product] or not _G.Prefabs[recipe.product].fn then
+		return nil
+	end
+
+	local ctor = _G.Prefabs[recipe.product].fn
+	local info = debug.getinfo(ctor, "S")
+
+	
+	local parent = string.match(info.source, "(.*)scripts%/prefabs%/")
+	local mod_folder_name = string.match(parent, "mods%/([^/]+)%/")
+	--mprint("hey:", recipe.product, info.source, parent, mod_folder_name)
+
+	if parent == "" then
+		-- vanilla
+		if not STRINGS.NAMES[string.upper(recipe.product)] then
+			return nil
+		end
+		return "https://dontstarve.fandom.com/wiki/" .. STRINGS.NAMES[string.upper(recipe.product)]:gsub("%s", "_"), false
+	end
+
+	-- modded
+	for _, modname in pairs(ModManager:GetEnabledModNames()) do
+		if modname == mod_folder_name then
+			local modinfo = KnownModIndex:GetModInfo(modname)
+			if type(modinfo.forumthread) == "string" and modinfo.forumthread ~= "" then
+				return modinfo.forumthread, true
+			else
+				local workshop_id = string.match(mod_folder_name, "workshop%-(%d+)")
+				if workshop_id then
+					return "https://steamcommunity.com/sharedfiles/filedetails/?id=" .. workshop_id, true
+				end
+			end
+		end
+	end
+
+	return nil
+end
+
 local oldRecipePopup_Refresh = RecipePopup.Refresh
 function RecipePopup:Refresh()
 	oldRecipePopup_Refresh(self)
@@ -319,8 +358,16 @@ function RecipePopup:Refresh()
 		return
 	end
 
-	local header = self.name
+	if not self.recipe then
+		return
+	end
 
+	local url, modded = GetRecipeURL(self.recipe)
+	if not url then
+		return
+	end
+	
+	local header = self.name
 	self.lookup = header:AddChild(InsightButton())
 	widgetLib.imagebutton.ForceImageSize(self.lookup.button, header:InsightGetSize(), header:InsightGetSize())
 	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:InsightGetSize() / 2, 0)
@@ -328,10 +375,12 @@ function RecipePopup:Refresh()
 	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
 	self.lookup.button:SetTooltip("Click to lookup item")
 
+	if modded then
+		self.lookup.button.image:SetTint(0, 1, 0, 1)
+	end
+
 	self.lookup:SetOnClick(function()
-		-- the wiki url automatically resolves spaces to underscores.
-		local title = header:GetString():gsub("%s", "_")
-		VisitURL("https://dontstarve.fandom.com/wiki/" .. title) 
+		VisitURL(GetRecipeURL(self.recipe))
 	end)
 end
 
