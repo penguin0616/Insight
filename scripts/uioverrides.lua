@@ -321,10 +321,10 @@ local function GetRecipeURL(recipe)
 
 	
 	local parent = string.match(info.source, "(.*)scripts%/prefabs%/")
-	local mod_folder_name = string.match(parent, "mods%/([^/]+)%/")
+	local mod_folder_name = parent and string.match(parent, "mods%/([^/]+)%/")
 	--mprint("hey:", recipe.product, info.source, parent, mod_folder_name)
 
-	if parent == "" then
+	if info.source == "scripts/prefabutil.lua" or parent == "" then
 		-- vanilla
 		if not STRINGS.NAMES[string.upper(recipe.product)] then
 			return nil
