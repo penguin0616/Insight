@@ -27,6 +27,7 @@ local function GetAttackerDamageData(attacker, target)
 	local mount_external_damage_multiplier = 1
 	local mount_damage_bonus = 0
 	
+	-- needs revision
 	if attacker.components.rider ~= nil and attacker.components.rider:IsRiding() then
 		local mount = attacker.components.rider:GetMount()
 		if mount ~= nil and mount.components.combat ~= nil then
@@ -40,11 +41,27 @@ local function GetAttackerDamageData(attacker, target)
 		if saddle ~= nil and saddle.components.saddler ~= nil then
 			damage = damage + saddle.components.saddler:GetBonusDamage()
 		end
-	end
+	else
+		local weapon = attacker.components.inventory ~= nil and attacker.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+		if weapon and weapon.components.weapon then -- monkeys
+			damage = Insight.descriptors.weapon.GetDamage(weapon.components.weapon, attacker, target)
+		end
 
-	local weapon = attacker.components.inventory ~= nil and attacker.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	if weapon and weapon.components.weapon then -- monkeys
-		damage = Insight.descriptors.weapon.GetDamage(weapon.components.weapon, attacker, target)
+		-- attacker damage multiplier
+		local attack_damage_multiplier = 1
+		if attacker and attacker.components.combat then
+			attack_damage_multiplier = attacker.components.combat.damagemultiplier or attack_damage_multiplier
+		end
+
+		-- external attack damage multiplier
+		local external_attack_damage_multiplier = 1
+		if attacker and attacker.components.combat and attacker.components.combat.externaldamagemultipliers then
+			external_attack_damage_multiplier = attacker.components.combat.externaldamagemultipliers:Get() or external_attack_damage_multiplier
+		end
+
+		return damage
+			* attack_damage_multiplier
+			* external_attack_damage_multiplier
 	end
 
 	return damage, mount_damage_multiplier, mount_external_damage_multiplier, mount_damage_bonus
@@ -52,7 +69,9 @@ end
 
 
 --- Figures out the real amount of damage that is dealt from attacker to target.
-local function GetRealDamage(damage, attacker, target)
+local function GetRealDamage(damage, attacker, target, settings)
+	settings = settings or {}
+
 	-- i'm getting a headache
 
 	-- can't damage something that doesn't have health
@@ -90,13 +109,13 @@ local function GetRealDamage(damage, attacker, target)
 
 	-- attacker damage multiplier
 	local attack_damage_multiplier = 1
-	if attacker and attacker.components.combat then
+	if not settings.ignoreAttackerMultiplier or (attacker and attacker.components.combat) then
 		attack_damage_multiplier = attacker.components.combat.damagemultiplier or attack_damage_multiplier
 	end
 
 	-- external attack damage multiplier
 	local external_attack_damage_multiplier = 1
-	if attacker and attacker.components.combat and attacker.components.combat.externaldamagemultipliers then
+	if not settings.ignoreAttackerMultiplier or (attacker and attacker.components.combat and attacker.components.combat.externaldamagemultipliers) then
 		external_attack_damage_multiplier = attacker.components.combat.externaldamagemultipliers:Get() or external_attack_damage_multiplier
 	end
 
@@ -178,7 +197,7 @@ local function Describe(self, context)
 	local description = nil
 
 	local damage = GetAttackerDamageData(self.inst, context.player)
-	local damage_to_player = GetRealDamage(damage, self.inst, context.player)
+	local damage_to_player = GetRealDamage(damage, self.inst, context.player, { ignoreAttackerMultiplier=true })
 
 	description = string.format(context.lstr.damage, Round(damage, 1))
 
