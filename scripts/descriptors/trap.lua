@@ -18,30 +18,23 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- klaussacklock.lua
-
--- Just going to regurgitate klaussackloot data here.
+-- trap.lua
 local function Describe(self, context)
-	local alt_description = {context.lstr.klaussackloot}
+	local description
 
-	local loot = Insight.descriptors.klaussackloot.SummarizeImportantLoot()
-
-	for name, amount in pairs(loot) do
-		local clr = "#FFFFFF"
-		if name=="krampus_sack" then
-			clr = Insight.COLORS.FRUIT
-		elseif name:sub(-10) == "_blueprint" then
-			clr = "#4A7ECE"--"#396DBD"
-		end
-		table.insert(alt_description, string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>)", clr, GetPrefabNameOrElse(name), amount))
-	end
-
-	alt_description = table.concat(alt_description, "\n")
-
-	return {
+	return --[[{
+		name = "trap",
+		priority = 49,
+		description = description,
+		alt_description = alt_description,
+	},--]] (self.range and context.config["display_attack_range"] and {
+		name = "insight_ranged",
 		priority = 0,
-		alt_description = alt_description
-	}
+		description = nil,
+		range = self.range,
+		color = "#ff0000",
+		attach_player = false
+	} or nil)
 end
 
 

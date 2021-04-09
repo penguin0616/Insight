@@ -83,21 +83,23 @@ local function GetDamageModifier(combat, context)
 	end
 end
 
-local function GetDamage(self, attacker, target)
+
+-- also used by combat descriptor
+local function GetDamage(self, f, attacker, target)
 	-- attacker is the weapon owner
-	local damage = attacker.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
+	local damage = nil --attacker.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
 
 	if world_type == -1 then -- DST
 		-- DST is Weapon:GetDamage(attacker, target)
 		-- in DST, some modded weapons don't put a nil check for targets. right now, April 5 2021, no vanilla weapons care about the target.
-		if WEAPON_CACHE[self.inst.prefab] == nil then 
+		if self.inst.prefab and WEAPON_CACHE[self.inst.prefab] == nil then 
 			WEAPON_CACHE[self.inst.prefab] = pcall(self.GetDamage, self, attacker, target)
 		end
 
-		if WEAPON_CACHE[self.inst.prefab] == true then -- we know the GetDamage was safe to call.
+		if self.inst.prefab == nil or WEAPON_CACHE[self.inst.prefab] == true then -- we know the GetDamage was safe to call.
 			damage = self:GetDamage(attacker, target) or damage
 
-		elseif WEAPON_CACHE[self.inst.prefab] == false then -- some mods just overwrite Weapon::GetDamage
+		elseif self.inst.prefab and WEAPON_CACHE[self.inst.prefab] == false then -- some mods just overwrite Weapon::GetDamage
 			damage = (type(self.damage) == "number" and self.damage) or damage
 		end
 
@@ -136,7 +138,7 @@ local function Describe(self, context)
 	end
 
 	-- Get Damage
-	local damage = GetDamage(self, owner, nil)
+	local damage = GetDamage(self, owner, nil) or owner.components.combat.defaultdamage
 
 	local _stimuli = self.stimuli
 	-- Weapon type
@@ -184,5 +186,6 @@ end
 
 return {
 	Describe = Describe,
-	GetSlingshotAmmoData = GetSlingshotAmmoData
+	GetSlingshotAmmoData = GetSlingshotAmmoData,
+	GetDamage = GetDamage,
 }

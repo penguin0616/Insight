@@ -351,15 +351,6 @@ local function Describe(self, context)
 		end
 	end
 
-	if inst.prefab == "trap_starfish" and context.config["display_attack_range"] then
-		local dmg, reset = string.format(context.lstr.damage, TUNING.STARFISH_TRAP_DAMAGE), nil
-		if inst._reset_task then
-			reset = string.format(context.lstr.trap_starfish_cooldown, TimeToText(time.new(GetTaskRemaining(inst._reset_task), context)))
-		end
-
-		description = CombineLines(dmg, reset)
-	end
-
 	if inst.prefab == "lureplant" then
 		if inst.hibernatetask and not IsWinter() then
 			description = string.format(context.lstr.lureplant_active, TimeToText(time.new(GetTaskRemaining(inst.hibernatetask), context)))

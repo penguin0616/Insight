@@ -394,7 +394,6 @@ return {
 		correct = "组装正确",
 		incorrect = "组装错误",
 	},
-	trap_starfish_cooldown = "重组于: %s后",
 	lureplant_active = "开始活动于: %s后",
 	walrus_camp_respawn = "<color=FROZEN>%s</color> 重生于: %s后",
 	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
@@ -430,6 +429,14 @@ return {
 
 	-- mermcandidate.lua
 	mermcandidate = "卡路里: %s / %s",
+
+	-- mine.lua
+	mine = {
+		active = "Checks for triggers every %s second(s).",
+		inactive = "Not checking for triggers.",
+		beemine_bees = "Will release %s bee(s).",
+		trap_starfish_cooldown = "重组于: %s后",
+	},
 
 	-- moisture.lua
 	moisture = "<color=WET>潮湿度</color>: <color=WET>%s%%</color>",

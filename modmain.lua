@@ -236,7 +236,7 @@ local descriptors_ignore = {
 	
 	-- now for DST stuff
 	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "constructionsite", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
-	"grogginess", "workmultiplier", "mine", "aura", -- may be interesting looking into
+	"grogginess", "workmultiplier", "aura", -- may be interesting looking into
 	"resistance", -- for the armor blocking of bone armor
 
 	"playerinspectable", "playeractionpicker", "playervision", "pinnable", "playercontroller", "playervoter", "singingshelltrigger", "tackler", "sleepingbaguser", "skinner", "playermetrics",-- from mousing over player

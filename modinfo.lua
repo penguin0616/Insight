@@ -3034,6 +3034,7 @@ configuration_options = {
 		tags = {"server_only"},
 	},
 	--]]
+	--[[
 	{
 		name = "account_combat_modifiers",
 		options = {
@@ -3044,6 +3045,7 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
+	--]]
 	{
 		name = "info_preload",
 		options = {

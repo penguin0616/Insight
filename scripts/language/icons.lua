@@ -394,7 +394,6 @@ return {
 		--correct = "This is correctly assembled.",
 		--incorrect = "This is assembled wrong.",
 	},
-	--trap_starfish_cooldown = "Rearms in: %s",
 	--lureplant_active = "Will become active in: %s",
 	--walrus_camp_respawn = "<color=FROZEN>%s</color> respawns in: %s",
 	--global_wetness = "<color=WET>Global Wetness</color>: <color=WET>%s</color>",
@@ -430,6 +429,14 @@ return {
 
 	-- mermcandidate.lua
 	--mermcandidate = "Calories: %s / %s",
+
+	-- mine.lua
+	mine = {
+		--active = "Checks for triggers every %s second(s).",
+		--inactive = "Not checking for triggers.",
+		--beemine_bees = "Will release %s bee(s).",
+		--trap_starfish_cooldown = "Rearms in: %s",
+	},
 
 	-- moisture.lua
 	moisture = "<icon=wetness> %s%%",
