@@ -144,11 +144,19 @@ return {
 	--disease_spread = "Will spread disease in: %s",
 	--disease_delay = "Disease is delayed for: %s",
 
-	-- domesticable.lua
-	domesticable = {
+	-- domesticatable.lua
+	domesticatable = {
 		--domestication = "Domestication: %s%%",
 		--obedience = "Obedience: %s%%",
-		--tendency = "Tendency: %s"
+		--obedience_extended = "Obedience: %s%% (Saddle: >=%s%%, Keep Saddle: >%s%%, Lose Domestication: <=%s%%)",
+		--tendency = "Tendency: %s",
+		tendencies = {
+			--["NONE"] = "None",
+			--[TENDENCY.DEFAULT] = "Default",
+			--[TENDENCY.ORNERY] = "Ornery",
+			--[TENDENCY.RIDER] = "Rider",
+			--[TENDENCY.PUDGY] = "Pudgy"
+		},
 	},
 
 	-- drivable.lua

@@ -193,6 +193,8 @@ widgetLib = {
 }
 
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
+SHOW_INFO_ORIGIN = false
+DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
 
 local player_contexts = {}
 local mod_component_cache = {}
@@ -236,7 +238,7 @@ local descriptors_ignore = {
 	
 	-- now for DST stuff
 	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "constructionsite", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
-	"grogginess", "workmultiplier", "aura", -- may be interesting looking into
+	"grogginess", "workmultiplier", "aura", "writeable", -- may be interesting looking into
 	"resistance", -- for the armor blocking of bone armor
 
 	"playerinspectable", "playeractionpicker", "playervision", "pinnable", "playercontroller", "playervoter", "singingshelltrigger", "tackler", "sleepingbaguser", "skinner", "playermetrics",-- from mousing over player
@@ -246,6 +248,7 @@ local descriptors_ignore = {
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", "murderable", "poppable", "balloonmaker", -- don't care
+	"markable_proxy", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -434,8 +437,32 @@ local function GetComponentOrigin(componentname)
 		return mod_component_cache[componentname]
 	end
 
+	local cmp = require("components/" .. componentname)
+	if not cmp then
+		mod_component_cache[componentname] = false
+		return GetComponentOrigin(componentname)
+	end
 
-	
+	local info = cmp._ctor and debug.getinfo(cmp._ctor, "S")
+
+	local parent = string.match(info.source, "(.*)scripts%/components%/")
+	local mod_folder_name = parent and string.match(parent, "mods%/([^/]+)%/")
+	--mprint("hey:", recipe.product, info.source, parent, mod_folder_name)
+
+	if parent == "" then
+		-- vanilla
+		mod_component_cache[componentname] = false
+		return GetComponentOrigin(componentname)
+	end
+
+	-- modded
+	for _, modname in pairs(ModManager:GetEnabledModNames()) do
+		if modname == mod_folder_name then
+			mod_component_cache[componentname] = KnownModIndex:GetModInfo(modname).name or false
+			return GetComponentOrigin(componentname)
+		end
+	end
+	--[[
 	for i,mod in pairs(ModManager.mods) do
 		-- mod is the env
 		local data = KnownModIndex:GetModInfo(mod.modname) -- modinfo.lua
@@ -449,6 +476,7 @@ local function GetComponentOrigin(componentname)
 	end
 	
 	mod_component_cache[componentname] = false
+	--]]
 
 	return nil
 end
@@ -720,12 +748,17 @@ local function GetEntityInformation(item, player, params)
 			local origin = GetComponentOrigin(name)
 
 			if origin then
-				description = string.format("[%s] No information for: %s", origin, name)
+				if DEBUG_SHOW_NOTIMPLEMENTED_MODDED then
+					description = string.format("[%s] No information for: %s", origin, name)
+				else
+					description = nil
+				end
 			end
 
 			--table.insert(chunks, {priority = -1, name = name, description = description})
-			chunks[len_chunks+1] = {priority = -1, name = name, description = description}; len_chunks = len_chunks + 1;
-
+			if description then
+				chunks[len_chunks+1] = {priority = -1, name = name, description = description}; len_chunks = len_chunks + 1;
+			end
 		end
 	end
 
@@ -762,7 +795,7 @@ local function GetEntityInformation(item, player, params)
 		if type(v.description) == "string" then
 			v.description = ResolveColors(v.description) -- resolve any color tags that reference the Insight table's colors
 
-			assembled.information = assembled.information .. v.description
+			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
 
 			--[[
 			if v.alt_description then
@@ -787,13 +820,13 @@ local function GetEntityInformation(item, player, params)
 
 
 		if type(v.alt_description) == "string" then
-			assembled.alt_information = assembled.alt_information .. ResolveColors(v.alt_description)
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. ResolveColors(v.alt_description)
 			if i < #chunks then
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
 
 		elseif v.alt_description == nil and v.description ~= nil then
-			assembled.alt_information = assembled.alt_information .. v.description
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
 			if i < #chunks then
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end

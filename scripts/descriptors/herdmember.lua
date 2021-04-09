@@ -20,8 +20,7 @@ directory. If not, please refer to
 
 -- herdmember.lua
 local function Describe(self, context)
-	local inst = self.inst
-	local description = nil
+	local alt_description
 
 	-- afaik, no way to mouse over herd component
 	-- so just taking care of this one
@@ -32,12 +31,12 @@ local function Describe(self, context)
 		herd = herd.components.herd
 		-- maxsize = 12
 		-- membercount = 0
-		description = string.format(context.lstr.herd_size, herd.membercount, herd.maxsize)
+		alt_description = string.format(context.lstr.herd_size, herd.membercount, herd.maxsize)
 	end
 
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 end
 

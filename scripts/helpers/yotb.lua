@@ -36,6 +36,8 @@ local set_data = assert(require("yotb_costumes"), "Failed to load yotb_costumes"
 local target_thresholds = assert(util.getupvalue(yotb_stager.GetParameterLine, "target_thresholds"), "Failed to load target_thresholds")
 local categories = assert(util.getupvalue(yotb_stager.DeclareWinner, "categories"), "Failed to retrieve yotb_stager -> categories")
 
+local SHOW_YOTB_INFO = false
+
 -- known categories as of February 9, 2021
 -- local CATEGORIES = { "WAR", "DOLL", "FESTIVE", "NATURE", "ROBOT", "ICE", "FORMAL", "VICTORIAN", "BEAST" }
 
@@ -105,6 +107,14 @@ local function DetermineBeefaloRankings(beefs, target_values, categories, target
 	return scores
 end
 
+local function GetShowYOTBInfo()
+	return SHOW_YOTB_INFO
+end
+
+local function SetShowYOTBInfo(bool)
+	SHOW_YOTB_INFO = bool
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -114,5 +124,7 @@ return {
 
 	GetThreshold = GetThreshold,
 	GetBeefScore = GetBeefScore,
+	GetShowYOTBInfo = GetShowYOTBInfo,
+	SetShowYOTBInfo = SetShowYOTBInfo,
 }
 

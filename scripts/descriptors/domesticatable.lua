@@ -19,45 +19,73 @@ directory. If not, please refer to
 ]]
 
 -- domesticatable.lua
-local function GetHighestTendency(self)
-	if self.inst.tendency then
-		return self.inst.tendency:sub(1,1):upper() .. self.inst.tendency:sub(2):lower()
-	else
-		return
-	end
+-- x, y, z = 20, 10, 10; print(x * 2, x+y+z) -> 40 40
+-- x, y, z = 40, 20, 20; print(x * 2, x+y+z) -> 80 80
+-- so in other words, dominant trait must be 50% of overall points
 
-	local a, b = nil, 0
-	for tendency, score in pairs(self.tendencies) do
-		if score > b then
-			a, b = tendency, score
-		end 
-	end
+local TENDENCY_COLORS = {
+	[TENDENCY.DEFAULT] = "#bbbbbb",
+	[TENDENCY.ORNERY] = "#B33C34", --"#A22B23",
+	[TENDENCY.RIDER] = Insight.COLORS.ENLIGHTENMENT,
+	[TENDENCY.PUDGY] = Insight.COLORS.HUNGER,
+}
 
-	if a then
-		local name = TENDENCY[a] or (a .. "*")
-		name = name:sub(1,1):upper() .. name:sub(2):lower()
-		return name
+-- order to display
+--local ORDER = {TENDENCY.DEFAULT, TENDENCY.ORNERY, TENDENCY.RIDER, TENDENCY.PUDGY}
+local ORDER = {TENDENCY.RIDER, TENDENCY.ORNERY, TENDENCY.PUDGY}
+
+local function GetTotalTendencyPoints(self)
+	local total = 0
+	for tendency, points in pairs(self.tendencies) do
+		total = total + points
 	end
+	return total
 end
 
 local function Describe(self, context)
-	local description = nil
+	local description, alt_description
 
-	if context.config["domestication_information"] then
-		local domestication = Round(self.domestication * 100, 1)
-		local obedience = Round(self.obedience * 100, 1)
-		local tendency = GetHighestTendency(self)
-
-		local x1 = domestication > 0 and string.format(context.lstr.domesticable.domestication, domestication) or nil
-		local x2 = obedience > 0 and string.format(context.lstr.domesticable.obedience, obedience) or nil
-		local x3 = tendency and string.format(context.lstr.domesticable.tendency, tendency) or nil
-
-		description = CombineLines(x1, x2, x3)
+	if not context.config["domestication_information"] then
+		return nil
 	end
 
+	-- figure out stats
+	local domestication = Round(self.domestication * 100, 2)
+	local obedience = Round(self.obedience * 100, 1)
+	local total_tendency_points = GetTotalTendencyPoints(self)
+
+	-- make strings
+	local domestication_string = domestication > 0 and string.format(context.lstr.domesticatable.domestication, domestication) or nil
+	
+	local obedience_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience, obedience) or nil
+	--local obedience_extended_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience_extended, obedience, TUNING.BEEFALO_SADDLEABLE_OBEDIENCE, TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE, self.minobedience or "?") or nil
+	local obedience_extended_string = obedience_string
+
+	local dominant_tendency_string = self.inst.tendency and ApplyColour(context.lstr.domesticatable.tendencies[self.inst.tendency] or "???", TENDENCY_COLORS[self.inst.tendency] or "#ffffff")
+	local tendency_string = dominant_tendency_string and string.format(context.lstr.domesticatable.tendency, dominant_tendency_string) or nil
+	
+	local full_tendency_string = ""
+
+	for i = 1, #ORDER do
+		local tendency = ORDER[i]
+		full_tendency_string = full_tendency_string .. string.format("%s: %s (<color=" .. TENDENCY_COLORS[tendency].. ">%s%%</color>), ", 
+			ApplyColour(context.lstr.domesticatable.tendencies[tendency] or "?", TENDENCY_COLORS[tendency]),
+			Round(self.tendencies[tendency] or 0, 3),
+			Round((self.tendencies[tendency] or 0) / total_tendency_points * 100, 2)
+		)
+	end
+
+	if #full_tendency_string > 0 then
+		full_tendency_string = full_tendency_string:sub(1, -3)
+	end
+
+	description = CombineLines(domestication_string, obedience_string, tendency_string)
+	alt_description = CombineLines(domestication_string, obedience_extended_string, tendency_string, full_tendency_string)
+
 	return {
-		priority = 0,
-		description = description
+		priority = 10,
+		description = description,
+		alt_description = alt_description
 	}
 end
 

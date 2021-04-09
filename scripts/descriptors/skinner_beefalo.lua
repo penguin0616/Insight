@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- skinner_beefalo.lua
+local yotb_helper = import("helpers/yotb")
 
 -- known categories as of February 9, 2021
 --local CATEGORIES = { "WAR", "DOLL", "FESTIVE", "NATURE", "ROBOT", "ICE", "FORMAL", "VICTORIAN", "BEAST" }
@@ -90,12 +91,12 @@ local function Describe(self, context)
 	end
 
 	local score = GetBeefScore(self.inst)
-	local description = string.format(context.lstr.skinner_beefalo, score.FEARSOME, score.FESTIVE, score.FORMAL)
+	local alt_description = string.format(context.lstr.skinner_beefalo, score.FEARSOME, score.FESTIVE, score.FORMAL)
 
 
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 
 end

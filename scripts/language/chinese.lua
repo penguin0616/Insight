@@ -144,11 +144,19 @@ return {
 	disease_spread = "将传播疾病于: %s",
 	disease_delay = "疾病被延迟: %s",
 
-	-- domesticable.lua
-	domesticable = {
+	-- domesticatable.lua
+	domesticatable = {
 		domestication = "驯化值: %s%%",
 		obedience = "顺从值: %s%%",
+		obedience_extended = "Obedience: %s%% (Saddle: >=%s%%, Keep Saddle: >%s%%, Lose Domestication: <=%s%%)",
 		tendency = "趋势: %s"
+		tendencies = {
+			["NONE"] = "None",
+			[TENDENCY.DEFAULT] = "Default",
+			[TENDENCY.ORNERY] = "Ornery",
+			[TENDENCY.RIDER] = "Rider",
+			[TENDENCY.PUDGY] = "Pudgy"
+		},
 	},
 
 	-- drivable.lua
