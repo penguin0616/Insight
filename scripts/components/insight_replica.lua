@@ -228,6 +228,9 @@ local function OnNaughtinessDirty(inst)
 	end
 
 	local str = GetInsight(inst).net_naughtiness:value()
+	if str == "" then
+		return
+	end
 	local data = json.decode(str)
 
 	--mprint("got and pushed", data.actions, data.threshold)

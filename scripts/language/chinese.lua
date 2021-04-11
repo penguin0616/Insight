@@ -149,7 +149,7 @@ return {
 		domestication = "驯化值: %s%%",
 		obedience = "顺从值: %s%%",
 		obedience_extended = "Obedience: %s%% (Saddle: >=%s%%, Keep Saddle: >%s%%, Lose Domestication: <=%s%%)",
-		tendency = "趋势: %s"
+		tendency = "趋势: %s",
 		tendencies = {
 			["NONE"] = "None",
 			[TENDENCY.DEFAULT] = "Default",

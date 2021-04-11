@@ -132,7 +132,7 @@ local RichText = Class(Widget, function(self, font, size, text, colour)
 	end
 
 	if size then
-		self:SetSize(30)
+		self:SetSize(size)
 	end
 
 	if colour then

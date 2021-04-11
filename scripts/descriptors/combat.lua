@@ -22,7 +22,7 @@ directory. If not, please refer to
 local world_type = GetWorldType()
 
 local function GetAttackerDamageData(attacker, target)
-	local damage = attacker.components.combat and attacker.components.combat.defaultdamage
+	local damage = attacker.components.combat and attacker.components.combat.defaultdamage or 0
 	local mount_damage_multiplier = 1
 	local mount_external_damage_multiplier = 1
 	local mount_damage_bonus = 0
@@ -44,7 +44,7 @@ local function GetAttackerDamageData(attacker, target)
 	else
 		local weapon = attacker.components.inventory ~= nil and attacker.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 		if weapon and weapon.components.weapon then -- monkeys
-			damage = Insight.descriptors.weapon.GetDamage(weapon.components.weapon, attacker, target)
+			damage = Insight.descriptors.weapon.GetDamage(weapon.components.weapon, attacker, target) or 0
 		end
 
 		-- attacker damage multiplier
@@ -109,13 +109,13 @@ local function GetRealDamage(damage, attacker, target, settings)
 
 	-- attacker damage multiplier
 	local attack_damage_multiplier = 1
-	if not settings.ignoreAttackerMultiplier or (attacker and attacker.components.combat) then
+	if not settings.ignoreAttackerMultiplier and (attacker and attacker.components.combat) then
 		attack_damage_multiplier = attacker.components.combat.damagemultiplier or attack_damage_multiplier
 	end
 
 	-- external attack damage multiplier
 	local external_attack_damage_multiplier = 1
-	if not settings.ignoreAttackerMultiplier or (attacker and attacker.components.combat and attacker.components.combat.externaldamagemultipliers) then
+	if not settings.ignoreAttackerMultiplier and (attacker and attacker.components.combat and attacker.components.combat.externaldamagemultipliers) then
 		external_attack_damage_multiplier = attacker.components.combat.externaldamagemultipliers:Get() or external_attack_damage_multiplier
 	end
 
@@ -197,15 +197,17 @@ local function Describe(self, context)
 	local description = nil
 
 	local damage = GetAttackerDamageData(self.inst, context.player)
-	local damage_to_player = GetRealDamage(damage, self.inst, context.player, { ignoreAttackerMultiplier=true })
 
-	description = string.format(context.lstr.damage, Round(damage, 1))
+	if damage ~= 0 then
+		local damage_to_player = GetRealDamage(damage, self.inst, context.player, { ignoreAttackerMultiplier=true })
 
-	if damage_to_player ~= damage then
-		description = description .. string.format(context.lstr.damageToYou, Round(damage_to_player, 1))
+		description = string.format(context.lstr.damage, Round(damage, 1))
+
+		if damage_to_player ~= damage then
+			description = description .. string.format(context.lstr.damageToYou, Round(damage_to_player, 1))
+		end
 	end
-
-
+	
 	--[[
 
 	local player = context.player --GetPlayer()
