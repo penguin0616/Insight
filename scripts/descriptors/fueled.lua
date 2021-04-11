@@ -47,7 +47,7 @@ local function Describe(self, context)
 	end
 
 	-- efficiency
-	if efficiency ~= 1 then
+	if efficiency ~= 1 and fuel_verbosity == 2 then
 		efficiency_string = string.format(context.lstr.fueled.efficiency, efficiency * 100)
 	end
 

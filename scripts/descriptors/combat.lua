@@ -20,6 +20,10 @@ directory. If not, please refer to
 
 -- combat.lua
 local function Describe(self, context)
+	if not context.config["mob_attack_damage"] then
+		return
+	end
+
 	local inst = self.inst
 	local description = nil
 

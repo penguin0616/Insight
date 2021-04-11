@@ -549,7 +549,7 @@ local english = {
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Special food effects will not show."
+				HOVER = "Special food effects will show."
 			},
 		},
 	},
@@ -679,6 +679,20 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Weapon damage is shown."
+			},
+		},
+	},
+	mob_attack_damage = {
+		LABEL = "Mob Attack Damage",
+		HOVER = "Whether mob attack damage is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Mob attack damage is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Mob attack damage is shown."
 			},
 		},
 	},
@@ -1052,6 +1066,20 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "Maximum",
 				HOVER = "All fuel information will show."
+			},
+		},
+	},
+	watery_verbosity = {
+		LABEL = "Watery Verbosity",
+		HOVER = "How verbose watery information is.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Will not display watery information."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Will display watery information."
 			},
 		},
 	},
@@ -1810,6 +1838,20 @@ local chinese = {
 			},
 		},
 	},
+	mob_attack_damage = {
+		LABEL = "Mob Attack Damage",
+		HOVER = "Whether mob attack damage is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Mob attack damage is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Mob attack damage is shown."
+			},
+		},
+	},
 	repair_values = {
 		LABEL = "修补数值",
 		HOVER = "是否显示物品的修复信息（需要检查）。",
@@ -2182,6 +2224,20 @@ local chinese = {
 			},
 		},
 	},
+	watery_verbosity = {
+		LABEL = "Watery Verbosity",
+		HOVER = "How verbose watery information is.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Will not display watery information."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Will display watery information."
+			},
+		},
+	},
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
@@ -2444,8 +2500,7 @@ configuration_options = {
 			{data = "icon"},
 		}, 
 		default = "text",
-		client = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "text_coloring",
@@ -2502,8 +2557,7 @@ configuration_options = {
 			--{data = "none"},
 		}, 
 		default = "gametime",
-		client = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "highlighting",
@@ -2573,8 +2627,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		client = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "pipspook_indicator",
@@ -2592,8 +2645,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		client = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "hunt_indicator",
@@ -2801,6 +2853,15 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	{
+		name = "mob_attack_damage",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
+	{
 		name = "repair_values",
 		options = {
 			{data = false},
@@ -2819,8 +2880,7 @@ configuration_options = {
 			{data = 4},
 		},
 		default = 2,
-		client = true,
-		tags = {"dst_only"},
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "soil_nutrients",
@@ -2832,8 +2892,7 @@ configuration_options = {
 			--{data = 4},
 		},
 		default = 2,
-		client = true,
-		tags = {"dst_only"},
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "display_plant_stressors",
@@ -3020,6 +3079,15 @@ configuration_options = {
 			{data = 2},
 		}, 
 		default = 2,
+		tags = {"undefined"},
+	},
+	{
+		name = "watery_verbosity",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_miscellaneous"),

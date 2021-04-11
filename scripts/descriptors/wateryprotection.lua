@@ -20,6 +20,10 @@ directory. If not, please refer to
 
 -- wateryprotection.lua
 local function Describe(self, context)
+	if not context.config["watery_verbosity"] then
+		return
+	end
+
 	local description = nil
 	local wetness_string = nil
 
