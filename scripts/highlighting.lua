@@ -37,10 +37,10 @@ local world_type = GetWorldType()
 local texturePrefabCache = {}
 
 local colors = {
-	fuel = {1, 0.4, 0.4, 1}, -- red
-	match = {0.3, 1, 1, 1}, -- greenish
-	unknown = {0.4, 0.4, 0.4, 1}, -- gray
-	error = {0.0, 0.0, 0.0, 1}
+	fuel = {1, 0, 0, 0.3}, -- red
+	match = {0, 1, 0, 0.3}, -- green
+	unknown = {1, 1, 1, 0.3}, -- gray
+	error = {0.0, 0.0, 0.0, 0.3}
 }
 
 local activeIngredientFocus = nil
@@ -144,7 +144,7 @@ local function RemoveHighlight(inst)
 			inst.image:SetTint(1, 1, 1, 1)
 			RemoveHighlight(inst.item) -- show the love further down too because why not
 		elseif IsPrefab(inst) then
-			inst.AnimState:SetMultColour(unpack(inst[highlightColorKey]))
+			inst.AnimState:SetAddColour(unpack(inst[highlightColorKey]))
 		else
 			error('big problem highlight')
 		end
@@ -164,8 +164,8 @@ local function ApplyHighlight(inst, color)
 	elseif IsPrefab(inst) then
 		-- apparently, AnimState doesn't exist for everything. I should have forseen that.
 		if inst.AnimState then
-			inst[highlightColorKey] = {inst.AnimState:GetMultColour()}
-			inst.AnimState:SetMultColour(unpack(color))
+			inst[highlightColorKey] = {inst.AnimState:GetAddColour()}
+			inst.AnimState:SetAddColour(unpack(color))
 		end
 	end
 end
