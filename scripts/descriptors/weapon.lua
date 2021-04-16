@@ -69,11 +69,12 @@ local function GetSlingshotAmmoData(inst)
 end
 
 local function GetDamageModifier(combat, context)
-	if not combat or not context.config["account_combat_modifiers"] then
+	if not combat or context.config["account_combat_modifiers"] == false then
 		return 1
 	end
 
 	if world_type == -1 then
+		--cprint((combat.damagemultiplier or 1), combat.externaldamagemultipliers:Get(), (combat.damagemultiplier or 1) * combat.externaldamagemultipliers:Get())
 		return (combat.damagemultiplier or 1) * combat.externaldamagemultipliers:Get()
 		--return combat.externaldamagemultipliers:Get()
 	elseif world_type == 0 or world_type == 1 then
@@ -92,7 +93,7 @@ local function GetDamage(self, f, attacker, target)
 	if world_type == -1 then -- DST
 		-- DST is Weapon:GetDamage(attacker, target)
 		-- in DST, some modded weapons don't put a nil check for targets. right now, April 5 2021, no vanilla weapons care about the target.
-		if self.inst.prefab and WEAPON_CACHE[self.inst.prefab] == nil then 
+		if self.inst.prefab ~= nil and WEAPON_CACHE[self.inst.prefab] == nil then 
 			WEAPON_CACHE[self.inst.prefab] = pcall(self.GetDamage, self, attacker, target)
 		end
 

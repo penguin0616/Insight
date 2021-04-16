@@ -550,6 +550,15 @@ return {
 		},
 	},
 
+	-- shadowsubmissive.lua
+	shadowsubmissive = {
+		shadowcreature = {
+			spawned_for = "Spawned by %s.",
+			sanity_reward = "<color=SANITY>Sanity</color> reward: <color=SANITY>%s</color>",
+			sanity_reward_split = "<color=SANITY>Sanity</color> reward: <color=SANITY>%s</color> / <color=SANITY>%s</color>",
+		},
+	},
+
 	-- sinkholespawner.lua
 	antlion_rage = "%s",
 
@@ -593,7 +602,7 @@ return {
 	-- tradable.lua
 	tradable_gold = "Worth %s gold nugget(s).",
 	tradable_gold_dubloons = "Worth %s gold nugget(s) and %s dubloon(s).",
-	tradable_rocktribute = "Delays <color=LIGHT>Antlion</color> rage by %s day(s).",
+	tradable_rocktribute = "Delays <color=LIGHT>Antlion</color> rage by %s.",
 
 	-- unwrappable.lua
 	-- handled by klei?
@@ -636,6 +645,12 @@ return {
 
 	-- wereness.lua
 	wereness_remaining = "Wereness: %s / %s",
+
+	-- winch.lua
+	winch = {
+		not_winch = "This has a winch component, but fails prefab check.",
+		sunken_item = "There is a <color=#66ee66>%s</color> underneath this winch.",
+	},
 
 	-- wintersfeasttable.lua
 
