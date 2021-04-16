@@ -248,7 +248,7 @@ local descriptors_ignore = {
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", "murderable", "poppable", "balloonmaker", -- don't care
-	"markable_proxy", -- don't care
+	"markable_proxy", "saved_scale", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -1372,6 +1372,7 @@ AddPrefabPostInit("bat", function(inst)
 end)
 --]]
 
+
 AddPrefabPostInit("cave_entrance_open", function(inst)
 	inst:ListenForEvent("migration_available", function()
 		local id = inst.components.worldmigrator.receivedPortal
@@ -1703,7 +1704,52 @@ if IsDST() then
 			oldUnlinkFromPlayer = util.getupvalue(inst._on_leader_death, "unlink_from_player")
 			util.replaceupvalue(inst._on_leader_death, "unlink_from_player", InsightUnlink)
 		end
+	end)
 
+	local MOONSTORM_SPARK_DATA = {
+		attack_range = 4,
+		hit_range = 4,
+		damage = TUNING.LIGHTNING_DAMAGE
+	}
+
+	AddPrefabPostInit("moonstorm_spark", function(inst)
+		if not TheWorld.ismastersim then
+			return
+		end
+
+		combatHelper.RegisterFalseCombat(inst, MOONSTORM_SPARK_DATA)
+	end)
+
+	local function GetMushroomBombDamage(inst)
+		local toadstool = inst.components.entitytracker:GetEntity("toadstool")
+		local damage =
+            (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
+            (inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
+            TUNING.TOADSTOOL_DAMAGE_LVL[0]		
+	end
+
+	AddPrefabPostInit("mushroombomb", function(inst)
+		if not TheWorld.ismastersim then
+			return
+		end
+
+		combatHelper.RegisterFalseCombat(inst, {
+			attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+			hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+			damage = GetMushroomBombDamage
+		})
+	end)
+
+	AddPrefabPostInit("mushroombomb_dark", function(inst) -- misery
+		if not TheWorld.ismastersim then
+			return
+		end
+
+		combatHelper.RegisterFalseCombat(inst, {
+			attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+			hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+			damage = GetMushroomBombDamage
+		})
 	end)
 
 	AddPrefabPostInit("meteorspawner", function(inst)

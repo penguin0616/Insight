@@ -89,10 +89,12 @@ local function SetColour(inst, ...)
 end
 
 local function OnVisibleDirty(inst)
+	inst.is_visible = inst.net_visible:value()
 	ChangeIndicatorVisibility(inst, inst.net_visible:value())
 end
 
 local function SetVisible(inst, bool)
+	inst.is_visible = bool
 	if inst.net_visible then
 		inst.net_visible:set(bool)
 	end
@@ -109,6 +111,12 @@ local function OnCombatIndicatorStateDirty(inst, ...)
 	end
 end
 
+local function OnCombatIndicatorCanDecayDirty(inst, ...)
+	if inst.OnCanDecayDirty then
+		inst.OnCanDecayDirty(inst, ...)
+	end
+end
+
 local function OnCombatIndicatorAttackRangeDirty(inst, ...)
 	if inst.OnAttackRangeDirty then
 		inst.OnAttackRangeDirty(inst, ...)
@@ -121,6 +129,11 @@ local function OnCombatIndicatorHitRangeDirty(inst, ...)
 	end
 end
 
+local function OnCombatIndicatorIncludePhysicsRadiusDirty(inst, ...)
+	if inst.OnIncludePhysicsRadiusDirty then
+		inst.OnIncludePhysicsRadiusDirty(inst, ...)
+	end
+end
 
 local function Attach(inst, to)
 	-- setting a player's parent to itself is an immediate crash with no error
@@ -213,10 +226,19 @@ local function combat_fn()
 		inst.net_state = net_tinybyte(inst.GUID, "insight_indicator_state", "insight_indicator_state_dirty") -- 0-7
 		inst:ListenForEvent("insight_indicator_state_dirty", OnCombatIndicatorStateDirty)
 
-		inst.net_attack_range = net_float(inst.GUID, "insight_combat_attack_range", "insight_combat_attack_range")
-		inst:ListenForEvent("insight_combat_attack_range", OnCombatIndicatorAttackRangeDirty)
+		inst.net_indicator_can_decay = net_bool(inst.GUID, "insight_indicator_can_decay", "insight_indicator_can_decay_dirty")
+		inst.net_indicator_can_decay:set(true)
+		inst:ListenForEvent("insight_indicator_can_decay_dirty", OnCombatIndicatorCanDecayDirty)
 
-		inst.net_hit_range = net_float(inst.GUID, "insight_combat_hit_range", "insight_combat_hit_range")
+		inst.net_attack_range = net_float(inst.GUID, "insight_combat_attack_range", "insight_combat_attack_range_dirty")
+		inst:ListenForEvent("insight_combat_attack_range_dirty", OnCombatIndicatorAttackRangeDirty)
+
+		inst.net_hit_range = net_float(inst.GUID, "insight_combat_hit_range", "insight_combat_hit_range_dirty")
+		
+		inst.net_include_physics_radius = net_bool(inst.GUID, "insight_combat_include_physics_radius", "insight_combat_include_physics_radius_dirty")
+		inst.net_include_physics_radius:set(true)
+		inst:ListenForEvent("insight_combat_include_physics_radius", OnCombatIndicatorIncludePhysicsRadiusDirty)
+		
 
 		inst:ListenForEvent("insight_combat_hit_range", OnCombatIndicatorHitRangeDirty)
 

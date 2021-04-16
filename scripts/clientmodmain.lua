@@ -608,24 +608,22 @@ end)
 
 --[[
 AddPrefabPostInit("redgem", function(inst)
-	-- tuning says default range is 15
-	a = SpawnPrefab("insight_range_indicator")
+	local a = SpawnPrefab("insight_range_indicator")
 	a:Attach(inst)
-	a:SetRadius(8 / WALL_STUDS_PER_TILE)
+	a:SetRadius(4 / WALL_STUDS_PER_TILE)
 	a:SetColour(Color.fromHex("#ff0000"))
 	a:SetVisible(true)
 
-
-	b = SpawnPrefab("insight_range_indicator")
-	b:Attach(inst)
-	b:SetRadius(15 / WALL_STUDS_PER_TILE)
-	b:SetColour(Color.fromHex("#ffffff"))
-	b:SetVisible(true)
-
-	--inst:AddComponent("dst_deployhelper")
-	--inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+	a:DoPeriodicTask(1, function()
+		if not localPlayer then return end
+		print(FindEntity(a, 4, nil, {"player"}))
+		print(distsq(a:GetPosition(), localPlayer:GetPosition()), 4 * 4) -- physics range doesn't matter in this case. just need half the entity as usual.
+		print'--------'
+	end)
 end)
+--]]
 
+--[[
 AddPrefabPostInit("deerclops", function(inst)
 	-- tuning says default range is 15
 	f = SpawnPrefab("insight_range_indicator")
@@ -748,33 +746,6 @@ AddPrefabPostInit("redgem", function(inst)
 	--inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
 end)
 --]]
-
-
-AddPrefabPostInit("mushroombomb", function(inst)
-	local c = localPlayer and GetPlayerContext(localPlayer) 
-	if not (c and c.config["display_attack_range"]) then
-		return
-	end
-
-	inst.explosion_range = SpawnPrefab("insight_range_indicator")
-	inst.explosion_range:Attach(inst)
-	inst.explosion_range:SetRadius(TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS / WALL_STUDS_PER_TILE) 
-	inst.explosion_range:SetColour(Color.fromHex(Insight.COLORS.HEALTH))
-	inst.explosion_range:SetVisible(true)
-end)
-
-AddPrefabPostInit("mushroombomb_dark", function(inst) -- misery
-	local c = localPlayer and GetPlayerContext(localPlayer) 
-	if not (c and c.config["display_attack_range"]) then
-		return
-	end
-
-	inst.explosion_range = SpawnPrefab("insight_range_indicator")
-	inst.explosion_range:Attach(inst)
-	inst.explosion_range:SetRadius(TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS / WALL_STUDS_PER_TILE) 
-	inst.explosion_range:SetColour(Color.fromHex(Insight.COLORS.HEALTH))
-	inst.explosion_range:SetVisible(true)
-end)
 
 AddPrefabPostInit("firesuppressor", function(inst) 
 	-- tuning says default range is 15
