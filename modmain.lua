@@ -1722,10 +1722,9 @@ if IsDST() then
 
 	local function GetMushroomBombDamage(inst)
 		local toadstool = inst.components.entitytracker:GetEntity("toadstool")
-		local damage =
-            (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
+		return (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
             (inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
-            TUNING.TOADSTOOL_DAMAGE_LVL[0]		
+            TUNING.TOADSTOOL_DAMAGE_LVL[0]
 	end
 
 	AddPrefabPostInit("mushroombomb", function(inst)

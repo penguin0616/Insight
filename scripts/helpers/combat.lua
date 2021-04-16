@@ -58,7 +58,8 @@ local oldUnequip = inventory and inventory.Unequip
 --------------------------------------------------------------------------
 --[[ Insight Combat ]]
 --------------------------------------------------------------------------
-local InsightCombat = Class(function(self, data)
+local InsightCombat = Class(function(self, inst, data)
+	self.inst = inst
 	self.attack_range = 3
     self.hit_range = 3
 
@@ -491,7 +492,7 @@ local function RegisterFalseCombat(inst, data)
 	local indicator = SpawnPrefab("insight_combat_range_indicator")
 	indicator:Attach(inst)
 	inst.insight_combat_range_indicator = indicator
-	inst.insight_combat = InsightCombat(data)
+	inst.insight_combat = InsightCombat(inst, data)
 	inst.insight_combat_range_indicator.net_indicator_can_decay:set(false)
 	inst.insight_combat_range_indicator.net_include_physics_radius:set(false)
 	PushNewIndicatorRange(inst)

@@ -252,6 +252,20 @@ local function RangedDescribe(self, context)
 	}
 end
 
+local function InsightFalseCombatDescribe(self, context)
+	if not Insight.descriptors.combat then
+		return
+	end
+
+	local description = Insight.descriptors.combat.DescribeDamageForPlayer(self:GetDamage(context.player), context.player, context)
+
+	return {
+		name = "insight_false_combat",
+		priority = 49,
+		description = description
+	}
+end
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
@@ -265,6 +279,10 @@ local function Describe(self, context)
 		return RangedDescribe(self, context)
 	end
 
+	if inst.insight_combat then
+		return InsightFalseCombatDescribe(inst.insight_combat, context)
+	end
+
 	--[[
 	if DEBUG_ENABLED and inst.prefab == "razor" then
 		return {
@@ -274,6 +292,10 @@ local function Describe(self, context)
 		}
 	end
 	--]]
+
+	if context.player.prefab ~= "winona" and inst.prefab:sub(1, 14) == "wagstaff_tool_" then
+		description = string.format("The name of this tool is: %s", ApplyColour(GetPrefabNameOrElse(inst.prefab, "\"%s\""), Insight.COLORS.ENLIGHTENMENT))
+	end
 
 	if inst.prefab == "catcoonden" then
 		if inst.lives_left then
