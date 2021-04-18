@@ -365,8 +365,9 @@ local function HookCombat(self)
 end
 
 
-local function OnIndicatorStateDirty(inst)
+local function OnIndicatorStateDirty(inst, forced)
 	local state = inst.net_state:value()
+	inst.state_forced = forced
 
 	if inst.hide_task then
 		inst.hide_task:Cancel()
@@ -378,14 +379,24 @@ local function OnIndicatorStateDirty(inst)
 		AdjustIndicator(inst, nil, false)
 	
 	elseif state == NET_STATES.TARGETTING then
-		inst.hide_task = inst.net_indicator_can_decay:value() and inst:DoTaskInTime(8, function()
+		local range
+
+		if my_context.config["attack_range_type"] == "attack" or my_context.config["attack_range_type"] == "both" then
+			range = inst.net_attack_range:value()
+		elseif my_context.config["attack_range_type"] == "hit" then
+			range = inst.net_hit_range:value()
+		end
+
+		
+
+		inst.hide_task = (not forced and inst.net_indicator_can_decay:value()) and inst:DoTaskInTime(8, function()
 			AdjustIndicator(inst, nil, false)
 		end)
 
 		--mprint("LOCAL STATE - TARGETTING")
-		AdjustIndicator(inst, Color.fromHex("#60ffff"), true)
+		AdjustIndicator(inst, Color.fromHex("#60ffff"), true, range + AccountForPhysics(inst))
 	else -- attacking
-		inst.hide_task = inst.net_indicator_can_decay:value() and inst:DoTaskInTime(8, function()
+		inst.hide_task = (not forced and inst.net_indicator_can_decay:value()) and inst:DoTaskInTime(8, function()
 			AdjustIndicator(inst, nil, false)
 		end)
 		
@@ -458,6 +469,11 @@ local function OnIncludePhysicsRadiusDirty(inst)
 	AdjustIndicator(inst, nil, nil, range + AccountForPhysics(inst))
 end
 
+local function ForceStateChange(inst, state)
+	inst.net_state:set_local(state)
+	OnIndicatorStateDirty(inst, true)
+end
+
 local function HookClientIndicator(inst, delay)
 	inst:DoTaskInTime(delay or 0, function()
 		local parent = inst.entity:GetParent()
@@ -479,7 +495,10 @@ local function HookClientIndicator(inst, delay)
 		inst.OnAttackRangeDirty = OnAttackRangeDirty
 		inst.OnHitRangeDirty = OnHitRangeDirty
 		inst.OnIncludePhysicsRadiusDirty = OnIncludePhysicsRadiusDirty
+		inst.ForceStateChange = ForceStateChange
 		
+		parent.insight_combat_range_indicator = inst
+
 		local range = CanUseRangeType("attack") and inst.net_attack_range:value() or inst.net_hit_range:value()
 		AdjustIndicator(inst, nil, nil, range + AccountForPhysics(inst))
 

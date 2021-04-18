@@ -194,6 +194,10 @@ end
 
 
 local function Describe(self, context)
+	if not context.config["display_mob_attack_damage"] then
+		return
+	end
+	
 	local description = nil
 
 	local damage = GetAttackerDamageData(self.inst, context.player)

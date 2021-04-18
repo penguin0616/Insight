@@ -200,7 +200,25 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		old.insight_hover_range = nil
 	end
 
+	if old and old.insight_combat_range_indicator and old.insight_combat_range_indicator.state_forced then
+		old.insight_combat_range_indicator:ForceStateChange(combatHelper.NET_STATES.NOTHING)
+	end
+
 	if not new then
+		return
+	end
+
+	if itemInfo.special_data.combat then
+		local ind = new.insight_combat_range_indicator
+		if not ind then
+			return
+		end
+
+		if ind.is_visible then
+			return	
+		end
+
+		ind:ForceStateChange(combatHelper.NET_STATES.TARGETTING)
 		return
 	end
 

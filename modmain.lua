@@ -1433,6 +1433,44 @@ AddPrefabPostInit("cave_exit", function(inst)
 	end)
 end)
 
+do
+	local FakeCombats = {
+		["moonstorm_spark"] = {
+			attack_range = 4,
+			damage = TUNING.LIGHTNING_DAMAGE
+		},
+		["moonstorm_glass"] = {
+			attack_range = 4,
+			damage = 30
+		},
+		["alterguardian_phase3_trap"] = {
+			attack_range = TUNING.ALTERGUARDIAN_PHASE3_TRAP_AOERANGE
+		},
+		["mushroombomb"] = {
+			attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+			hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+			damage = function(inst)
+				local toadstool = inst.components.entitytracker:GetEntity("toadstool")
+				return (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
+					(inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
+					TUNING.TOADSTOOL_DAMAGE_LVL[0]
+			end
+		}
+	}
+
+	FakeCombats.mushroombomb_dark = FakeCombats.mushroombomb
+
+	for prefab, data in pairs(FakeCombats) do
+		AddPrefabPostInit(prefab, function(inst)
+			if not TheWorld.ismastersim then
+				return
+			end
+
+			combatHelper.RegisterFalseCombat(inst, data)
+		end)
+	end
+end
+
 if IsDST() then 
 	-- replicable
 	AddReplicableComponent("insight")
@@ -1730,65 +1768,6 @@ if IsDST() then
 			oldUnlinkFromPlayer = util.getupvalue(inst._on_leader_death, "unlink_from_player")
 			util.replaceupvalue(inst._on_leader_death, "unlink_from_player", InsightUnlink)
 		end
-	end)
-
-	local MOONSTORM_SPARK_DATA = {
-		attack_range = 4,
-		hit_range = 4,
-		damage = TUNING.LIGHTNING_DAMAGE
-	}
-
-	AddPrefabPostInit("moonstorm_spark", function(inst)
-		if not TheWorld.ismastersim then
-			return
-		end
-
-		combatHelper.RegisterFalseCombat(inst, MOONSTORM_SPARK_DATA)
-	end)
-
-	local MOONSTORM_GLASS_DATA = {
-		attack_range = 4,
-		hit_range = 4,
-		damage = 30
-	}
-
-	AddPrefabPostInit("moonstorm_glass", function(inst)
-		if not TheWorld.ismastersim then
-			return
-		end
-
-		combatHelper.RegisterFalseCombat(inst, MOONSTORM_GLASS_DATA)
-	end)
-
-	local function GetMushroomBombDamage(inst)
-		local toadstool = inst.components.entitytracker:GetEntity("toadstool")
-		return (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
-            (inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
-            TUNING.TOADSTOOL_DAMAGE_LVL[0]
-	end
-
-	AddPrefabPostInit("mushroombomb", function(inst)
-		if not TheWorld.ismastersim then
-			return
-		end
-
-		combatHelper.RegisterFalseCombat(inst, {
-			attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			damage = GetMushroomBombDamage
-		})
-	end)
-
-	AddPrefabPostInit("mushroombomb_dark", function(inst) -- misery
-		if not TheWorld.ismastersim then
-			return
-		end
-
-		combatHelper.RegisterFalseCombat(inst, {
-			attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			damage = GetMushroomBombDamage
-		})
 	end)
 
 	AddPrefabPostInit("meteorspawner", function(inst)

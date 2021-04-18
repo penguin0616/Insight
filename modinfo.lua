@@ -296,17 +296,17 @@ local english = {
 			},
 		},
 	},
-	item_range_indicator = {
-		LABEL = "Item Range Hover",
-		HOVER = "Whether an item's range is shown upon hovering.",
+	hover_range_indicator = {
+		LABEL = "Item/Mob Range Hover",
+		HOVER = "Whether an item or mob's range is shown upon hovering.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Item range is not shown."
+				HOVER = "Range is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Item range is shown."
+				HOVER = "Range is shown."
 			},
 		},
 	},
@@ -840,6 +840,20 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Health information is shown."
+			},
+		},
+	},
+	display_mob_attack_damage = {
+		LABEL = "Mob Attack Damage",
+		HOVER = "Whether mob attack damage is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Mob attack damage is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Mob attack damage is shown.",
 			},
 		},
 	},
@@ -1424,7 +1438,7 @@ local chinese = {
 
 		},
 	},
-	item_range_indicator = {
+	hover_range_indicator = {
 		LABEL = "鼠标放置显示物品生效范围",
 		HOVER = "将鼠标放置于物品上时该物品的生效范围是否显示。",
 		OPTIONS = {
@@ -1967,6 +1981,20 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示生命值信息"
+			},
+		},
+	},
+	display_mob_attack_damage = {
+		LABEL = "Mob Attack Damage",
+		HOVER = "Whether mob attack damage is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Mob attack damage is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Mob attack damage is shown.",
 			},
 		},
 	},
@@ -2547,7 +2575,7 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	{
-		name = "item_range_indicator",
+		name = "hover_range_indicator",
 		options = {
 			{data = false},
 			{data = true},
@@ -2832,8 +2860,7 @@ configuration_options = {
 			--{data = 4},
 		},
 		default = 2,
-		client = true,
-		tags = {"dst_only"},
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "display_plant_stressors",
@@ -2884,6 +2911,15 @@ configuration_options = {
 	},
 	{
 		name = "display_health",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_mob_attack_damage",
 		options = {
 			{data = false},
 			{data = true},

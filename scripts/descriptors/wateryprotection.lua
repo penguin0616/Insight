@@ -20,18 +20,15 @@ directory. If not, please refer to
 
 -- wateryprotection.lua
 local function Describe(self, context)
-	local description = nil
-	local wetness_string = nil
+	local alt_description = nil
 
 	if self.addwetness then
-		wetness_string = string.format(context.lstr.wateryprotection.wetness, self.addwetness)
+		alt_description = string.format(context.lstr.wateryprotection.wetness, self.addwetness)
 	end
-
-	description = CombineLines(wetness_string)
 
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 end
 
