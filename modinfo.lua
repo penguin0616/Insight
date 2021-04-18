@@ -549,7 +549,7 @@ local english = {
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Special food effects will not show."
+				HOVER = "Special food effects will show."
 			},
 		},
 	},

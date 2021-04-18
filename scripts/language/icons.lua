@@ -45,6 +45,12 @@ return {
 
 	-------------------------------------------------------------------------------------------------------------------------
 
+	-- alterguardianhat.lua [Prefab]
+	alterguardianhat = {
+		--minimum_sanity = "Minimum <color=SANITY>sanity</color> for light: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+		--current_sanity = "Your <color=SANITY>sanity</color> is: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+	},
+
 	-- appeasement.lua
 	appease_good = "<icon=volcano> %s segment(s).",
 	appease_bad = "<icon=volcano_active> -%s segment(s).",
@@ -448,6 +454,16 @@ return {
 
 	-- moisture.lua
 	moisture = "<icon=wetness> %s%%",
+
+	-- moonstormmanager.lua
+	moonstormmanager = {
+		wagstaff_hunt = {
+			--progress = "Progress to destination: %s / %s",
+			--time_for_next_tool = "Will need another tool in %s.",
+			--experiment_time = "Experiment will complete in %s.",
+		},
+		--storm_move = "%s%% chance to move moonstorms on day %s.",
+	},
 
 	-- nightmareclock.lua
 	--nightmareclock = "<color=%s>Phase: %s</color>, %s",
