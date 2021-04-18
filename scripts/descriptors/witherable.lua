@@ -32,7 +32,7 @@ local function Describe(self, context)
 
 	if self.delay_to_time then
 		local remaining_time = self.delay_to_time - GetTime()
-		remaining_time = TimeToText(time.new(remaining_time, context))
+		remaining_time = context.time:SimpleProcess(remaining_time)
 
 		description = string.format(context.lstr.witherable.delay, remaining_time)
 		return
@@ -46,7 +46,7 @@ local function Describe(self, context)
 		-- meh
 	elseif self:CanWither() then
 		local remaining_time = self.task_to_time - GetTime()
-		remaining_time = TimeToText(time.new(remaining_time, context))
+		remaining_time = context.time:SimpleProcess(remaining_time)
 
 		if CanWither(self) then
 			description = string.format(context.lstr.witherable.wither, remaining_time)
@@ -55,7 +55,7 @@ local function Describe(self, context)
 		end
 	elseif self:CanRejuvenate() then
 		local remaining_time = self.task_to_time - GetTime()
-		remaining_time = TimeToText(time.new(remaining_time, context))
+		remaining_time = context.time:SimpleProcess(remaining_time)
 
 		if CanRejuvenate(self) then
 			description = string.format(context.lstr.witherable.rejuvenate, remaining_time)

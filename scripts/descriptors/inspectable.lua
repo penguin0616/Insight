@@ -170,9 +170,9 @@ local function GetCanaryDescription(inst, context)
 
         table.insert(strs, string.format(context.lstr.canary.gas_level, data.gas_level, 13))
         if data.increasing then
-            table.insert(strs, string.format(context.lstr.canary.gas_level_increase, TimeToText(time.new(data.time, context))))
+            table.insert(strs, string.format(context.lstr.canary.gas_level_increase, context.time:SimpleProcess(data.time)))
         elseif data.decreasing then
-            table.insert(strs, string.format(context.lstr.canary.gas_level_decrease, TimeToText(time.new(data.time, context))))
+            table.insert(strs, string.format(context.lstr.canary.gas_level_decrease, context.time:SimpleProcess(data.time)))
         end
 
         description = table.concat(strs, ", ")
@@ -194,7 +194,7 @@ local function GetRobotChargeTime(self, context)
 	
 	return {
 		priority = 1,
-		description = string.format(context.lstr.wx78_charge, TimeToText(time.new(self.inst.charge_time, context))),
+		description = string.format(context.lstr.wx78_charge, context.time:SimpleProcess(self.inst.charge_time)),
 		icon = {
 			tex = "ladybolt.tex",
 			atlas = "images/ladybolt.xml"
@@ -283,6 +283,9 @@ local function Describe(self, context)
 		return InsightFalseCombatDescribe(inst.insight_combat, context)
 	end
 
+	-- wtf is the name of the thing you repair
+	--if inst.prefab == 
+
 	--[[
 	if DEBUG_ENABLED and inst.prefab == "razor" then
 		return {
@@ -305,7 +308,7 @@ local function Describe(self, context)
 				local remaining_time = inst.delay_end - GetTime()
 
 				if remaining_time > 0 then
-					description = description .. "\n" .. string.format(context.lstr.catcoonden.regenerate, TimeToText(time.new(remaining_time, context)))
+					description = description .. "\n" .. string.format(context.lstr.catcoonden.regenerate, context.time:SimpleProcess(remaining_time))
 				else
 					description = description .. "\n" .. context.lstr.catcoonden.waiting_for_sleep
 				end
@@ -315,7 +318,7 @@ local function Describe(self, context)
 
 	if inst.prefab == "chester_eyebone" or inst.prefab == "hutch_fishbowl" then
 		if inst.respawntask and inst.respawntime then
-			description = string.format("Will respawn in: %s", TimeToText(time.new(inst.respawntime - GetTime(), context)))
+			description = string.format("Will respawn in: %s", context.time:SimpleProcess(inst.respawntime - GetTime()))
 		end
 	end
 
@@ -330,7 +333,7 @@ local function Describe(self, context)
 			local remaining_time = TUNING.SEG_TIME * 0.5 - offset
 
 			if remaining_time >= 0 then
-				reset_string = string.format(context.lstr.stagehand.time_to_reset, TimeToText(time.new(remaining_time, context)))
+				reset_string = string.format(context.lstr.stagehand.time_to_reset, context.time:SimpleProcess(remaining_time))
 			else
 				hits_left = TUNING.STAGEHAND_HITS_TO_GIVEUP -- we're technically reset to 86, though it doesn't take place until the next hit.
 			end
@@ -375,7 +378,7 @@ local function Describe(self, context)
 
 	if inst.prefab == "lureplant" then
 		if inst.hibernatetask and not IsWinter() then
-			description = string.format(context.lstr.lureplant_active, TimeToText(time.new(GetTaskRemaining(inst.hibernatetask), context)))
+			description = string.format(context.lstr.lureplant_active, context.time:SimpleProcess(GetTaskRemaining(inst.hibernatetask)))
 		end
 	end
 
@@ -385,7 +388,7 @@ local function Describe(self, context)
 			for prefab, targettime in pairs(inst.data.regentime) do
 				local respawn_in = targettime - GetTime()
 				if respawn_in >= 0 then
-					respawn_in = TimeToText(time.new(respawn_in, context))
+					respawn_in = context.time:SimpleProcess(respawn_in)
 					table.insert(strs, string.format(context.lstr.walrus_camp_respawn, STRINGS.NAMES[string.upper(prefab)] or ("\"" .. prefab .. "\""), respawn_in))
 				end
 			end
@@ -449,7 +452,7 @@ local function Describe(self, context)
 		local ghostlybond = context.player.components.ghostlybond
 
 		if ghostlybond.bondleveltimer then
-			local ghostlybond_levelup_time = TimeToText(time.new(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer, context))
+			local ghostlybond_levelup_time = context.time:SimpleProcess(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer)
 			description = string.format(context.lstr.ghostlybond_self, ghostlybond.bondlevel, ghostlybond.maxbondlevel, ghostlybond_levelup_time)
 		end
 	end

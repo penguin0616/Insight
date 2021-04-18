@@ -32,15 +32,15 @@ local function Describe(self, context)
 
 	local amount = self.timer / self.rate
 
-	local remaining_time = time.new(amount, context)
+	local remaining_time = context.time:SimpleProcess(amount)
 	local next_stage = self.is_blooming and (self.level + 1) or (self.level - 1)
 
 	if self.is_blooming or self.level ~= 0 then
 		local clr1 = WHITE:Lerp(LIGHT_PINK, self.level / self.max):ToHex()
 		local clr2 = WHITE:Lerp(LIGHT_PINK, next_stage / self.max):ToHex()
-		--description = string.format("Will enter stage %s/<color=LIGHT_PINK>%s</color> in %s", ApplyColour(next_stage, clr), self.max, TimeToText(remaining_time))
+		--description = string.format("Will enter stage %s/<color=LIGHT_PINK>%s</color> in %s", ApplyColour(next_stage, clr), self.max, remaining_time)
 		
-		description = string.format("Stage %s -> %s in %s", ApplyColour(self.level, clr1), ApplyColour(next_stage, clr2), TimeToText(remaining_time))
+		description = string.format("Stage %s -> %s in %s", ApplyColour(self.level, clr1), ApplyColour(next_stage, clr2), remaining_time)
 	end
 
 	return {

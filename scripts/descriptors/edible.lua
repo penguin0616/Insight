@@ -41,7 +41,7 @@ local function GetWereEaterData(inst, context)
 	local forget_time = wereeater.forget_task and GetTaskRemaining(wereeater.forget_task)
 
 	if forget_time then
-		forget_time = TimeToText(time.new(forget_time, context))
+		forget_time = context.time:SimpleProcess(forget_time)
 	else
 		forget_time = "?"
 	end
@@ -245,7 +245,7 @@ local function Describe(self, context)
 			foodmemory_data = {
 				name = "edible_foodmemory",
 				priority = 0.1,
-				description = string.format(context.lstr.foodmemory, recently_eaten, #foodmemory.mults, TimeToText(time.new(time_to_forget, context)))
+				description = string.format(context.lstr.foodmemory, recently_eaten, #foodmemory.mults, context.time:SimpleProcess(time_to_forget))
 			}
 		end
 	end
@@ -266,7 +266,7 @@ local function Describe(self, context)
 		local effect_description = {}
 
 		for name, data in pairs(effects) do
-			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], data.delta and FormatDecimal(data.delta, 1) or ("MISSING DELTA FOR [" .. name .. "]"), data.duration and TimeToText(time.new(data.duration, context), "realtime_short") or "[YOU SHOULDN'T SEE THIS]")
+			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], data.delta and FormatDecimal(data.delta, 1) or ("MISSING DELTA FOR [" .. name .. "]"), data.duration and context.time:SimpleProcess(data.duration, "realtime_short") or "[YOU SHOULDN'T SEE THIS]")
 		end
 
 		if #effect_description > 0 then

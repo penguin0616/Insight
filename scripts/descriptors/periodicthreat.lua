@@ -35,9 +35,9 @@ local function Describe(self, context)
 	--dprint(wormthreat.timer, wormthreat.state, wormthreat.state_variables.statetimer)
 
 	if wormthreat.state == "wait" then
-		description = string.format(context.lstr.worms_incoming, TimeToText(time.new(wormthreat.timer, context)))
+		description = string.format(context.lstr.worms_incoming, context.time:SimpleProcess(wormthreat.timer))
 	elseif wormthreat.state == "warn" then
-		description = string.format(context.lstr.worms_incoming_danger, TimeToText(time.new(wormthreat.timer, context)))
+		description = string.format(context.lstr.worms_incoming_danger, context.time:SimpleProcess(wormthreat.timer))
 	end
 
 	return {

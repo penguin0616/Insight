@@ -119,7 +119,7 @@ local function Describe(self, context)
 				if debuff.components.timer then -- ink timer missing
 					local name, value = next(debuff.components.timer.timers)
 					if next(debuff.components.timer.timers, name) == nil then
-						remaining_time = TimeToText(time.new(debuff.components.timer:GetTimeLeft(name), context))
+						remaining_time = context.time:SimpleProcess(debuff.components.timer:GetTimeLeft(name))
 					else
 						-- doesnt have a single timer
 						remaining_time = "Buff has multiple timers?"

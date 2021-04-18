@@ -89,7 +89,7 @@ local function Describe(self, context)
 				end
 			end
 
-			regen_time = regen_time and TimeToText(time.new(regen_time, context)) or "?"
+			regen_time = regen_time and context.time:SimpleProcess(regen_time) or "?"
 			regen = string.format(context.lstr.childspawner.regenerating, to_regen, regen_time)
 		end
 	end

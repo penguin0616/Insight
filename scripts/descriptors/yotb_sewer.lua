@@ -23,7 +23,7 @@ local function Describe(self, context)
 	local description = nil
 
 	if self:IsSewing() then
-		description = string.format(context.lstr.yotb_sewer, TimeToText(time.new(self:GetTimeToSew(), context)))
+		description = string.format(context.lstr.yotb_sewer, context.time:SimpleProcess(self:GetTimeToSew()))
 	end
 
 	return {

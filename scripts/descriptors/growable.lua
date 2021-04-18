@@ -44,9 +44,9 @@ local function Describe(self, context)
 
 			-- times can be from 1 frame short to 935 seconds short. nice.
 			if self.task and remaining_time > 0 then
-				remaining_time = time.new(remaining_time, context)
-				--description = string.format("%sNext stage in %s.", description, TimeToText(remaining_time))
-				description = description .. string.format(context.lstr.growth_next_stage, TimeToText(remaining_time))
+				remaining_time = context.time:SimpleProcess(remaining_time)
+				--description = string.format("%sNext stage in %s.", description, remaining_time)
+				description = description .. string.format(context.lstr.growth_next_stage, remaining_time)
 			else
 				--description = string.format("%sGrowth paused.", description)
 				description = description .. context.lstr.growth_paused

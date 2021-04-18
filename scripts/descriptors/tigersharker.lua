@@ -34,7 +34,7 @@ local function Describe(self, context)
 		-- something has to trigger a spawn
 		if appear_time > 0 or respawn_time > 0 then 
 			local max = math.max(appear_time, respawn_time)
-			description = string.format(context.lstr.tigershark_spawnin, TimeToText(time.new(max, context)))
+			description = string.format(context.lstr.tigershark_spawnin, context.time:SimpleProcess(max))
 		else
 			description = context.lstr.tigershark_waiting
 		end

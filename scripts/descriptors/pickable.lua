@@ -35,12 +35,12 @@ local function Describe(self, context)
 
 	if remaining_time then 
 		if not self.paused and remaining_time > 0 then
-			remaining_time = time.new(remaining_time, context)
+			remaining_time = context.time:SimpleProcess(remaining_time)
 
 			if context.usingIcons and self.product and PrefabHasIcon(self.product) then
-				description = string.format(context.lstr.regrowth, self.product, TimeToText(remaining_time))
+				description = string.format(context.lstr.regrowth, self.product, remaining_time)
 			else
-				description = string.format(context.lstr.lang.regrowth, TimeToText(remaining_time))
+				description = string.format(context.lstr.lang.regrowth, remaining_time)
 			end
 
 		elseif self.paused then

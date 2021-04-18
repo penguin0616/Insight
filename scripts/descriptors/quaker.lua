@@ -43,14 +43,14 @@ local function Describe(self, context)
 	if IsDST() and save_data.state == QUAKESTATE.WAITING then
 		--dprint("quake state valid")
 		--print(save_data.time)
-		--description = string.format(context.lstr.next_quake, TimeToText(time.new(save_data.time, context)))
+		--description = string.format(context.lstr.next_quake, context.time:SimpleProcess(save_data.time))
 		next_quake = save_data.time
 	elseif IsDS() and save_data and save_data.nextquake then
 		next_quake = save_data.nextquake
 	end
 
 	if next_quake then
-		description = string.format(context.lstr.next_quake, TimeToText(time.new(next_quake, context)))
+		description = string.format(context.lstr.next_quake, context.time:SimpleProcess(next_quake))
 	end
 
 	--local _, tex, atlas = PrefabHasIcon("rocks") -- cant think of a reason this wouldnt exist

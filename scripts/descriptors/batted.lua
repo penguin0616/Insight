@@ -23,7 +23,7 @@ local function Describe(self, context)
 	local description
 
 	if self.timetoattack then
-		description = TimeToText(time.new(self.timetoattack, context))
+		description = context.time:SimpleProcess(self.timetoattack)
 	end
 
 	return {

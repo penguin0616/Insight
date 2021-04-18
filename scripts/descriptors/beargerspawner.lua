@@ -58,7 +58,7 @@ local function GetBeargerData(self)
 end
 
 local function ProcessInformation(context, time_to_attack, target)
-	local time_string = TimeToText(time.new(time_to_attack, context))
+	local time_string = context.time:SimpleProcess(time_to_attack)
 	local client_table = target and TheNet:GetClientTableForUser(target.userid)
 
 	if not client_table then
@@ -93,7 +93,7 @@ local function Describe(self, context)
 	end
 
 	return {
-		priority = 0,
+		priority = 10,
 		description = description,
 		icon = {
 			atlas = "images/Bearger.xml",

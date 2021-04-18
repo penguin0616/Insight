@@ -42,7 +42,7 @@ local function Describe(self, context)
 		description = string.format(context.lstr.lang.harvestable.product, name, self.produce, self.maxproduce)
 
 		if self.targettime then
-			description = CombineLines(description, string.format(context.lstr.harvestable.grow, TimeToText(time.new(self.targettime - GetTime(), context))))
+			description = CombineLines(description, string.format(context.lstr.harvestable.grow, context.time:SimpleProcess(self.targettime - GetTime())))
 		end
 	end
 

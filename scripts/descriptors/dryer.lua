@@ -35,13 +35,13 @@ local function Describe(self, context)
 			local product = (context.usingIcons and PrefabHasIcon(self.product)) or nil
 			-- drying
 			if product then
-				description = string.format(context.lstr.dry_time, self.product, TimeToText(time.new(self:GetTimeToDry(), context)))
+				description = string.format(context.lstr.dry_time, self.product, context.time:SimpleProcess(self:GetTimeToDry()))
 			else
-				description = string.format(context.lstr.lang.dry_time, TimeToText(time.new(self:GetTimeToDry(), context)))
+				description = string.format(context.lstr.lang.dry_time, context.time:SimpleProcess(self:GetTimeToDry()))
 			end
 		elseif self:IsDone() and self:GetTimeToSpoil() then
 			-- TODO: check for rot later
-			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.spoil, TimeToText(time.new(self:GetTimeToSpoil(), context)))
+			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.spoil, context.time:SimpleProcess(self:GetTimeToSpoil()))
 		end
 	end
 

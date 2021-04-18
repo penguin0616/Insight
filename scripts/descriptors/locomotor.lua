@@ -53,7 +53,7 @@ local function Describe(self, context)
 			if remaining_time then -- only show the ones with a timer
 				local data = {
 					priority = 0,
-					description = string.format("ADD %s | %s", add, TimeToText(time.new(remaining_time, context))), -- apparently this timer is automatically deducted
+					description = string.format("ADD %s | %s", add, context.time:SimpleProcess(remaining_time)), -- apparently this timer is automatically deducted
 					icon = icons[name] and ResolvePrefabToImageTable(icons[name].prefab) or nil,
 					name = "locomotor_add_" .. name,
 					playerly = true,
@@ -66,7 +66,7 @@ local function Describe(self, context)
 			if self.speed_modifiers_mult_timer[name] then
 				local data = {
 					priority = 0,
-					description = string.format("MULT %s | %s", mult, TimeToText(time.new(self.speed_modifiers_mult_timer[name], context))), -- apparently this timer is automatically deducted
+					description = string.format("MULT %s | %s", mult, context.time:SimpleProcess(self.speed_modifiers_mult_timer[name])), -- apparently this timer is automatically deducted
 					icon = icons[name] and ResolvePrefabToImageTable(icons[name].prefab) or nil,
 					name = "locomotor_mult_" .. name,
 					playerly = true

@@ -35,8 +35,8 @@ local function Describe(self, context)
 
 	-- normally i would just check for the respawn task, but it's possible for the task to exist with full fish capacity.
 	if self.fishleft < self.maxfish and self.respawntask and context.config["time_style"] ~= "none" then
-		local time_remaining = time.new(GetTaskRemaining(self.respawntask), context) -- (self.respawntask.nexttick - TheSim:GetTick()) but in seconds
-		fish_count = fish_count .. string.format(context.lstr.fish_recharge, TimeToText(time_remaining))
+		local time_remaining = context.time:SimpleProcess(GetTaskRemaining(self.respawntask)) -- (self.respawntask.nexttick - TheSim:GetTick()) but in seconds
+		fish_count = fish_count .. string.format(context.lstr.fish_recharge, time_remaining)
 	end
 
 	-- time to catch a fish

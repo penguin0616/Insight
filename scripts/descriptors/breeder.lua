@@ -28,12 +28,12 @@ local function Describe(self, context)
 		local data = self:OnSave()
 
 		local fishstring = string.format(context.lstr.breeder_fishstring, context.lstr["breeder_" .. self.product] or ("\"" .. self.product .. "\""), self.volume, self.max_volume)
-		local levelup_time = data.breedtasktime and string.format(context.lstr.breeder_nextfishtime, TimeToText(time.new(data.breedtasktime, context)))
+		local levelup_time = data.breedtasktime and string.format(context.lstr.breeder_nextfishtime, context.time:SimpleProcess(data.breedtasktime))
 
 		-- lure tasks don't work properly in shipwrecked, this is due to :OnSave() checking self.luretask instead of self.lureTask, so it never gets exported
 		-- this means the threat of a predator is only relevant from when you first plant the roe to when you exit the world
 		-- also this means we have to check the component itself
-		local predatorcheck_time = self.lureTask and string.format(context.lstr.breeder_possiblepredatortime, TimeToText(time.new(GetTaskRemaining(self.lureTask), context)))
+		local predatorcheck_time = self.lureTask and string.format(context.lstr.breeder_possiblepredatortime, context.time:SimpleProcess(GetTaskRemaining(self.lureTask)))
 
 		description = CombineLines(fishstring, levelup_time, predatorcheck_time)
 	end

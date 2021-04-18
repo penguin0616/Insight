@@ -29,11 +29,11 @@ local function Describe(self, context)
 	end
 	
 	if data.warningtime then -- self:IsBecomingDiseased(), but :OnSave() handles thus efficiency
-		description = string.format(context.lstr.disease_in, TimeToText(time.new(data.warningtime, context)))
+		description = string.format(context.lstr.disease_in, context.time:SimpleProcess(data.warningtime))
 	elseif data.spreadtime then -- self:IsDiseased(), but :OnSave() handles thus efficiency
-		description = string.format(context.lstr.disease_spread, TimeToText(time.new(data.spreadtime, context)))
+		description = string.format(context.lstr.disease_spread, context.time:SimpleProcess(data.spreadtime))
 	elseif data.delaytime then
-		description = string.format(context.lstr.disease_delay, TimeToText(time.new(data.delaytime, context)))
+		description = string.format(context.lstr.disease_delay, context.time:SimpleProcess(data.delaytime))
 	end
 
 	return {

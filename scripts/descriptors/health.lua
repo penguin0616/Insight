@@ -102,6 +102,7 @@ local function Describe(self, context)
 	return {
 		name = "health",
 		priority = 1000,
+		forge_enabled = true,
 		description = description,
 		alt_description = alt_description,
 	}, naughtiness_table
@@ -109,5 +110,5 @@ end
 
 return {
 	Describe = Describe,
-	GetData = GetData
+	GetData = GetData,
 }

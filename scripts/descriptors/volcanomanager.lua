@@ -59,7 +59,7 @@ local function Describe(self, context)
 
 	--mprint("eruption in:", seconds)
 
-	description = TimeToText(time.new(seconds, context))
+	description = context.time:SimpleProcess(seconds)
 
 	return {
 		priority = 0,

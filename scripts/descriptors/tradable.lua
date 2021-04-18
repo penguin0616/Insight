@@ -38,7 +38,7 @@ local function Describe(self, context)
 
 	if context.config["appeasement_value"] then
 		if tribute then
-			tribute = string.format(context.lstr.tradable_rocktribute, TimeToText(time.new(tribute * TUNING.ANTLION_TRIBUTE_TO_RAGE_TIME, context)))
+			tribute = string.format(context.lstr.tradable_rocktribute, context.time:SimpleProcess(tribute * TUNING.ANTLION_TRIBUTE_TO_RAGE_TIME))
 			description = CombineLines(description, tribute)
 		end
 	end

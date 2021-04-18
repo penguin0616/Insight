@@ -70,7 +70,7 @@ local function Describe(self, context)
 		description = string.format(context.lstr.klaussack_despawn, data.despawn_day)
 
 	elseif data.time_to_spawn then
-		description = string.format(context.lstr.klaussack_spawnsin, TimeToText(time.new(data.time_to_spawn, context)))
+		description = string.format(context.lstr.klaussack_spawnsin, context.time:SimpleProcess(data.time_to_spawn))
 	end
 
 	return {

@@ -35,7 +35,7 @@ local function Describe(self, context)
 		leader_name = string.format(context.lstr.leader, self.leader:GetDisplayName())
 
 		if self.targettime then
-			remaining_time = string.format(context.lstr.loyalty_duration, TimeToText(time.new(self.targettime - GetTime(), context)))
+			remaining_time = string.format(context.lstr.loyalty_duration, context.time:SimpleProcess(self.targettime - GetTime()))
 		end
 	end
 
@@ -45,7 +45,7 @@ local function Describe(self, context)
 		local ghostlybond = leader.components.ghostlybond
 
 		if ghostlybond and ghostlybond.bondleveltimer then
-			local ghostlybond_levelup_time = TimeToText(time.new(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer, context))
+			local ghostlybond_levelup_time = context.time:SimpleProcess(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer)
 			ghostlybond_levelup = string.format(context.lstr.ghostlybond, ghostlybond.bondlevel, ghostlybond.maxbondlevel, ghostlybond_levelup_time)
 		end
 	end

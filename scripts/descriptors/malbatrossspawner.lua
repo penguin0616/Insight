@@ -52,7 +52,7 @@ local function Describe(self, context)
 	end
 
 	if data.time_to_respawn and data.time_to_respawn > 0 then
-		description = string.format(context.lstr.malbatross_spawnsin, TimeToText(time.new(data.time_to_respawn, context)))
+		description = string.format(context.lstr.malbatross_spawnsin, context.time:SimpleProcess(data.time_to_respawn))
 	end
 
 	return {

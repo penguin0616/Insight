@@ -199,7 +199,7 @@ local function Describe(self, context)
 
 		return {
 			priority = 0,
-			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.rot, TimeToText(time.new(context.bundleitem.perishremainingtime, context))),
+			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.rot, context.time:SimpleProcess(context.bundleitem.perishremainingtime)),
 			perishmodifier = modifier,
 		}
 	end
@@ -305,8 +305,8 @@ local function Describe(self, context)
 		-- percent
 		local percent = math.min(max_perish_time, alt_time_to_perish) / max_perish_time
 		
-		time_to_perish = TimeToText(time.new(math.abs(time_to_perish), context))
-		alt_time_to_perish = TimeToText(time.new(math.abs(alt_time_to_perish), context))
+		time_to_perish = context.time:SimpleProcess(math.abs(time_to_perish))
+		alt_time_to_perish = context.time:SimpleProcess(math.abs(alt_time_to_perish))
 
 		description = string.format(context.lstr.perishable.transition, perish_type, time_to_perish)
 		alt_description = string.format(context.lstr.perishable.transition_extended, alt_perish_type, alt_time_to_perish, Round(percent * 100, 1))

@@ -38,7 +38,7 @@ local function Describe(self, context)
 		time_remaining = time_remaining + self.stages[i].time
 	end
 
-	description = string.format(context.lstr.madsciencelab_finish, TimeToText(time.new(time_remaining, context)))
+	description = string.format(context.lstr.madsciencelab_finish, context.time:SimpleProcess(time_remaining))
 
 	return {
 		priority = 0,

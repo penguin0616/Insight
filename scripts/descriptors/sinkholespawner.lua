@@ -43,7 +43,7 @@ local function Describe(self, context)
 	local time_to_rage = data.time_to_rage
 
 	if time_to_rage and time_to_rage > 0 then
-		description = string.format(context.lstr.antlion_rage, TimeToText(time.new(time_to_rage, context)))
+		description = string.format(context.lstr.antlion_rage, context.time:SimpleProcess(time_to_rage))
 	end
 
 	return {

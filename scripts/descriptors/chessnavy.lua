@@ -24,7 +24,7 @@ local function Describe(self, context)
 	local description = nil
 
 	if self.spawn_timer and self.spawn_timer > 0 then
-		description = string.format(context.lstr.chessnavy_timer, TimeToText(time.new(self.spawn_timer, context)))
+		description = string.format(context.lstr.chessnavy_timer, context.time:SimpleProcess(self.spawn_timer))
 	elseif self.ready_to_spawn then
 		description = context.lstr.chessnavy_ready
 	end

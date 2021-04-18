@@ -91,7 +91,7 @@ local function Describe(self, context)
 			if remaining_time < 0 then
 				--remaining_time = "negative time: " .. remaining_time
 			else
-				remaining_time = TimeToText(time.new(remaining_time, context))
+				remaining_time = context.time:SimpleProcess(remaining_time)
 			end
 		else
 			remaining_time = context.lstr.crop_paused

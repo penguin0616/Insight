@@ -26,7 +26,7 @@ local function Describe(self, context)
 	local respawn_time = self:TimeUntilCanSpawn()
 
 	if respawn_time > 0 then
-		description = TimeToText(time.new(respawn_time, context))
+		description = context.time:SimpleProcess(respawn_time)
 	end
 
 	return {

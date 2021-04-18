@@ -32,7 +32,7 @@ local function Describe(self, context)
 
 			local remaining = Round(time_to_decay + time_to_die, 0)
 
-			description = string.format("<icon=hunger> %s / %s, dies in: %s", hunger_data.hunger, hunger_data.max_hunger, TimeToText(time.new(remaining, context), "both_short"))
+			description = string.format("<icon=hunger> %s / %s, dies in: %s", hunger_data.hunger, hunger_data.max_hunger, context.time:SimpleProcess(remaining, "both_short"))
 		end
 	end
 

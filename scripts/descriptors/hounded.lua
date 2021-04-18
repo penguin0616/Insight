@@ -49,11 +49,11 @@ local function Describe(self, context)
 	end
 
 	if time_to_attack > 0 then
-		description = TimeToText(time.new(time_to_attack, context))
+		description = context.time:SimpleProcess(time_to_attack)
 	end
 
 	return {
-		priority = 0,
+		priority = 5,
 		description = description,
 		icon = icons[worldprefab],
 		worldly = true

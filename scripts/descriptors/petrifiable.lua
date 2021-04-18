@@ -23,7 +23,7 @@ local function Describe(self, context)
 	local description = nil
 	
 	if self._petrifytask then
-		description = string.format(context.lstr.petrify, TimeToText(time.new(GetTaskRemaining(self._petrifytask), context)))
+		description = string.format(context.lstr.petrify, context.time:SimpleProcess(GetTaskRemaining(self._petrifytask)))
 	end
 
 	return {

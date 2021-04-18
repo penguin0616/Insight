@@ -44,7 +44,7 @@ local function Describe(self, context)
 	end
 
 	if data.time_to_respawn then
-		description = string.format(context.lstr.crabking_spawnsin, TimeToText(time.new(data.time_to_respawn, context)))
+		description = string.format(context.lstr.crabking_spawnsin, context.time:SimpleProcess(data.time_to_respawn))
 	end
 
 	return {

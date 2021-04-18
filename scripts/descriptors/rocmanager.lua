@@ -39,7 +39,7 @@ local function Describe(self, context)
 		
 		
 		if remaining_time >= 0 then
-			description = TimeToText(time.new(remaining_time, context))
+			description = context.time:SimpleProcess(remaining_time)
 		elseif not should_spawn then -- don't use self:ShouldSpawn(), does modifications of its own
 			description = context.lstr.rocmanager.cant_spawn
 		end

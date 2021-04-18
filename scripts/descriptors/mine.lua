@@ -23,7 +23,7 @@ directory. If not, please refer to
 if inst.prefab == "trap_starfish" and context.config["display_attack_range"] then
 		local dmg, reset = string.format(context.lstr.damage, TUNING.STARFISH_TRAP_DAMAGE), nil
 		if inst._reset_task then
-			reset = string.format(context.lstr.trap_starfish_cooldown, TimeToText(time.new(GetTaskRemaining(inst._reset_task), context)))
+			reset = string.format(context.lstr.trap_starfish_cooldown, context.time:SimpleProcess(GetTaskRemaining(inst._reset_task)))
 		end
 
 		description = CombineLines(dmg, reset)
@@ -38,7 +38,7 @@ local function Describe(self, context)
 	if inst.prefab == "trap_starfish" then
 		description = Insight.descriptors.combat.DescribeDamageForPlayer(TUNING.STARFISH_TRAP_DAMAGE, context.player, context)
 		if inst._reset_task then
-			description = description .. "\n" .. string.format(context.lstr.mine.trap_starfish_cooldown, TimeToText(time.new(GetTaskRemaining(inst._reset_task), context)))
+			description = description .. "\n" .. string.format(context.lstr.mine.trap_starfish_cooldown, context.time:SimpleProcess(GetTaskRemaining(inst._reset_task)))
 		end
 	elseif inst.prefab == "trap_bramble" then
 		description = Insight.descriptors.combat.DescribeDamageForPlayer(TUNING.TRAP_BRAMBLE_DAMAGE, context.player, context)

@@ -249,7 +249,8 @@ local function Describe(self, context)
 
 	return {
 		priority = 49,
-		description = description
+		forge_enabled = true,
+		description = description,
 	}
 end
 

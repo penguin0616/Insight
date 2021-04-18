@@ -52,10 +52,10 @@ local function Describe(self, context)
 		local time_to_attack = self.timetoattack
 
 		if time_to_attack then
-			--table.insert(hasslers, {name = "deerclops", text = TimeToText(time.new(time_to_attack, context)), icon=icons.deerclops})
+			--table.insert(hasslers, {name = "deerclops", text = context.time:SimpleProcess(time_to_attack), icon=icons.deerclops})
 			table.insert(hasslers, {
 				priority = 0,
-				description = TimeToText(time.new(time_to_attack, context)),
+				description = context.time:SimpleProcess(time_to_attack),
 				icon = icons.deerclops,
 				worldly = true,
 			})
@@ -66,11 +66,11 @@ local function Describe(self, context)
 		for name, data in pairs(self.hasslers or {}) do -- someone had hasslers = nil, 12/8/2020
 			--if GetWorldType() == 3 then dprint(name, data.HASSLER_STATE, data.timer) end
 			if data.HASSLER_STATE ~= "DORMANT" and (data.activeseason == season or data.attackduringoffseason) then
-				--table.insert(hasslers, {name = data.prefab, text = TimeToText(time.new(data.timer, context)), icon=icons[data.prefab]})
+				--table.insert(hasslers, {name = data.prefab, text = context.time:SimpleProcess(data.timer), icon=icons[data.prefab]})
 				local str = data.HASSLER_STATE == "WARNING" and "<color=HEALTH>%s</color>" or "%s"
 				table.insert(hasslers, {
 					priority = 0,
-					description = string.format(str, TimeToText(time.new(data.timer, context))),
+					description = string.format(str, context.time:SimpleProcess(data.timer)),
 					icon = icons[data.prefab],
 					worldly = true,
 					name = "basehassler_" .. data.prefab

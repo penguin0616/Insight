@@ -106,9 +106,9 @@ local function Describe(self, context)
 			remaining_time = context.lstr.nightmareclock_lock
 		else
 			if IsDST() then
-				remaining_time = TimeToText(time.new(save_data.remainingtimeinphase, context))
+				remaining_time = context.time:SimpleProcess(save_data.remainingtimeinphase)
 			else
-				remaining_time = TimeToText(time.new(self:GetTimeLeftInEra(), context))
+				remaining_time = context.time:SimpleProcess(self:GetTimeLeftInEra())
 			end
 		end
 

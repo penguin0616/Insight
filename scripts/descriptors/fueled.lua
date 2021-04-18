@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- fueled.lua
 local function FormatFuel(fuel, context)
-	return string.format(context.lstr.fueled.units, TimeToText(time.new(fuel, context)))
+	return string.format(context.lstr.fueled.units, context.time:SimpleProcess(fuel))
 end
 
 local function Describe(self, context)
@@ -33,16 +33,15 @@ local function Describe(self, context)
 	local efficiency = self.bonusmult
 	local efficiency_string = nil
 	
-	remaining_time = time.new(remaining_time, context)
-	
 	-- remaining fuel
 	if self.rate > 0 then
-		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(self:GetPercent() * 100, 0), TimeToText(remaining_time))
+		local fuel_time = context.time:SimpleProcess(remaining_time)
+		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(self:GetPercent() * 100, 0), fuel_time)
 
 		if fuel_verbosity == 2 then
 			time_string = time_string_verbose
 		elseif fuel_verbosity == 1 then
-			time_string = string.format(context.lstr.fueled.time, Round(self:GetPercent() * 100, 0), TimeToText(remaining_time))
+			time_string = string.format(context.lstr.fueled.time, Round(self:GetPercent() * 100, 0), fuel_time)
 		end
 	end
 
@@ -68,7 +67,7 @@ local function Describe(self, context)
 		priority = 1,
 		description = description,
 		alt_description = alt_description,
-		remaining_time = TimeToText(remaining_time, "realtime_short"),
+		remaining_time = context.time:SimpleProcess(remaining_time, "realtime_short"),
 		accepting = self.accepting,
 		fueltype = self.fueltype,
 		secondaryfueltype = self.secondaryfueltype

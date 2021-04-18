@@ -24,8 +24,8 @@ local function Describe(self, context)
 	local description = nil
 
 	if self:GetTimeToCharged() > 0 then
-		local remaining_time = time.new(self:GetTimeToCharged(), context)
-		description = string.format(context.lstr.cooldown, TimeToText(remaining_time))
+		local remaining_time = context.time:SimpleProcess(self:GetTimeToCharged())
+		description = string.format(context.lstr.cooldown, remaining_time)
 	end
 
 	return {

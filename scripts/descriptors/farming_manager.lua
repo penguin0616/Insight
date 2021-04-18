@@ -52,7 +52,7 @@ local function Describe(self, context)
 	end
 
 	local remaining_time = data.lordfruitfly_spawntime
-	remaining_time = TimeToText(time.new(remaining_time, context))
+	remaining_time = context.time:SimpleProcess(remaining_time)
 
 	description = remaining_time
 
