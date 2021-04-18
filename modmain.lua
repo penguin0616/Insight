@@ -76,7 +76,8 @@ local Insight = {
 		players = {},
 	},
 	active_hunts = {},
-	descriptors = nil,
+	descriptors = {}, -- 130 descriptors as of April 17, 2021
+	prefab_descriptors = {}, 
 	FUEL_TYPES = {
 		BURNABLE = "Fuel",
 		CAVE = "Light", -- miner hat / lanterns, light bulbs n stuff
@@ -179,7 +180,7 @@ end
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
 string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end})
 import = kleiloadlua(MODROOT .. "scripts/import.lua")()
-time = import("time")
+Time = import("time")
 util = import("util")
 Color = import("helpers/color")
 entityManager = import("entitymanager")()
@@ -203,8 +204,6 @@ local log_buffer = ""
 local LOG_LIMIT = 4500000 -- 4.5 million
 local SERVER_OWNER_HAS_OPTED_IN = nil
 
-local descriptors = createTable(100)
-local prefab_descriptors = {}
 local descriptors_ignore = {
 	--"mapiconhandler", -- this is just from a mod i use :^)
 
@@ -399,11 +398,14 @@ function CreatePlayerContext(player, config, external_config, etc)
 		player = player,
 		config = config,
 		external_config = external_config,
+		time = nil,
 		usingIcons = config["info_style"] == "icon",
 		lstr = import("language/language")(config, etc.locale),
 		is_server_owner = etc.is_server_owner,
 		etc = etc
 	}
+
+	context.time = Time:new({ context=context })
 
 	if context.is_server_owner then
 		if context.config["crash_reporter"] then
@@ -585,79 +587,84 @@ function cprint(...)
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
---- Returns the descriptor method for an item. Returns false if descriptor failed to load or does not exist.
--- @tparam string name
--- @treturn ?function|false
+local function InvalidDescriptorIndex(self, index)
+	error(string.format("Descriptor '%s' does not have index '%s'", tostring(self.name), tostring(index)))
+end
+
+--- Returns a component descriptor. 
+-- @tparam string name Name of the component.
+-- @treturn ?table|false
 local function GetComponentDescriptor(name)
-	if descriptors[name] == nil then
-		-- never processed before
-		local safe, res = pcall(import, "descriptors/" .. name)
-		descriptors[name] = (safe and res) or false
-		
-		if safe then
-			if type(res) == "table" then
-				assert(type(res.Describe) == "function", string.format("[Insight]: attempt to return '%s' as a complex descriptor with Describe as '%s'", name, tostring(res.Describe)))
-				-- complex
-				Insight.descriptors[name] = setmetatable(deepcopy(res), { __index = function(self, index) error(string.format("descriptor '%s' does not have index '%s'", name, index)) end })
-			else
-				--Insight.descriptors[name] = res
-				mprint(safe, res)
-				error(string.format("Attempt to return '%s' in descriptor '%s'", tostring(res), name))
+	local safe, res = pcall(import, "descriptors/" .. name)
+	
+	if safe then
+		if type(res) == "table" then
+			assert(
+				res.Describe == nil or type(res.Describe) == "function", 
+				string.format("[Insight]: attempt to return '%s' as a complex descriptor with Describe as '%s'", 
+					name, tostring(res.Describe)
+				)
+			)
+
+			if getmetatable(res) == nil then
+				res.name = res.name or name
+				setmetatable(res, { __index=InvalidDescriptorIndex })
 			end
+
+			return res
 		else
-			--dprint("?????", safe, res)
-			Insight.descriptors[name] = false
+			error(string.format("Attempt to return %s '%s' in descriptor '%s'", type(res), tostring(res), name))
+			--Insight.descriptors[name] = false
+			return false
 		end
-
-		if not safe then
-			-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
-			local _, en = string.find(res, ":%d+:%s")
-			res = string.sub(res, (en or 0)+1)
-			if not res:find("not exist") then
-				descriptors[name] = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end
-			end
-
-			dprint(string.format("FAILED TO LOAD DESCRIPTOR %s: %s", name, res))
-		end
-
-		-- reprocess
-		return GetComponentDescriptor(name)
-	--[[
-	elseif type(descriptors[name]) == "function" then
-		-- simple function return
-		return descriptors[name]
-	--]]
-	elseif type(descriptors[name]) == "table" then
-		-- looks like its a complex descriptor
-		return descriptors[name].Describe
 	else
-		-- its not good :(
-		return descriptors[name]
+		-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
+		local _, en = string.find(res, ":%d+:%s")
+		res = string.sub(res, (en or 0)+1)
+		if not res:find("not exist") then
+			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end }
+		end
+
+		return false
 	end
 end
 
+--- Returns a prefab descriptor. 
+-- @tparam string name Prefab name.
+-- @treturn ?table|false
 local function GetPrefabDescriptor(name)
-	if prefab_descriptors[name] == nil then
-		-- never processed before
-		local safe, res = pcall(import, "prefab_descriptors/" .. name)
-		prefab_descriptors[name] = (safe and res) or false
+	-- This is like an exact duplicate of GetComponentDescriptor, except prefab_descriptors. pensive.
+	local safe, res = pcall(import, "prefab_descriptors/" .. name)
+	
+	if safe then
+		if type(res) == "table" then
+			assert(
+				res.Describe == nil or type(res.Describe) == "function", 
+				string.format("[Insight]: attempt to return '%s' as a complex prefab descriptor with Describe as '%s'", 
+					name, tostring(res.Describe)
+				)
+			)
 
-		if not safe then
-			if res:find("loading") then
-				prefab_descriptors[name] = function() return {priority = -0.5, description = "ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\": " .. res} end
-			else
-				--descriptors[name] = function() return {priority = -0.5, description = "ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\": " .. res} end
+			if getmetatable(res) == nil then
+				res.name = res.name or name
+				setmetatable(res, { __index=InvalidDescriptorIndex })
 			end
+
+			return res
+		else
+			error(string.format("Attempt to return %s '%s' in prefab descriptor '%s'", type(res), tostring(res), name))
+			--Insight.descriptors[name] = false
+			return false
+		end
+	else
+		-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
+		local _, en = string.find(res, ":%d+:%s")
+		res = string.sub(res, (en or 0)+1)
+		if not res:find("not exist") then
+			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end }
 		end
 
-		-- reprocess
-		return GetPrefabDescriptor(name)
-	elseif type(prefab_descriptors[name]) == "function" then
-		-- yay
-		return prefab_descriptors[name]
-	else
-		-- its not good :(
-		return prefab_descriptors[name]
+		return false
 	end
 end
 
@@ -671,17 +678,60 @@ local function GetSpecialData(describe_data)
 	return special_data
 end
 
+-- i don't really like having this many arguments in a function
+local function ValidateDescribeResponse(chunks, name, datas, params)
+	for i, d in pairs(datas) do
+	--for i = 1, #datas do -- doesn't account for nils
+		--local d = datas[i]
+		if d and ((not params.ignore_worldly) or (params.ignore_worldly == true and not d.worldly)) then
+			assert(type(d.priority)=="number", "Invalid priority for:" .. name)
+
+			if d.name ~= nil and type(d.name) ~= "string" then
+				error(string.format("Invalid name '%s' (%s) for component descriptor '%s'.", d.name, type(d.name), name))
+			elseif d.name == nil and #datas > 1 then
+				error(string.format("Missing name for multiple-return descriptor '%s'.", name)) -- when returning multiple tables, need to manually specify the names
+			end
+
+			d.name = d.name or name -- chosen name or default component name
+
+			if d.description ~= nil and type(d.description) ~= "string" then
+				error(string.format("Invalid description: %s | Descriptor: %s", tostring(d.description), d.name))
+			end
+
+			if d.alt_description ~= nil and type(d.alt_description) ~= "string" then
+				error(string.format("Invalid alt_description: %s | Descriptor: %s", tostring(d.alt_description), d.name))
+			end
+
+			if params.is_forge == false or (params.is_forge == true and d.forge_enabled) then
+				--fprint(item, "component", name, d.description)
+				--table.insert(chunks, d)
+				chunks[#chunks+1] = d;
+			end
+		end
+	end
+end
+
+local function SortDescriptors(a, b)
+	local p1, p2 = a.priority or 0, b.priority or 0
+
+	if p1 == p2 and a.description and b.description then
+		return a.description < b.description -- key code means letters further down the alphabet have a higher value, so we need smaller of them to sort alphabetically
+	else
+		return p1 > p2 -- we need higher value priority
+	end
+end
+
 --- Retrives our information for an item.
 -- @tparam Prefab item
 -- @tparam Player player
 -- @tparam table params
 -- @treturn string
-local function GetEntityInformation(item, player, params)
+local function GetEntityInformation(entity, player, params)
 	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab
 	-- 5/2/2020
 
 	local assembled = {
-		GUID = item.GUID,
+		GUID = entity.GUID,
 		information = "", --string.rep("hello there <color=HEALTH> monty python 123</color> dingo bongo\n" .. GetTime(), 4),
 		alt_information = "",
 		special_data = {},
@@ -689,7 +739,7 @@ local function GetEntityInformation(item, player, params)
 	}
 
 	--[[
-	if not IsPrefab(item) then
+	if not IsPrefab(entity) then
 		assembled.GUID = "?"
 		assembled.information = "Not a prefab"
 		return assembled
@@ -705,43 +755,25 @@ local function GetEntityInformation(item, player, params)
 
 	player_context.fromInspection = params.fromInspection or false
 
-	local isForge = IsForge() -- why call this multiple times later?
-
-	local components = item.components
-
-
+	params.is_forge = IsForge() -- why call this multiple times later?
 
 	local chunks = {}
-	local len_chunks = 0
-	for name, component in pairs(components) do		
-		local descriptor = GetComponentDescriptor(name)
+
+	local prefab_descriptor = Insight.prefab_descriptors[entity.prefab]
+	if prefab_descriptor and prefab_descriptor.Describe then
+		local datas = {prefab_descriptor.Describe(entity, player_context)}
+		ValidateDescribeResponse(chunks, entity.prefab, datas, params)
+	end
+	
+	for name, component in pairs(entity.components) do		
+		local descriptor = Insight.descriptors[name]
 		
-		if descriptor then
-			local datas = {descriptor(component, player_context)}
-			for i, d in pairs(datas) do
-			--for i = 1, #datas do -- doesn't account for nils
-				--local d = datas[i]
-				if d and ((not params.ignore_worldly) or (params.ignore_worldly == true and not d.worldly)) then
-					assert(type(d.priority)=="number", "Invalid priority for:" .. name)
-
-					if d.name ~= nil and type(d.name) ~= "string" then
-						error("invalid chosen name for a descriptor")
-					elseif d.name == nil and #datas > 1 then
-						error("missing name for a multiple-return descriptor") -- when returning multiple tables, need to manually specify the names
-					end
-					
-					d.name = d.name or name -- chosen name or default component name
-
-					if isForge == false or (isForge == true and name == "health") then
-						--fprint(item, "component", name, d.description)
-						--table.insert(chunks, d)
-						chunks[len_chunks+1] = d; len_chunks = len_chunks + 1;
-					end
-				end
-			end
+		if descriptor and descriptor.Describe then
+			local datas = {descriptor.Describe(component, player_context)}
+			ValidateDescribeResponse(chunks, name, datas, params)
+			
 		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
-			--table.insert(chunks, {priority = -2, name = name, description = "Disabled descriptor: " .. name})
-			chunks[len_chunks+1] = {priority = -2, name = name, description = "Disabled descriptor: " .. name}; len_chunks = len_chunks + 1;
+			chunks[#chunks+1] = {priority = -2, name = name, description = "Disabled descriptor: " .. name};
 
 		elseif player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not table.contains(descriptors_ignore, name) then
 			local description = "No information for: " .. name
@@ -755,34 +787,24 @@ local function GetEntityInformation(item, player, params)
 				end
 			end
 
-			--table.insert(chunks, {priority = -1, name = name, description = description})
 			if description then
-				chunks[len_chunks+1] = {priority = -1, name = name, description = description}; len_chunks = len_chunks + 1;
+				chunks[#chunks+1] = {priority = -1, name = name, description = description};
 			end
 		end
 	end
 
 	-- sort by priority
-	table.sort(chunks, function(a, b)
-		local p1, p2 = a.priority or 0, b.priority or 0
-
-		if p1 == p2 and a.description and b.description then
-			return a.description < b.description -- key code means letters further down the alphabet have a higher value, so we need smaller of them to sort alphabetically
-		else
-			return p1 > p2 -- we need higher value priority
-		end
-	end)
+	table.sort(chunks, SortDescriptors)
 
 	-- assembly time
 	-- if there's no data, why bother?
-	--if #chunks == 0 then
-	if len_chunks == 0 then
+	if #chunks == 0 then
 		assembled.information = nil
 		assembled.alt_information = nil
 		return assembled
 	end
 
-	--fprint(item, "has some info")
+	--fprint(entity, "has some info")
 
 	for i = 1, #chunks do
 	--for i,v in pairs(chunks) do
@@ -792,7 +814,7 @@ local function GetEntityInformation(item, player, params)
 		end
 
 		-- collect the description if one was provided
-		if type(v.description) == "string" then
+		if v.description then -- type(v.description) == "string"
 			v.description = ResolveColors(v.description) -- resolve any color tags that reference the Insight table's colors
 
 			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
@@ -813,13 +835,10 @@ local function GetEntityInformation(item, player, params)
 			if params.raw == true then
 				assembled.raw[v.name] = v.description
 			end
-		elseif v.description ~= nil then
-			-- should have been caught in the previous statement
-			error(string.format("invalid description: %s | Descriptor: %s", tostring(v.description), v.name))
 		end
 
 
-		if type(v.alt_description) == "string" then
+		if v.alt_description then -- type(v.alt_description) == "string"
 			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. ResolveColors(v.alt_description)
 			if i < #chunks then
 				assembled.alt_information = assembled.alt_information .. "\n"
@@ -830,14 +849,7 @@ local function GetEntityInformation(item, player, params)
 			if i < #chunks then
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
-
-		elseif v.alt_description ~= nil then
-			-- should have been caught in the previous statement
-			error(string.format("invalid alt_description: %s | Descriptor: %s", tostring(v.alt_description), v.name))
 		end
-
-		
-
 	end
 
 	if assembled.information == "" then
@@ -852,30 +864,30 @@ local function GetEntityInformation(item, player, params)
 end
 
 --- Middleman between GetEntityInformation's server side and the client, really only important for DST
-function RequestEntityInformation(item, player, params)
+function RequestEntityInformation(entity, player, params)
 	--if true then return nil end
 
 	assert(type(params) == "table", "RequestEntityInformation expected 'params' as a table")
 
 	if TRACK_INFORMATION_REQUESTS then
-		dprint("SERVER got:", item, player, params)
+		dprint("SERVER got:", entity, player, params)
 	end
 
 	-- might as well
-	if not item then
+	if not entity then
 		--dprint(player, "requested information for nil.")
 		return nil
 	end
 
 	-- DST
-	if not IsPrefab(item) then
+	if not IsPrefab(entity) then
 		if IsDST() then
-			mprint(string.format("%s requested information for %s, mastersim: %s", player.name, tostring(item), tostring(TheWorld.ismastersim)))
+			mprint(string.format("%s requested information for %s, mastersim: %s", player.name, tostring(entity), tostring(TheWorld.ismastersim)))
 		else
-			mprint(string.format("Requested information for %s", tostring(item)))
+			mprint(string.format("Requested information for %s", tostring(entity)))
 		end
 
-		return {GUID = params.id or 0, info = "not a real item?", special_data = {}}
+		return {GUID = params.id or 0, info = "not a real entity?", special_data = {}}
 	end
 
 	local insight = GetInsight(player)
@@ -887,34 +899,34 @@ function RequestEntityInformation(item, player, params)
 	
 	if IsDS() then
 		-- DS
-		local info = GetEntityInformation(item, player, params)
+		local info = GetEntityInformation(entity, player, params)
 		info.GUID = params.id
-		insight.entity_data[item] = info
+		insight.entity_data[entity] = info
 
 		return info
 	end
 
 
 
-	--local ok = DEBUG_ENABLED and ("is_active: " .. tostring(entityManager:IsEntityActive(item)) .. "\n") or ""
+	--local ok = DEBUG_ENABLED and ("is_active: " .. tostring(entityManager:IsEntityActive(entity)) .. "\n") or ""
 
 	local id = params.id
 
 	-- GUIDs vary between server and client
 	if TheWorld.ismastersim then
-		--dprint(player, "is requesting info for", item)
+		--dprint(player, "is requesting info for", entity)
 		
-		local data = GetEntityInformation(item, player, params)
+		local data = GetEntityInformation(entity, player, params)
 		
 		
 		if not id then
 			if IsClientHost() then
 				-- understandable
-				id = item.GUID
+				id = entity.GUID
 			else
 				-- we shouldn't be here
 				mprint("&&&&&&&&&&&&&& guid missing in server RQST")
-				id = item.GUID
+				id = entity.GUID
 			end
 		end
 		
@@ -922,21 +934,21 @@ function RequestEntityInformation(item, player, params)
 		data.GUID = id
 		
 		if TRACK_INFORMATION_REQUESTS then
-			dprint("Information set for", item)
+			dprint("Information set for", entity)
 		end
 
-		insight:SetEntityData(item, data)
+		insight:SetEntityData(entity, data)
 	else
 		-- client is asking for information
-		insight:RequestInformation(item, params) -- clients have to go through this at some point, unless client is host and its a forest-only world
+		insight:RequestInformation(entity, params) -- clients have to go through this at some point, unless client is host and its a forest-only world
 	end
 
 	if TRACK_INFORMATION_REQUESTS then
-		--dprint("Information returning for", item)
+		--dprint("Information returning for", entity)
 	end
 	
-	if insight.entity_data[item] then
-		return insight.entity_data[item]
+	if insight.entity_data[entity] then
+		return insight.entity_data[entity]
 	end
 
 	return ok or nil
@@ -1024,7 +1036,7 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["antlion"] = TimeToText(time.new(antlion_timer, context))
+			data.raw["antlion"] = context.time:SimpleProcess(antlion_timer)
 		end
 		--]]
 		
@@ -1049,7 +1061,7 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["atrium_gate"] = TimeToText(time.new(atrium_gate_cooldown, context))
+			data.raw["atrium_gate"] = context.time:SimpleProcess(atrium_gate_cooldown)
 		end
 
 		-- dragonfly
@@ -1064,7 +1076,7 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["dragonfly_spawner"] = TimeToText(time.new(dragonfly_respawn, context))	
+			data.raw["dragonfly_spawner"] = context.time:SimpleProcess(dragonfly_respawn)	
 		end
 
 		-- bee queen
@@ -1079,7 +1091,7 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["beequeenhive"] = TimeToText(time.new(beequeen_respawn, context))
+			data.raw["beequeenhive"] = context.time:SimpleProcess(beequeen_respawn)
 		end
 
 		-- bearger
@@ -1313,19 +1325,29 @@ end
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
-Insight.descriptors = setmetatable({}, {
+setmetatable(Insight.descriptors, {
 	__index = function(self, index)
-		-- if this triggers, that means we're requesting information from an unloaded descriptor
-		GetComponentDescriptor(index)
-
-		return rawget(self, index)
+		-- If we're here, this means that we're requesting an unloaded descriptor.
+		local value = GetComponentDescriptor(index)
+		rawset(self, index, value)
+		return value
 	end,
-	__metatable = "[Insight] The metatable is locked"
+	__metatable = "[Insight] This metatable is locked."
 })
+
+setmetatable(Insight.prefab_descriptors, {
+	__index = function(self, index)
+		-- If we're here, this means that we're requesting an unloaded prefab descriptor.
+		local value = GetPrefabDescriptor(index)
+		rawset(self, index, value)
+		return value
+	end,
+	__metatable = "[Insight] This metatable is locked."
+})
+
 
 -- ignore selected descriptors
 for i,v in pairs(descriptors_ignore) do
-	descriptors[v] = false
 	Insight.descriptors[v] = false
 end
 
@@ -1438,7 +1460,11 @@ if IsDST() then
 
 		params = json.decode(params)
 
-		RequestEntityInformation(entity, player, params)
+		if false and TheGlobalInstance then
+			TheGlobalInstance:DoTaskInTime(0, function() RequestEntityInformation(entity, player, params) end)
+		else
+			RequestEntityInformation(entity, player, params)
+		end
 	end)
 
 	rpcNetwork.AddModRPCHandler(modname, "RemoteExecute", function(player, str)
@@ -1718,6 +1744,20 @@ if IsDST() then
 		end
 
 		combatHelper.RegisterFalseCombat(inst, MOONSTORM_SPARK_DATA)
+	end)
+
+	local MOONSTORM_GLASS_DATA = {
+		attack_range = 4,
+		hit_range = 4,
+		damage = 30
+	}
+
+	AddPrefabPostInit("moonstorm_glass", function(inst)
+		if not TheWorld.ismastersim then
+			return
+		end
+
+		combatHelper.RegisterFalseCombat(inst, MOONSTORM_GLASS_DATA)
 	end)
 
 	local function GetMushroomBombDamage(inst)
@@ -2013,6 +2053,7 @@ if IsDST() then
 	
 	if true then
 		_G.c_nohounds = function() assert(TheWorld.ismastersim, "need to be mastersim") c_removeall'firehound' c_removeall'icehound' c_removeall'hound' end
+		_G.c_nowagbirds = function() assert(TheWorld.ismastersim, "need to be mastersim") c_removeall'bird_mutant' c_removeall'bird_mutant_spitter' end
 		_G.c_noshadows = function(x) assert(TheWorld.ismastersim, "need to be mastersim") c_removeall'terrorbeak' c_removeall'crawlinghorror' if x then c_removeall'nightmarebeak' c_removeall'crawlingnightmare' end end
 		_G.c_rain = function(bool) assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_forceprecipitation", bool) end
 		_G.c_lightning = function() assert(TheWorld.ismastersim, "need to be mastersim") TheWorld:PushEvent("ms_sendlightningstrike", ConsoleWorldPosition()) end

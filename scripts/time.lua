@@ -23,17 +23,26 @@ directory. If not, please refer to
 -- @classmod Time
 -- @author penguin0616
 
-local time = {} -- library
-local Time = {} -- object
+--[[
+	search: TimeToText\(time\.new\(([^,]+),\s*context\)\)
+	replace: context.time:SimpleProcess($1)
+]]
+--------------------------------------------------------------------------
+--[[ Declarations ]]
+--------------------------------------------------------------------------
+local Time = {}
+Time.__index = Time
 
--- constants
-local SEGMENTS_PER_DAY = 16
-local SECONDS_PER_SEGMENT = 30
+local WorkableTime = {}
+WorkableTime.__index = WorkableTime
 
-time.SEGMENTS_PER_DAY = SEGMENTS_PER_DAY
-time.SECONDS_PER_SEGMENT = SECONDS_PER_SEGMENT
-time.SECONDS_PER_DAY = time.SEGMENTS_PER_DAY * time.SECONDS_PER_SEGMENT
+local TUNING = TUNING
+local SEGMENTS_PER_DAY = (TUNING.TOTAL_DAY_TIME / TUNING.SEG_TIME)
 
+
+--------------------------------------------------------------------------
+--[[ Functions ]]
+--------------------------------------------------------------------------
 local function round(num, places) 
 	places = places or 1
 	return tonumber(string.format("%." .. places .. "f", num))
@@ -44,80 +53,172 @@ local function doubleDigit(num)
 	return string.format("%02.0f", num)
 end
 
--- base conversion functions
-function time.SecondsToSegments(seconds)
-	return seconds / SECONDS_PER_SEGMENT
+--------------------------------------------------------------------------
+--[[ Time Static Methods ]]
+--------------------------------------------------------------------------
+function Time.SecondsToSegments(seconds)
+	return seconds / TUNING.SEG_TIME
 end
 
-function time.MinutesToSegments(minutes)
+function Time.MinutesToSegments(minutes)
 	return Time.SecondsToSegments(minutes * 60)
 end
 
-function time.SecondsToDays(seconds)
+function Time.SecondsToDays(seconds)
 	return Time.SecondsToSegments(seconds) / SEGMENTS_PER_DAY
 end
 
-function time.MinutesToDays(minutes)
+function Time.MinutesToDays(minutes)
 	return Time.SecondsToDays(minutes * 60)
 end
 
-function time.DaysToSegments(days)
+function Time.DaysToSegments(days)
 	return days * SEGMENTS_PER_DAY
 end
 
-function time.DaysToSeconds(days)
-	return Time.DaysToSegments(days) * SECONDS_PER_SEGMENT
+function Time.DaysToSeconds(days)
+	return Time.DaysToSegments(days) * TUNING.SEG_TIME
 end
 
+--------------------------------------------------------------------------
+--[[ Time Methods ]]
+--------------------------------------------------------------------------
+function Time:new(data)
+	assert(type(data) == "table", string.format("bad argument #1 to 'new' (table expected, got %s)", type(data)))
+	assert(type(data.context) == "table", string.format("bad argument #1 to 'new' (expected table for arg.context, got %s)", type(data.context)))
 
--- PHEW.
-function time.new(base_seconds, context)
-	if type(base_seconds) ~= 'number' then
-		error("base_seconds doesnt have a number inputted for time.new", 2)
-	end
-	
-	assert(context, "[insight]: i forgot to include context somewhere, please report")
-	-- assert(base_seconds >= 0, "[insight]: time.new expected first argument to be positive.") -- experimenting i suppose
-	if base_seconds < 0 then
-		base_seconds = 0
-	end
+	setmetatable(data, self)
 
-	local self = {base_seconds = math.floor(base_seconds), context = context}
+	--[[
+	-- old
+	local this = { base_seconds=math.floor(base_seconds), context = context}
 
 	setmetatable(self, {__index = Time, __tostring = Time.__tostring})
 
 	return self
+	]]
+
+	return data
 end
 
--- phew
-function Time:GetDays(raw)
-	-- under the assumption we don't need REAL days........
-	local days = self.base_seconds / SECONDS_PER_SEGMENT / SEGMENTS_PER_DAY
-
-	if not raw then
-		days = math.floor(days)
+function Time:GetWorkable(base_seconds)
+	if not self.context then
+		return nil
 	end
 
-	return days
+	if base_seconds < 0 then
+		base_seconds = 0
+	end
+
+	return WorkableTime:new({ context=self.context, base_seconds=base_seconds })
 end
 
-function Time:GetSegments()
-	return self.base_seconds / SECONDS_PER_SEGMENT % SEGMENTS_PER_DAY
+
+function Time:SimpleProcess(base_seconds, override)
+	if not self.context then
+		return nil
+	end
+	
+	--local style = (type(override) == "string" and override) or GetModConfigData("time_style", true)
+	local style = override or self.context.config["time_style"]
+
+	local wt = self:GetWorkable(base_seconds)
+	
+	if style == "realtime" then
+		--return WorkableTime.GetReasonableRealTime({ context=self.context, base_seconds=base_seconds }, false)
+		return wt:GetReasonableRealTime(false)
+	elseif style == "realtime_short" then
+		--return WorkableTime.GetReasonableRealTime({ context=self.context, base_seconds=base_seconds }, true)
+		return wt:GetReasonableRealTime(true)
+
+	elseif style == "gametime" then
+		--return WorkableTime.GetReasonableGameTime({ context=self.context, base_seconds=base_seconds }, false)
+		return wt:GetReasonableGameTime(false)
+	elseif style == "gametime_short" then
+		--return WorkableTime.GetReasonableGameTime({ context=self.context, base_seconds=base_seconds }, true)
+		return wt:GetReasonableGameTime(true)
+
+	elseif style == "both" then
+		return string.format("%s (%s)", 
+			--WorkableTime.GetReasonableGameTime({ context=self.context, base_seconds=base_seconds }, false),
+			--WorkableTime.GetReasonableRealTime({ context=self.context, base_seconds=base_seconds }, false)
+			wt:GetReasonableGameTime(false),
+			wt:GetReasonableRealTime(false)
+		)
+	elseif style == "both_short" then
+		return string.format("%s (%s)", 
+			--WorkableTime.GetReasonableGameTime({ context=self.context, base_seconds=base_seconds }, true),
+			--WorkableTime.GetReasonableRealTime({ context=self.context, base_seconds=base_seconds }, true)
+			wt:GetReasonableGameTime(true),
+			wt:GetReasonableRealTime(true)
+		)
+	else
+		-- this shouldn't occur
+		return nil
+	end
 end
 
-function Time:GetHours()
-	return math.floor(self.base_seconds / 60 / 60)
+
+function Time:__tostring()
+	return string.format("%s | %s", self:GetReasonableGameTime(), self:GetReasonableRealTime())
 end
 
-function Time:GetMinutes()
-	return math.floor(self.base_seconds / 60) % 60
+--[[
+	function TimeToText(arg, override)
+		if type(arg) == "number" then
+			error("TimeToText should be called with a time object.")
+		end
+
+		--local style = (type(override) == "string" and override) or GetModConfigData("time_style", true)
+		local style = (type(override) == "string" and override) or arg.context.config["time_style"]
+
+
+		if style == "realtime" then
+			return arg:GetReasonableRealTime()
+		elseif style == "realtime_short" then
+			return arg:GetReasonableRealTime(true)
+
+		elseif style == "gametime" then
+			return arg:GetReasonableGameTime()
+		elseif style == "gametime_short" then
+			return arg:GetReasonableGameTime(true)
+
+		elseif style == "both" then
+			return string.format("%s (%s)", arg:GetReasonableGameTime(), arg:GetReasonableRealTime())
+		elseif style == "both_short" then
+			return string.format("%s (%s)", arg:GetReasonableGameTime(true), arg:GetReasonableRealTime(true))
+			
+		else
+			-- this shouldn't occur
+			return nil
+		end
+	end
+
+]]
+
+--------------------------------------------------------------------------
+--[[ WorkableTime Methods ]]
+--------------------------------------------------------------------------
+function WorkableTime:new(data)
+	assert(type(data) == "table", string.format("bad argument #1 to 'new' (table expected, got %s)", type(data)))
+	assert(type(data.context) == "table", string.format("bad argument #1 to 'new' (expected table for arg.context, got %s)", type(data.context)))
+	assert(type(data.base_seconds) == "number", string.format("bad argument #1 to 'new' (expected number for arg.base_seconds, got %s)", type(data.base_seconds)))
+
+	setmetatable(data, self)
+
+	--[[
+	-- old
+	local this = { base_seconds=math.floor(base_seconds), context = context}
+
+	setmetatable(self, {__index = Time, __tostring = Time.__tostring})
+
+	return self
+	]]
+
+	return data
 end
 
-function Time:GetSeconds()
-	return self.base_seconds % 60
-end
-
-function Time:GetReasonableGameTime(short)
+function WorkableTime:GetReasonableGameTime(short)
 	local days = round(self:GetDays(), 1)
 	local segments = round(self:GetSegments(), 1)
 	local str
@@ -140,7 +241,7 @@ function Time:GetReasonableGameTime(short)
 	return str
 end
 
-function Time:GetReasonableRealTime(short)
+function WorkableTime:GetReasonableRealTime(short)
 	local hours = round(self:GetHours(), 0)
 	local minutes = round(self:GetMinutes(), 0)
 	local seconds = round(self:GetSeconds(), 0)
@@ -167,26 +268,31 @@ function Time:GetReasonableRealTime(short)
 	return str
 end
 
-function Time:__tostring()
-	--[[
-	local days = self:GetDays()
-	local segments = self:GetSegments()
-	local minutes = self:GetMinutes()
-	local seconds = self:GetSeconds()
-	return string.format("%s day%s and %s segment%s | %s minute%s and %s second%s.",
-		days,
-		(days ~= 1 and "s") or "",
-		segments,
-		(segments ~= 1 and "s") or "",
-		minutes,
-		(minutes ~= 1 and "s") or "",
-		seconds,
-		(seconds ~= 1 and "s") or ""
-	)
-	--]]
+function WorkableTime:GetDays(raw)
+	-- under the assumption we don't need REAL days........
+	local days = self.base_seconds / TUNING.SEG_TIME / SEGMENTS_PER_DAY
 
-	return string.format("%s | %s", self:GetReasonableGameTime(), self:GetReasonableRealTime())
+	if not raw then
+		days = math.floor(days)
+	end
+
+	return days
 end
 
+function WorkableTime:GetSegments()
+	return self.base_seconds / TUNING.SEG_TIME % SEGMENTS_PER_DAY
+end
 
-return time
+function WorkableTime:GetHours()
+	return math.floor(self.base_seconds / 60 / 60)
+end
+
+function WorkableTime:GetMinutes()
+	return math.floor(self.base_seconds / 60) % 60
+end
+
+function WorkableTime:GetSeconds()
+	return self.base_seconds % 60
+end
+
+return Time
