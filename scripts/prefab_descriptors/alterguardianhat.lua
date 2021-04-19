@@ -26,11 +26,15 @@ local function Describe(inst, context)
 		return
 	end
 
-	description = string.format(context.lstr.alterguardianhat.minimum_sanity, 
+	local minimum_sanity_string = string.format(context.lstr.alterguardianhat.minimum_sanity, 
 		math.ceil(context.player.components.sanity.max * TUNING.SANITY_BECOME_ENLIGHTENED_THRESH),
 		TUNING.SANITY_BECOME_ENLIGHTENED_THRESH * 100
 	)
+
+	local gestalt_damage_string = string.format(context.lstr.alterguardianhat.summoned_gestalt_damage, TUNING.ALTERGUARDIANHAT_GESTALT_DAMAGE)
 	
+	description = minimum_sanity_string .. "\n" .. gestalt_damage_string
+
 	return {
 		priority = 0,
 		description = description

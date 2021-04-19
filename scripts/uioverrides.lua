@@ -476,6 +476,8 @@ end
 --==========================================================================================================================
 local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true); AddLocalPlayerPostInit(function(_, context) DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] end);
 AddClassPostConstruct("widgets/hoverer", function(hoverer)
+	local HOVERER_TEXT_SIZE = 30
+	local TEXT_SIZE = 30
 	local GetMouseTargetItem = GetMouseTargetItem
 	local RequestEntityInformation = RequestEntityInformation
 	local TheSim = TheSim
@@ -500,9 +502,10 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 	local informationOnAltOnly
 	local canShowItemRange
+	local canShowExtendedInfoIndicator
 	--local altOnlyIsVerbose
 
-	hoverer.insightText = hoverer:AddChild(RichText())
+	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, TEXT_SIZE))
 
 	-- so, there's an issue where once you examine something, YOFFSETUP and YOFFSETDOWN are changed to compensate for that secondary text, but are never changed back
 	-- so whereas normally hover text is unable to follow below a certain height because of math.min, the new YOFFSETUP means it is free to roam wherever vertically
@@ -612,7 +615,11 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		end
 
 		if canShowItemRange == nil then
-			canShowItemRange = GetModConfigData("item_range_indicator", true)
+			canShowItemRange = GetModConfigData("hover_range_indicator", true)
+		end
+
+		if canShowExtendedInfoIndicator == nil then
+			canShowExtendedInfoIndicator = GetModConfigData("extended_info_indicator", true)
 		end
 
 		--[[
@@ -658,7 +665,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 				if entityInformation.information ~= entityInformation.alt_information then
 					local pos = string_find(text, "\n")
 					if pos then
-						text = string_sub(text, 1, pos - 1) .. "*" .. string_sub(text, pos)
+						text = string_sub(text, 1, pos - 1) .. (canShowExtendedInfoIndicator and "*" or "") .. string_sub(text, pos)
 					else
 						text = text .. "*"
 					end

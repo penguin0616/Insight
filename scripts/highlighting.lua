@@ -27,21 +27,108 @@ local IsPrefab, IsWidget, IsBundleWrap = IsPrefab, IsWidget, IsBundleWrap
 
 local cooking = require("cooking")
 
-local highlightColorKey = "__insight:MultColor"
+local highlightColorKey = "_insight_highlight"
 local fuel_highlighting = nil
 local highlighting_enabled = nil
 local activated = false
 local Is_DST = IsDST()
 local world_type = GetWorldType()
+local is_client_host = IsClientHost()
 
 local texturePrefabCache = {}
 
-local colors = {
-	fuel = {1, 0.4, 0.4, 1}, -- red
-	match = {0.3, 1, 1, 1}, -- greenish
-	unknown = {0.4, 0.4, 0.4, 1}, -- gray
-	error = {0.0, 0.0, 0.0, 1}
+local COLOR_TYPES = {
+	FUEL = "FUEL",
+	MATCH = "MATCH",
+	UNKNOWN = "UNKNOWN",
+	ERROR = "ERROR",
 }
+
+local COLORS_ADD = { -- brighter but most color gets siphoned at night
+	-- alpha doesn't matter? 
+	RED = {0.6, 0, 0, 0}, -- red (by itself, #ff0000, it's red.)
+	GREEN = {0, 0.5, 0, 0}, -- green (by itself, #00ff00, it's green.)
+	BLUE = {0, 0, 0.8, 0}, -- blue (by itself, #0000ff, it's blue.)
+	--GRAY = {0.4, 0.4, 0}, -- gray (by itself, #666666, is gray)
+	--BLACK = {0, 0, 0, 0}, -- black (by itself, #000000, is black)
+	NOTHING = {0, 0, 0, 0}, -- default without any changes
+
+	LIGHT_BLUE = {0, 0.4, 0.6, 0}, -- light blue (by itself, #006699, its a nice ocean blue)
+	PURPLE = {0.4, 0, 1, 0}, -- purple (by itself, #6600ff, dark blue with red tint) -- rgb(155, 89, 182) {0.6, 0.35, 0.71, 1} sin purple -- rgb(98, 37, 209) {0.38, 0.145, 0.82, 1} royal purple
+	YELLOW = {0.4, 0.4, 0, 0}, -- yellow (by itself, #666600, ugly dark yellow)
+	WHITE = {0.4, 0.4, 0.4, 0},
+}
+
+COLORS_ADD.GRAY = COLORS_ADD.NOTHING
+COLORS_ADD.BLACK = COLORS_ADD.NOTHING
+
+local COLORS_MULT = { -- more resistant to night siphoning color, but dimmer
+	RED = {1, 0.4, 0.4, 1}, -- red (by itself, #ff6666, lighter version of MOB_COLOR)
+	GREEN = {0.3, 1, 1, 1}, -- greenish (by itself, #4dffff, seems to be slightly lighter cyan)
+	BLUE = {0.4, 0.4, 1, 1},
+	GRAY = {0.4, 0.4, 0.4, 1}, -- gray (by itself, #666666, is gray)
+	BLACK = {0, 0, 0, 1}, -- black (by itself, #000000, is black)
+	NOTHING = {1, 1, 1, 1}, -- default without any changes
+
+	LIGHT_BLUE = {0, 0.9, 1, 1},  -- 0, 0.5, 1
+	PURPLE = {0.4, 0, 1, 1},
+	--YELLOW = {0.5, 0.5, 0, 1},
+	--WHITE = {1, 1, 1, 1},
+}
+
+COLORS_MULT.YELLOW = COLORS_MULT.GREEN
+COLORS_MULT.WHITE = COLORS_MULT.GREEN
+
+--[[
+local COLORS_ADD = {
+	RED = {r=1, g=0, b=0, a=1}, -- red (by itself, #ff0000, it's red.)
+	GREEN = {r=0, g=1, b=0, a=1}, -- green (by itself, #00ff00, it's green.)
+	BLUE = {r=0, g=0, b=1, a=1}, -- blue (by itself, #0000ff, it's blue.)
+	--GRAY = {1, 1, 1, 0.3}, -- gray (by itself, #666666, is gray)
+	--BLACK = {0.0, 0.0, 0.0, 1}, -- black (by itself, #000000, is black)
+	NOTHING = {r=0, g=0, b=0, a=0}, -- default without any changes
+
+	LIGHT_BLUE = {r=0, g=1, b=1, a=1} -- light blue (by itself, #00ffff, its cyan)
+}
+
+local COLORS_MULT = {
+	RED = {r=1, g=0.4, b=0.4, a=1}, -- red (by itself, #ff6666, lighter version of MOB_COLOR)
+	GREEN = {r=0.3, g=1, b=1, a=1}, -- greenish (by itself, #4dffff, seems to be slightly lighter cyan)
+	BLUE = {r=0.4, g=0.4, b=1, a=1},
+}
+--]]
+
+local add_colors_to_use = {
+	[COLOR_TYPES.FUEL] = COLORS_ADD.RED,
+	[COLOR_TYPES.MATCH] = COLORS_ADD.GREEN,
+	[COLOR_TYPES.UNKNOWN] = COLORS_ADD.GRAY, -- doesn't actually get used
+	[COLOR_TYPES.ERROR] = COLORS_ADD.BLACK, -- doesn't actually get used
+}
+
+local mult_colors_to_use = {
+	[COLOR_TYPES.FUEL] = COLORS_MULT.RED,
+	[COLOR_TYPES.MATCH] = COLORS_MULT.GREEN,
+	[COLOR_TYPES.UNKNOWN] = COLORS_MULT.GRAY,
+	[COLOR_TYPES.ERROR] = COLORS_MULT.BLACK,
+}
+
+--[[
+local COLORS_MULT = {
+	FUEL = {1, 0.4, 0.4, 1}, -- red (by itself, #ff6666, lighter version of MOB_COLOR)
+	MATCH = {0.3, 1, 1, 1}, -- greenish (by itself, #4dffff, seems to be cyan)
+	UNKNOWN = {0.4, 0.4, 0.4, 1}, -- gray (by itself, #666666, is gray)
+	ERROR =  {0.0, 0.0, 0.0, 1}, -- black (by itself, #000000, is black)
+	DEFAULT = {1.0, 1.0, 1.0, 1} -- default without any changes
+}
+
+local COLORS_ADD = {
+	FUEL = {1, 0, 0, 0.3}, -- red
+	MATCH = {0, 1, 0, 0.3}, -- greenish
+	UNKNOWN = {1, 1, 1, 0.3}, -- gray
+	ERROR = {0.0, 0.0, 0.0, 0.3}, -- black
+	DEFAULT = {0.0, 0.0, 0.0, 0.0} -- default without any changes
+}
+--]]
 
 local activeIngredientFocus = nil
 local activeItem = nil
@@ -144,7 +231,14 @@ local function RemoveHighlight(inst)
 			inst.image:SetTint(1, 1, 1, 1)
 			RemoveHighlight(inst.item) -- show the love further down too because why not
 		elseif IsPrefab(inst) then
-			inst.AnimState:SetMultColour(unpack(inst[highlightColorKey]))
+			local previous = inst[highlightColorKey]
+			
+			if is_client_host or previous[5] == COLOR_TYPES.ERROR or previous[5] == COLOR_TYPES.UNKNOWN then
+				inst.AnimState:OverrideMultColour(previous[1], previous[2], previous[3], previous[4])
+			else
+				inst.AnimState:SetLightOverride(0)
+				inst.AnimState:SetAddColour(previous[1], previous[2], previous[3], previous[4])
+			end
 		else
 			error('big problem highlight')
 		end
@@ -152,20 +246,32 @@ local function RemoveHighlight(inst)
 	end
 end
 
-local function ApplyHighlight(inst, color)
+local function ApplyHighlight(inst, color_key)
 	RemoveHighlight(inst) -- preemptive strike
 
 	if IsWidget(inst) then -- ItemTile
+		local color = mult_colors_to_use[color_key] or mult_colors_to_use.ERROR
 		inst[highlightColorKey] = "#compatability?"
-		inst.image:SetTint(unpack(color))
+		inst.image:SetTint(color[1], color[2], color[3], color[4])
 
 		ApplyHighlight(inst.item, color) -- show the love further down too because why not
 
 	elseif IsPrefab(inst) then
 		-- apparently, AnimState doesn't exist for everything. I should have forseen that.
 		if inst.AnimState then
-			inst[highlightColorKey] = {inst.AnimState:GetMultColour()}
-			inst.AnimState:SetMultColour(unpack(color))
+			local use_mult = is_client_host or color_key == COLOR_TYPES.ERROR or color_key == COLOR_TYPES.UNKNOWN
+
+			local color_table = (use_mult and mult_colors_to_use) or add_colors_to_use
+			local color = color_table[color_key] or color_table.ERROR
+
+			if use_mult then
+				inst[highlightColorKey] = {COLORS_MULT.NOTHING[1], COLORS_MULT.NOTHING[2], COLORS_MULT.NOTHING[3], COLORS_MULT.NOTHING[4], color_key}
+				inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
+			else
+				inst[highlightColorKey] = {inst.AnimState:GetAddColour()}
+				inst.AnimState:SetLightOverride(.4)
+				inst.AnimState:SetAddColour(color[1], color[2], color[3], color[4])
+			end
 		end
 	end
 end
@@ -247,7 +353,7 @@ local function Comparator(held, inst)
 	-- fuel highlighting
 	if isSearchingForFoodTag == false and held.prefab and inst.prefab then -- IsPrefab(held) and IsPrefab(inst)
 		if fuel_highlighting and insight:DoesFuelMatchFueled(held, inst) then
-			return colors.fuel
+			return COLOR_TYPES.FUEL
 		end
 	end
 
@@ -258,14 +364,14 @@ local function Comparator(held, inst)
 
 	if isSearchingForFoodTag == true and cooking.ingredients and cooking.ingredients[inst_prefab] and cooking.ingredients[inst_prefab].tags then
 		if cooking.ingredients[inst_prefab].tags[held] then
-			return colors.match
+			return COLOR_TYPES.MATCH
 		end
 	end
 
 	-- same prefabs easy peasy
 	if isSearchingForFoodTag == false and held_prefab == inst_prefab then
 		if held_name == inst_name then
-			return colors.match
+			return COLOR_TYPES.MATCH
 		end
 	end
 	
@@ -274,13 +380,13 @@ local function Comparator(held, inst)
 		if matchy == nil then
 			-- my bundle hasn't loaded for some reason
 
-			return nil -- colors.unknown wouldn't make sense, since it would grey out the inst which could be anything
+			return nil -- COLOR_TYPES.UNKNOWN wouldn't make sense, since it would grey out the inst which could be anything
 		elseif matchy == false then
 			-- compared item is not berries
 			return nil
 		elseif matchy == true then
 			-- compared item is berries
-			return colors.match
+			return COLOR_TYPES.MATCH
 		end
 
 	elseif IsBundleWrap(inst) then -- holding berries and searching bundles for some
@@ -288,13 +394,13 @@ local function Comparator(held, inst)
 
 		if matchy == nil then
 			-- bundle hasn't loaded for some reason
-			return colors.unknown -- makes sense to grey out here, since its only bundles
+			return COLOR_TYPES.UNKNOWN -- makes sense to grey out here, since its only bundles
 		elseif matchy == false then
 			-- compared item is not berries
 			return nil
 		elseif matchy == true then
 			-- compared item is berries
-			return colors.match
+			return COLOR_TYPES.MATCH
 		end
 	end
 
@@ -360,7 +466,7 @@ local function EvaluateRelevance(inst, isApplication)
 		local relevance = GetContainerRelevance(container)
 
 		if isApplication and relevance > 0 then
-			ApplyHighlight(inst, (relevance == 2 and colors.match) or (relevance == 1 and colors.unknown) or colors.error) 
+			ApplyHighlight(inst, (relevance == 2 and COLOR_TYPES.MATCH) or (relevance == 1 and COLOR_TYPES.UNKNOWN) or COLOR_TYPES.ERROR) 
 		else
 			RemoveHighlight(inst)
 		end
@@ -501,6 +607,13 @@ highlighting.Activate = function(insight, context)
 	dprint("Highlighting activated")
 	fuel_highlighting = context.config["fuel_highlighting"]
 	highlighting_enabled = context.config["highlighting"]
+
+	add_colors_to_use[COLOR_TYPES.FUEL] = COLORS_ADD[context.config["fuel_highlighting_color"]]
+	add_colors_to_use[COLOR_TYPES.MATCH] = COLORS_ADD[context.config["highlighting_color"]]
+
+	mult_colors_to_use[COLOR_TYPES.FUEL] = COLORS_MULT[context.config["fuel_highlighting_color"]]
+	mult_colors_to_use[COLOR_TYPES.MATCH] = COLORS_MULT[context.config["highlighting_color"]]
+
 	activated = true
 end
 

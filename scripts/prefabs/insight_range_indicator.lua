@@ -192,7 +192,7 @@ local function base_fn()
 	inst.AnimState:PlayAnimation("idle")
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
-	--inst.AnimState:SetLightOverride(0)
+	--inst.AnimState:SetLightOverride(1) -- ignores darkness
 	inst.AnimState:SetSortOrder(3)
 	--inst.AnimState:SetMultColour(0, 0, 0, 1)
 	--inst.AnimState:SetAddColour(1, 0, 0, 1)
@@ -298,10 +298,10 @@ return Prefab("insight_range_indicator", normal_fn, assets), Prefab("insight_com
 [00:13:42]: SetDeltaTimeMultiplier	function: 95B46EB8	
 [00:13:42]: GetCurrentAnimationLength	function: 95B361A8	
 [00:13:42]: ClearAllOverrideSymbols	function: 95B46C78	
-[00:13:42]: SetLightOverride	function: 95B364D8	
+[00:13:42]: SetLightOverride	function: 95B364D8	-- replicates
 [00:13:42]: SetOceanBlendParams	function: 95B36388	
 [00:13:42]: ShowSymbol	function: 95B464C8	
-[00:13:42]: OverrideShade	function: 95B46F78	
+[00:13:42]: OverrideShade	function: 95B46F78	 -- doesn't replicate
 [00:13:42]: GetMultColour	function: 95B46FD8	
 [00:13:42]: OverrideSymbol	function: 95B46DC8	
 [00:13:42]: SetPercent	function: 95B46528	

@@ -50,7 +50,9 @@ local function SetEntityAwake(manager, inst)
 		return
 	end
 
-	if Entity_HasTag(inst.entity, "fx") or Entity_HasTag(inst.entity, "DECOR") or Entity_HasTag(inst.entity, "CLASSIFIED") then -- or inst:HasTag("INLIMBO") , but inventory items are INLIMBO in DST || search EntityScript:IsInLimbo
+	if not inst.Transform or not inst.AnimState then
+		return
+	elseif Entity_HasTag(inst.entity, "fx") or Entity_HasTag(inst.entity, "DECOR") or Entity_HasTag(inst.entity, "CLASSIFIED") then -- or inst:HasTag("INLIMBO") , but inventory items are INLIMBO in DST || search EntityScript:IsInLimbo
 		return
 	elseif Entity_HasTag(inst.entity, "NOCLICK") then 
 		if inst.replica then

@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.0.17" -- ds is 2.9.7_ds
+version = "3.1.0" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Klaus sack loot information (press alt), mod compatibility fixes, efficiency and use modifiers for Wes, fishing configuration, chinese translations, item lookup supports modded items.",
+	update_info = "Highlighting update (now configurable), Eye of the Storm Beta information, Bug fixes",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -234,7 +234,7 @@ local english = {
 		},
 	},
 	highlighting = {
-		LABEL = "Enable Highlighting",
+		LABEL = "Highlighting",
 		HOVER = "Whether item highlighting is enabled. (\"Finder\")",
 		OPTIONS = {
 			["false"] = {
@@ -244,6 +244,40 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Chests/items will be highlighted."
+			},
+		},
+	},
+	highlighting_color = {
+		LABEL = "Highlighting Color",
+		HOVER = "The color to use for highlighting.",
+		OPTIONS = {
+			["RED"] = {
+				DESCRIPTION = "Red",
+				HOVER = "Red",
+			},
+			["GREEN"] = {
+				DESCRIPTION = "Green",
+				HOVER = "Green",
+			},
+			["BLUE"] = {
+				DESCRIPTION = "Blue",
+				HOVER = "Blue",
+			},
+			["LIGHT_BLUE"] = {
+				DESCRIPTION = "Cyan",
+				HOVER = "Cyan",
+			},
+			["PURPLE"] = {
+				DESCRIPTION = "Purple",
+				HOVER = "Purple",
+			},
+			["YELLOW"] = {
+				DESCRIPTION = "Yellow",
+				HOVER = "Yellow",
+			},
+			["WHITE"] = {
+				DESCRIPTION = "White",
+				HOVER = "White",
 			},
 		},
 	},
@@ -258,6 +292,54 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Fuel entities will be highlighted."
+			},
+		},
+	},
+	fuel_highlighting_color = {
+		LABEL = "Fuel Highlighting Color",
+		HOVER = "The color to use for fuel highlighting.",
+		OPTIONS = {
+			["RED"] = {
+				DESCRIPTION = "Red",
+				HOVER = "Red",
+			},
+			["GREEN"] = {
+				DESCRIPTION = "Green",
+				HOVER = "Green",
+			},
+			["BLUE"] = {
+				DESCRIPTION = "Blue",
+				HOVER = "Blue",
+			},
+			["LIGHT_BLUE"] = {
+				DESCRIPTION = "Cyan",
+				HOVER = "Cyan",
+			},
+			["PURPLE"] = {
+				DESCRIPTION = "Purple",
+				HOVER = "Purple",
+			},
+			["YELLOW"] = {
+				DESCRIPTION = "Yellow",
+				HOVER = "Yellow",
+			},
+			["WHITE"] = {
+				DESCRIPTION = "White",
+				HOVER = "White",
+			},
+		},
+	},
+	extended_info_indicator = {
+		LABEL = "More Information Hint",
+		HOVER = "Whether an asterisk is present for entities with more information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The indicator is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The indicator is shown."
 			},
 		},
 	},
@@ -1388,6 +1470,40 @@ local chinese = {
 			},
 		},
 	},
+	highlighting_color = {
+		LABEL = "Highlighting Color",
+		HOVER = "The color to use for highlighting.",
+		OPTIONS = {
+			["RED"] = {
+				DESCRIPTION = "Red",
+				HOVER = "Red",
+			},
+			["GREEN"] = {
+				DESCRIPTION = "Green",
+				HOVER = "Green",
+			},
+			["BLUE"] = {
+				DESCRIPTION = "Blue",
+				HOVER = "Blue",
+			},
+			["LIGHT_BLUE"] = {
+				DESCRIPTION = "Cyan",
+				HOVER = "Cyan",
+			},
+			["PURPLE"] = {
+				DESCRIPTION = "Purple",
+				HOVER = "Purple",
+			},
+			["YELLOW"] = {
+				DESCRIPTION = "Yellow",
+				HOVER = "Yellow",
+			},
+			["WHITE"] = {
+				DESCRIPTION = "White",
+				HOVER = "White",
+			},
+		},
+	},
 	fuel_highlighting = {
 		LABEL = "燃料高亮显示",
 		HOVER = "是否开启燃料高亮显示。",
@@ -1399,6 +1515,54 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "燃料高亮显示模式开启。"
+			},
+		},
+	},
+	fuel_highlighting_color = {
+		LABEL = "Fuel Highlighting Color",
+		HOVER = "The color to use for fuel highlighting.",
+		OPTIONS = {
+			["RED"] = {
+				DESCRIPTION = "Red",
+				HOVER = "Red",
+			},
+			["GREEN"] = {
+				DESCRIPTION = "Green",
+				HOVER = "Green",
+			},
+			["BLUE"] = {
+				DESCRIPTION = "Blue",
+				HOVER = "Blue",
+			},
+			["LIGHT_BLUE"] = {
+				DESCRIPTION = "Cyan",
+				HOVER = "Cyan",
+			},
+			["PURPLE"] = {
+				DESCRIPTION = "Purple",
+				HOVER = "Purple",
+			},
+			["YELLOW"] = {
+				DESCRIPTION = "Yellow",
+				HOVER = "Yellow",
+			},
+			["WHITE"] = {
+				DESCRIPTION = "White",
+				HOVER = "White",
+			},
+		},
+	},
+	extended_info_indicator = {
+		LABEL = "More Information Hint",
+		HOVER = "Whether an asterisk is present for entities with more information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The indicator is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The indicator is shown."
 			},
 		},
 	},
@@ -2544,12 +2708,52 @@ configuration_options = {
 		tags = {},
 	},
 	{
+		name = "highlighting_color",
+		options = {
+			{data = "RED"},
+			{data = "GREEN"},
+			{data = "BLUE"},
+			{data = "LIGHT_BLUE"},
+			{data = "PURPLE"},
+			{data = "YELLOW"},
+			{data = "WHITE"},
+		}, 
+		default = "GREEN",
+		client = true,
+		tags = {},
+	},
+	{
 		name = "fuel_highlighting",
 		options = {
 			{data = false},
 			{data = true},
 		}, 
 		default = false,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "fuel_highlighting_color",
+		options = {
+			{data = "RED"},
+			{data = "GREEN"},
+			{data = "BLUE"},
+			{data = "LIGHT_BLUE"},
+			{data = "PURPLE"},
+			{data = "YELLOW"},
+			{data = "WHITE"},
+		}, 
+		default = "RED",
+		client = true,
+		tags = {},
+	},
+	{
+		name = "extended_info_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
 		client = true,
 		tags = {},
 	},

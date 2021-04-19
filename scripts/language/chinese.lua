@@ -49,8 +49,9 @@ return {
 	alterguardianhat = {
 		minimum_sanity = "Minimum <color=SANITY>sanity</color> for light: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_sanity = "Your <color=SANITY>sanity</color> is: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+		summoned_gestalt_damage = "Summoned <color=ENLIGHTENMENT>gestalts</color> deal <color=HEALTH>%s</color> damage.",
 	},
-	
+
 	-- appeasement.lua
 	appease_good = "延迟火山喷发 %s 个时段",
 	appease_bad = "加速火山喷发 %s 个时段",
