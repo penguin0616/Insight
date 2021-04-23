@@ -208,7 +208,12 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		return
 	end
 
-	if itemInfo.special_data.combat then
+	local context = GetPlayerContext(localPlayer)
+	if not context then
+		return
+	end
+
+	if context.config["display_attack_range"] and itemInfo.special_data.combat then
 		local ind = new.insight_combat_range_indicator
 		if not ind then
 			return
@@ -849,10 +854,6 @@ AddPlayerPostInit(function(player)
 		AddLocalPlayerPostInit(function(insight, context)
 			if context.config["blink_range"] then
 				AttachBlinkRangeIndicator(player)
-			end
-
-			if player.components.inspectable == nil then
-				player:AddComponent("inspectable")
 			end
 		end)
 

@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.1.0" -- ds is 2.9.7_ds
+version = "3.1.1" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -379,8 +379,8 @@ local english = {
 		},
 	},
 	hover_range_indicator = {
-		LABEL = "Item/Mob Range Hover",
-		HOVER = "Whether an item or mob's range is shown upon hovering.",
+		LABEL = "Item Range Hover",
+		HOVER = "Whether an item's range is shown upon hovering.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
