@@ -86,7 +86,7 @@ end
 
 
 -- also used by combat descriptor
-local function GetDamage(self, f, attacker, target)
+local function GetDamage(self, attacker, target)
 	-- attacker is the weapon owner
 	local damage = nil --attacker.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
 
@@ -154,7 +154,7 @@ local function Describe(self, context)
 	end
 
 	-- Walter's slingshot
-	if inst:HasTag("slingshot") then -- walter's slingshot
+	if inst.components.container and inst:HasTag("slingshot") then -- walter's slingshot
 		local ammo = inst.components.container:GetItemInSlot(1)
 		if ammo then
 			local ammo_data = GetSlingshotAmmoData(ammo)

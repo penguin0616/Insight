@@ -36,8 +36,8 @@ local function Describe(self, context)
 	if context.usingIcons and PrefabHasIcon(self.product) then
 		description = string.format(context.lstr.harvestable.product, self.product, self.produce, self.maxproduce)
 	else
-		local name = GetPrefabNameOrElse(self.product, "\"%s\"")
-		name = string.format("<color=%s>%s</color>", COLORS[self.product] or "#ffffff", name)
+		local name = self.product--GetPrefabNameOrElse(self.product, "\"%s\"")
+		name = string.format("<color=%s><prefab=%s></color>", COLORS[self.product] or "#ffffff", name)
 
 		description = string.format(context.lstr.lang.harvestable.product, name, self.produce, self.maxproduce)
 

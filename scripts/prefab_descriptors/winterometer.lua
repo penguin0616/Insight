@@ -18,30 +18,18 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- timer.lua
-local function Describe(self, context)
+-- winterometer.lua [Prefab]
+local is_dst = IsDST()
+
+local function Describe(inst, context)
 	local description = nil
 
-	if not context.config["display_timers"] then
-		return
+	local temperature = (is_dst and TheWorld.state.temperature) or (not is_dst and GetSeasonManager():GetCurrentTemperature())
+	-- SHOWWORLDTEMP
+	if not context.external_config["combined_status"]["SHOWWORLDTEMP"] then
+		description = string.format(context.lstr.world_temperature, Round(temperature, 0))
 	end
-
-	local timers = {}
-
-	for name in pairs(self.timers) do
-		local paused = self:IsPaused(name)
-		local time_left = not paused and self:GetTimeLeft(name) or nil
-
-		local time_string = (paused and context.lstr.timer.paused) or (time_left and context.time:SimpleProcess(time_left))
-		if time_string then
-			timers[#timers+1] = string.format(context.lstr.timer.label, name, time_string)
-		end
-	end
-
-	if #timers > 0 then
-		description = table.concat(timers, "\n")
-	end
-
+	
 	return {
 		priority = 0,
 		description = description

@@ -80,8 +80,6 @@ local function Describe(self, context)
 	local description = nil
 
 	if self.product_prefab and self.task and self.task:NextTime() then -- nexttime isn't nil if task is running
-		local name = STRINGS.NAMES[string.upper(self.product_prefab)] or self.product_prefab
-		
 		local nextUpdateIn = self.task:NextTime() - GetTime() -- used to give the illusion of growth, occurs every 2s in reality
 		local rate = GetGrowthRate(self) * self.rate -- 2 very different things...
 		local remaining_time = nil
@@ -115,7 +113,7 @@ local function Describe(self, context)
 		if context.usingIcons and PrefabHasIcon(self.product_prefab) then
 			description = string.format(context.lstr.growth, self.product_prefab, remaining_time)
 		else
-			description = string.format(context.lstr.lang.growth, name, remaining_time)
+			description = string.format(context.lstr.lang.growth, self.product_prefab, remaining_time)
 		end
 
 		-- dst version: CROP_NAME: xx%

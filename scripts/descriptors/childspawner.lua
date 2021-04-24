@@ -43,7 +43,7 @@ local function Describe(self, context)
 		--]]
 		
 		kids = string.format(context.lstr.childspawner.children, -- %s<sub>inside</sub> + %s<sub>outside</sub> 
-			GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
+			self.childname, --GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
 			self.childreninside, self.numchildrenoutside, 
 			self.maxchildren
 		)
@@ -52,7 +52,7 @@ local function Describe(self, context)
 
 	if self.emergencychildname and self.maxemergencychildren > 0 then
 		emergency_kids = string.format(context.lstr.childspawner.emergency_children, 
-			GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
+			self.emergencychildname, --GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
 			self.emergencychildreninside, self.numemergencychildrenoutside, 
 			self.maxemergencychildren
 		)
@@ -68,13 +68,13 @@ local function Describe(self, context)
 
 			if missingchildren and missingemergencychildren then
 				to_regen = string.format(context.lstr.childspawner.both_regen, 
-					GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB),
-					GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB)
+					self.childname, --GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
+					self.emergencychildname --GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
 				)
 			elseif missingchildren then
-				to_regen = string.format(context.lstr.childspawner.entity, GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB))
+				to_regen = string.format(context.lstr.childspawner.entity, self.childname)
 			elseif missingemergencychildren then
-				to_regen = string.format(context.lstr.childspawner.entity, GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB))
+				to_regen = string.format(context.lstr.childspawner.entity, self.emergencychildname)
 			end
 
 			

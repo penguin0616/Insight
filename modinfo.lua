@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.1.1" -- ds is 2.9.7_ds
+version = "3.1.2" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -326,20 +326,6 @@ local english = {
 			["WHITE"] = {
 				DESCRIPTION = "White",
 				HOVER = "White",
-			},
-		},
-	},
-	extended_info_indicator = {
-		LABEL = "More Information Hint",
-		HOVER = "Whether an asterisk is present for entities with more information.",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The indicator is not shown."
-			},
-			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The indicator is shown."
 			},
 		},
 	},
@@ -1154,6 +1140,34 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	display_insight_menu_button = {
+		LABEL = "Insight Menu Button",
+		HOVER = "Whether the insight menu button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
+	extended_info_indicator = {
+		LABEL = "More Information Hint",
+		HOVER = "Whether an asterisk is present for entities with more information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The indicator is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The indicator is shown."
+			},
+		},
+	},
 	unrandomizer = {
 		LABEL = "Unrandomizer",
 		HOVER = "[Server Only] \"Solves\" the randomness of some situations.",
@@ -1549,20 +1563,6 @@ local chinese = {
 			["WHITE"] = {
 				DESCRIPTION = "White",
 				HOVER = "White",
-			},
-		},
-	},
-	extended_info_indicator = {
-		LABEL = "More Information Hint",
-		HOVER = "Whether an asterisk is present for entities with more information.",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The indicator is not shown."
-			},
-			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The indicator is shown."
 			},
 		},
 	},
@@ -2377,6 +2377,34 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	display_insight_menu_button = {
+		LABEL = "Insight Menu Button",
+		HOVER = "Whether the insight menu button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
+	extended_info_indicator = {
+		LABEL = "More Information Hint",
+		HOVER = "Whether an asterisk is present for entities with more information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The indicator is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The indicator is shown."
+			},
+		},
+	},
 	unrandomizer = {
 		LABEL = "Unrandomizer",
 		HOVER = "[Server Only] \"Solves\" the randomness of some situations.",
@@ -2744,16 +2772,6 @@ configuration_options = {
 			{data = "WHITE"},
 		}, 
 		default = "RED",
-		client = true,
-		tags = {},
-	},
-	{
-		name = "extended_info_indicator",
-		options = {
-			{data = false},
-			{data = true},
-		}, 
-		default = true,
 		client = true,
 		tags = {},
 	},
@@ -3263,6 +3281,26 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_miscellaneous"),
+	{
+		name = "display_insight_menu_button",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "extended_info_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
 	--[[
 	{
 		name = "unrandomizer",

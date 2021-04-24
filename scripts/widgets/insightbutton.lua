@@ -25,15 +25,16 @@ local InsightButton = Class(Widget, function(self)
 	Widget._ctor(self, "Menu Button")
 
 	self.allowcontroller = true
+	self.can_be_shown = true
 
-	self.inst:DoPeriodicTask(1, function()
+	self.inst:DoPeriodicTask(0.5, function()
 		if self.allowcontroller then
 			return
 		end
 
-		if TheInput:ControllerAttached() then
+		if not self.can_be_shown or TheInput:ControllerAttached() then
 			self:Hide()
-		else
+		elseif self.can_be_shown then
 			self:Show()
 		end
 	end)

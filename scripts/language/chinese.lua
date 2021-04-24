@@ -59,6 +59,9 @@ return {
 	-- appraisable.lua
 	appraisable = "Fearsome: %s, Festive: %s, Formal: %s",
 
+	-- archive_lockbox.lua [Prefab]
+	archive_lockbox_unlocks = "解锁: <prefab=%s>",
+
 	-- armor.lua
 	protection = "<color=HEALTH>保护程度</color>: <color=HEALTH>%s%%</color>",
 	durability = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
@@ -88,18 +91,36 @@ return {
 		smolder_time = "即将<color=LIGHT>燃起</color>: <color=LIGHT>%s</color>",
 		burn_time = "剩余<color=LIGHT>燃烧时间</color>: <color=LIGHT>%s</color>",
 	},
+	
+	-- canary.lua [Prefab]
+	canary = {
+		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
+		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
+		gas_level_increase = "Increases in %s.",
+		gas_level_decrease = "Decreases in %s."
+	},
+
+	-- catcoonden.lua [Prefab]
+	catcoonden = {
+		lives = "浣熊猫寿命: %s / %s",
+		regenerate = "浣熊猫将复活于: %s",
+		waiting_for_sleep = "等待附近的玩家走开.",
+	},
 
 	-- chessnavy.lua
 	chessnavy_timer = "%s",
 	chessnavy_ready = "等待你回到犯罪地点",
 
+	-- chester_eyebone.lua [Prefab]
+	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> will respawn in: %s",
+
 	-- childspawner.lua
 	childspawner = {
-		children = "<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
-		emergency_children = "*<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
-		both_regen = "<color=MOB_SPAWN>%s</color> & <color=MOB_SPAWN>%s</color>",
+		children = "<color=MOB_SPAWN><prefab=%s></color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		emergency_children = "*<color=MOB_SPAWN><prefab=%s></color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		both_regen = "<color=MOB_SPAWN><prefab=%s></color> & <color=MOB_SPAWN><prefab=%s></color>",
 		regenerating = "%s 重新生长于: %s",
-		--entity = "<color=MOB_SPAWN>%s</color>",
+		entity = "<color=MOB_SPAWN><prefab=%s></color>",
 	},
 
 	-- combat.lua
@@ -122,7 +143,7 @@ return {
 
 	-- crop.lua
 	crop_paused = "暂停",
-	growth = "<color=NATURE>%s</color>: <color=NATURE>%s</color>",
+	growth = "<color=NATURE><prefab=%s></color>: <color=NATURE>%s</color>",
 
 	-- dapperness.lua
 	dapperness = "<color=SANITY>理智</color>: <color=SANITY>%s/分</color>",
@@ -222,7 +243,7 @@ return {
 
 	-- farmplantable.lua
 	farmplantable = {
-		product = "会长成 <color=NATURE>%s</color>.",
+		product = "会长成 <color=NATURE><prefab=%s></color>.",
 		nutrient_consumption = "植物消耗: [<color=NATURE>%d<sub>施法</sub></color>, <color=CAMO>%d<sub>肥料</sub></color>, <color=INEDIBLE>%d<sub>便便</sub></color>]",
 		good_seasons = "生长季节: %s",
 	},
@@ -320,6 +341,14 @@ return {
 	-- forcecompostable.lua
 	forcecompostable = "肥料值: %s",
 
+	-- fossil_stalker.lua [Prefab]
+	fossil_stalker = {
+		pieces_needed = "有 20%% 几率组装错误在组装上 %s 片后",
+		correct = "组装正确",
+		incorrect = "组装错误",
+		gateway_too_far = "This skeleton is %s tile(s) too far.",
+	},
+
 	-- friendlevels.lua
 	friendlevel = "友善等级: %s / %s",
 
@@ -387,36 +416,12 @@ return {
 		alternate_beast_chance = "<color=#b51212>%s%% chance</color> for a <color=MOB_SPAWN>Varg</color> or <color=MOB_SPAWN>Ewecus</color>.",
 	},
 
-	-- inspectable.lua
-	catcoonden = {
-		lives = "浣熊猫寿命: %s / %s",
-		regenerate = "浣熊猫将复活于: %s",
-		waiting_for_sleep = "等待附近的玩家走开.",
-	},
-	wx78_charge = "剩余充能: %s",
-	stagehand = {
-		hits_remaining = "剩余<color=#aaaaee>敲击</color>: <color=#aaaaee>%s</color>",
-		time_to_reset = "将重置于 %s."  
-	},
-	canary = {
-		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
-		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
-		gas_level_increase = "Increases in %s.",
-		gas_level_decrease = "Decreases in %s."
-	},
-	fossil_stalker = {
-		pieces_needed = "有 20%% 几率组装错误在组装上 %s 片后",
-		correct = "组装正确",
-		incorrect = "组装错误",
-	},
-	lureplant_active = "开始活动于: %s后",
-	walrus_camp_respawn = "<color=FROZEN>%s</color> 重生于: %s后",
-	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
-	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
-	frog_rain_chance = "<color=FROG>青蛙雨几率</color>: <color=FROG>%s%%</color>",
-	world_temperature = "<color=LIGHT>世界温度</color>: <color=LIGHT>%s</color>",
-	unlocks = "解锁: %s",
+	-- hutch_fishbowl.lua [Prefab]
+	hutch_respawn = "<color=MOB_SPAWN><prefab=hutch></color> will respawn in: %s",
 
+	-- inspectable.lua
+	wagstaff_tool = "The name of this tool is: <prefab=%s>",
+	
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>隔热效果</color>: <color=FROZEN>%s</color>",
@@ -430,6 +435,9 @@ return {
 
 	-- leader.lua
 	followers = "跟随者数量: %s",
+
+	-- lureplant.lua [Prefab]
+	lureplant_active = "开始活动于: %s后",
 
 	-- madsciencelab.lua
 	madsciencelab_finish = "完成于: %s后",
@@ -514,6 +522,11 @@ return {
 		},
 	},
 
+	-- rainometer.lua [Prefab]
+	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
+	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
+	frog_rain_chance = "<color=FROG>青蛙雨几率</color>: <color=FROG>%s%%</color>",
+
 	-- repairer.lua
 	repairer = {
 		type = "修复工具: <color=#aaaaaa>%s</color>",
@@ -587,15 +600,25 @@ return {
 	wortox_soul_heal_range = "<color=HEALTH>治疗</color> <color=#DED15E>%s 个格子</color> 内的玩家.",
 
 	-- spawner.lua
-	spawner_next = "将生成 <color=MOB_SPAWN>%s</color> 于 %s",
-	spawner_child = "生成一个 <color=#ff9999>%s</color>",
+	spawner = {
+		next = "将生成 <color=MOB_SPAWN>%s</color> 于 %s",
+		child = "生成一个 <color=#ff9999>%s</color>",
+	},
+
+	-- stagehand.lua [Prefab]
+	stagehand = {
+		hits_remaining = "剩余<color=#aaaaee>敲击</color>: <color=#aaaaee>%s</color>",
+		time_to_reset = "将重置于 %s."  
+	},
 
 	-- stewer.lua
-	stewer_product = "<color=HUNGER>%s</color>(<color=HUNGER>%s</color>)",
-	cooktime_remaining ="<color=HUNGER>%s</color>(<color=HUNGER>%s</color>) 将在 %s 秒后完成",
-	cooker = "由 <color=%s>%s</color> 烹饪",
-	cooktime_modifier_slower = "烹调食物 <color=#DED15E>%s%%</color> 减慢.",
-	cooktime_modifier_faster = "烹调食物 <color=NATURE>%s%%</color> 加快.",
+	stewer = {
+		product = "<color=HUNGER><prefab=%s></color>(<color=HUNGER>%s</color>)",
+		cooktime_remaining ="<color=HUNGER><prefab=%s></color>(<color=HUNGER>%s</color>) 将在 %s 秒后完成",
+		cooker = "由 <color=%s>%s</color> 烹饪",
+		cooktime_modifier_slower = "烹调食物 <color=#DED15E>%s%%</color> 减慢.",
+		cooktime_modifier_faster = "烹调食物 <color=NATURE>%s%%</color> 加快.",
+	},
 
 	-- stickable.lua
 	stickable = "<color=FISH>贻贝</color>: %s",
@@ -609,8 +632,10 @@ return {
 	tigershark_exists = "当前虎鲨出没",
 
 	-- timer.lua
-	timer_paused = "暂停",
-	timer = "计时 '%s': %s",
+	timer = {
+		label = "计时 '%s': %s",
+		paused = "暂停",
+	},
 
 	-- tool.lua
 	action_efficiency = "<color=#DED15E>%s</color>: %s%%",
@@ -628,6 +653,9 @@ return {
 	upgradeable_stage = "阶段: %s / %s: ",
 	upgradeable_complete = "升级 %s%% 完成",
 	upgradeable_incomplete = "不可升级",
+
+	-- walrus_camp.lua [Prefab]
+	walrus_camp_respawn = "<color=MOB_SPAWN><prefab=%s></color> 重生于: <color=FROZEN>%s后</color>",
 
 	-- waterproofer.lua
 	waterproofness = "<color=WET>防水</color>: <color=WET>%s%%</color>",
@@ -669,6 +697,9 @@ return {
 		sunken_item = "There is a <color=#66ee66>%s</color> underneath this winch.",
 	},
 
+	-- winterometer.lua [Prefab]
+	world_temperature = "<color=LIGHT>世界温度</color>: <color=LIGHT>%s</color>",
+
 	-- wintersfeasttable.lua
 
 	-- wintertreegiftable.lua
@@ -696,6 +727,15 @@ return {
 		received_portal = "传送门: %s",
 		id = "这是 #: %s",
 	},
+
+	-- worldsettingstimer.lua
+	worldsettingstimer = {
+		label = "WSTimer '%s': %s",
+		paused = "Paused",
+	},
+
+	-- wx78.lua [Prefab]
+	wx78_charge = "剩余充能: %s",
 
 	-- yotb_sewer.lua
 	yotb_sewer = "缝制将完成于: %s",

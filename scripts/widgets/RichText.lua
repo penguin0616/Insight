@@ -59,8 +59,9 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 	color = Color.fromHex(color)
 
 	local obj = nil
+	local is_object = chunk:IsObject()
 
-	if chunk:IsObject() then
+	if is_object and chunk.object.class ~= "prefab" then
 		-- object
 		if chunk.object.class == "icon" then
 			local tex, atlas = _LookupIcon(chunk.object.value)
@@ -93,7 +94,15 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 			modifiers.sup = true
 		end
 
-		obj = Text(richtext.font, size, chunk.text)
+		local text = nil
+		if is_object then
+			-- prefab class
+			local prefab = chunk.object.value
+			text = GetPrefabNameOrElse(prefab, "\"%s\"")
+		else
+			text = chunk.text
+		end
+		obj = Text(richtext.font, size, text)
 		obj:SetColour(color)
 		obj.modifiers = modifiers
 

@@ -18,30 +18,26 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- timer.lua
-local function Describe(self, context)
+-- catcoonden.lua [Prefab]
+local function Describe(inst, context)
 	local description = nil
 
-	if not context.config["display_timers"] then
+	if not inst.lives_left then
 		return
 	end
 
-	local timers = {}
+	description = string.format(context.lstr.catcoonden.lives, inst.lives_left, 9)
 
-	for name in pairs(self.timers) do
-		local paused = self:IsPaused(name)
-		local time_left = not paused and self:GetTimeLeft(name) or nil
+	if inst.lives_left <= 0 and inst.delay_end then
+		local remaining_time = inst.delay_end - GetTime()
 
-		local time_string = (paused and context.lstr.timer.paused) or (time_left and context.time:SimpleProcess(time_left))
-		if time_string then
-			timers[#timers+1] = string.format(context.lstr.timer.label, name, time_string)
+		if remaining_time > 0 then
+			description = description .. "\n" .. string.format(context.lstr.catcoonden.regenerate, context.time:SimpleProcess(remaining_time))
+		else
+			description = description .. "\n" .. context.lstr.catcoonden.waiting_for_sleep
 		end
 	end
-
-	if #timers > 0 then
-		description = table.concat(timers, "\n")
-	end
-
+	
 	return {
 		priority = 0,
 		description = description

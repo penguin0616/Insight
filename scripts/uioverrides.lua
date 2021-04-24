@@ -103,10 +103,6 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	
 	controls.insight_menu = controls.top_root:AddChild(menu)
 
-	AddLocalPlayerPostInit(function(insight)
-		insight:MaintainMenu(menu)
-	end)
-
 	local mb = InsightButton()
 	mb:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
 	mb:SetDraggable(true)
@@ -137,6 +133,14 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			menu:Show()
 		end
 	end)
+
+	AddLocalPlayerPostInit(function(insight, context)
+		insight:MaintainMenu(menu)
+		if not context.config["display_insight_menu_button"] then
+			mb.can_be_shown = false
+		end
+	end)
+
 
 	--[[
 	local Insight_Clock = import("widgets/insight_clock")
@@ -655,6 +659,16 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 				local altOnlyIsVerbose = TheInput_IsControlPressed(TheInput, CONTROL_FORCE_TRADE)
 				if informationOnAltOnly == true and altOnlyIsVerbose == false then
 					itemDescription = entityInformation.information
+
+					if entityInformation.information ~= entityInformation.alt_information then
+						local pos = string_find(text, "\n")
+						if pos then
+							text = string_sub(text, 1, pos - 1) .. (canShowExtendedInfoIndicator and "*" or "") .. string_sub(text, pos)
+						else
+							text = text .. "*"
+						end
+					end
+					
 				else
 					itemDescription = entityInformation.alt_information
 				end
@@ -667,7 +681,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 					if pos then
 						text = string_sub(text, 1, pos - 1) .. (canShowExtendedInfoIndicator and "*" or "") .. string_sub(text, pos)
 					else
-						text = text .. "*"
+						text = text .. (canShowExtendedInfoIndicator and "*" or "")
 					end
 				end
 			end
