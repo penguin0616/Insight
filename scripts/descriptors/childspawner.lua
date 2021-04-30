@@ -33,7 +33,8 @@ local function Describe(self, context)
 	local emergency_kids
 	local regen
 
-	if self.childname then
+
+	if self.childname and self.childname ~= "" then
 		--[[
 		kids = string.format("<color=MOB_SPAWN>%s</color>: %s / %s", -- %s<sub>inside</sub> + %s<sub>outside</sub> 
 			GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
@@ -50,7 +51,7 @@ local function Describe(self, context)
 		
 	end
 
-	if self.emergencychildname and self.maxemergencychildren > 0 then
+	if self.emergencychildname and self.emergencychildname ~= "" and self.maxemergencychildren > 0 then
 		emergency_kids = string.format(context.lstr.childspawner.emergency_children, 
 			self.emergencychildname, --GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
 			self.emergencychildreninside, self.numemergencychildrenoutside, 
@@ -63,13 +64,13 @@ local function Describe(self, context)
 		local missingchildren = self.numchildrenoutside + self.childreninside < self.maxchildren
         local missingemergencychildren = self.numemergencychildrenoutside + self.emergencychildreninside < self.maxemergencychildren
         
-		if (self.childname and missingchildren) or (self.emergencychildname and missingemergencychildren) then
+		if (self.childname and self.childname ~= "" and missingchildren) or (self.emergencychildname and self.emergencychildname ~= "" and missingemergencychildren) then
 			local to_regen = ""
 
 			if missingchildren and missingemergencychildren then
 				to_regen = string.format(context.lstr.childspawner.both_regen, 
-					self.childname, --GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
-					self.emergencychildname --GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
+					self.childname or "<color=#FF0000>ERROR</color>", --GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
+					self.emergencychildname or "<color=#FF0000>ERROR</color>" --GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
 				)
 			elseif missingchildren then
 				to_regen = string.format(context.lstr.childspawner.entity, self.childname)

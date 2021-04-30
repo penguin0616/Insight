@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.1.2" -- ds is 2.9.7_ds
+version = "3.1.3" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -279,6 +279,10 @@ local english = {
 				DESCRIPTION = "White",
 				HOVER = "White",
 			},
+			["ORANGE"] = {
+				DESCRIPTION = "Orange",
+				HOVER = "Orange",
+			},
 		},
 	},
 	fuel_highlighting = {
@@ -326,6 +330,10 @@ local english = {
 			["WHITE"] = {
 				DESCRIPTION = "White",
 				HOVER = "White",
+			},
+			["ORANGE"] = {
+				DESCRIPTION = "Orange",
+				HOVER = "Orange",
 			},
 		},
 	},
@@ -1140,6 +1148,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	display_crafting_lookup_button = {
+		LABEL = "Crafting Lookup Button",
+		HOVER = "Whether the crafting lookup button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
 	display_insight_menu_button = {
 		LABEL = "Insight Menu Button",
 		HOVER = "Whether the insight menu button is displayed or not.",
@@ -1516,6 +1538,10 @@ local chinese = {
 				DESCRIPTION = "White",
 				HOVER = "White",
 			},
+			["ORANGE"] = {
+				DESCRIPTION = "Orange",
+				HOVER = "Orange",
+			},
 		},
 	},
 	fuel_highlighting = {
@@ -1563,6 +1589,10 @@ local chinese = {
 			["WHITE"] = {
 				DESCRIPTION = "White",
 				HOVER = "White",
+			},
+			["ORANGE"] = {
+				DESCRIPTION = "Orange",
+				HOVER = "Orange",
 			},
 		},
 	},
@@ -2377,6 +2407,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	display_crafting_lookup_button = {
+		LABEL = "Crafting Lookup Button",
+		HOVER = "Whether the crafting lookup button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
 	display_insight_menu_button = {
 		LABEL = "Insight Menu Button",
 		HOVER = "Whether the insight menu button is displayed or not.",
@@ -2745,6 +2789,7 @@ configuration_options = {
 			{data = "PURPLE"},
 			{data = "YELLOW"},
 			{data = "WHITE"},
+			{data = "ORANGE"},
 		}, 
 		default = "GREEN",
 		client = true,
@@ -2770,6 +2815,7 @@ configuration_options = {
 			{data = "PURPLE"},
 			{data = "YELLOW"},
 			{data = "WHITE"},
+			{data = "ORANGE"},
 		}, 
 		default = "RED",
 		client = true,
@@ -3281,6 +3327,16 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_miscellaneous"),
+	{
+		name = "display_crafting_lookup_button",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
 	{
 		name = "display_insight_menu_button",
 		options = {
