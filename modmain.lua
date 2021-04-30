@@ -177,7 +177,7 @@ if false and DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 2")
 end
 
-PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
+PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_ghost_klaus_sack"}
 string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end})
 import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
@@ -1316,17 +1316,6 @@ function decompress2(str)
 	return res()
 end
 
-local function CheckForKlausSack(inst)
-	-- klaussacklock
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local found = TheSim:FindEntities(x, y, z, 2, {"klaussacklock"})
-	if #found > 0 then
-		inst.MiniMapEntity:SetEnabled(false)
-	else
-		inst.MiniMapEntity:SetEnabled(true)
-	end
-end
-
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
@@ -1784,7 +1773,13 @@ if IsDST() then
 	end)
 
 	AddPrefabPostInit("deerspawningground", function(inst)
+		if not GetModConfigData("klaus_sack_markers") then
+			return
+		end
+
 		--dprint('prefabpostinitdeer', inst)
+		local marker = SpawnPrefab("insight_ghost_klaus_sack")
+		marker.owner = inst
 	end)
 
 	AddPrefabPostInit("klaus_sack", function(inst)

@@ -538,6 +538,20 @@ local english = {
 			},
 		},
 	},
+	klaus_sack_markers = {
+		LABEL = "Loot Stash Markers (Server Only)",
+		HOVER = "Whether Loot Stash spawning locations are marked. *Only the server's choice matters.*",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Markers are shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Markers are not shown."
+			},
+		},
+	},
 	sinkhole_marks = {
 		LABEL = "Sinkhole Marks",
 		HOVER = "How sinkhole marking is applied.",
@@ -1798,6 +1812,20 @@ local chinese = {
 			},
 		},
 	},
+	klaus_sack_markers = {
+		LABEL = "Loot Stash Markers (Server Only)",
+		HOVER = "Whether Loot Stash spawning locations are marked. *Only the server's choice matters.*",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Markers are shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Markers are not shown."
+			},
+		},
+	},
 	sinkhole_marks = {
 		LABEL = "落水洞标记",
 		HOVER = "如何显示落水洞的标记。",
@@ -2951,6 +2979,15 @@ configuration_options = {
 		default = "both",
 		client = true,
 		tags = {"dst_only"},
+	},
+	{
+		name = "klaus_sack_markers",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"dst_only", "server_only"},
 	},
 	{
 		name = "sinkhole_marks",
