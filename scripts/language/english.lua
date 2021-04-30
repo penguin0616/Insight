@@ -596,6 +596,20 @@ return {
 		},
 	},
 
+	-- singable.lua
+	singable = {
+		battlesong = {
+			battlesong_durability = "<color=HEALTH>Weapons</color> last <color=#aaaaee>%s%%</color> longer.",
+			battlesong_healthgain = "Hitting enemies restores <color=HEALTH>%s health</color> (<color=HEALTH>%s</color> for Wigfrids).",
+			battlesong_sanitygain = "Hitting enemies restores <color=SANITY>%s sanity</color>.",
+			battlesong_sanityaura = "Negative <color=SANITY>sanity auras</color> are <color=SANITY>%s%%</color> less effective.",
+			battlesong_fireresistance = "Take <color=HEALTH>%s%% less damage</color> from <color=LIGHT>fire</color>.",
+			battlesong_instant_taunt = "Taunts all nearby enemies within song radius.",
+			battlesong_instant_panic = "Panics nearby hauntable enemies for %s second(s).",
+		},
+		cost = "Costs %s inspiration to use.",
+	},
+
 	-- sinkholespawner.lua
 	antlion_rage = "%s",
 
