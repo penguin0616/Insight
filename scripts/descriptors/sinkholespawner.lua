@@ -52,7 +52,7 @@ local function Describe(self, context)
 			atlas = "images/Antlion.xml",
 			tex = "Antlion.tex",
 		},
-		worldly = true, -- not really but might as well be
+		worldly = true, -- not really but might as well be, means timer doesn't show up on antlion though
 	}
 end
 

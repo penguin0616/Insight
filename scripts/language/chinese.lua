@@ -561,6 +561,12 @@ return {
 		cant_spawn = "无法生成"
 	},
 
+	-- saddler.lua
+	saddler = {
+		bonus_damage = "<color=HEALTH>Bonus damage</color>: <color=HEALTH>%s</color>",
+		bonus_speed = "<color=DAIRY>Bonus speed</color>: %s%%",
+	},
+
 	-- sanity.lua
 	sanity = "<color=SANITY>理智</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 	enlightenment = "<color=ENLIGHTENMENT>启蒙值</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
