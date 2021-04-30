@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- finiteuses.lua
-local rawget = rawget
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
 local function FormatUses(uses, context)
 	return string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses)
@@ -40,7 +40,7 @@ end
 
 local function Describe(self, context)
 	local inst = self.inst
-	local description = nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
+	local description, alt_description = nil, nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
 
 	local uses = self:GetUses()
 	if context.finiteuses_forced or context.config["display_finiteuses"] then
@@ -93,30 +93,37 @@ local function Describe(self, context)
 		--]]
 
 		local actions = createTable(num_actions)
+		local actions_verbose = createTable(num_actions)
+
 		for i = 1, num_actions do
 			local v = consumptions2[i]
 			local action, amount = v[1], v[2]
 			local action_id = action.id:lower()
 
 			local uses = math.ceil(self.current / amount)
+			local max_uses = math.ceil(self.total / amount)
 			if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(context.lstr.actions[action_id]) then
-				actions[#actions+1] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
+				actions[i] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
+				actions_verbose[i] = string.format(context.lstr.action_uses_verbose, context.lstr.actions[action_id], uses, max_uses)
 			else
-				actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses)
+				actions[i] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses)
+				actions_verbose[i] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses, max_uses)
 			end
 		end
 
 		if #actions == 0 then
-			actions[#actions+1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses)
+			actions[1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses)
 		end
 
 		description = table.concat(actions, ", ")
+		alt_description = table.concat(actions_verbose, ", ")
 
 	end
 
 	return {
 		priority = 1,
 		description = description,
+		alt_description = alt_description,
 		uses = math.ceil(uses)
 	}
 end

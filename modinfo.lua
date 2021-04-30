@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Highlighting update (now configurable), Eye of the Storm Beta information, Bug fixes",
+	update_info = "Loot Stash locations, battlesong information, performance optimization, saddle information, added orange highlighting, finiteuses max uses on inspection.",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 

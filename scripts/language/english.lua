@@ -295,6 +295,7 @@ return {
 
 	-- finiteuses.lua
 	action_uses = "<color=#aaaaee>%s</color>: %s",
+	action_uses_verbose = "<color=#aaaaee>%s</color>: %s / %s",
 	actions = {
 		uses_plain = "Uses",
 		sleepin = "Sleep",

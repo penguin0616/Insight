@@ -295,6 +295,7 @@ return {
 
 	-- finiteuses.lua
 	action_uses = "<icon=%s> %s",
+	action_uses_verbose = "<icon=%s> %s / %s",
 	actions = {
 		--uses_plain = "Uses",
 		sleepin = "bedroll_straw",
