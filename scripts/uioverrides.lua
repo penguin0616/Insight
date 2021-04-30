@@ -103,6 +103,10 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	
 	controls.insight_menu = controls.top_root:AddChild(menu)
 
+	AddLocalPlayerPostInit(function(insight)
+		insight:MaintainMenu(menu)
+	end)
+
 	local mb = InsightButton()
 	mb:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
 	mb:SetDraggable(true)
@@ -133,14 +137,6 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			menu:Show()
 		end
 	end)
-
-	AddLocalPlayerPostInit(function(insight, context)
-		insight:MaintainMenu(menu)
-		if not context.config["display_insight_menu_button"] then
-			mb.can_be_shown = false
-		end
-	end)
-
 
 	--[[
 	local Insight_Clock = import("widgets/insight_clock")
@@ -315,7 +311,13 @@ end
 --======================================== Recipe Popup ====================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local recipe_urls = {}
 local function GetRecipeURL(recipe)
+	if recipe_urls[recipe.name] then
+		return unpack(recipe_urls[recipe.name])
+	end
+
+	--print('lookup', recipe and recipe.product)
 	if not _G.Prefabs[recipe.product] or not _G.Prefabs[recipe.product].fn then
 		return nil
 	end
@@ -331,9 +333,14 @@ local function GetRecipeURL(recipe)
 	if info.source == "scripts/prefabutil.lua" or parent == "" then
 		-- vanilla
 		if not STRINGS.NAMES[string.upper(recipe.product)] then
-			return nil
+			recipe_urls[recipe.name] = {nil, nil}
+			return recipe_urls[recipe.name]
 		end
-		return "https://dontstarve.fandom.com/wiki/" .. STRINGS.NAMES[string.upper(recipe.product)]:gsub("%s", "_"), false
+
+		local url = "https://dontstarve.fandom.com/wiki/" .. STRINGS.NAMES[string.upper(recipe.product)]:gsub("%s", "_")
+		recipe_urls[recipe.name] = {url, false}
+
+		return url, false
 	end
 
 	-- modded
@@ -341,33 +348,60 @@ local function GetRecipeURL(recipe)
 		if modname == mod_folder_name then
 			local modinfo = KnownModIndex:GetModInfo(modname)
 			if type(modinfo.forumthread) == "string" and modinfo.forumthread ~= "" then
-				return modinfo.forumthread, true
+				recipe_urls[recipe.name] = {modinfo.forumthread, true}
+				return unpack(recipe_urls[recipe.name])
 			else
 				local workshop_id = string.match(mod_folder_name, "workshop%-(%d+)")
 				if workshop_id then
-					return "https://steamcommunity.com/sharedfiles/filedetails/?id=" .. workshop_id, true
+					local url = "https://steamcommunity.com/sharedfiles/filedetails/?id=" .. workshop_id
+					recipe_urls[recipe.name] = {url, true}
+					return url, true
 				end
 			end
 		end
 	end
 
+	recipe_urls[recipe.name] = {nil, nil}
 	return nil
 end
 
 local oldRecipePopup_Refresh = RecipePopup.Refresh
 function RecipePopup:Refresh()
+	local mod = {0, 1, 0, 1}
+	local normal = {1, 1, 1, 1}
+
 	oldRecipePopup_Refresh(self)
+	local context = localPlayer and GetPlayerContext(localPlayer)
+	if not context or not context.config["display_crafting_lookup_button"] then
+		--dprint("rejected, 1", self.recipe and self.recipe.product)
+		return
+	end
+	
 	if self.lookup and self.lookup.inst:IsValid() then 
 		self.lookup:SetPosition(self.name:GetRegionSize() / 2 + self.name:InsightGetSize() / 2, 0)
+		local url, modded = GetRecipeURL(self.recipe)
+		if url then
+			if modded then
+				self.lookup.button.image:SetTint(unpack(mod))
+			else
+				self.lookup.button.image:SetTint(unpack(normal))
+			end
+		else
+			self.lookup:Kill()
+			self.lookup = nil
+		end
+		--dprint("rejected, 2", self.recipe and self.recipe.product)
 		return
 	end
 
 	if not self.recipe then
+		--dprint("rejected, 3", self.recipe and self.recipe.product)
 		return
 	end
 
 	local url, modded = GetRecipeURL(self.recipe)
 	if not url then
+		--dprint("rejected, 4", self.recipe and self.recipe.product)
 		return
 	end
 	
@@ -380,7 +414,9 @@ function RecipePopup:Refresh()
 	self.lookup.button:SetTooltip("Click to lookup item")
 
 	if modded then
-		self.lookup.button.image:SetTint(0, 1, 0, 1)
+		self.lookup.button.image:SetTint(unpack(mod))
+	else
+		self.lookup.button.image:SetTint(unpack(normal))
 	end
 
 	self.lookup:SetOnClick(function()
