@@ -264,8 +264,8 @@ local english = {
 				HOVER = "Blue",
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Cyan",
-				HOVER = "Cyan",
+				DESCRIPTION = "Light Blue",
+				HOVER = "Light Blue",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",
@@ -316,8 +316,8 @@ local english = {
 				HOVER = "Blue",
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Cyan",
-				HOVER = "Cyan",
+				DESCRIPTION = "Light Blue",
+				HOVER = "Light Blue",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",
@@ -1523,8 +1523,8 @@ local chinese = {
 				HOVER = "Blue",
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Cyan",
-				HOVER = "Cyan",
+				DESCRIPTION = "Light Blue",
+				HOVER = "Light Blue",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",
@@ -1575,8 +1575,8 @@ local chinese = {
 				HOVER = "Blue",
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Cyan",
-				HOVER = "Cyan",
+				DESCRIPTION = "Light Blue",
+				HOVER = "Light Blue",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",

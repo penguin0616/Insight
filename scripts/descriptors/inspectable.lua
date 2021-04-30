@@ -200,9 +200,12 @@ local function Describe(self, context)
 	end
 	
 	if inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
-		local data = Insight.descriptors.weapon.GetSlingshotAmmoData(inst)
-		local damage = data and data.damage
-		description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage or "?")
+		local func = Insight.descriptors.weapon and Insight.descriptors.weapon.GetSlingshotAmmoData
+		if func then
+			local data = func(inst)
+			local damage = data and data.damage
+			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage or "?")
+		end
 	end
 
 	if context.player.components.ghostlybond and inst:HasTag("abigail_flower") then

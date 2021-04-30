@@ -94,7 +94,7 @@ local function GetDamage(self, attacker, target)
 		-- DST is Weapon:GetDamage(attacker, target)
 		-- in DST, some modded weapons don't put a nil check for targets. right now, April 5 2021, no vanilla weapons care about the target.
 		if self.inst.prefab ~= nil and WEAPON_CACHE[self.inst.prefab] == nil then 
-			WEAPON_CACHE[self.inst.prefab] = pcall(self.GetDamage, self, attacker, target)
+			WEAPON_CACHE[self.inst.prefab] = pcall(self.GetDamage, self, attacker, nil)
 		end
 
 		if self.inst.prefab == nil or WEAPON_CACHE[self.inst.prefab] == true then -- we know the GetDamage was safe to call.

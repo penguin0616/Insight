@@ -183,7 +183,6 @@ import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
 util = import("util")
 Color = import("helpers/color")
-entityManager = import("entitymanager")()
 rpcNetwork = import("rpcnetwork")
 combatHelper = import("helpers/combat")
 
@@ -1439,7 +1438,7 @@ AddPrefabPostInit("cave_exit", function(inst)
 	end)
 end)
 
-do
+if true then
 	local FakeCombats = {
 		["moonstorm_spark"] = {
 			attack_range = 4,
@@ -2887,6 +2886,7 @@ if IsDS() or IsClient() or IsClientHost() then
 		end
 	end
 
+	entityManager = import("entitymanager")
 	import("clientmodmain")
 end
 

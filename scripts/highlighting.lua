@@ -46,17 +46,18 @@ local COLOR_TYPES = {
 
 local COLORS_ADD = { -- brighter but most color gets siphoned at night
 	-- alpha doesn't matter? 
-	RED = {0.6, 0, 0, 0}, -- red (by itself, #ff0000, it's red.)
-	GREEN = {0, 0.5, 0, 0}, -- green (by itself, #00ff00, it's green.)
-	BLUE = {0, 0, 0.8, 0}, -- blue (by itself, #0000ff, it's blue.)
-	--GRAY = {0.4, 0.4, 0}, -- gray (by itself, #666666, is gray)
-	--BLACK = {0, 0, 0, 0}, -- black (by itself, #000000, is black)
-	NOTHING = {0, 0, 0, 0}, -- default without any changes
+	RED = {0.6, 0, 0, 1}, -- red (by itself, #ff0000, it's red.)
+	GREEN = {0, 0.5, 0, 1}, -- green (by itself, #00ff00, it's green.)
+	BLUE = {0, 0, 1, 1}, -- blue (by itself, #0000ff, it's blue.)
+	--GRAY = {0.4, 0.4, 1}, -- gray (by itself, #666666, is gray)
+	--BLACK = {0, 0, 0, 1}, -- black (by itself, #000000, is black)
+	NOTHING = {0, 0, 0, 1}, -- default without any changes
 
-	LIGHT_BLUE = {0, 0.4, 0.6, 0}, -- light blue (by itself, #006699, its a nice ocean blue)
-	PURPLE = {0.4, 0, 1, 0}, -- purple (by itself, #6600ff, dark blue with red tint) -- rgb(155, 89, 182) {0.6, 0.35, 0.71, 1} sin purple -- rgb(98, 37, 209) {0.38, 0.145, 0.82, 1} royal purple
-	YELLOW = {0.4, 0.4, 0, 0}, -- yellow (by itself, #666600, ugly dark yellow)
-	WHITE = {0.4, 0.4, 0.4, 0},
+	LIGHT_BLUE = {0, 0.4, 0.6, 1}, -- light blue (by itself, #006699, its a nice ocean blue)
+	PURPLE = {0.4, 0, 1, 1}, -- purple (by itself, #6600ff, dark blue with red tint) -- rgb(155, 89, 182) {0.6, 0.35, 0.71, 1} sin purple -- rgb(98, 37, 209) {0.38, 0.145, 0.82, 1} royal purple
+	YELLOW = {0.4, 0.4, 0, 1}, -- yellow (by itself, #666600, ugly dark yellow)
+	WHITE = {0.4, 0.4, 0.4, 1},
+	ORANGE = {0.8, 0.35, 0, 1}, -- orange -- {1, 0.5, 0, 1}
 }
 
 COLORS_ADD.GRAY = COLORS_ADD.NOTHING
@@ -74,6 +75,7 @@ local COLORS_MULT = { -- more resistant to night siphoning color, but dimmer
 	PURPLE = {0.4, 0, 1, 1},
 	--YELLOW = {0.5, 0.5, 0, 1},
 	--WHITE = {1, 1, 1, 1},
+	ORANGE = {1, 0.4, 0.4, 1},
 }
 
 COLORS_MULT.YELLOW = COLORS_MULT.GREEN
@@ -528,10 +530,12 @@ local function DoRelevanceChecks(force_apply)
 
 	local c = os.clock()
 
-	--dprint('active_entities:', b - a)
-	--dprint('item slots:', c - b)
-	--dprint('total:', c - a)
-	--dprint'--------------------------------'
+	--[[
+	dprint('active_entities:', b - a)
+	dprint('item slots:', c - b)
+	dprint('total:', c - a)
+	dprint'--------------------------------'
+	--]]
 end
 
 function highlighting.SetActiveItem(player, data)
@@ -603,16 +607,23 @@ function highlighting.SetEntityAwake(inst)
 	end
 end
 
+highlighting.SetMatchColor = function(key)
+	add_colors_to_use[COLOR_TYPES.MATCH] = COLORS_ADD[key]
+	mult_colors_to_use[COLOR_TYPES.MATCH] = COLORS_MULT[key]
+end
+
+highlighting.SetFuelMatchColor = function(key)
+	add_colors_to_use[COLOR_TYPES.FUEL] = COLORS_ADD[key]
+	mult_colors_to_use[COLOR_TYPES.FUEL] = COLORS_MULT[key]
+end
+
 highlighting.Activate = function(insight, context)
 	dprint("Highlighting activated")
 	fuel_highlighting = context.config["fuel_highlighting"]
 	highlighting_enabled = context.config["highlighting"]
 
-	add_colors_to_use[COLOR_TYPES.FUEL] = COLORS_ADD[context.config["fuel_highlighting_color"]]
-	add_colors_to_use[COLOR_TYPES.MATCH] = COLORS_ADD[context.config["highlighting_color"]]
-
-	mult_colors_to_use[COLOR_TYPES.FUEL] = COLORS_MULT[context.config["fuel_highlighting_color"]]
-	mult_colors_to_use[COLOR_TYPES.MATCH] = COLORS_MULT[context.config["highlighting_color"]]
+	highlighting.SetMatchColor(context.config["highlighting_color"])
+	highlighting.SetFuelMatchColor(context.config["fuel_highlighting_color"])
 
 	activated = true
 end

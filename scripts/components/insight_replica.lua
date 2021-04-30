@@ -161,6 +161,17 @@ function PerformanceRatings:Refresh()
 	}
 end
 
+local function ClearDebounce(inst, self)
+	self.entity_debounces[inst] = nil
+end
+
+local function SetDebounce(self, inst, debounce)
+	if debounce then
+		self.entity_debounces[inst] = inst:DoTaskInTime(debounce, ClearDebounce, self)
+	else
+		self.entity_debounces[inst] = true
+	end
+end
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
@@ -272,10 +283,17 @@ local function OnEntityNetworkActive(ent, self)
 		return
 	end
 	--]]
+	ClearDebounce(ent, self)
+	
 	local config_enabled = self.context and (self.context.config["info_preload"] == 2 or (self.context.config["info_preload"] == 1 and ent.replica.container)) 
 
-	if (ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") or (not TheWorld.ismastersim and config_enabled) then
-		self:RequestInformation(ent, (ent == ThePlayer and {raw = true}) or nil)
+	if (ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") or (config_enabled) then
+		local a, b = self:RequestInformation(ent, (ent == ThePlayer and {raw = true}) or nil)
+		if not a then
+			--dprint("Failed to query:", b, ent)
+		else
+			--dprint("Queried:", ent)
+		end
 	end
 end
 
@@ -665,10 +683,10 @@ function Insight:DoesFuelMatchFueled(fuel, fueled)
 		--local ed_fueled = self:GetInformation(fueled)
 
 		if not ed_fuel or not ed_fuel.GUID then
-			self:RequestInformation(fuel)
+			self:RequestInformation(fuel, { debounce=1 })
 		end
 		if not ed_fueled or not ed_fueled.GUID then
-			self:RequestInformation(fueled)
+			self:RequestInformation(fueled, { debounce=1 })
 		end
 
 		--[[
@@ -695,7 +713,7 @@ function Insight:BundleHasPrefab(inst, prefab, isSearchingForFoodTag)
 	local info = self:GetInformation(inst)
 
 	if not info then
-		self:RequestInformation(inst, { debounce=0.1 })
+		self:RequestInformation(inst, { debounce=1 })
 		return nil
 	end
 
@@ -732,7 +750,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 
 	-- Load Container Info
 	if container_info == nil then
-		self:RequestInformation(container, { debounce=0.1 })
+		self:RequestInformation(container, { debounce=1 })
 		--dprint(container, container:IsValid(), "missing container info")
 		return nil -- 0
 	end
@@ -741,7 +759,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 	if is_unwrappable then
 		bundle_info = self:GetInformation(inst)
 		if not bundle_info then
-			self:RequestInformation(inst, { debounce=0.1 })
+			self:RequestInformation(inst, { debounce=1 })
 			--dprint(inst, "missing bundle info")
 			return nil
 		end
@@ -836,8 +854,8 @@ end
 
 function Insight:RequestInformation(item, params)
 	if not self.is_client then
-		dprint("insight for", self.inst, "tried to request information for", item)
-		return
+		--dprint("insight for", self.inst, "tried to request information for", item)
+		return false, "IS_CLIENT"
 	end
 
 	if TRACK_INFORMATION_REQUESTS then
@@ -852,25 +870,25 @@ function Insight:RequestInformation(item, params)
 	if Is_DS then
 		-- we don't care about the rest of this in DS
 		RequestEntityInformation(item, self.inst, params)
-		return
+		return true
 	end
 
 	if item.Network == nil then -- not networked
-		return
+		return false, "NOT_NETWORKED"
 	end
 
 	-- check if there is a debounce
 	if self.entity_debounces[item] then
 		--dprint('rejected', item, self.entity_debounces[item])
-		return
+		return false, "DEBOUNCE"
 	end
 
 	-- check context
 	local context = self.context
 	if not context then
 		-- cant do anything without context
-		mprint('Insight:RequestEntityInformation missing context')
-		return
+		--mprint('Insight:RequestEntityInformation missing context')
+		return false, "NO_CONTEXT"
 	end
 
 	--[[
@@ -880,41 +898,38 @@ function Insight:RequestInformation(item, params)
 	end
 	--]]
 
-	-- check for delays
+	-- check for debounces
 	--mprint("context", context)
 	--table.foreach(context, mprint)
-	local delay = params.debounce or context.config["refresh_delay"]
+	local debounce = params.debounce or context.config["refresh_delay"]
 	
-	if delay == true then
+	if debounce == true then
 		local host = self.performance_ratings:GetHost()
 		local client = self.performance_ratings:GetClient()
 		local ents = math.floor(self:CountEntities() / 1000) -- (2000 - host * 500) -- host? client? who knows which is better.
 		local plrs = math.ceil(#(TheNet:GetClientTable() or {}) / 4)
 		-- min is 170, max seen is 3370
 		
-		delay = (0.50 * host) + (1/3 * client) + (0.125 * ents) + (0.125 * plrs)
-	elseif type(delay) == "string" then
-		delay = delay:gsub("_", ".")
-		delay = tonumber(delay)
-	elseif type(delay) == "number" and delay >= 0 then
+		debounce = (0.50 * host) + (1/3 * client) + (0.125 * ents) + (0.125 * plrs)
+	elseif type(debounce) == "string" then
+		debounce = debounce:gsub("_", ".")
+		debounce = tonumber(debounce)
+	elseif type(debounce) == "number" and debounce >= 0 then
 		-- good
 	else
-		mprint("Delay set to 0 in weird case.", tostring(delay), type(delay))
-		--error("Delay set to 0 in weird case.")
-		--delay = 0
-		return
+		mprint("debounce set to 0 in weird case.", tostring(debounce), type(debounce))
+		--error("debounce set to 0 in weird case.")
+		--debounce = 0
+		return false, "WEIRD_DEBOUNCE_CASE"
 	end
 
-	if delay > 0 then
-		self.entity_debounces[item] = true
-		self.inst:DoTaskInTime(delay, function()
-			--mprint'clear'
-			self.entity_debounces[item] = nil
-		end)
+	if debounce > 0 then
+		SetDebounce(self, item, debounce)
 	end
 
 	params = json.encode(params) -- encode for rpc transfer
 	SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), item, params)
+	return true
 end
 
 -- entity functions
@@ -926,9 +941,10 @@ function Insight:EntityInactive(ent)
 	end
 	--]]
 
+	--dprint('inactive', ent)
 	assert(Is_DST, "Insight:EntityInactive called outside DST")
 	
-	--self.entity_data[ent] = nil
+	self.entity_data[ent] = nil
 	--self.entity_count = self.entity_count - 1
 end
 
@@ -938,7 +954,7 @@ function Insight:EntityActive(ent)
 		return
 	end
 
-	assert(Is_DST, "Insight:EntityActive called outside DST")
+	if DEBUG_ENABLED then assert(Is_DST, "Insight:EntityActive called outside DST") end
 
 	self.entity_data[ent] = {
 		GUID = nil,
@@ -948,7 +964,11 @@ function Insight:EntityActive(ent)
 
 	--self.entity_count = self.entity_count + 1
 
-	local delay = ((ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") and 0) or math.random(1, 8) / 10
+	local delay = ((ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") and 0) or math.random(3, 10) / (TheWorld.ismastersim and 4 or 10)
+	if delay > 0 then
+		SetDebounce(self, ent)
+	end
+	--dprint('active', ent, delay)
 	ent:DoTaskInTime(delay, OnEntityNetworkActive, self)
 end
 
