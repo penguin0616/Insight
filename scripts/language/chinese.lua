@@ -482,7 +482,7 @@ return {
 
 	-- perishable.lua
 	-- TODO: Pull translations directly from DST, as some language mods would overwrite official translations
-	-- eg. Officially "stale" woule be 不新鲜 and Chinese++ would give it as 陈旧 for more native expression if player subscribed this mod
+	-- eg. Officially "stale" woule be 不新鲜 and "Chinese Language Pack" would give it as 陈旧 for more native expression if player subscribed this mod
 	-- So Insight could display different translations accordingly? Actually do this to all the other possible strings...
 	perishable = {
 		rot = "腐烂",
