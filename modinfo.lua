@@ -2188,7 +2188,7 @@ local chinese = {
 			},
 			["1"] = {
 				DESCRIPTION = "简短",
-				HOVER = "只显示生长到下一阶段所需的时间。"
+				HOVER = "仅显示生长到下一阶段所需的时间。"
 			},
 			["2"] = {
 				DESCRIPTION = "详细",
