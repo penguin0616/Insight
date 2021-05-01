@@ -17,7 +17,6 @@ LICENSE in the form of a LICENSE file in the root of the source
 directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
-
 ---------------------------------------
 -- Mod information for the game to process.
 -- @script modinfo
@@ -38,13 +37,12 @@ priority = -10000 --[[ rezecib's Geometric Placement has -10, chinese++, has -99
 ideally, we come last in the mod loading order to make life easier. 
 that way, I can try to be compatible with other mods without them having to worry about compatibility with Insight. after all, probably better if I handle it.
 --]]
-
 -- DS
 api_version = 6
 dont_starve_compatible = true
 reign_of_giants_compatible = true -- DLC0001
 shipwrecked_compatible = true -- DLC0002
-hamlet_compatible = true -- DLC0003 
+hamlet_compatible = true -- DLC0003
 
 -- DST
 api_version_dst = 10
@@ -75,24 +73,18 @@ server_filter_tags = {"insight_" .. version}
 	end
 
 ]]
-
-
 local translations = {}
 local english = {
-
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
 	update_info = "Highlighting update (now configurable), Eye of the Storm Beta information, Bug fixes",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
-
 	mod_explanation = "Basically Show Me but with more features.",
 	config_paths = "Server Configuration: Main Menu -> Host Game -> Mods -> Server Mods -> Insight -> Configure Mod\n-------------------------\nClient Configuration: Main Menu -> Mods -> Server Mods -> Insight -> Configure Mod",
-
 	config_disclaimer = "Make sure to check out the configuration options.",
 	version = "Version",
 	latest_update = "Latest update",
-
 	-- section titles
 	sectiontitle_formatting = "Formatting",
 	sectiontitle_indicators = "Indicators",
@@ -100,11 +92,9 @@ local english = {
 	sectiontitle_informationcontrol = "Information Control",
 	sectiontitle_miscellaneous = "Miscellaneous",
 	sectiontitle_debugging = "Debugging",
-
 	-- etc
 	undefined = "Undefined",
 	undefined_description = "Defaults to: ",
-
 	-- Formatting
 	language = {
 		--------------------------------------------------------------------------
@@ -124,8 +114,8 @@ local english = {
 			["zh"] = {
 				DESCRIPTION = "Chinese",
 				HOVER = "Chinese"
-			},
-		},
+			}
+		}
 	},
 	info_style = {
 		LABEL = "Icon Mode",
@@ -138,8 +128,8 @@ local english = {
 			["icon"] = {
 				DESCRIPTION = "Icon",
 				HOVER = "Icons will be used over text where possible."
-			},
-		},
+			}
+		}
 	},
 	text_coloring = {
 		LABEL = "Text Coloring",
@@ -152,8 +142,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Text coloring will be used."
-			},
-		},
+			}
+		}
 	},
 	alt_only_information = {
 		LABEL = "Inspect Only",
@@ -166,8 +156,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Information only displays on inspection."
-			},
-		},
+			}
+		}
 	},
 	--[[
 	alt_only_is_verbose = {
@@ -200,8 +190,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "Percentages",
 				HOVER = "Will provide use default percentages on item slots."
-			},
-		},
+			}
+		}
 	},
 	time_style = {
 		LABEL = "Time style",
@@ -230,12 +220,12 @@ local english = {
 			["both_short"] = {
 				DESCRIPTION = "Both (Short)",
 				HOVER = "Use both time styles and shorten: x.y days (hours:minutes:seconds)."
-			},
-		},
+			}
+		}
 	},
 	highlighting = {
 		LABEL = "Highlighting",
-		HOVER = "Whether item highlighting is enabled. (\"Finder\")",
+		HOVER = 'Whether item highlighting is enabled. ("Finder")',
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
@@ -244,8 +234,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Chests/items will be highlighted."
-			},
-		},
+			}
+		}
 	},
 	highlighting_color = {
 		LABEL = "Highlighting Color",
@@ -253,33 +243,33 @@ local english = {
 		OPTIONS = {
 			["RED"] = {
 				DESCRIPTION = "Red",
-				HOVER = "Red",
+				HOVER = "Red"
 			},
 			["GREEN"] = {
 				DESCRIPTION = "Green",
-				HOVER = "Green",
+				HOVER = "Green"
 			},
 			["BLUE"] = {
 				DESCRIPTION = "Blue",
-				HOVER = "Blue",
+				HOVER = "Blue"
 			},
 			["LIGHT_BLUE"] = {
 				DESCRIPTION = "Cyan",
-				HOVER = "Cyan",
+				HOVER = "Cyan"
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",
-				HOVER = "Purple",
+				HOVER = "Purple"
 			},
 			["YELLOW"] = {
 				DESCRIPTION = "Yellow",
-				HOVER = "Yellow",
+				HOVER = "Yellow"
 			},
 			["WHITE"] = {
 				DESCRIPTION = "White",
-				HOVER = "White",
-			},
-		},
+				HOVER = "White"
+			}
+		}
 	},
 	fuel_highlighting = {
 		LABEL = "Fuel Highlighting",
@@ -292,8 +282,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Fuel entities will be highlighted."
-			},
-		},
+			}
+		}
 	},
 	fuel_highlighting_color = {
 		LABEL = "Fuel Highlighting Color",
@@ -301,33 +291,33 @@ local english = {
 		OPTIONS = {
 			["RED"] = {
 				DESCRIPTION = "Red",
-				HOVER = "Red",
+				HOVER = "Red"
 			},
 			["GREEN"] = {
 				DESCRIPTION = "Green",
-				HOVER = "Green",
+				HOVER = "Green"
 			},
 			["BLUE"] = {
 				DESCRIPTION = "Blue",
-				HOVER = "Blue",
+				HOVER = "Blue"
 			},
 			["LIGHT_BLUE"] = {
 				DESCRIPTION = "Cyan",
-				HOVER = "Cyan",
+				HOVER = "Cyan"
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",
-				HOVER = "Purple",
+				HOVER = "Purple"
 			},
 			["YELLOW"] = {
 				DESCRIPTION = "Yellow",
-				HOVER = "Yellow",
+				HOVER = "Yellow"
 			},
 			["WHITE"] = {
 				DESCRIPTION = "White",
-				HOVER = "White",
-			},
-		},
+				HOVER = "White"
+			}
+		}
 	},
 	extended_info_indicator = {
 		LABEL = "More Information Hint",
@@ -340,8 +330,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The indicator is shown."
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
@@ -357,8 +347,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Attack ranges are shown."
-			},
-		},
+			}
+		}
 	},
 	attack_range_type = {
 		LABEL = "Attack Range Type",
@@ -375,8 +365,8 @@ local english = {
 			["both"] = {
 				DESCRIPTION = "Both",
 				HOVER = "Both hit and attack range are shown."
-			},
-		},
+			}
+		}
 	},
 	hover_range_indicator = {
 		LABEL = "Item/Mob Range Hover",
@@ -389,8 +379,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Range is shown."
-			},
-		},
+			}
+		}
 	},
 	boss_indicator = {
 		LABEL = "Boss Indicator",
@@ -403,8 +393,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Boss indicators are shown."
-			},
-		},
+			}
+		}
 	},
 	notable_indicator = {
 		LABEL = "Notable Indicator",
@@ -417,8 +407,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Notable indicators are shown."
-			},
-		},
+			}
+		}
 	},
 	pipspook_indicator = {
 		LABEL = "Pipspook toy indicators",
@@ -431,8 +421,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Pipspook toy indicators are shown."
-			},
-		},
+			}
+		}
 	},
 	bottle_indicator = {
 		LABEL = "Bottle Indicator",
@@ -445,8 +435,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Message indicators are shown."
-			},
-		},
+			}
+		}
 	},
 	hunt_indicator = {
 		LABEL = "Hunt Indicator",
@@ -459,8 +449,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Hunt indicators are shown."
-			},
-		},
+			}
+		}
 	},
 	orchestrina_indicator = {
 		LABEL = "Archive Puzzle Helper",
@@ -491,8 +481,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "Always",
 				HOVER = "Always show lightning rod range."
-			},
-		},
+			}
+		}
 	},
 	blink_range = {
 		LABEL = "Blink range",
@@ -505,8 +495,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Blink range shown."
-			},
-		},
+			}
+		}
 	},
 	wortox_soul_range = {
 		LABEL = "Wortox Soul range",
@@ -519,8 +509,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Soul pickup ranges shown."
-			},
-		},
+			}
+		}
 	},
 	battlesong_range = {
 		LABEL = "Battle song range",
@@ -541,8 +531,8 @@ local english = {
 			["both"] = {
 				DESCRIPTION = "Both",
 				HOVER = "Both ranges are shown."
-			},
-		},
+			}
+		}
 	},
 	sinkhole_marks = {
 		LABEL = "Sinkhole Marks",
@@ -559,8 +549,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "Sinkholes & Map",
 				HOVER = "Apply to both map icons & sinkholes."
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Food Related ]]
@@ -571,13 +561,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Food information is not shown.",
+				HOVER = "Food information is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Food information is shown."
-			},
-		},
+			}
+		}
 	},
 	food_style = {
 		LABEL = "Food style",
@@ -590,8 +580,8 @@ local english = {
 			["long"] = {
 				DESCRIPTION = "Long",
 				HOVER = "Hunger: +X / Sanity: -X / Health: +X"
-			},
-		},
+			}
+		}
 	},
 	food_order = {
 		LABEL = "Food order",
@@ -604,8 +594,8 @@ local english = {
 			["wiki"] = {
 				DESCRIPTION = "Wiki",
 				HOVER = "Health / Hunger / Sanity"
-			},
-		},
+			}
+		}
 	},
 	food_units = {
 		LABEL = "Display food units",
@@ -618,8 +608,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Food units WILL be displayed."
-			},
-		},
+			}
+		}
 	},
 	food_effects = {
 		LABEL = "Food Effects",
@@ -632,8 +622,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Special food effects will show."
-			},
-		},
+			}
+		}
 	},
 	stewer_chef = {
 		LABEL = "Chef Identifiers",
@@ -646,8 +636,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The chef will be shown."
-			},
-		},
+			}
+		}
 	},
 	food_memory = {
 		LABEL = "Food Memory",
@@ -660,8 +650,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Your food memory will be shown."
-			},
-		},
+			}
+		}
 	},
 	display_perishable = {
 		LABEL = "Perishing",
@@ -674,8 +664,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Perishable information is shown."
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
@@ -686,13 +676,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "The pageant winners are not shown.",
+				HOVER = "The pageant winners are not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The pageant winners  are shown."
-			},
-		},
+			}
+		}
 	},
 	display_yotb_appraisal = {
 		LABEL = "Appraisal Values [YOTB]",
@@ -700,13 +690,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "The appraisal values are not shown.",
+				HOVER = "The appraisal values are not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The appraisal values are shown."
-			},
-		},
+			}
+		}
 	},
 	display_shared_stats = {
 		LABEL = "Playerlist Stats",
@@ -714,13 +704,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "The stats are not shown.",
+				HOVER = "The stats are not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The stats are shown."
-			},
-		},
+			}
+		}
 	},
 	display_fishing_information = {
 		LABEL = "Fishing information",
@@ -728,13 +718,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Fishing information is not shown.",
+				HOVER = "Fishing information is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Fishing information is shown."
-			},
-		},
+			}
+		}
 	},
 	display_spawner_information = {
 		LABEL = "Spawner information",
@@ -742,13 +732,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "The spawner information is not shown.",
+				HOVER = "The spawner information is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The spawner information is shown."
-			},
-		},
+			}
+		}
 	},
 	weapon_damage = {
 		LABEL = "Weapon Damage",
@@ -756,13 +746,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Weapon damage is not shown.",
+				HOVER = "Weapon damage is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Weapon damage is shown."
-			},
-		},
+			}
+		}
 	},
 	repair_values = {
 		LABEL = "Repair Values",
@@ -770,12 +760,12 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Repair information is not shown.",
+				HOVER = "Repair information is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Repair information is shown.",
-			},
+				HOVER = "Repair information is shown."
+			}
 		}
 	},
 	soil_moisture = {
@@ -784,23 +774,23 @@ local english = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "Off",
-				HOVER = "Soil moisture is not shown.",
+				HOVER = "Soil moisture is not shown."
 			},
 			["1"] = {
 				DESCRIPTION = "Soil",
-				HOVER = "Only soil moisture is shown.",
+				HOVER = "Only soil moisture is shown."
 			},
 			["2"] = {
 				DESCRIPTION = "Soil / Plant",
-				HOVER = "Soil moisture and the plant consumption rate is shown.",
+				HOVER = "Soil moisture and the plant consumption rate is shown."
 			},
 			["3"] = {
 				DESCRIPTION = "Soil, Plant, Tile",
-				HOVER = "Soil moisture, plant consumption, and the tile moisture rate is shown.",
+				HOVER = "Soil moisture, plant consumption, and the tile moisture rate is shown."
 			},
 			["4"] = {
 				DESCRIPTION = "All",
-				HOVER = "Soil moisture, plant consumption, and the **NET** tile moisture rate is shown.",
+				HOVER = "Soil moisture, plant consumption, and the **NET** tile moisture rate is shown."
 			}
 		}
 	},
@@ -810,20 +800,20 @@ local english = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "Off",
-				HOVER = "Soil nutrients are not shown.",
+				HOVER = "Soil nutrients are not shown."
 			},
 			["1"] = {
 				DESCRIPTION = "Soil",
-				HOVER = "Only soil nutrients are shown.",
+				HOVER = "Only soil nutrients are shown."
 			},
 			["2"] = {
 				DESCRIPTION = "Soil / Plant",
-				HOVER = "Soil nutrients and the plant consumption rate are shown.",
+				HOVER = "Soil nutrients and the plant consumption rate are shown."
 			},
 			["3"] = {
 				DESCRIPTION = "Soil, Plant, Tile",
-				HOVER = "Soil nutrients, plant consumption, and the tile nutrients rate are all shown.",
-			},
+				HOVER = "Soil nutrients, plant consumption, and the tile nutrients rate are all shown."
+			}
 			--[[
 			["4"] = {
 				DESCRIPTION = "All",
@@ -838,11 +828,11 @@ local english = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "No",
-				HOVER = "Plant stress is not shown.",
+				HOVER = "Plant stress is not shown."
 			},
 			["1"] = {
 				DESCRIPTION = "With Hat",
-				HOVER = "Plant stress will be shown if you have the Premier Gardeneer Hat.",
+				HOVER = "Plant stress will be shown if you have the Premier Gardeneer Hat."
 			},
 			["2"] = {
 				DESCRIPTION = "Always",
@@ -850,19 +840,18 @@ local english = {
 			}
 		}
 	},
-	
 	display_weighable = {
 		LABEL = "Item Weight",
 		HOVER = "Determines whether item weight is shown.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Item weight is not shown.",
+				HOVER = "Item weight is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Item weight is shown.",
-			},
+				HOVER = "Item weight is shown."
+			}
 		}
 	},
 	display_world_events = {
@@ -876,8 +865,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "World data is shown."
-			},
-		},
+			}
+		}
 	},
 	display_weather = {
 		LABEL = "Show weather information",
@@ -890,8 +879,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Weather is shown."
-			},
-		},
+			}
+		}
 	},
 	nightmareclock_display = {
 		LABEL = "Nightmare Phases",
@@ -908,8 +897,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "On",
 				HOVER = "Nightmare phase information is always shown."
-			},
-		},
+			}
+		}
 	},
 	display_health = {
 		LABEL = "Health",
@@ -922,8 +911,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Health information is shown."
-			},
-		},
+			}
+		}
 	},
 	display_mob_attack_damage = {
 		LABEL = "Mob Attack Damage",
@@ -931,13 +920,13 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Mob attack damage is not shown.",
+				HOVER = "Mob attack damage is not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Mob attack damage is shown.",
-			},
-		},
+				HOVER = "Mob attack damage is shown."
+			}
+		}
 	},
 	growth_verbosity = {
 		LABEL = "Growth Verbosity",
@@ -954,8 +943,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "All",
 				HOVER = "Displays current stage name, number of stages, and time until next stage."
-			},
-		},
+			}
+		}
 	},
 	display_finiteuses = {
 		LABEL = "Tool Durability",
@@ -968,8 +957,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Tool durability will be displayed."
-			},
-		},
+			}
+		}
 	},
 	display_timers = {
 		LABEL = "Timers",
@@ -982,8 +971,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Timers will be displayed."
-			},
-		},
+			}
+		}
 	},
 	display_upgradeable = {
 		LABEL = "Upgradeables",
@@ -996,8 +985,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Displays information for upgradeable structures, such as spider dens."
-			},
-		},
+			}
+		}
 	},
 	naughtiness_verbosity = {
 		LABEL = "Naughtiness verbosity",
@@ -1014,8 +1003,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "Plr/Creature",
 				HOVER = "Player and creature naughtiness values will display."
-			},
-		},
+			}
+		}
 	},
 	follower_info = {
 		LABEL = "Follower information",
@@ -1028,8 +1017,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Will display follower information."
-			},
-		},
+			}
+		}
 	},
 	herd_information = {
 		LABEL = "Herd information",
@@ -1042,8 +1031,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Will display herd information."
-			},
-		},
+			}
+		}
 	},
 	domestication_information = {
 		LABEL = "Domestication info",
@@ -1056,8 +1045,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Will display domestication information."
-			},
-		},
+			}
+		}
 	},
 	display_pollination = {
 		LABEL = "Pollination",
@@ -1070,8 +1059,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Will display pollination information."
-			},
-		},
+			}
+		}
 	},
 	display_hunger = {
 		LABEL = "Hunger",
@@ -1088,8 +1077,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "All",
 				HOVER = "Will display all hunger information."
-			},
-		},
+			}
+		}
 	},
 	display_sanityaura = {
 		LABEL = "Sanity Auras",
@@ -1102,8 +1091,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Will display sanity auras."
-			},
-		},
+			}
+		}
 	},
 	item_worth = {
 		LABEL = "Display item worth",
@@ -1116,8 +1105,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Will display gold and dubloon value."
-			},
-		},
+			}
+		}
 	},
 	appeasement_value = {
 		LABEL = "Display Appeasement",
@@ -1130,8 +1119,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Will display appeasement value."
-			},
-		},
+			}
+		}
 	},
 	fuel_verbosity = {
 		LABEL = "Fuel Verbosity",
@@ -1148,15 +1137,15 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "All",
 				HOVER = "All fuel information will show."
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
 	unrandomizer = {
 		LABEL = "Unrandomizer",
-		HOVER = "[Server Only] \"Solves\" the randomness of some situations.",
+		HOVER = '[Server Only] "Solves" the randomness of some situations.',
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
@@ -1179,12 +1168,12 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Combat popups (ie damage) will account for any buffs/nerfs your character has."
-			},
-		},
+			}
+		}
 	},
 	info_preload = {
 		LABEL = "Information preloading",
-		HOVER = "Whether information is preloaded when entities become visible. Trades network usage for faster performance. Recommended to use \"All\".",
+		HOVER = 'Whether information is preloaded when entities become visible. Trades network usage for faster performance. Recommended to use "All".',
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "No",
@@ -1197,8 +1186,8 @@ local english = {
 			["2"] = {
 				DESCRIPTION = "All",
 				HOVER = "Highest FPS, recommended."
-			},
-		},
+			}
+		}
 	},
 	refresh_delay = {
 		LABEL = "Refresh delay",
@@ -1227,8 +1216,8 @@ local english = {
 			["3"] = {
 				DESCRIPTION = "3s",
 				HOVER = "Information updates every 3 seconds."
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Debugging ]]
@@ -1244,8 +1233,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The log reporting is enabled."
-			},
-		},
+			}
+		}
 	},
 	crash_reporter = {
 		LABEL = "Crash Reporter",
@@ -1258,8 +1247,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The crash reporter is enabled."
-			},
-		},
+			}
+		}
 	},
 	DEBUG_SHOW_NOTIMPLEMENTED = {
 		LABEL = "DEBUG_SHOW_NOTIMPLEMENTED",
@@ -1272,8 +1261,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Will warn you if there are any components not accounted for."
-			},
-		},
+			}
+		}
 	},
 	DEBUG_SHOW_DISABLED = {
 		LABEL = "DEBUG_SHOW_DISABLED",
@@ -1286,8 +1275,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Will display information for disabled descriptors."
-			},
-		},
+			}
+		}
 	},
 	DEBUG_SHOW_PREFAB = {
 		LABEL = "DEBUG_SHOW_PREFAB",
@@ -1300,8 +1289,8 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Will display prefabs on entity."
-			},
-		},
+			}
+		}
 	},
 	DEBUG_ENABLED = {
 		LABEL = "DEBUG_ENABLED",
@@ -1314,9 +1303,9 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Insight will show debugging information."
-			},
-		},
-	},
+			}
+		}
+	}
 }
 translations["en"] = english
 
@@ -1324,14 +1313,11 @@ local chinese = {
 	-- description
 	update_info = "",
 	crashreporter_info = "**添加了崩溃报告器**, 你可以在客户端或服务器设置界面来开启它。",
-
 	mod_explanation = "以 Show Me 为基础，但功能更全面",
 	config_paths = "服务器设置方法: 主界面 -> 创建世界-> 模组 -> 服务器模组 -> Insight -> 模组设置\n-------------------------\n客户端设置方法: 主界面 -> 模组 -> 服务器模组 -> Insight -> 模组设置",
-
 	config_disclaimer = "请确认你设置的各个选项, 尤其是设置好显示的和设置不再显示的信息，需要格外注意。",
 	version = "版本",
 	latest_update = "最新更新",
-
 	-- section titles
 	sectiontitle_formatting = "格式",
 	sectiontitle_indicators = "指示器",
@@ -1339,11 +1325,9 @@ local chinese = {
 	sectiontitle_informationcontrol = "信息控制",
 	sectiontitle_miscellaneous = "杂项",
 	sectiontitle_debugging = "调试",
-
 	-- etc
 	undefined = "默认",
 	undefined_description = "默认为：",
-
 	-- Formatting
 	language = {
 		--------------------------------------------------------------------------
@@ -1363,8 +1347,8 @@ local chinese = {
 			["zh"] = {
 				DESCRIPTION = "中文",
 				HOVER = "中文"
-			},
-		},
+			}
+		}
 	},
 	info_style = {
 		LABEL = "图标模式",
@@ -1377,8 +1361,8 @@ local chinese = {
 			["icon"] = {
 				DESCRIPTION = "图标",
 				HOVER = "显示图标替代文字"
-			},
-		},
+			}
+		}
 	},
 	text_coloring = {
 		LABEL = "文字着色",
@@ -1391,8 +1375,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "启用文字着色"
-			},
-		},
+			}
+		}
 	},
 	alt_only_information = {
 		LABEL = "仅在检查时显示",
@@ -1405,8 +1389,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "仅当按住 Alt 键时显示信息"
-			},
-		},
+			}
+		}
 	},
 	--[[
 	alt_only_is_verbose = {
@@ -1439,8 +1423,8 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "百分比",
 				HOVER = "显示默认百分比"
-			},
-		},
+			}
+		}
 	},
 	time_style = {
 		LABEL = "时间样式",
@@ -1469,12 +1453,12 @@ local chinese = {
 			["both_short"] = {
 				DESCRIPTION = "兼用两种模式（精简）",
 				HOVER = "简化版的双模式显示"
-			},
-		},
+			}
+		}
 	},
 	highlighting = {
 		LABEL = "高亮显示",
-		HOVER = "是否启用箱子/物品的高亮显示 (\"物品查找器\")",
+		HOVER = '是否启用箱子/物品的高亮显示 ("物品查找器")',
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -1483,8 +1467,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "箱子/物品会高亮显示"
-			},
-		},
+			}
+		}
 	},
 	highlighting_color = {
 		LABEL = "高亮颜色",
@@ -1492,33 +1476,33 @@ local chinese = {
 		OPTIONS = {
 			["RED"] = {
 				DESCRIPTION = "红色",
-				HOVER = "红色",
+				HOVER = "红色"
 			},
 			["GREEN"] = {
 				DESCRIPTION = "绿色",
-				HOVER = "绿色",
+				HOVER = "绿色"
 			},
 			["BLUE"] = {
 				DESCRIPTION = "蓝色",
-				HOVER = "蓝色",
+				HOVER = "蓝色"
 			},
 			["LIGHT_BLUE"] = {
 				DESCRIPTION = "青色",
-				HOVER = "青色",
+				HOVER = "青色"
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "紫色",
-				HOVER = "紫色",
+				HOVER = "紫色"
 			},
 			["YELLOW"] = {
 				DESCRIPTION = "黄色",
-				HOVER = "黄色",
+				HOVER = "黄色"
 			},
 			["WHITE"] = {
 				DESCRIPTION = "白色",
-				HOVER = "白色",
-			},
-		},
+				HOVER = "白色"
+			}
+		}
 	},
 	fuel_highlighting = {
 		LABEL = "燃料高亮显示",
@@ -1531,8 +1515,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "启用燃料高亮显示"
-			},
-		},
+			}
+		}
 	},
 	fuel_highlighting_color = {
 		LABEL = "燃料高亮颜色",
@@ -1540,33 +1524,33 @@ local chinese = {
 		OPTIONS = {
 			["RED"] = {
 				DESCRIPTION = "红色",
-				HOVER = "红色",
+				HOVER = "红色"
 			},
 			["GREEN"] = {
 				DESCRIPTION = "绿色",
-				HOVER = "绿色",
+				HOVER = "绿色"
 			},
 			["BLUE"] = {
 				DESCRIPTION = "蓝色",
-				HOVER = "蓝色",
+				HOVER = "蓝色"
 			},
 			["LIGHT_BLUE"] = {
 				DESCRIPTION = "青色",
-				HOVER = "青色",
+				HOVER = "青色"
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "紫色",
-				HOVER = "紫色",
+				HOVER = "紫色"
 			},
 			["YELLOW"] = {
 				DESCRIPTION = "黄色",
-				HOVER = "黄色",
+				HOVER = "黄色"
 			},
 			["WHITE"] = {
 				DESCRIPTION = "白色",
-				HOVER = "白色",
-			},
-		},
+				HOVER = "白色"
+			}
+		}
 	},
 	extended_info_indicator = {
 		LABEL = "更多信息提示",
@@ -1579,8 +1563,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示提示"
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
@@ -1596,8 +1580,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "显示攻击范围"
-			},
-		},
+			}
+		}
 	},
 	attack_range_type = {
 		LABEL = "攻击范围类型",
@@ -1614,9 +1598,8 @@ local chinese = {
 			["both"] = {
 				DESCRIPTION = "兼用",
 				HOVER = "同时显示敲击和攻击范围"
-			},
-
-		},
+			}
+		}
 	},
 	hover_range_indicator = {
 		LABEL = "物品范围",
@@ -1629,8 +1612,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示物品范围。"
-			},
-		},
+			}
+		}
 	},
 	boss_indicator = {
 		LABEL = "Boss 指示器",
@@ -1643,8 +1626,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示 Boss 指示器。"
-			},
-		},
+			}
+		}
 	},
 	notable_indicator = {
 		LABEL = "其他物品的指示器",
@@ -1657,8 +1640,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示指示器。"
-			},
-		},
+			}
+		}
 	},
 	pipspook_indicator = {
 		LABEL = "小惊吓玩具指示器",
@@ -1671,8 +1654,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示小惊吓玩具指示器。"
-			},
-		},
+			}
+		}
 	},
 	bottle_indicator = {
 		LABEL = "漂流瓶指示器",
@@ -1685,8 +1668,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示漂流瓶指示器。"
-			},
-		},
+			}
+		}
 	},
 	hunt_indicator = {
 		LABEL = "动物脚印指示器",
@@ -1699,8 +1682,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示脚印指示器。"
-			},
-		},
+			}
+		}
 	},
 	orchestrina_indicator = {
 		LABEL = "远古迷宫",
@@ -1731,8 +1714,8 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "总是",
 				HOVER = "总是显示避雷针的生效范围。"
-			},
-		},
+			}
+		}
 	},
 	blink_range = {
 		LABEL = "瞬移范围",
@@ -1745,8 +1728,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示瞬移范围。"
-			},
-		},
+			}
+		}
 	},
 	wortox_soul_range = {
 		LABEL = "沃拓克斯灵魂范围",
@@ -1759,8 +1742,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示灵魂范围功能。"
-			},
-		},
+			}
+		}
 	},
 	battlesong_range = {
 		LABEL = "战歌生效范围",
@@ -1781,8 +1764,8 @@ local chinese = {
 			["both"] = {
 				DESCRIPTION = "兼用",
 				HOVER = "同时显示脱离战歌和被战歌鼓舞的生效范围"
-			},
-		},
+			}
+		}
 	},
 	sinkhole_marks = {
 		LABEL = "落水洞标记",
@@ -1799,8 +1782,8 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "兼用",
 				HOVER = "同时着色标记地图图标和落水洞洞口。"
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Food Related ]]
@@ -1811,13 +1794,13 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示食物信息。",
+				HOVER = "不显示食物信息。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示食物信息。"
-			},
-		},
+			}
+		}
 	},
 	food_style = {
 		LABEL = "食物属性格式",
@@ -1830,8 +1813,8 @@ local chinese = {
 			["long"] = {
 				DESCRIPTION = "详细",
 				HOVER = "饥饿：+X / 理智：-X / 生命：+X"
-			},
-		},
+			}
+		}
 	},
 	food_order = {
 		LABEL = "食物属性显示顺序",
@@ -1844,8 +1827,8 @@ local chinese = {
 			["wiki"] = {
 				DESCRIPTION = "维基",
 				HOVER = "生命 / 饥饿 / 理智"
-			},
-		},
+			}
+		}
 	},
 	food_units = {
 		LABEL = "食物系数",
@@ -1858,8 +1841,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示食物度。"
-			},
-		},
+			}
+		}
 	},
 	food_effects = {
 		LABEL = "食物加成属性",
@@ -1872,8 +1855,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示特殊的食物属性。"
-			},
-		},
+			}
+		}
 	},
 	stewer_chef = {
 		LABEL = "烹饪厨师显示",
@@ -1886,8 +1869,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示料理的制作人。"
-			},
-		},
+			}
+		}
 	},
 	food_memory = {
 		LABEL = "瓦力大厨的食物计时",
@@ -1900,8 +1883,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示食物计时。"
-			},
-		},
+			}
+		}
 	},
 	display_perishable = {
 		LABEL = "腐烂信息",
@@ -1914,39 +1897,39 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示腐烂信息"
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
 	display_yotb_winners = {
-		LABEL = "选美大赛冠军 [\"皮弗娄牛之年\" 更新]",
+		LABEL = '选美大赛冠军 ["皮弗娄牛之年" 更新]',
 		HOVER = "是否显示选美大赛冠军",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示选美大赛冠军",
+				HOVER = "不显示选美大赛冠军"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示选美大赛冠军"
-			},
-		},
+			}
+		}
 	},
 	display_yotb_appraisal = {
-		LABEL = "评价值 [\"皮弗娄牛之年\" 更新]",
+		LABEL = '评价值 ["皮弗娄牛之年" 更新]',
 		HOVER = "是否显示评价值",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "不显示评价值",
+				HOVER = "不显示评价值"
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "显示评价值"
-			},
-		},
+			}
+		}
 	},
 	display_shared_stats = {
 		LABEL = "玩家列表中的数据",
@@ -1959,8 +1942,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示数据。"
-			},
-		},
+			}
+		}
 	},
 	display_fishing_information = {
 		LABEL = "垂钓信息",
@@ -1968,13 +1951,13 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示垂钓信息",
+				HOVER = "不显示垂钓信息"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示垂钓信息"
-			},
-		},
+			}
+		}
 	},
 	display_spawner_information = {
 		LABEL = "生物生成计时器",
@@ -1987,8 +1970,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "显示生物生成计时信息。"
-			},
-		},
+			}
+		}
 	},
 	weapon_damage = {
 		LABEL = "武器伤害值",
@@ -1996,13 +1979,13 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示武器的伤害值。",
+				HOVER = "不显示武器的伤害值。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示武器的伤害值。"
-			},
-		},
+			}
+		}
 	},
 	repair_values = {
 		LABEL = "修补数值",
@@ -2010,12 +1993,12 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示物品的修复信息。",
+				HOVER = "不显示物品的修复信息。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示物品的修复信息。",
-			},
+				HOVER = "显示物品的修复信息。"
+			}
 		}
 	},
 	soil_moisture = {
@@ -2024,23 +2007,23 @@ local chinese = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "禁用",
-				HOVER = "不显示土壤潮湿度。",
+				HOVER = "不显示土壤潮湿度。"
 			},
 			["1"] = {
 				DESCRIPTION = "仅土壤",
-				HOVER = "仅显示土壤的潮湿度。",
+				HOVER = "仅显示土壤的潮湿度。"
 			},
 			["2"] = {
 				DESCRIPTION = "土壤/植株",
-				HOVER = "显示土壤潮湿度和植株耗水率。",
+				HOVER = "显示土壤潮湿度和植株耗水率。"
 			},
 			["3"] = {
 				DESCRIPTION = "土壤，植株，耕地",
-				HOVER = "显示土壤潮湿度，植株耗水率，耕地潮湿度。",
+				HOVER = "显示土壤潮湿度，植株耗水率，耕地潮湿度。"
 			},
 			["4"] = {
 				DESCRIPTION = "全部",
-				HOVER = "显示土壤潮湿度，植株耗水率，总耕地潮湿度。",
+				HOVER = "显示土壤潮湿度，植株耗水率，总耕地潮湿度。"
 			}
 		}
 	},
@@ -2050,20 +2033,20 @@ local chinese = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "禁用",
-				HOVER = "不显示土壤养分值。",
+				HOVER = "不显示土壤养分值。"
 			},
 			["1"] = {
 				DESCRIPTION = "仅土壤",
-				HOVER = "仅显示土壤养分值。",
+				HOVER = "仅显示土壤养分值。"
 			},
 			["2"] = {
 				DESCRIPTION = "土壤/植株",
-				HOVER = "显示土壤养分值和植株耗肥率。",
+				HOVER = "显示土壤养分值和植株耗肥率。"
 			},
 			["3"] = {
 				DESCRIPTION = "土壤，植株，耕地",
-				HOVER = "显示土壤养分值，植株耗肥率，耕地养分值。",
-			},
+				HOVER = "显示土壤养分值，植株耗肥率，耕地养分值。"
+			}
 			--[[
 			["4"] = {
 				DESCRIPTION = "全部",
@@ -2078,11 +2061,11 @@ local chinese = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "否",
-				HOVER = "植物压力值将不会显示",
+				HOVER = "植物压力值将不会显示"
 			},
 			["1"] = {
 				DESCRIPTION = "有园艺帽时",
-				HOVER = "如果你身上有，或戴上远古园艺帽时，显示植物的压力值。",
+				HOVER = "如果你身上有，或戴上远古园艺帽时，显示植物的压力值。"
 			},
 			["2"] = {
 				DESCRIPTION = "总是",
@@ -2096,12 +2079,12 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示物品的重量值",
+				HOVER = "不显示物品的重量值"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示物品的重量值",
-			},
+				HOVER = "显示物品的重量值"
+			}
 		}
 	},
 	display_world_events = {
@@ -2115,8 +2098,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示世界事件。"
-			},
-		},
+			}
+		}
 	},
 	display_weather = {
 		LABEL = "天气信息",
@@ -2129,8 +2112,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示天气信息"
-			},
-		},
+			}
+		}
 	},
 	nightmareclock_display = {
 		LABEL = "洞穴暴动阶段",
@@ -2147,8 +2130,8 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "启用",
 				HOVER = "总是显示暴动阶段的信息。"
-			},
-		},
+			}
+		}
 	},
 	display_health = {
 		LABEL = "生命值",
@@ -2161,8 +2144,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示生命值信息。"
-			},
-		},
+			}
+		}
 	},
 	display_mob_attack_damage = {
 		LABEL = "怪物攻击范围",
@@ -2170,13 +2153,13 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示怪物的攻击范围",
+				HOVER = "不显示怪物的攻击范围"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示怪物的攻击范围",
-			},
-		},
+				HOVER = "显示怪物的攻击范围"
+			}
+		}
 	},
 	growth_verbosity = {
 		LABEL = "植物生长阶段",
@@ -2193,8 +2176,8 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "详细",
 				HOVER = "显示当前阶段名称，阶段的数字，长到下一阶段所需的时间。"
-			},
-		},
+			}
+		}
 	},
 	display_finiteuses = {
 		LABEL = "工具耐久度",
@@ -2207,8 +2190,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示跟随者的信息"
-			},
-		},
+			}
+		}
 	},
 	display_timers = {
 		LABEL = "计时器",
@@ -2221,8 +2204,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "开启计时器。"
-			},
-		},
+			}
+		}
 	},
 	display_upgradeable = {
 		LABEL = "可升级物品",
@@ -2235,8 +2218,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示可升级的物品的信息，如蜘蛛巢等。"
-			},
-		},
+			}
+		}
 	},
 	naughtiness_verbosity = {
 		LABEL = "淘气值",
@@ -2253,8 +2236,8 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "玩家/生物的淘气值",
 				HOVER = "同时显示玩家已有的淘气值和击杀生物的淘气值。"
-			},
-		},
+			}
+		}
 	},
 	follower_info = {
 		LABEL = "随从信息",
@@ -2267,8 +2250,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "显示跟随者的信息。"
-			},
-		},
+			}
+		}
 	},
 	herd_information = {
 		LABEL = "兽群信息",
@@ -2281,8 +2264,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "显示兽群的信息。"
-			},
-		},
+			}
+		}
 	},
 	domestication_information = {
 		LABEL = "牛驯服度",
@@ -2295,8 +2278,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "显示牛的驯服度信息。"
-			},
-		},
+			}
+		}
 	},
 	display_pollination = {
 		LABEL = "授粉信息",
@@ -2309,8 +2292,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "启用",
 				HOVER = "显示授粉信息。"
-			},
-		},
+			}
+		}
 	},
 	display_hunger = {
 		LABEL = "物品饥饿值",
@@ -2327,22 +2310,22 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "完整",
 				HOVER = "显示完整物品的饥饿值。"
-			},
-		},
+			}
+		}
 	},
 	display_sanityaura = {
-		LABEL = "精神光环",
-		HOVER = "是否显示精神光环。",
+		LABEL = "理智光环",
+		HOVER = "是否显示理智光环。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示精神光环。"
+				HOVER = "不显示理智光环。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示精神光环。"
-			},
-		},
+				HOVER = "显示理智光环。"
+			}
+		}
 	},
 	item_worth = {
 		LABEL = "物品价值",
@@ -2355,8 +2338,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示物品值的价值。"
-			},
-		},
+			}
+		}
 	},
 	appeasement_value = {
 		LABEL = "蚁狮",
@@ -2369,8 +2352,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示蚁狮的信息。"
-			},
-		},
+			}
+		}
 	},
 	fuel_verbosity = {
 		LABEL = "燃料",
@@ -2387,15 +2370,15 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "全面",
 				HOVER = "显示全面的燃料信息"
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
 	unrandomizer = {
 		LABEL = "去随机化",
-		HOVER = "[服务器] 是否 \"移除\" 某些情况下的随机性.",
+		HOVER = '[服务器] 是否 "移除" 某些情况下的随机性.',
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -2418,12 +2401,12 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示伤害及其加成和削弱状态后的数据。"
-			},
-		},
+			}
+		}
 	},
 	info_preload = {
 		LABEL = "信息预载",
-		HOVER = "是否预先加载可见范围内所有实体的信息。消耗更多网络以获取更好的表现。推荐使用 \"所有\"。",
+		HOVER = '是否预先加载可见范围内所有实体的信息。消耗更多网络以获取更好的表现。推荐使用 "所有"。',
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "否",
@@ -2436,8 +2419,8 @@ local chinese = {
 			["2"] = {
 				DESCRIPTION = "所有",
 				HOVER = "最高帧率，推荐。"
-			},
-		},
+			}
+		}
 	},
 	refresh_delay = {
 		LABEL = "信息刷新延时",
@@ -2466,8 +2449,8 @@ local chinese = {
 			["3"] = {
 				DESCRIPTION = "3秒",
 				HOVER = "信息每3秒更新。"
-			},
-		},
+			}
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Debugging ]]
@@ -2483,8 +2466,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "启用日志报告器。"
-			},
-		},
+			}
+		}
 	},
 	crash_reporter = {
 		LABEL = "崩溃报告器",
@@ -2497,8 +2480,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "开启崩溃报告器。"
-			},
-		},
+			}
+		}
 	},
 	DEBUG_SHOW_NOTIMPLEMENTED = {
 		LABEL = "执行调试显示信息",
@@ -2511,8 +2494,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "未找出错误原因时，发出警告。"
-			},
-		},
+			}
+		}
 	},
 	DEBUG_SHOW_DISABLED = {
 		LABEL = "禁用调试显示",
@@ -2525,8 +2508,8 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示已禁用的描述符的信息。"
-			},
-		},
+			}
+		}
 	},
 	DEBUG_SHOW_PREFAB = {
 		LABEL = "预设调试显示",
@@ -2539,10 +2522,11 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "否",
 				HOVER = "显示物品的预设名称。"
-			},
-		},
+			}
+		}
 	},
-	DEBUG_ENABLED = { -- this will need revision at some point. dunno why i wrote the original like that.
+	DEBUG_ENABLED = {
+		-- this will need revision at some point. dunno why i wrote the original like that.
 		LABEL = "开启调试功能",
 		HOVER = "打开你的 Insight 调试功能。",
 		OPTIONS = {
@@ -2553,9 +2537,9 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示调试信息"
-			},
-		},
-	},
+			}
+		}
+	}
 }
 translations["zh"] = chinese
 translations["ch"] = chinese
@@ -2598,7 +2582,7 @@ local function T(x) -- Translate
 	for field in string_gmatch(x, "[^%][^.]+") do
 		current = current[field]
 		backup = backup[field]
-	
+
 		if not current then
 			current = backup -- this could also be just "break", but that would cause translation to return a table if it was in the middle of a chain. this allows us to resort to the backup and keep going
 			if not backup then
@@ -2616,18 +2600,19 @@ local function T(x) -- Translate
 	return current or backup
 end
 
-description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
+description =
+	string_format(
+	"[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s",
 	--locale or "?", tostring(folder_name), tostring(IsDST),
-	locale or T"ds_not_enabled", 
-	T"mod_explanation", 
-	T"config_disclaimer", 
-
-	T"version", version, 
-	T"latest_update", (IsDST and T"update_info" or T"update_info_ds"), 
-
-	T"crashreporter_info",
-
-	(IsDST and T"config_paths" or "")
+	locale or T "ds_not_enabled",
+	T "mod_explanation",
+	T "config_disclaimer",
+	T "version",
+	version,
+	T "latest_update",
+	(IsDST and T "update_info" or T "update_info_ds"),
+	T "crashreporter_info",
+	(IsDST and T "config_paths" or "")
 )
 
 -- Functions
@@ -2635,59 +2620,58 @@ local function AddSectionTitle(title) -- 100% stole this idea from ReForged. Did
 	if IsDST then
 		return {
 			name = title:upper(), -- avoid conflicts
-			label = title, 
+			label = title,
 			options = {{description = "", data = 0}},
 			default = 0,
-			tags = {"ignore"},
+			tags = {"ignore"}
 		}
 	else
 		return {tags = {"ignore"}}
 	end
 end
 
-
 configuration_options = {
-	AddSectionTitle(T"sectiontitle_formatting"),
+	AddSectionTitle(T "sectiontitle_formatting"),
 	{
 		name = "language", -- name of option -- header for option in dst
 		options = {
 			{data = "automatic"},
 			{data = "en"},
-			{data = "zh"},
-		}, 
+			{data = "zh"}
+		},
 		default = "automatic",
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "info_style",
 		options = {
 			{data = "text"},
-			{data = "icon"},
-		}, 
+			{data = "icon"}
+		},
 		default = "text",
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "text_coloring",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "alt_only_information",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = false,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	--[[
 	{
@@ -2706,11 +2690,11 @@ configuration_options = {
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 2,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "time_style",
@@ -2720,22 +2704,22 @@ configuration_options = {
 			{data = "both"},
 			{data = "gametime_short"},
 			{data = "realtime_short"},
-			{data = "both_short"},
+			{data = "both_short"}
 			--{data = "none"},
-		}, 
+		},
 		default = "gametime",
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "highlighting",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "highlighting_color",
@@ -2746,21 +2730,21 @@ configuration_options = {
 			{data = "LIGHT_BLUE"},
 			{data = "PURPLE"},
 			{data = "YELLOW"},
-			{data = "WHITE"},
-		}, 
+			{data = "WHITE"}
+		},
 		default = "GREEN",
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "fuel_highlighting",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = false,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "fuel_highlighting_color",
@@ -2771,140 +2755,140 @@ configuration_options = {
 			{data = "LIGHT_BLUE"},
 			{data = "PURPLE"},
 			{data = "YELLOW"},
-			{data = "WHITE"},
-		}, 
+			{data = "WHITE"}
+		},
 		default = "RED",
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "extended_info_indicator",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
-	AddSectionTitle(T"sectiontitle_indicators"),
+	AddSectionTitle(T "sectiontitle_indicators"),
 	{
 		name = "display_attack_range",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "attack_range_type",
 		options = {
 			{data = "hit"},
 			{data = "attack"},
-			{data = "both"},
+			{data = "both"}
 		},
 		default = "hit",
 		client = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "hover_range_indicator",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "boss_indicator",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "notable_indicator",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "pipspook_indicator",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"dst_only"},
+		tags = {"dst_only"}
 	},
 	{
 		name = "bottle_indicator",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "hunt_indicator",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "orchestrina_indicator",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "lightningrod_range",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 1,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "blink_range",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "wortox_soul_range",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {"dst_only"},
+		tags = {"dst_only"}
 	},
 	{
 		name = "battlesong_range",
@@ -2912,164 +2896,164 @@ configuration_options = {
 			{data = "none"},
 			{data = "detach"},
 			{data = "attach"},
-			{data = "both"},
-		}, 
+			{data = "both"}
+		},
 		default = "both",
 		client = true,
-		tags = {"dst_only"},
+		tags = {"dst_only"}
 	},
 	{
 		name = "sinkhole_marks",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 2,
 		client = true,
-		tags = {"dst_only"},
+		tags = {"dst_only"}
 	},
-	AddSectionTitle(T"sectiontitle_foodrelated"),
+	AddSectionTitle(T "sectiontitle_foodrelated"),
 	{
 		name = "display_food",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "food_style",
 		options = {
 			{data = "short"},
-			{data = "long"},	
-		}, 
+			{data = "long"}
+		},
 		default = "long",
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "food_order",
 		options = {
 			{data = "interface"},
-			{data = "wiki"},
-		}, 
+			{data = "wiki"}
+		},
 		default = "interface",
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "food_units",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "food_effects",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "stewer_chef",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined", "dst_only"},
+		tags = {"undefined", "dst_only"}
 	},
 	{
 		name = "food_memory",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {"undefined", "dst_only"},
+		tags = {"undefined", "dst_only"}
 	},
 	{
 		name = "display_perishable",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
-	AddSectionTitle(T"sectiontitle_informationcontrol"),
+	AddSectionTitle(T "sectiontitle_informationcontrol"),
 	{
 		name = "display_yotb_winners",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = false,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "display_yotb_appraisal",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = false,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "display_shared_stats",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = true,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "display_fishing_information",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_spawner_information",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "weapon_damage",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "repair_values",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = false,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "soil_moisture",
@@ -3078,11 +3062,11 @@ configuration_options = {
 			{data = 1},
 			{data = 2},
 			{data = 3},
-			{data = 4},
+			{data = 4}
 		},
 		default = 2,
 		client = true,
-		tags = {"dst_only"},
+		tags = {"dst_only"}
 	},
 	{
 		name = "soil_nutrients",
@@ -3090,209 +3074,209 @@ configuration_options = {
 			{data = 0},
 			{data = 1},
 			{data = 2},
-			{data = 3},
+			{data = 3}
 			--{data = 4},
 		},
 		default = 2,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "display_plant_stressors",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
+			{data = 2}
 		},
 		default = 2,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "display_weighable",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = false,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "display_world_events",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "display_weather",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
 	{
 		name = "nightmareclock_display",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 2,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_health",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_mob_attack_damage",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "growth_verbosity",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 1,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_finiteuses",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "display_timers",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_upgradeable",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = false,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "naughtiness_verbosity",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 2,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "follower_info",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "herd_information",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = false,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "domestication_information",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_pollination",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_hunger",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 1,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "display_sanityaura",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "item_worth",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = true,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "appeasement_value",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = false,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "fuel_verbosity",
 		options = {
 			{data = 0},
 			{data = 1},
-			{data = 2},
-		}, 
+			{data = 2}
+		},
 		default = 2,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
-	AddSectionTitle(T"sectiontitle_miscellaneous"),
+	AddSectionTitle(T "sectiontitle_miscellaneous"),
 	--[[
 	{
 		name = "unrandomizer",
@@ -3321,10 +3305,10 @@ configuration_options = {
 		options = {
 			--{data = 0}, -- probably not going to let people use this one
 			{data = 1},
-			{data = 2},
+			{data = 2}
 		},
 		default = 2,
-		tags = {"undefined"},
+		tags = {"undefined"}
 	},
 	{
 		name = "refresh_delay",
@@ -3335,59 +3319,59 @@ configuration_options = {
 			{data = "0_25"},
 			{data = "0_5"},
 			{data = 1},
-			{data = 3},
+			{data = 3}
 		},
 		default = true,
-		tags = {"dst_only", "undefined"},
+		tags = {"dst_only", "undefined"}
 	},
-	AddSectionTitle(T"sectiontitle_debugging"),
+	AddSectionTitle(T "sectiontitle_debugging"),
 	{
 		name = "crash_reporter",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = false,
-		tags = {"independent", "dst_only"},
+		tags = {"independent", "dst_only"}
 	},
 	{
 		name = "DEBUG_SHOW_NOTIMPLEMENTED",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = false,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "DEBUG_SHOW_DISABLED",
 		options = {
 			{data = false},
-			{data = true},
-		}, 
+			{data = true}
+		},
 		default = false,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "DEBUG_SHOW_PREFAB",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = false,
 		client = true,
-		tags = {},
+		tags = {}
 	},
 	{
 		name = "DEBUG_ENABLED",
 		options = {
 			{data = false},
-			{data = true},
+			{data = true}
 		},
 		default = false,
-		tags = {},
+		tags = {}
 	}
 }
 
@@ -3396,7 +3380,7 @@ local function GetDefaultSetting(entry)
 
 	if not entry then
 		local msg = "MAJOR ERROR. ENTRY IS NIL. PLEASE REPORT TO MOD CREATOR."
-		return { description = msg, data = false, hover = msg}
+		return {description = msg, data = false, hover = msg}
 	end
 
 	for i = 1, #entry.options do
@@ -3406,7 +3390,7 @@ local function GetDefaultSetting(entry)
 	end
 
 	local msg = "[DEFAULT???]: \n" .. entry.name .. "|" .. tostring(entry.default)
-	return { description = msg, data = false, hover = msg}
+	return {description = msg, data = false, hover = msg}
 end
 
 local function GetOption(name)
@@ -3437,8 +3421,8 @@ end
 
 for i = 1, #configuration_options do
 	local entry = configuration_options[i]
-	
-	if not HasTag(entry, "ignore") then 
+
+	if not HasTag(entry, "ignore") then
 		entry.label = T(entry.name .. ".LABEL")
 		entry.hover = T(entry.name .. ".HOVER")
 
@@ -3450,11 +3434,10 @@ for i = 1, #configuration_options do
 	end
 end
 
-
-if IsDST then 
+if IsDST then
 	for i = 1, #configuration_options do
 		local entry = configuration_options[i]
-		
+
 		local default = GetDefaultSetting(entry)
 
 		--[[
@@ -3462,11 +3445,14 @@ if IsDST then
 			entry.label = entry.label .. " (Client)" -- Only client can choose
 		end
 		--]]
-
 		if HasTag(entry, "undefined") then -- Server doesn't have to specify
 			entry.original_default = entry.default
 			entry.default = "undefined"
-			entry.options[#entry.options+1] = { description = T"undefined", data = "undefined", hover = T"undefined_description" .. default.description}
+			entry.options[#entry.options + 1] = {
+				description = T "undefined",
+				data = "undefined",
+				hover = T "undefined_description" .. default.description
+			}
 		end
 
 		--v.options[#v.options+1] = { description = "Undefined" , data = "undefined", hover = "Default: " .. default.description }
@@ -3486,8 +3472,7 @@ else
 
 	for i = 1, #configuration_options do
 		local entry = configuration_options[i]
-		
+
 		--v.options[#v.options+1] = { description = "DS", data = "hehe", hover = i}
 	end
-	
 end
