@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- Translated by: https://steamcommunity.com/id/interesting28/ and https://steamcommunity.com/id/cloudyyoung
 
--- CY notes: Not break Chinese characters with space, even with color tag. Only break when meeting pucntuations or numbers.
+-- CY notes: Not breaking Chinese characters with space, even with color tag. Only break when meeting pucntuations or numbers.
 
 
 return {
@@ -83,8 +83,8 @@ return {
 	breeder_fish4 = "<color=#DED15E>小丑鱼</color>",
 	breeder_fish5 = "<color=#9ADFDE>霓虹鱼</color>",
 	breeder_fishstring = "%s: %s / %s",
-	breeder_nextfishtime = "加鱼于: %s 后", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
-	breeder_possiblepredatortime = "可能生成捕食者于: %s",
+	breeder_nextfishtime = "加鱼于 %s 后", -- this is a confusing one...
+	breeder_possiblepredatortime = "可能生成捕食者于 %s",
 
 	-- burnable.lua
 	burnable = {
@@ -101,7 +101,7 @@ return {
 		children = "<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
 		emergency_children = "*<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
 		both_regen = "<color=MOB_SPAWN>%s</color> & <color=MOB_SPAWN>%s</color>",
-		regenerating = "%s 重新生长于: %s",
+		regenerating = "%s 重新生长于 %s",
 		entity = "<color=MOB_SPAWN>%s</color>",
 	},
 
@@ -150,9 +150,9 @@ return {
 	incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
 
 	-- diseaseable.lua
-	disease_in = "将感染疾病于: %s",
-	disease_spread = "将传播疾病于: %s",
-	disease_delay = "疾病被延迟: %s",
+	disease_in = "将感染疾病于 %s",
+	disease_spread = "将传播疾病于 %s",
+	disease_delay = "疾病被延迟 %s",
 
 	-- domesticatable.lua
 	domesticatable = {
@@ -173,7 +173,7 @@ return {
 
 	-- dryer.lua
 	dryer_paused = "暂停晾干",
-	dry_time = "完成还需: %s",
+	dry_time = "完成还需 %s",
 
 	-- edible.lua
 	food_unit = "<color=%s>%s</color> 个单位的 <color=%s>%s</color>",
@@ -206,8 +206,8 @@ return {
 		instant_temperature = "温度变化: %s, (瞬间)",
 		antihistamine = "花粉症延时: %ss",
 	},
-	foodmemory = "最近食用: %s / %s，会忘记于: %s后",
-	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消逝于: %s", 
+	foodmemory = "最近食用 %s / %s，会忘记于 %s后",
+	wereeater = "已食用<color=MONSTER>怪兽肉</color> %s / %s, 将消逝于 %s", 
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
@@ -276,7 +276,7 @@ return {
 	},
 
 	-- finiteuses.lua
-	action_uses = "<color=#aaaaee>%s</color>: %s",
+	action_uses = "<color=#aaaaee>%s</color>%s",
 	actions = {
 		uses_plain = "使用",
 		sleepin = "睡觉",
@@ -307,7 +307,7 @@ return {
 
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
-	fish_recharge = "+1 条鱼于: %s",
+	fish_recharge = "+1 条鱼于 %s",
 	--fish_wait_time = "抓一条鱼将花费 <color=SHALLOWS>%s 秒</color>.",
 
 	-- fishingrod.lua
@@ -315,7 +315,7 @@ return {
 	fishingrod_loserodtime = "最大缠绕时间: <color=SHALLOWS>%s</color>",
 
 	-- follower.lua
-	leader = "领导者: %s", -- cy "主人: %s", but GT says it comes out to "the host". CY: Should mean "master" here by context, but this is fine
+	leader = "领导者: %s", -- cy "主人" should mean "master" here by free translation, "领导者" is direct translation
 	loyalty_duration = "忠诚持续时间: %s",
 	ghostlybond = "等级: %s / %s. +1 于 %s 后",
 	ghostlybond_self = "你的等级: %s / %s. +1 于 %s 后", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -342,7 +342,7 @@ return {
 	},
 
 	-- growable.lua
-	growth_stage = "'%s' 阶段: %s / %s: ",
+	growth_stage = "'%s' 阶段: %s / %s: ", 
 	growth_paused = "暂停生长",
 	growth_next_stage = "下一阶段于 %s 后",
 
@@ -393,7 +393,7 @@ return {
 	-- inspectable.lua
 	catcoonden = {
 		lives = "浣熊猫寿命: %s / %s",
-		regenerate = "浣熊猫将复活于: %s",
+		regenerate = "浣熊猫将复活于 %s",
 		waiting_for_sleep = "等待附近玩家走开。",
 	},
 	wx78_charge = "剩余充能: %s",
@@ -412,8 +412,8 @@ return {
 		correct = "组装正确",
 		incorrect = "组装错误",
 	},
-	lureplant_active = "开始活动于: %s后",
-	walrus_camp_respawn = "<color=FROZEN>%s</color> 重生于: %s后",
+	lureplant_active = "开始活动于 %s后",
+	walrus_camp_respawn = "<color=FROZEN>%s</color> 重生于 %s后",
 	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
 	frog_rain_chance = "<color=FROG>青蛙雨几率</color>: <color=FROG>%s%%</color>",
@@ -435,7 +435,7 @@ return {
 	followers = "跟随者数量: %s",
 
 	-- madsciencelab.lua
-	madsciencelab_finish = "完成于: %s 后",
+	madsciencelab_finish = "完成于 %s 后",
 
 	-- malbatrossspawner.lua
 	malbatross_spawnsin = "%s",
@@ -453,7 +453,7 @@ return {
 		active = "每 %s 秒检查一次触发器",
 		inactive = "不检查触发器",
 		beemine_bees = "将飞出 %s 个蜜蜂",
-		trap_starfish_cooldown = "重组于: %s 后",
+		trap_starfish_cooldown = "重组于 %s 后",
 	},
 
 	-- moisture.lua
@@ -470,7 +470,7 @@ return {
 	},
 
 	-- nightmareclock.lua
-	nightmareclock = "<color=%s>阶段: %s</color>, %s", -- weird one, 时期 VS 阶段?
+	nightmareclock = "<color=%s>阶段: %s</color>, %s", -- Free translation "阶段" would fit better here, it can mean both stage and phase; dst wiki uses this term as well
 	nightmareclock_lock = "被<color=#CE3D45>远古钥匙</color>锁住",
 
 	-- oar.lua
@@ -490,16 +490,16 @@ return {
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
-		transition = "<color=MONSTER>%s</color>于: %s 后", -- cy: for this and extended, remove "后", but GT says right now its "after" and removing makes it "on"
-		transition_extended = "<color=MONSTER>%s</color>于: %s 后 (<color=MONSTER>%s%%</color>)",
+		transition = "<color=MONSTER>%s</color>于 %s", -- Both are correct
+		transition_extended = "<color=MONSTER>%s</color>于 %s (<color=MONSTER>%s%%</color>)",
 		paused = "当前暂停腐烂",
 	},
 
 	-- petrifiable.lua
-	petrify = "石化于: %s",
+	petrify = "石化于 %s",
 
 	-- pickable.lua
-	regrowth = "<color=NATURE>重新生长</color> 在: <color=NATURE>%s</color> 后", -- has grammar problem, left because too annoying
+	regrowth = "<color=NATURE>重新生长</color>于 <color=NATURE>%s</color>", -- it's understandable but could be improved, need to modify replacement logic somewhere else, similar thing for the whole debuffable part too
 	regrowth_paused = "重生暂停",
 	pickable_cycles = "剩余收获次数: %s / %s",
 
@@ -510,7 +510,7 @@ return {
 	preservative = "恢复 %s%% 新鲜度.",
 
 	-- quaker.lua
-	next_quake = "<color=INEDIBLE>地震</color> 于%s后", -- same thing as perishable transition
+	next_quake = "<color=INEDIBLE>地震</color>于 %s", -- same thing as perishable transition
 
 	-- questowner.lua
 	questowner = {
@@ -610,7 +610,7 @@ return {
 	temperature = "温度: %s",
 
 	-- tigersharker.lua
-	tigershark_spawnin = "重生于: %s后",
+	tigershark_spawnin = "重生于 %s",
 	tigershark_waiting = "重生准备就绪",
 	tigershark_exists = "当前虎鲨出没",
 
@@ -704,5 +704,5 @@ return {
 	},
 
 	-- yotb_sewer.lua
-	yotb_sewer = "缝制将完成于: %s",
+	yotb_sewer = "缝制将完成于 %s",
 }
