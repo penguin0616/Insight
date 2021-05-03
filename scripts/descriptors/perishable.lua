@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- perishable.lua
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+
 local function Perish(self, bundle)
 	local inst
 	if bundle then
@@ -191,23 +193,7 @@ local function GetPerishModifier(...)
 	return nil
 end
 
-local function Describe(self, context)
-	local description, alt_description
-
-	if context.bundleitem then
-		local modifier = GetPerishModifier(nil, context.bundleitem.bundle)
-
-		return {
-			priority = 0,
-			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.rot, context.time:SimpleProcess(context.bundleitem.perishremainingtime)),
-			perishmodifier = modifier,
-		}
-	end
-
-	if not context.config["display_perishable"] then
-		return
-	end
-
+local function GetPerishData(self)
 	local next_task_call = GetTaskRemaining(self.updatetask)
 	if next_task_call == -1 then
 		-- SmartCrockPot (https://steamcommunity.com/sharedfiles/filedetails/?id=732554330) when mousing over the prediction, NextTime returns nil
@@ -227,89 +213,128 @@ local function Describe(self, context)
 		-- no description for non-held creatures, or critters
 		return nil
 	end
-	
+
 	local modifier = GetPerishModifier(self)
 	if modifier == 0 then
+		return {
+			modifier = 0
+		}
+	end
+
+	local perish_type, alt_perish_type = nil, "rot"
+	local time_to_perish, alt_time_to_perish = self.perishremainingtime, self.perishremainingtime
+
+	-- figure out remaining perish time
+	if inst.components.health then -- living creature
+		perish_type = "dies"
+		alt_perish_type = perish_type
+
+	elseif is_critter then -- critter
+		perish_type = "starves"
+		alt_perish_type = perish_type
+	
+	elseif modifier < 0 then
+		perish_type = "rot"
+		alt_perish_type = perish_type -- wasn't here when was only describe
+
+	elseif self:IsSpoiled() then
+		--perish_type = modifier > 0 and context.lstr.perishable.rot or context.lstr.perishable.stale
+		perish_type = "rot"
+		alt_perish_type = "rot"
+	
+	elseif self:IsFresh() then
+		--perish_type = modifier > 0 and context.lstr.perishable.stale or "???"
+		perish_type = "stale"
+		alt_perish_type = "rot"
+		
+		--time_to_perish = modifier > 0 and self.perishremainingtime - (self.perishtime) * 0.5 or self.perishremainingtime
+		time_to_perish = self.perishremainingtime - (self.perishtime) * 0.5
+
+	elseif self:IsStale() then
+		--perish_type = modifier > 0 and context.lstr.perishable.spoil or context.lstr.perishable.fresh
+		perish_type = "spoil"
+		alt_perish_type = "rot"
+
+		--time_to_perish = modifier > 0 and self.perishremainingtime - (self.perishtime) * 0.2 or self.perishremainingtime
+		time_to_perish = self.perishremainingtime - (self.perishtime) * 0.2
+	end
+
+	local delta = self.updatetask.arg[2]
+	local max_perish_time = self.perishtime / math.abs(modifier)
+
+	-- account for modifiers and the next task tick, since perishing isn't realtime
+
+	-- stage based perishing
+	time_to_perish = time_to_perish / modifier
+	if modifier > 0 then
+		-- now, we use a bit of inaccuracy for consistency.
+		-- before, number could be off because time_to_perish wasn't exactly the delta.
+		-- before, i did time_to_perish + next_task_call, and when next_task_call == 0 right before a boundary switch, 
+		-- the remaining time displayed was time_to_perish when time_to_perish < delta
+		-- i could use a couple approaches to fix that but that meant the number would jump around as the boundary was approached within 2 ticks
+		-- taking time_to_perish/delta gives us some "time units" we can fiddle with, flooring that and multiplying it back with delta undoes the "time units"
+		-- which smoothes out the delta so the time is always consistent, if not perfectly accurate
+		-- then again, the original approach wasn't accurate so who cares
+		-- i don't know how i thought of this, it just came to me while i was staring at this.
+
+		time_to_perish = math.floor(time_to_perish / delta) * delta + next_task_call
+	elseif modifier < 0 then
+		local x = math.abs(time_to_perish - (delta - next_task_call)) -- can't add, since we need opposite
+
+		--print(x, self.perishtime, self.perishtime / math.abs(modifier))
+		time_to_perish = math.min(x, max_perish_time)
+	end
+
+	-- complete perishing
+	alt_time_to_perish = alt_time_to_perish / modifier
+	if modifier > 0 then
+		alt_time_to_perish = math.floor(alt_time_to_perish / delta) * delta + next_task_call
+
+	elseif modifier < 0 then
+		local x = math.abs(alt_time_to_perish - (delta - next_task_call)) -- can't add, since we need opposite
+		alt_time_to_perish = math.min(x, max_perish_time)
+	end
+
+	-- percent
+	local percent = math.min(max_perish_time, alt_time_to_perish) / max_perish_time
+
+	return {
+		modifier = modifier,
+		perish_type = perish_type,
+		alt_perish_type = alt_perish_type,
+		time_to_perish = time_to_perish,
+		alt_time_to_perish = alt_time_to_perish,
+		percent = percent
+	}
+end
+
+local function Describe(self, context)
+	local description, alt_description
+
+	if context.bundleitem then
+		local modifier = GetPerishModifier(nil, context.bundleitem.bundle)
+
+		return {
+			priority = 0,
+			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.rot, context.time:SimpleProcess(context.bundleitem.perishremainingtime)),
+			perishmodifier = modifier,
+		}
+	end
+
+	if not context.config["display_perishable"] then
+		return
+	end
+
+	local data = GetPerishData(self)
+	if data and data.modifier == 0 then
 		description = context.lstr.perishable.paused
-	else
-		local perish_type, alt_perish_type = nil, context.lstr.perishable.rot
-		local time_to_perish, alt_time_to_perish = self.perishremainingtime, self.perishremainingtime
-
-		-- figure out remaining perish time
-		if inst.components.health then -- living creature
-			perish_type = context.lstr.perishable.dies
-			alt_perish_type = perish_type
-
-		elseif is_critter then -- critter
-			perish_type = context.lstr.perishable.starves
-			alt_perish_type = perish_type
+	elseif data then
 		
-		elseif modifier < 0 then
-			perish_type = context.lstr.perishable.rot
+		local time_to_perish = context.time:SimpleProcess(math.abs(data.time_to_perish))
+		local alt_time_to_perish = context.time:SimpleProcess(math.abs(data.alt_time_to_perish))
 
-		elseif self:IsSpoiled() then
-			--perish_type = modifier > 0 and context.lstr.perishable.rot or context.lstr.perishable.stale
-			perish_type = context.lstr.perishable.rot
-		
-		elseif self:IsFresh() then
-			--perish_type = modifier > 0 and context.lstr.perishable.stale or "???"
-			perish_type = context.lstr.perishable.stale
-			
-			--time_to_perish = modifier > 0 and self.perishremainingtime - (self.perishtime) * 0.5 or self.perishremainingtime
-			time_to_perish = self.perishremainingtime - (self.perishtime) * 0.5
-
-		elseif self:IsStale() then
-			--perish_type = modifier > 0 and context.lstr.perishable.spoil or context.lstr.perishable.fresh
-			perish_type = context.lstr.perishable.spoil
-
-			--time_to_perish = modifier > 0 and self.perishremainingtime - (self.perishtime) * 0.2 or self.perishremainingtime
-			time_to_perish = self.perishremainingtime - (self.perishtime) * 0.2
-		end
-
-		local delta = self.updatetask.arg[2]
-		local max_perish_time = self.perishtime / math.abs(modifier)
-
-		-- account for modifiers and the next task tick, since perishing isn't realtime
-
-		-- stage based perishing
-		time_to_perish = time_to_perish / modifier
-		if modifier > 0 then
-			-- now, we use a bit of inaccuracy for consistency.
-			-- before, number could be off because time_to_perish wasn't exactly the delta.
-			-- before, i did time_to_perish + next_task_call, and when next_task_call == 0 right before a boundary switch, 
-			-- the remaining time displayed was time_to_perish when time_to_perish < delta
-			-- i could use a couple approaches to fix that but that meant the number would jump around as the boundary was approached within 2 ticks
-			-- taking time_to_perish/delta gives us some "time units" we can fiddle with, flooring that and multiplying it back with delta undoes the "time units"
-			-- which smoothes out the delta so the time is always consistent, if not perfectly accurate
-			-- then again, the original approach wasn't accurate so who cares
-			-- i don't know how i thought of this, it just came to me while i was staring at this.
-
-			time_to_perish = math.floor(time_to_perish / delta) * delta + next_task_call
-		elseif modifier < 0 then
-			local x = math.abs(time_to_perish - (delta - next_task_call)) -- can't add, since we need opposite
-
-			--print(x, self.perishtime, self.perishtime / math.abs(modifier))
-			time_to_perish = math.min(x, max_perish_time)
-		end
-
-		-- complete perishing
-		alt_time_to_perish = alt_time_to_perish / modifier
-		if modifier > 0 then
-			alt_time_to_perish = math.floor(alt_time_to_perish / delta) * delta + next_task_call
-
-		elseif modifier < 0 then
-			local x = math.abs(alt_time_to_perish - (delta - next_task_call)) -- can't add, since we need opposite
-			alt_time_to_perish = math.min(x, max_perish_time)
-		end
-
-		-- percent
-		local percent = math.min(max_perish_time, alt_time_to_perish) / max_perish_time
-		
-		time_to_perish = context.time:SimpleProcess(math.abs(time_to_perish))
-		alt_time_to_perish = context.time:SimpleProcess(math.abs(alt_time_to_perish))
-
-		description = string.format(context.lstr.perishable.transition, perish_type, time_to_perish)
-		alt_description = string.format(context.lstr.perishable.transition_extended, alt_perish_type, alt_time_to_perish, Round(percent * 100, 1))
+		description = string.format(context.lstr.perishable.transition, context.lstr.perishable[data.perish_type], time_to_perish)
+		alt_description = string.format(context.lstr.perishable.transition_extended, context.lstr.perishable[data.alt_perish_type], alt_time_to_perish, Round(data.percent * 100, 1))
 	end
 
 	return {
@@ -322,5 +347,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetPerishData = GetPerishData
 }

@@ -96,7 +96,7 @@ local function GetItems(self, context)
 		end
 
 		if not item.name then
-			item.display_name = GetPrefabNameOrElse(item.prefab, "**%s")
+			item.display_name = "<prefab=" .. item.prefab .. ">" --GetPrefabNameOrElse(item.prefab, "**%s")
 		end
 
 		items[#items+1] = item

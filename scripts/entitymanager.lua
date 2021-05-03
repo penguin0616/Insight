@@ -53,7 +53,7 @@ local function SetEntityAwake(inst)
 		return
 	end
 
-	if Entity_HasTag(inst.entity, "NOCLICK") then 
+	if not inst.components.spawnfader and Entity_HasTag(inst.entity, "NOCLICK") then 
 		if inst.replica then 
 			if inst.replica.inventoryitem == nil then
 				return
@@ -94,14 +94,14 @@ function EntityManager.Manage(inst)
 		print(string.format("DENIED: %s | FX: %s, %s | DECOR: %s | CLASSIFIED: %s", 
 			tostring(inst), 
 			tostring(inst:HasTag("fx")), 
-			tostring(inst:HasTag("FX")), 
+			tostring(inst:HasTag("FX")), -- case doesn't matter
 			tostring(inst:HasTag("DECOR")), 
 			tostring(inst:HasTag("CLASSIFIED"))
 		))
 		--]]
 		PREFABS_TO_IGNORE[inst.prefab] = true
 		return
-	elseif Entity_HasTag(inst.entity, "fx") or Entity_HasTag(inst.entity, "DECOR") or Entity_HasTag(inst.entity, "CLASSIFIED") then
+	elseif Entity_HasTag(inst.entity, "fx") or Entity_HasTag(inst.entity, "decor") or Entity_HasTag(inst.entity, "classified") then
 		PREFABS_TO_IGNORE[inst.prefab] = true
 		return
 	end

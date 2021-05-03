@@ -103,10 +103,6 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	
 	controls.insight_menu = controls.top_root:AddChild(menu)
 
-	AddLocalPlayerPostInit(function(insight)
-		insight:MaintainMenu(menu)
-	end)
-
 	local mb = InsightButton()
 	mb:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
 	mb:SetDraggable(true)
@@ -136,6 +132,14 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		else
 			menu:Show()
 		end
+	end)
+
+	AddLocalPlayerPostInit(function(insight, context)
+		if not context.config["display_insight_menu_button"] then
+			mb:Kill()
+			return
+		end
+		insight:MaintainMenu(menu)
 	end)
 
 	--[[

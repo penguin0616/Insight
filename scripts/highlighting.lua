@@ -58,6 +58,7 @@ local COLORS_ADD = { -- brighter but most color gets siphoned at night
 	YELLOW = {0.4, 0.4, 0, 1}, -- yellow (by itself, #666600, ugly dark yellow)
 	WHITE = {0.4, 0.4, 0.4, 1},
 	ORANGE = {0.8, 0.35, 0, 1}, -- orange -- {1, 0.5, 0, 1}
+	PINK = {1, 0, 1, 1}
 }
 
 COLORS_ADD.GRAY = COLORS_ADD.NOTHING
@@ -76,6 +77,7 @@ local COLORS_MULT = { -- more resistant to night siphoning color, but dimmer
 	--YELLOW = {0.5, 0.5, 0, 1},
 	--WHITE = {1, 1, 1, 1},
 	ORANGE = {1, 0.4, 0.4, 1},
+	PINK = {1, 0, 1, 1},
 }
 
 COLORS_MULT.YELLOW = COLORS_MULT.GREEN
@@ -547,6 +549,11 @@ function highlighting.SetActiveItem(player, data)
 	activeItem = data.item
 
 	DoRelevanceChecks()
+end
+
+-- this is buggy
+function highlighting.find(prefab)
+	return highlighting.SetActiveIngredientUI({prefab=prefab})
 end
 
 function highlighting.SetActiveIngredientUI(ui)

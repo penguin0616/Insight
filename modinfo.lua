@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.1.4" -- ds is 2.9.7_ds
+version = "3.1.5" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Loot Stash locations, battlesong information, performance optimization, saddle information, added orange highlighting, finiteuses max uses on inspection.",
+	update_info = "Added lureplant inventory information, added pink highlighting, Loot Stash locations, battlesong information, performance optimization, saddle information, added orange highlighting, finiteuses max uses on inspection.",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -283,6 +283,10 @@ local english = {
 				DESCRIPTION = "Orange",
 				HOVER = "Orange",
 			},
+			["PINK"] = {
+				DESCRIPTION = "Pink",
+				HOVER = "Pink",
+			},
 		},
 	},
 	fuel_highlighting = {
@@ -334,6 +338,10 @@ local english = {
 			["ORANGE"] = {
 				DESCRIPTION = "Orange",
 				HOVER = "Orange",
+			},
+			["PINK"] = {
+				DESCRIPTION = "Pink",
+				HOVER = "Pink",
 			},
 		},
 	},
@@ -1556,6 +1564,10 @@ local chinese = {
 				DESCRIPTION = "Orange",
 				HOVER = "Orange",
 			},
+			["PINK"] = {
+				DESCRIPTION = "Pink",
+				HOVER = "Pink",
+			},
 		},
 	},
 	fuel_highlighting = {
@@ -1607,6 +1619,10 @@ local chinese = {
 			["ORANGE"] = {
 				DESCRIPTION = "Orange",
 				HOVER = "Orange",
+			},
+			["PINK"] = {
+				DESCRIPTION = "Pink",
+				HOVER = "Pink",
 			},
 		},
 	},
@@ -2818,6 +2834,7 @@ configuration_options = {
 			{data = "YELLOW"},
 			{data = "WHITE"},
 			{data = "ORANGE"},
+			{data = "PINK"},
 		}, 
 		default = "GREEN",
 		client = true,
@@ -2844,6 +2861,7 @@ configuration_options = {
 			{data = "YELLOW"},
 			{data = "WHITE"},
 			{data = "ORANGE"},
+			{data = "PINK"},
 		}, 
 		default = "RED",
 		client = true,

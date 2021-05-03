@@ -111,8 +111,9 @@ local function Describe(self, context)
 			end
 		end
 
-		if #actions == 0 then
+		if num_actions == 0 then
 			actions[1] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.uses_plain, uses)
+			actions_verbose[1] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions.uses_plain, uses, self.total)
 		end
 
 		description = table.concat(actions, ", ")

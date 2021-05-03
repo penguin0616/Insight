@@ -88,8 +88,8 @@ return {
 
 	-- burnable.lua
 	burnable = {
-		smolder_time = "Will <color=LIGHT>ignite</color> in: <color=LIGHT>%s</color>",
-		burn_time = "Remaining <color=LIGHT>burn time</color>: <color=LIGHT>%s</color>",
+		--smolder_time = "Will <color=LIGHT>ignite</color> in: <color=LIGHT>%s</color>",
+		--burn_time = "Remaining <color=LIGHT>burn time</color>: <color=LIGHT>%s</color>",
 	},
 
 	-- canary.lua [Prefab]
@@ -112,7 +112,7 @@ return {
 	--chessnavy_ready = "Waiting for you to return to a crime scene.",
 
 	-- chester_eyebone.lua [Prefab]
-	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> %s",
+	--chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> %s",
 
 	-- childspawner.lua
 	childspawner = {
@@ -151,17 +151,17 @@ return {
 	-- debuffable.lua
 	--buff_text = "<color=MAGIC>Buff</color>: <color=MAGIC>%s</color>, %s",
 	debuffs = { -- ugh
-		["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
-		["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
-		["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
+		--["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
+		--["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
+		--["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
 		
-		["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
-		["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
-		["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
+		--["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
+		--["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
+		--["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
 		
-		["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
-		["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
-		["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
+		--["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		--["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		--["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
 	},
 
 	-- deerclopsspawner.lua
@@ -250,23 +250,23 @@ return {
 
 	-- farmplantstress.lua
 	farmplantstress = {
-		stress_points = "Stress Points: %s",
-		display = "Stressors: %s",
-		stress_tier = "Stress level: %s",
+		--stress_points = "Stress Points: %s",
+		--display = "Stressors: %s",
+		--stress_tier = "Stress level: %s",
 		tiers = (IsDST() and {
-			[FARM_PLANT_STRESS.NONE] = "None",
-			[FARM_PLANT_STRESS.LOW] = "Low",
-			[FARM_PLANT_STRESS.MODERATE] = "Moderate",
-			[FARM_PLANT_STRESS.HIGH] = "High",
+			--[FARM_PLANT_STRESS.NONE] = ":)",
+			--[FARM_PLANT_STRESS.LOW] = ":|",
+			--[FARM_PLANT_STRESS.MODERATE] = ":(",
+			--[FARM_PLANT_STRESS.HIGH] = ">:(",
 		} or {}),
 	},
 
 	-- farmsoildrinker.lua
 	farmsoildrinker = {
-		soil_only = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color>",
-		soil_plant = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s/min<sub>plant</sub></color>)",
-		soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color>])<color=WET>/min</color>",
-		soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color> + <color=SHALLOWS>%s<sub>world</sub></color> = <color=#DED15E>%+.1f<sub>net</sub></color>])<color=WET>/min</color>"
+		--soil_only = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color>",
+		--soil_plant = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s/min<sub>plant</sub></color>)",
+		--soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color>])<color=WET>/min</color>",
+		--soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color> + <color=SHALLOWS>%s<sub>world</sub></color> = <color=#DED15E>%+.1f<sub>net</sub></color>])<color=WET>/min</color>"
 	},
 
 	farmsoildrinker_nutrients = {
@@ -438,7 +438,9 @@ return {
 	--followers = "Followers: %s",
 
 	-- lureplant.lua [Prefab]
-	--lureplant_active = "Will become active in: %s",
+	lureplant = {
+		become_active = "Will become active in: %s",
+	},
 
 	-- madsciencelab.lua
 	--madsciencelab_finish = "Will finish in: %s",

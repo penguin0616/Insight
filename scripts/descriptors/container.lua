@@ -47,6 +47,7 @@ end
 ]]
 
 local containers = setmetatable({}, {__mode = "k"})
+local listeners_hooked = setmetatable({}, {__mode = "kv"})
 
 local function GetContainerItems(self)
 	if IsDST() then
@@ -96,8 +97,12 @@ local function GetContainerContents(self, context)
 
 	containers[self.inst] = items
 
-	self.inst:ListenForEvent("itemget", PopContainer)
-	self.inst:ListenForEvent("itemlose", PopContainer)
+	--if not table.contains(self.inst.event_listeners["itemget"][self.inst], PopContainer) then -- this works but eh
+	if not listeners_hooked[self.inst] then
+		listeners_hooked[self.inst] = true
+		self.inst:ListenForEvent("itemget", PopContainer)
+		self.inst:ListenForEvent("itemlose", PopContainer)
+	end
 
 	return containers[self.inst]
 end

@@ -438,7 +438,9 @@ return {
 	followers = "跟随者数量: %s",
 
 	-- lureplant.lua [Prefab]
-	lureplant_active = "开始活动于: %s后",
+	lureplant = {
+		become_active = "开始活动于: %s后",
+	},
 
 	-- madsciencelab.lua
 	madsciencelab_finish = "完成于: %s后",

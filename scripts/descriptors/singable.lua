@@ -53,7 +53,6 @@ local function Describe(self, context)
 	end
 
 	local cost
-	table.foreach(self.inst.songdata, cprint)
 	if self.inst.songdata.DELTA then
 		cost = string.format(context.lstr.singable.cost, Round(self.inst.songdata.DELTA, 0))
 	end
