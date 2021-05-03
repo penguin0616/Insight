@@ -26,6 +26,7 @@ directory. If not, please refer to
 	2. Only break when meeting pucntuations or numbers or player names.
 	3. Remove unneccessary colons to make strings into a natural sentence (reads better). If it's field-like then keep the colon, eg. "Sanity: %s" -> "理智： %s".
 	4. If english "Will die in: %s", then chinese "将死于 %s后". Notice there should be no space before "后".
+	5. Translate "Sanity" as "理智" instead of "精神" by dst wiki: https://dontstarve.fandom.com/zh/wiki/%E7%90%86%E6%99%BA?variant=zh-cn
 ]]
 
 
