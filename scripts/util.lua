@@ -630,5 +630,24 @@ function module.replaceupvalue(func, name, replacement)
 	end
 end
 
+
+--- Format string
+--- With supports for "$" replace-able
+-- @str string to replace
+-- @param replacing fields
+-- @return replaced string
+local _StringFormat = string.format
+string.format = function(str, ...)
+	str2 = _StringFormat(str, ...)
+	if(str2 == str) then
+		for index, field in ipairs{...} do
+			str2 = str2:gsub("$" .. index,  field)
+		end
+		return str2
+	end
+	return str2
+end
+
+
 -- end
 return module
