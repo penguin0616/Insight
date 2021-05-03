@@ -324,9 +324,9 @@ return {
 	fishingrod_loserodtime = "最大缠绕时间: <color=SHALLOWS>%s</color>",
 
 	-- follower.lua
-	leader = "领导者: %s", -- Should mean "master" here by context, but this is fine
+	leader = "主人: %s", -- "主人" should mean "master" here by free translation, "领导者" is literal translation and not precise?
 	loyalty_duration = "忠诚持续时间: %s",
-	ghostlybond = "等级: %s / %s. 于 %s后升级",
+	ghostlybond = "等级: %s / %s. 于 %s后升级", -- Originally "+1 in: %s", by free translation meaning "Upgrade in %s after"
 	ghostlybond_self = "你的等级: %s / %s. 于 %s后升级", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	-- forcecompostable.lua
