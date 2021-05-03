@@ -27,6 +27,23 @@ directory. If not, please refer to
 	4. If english "Will die in: %s", then chinese "将死于 %s后". Notice there should be no space before "后".
 	5. Translate "Sanity" as "理智" instead of "精神" by dst wiki: https://dontstarve.fandom.com/zh/wiki/%E7%90%86%E6%99%BA?variant=zh-cn
 ]]
+
+--[[
+	Pull translations directly from DST, as some language mods might overwrite official translations
+	Eg. Officially "stale" woule be 不新鲜 and "Chinese Language Pack" would give it as 陈旧 for a more native expression
+	So Insight would display translation accordingly
+]]
+local STRINGS = GLOBAL.STRINGS
+local function adjectiveToNoun(str)
+	return str:gsub('%的', '')
+end
+
+local beard = STRINGS.UI.COLLECTIONSCREEN.BEARD
+local catcoon = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
+
+-- perishable
+local stale = adjectiveToNoun(STRINGS.UI.HUD.STALE)
+
 return {
 	-- insightservercrash.lua
 	server_crash = "由于未知原因，服务器崩溃",
@@ -35,13 +52,13 @@ return {
 	dragonfly_ready = "准备战斗",
 
 	-- time.lua
-	-- TODO: consider to remove comma after days, minutes and hours, need to determine where they're used
+	-- there;s no comma after days, minutes and hours in chinese expressions
 	time_segments = "%s 个时段",
-	time_days = "%s 天, ",
+	time_days = "%s 天 ",
 	time_days_short = "%s 天",
 	time_seconds = "%s 秒",
-	time_minutes = "%s 分, ",
-	time_hours = "%s 小时, ",
+	time_minutes = "%s 分 ",
+	time_hours = "%s 小时 ",
 
 	-- meh
 	seasons = {
@@ -76,8 +93,7 @@ return {
 	durability_unwrappable = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color>",
 
 	-- beard.lua
-	beard = "你的胡子将于 %s 天后长好",
-
+	beard = "你的" .. beard .. "将于 %s 天后长好", -- "胡须"
 	-- beargerspawner.lua
 	incoming_bearger_targeted = "<color=%s>目标: %s</color> -> %s",
 
@@ -94,25 +110,25 @@ return {
 	breeder_fishstring = "%s: %s / %s",
 	breeder_nextfishtime = "加鱼于 %s后", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
 	breeder_possiblepredatortime = "可能生成捕食者于 %s后",
-	
+
 	-- burnable.lua
 	burnable = {
 		smolder_time = "即将<color=LIGHT>燃起</color>: <color=LIGHT>%s</color>",
 		burn_time = "剩余<color=LIGHT>燃烧时间</color>: <color=LIGHT>%s</color>"
 	},
-	
+
 	-- canary.lua [Prefab]
 	canary = {
-		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
-		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
-		gas_level_increase = "Increases in %s.",
-		gas_level_decrease = "Decreases in %s."
+		gas_level = "<color=#DBC033>空气等级</color>: %s / %s", -- canary, max saturation canary
+		poison_chance = "变为<color=#522E61>有毒</color>几率: <color=#D8B400>%d%%</color>",
+		gas_level_increase = "增加于 %s",
+		gas_level_decrease = "减少于 %s"
 	},
-	
+
 	-- catcoonden.lua [Prefab]
 	catcoonden = {
-		lives = "浣熊猫寿命: %s / %s",
-		regenerate = "浣熊猫将复活于 %s",
+		lives = catcoon .. "寿命: %s / %s",
+		regenerate = catcoon .. "将复活于 %s",
 		waiting_for_sleep = "等待附近的玩家走开."
 	},
 
@@ -121,7 +137,7 @@ return {
 	chessnavy_ready = "等待你回到犯罪地点",
 
 	-- chester_eyebone.lua [Prefab]
-	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> will respawn in: %s",
+	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color>将生成于 %s后",
 
 	-- childspawner.lua
 	childspawner = {
@@ -149,7 +165,7 @@ return {
 	dominant_trait = "特质: %s",
 
 	-- crop.lua
-	crop_paused = "暂停",
+	crop_paused = "暂停生长",
 	growth = "<color=NATURE><prefab=%s></color>: <color=NATURE>%s</color>",
 
 	-- dapperness.lua
@@ -249,8 +265,8 @@ return {
 
 	-- farmplantable.lua
 	farmplantable = {
-		product = "会长成 <color=NATURE><prefab=%s></color>.",
-		nutrient_consumption = "植物消耗: [<color=NATURE>%d<sub>催长剂</sub></color>, <color=CAMO>%d<sub>堆肥</sub></color>, <color=INEDIBLE>%d<sub>粪肥</sub></color>]",
+		product = "将长成 <color=NATURE><prefab=%s></color>.",
+		nutrient_consumption = "消耗养分: [<color=NATURE>%d<sub>催长剂</sub></color>, <color=CAMO>%d<sub>堆肥</sub></color>, <color=INEDIBLE>%d<sub>粪肥</sub></color>]",
 		good_seasons = "生长季节: %s"
 	},
 
@@ -498,12 +514,9 @@ return {
 	worms_incoming_danger = "<color=HEALTH>%s</color>",
 
 	-- perishable.lua
-	-- TODO: Pull translations directly from DST, as some language mods would overwrite official translations
-	-- eg. Officially "stale" woule be 不新鲜 and "Chinese Language Pack" would give it as 陈旧 for more native expression if player subscribed this mod
-	-- So Insight could display different translations accordingly? Actually do this to all the other possible strings...
 	perishable = {
 		rot = "腐烂",
-		stale = "不新鲜", -- cy: "陈旧", GT says "obsolete"
+		stale = stale, -- cy: "陈旧", GT says "obsolete"
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
