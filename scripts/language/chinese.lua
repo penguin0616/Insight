@@ -20,7 +20,13 @@ directory. If not, please refer to
 
 -- Translated by: https://steamcommunity.com/id/interesting28/ and https://steamcommunity.com/id/cloudyyoung
 
--- CY notes: Not breaking Chinese characters with space, even with color tag. Only break when meeting pucntuations or numbers.
+--[[
+	CY notes (rules to keep consistency):
+	1. Not break Chinese characters with space, even color tags. 
+	2. Only break when meeting pucntuations or numbers or player names.
+	3. Remove unneccessary colons to make strings into a natural sentence (reads better). If it's field-like then keep the colon, eg. "Sanity: %s" -> "理智： %s".
+	4. If english "Will die in: %s", then chinese "将死于 %s后". Notice there should be no space before "后".
+]]
 
 
 return {
@@ -31,6 +37,7 @@ return {
 	dragonfly_ready = "准备战斗",
 
 	-- time.lua
+	-- TODO: consider to remove comma after days, minutes and hours, need to determine where they're used
 	time_segments = "%s 个时段",
 	time_days = "%s 天, ",
 	time_days_short = "%s 天",
@@ -52,7 +59,7 @@ return {
 	alterguardianhat = {
 		minimum_sanity = "最低<color=SANITY>理智</color>光源: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_sanity = "你的<color=SANITY>理智</color>: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
-		summoned_gestalt_damage = "召唤<color=ENLIGHTENMENT>月灵</color>造成<color=HEALTH>%s</color>伤害.",
+		summoned_gestalt_damage = "召唤<color=ENLIGHTENMENT>月灵</color>造成<color=HEALTH>%s</color>伤害",
 	},
 
 	-- appeasement.lua
@@ -68,7 +75,7 @@ return {
 	durability_unwrappable = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color>",
 
 	-- beard.lua
-	beard = "你的胡子将在 %s 天后长好.",
+	beard = "你的胡子将于 %s 天后长好",
 
 	-- beargerspawner.lua
 	incoming_bearger_targeted = "<color=%s>目标: %s</color> -> %s",
@@ -83,8 +90,8 @@ return {
 	breeder_fish4 = "<color=#DED15E>小丑鱼</color>",
 	breeder_fish5 = "<color=#9ADFDE>霓虹鱼</color>",
 	breeder_fishstring = "%s: %s / %s",
-	breeder_nextfishtime = "加鱼于 %s 后", -- this is a confusing one...
-	breeder_possiblepredatortime = "可能生成捕食者于 %s",
+	breeder_nextfishtime = "加鱼于 %s后", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
+	breeder_possiblepredatortime = "可能生成捕食者于 %s后",
 
 	-- burnable.lua
 	burnable = {
@@ -150,8 +157,8 @@ return {
 	incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
 
 	-- diseaseable.lua
-	disease_in = "将感染疾病于 %s",
-	disease_spread = "将传播疾病于 %s",
+	disease_in = "将感染疾病于 %s后",
+	disease_spread = "将传播疾病于 %s后",
 	disease_delay = "疾病被延迟 %s",
 
 	-- domesticatable.lua
@@ -173,7 +180,7 @@ return {
 
 	-- dryer.lua
 	dryer_paused = "暂停晾干",
-	dry_time = "完成还需 %s",
+	dry_time = "完成还需: %s",
 
 	-- edible.lua
 	food_unit = "<color=%s>%s</color> 个单位的 <color=%s>%s</color>",
@@ -206,8 +213,8 @@ return {
 		instant_temperature = "温度变化: %s, (瞬间)",
 		antihistamine = "花粉症延时: %ss",
 	},
-	foodmemory = "最近食用 %s / %s，会忘记于 %s后",
-	wereeater = "已食用<color=MONSTER>怪兽肉</color> %s / %s, 将消逝于 %s", 
+	foodmemory = "最近食用: %s / %s，会忘记于 %s后",
+	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消逝于 %s后", 
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
@@ -251,7 +258,8 @@ return {
 		soil_plant_tile_net = "<color=WET>水分</color>: <color=WET>%s<sub> 格</sub></color> (<color=WET>%s<sub>植物</sub></color> [<color=#2f96c4>%s<sub>格</sub></color> + <color=SHALLOWS>%s<sub>世界</sub></color> = <color=#DED15E>%+.1f<sub>网</sub></color>])<color=WET>/分</color>"
 	},
 
-	farmsoildrinker_nutrients = { -- Formula 催长剂, Compost 堆肥, Manure 粪肥
+	-- Formula 催长剂, Compost 堆肥, Manure 粪肥 by free translation
+	farmsoildrinker_nutrients = {
 		soil_only = "养分: [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>]",
 		soil_plant = "养分: [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>] ([<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>])",
 		--soil_plant_tile = "养分: [%+d<color=NATURE><sub>催</sub></color>, %+d<color=CAMO><sub>堆</sub></color>, %+d<color=INEDIBLE><sub>粪</sub></color>]<sup>格</sup> ([<color=#bee391>%+d<sub>催</sub></color>, <color=#7a9c6e>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>]<sup>plantΔ</sup>   [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>]<sup>格Δ</sup>)",
@@ -276,7 +284,7 @@ return {
 	},
 
 	-- finiteuses.lua
-	action_uses = "<color=#aaaaee>%s</color>%s",
+	action_uses = "<color=#aaaaee>%s</color>: %s",
 	actions = {
 		uses_plain = "使用",
 		sleepin = "睡觉",
@@ -307,7 +315,7 @@ return {
 
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
-	fish_recharge = "+1 条鱼于 %s",
+	fish_recharge = "+1 条鱼于 %s后",
 	--fish_wait_time = "抓一条鱼将花费 <color=SHALLOWS>%s 秒</color>.",
 
 	-- fishingrod.lua
@@ -315,10 +323,10 @@ return {
 	fishingrod_loserodtime = "最大缠绕时间: <color=SHALLOWS>%s</color>",
 
 	-- follower.lua
-	leader = "领导者: %s", -- cy "主人" should mean "master" here by free translation, "领导者" is direct translation
+	leader = "领导者: %s", -- Should mean "master" here by context, but this is fine
 	loyalty_duration = "忠诚持续时间: %s",
-	ghostlybond = "等级: %s / %s. +1 于 %s 后",
-	ghostlybond_self = "你的等级: %s / %s. +1 于 %s 后", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	ghostlybond = "等级: %s / %s. 于 %s后升级",
+	ghostlybond_self = "你的等级: %s / %s. 于 %s后升级", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	-- forcecompostable.lua
 	forcecompostable = "肥料值: %s",
@@ -342,9 +350,9 @@ return {
 	},
 
 	-- growable.lua
-	growth_stage = "'%s' 阶段: %s / %s: ", 
+	growth_stage = "'%s' 阶段: %s / %s: ",
 	growth_paused = "暂停生长",
-	growth_next_stage = "下一阶段于 %s 后",
+	growth_next_stage = "下一阶段于 %s后",
 
 	-- grower.lua
 	harvests = "<color=NATURE>剩余使用次数</color>: <color=NATURE>%s</color> / <color=NATURE>%s</color>",
@@ -393,8 +401,8 @@ return {
 	-- inspectable.lua
 	catcoonden = {
 		lives = "浣熊猫寿命: %s / %s",
-		regenerate = "浣熊猫将复活于 %s",
-		waiting_for_sleep = "等待附近玩家走开。",
+		regenerate = "浣熊猫将复活于 %s后",
+		waiting_for_sleep = "等待附近玩家走开.",
 	},
 	wx78_charge = "剩余充能: %s",
 	stagehand = {
@@ -429,13 +437,13 @@ return {
 
 	-- klaussackspawner.lua
 	klaussack_spawnsin = "%s",
-	klaussack_despawn = "消失在第 %s 天",
+	klaussack_despawn = "消失于第 %s 天",
 
 	-- leader.lua
 	followers = "跟随者数量: %s",
 
 	-- madsciencelab.lua
-	madsciencelab_finish = "完成于 %s 后",
+	madsciencelab_finish = "完成于 %s后",
 
 	-- malbatrossspawner.lua
 	malbatross_spawnsin = "%s",
@@ -453,7 +461,7 @@ return {
 		active = "每 %s 秒检查一次触发器",
 		inactive = "不检查触发器",
 		beemine_bees = "将飞出 %s 个蜜蜂",
-		trap_starfish_cooldown = "重组于 %s 后",
+		trap_starfish_cooldown = "重组于 %s后",
 	},
 
 	-- moisture.lua
@@ -470,7 +478,7 @@ return {
 	},
 
 	-- nightmareclock.lua
-	nightmareclock = "<color=%s>阶段: %s</color>, %s", -- Free translation "阶段" would fit better here, it can mean both stage and phase; dst wiki uses this term as well
+	nightmareclock = "<color=%s>阶段: %s</color>, %s", -- "阶段 Stage" by free translation, same term used in dst wiki
 	nightmareclock_lock = "被<color=#CE3D45>远古钥匙</color>锁住",
 
 	-- oar.lua
@@ -490,16 +498,16 @@ return {
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
-		transition = "<color=MONSTER>%s</color>于 %s", -- Both are correct
-		transition_extended = "<color=MONSTER>%s</color>于 %s (<color=MONSTER>%s%%</color>)",
+		transition = "<color=MONSTER>%s</color>于 %s后", -- This is correct
+		transition_extended = "<color=MONSTER>%s</color>于 %s后 (<color=MONSTER>%s%%</color>)",
 		paused = "当前暂停腐烂",
 	},
 
 	-- petrifiable.lua
-	petrify = "石化于 %s",
+	petrify = "石化于 %s后",
 
 	-- pickable.lua
-	regrowth = "<color=NATURE>重新生长</color>于 <color=NATURE>%s</color>", -- it's understandable but could be improved, need to modify replacement logic somewhere else, similar thing for the whole debuffable part too
+	regrowth = "<color=NATURE>重新生长</color>于 <color=NATURE>%s</color>后", -- has grammar problem, left because too annoying
 	regrowth_paused = "重生暂停",
 	pickable_cycles = "剩余收获次数: %s / %s",
 
@@ -510,7 +518,7 @@ return {
 	preservative = "恢复 %s%% 新鲜度.",
 
 	-- quaker.lua
-	next_quake = "<color=INEDIBLE>地震</color>于 %s", -- same thing as perishable transition
+	next_quake = "<color=INEDIBLE>地震</color>于 %s后", -- same thing as perishable transition
 
 	-- questowner.lua
 	questowner = {
@@ -610,7 +618,7 @@ return {
 	temperature = "温度: %s",
 
 	-- tigersharker.lua
-	tigershark_spawnin = "重生于 %s",
+	tigershark_spawnin = "重生于 %s后",
 	tigershark_waiting = "重生准备就绪",
 	tigershark_exists = "当前虎鲨出没",
 
