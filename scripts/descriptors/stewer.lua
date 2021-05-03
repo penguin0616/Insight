@@ -60,28 +60,72 @@ local function GetCookTimeModifier(self)
 	return 1 - self.cooktimemult
 end
 
-local function GetProductDisplayName(recipe, spice)
-	if not spice then
-		return STRINGS.NAMES[string.upper(product_prefab)] or ("\"" .. product_prefab.. "\"")
-	end
-
-	return subfmt(STRINGS.NAMES[spice.."_FOOD"], { food = STRINGS.NAMES[string.upper(data.basename)] })
-	--recipe.spice, recipe.basename
-end
-
 local function GetRecipeInfo(recipe)
 	local data = {
 		basename = recipe.basename or recipe.name,
+		spice = recipe.spice,
 		name = recipe.name,
 		stacksize = recipe.stacksize or 1,
-		fancyname = nil
 	}
 
+	--[[
+		cookbook_atlas="images/cookbook_mashedpotatoes.xml",
+		cookbook_category="cookpot",
+		cooktime=1,
+		floater={ [2]=0.1, [3]={ 0.7, 0.6, 0.7 } },
+		foodtype="VEGGIE",
+		health=20,
+		hunger=37.5,
+		name="mashedpotatoes",
+		perishtime=7200,
+		potlevel="low",
+		priority=20,
+		sanity=33,
+		supportedCookers={ archive_cookpot=true, cookpot=true, portablecookpot=true },
+	]]
+
+	--[[
+		{
+		basename="mashedpotatoes",
+		cookbook_atlas="images/cookbook_mashedpotatoes_spice_garlic.xml",
+		cookbook_category="spiced_cookpot",
+		cooktime=0.12,
+		floater={ "med", [3]={ 0.85, 0.7, 0.85 } },
+		foodtype="VEGGIE",
+		health=20,
+		hunger=37.5,
+		name="mashedpotatoes_spice_garlic",
+		official=true,
+		oneatenfn=loadstring("LuaQ\000\000\000\000\000scripts/spicedfoods.lua\000\000\000\000\000\000\000\000\000 \000\000\000\000À\000@@W@\000À\000@@À@\000\000\000\000\000\000À\000\000AW@@\000À\000\000A@A\000@\000\000Á\000Á\000@\000\000@\000À\000@@\000BA\000AA\000@\000\000\000\
+		\000\000\000\000\000\000components\000\000\000\000debuffable\000\000\
+		\000\000\000IsEnabled\000\000\000\000health\000\000\000\000IsDead\000\000\000\000HasTag\000\000\000\000playerghost\000\
+		\000\000\000AddDebuff\000\000\000\000buff_playerabsorption\000\000\000\000\000 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000	\000\000\000	\000\000\000	\000\000\000	\000\000\000	\000\000\000	\000\000\000\000\000\000\000\000\000\000\000\000inst\000\000\000\000\000\000\000\000\000\000\000eater\000\000\000\000\000\000\000\000\000\000\000\000"),
+		perishtime=7200,
+		potlevel="low",
+		prefabs={ "buff_playerabsorption" },
+		priority=100,
+		sanity=33,
+		spice="SPICE_GARLIC",
+		supportedCookers={ portablespicer=true },
+		test=closure {
+			"LuaQ\000\000\000\000\000scripts/spicedfoods.lua\000.\000\000\000.\000\000\000\000\000\000\000Ĝ000\000\000ƀ\000ڜ000\000\000@\000Ĝ000\000ƀ\000ޜ000\000\000\000\000\000\000\000\000\000\000\000\000\000\000.\000\000\000.\000\000\000.\000\000\000.\000\000\000.\000\000\000.\000\000\000.\000\000\000.\000\000\000\000\000\000\000\000\000cooker\000\000\000\000\000\000\000\000\000\000\000names\000\000\000\000\000\000\000\000\000\000\000tags\000\000\000\000\000\000\000\000\000\000\000	\000\000\000foodname\000\
+		\000\000\000spicename\000",
+			"mashedpotatoes",
+			"spice_garlic" 
+		},
+		weight=1 
+		}
+	]]
+
+	--print(DataDumper(recipe))
+
+	--[[
 	if recipe.spice then
 		data.fancyname = subfmt(STRINGS.NAMES[recipe.spice.."_FOOD"], { food = STRINGS.NAMES[string.upper(data.basename)] })
 	else
 		data.fancyname = STRINGS.NAMES[string.upper(data.name)]
 	end
+	--]]
 
 	return data
 end
@@ -107,18 +151,18 @@ local function Describe(self, context)
 	if cook_time_modifier < 0 then
 		-- 1 - 1.25 = -0.25 = you cook slower
 		-- slower
-		cook_time_string = string.format(context.lstr.cooktime_modifier_slower, math.abs(cook_time_modifier) * 100)
+		cook_time_string = string.format(context.lstr.stewer.cooktime_modifier_slower, math.abs(cook_time_modifier) * 100)
 	elseif cook_time_modifier > 0 then
 		-- 1 - 0.8 = 0.2 = you cook faster
 		-- faster
-		cook_time_string = string.format(context.lstr.cooktime_modifier_faster, cook_time_modifier * 100)
+		cook_time_string = string.format(context.lstr.stewer.cooktime_modifier_faster, cook_time_modifier * 100)
 	end
 
 	-- chef
 	if self.done or cooktime > 0 then -- IsDone() missing in DS, exists in DLC
 		local chef = context.config["stewer_chef"] and GetChef(self)
 		if chef then
-			chef_string = string.format(context.lstr.cooker, chef.colour, chef.name)
+			chef_string = string.format(context.lstr.stewer.cooker, chef.colour, chef.name)
 		end
 
 		cooktime = math.ceil(cooktime)
@@ -126,41 +170,18 @@ local function Describe(self, context)
 		local recipe = GetRecipe(self.inst.prefab, self.product)
 
 		if not recipe then
-			food = string.format(context.lstr.stewer_product, "?", "???")
+			food = string.format(context.lstr.stewer.product, "?", "???")
 		else
 			local data = GetRecipeInfo(recipe)
 			if context.usingIcons and PrefabHasIcon(data.name) then -- self.product
-				local base_food_string = cooktime > 0 and context.lstr.cooktime_remaining or context.lstr.stewer_product
+				local base_food_string = cooktime > 0 and context.lstr.stewer.cooktime_remaining or context.lstr.stewer.product
 				food = string.format(base_food_string, data.name, data.stacksize, cooktime)
 			else
-				local base_food_string = cooktime > 0 and context.lstr.lang.cooktime_remaining or context.lstr.lang.stewer_product
-				food = string.format(base_food_string, data.fancyname, data.stacksize, cooktime)
+				local base_food_string = cooktime > 0 and context.lstr.lang.stewer.cooktime_remaining or context.lstr.lang.stewer.product
+				food = string.format(base_food_string, data.name, data.stacksize, cooktime)
 			end
 		end
 	end
-
-	--[[
-	
-	if chef and (self:IsDone() or cooktime > 0) then -- 
-		chef_string = string.format(context.lstr.cooker, chef.colour, chef.name)
-	end
-
-	
-	-- food identification and cooking
-	if self:IsDone() or cooktime > 0 then -- not using :IsCooking() because its not in DS
-		cooktime = math.ceil(cooktime)
-
-		local recipe = GetRecipe(self.inst.prefab, self.product)
-		local stacksize = recipe and recipe.stacksize or 1
-			
-		if context.usingIcons and PrefabHasIcon(self.product) then
-			food = string.format(context.lstr.cooktime_remaining, self.product, stacksize, cooktime)
-		else
-			local name = STRINGS.NAMES[string.upper(self.product)] or ("\"" .. self.product .. "\"")
-			food = string.format(context.lstr.lang.cooktime_remaining, name, stacksize, cooktime)
-		end
-	end
-	--]]
 
 	description = CombineLines(food, chef_string, cook_time_string)
 

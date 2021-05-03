@@ -197,6 +197,10 @@ function ResolveColors(str)
 end
 
 function GetPrefabNameOrElse(prefab, other)
+	if not prefab then
+		return string.format(other or "ERROR: %s</color>", ApplyColour(tostring(nil), "#ff0000"))
+	end
+
 	local upper = prefab:upper()
 
 	-- a seed?
@@ -251,14 +255,13 @@ table.insert(ornament, MakeOrnament("festivalevents5", "winter_ornamentgorge", n
        		SPICE_CHILI_FOOD = "Spicy {food}",
         	SPICE_SALT_FOOD = "Salty {food}",
 		--]]
-		return subfmt(STRINGS.NAMES["SPICE_" .. spice .. "_FOOD"], { food = GetPrefabNameOrElse(spiced, other) })
+		local str = STRINGS.NAMES["SPICE_" .. spice .. "_FOOD"]
+		if str then
+			return subfmt(str, { food = GetPrefabNameOrElse(spiced, other) })
+		end
 	end
 
-	if other then
-		return string.format(other, prefab)
-	end
-
-	return "no_name:" .. prefab
+	return string.format(other or "no_name: %s", prefab)
 end
 
 function FormatDecimal(num, places)

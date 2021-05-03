@@ -18,30 +18,14 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- timer.lua
-local function Describe(self, context)
+-- archive_lockbox.lua [Prefab]
+local function Describe(inst, context)
 	local description = nil
 
-	if not context.config["display_timers"] then
-		return
+	if inst.product_orchestrina then
+		description = string.format(context.lstr.archive_lockbox_unlocks, inst.product_orchestrina)
 	end
-
-	local timers = {}
-
-	for name in pairs(self.timers) do
-		local paused = self:IsPaused(name)
-		local time_left = not paused and self:GetTimeLeft(name) or nil
-
-		local time_string = (paused and context.lstr.timer.paused) or (time_left and context.time:SimpleProcess(time_left))
-		if time_string then
-			timers[#timers+1] = string.format(context.lstr.timer.label, name, time_string)
-		end
-	end
-
-	if #timers > 0 then
-		description = table.concat(timers, "\n")
-	end
-
+	
 	return {
 		priority = 0,
 		description = description

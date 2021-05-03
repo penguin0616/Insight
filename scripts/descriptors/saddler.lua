@@ -18,29 +18,21 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- timer.lua
+-- saddler.lua
 local function Describe(self, context)
 	local description = nil
 
-	if not context.config["display_timers"] then
-		return
+	local damage_string
+	if self.bonusdamage and self.bonusdamage ~= 0 then
+		damage_string = string.format(context.lstr.saddler.bonus_damage, self.bonusdamage)
 	end
 
-	local timers = {}
-
-	for name in pairs(self.timers) do
-		local paused = self:IsPaused(name)
-		local time_left = not paused and self:GetTimeLeft(name) or nil
-
-		local time_string = (paused and context.lstr.timer.paused) or (time_left and context.time:SimpleProcess(time_left))
-		if time_string then
-			timers[#timers+1] = string.format(context.lstr.timer.label, name, time_string)
-		end
+	local speed_string
+	if self.speedmult and self.speedmult ~= 1 then
+		speed_string = string.format(context.lstr.saddler.bonus_speed, Round((self.speedmult - 1) * 100, 0))
 	end
 
-	if #timers > 0 then
-		description = table.concat(timers, "\n")
-	end
+	description = CombineLines(damage_string, speed_string)
 
 	return {
 		priority = 0,

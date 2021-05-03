@@ -19,6 +19,22 @@ directory. If not, please refer to
 ]]
 
 -- equippable.lua
+--[[
+	x=ThePlayer.components.sanity.current; print(x)
+	ThePlayer.components.inventory:Equip(c_findnext'walrushat');
+	ThePlayer:DoTaskInTime(60, function() ThePlayer.components.inventory:Unequip(EQUIPSLOTS.HEAD);c=ThePlayer.components.sanity.current; print(c); print(c-x); end);
+
+
+	rate_modifier = 1.1
+	60
+	67.3292594151
+	7.3292596415095
+
+	rate_modifier = 1
+	60
+	66.66296331046
+	6.6629633104599
+]]
 local function GetDappernessForPlayer(self, player)
 	if not self.GetDapperness then
 		return nil

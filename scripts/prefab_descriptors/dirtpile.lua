@@ -18,29 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- timer.lua
-local function Describe(self, context)
-	local description = nil
-
-	if not context.config["display_timers"] then
-		return
-	end
-
-	local timers = {}
-
-	for name in pairs(self.timers) do
-		local paused = self:IsPaused(name)
-		local time_left = not paused and self:GetTimeLeft(name) or nil
-
-		local time_string = (paused and context.lstr.timer.paused) or (time_left and context.time:SimpleProcess(time_left))
-		if time_string then
-			timers[#timers+1] = string.format(context.lstr.timer.label, name, time_string)
-		end
-	end
-
-	if #timers > 0 then
-		description = table.concat(timers, "\n")
-	end
+-- dirtpile.lua [Prefab]
+local function Describe(inst, context)
+	local description = "<color=#FF0000>Unable to load hunter descriptor.</color>"
 
 	return {
 		priority = 0,
@@ -48,8 +28,6 @@ local function Describe(self, context)
 	}
 end
 
-
-
 return {
-	Describe = Describe
+	Describe = Insight.descriptors.hunter and Insight.descriptors.hunter.DescribeTrack or Describe
 }

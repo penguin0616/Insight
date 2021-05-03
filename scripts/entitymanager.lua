@@ -25,37 +25,36 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local Entity_HasTag = Entity.HasTag
 
+local PREFABS_TO_IGNORE = {}
+
+local is_dst = IsDST()
+local is_ds = IsDS()
+local is_client_host = IsClientHost()
+local manager = nil
+
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
 
-local function SetEntitySleep(manager, inst, rmv)
-	--manager.chests[inst] = nil
+local function SetEntitySleep(inst)
 	if manager.active_entities[inst] == nil then
 		return
 	end
-
 	
 	manager.active_entities[inst] = nil
 	manager.active_entity_lookup[inst.GUID] = nil
 	manager.entity_count = manager.entity_count - 1
 	 
-	--mprint("sleep", inst, manager.entity_count)
 	manager:PushEvent("sleep", inst)
 end
 
-local function SetEntityAwake(manager, inst)
+local function SetEntityAwake(inst)
 	if manager.active_entities[inst] then
-		--mprint(inst, 'rejected already awake')
 		return
 	end
 
-	if not inst.Transform or not inst.AnimState then
-		return
-	elseif Entity_HasTag(inst.entity, "fx") or Entity_HasTag(inst.entity, "DECOR") or Entity_HasTag(inst.entity, "CLASSIFIED") then -- or inst:HasTag("INLIMBO") , but inventory items are INLIMBO in DST || search EntityScript:IsInLimbo
-		return
-	elseif Entity_HasTag(inst.entity, "NOCLICK") then 
-		if inst.replica then
+	if not inst.components.spawnfader and Entity_HasTag(inst.entity, "NOCLICK") then 
+		if inst.replica then 
 			if inst.replica.inventoryitem == nil then
 				return
 			end
@@ -65,22 +64,11 @@ local function SetEntityAwake(manager, inst)
 			end
 		end
 	end
-
-	--mprint("awake", inst, manager.entity_count)
-
-	--[[
-	inst:DoTaskInTime(0.01, function()
-		if inst.replica.container and inst:IsValid() then
-			manager.chests[inst] = true
-		end
-	end)
-	--]]
 	
-	manager.active_entities[inst] = 0 -- ~.02 improvement --GetEntityDebugData(inst)
+	manager.active_entities[inst] = true
 	manager.active_entity_lookup[inst.GUID] = inst
 	manager.entity_count = manager.entity_count + 1
 
-	--table.insert(manager.active_entities, inst)
 	manager:PushEvent("awake", inst)
 end
 
@@ -89,42 +77,50 @@ end
 --------------------------------------------------------------------------
 
 local EntityManager = Class(function(self)
-	self.active_entities = setmetatable(createTable(1000), { __mode="k" })
+	self.active_entities = setmetatable(createTable(1000), { __mode="kv" })
 	self.active_entity_lookup = setmetatable(createTable(1000), { __mode="kv" })
 	self.entity_count = 0
 	self.listeners = {}
 	--self.chests = setmetatable(createTable(250), { __mode="k" }) -- used for highlighting, and that meant item highlighting didnt work since it only considered chests
 end)
 
+function EntityManager.Manage(inst)
+	if PREFABS_TO_IGNORE[inst.prefab] then
+		return
+	end
+
+	if not inst.Transform or not inst.AnimState then
+		--[[
+		print(string.format("DENIED: %s | FX: %s, %s | DECOR: %s | CLASSIFIED: %s", 
+			tostring(inst), 
+			tostring(inst:HasTag("fx")), 
+			tostring(inst:HasTag("FX")), -- case doesn't matter
+			tostring(inst:HasTag("DECOR")), 
+			tostring(inst:HasTag("CLASSIFIED"))
+		))
+		--]]
+		PREFABS_TO_IGNORE[inst.prefab] = true
+		return
+	elseif Entity_HasTag(inst.entity, "fx") or Entity_HasTag(inst.entity, "decor") or Entity_HasTag(inst.entity, "classified") then
+		PREFABS_TO_IGNORE[inst.prefab] = true
+		return
+	end
+	
+	-- localPlayer.replica.insight:EntityActive(inst)
+	inst:ListenForEvent("entitysleep", SetEntitySleep)
+	inst:ListenForEvent("entitywake", SetEntityAwake)
+	inst:ListenForEvent("onremove", SetEntitySleep)
+
+	if not is_client_host or (is_client_host and inst.entity:IsAwake()) then
+		SetEntityAwake(inst)
+	end
+end
+
+
 function EntityManager:Count()
 	return self.entity_count
 end
 
-function EntityManager:LookupGUID(GUID)
-	return self.active_entity_lookup[GUID]
-end
-
-function EntityManager:Manage(entity)
-	if not entity then
-		--return
-	end
-
-	entity:ListenForEvent("entitysleep", function()
-		SetEntitySleep(self, entity)
-	end)
-
-	entity:ListenForEvent("entitywake", function()
-		SetEntityAwake(self, entity)
-	end)
-
-	entity:ListenForEvent("onremove", function() -- preemptive strike
-		SetEntitySleep(self, entity, true) -- preemptive strike
-	end)
-
-	if not entity:IsAsleep() then
-		SetEntityAwake(self, entity)
-	end
-end
 
 function EntityManager:IsEntityActive(entity)
 	return self.active_entities[entity] ~= nil
@@ -147,4 +143,6 @@ function EntityManager:PushEvent(name, ...)
 end
 
 
-return EntityManager
+manager = EntityManager()
+
+return manager

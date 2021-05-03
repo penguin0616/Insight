@@ -44,7 +44,7 @@ local function GetAttackerDamageData(attacker, target)
 	else
 		local weapon = attacker.components.inventory ~= nil and attacker.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 		if weapon and weapon.components.weapon then -- monkeys
-			damage = Insight.descriptors.weapon.GetDamage(weapon.components.weapon, attacker, target) or 0
+			damage = Insight.descriptors.weapon and Insight.descriptors.weapon.GetDamage and Insight.descriptors.weapon.GetDamage(weapon.components.weapon, attacker, target) or 0
 		end
 
 		-- attacker damage multiplier
@@ -197,9 +197,13 @@ local function Describe(self, context)
 	if not context.config["display_mob_attack_damage"] then
 		return
 	end
+
+	if self.inst == context.player then
+		-- shouldn't be calculating damage towards myself
+		return
+	end
 	
 	local description = nil
-
 	local damage = GetAttackerDamageData(self.inst, context.player)
 
 	if damage ~= 0 then

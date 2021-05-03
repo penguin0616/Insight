@@ -34,7 +34,7 @@ directory. If not, please refer to
 --]]
 
 
-local skip_closing = {icon=true}
+local skip_closing = {icon=true, prefab=true}
 
 local function GenerateErrorString(rdr, desc)
 	return "parsing error" .. "\noriginal: " .. rdr.original .. "\nbuffer (#" .. #rdr.buffer .. "): " .. rdr.buffer .. "\nerror: " .. (desc or "not specified")

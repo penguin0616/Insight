@@ -86,7 +86,7 @@ end
 
 
 -- also used by combat descriptor
-local function GetDamage(self, f, attacker, target)
+local function GetDamage(self, attacker, target)
 	-- attacker is the weapon owner
 	local damage = nil --attacker.components.combat.defaultdamage --or TUNING.UNARMED_DAMAGE
 
@@ -94,7 +94,7 @@ local function GetDamage(self, f, attacker, target)
 		-- DST is Weapon:GetDamage(attacker, target)
 		-- in DST, some modded weapons don't put a nil check for targets. right now, April 5 2021, no vanilla weapons care about the target.
 		if self.inst.prefab ~= nil and WEAPON_CACHE[self.inst.prefab] == nil then 
-			WEAPON_CACHE[self.inst.prefab] = pcall(self.GetDamage, self, attacker, target)
+			WEAPON_CACHE[self.inst.prefab] = pcall(self.GetDamage, self, attacker, nil)
 		end
 
 		if self.inst.prefab == nil or WEAPON_CACHE[self.inst.prefab] == true then -- we know the GetDamage was safe to call.
@@ -154,7 +154,7 @@ local function Describe(self, context)
 	end
 
 	-- Walter's slingshot
-	if inst:HasTag("slingshot") then -- walter's slingshot
+	if inst.components.container and inst:HasTag("slingshot") then -- walter's slingshot
 		local ammo = inst.components.container:GetItemInSlot(1)
 		if ammo then
 			local ammo_data = GetSlingshotAmmoData(ammo)

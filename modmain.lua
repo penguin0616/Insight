@@ -177,13 +177,12 @@ if false and DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 2")
 end
 
-PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
+PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_ghost_klaus_sack"}
 string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end})
 import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
 util = import("util")
 Color = import("helpers/color")
-entityManager = import("entitymanager")()
 rpcNetwork = import("rpcnetwork")
 combatHelper = import("helpers/combat")
 
@@ -237,7 +236,7 @@ local descriptors_ignore = {
 	
 	-- now for DST stuff
 	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "constructionsite", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
-	"grogginess", "workmultiplier", "aura", "writeable", -- may be interesting looking into
+	"grogginess", "workmultiplier", "aura", "writeable", "preserver", -- may be interesting looking into
 	"resistance", -- for the armor blocking of bone armor
 
 	"playerinspectable", "playeractionpicker", "playervision", "pinnable", "playercontroller", "playervoter", "singingshelltrigger", "tackler", "sleepingbaguser", "skinner", "playermetrics",-- from mousing over player
@@ -246,8 +245,8 @@ local descriptors_ignore = {
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", "spellcaster", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "worldsettingstimer", "murderable", "poppable", "balloonmaker", -- don't care
-	"markable_proxy", "saved_scale", -- don't care
+	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", -- don't care
+	"markable_proxy", "saved_scale", "gingerbreadhunter", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -263,8 +262,6 @@ local descriptors_ignore = {
 	"squidspawner", "moosespawner", "birdspawner", "worldwind", "retrofitforestmap_anr", "deerherdspawner", "deerherding", "wildfires", "flotsamgenerator", "brightmarespawner", 
 	"sandstorms", "messagebottlemanager", "forestpetrification", "penguinspawner", "sharklistener", "frograin", "waterphysics", "butterflyspawner", "worldmeteorshower",
 	"worlddeciduoustreeupdater", "schoolspawner", "specialeventsetup", "playerspawner", "walkableplatformmanager", "lureplantspawner", "wavemanager",
-	
-	
 
 	-- Caves
 	"retrofitcavemap_anr", "caveins", "grottowaterfallsoundcontroller", "grottowarmanager", "archivemanager", 
@@ -619,11 +616,19 @@ local function GetComponentDescriptor(name)
 		end
 	else
 		-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
+		
+
 		local _, en = string.find(res, ":%d+:%s")
 		res = string.sub(res, (en or 0)+1)
-		if not res:find("not exist") then
+	
+		if res:find("File does not exist") then
+
+		else
+			mprint("Failed to load descriptor", name, "|", res)
 			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end }
 		end
+
+		
 
 		return false
 	end
@@ -908,7 +913,6 @@ function RequestEntityInformation(entity, player, params)
 
 
 
-	--local ok = DEBUG_ENABLED and ("is_active: " .. tostring(entityManager:IsEntityActive(entity)) .. "\n") or ""
 
 	local id = params.id
 
@@ -1002,9 +1006,9 @@ function GetWorldInformation(player) -- refactor?
 	
 
 	if GetWorldType() >= 2 then
-		local descriptor = GetComponentDescriptor("krakener")
+		local descriptor = Insight.descriptors.krakener
 		if descriptor then
-			local krakener = descriptor(player.components.krakener, context)
+			local krakener = descriptor.Describe(player.components.krakener, context)
 
 			for j, k in pairs(krakener) do
 				if j ~= 'description' and j ~= 'priority' then
@@ -1044,9 +1048,9 @@ function GetWorldInformation(player) -- refactor?
 		-- antlion (could use sinkholespawner)
 		if data.raw["antlion"] == nil and helper:GetAntlionData() then
 			context.antlion_data = helper:GetAntlionData()
-			local res = Insight.descriptors.sinkholespawner.Describe(nil, context)
-			data.special_data["antlion"] = GetSpecialData(res)
-			data.raw["antlion"] = res.description
+			local res = Insight.descriptors.sinkholespawner and Insight.descriptors.sinkholespawner.Describe(nil, context) or nil
+			data.special_data["antlion"] = res and GetSpecialData(res) or nil
+			data.raw["antlion"] = res and res.description or nil
 		end
 
 		-- ancient gateway
@@ -1097,49 +1101,49 @@ function GetWorldInformation(player) -- refactor?
 		-- bearger
 		if data.raw["beargerspawner"] == nil and helper:GetBeargerData() then
 			context.bearger_data = helper:GetBeargerData()
-			local res = Insight.descriptors.beargerspawner.Describe(nil, context)
-			data.special_data["beargerspawner"] = GetSpecialData(res)
-			data.raw["beargerspawner"] = res.description
+			local res = Insight.descriptors.beargerspawner and Insight.descriptors.beargerspawner.Describe(nil, context) or nil
+			data.special_data["beargerspawner"] = res and GetSpecialData(res) or nil
+			data.raw["beargerspawner"] = res and res.description or nil
 		end
 
 		-- crabking
 		if data.raw["crabkingspawner"] == nil and helper:GetCrabKingData() then
 			context.crabking_data = helper:GetCrabKingData()
-			local res = Insight.descriptors.crabkingspawner.Describe(nil, context)
-			data.special_data["crabkingspawner"] = GetSpecialData(res)
-			data.raw["crabkingspawner"] = res.description
+			local res = Insight.descriptors.crabkingspawner and Insight.descriptors.crabkingspawner.Describe(nil, context) or nil
+			data.special_data["crabkingspawner"] = res and GetSpecialData(res) or nil
+			data.raw["crabkingspawner"] = res and res.description or nil
 		end
 
 		-- deerclops
 		if data.raw["deerclopsspawner"] == nil and helper:GetDeerclopsData() then
 			context.deerclops_data = helper:GetDeerclopsData()
-			local res = Insight.descriptors.deerclopsspawner.Describe(nil, context)
-			data.special_data["deerclopsspawner"] = GetSpecialData(res)
-			data.raw["deerclopsspawner"] = res.description
+			local res = Insight.descriptors.deerclopsspawner and Insight.descriptors.deerclopsspawner.Describe(nil, context) or nil
+			data.special_data["deerclopsspawner"] = res and GetSpecialData(res) or nil
+			data.raw["deerclopsspawner"] = res and res.description or nil
 		end
 
 		-- klaussack
 		if data.raw["klaussackspawner"] == nil and helper:GetKlausSackData() then
 			context.klaussack_data = helper:GetKlausSackData()
-			local res = Insight.descriptors.klaussackspawner.Describe(nil, context)
-			data.special_data["klaussackspawner"] = GetSpecialData(res)
-			data.raw["klaussackspawner"] = res.description
+			local res = Insight.descriptors.klaussackspawner and Insight.descriptors.klaussackspawner.Describe(nil, context) or nil
+			data.special_data["klaussackspawner"] = res and GetSpecialData(res) or nil
+			data.raw["klaussackspawner"] = res and res.description or nil
 		end
 
 		-- malbatross
 		if data.raw["malbatrossspawner"] == nil and helper:GetMalbatrossData() then
 			context.malbatross_data = helper:GetMalbatrossData()
-			local res = Insight.descriptors.malbatrossspawner.Describe(nil, context)
-			data.special_data["malbatrossspawner"] = GetSpecialData(res)
-			data.raw["malbatrossspawner"] = res.description
+			local res = Insight.descriptors.malbatrossspawner and Insight.descriptors.malbatrossspawner.Describe(nil, context) or nil
+			data.special_data["malbatrossspawner"] = res and GetSpecialData(res) or nil
+			data.raw["malbatrossspawner"] = res and res.description or nil
 		end
 
 		-- toadstool
 		if data.raw["toadstoolspawner"] == nil and helper:GetToadstoolData() then
 			context.toadstool_data = helper:GetToadstoolData()
-			local res = Insight.descriptors.toadstoolspawner.Describe(nil, context)
-			data.special_data["toadstoolspawner"] = GetSpecialData(res)
-			data.raw["toadstoolspawner"] = res.description
+			local res = Insight.descriptors.toadstoolspawner and Insight.descriptors.toadstoolspawner.Describe(nil, context) or nil
+			data.special_data["toadstoolspawner"] = res and GetSpecialData(res) or nil
+			data.raw["toadstoolspawner"] = res and res.description or nil
 		end
 
 		-- add data from network
@@ -1311,17 +1315,6 @@ function decompress2(str)
 	return res()
 end
 
-local function CheckForKlausSack(inst)
-	-- klaussacklock
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local found = TheSim:FindEntities(x, y, z, 2, {"klaussacklock"})
-	if #found > 0 then
-		inst.MiniMapEntity:SetEnabled(false)
-	else
-		inst.MiniMapEntity:SetEnabled(true)
-	end
-end
-
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
@@ -1433,7 +1426,7 @@ AddPrefabPostInit("cave_exit", function(inst)
 	end)
 end)
 
-do
+if true then
 	local FakeCombats = {
 		["moonstorm_spark"] = {
 			attack_range = 4,
@@ -1779,7 +1772,13 @@ if IsDST() then
 	end)
 
 	AddPrefabPostInit("deerspawningground", function(inst)
+		if not GetModConfigData("klaus_sack_markers") then
+			return
+		end
+
 		--dprint('prefabpostinitdeer', inst)
+		local marker = SpawnPrefab("insight_ghost_klaus_sack")
+		marker.owner = inst
 	end)
 
 	AddPrefabPostInit("klaus_sack", function(inst)
@@ -2692,7 +2691,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 		--]]
 
 		TheSim:QueryServer(
-			"https://www.penguin0616.com/dontstarve/reportcrash",
+			"https://dst.penguin0616.com/crashreporter/reportcrash",
 			function(res, isSuccessful, statusCode)
 				mprint("Report:", res, isSuccessful, statusCode)
 
@@ -2881,6 +2880,7 @@ if IsDS() or IsClient() or IsClientHost() then
 		end
 	end
 
+	entityManager = import("entitymanager")
 	import("clientmodmain")
 end
 

@@ -33,7 +33,7 @@ local function Describe(self, context)
 		elseif name:sub(-10) == "_blueprint" then
 			clr = "#4A7ECE"--"#396DBD"
 		end
-		table.insert(alt_description, string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>)", clr, GetPrefabNameOrElse(name), amount))
+		table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, amount))
 	end
 
 	alt_description = table.concat(alt_description, "\n")

@@ -218,7 +218,7 @@ debuff_effects["shroomcake"] = {
 	["buff_sleepresistance"] = {
 		prefab = "buff_sleepresistance",
 		data = {
-			duration = TUNING.BUFF_MOISTUREIMMUNITY_DURATION,
+			duration = TUNING.SLEEPRESISTBUFF_TIME,
 		}
 	}
 }

@@ -59,6 +59,9 @@ return {
 	-- appraisable.lua
 	--appraisable = "Fearsome: %s, Festive: %s, Formal: %s",
 
+	-- archive_lockbox.lua [Prefab]
+	archive_lockbox_unlocks = "<icon=blueprint> <prefab=%s>",
+
 	-- armor.lua
 	protection = "<icon=armorwood> %s%%",
 	durability = "<icon=health> %s / %s",
@@ -85,21 +88,39 @@ return {
 
 	-- burnable.lua
 	burnable = {
-		smolder_time = "Will <color=LIGHT>ignite</color> in: <color=LIGHT>%s</color>",
-		burn_time = "Remaining <color=LIGHT>burn time</color>: <color=LIGHT>%s</color>",
+		--smolder_time = "Will <color=LIGHT>ignite</color> in: <color=LIGHT>%s</color>",
+		--burn_time = "Remaining <color=LIGHT>burn time</color>: <color=LIGHT>%s</color>",
+	},
+
+	-- canary.lua [Prefab]
+	canary = {
+		--gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
+		--poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
+		--gas_level_increase = "Increases in %s.",
+		--gas_level_decrease = "Decreases in %s."
+	},
+
+	-- catcoonden.lua [Prefab]
+	catcoonden = {
+		--lives = "Cat lives: %s / %s",
+		--regenerate = "Cats regenerate in: %s",
+		--waiting_for_sleep = "Waiting for nearby players to go away.",
 	},
 
 	-- chessnavy.lua
 	--chessnavy_timer = "%s",
 	--chessnavy_ready = "Waiting for you to return to a crime scene.",
 
+	-- chester_eyebone.lua [Prefab]
+	--chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> %s",
+
 	-- childspawner.lua
 	childspawner = {
-		--children = "<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
-		--emergency_children = "*<color=MOB_SPAWN>%s</color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
-		--both_regen = "<color=MOB_SPAWN>%s</color> & <color=MOB_SPAWN>%s</color>",
+		--children = "<color=MOB_SPAWN><prefab=%s></color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		--emergency_children = "*<color=MOB_SPAWN><prefab=%s></color>: %s<sub>in</sub> + %s<sub>out</sub> / %s",
+		--both_regen = "<color=MOB_SPAWN><prefab=%s></color> & <color=MOB_SPAWN><prefab=%s></color>",
 		--regenerating = "Regenerating %s in: %s",
-		--entity = "<color=MOB_SPAWN>%s</color>",
+		--entity = "<color=MOB_SPAWN><prefab=%s></color>",
 	},
 
 	-- combat.lua
@@ -130,17 +151,17 @@ return {
 	-- debuffable.lua
 	--buff_text = "<color=MAGIC>Buff</color>: <color=MAGIC>%s</color>, %s",
 	debuffs = { -- ugh
-		["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
-		["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
-		["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
+		--["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
+		--["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
+		--["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
 		
-		["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
-		["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
-		["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
+		--["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
+		--["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
+		--["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
 		
-		["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
-		["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
-		["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
+		--["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		--["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		--["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
 	},
 
 	-- deerclopsspawner.lua
@@ -229,23 +250,23 @@ return {
 
 	-- farmplantstress.lua
 	farmplantstress = {
-		stress_points = "Stress Points: %s",
-		display = "Stressors: %s",
-		stress_tier = "Stress level: %s",
+		--stress_points = "Stress Points: %s",
+		--display = "Stressors: %s",
+		--stress_tier = "Stress level: %s",
 		tiers = (IsDST() and {
-			[FARM_PLANT_STRESS.NONE] = "None",
-			[FARM_PLANT_STRESS.LOW] = "Low",
-			[FARM_PLANT_STRESS.MODERATE] = "Moderate",
-			[FARM_PLANT_STRESS.HIGH] = "High",
+			--[FARM_PLANT_STRESS.NONE] = ":)",
+			--[FARM_PLANT_STRESS.LOW] = ":|",
+			--[FARM_PLANT_STRESS.MODERATE] = ":(",
+			--[FARM_PLANT_STRESS.HIGH] = ">:(",
 		} or {}),
 	},
 
 	-- farmsoildrinker.lua
 	farmsoildrinker = {
-		soil_only = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color>",
-		soil_plant = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s/min<sub>plant</sub></color>)",
-		soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color>])<color=WET>/min</color>",
-		soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color> + <color=SHALLOWS>%s<sub>world</sub></color> = <color=#DED15E>%+.1f<sub>net</sub></color>])<color=WET>/min</color>"
+		--soil_only = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color>",
+		--soil_plant = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s/min<sub>plant</sub></color>)",
+		--soil_plant_tile = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color>])<color=WET>/min</color>",
+		--soil_plant_tile_net = "<color=WET>Water</color>: <color=WET>%s<sub>tile</sub></color> (<color=WET>%s<sub>plant</sub></color> [<color=#2f96c4>%s<sub>tile</sub></color> + <color=SHALLOWS>%s<sub>world</sub></color> = <color=#DED15E>%+.1f<sub>net</sub></color>])<color=WET>/min</color>"
 	},
 
 	farmsoildrinker_nutrients = {
@@ -274,6 +295,7 @@ return {
 
 	-- finiteuses.lua
 	action_uses = "<icon=%s> %s",
+	action_uses_verbose = "<icon=%s> %s / %s",
 	actions = {
 		--uses_plain = "Uses",
 		sleepin = "bedroll_straw",
@@ -319,6 +341,14 @@ return {
 
 	-- forcecompostable.lua
 	--forcecompostable = "Compost value: %s",
+
+	-- fossil_stalker.lua [Prefab]
+	fossil_stalker = {
+		--pieces_needed = "20%% chance of going wrong with %s more piece(s).",
+		--correct = "This is correctly assembled.",
+		--incorrect = "This is assembled wrong.",
+		--gateway_too_far = "This skeleton is %s tile(s) too far.",
+	},
 
 	-- friendlevels.lua
 	--friendlevel = "Friendliness level: %s / %s",
@@ -387,35 +417,11 @@ return {
 		--alternate_beast_chance = "<color=#b51212>%s%% chance</color> for a <color=MOB_SPAWN>Varg</color> or <color=MOB_SPAWN>Ewecus</color>.",
 	},
 
+	-- hutch_fishbowl.lua [Prefab]
+	hutch_respawn = "<color=MOB_SPAWN><prefab=hutch></color> will respawn in: %s",
+
 	-- inspectable.lua
-	catcoonden = {
-		--lives = "Cat lives: %s / %s",
-		--regenerate = "Cats regenerate in: %s",
-		--waiting_for_sleep = "Waiting for nearby players to go away.",
-	},
-	--wx78_charge = "Remaining charge: %s",
-	stagehand = {
-		--hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
-		--time_to_reset = "Will reset in %s." 
-	},
-	canary = {
-		--gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
-		--poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
-		--gas_level_increase = "Increases in %s.",
-		--gas_level_decrease = "Decreases in %s."
-	},
-	fossil_stalker = {
-		--pieces_needed = "20%% chance of going wrong with %s more piece(s).",
-		--correct = "This is correctly assembled.",
-		--incorrect = "This is assembled wrong.",
-	},
-	--lureplant_active = "Will become active in: %s",
-	--walrus_camp_respawn = "<color=FROZEN>%s</color> respawns in: %s",
-	--global_wetness = "<color=WET>Global Wetness</color>: <color=WET>%s</color>",
-	--precipitation_rate = "<color=WET>Precipitation Rate</color>: <color=WET>%s</color>",
-	frog_rain_chance = "<icon=frog> <color=FROG>%s%%</color>", -- icon is screwed up with white bg
-	--world_temperature = "<color=LIGHT>World Temperature</color>: <color=LIGHT>%s</color>",
-	unlocks = "<icon=blueprint> %s",
+	--wagstaff_tool = "The name of this tool is: <prefab=%s>",
 
 	-- insulator.lua
 	insulation_winter = "<icon=beargervest> <color=FROZEN>%s</color>",
@@ -430,6 +436,11 @@ return {
 
 	-- leader.lua
 	--followers = "Followers: %s",
+
+	-- lureplant.lua [Prefab]
+	lureplant = {
+		become_active = "Will become active in: %s",
+	},
 
 	-- madsciencelab.lua
 	--madsciencelab_finish = "Will finish in: %s",
@@ -514,6 +525,11 @@ return {
 		},
 	},
 
+	-- rainometer.lua [Prefab]
+	--global_wetness = "<color=WET>Global Wetness</color>: <color=WET>%s</color>",
+	--precipitation_rate = "<color=WET>Precipitation Rate</color>: <color=WET>%s</color>",
+	frog_rain_chance = "<icon=frog> <color=FROG>%s%%</color>", -- icon is screwed up with white bg
+
 	-- repairer.lua
 	repairer = {
 		type = "Repair material: <color=#aaaaaa>%s</color>",
@@ -548,6 +564,12 @@ return {
 		--cant_spawn = "Unable to spawn."
 	},
 
+	-- saddler.lua
+	saddler = {
+		--bonus_damage = "<color=HEALTH>Bonus damage</color>: <color=HEALTH>%s</color>",
+		--bonus_speed = "<color=DAIRY>Bonus speed</color>: %s%%",
+	},
+
 	-- sanity.lua
 	sanity = "<icon=sanity> <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 	enlightenment = "<icon=enlightenment> <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
@@ -576,6 +598,20 @@ return {
 		},
 	},
 
+	-- singable.lua
+	singable = {
+		battlesong = {
+			battlesong_durability = "<color=HEALTH>Weapons</color> last <color=#aaaaee>%s%%</color> longer.",
+			battlesong_healthgain = "Hitting enemies restores <color=HEALTH>%s health</color> (<color=HEALTH>%s</color> for Wigfrids).",
+			battlesong_sanitygain = "Hitting enemies restores <color=SANITY>%s sanity</color>.",
+			battlesong_sanityaura = "Negative <color=SANITY>sanity auras</color> are <color=SANITY>%s%%</color> less effective.",
+			battlesong_fireresistance = "Take <color=HEALTH>%s%% less damage</color> from <color=LIGHT>fire</color>.",
+			battlesong_instant_taunt = "Taunts all nearby enemies within song radius.",
+			battlesong_instant_panic = "Panics nearby hauntable enemies for %s second(s).",
+		},
+		cost = "Costs %s inspiration to use.",
+	},
+
 	-- sinkholespawner.lua
 	antlion_rage = "%s",
 
@@ -587,15 +623,25 @@ return {
 	wortox_soul_heal_range = "<color=HEALTH>Heals</color> people within <color=#DED15E>%s tiles</color>.",
 
 	-- spawner.lua
-	--spawner_next = "Will spawn a <color=MOB_SPAWN>%s</color> in %s.",
-	--spawner_child = "Spawns a <color=#ff9999>%s</color>",
+	spawner = {
+		--next = "Will spawn a <color=MOB_SPAWN>%s</color> in %s.",
+		--child = "Spawns a <color=#ff9999>%s</color>",
+	},
+
+	-- stagehand.lua [Prefab]
+	stagehand = {
+		hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
+		time_to_reset = "Will reset in %s." 
+	},
 
 	-- stewer.lua
-	stewer_product = "<icon=%s>(<color=HUNGER>%s</color>)",
-	cooktime_remaining = "<icon=%s>(<color=HUNGER>%s</color>) %s",
-	--cooker = "Cooked by <color=%s>%s</color>.",
-	--cooktime_modifier_slower = "Cooks food <color=#DED15E>%s%%</color> slower.", -- some sort of double side-chevron (like a slow down sign) <<
-	--cooktime_modifier_faster = Cooks food <color=NATURE>%s%%</color> faster.",-- some sort of double side-chevron (like a speed up sign) >>
+	stewer = {
+		product = "<icon=%s>(<color=HUNGER>%s</color>)",
+		cooktime_remaining = "<icon=%s>(<color=HUNGER>%s</color>) %s",
+		--cooker = "Cooked by <color=%s>%s</color>.",
+		--cooktime_modifier_slower = "Cooks food <color=#DED15E>%s%%</color> slower.", -- some sort of double side-chevron (like a slow down sign) <<
+		--cooktime_modifier_faster = Cooks food <color=NATURE>%s%%</color> faster.",-- some sort of double side-chevron (like a speed up sign) >>
+	},
 
 	-- stickable.lua
 	stickable = "<icon=n> %s",
@@ -609,8 +655,10 @@ return {
 	--tigershark_exists = "Tiger shark is present.",
 
 	-- timer.lua
-	--timer_paused = "Paused",
-	--timer = "Timer '%s': %s",
+	timer = {
+		label = "Timer '%s': %s",
+		paused = "Paused",
+	},
 
 	-- tool.lua
 	--action_efficiency = "<color=#DED15E>%s</color>: %s%%",
@@ -628,6 +676,9 @@ return {
 	--upgradeable_stage = "Stage %s / %s: ",
 	--upgradeable_complete = "Upgrade %s%% complete.",
 	--upgradeable_incomplete = "No upgrades possible.",
+
+	-- walrus_camp.lua [Prefab]
+	--walrus_camp_respawn = "<color=MOB_SPAWN><prefab=%s></color> respawns in: <color=FROZEN>%s</color>",
 
 	-- waterproofer.lua
 	waterproofness = "<icon=wetness> <color=WET>%s%%</color>",
@@ -669,6 +720,9 @@ return {
 		--sunken_item = "There is a <color=#66ee66>%s</color> underneath this winch.",
 	},
 
+	-- winterometer.lua [Prefab]
+	--world_temperature = "<color=LIGHT>World Temperature</color>: <color=LIGHT>%s</color>",
+
 	-- wintersfeasttable.lua
 
 	-- wintertreegiftable.lua
@@ -696,6 +750,15 @@ return {
 		--received_portal = "Shard Migrator: %s",
 		--id = "This #: %s",
 	},
+
+	-- worldsettingstimer.lua
+	worldsettingstimer = {
+		label = "WSTimer '%s': %s",
+		paused = "Paused",
+	},
+
+	-- wx78.lua [Prefab]
+	--wx78_charge = "Remaining charge: %s",
 
 	-- yotb_sewer.lua
 	--yotb_sewer = "Will finish sewing in: %s",

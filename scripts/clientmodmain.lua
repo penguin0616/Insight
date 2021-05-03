@@ -48,6 +48,7 @@ end; })
 local delayed_actives = {}
 local Is_DS = IsDS()
 local Is_DST = IsDST()
+local Is_Client_Host = IsClientHost()
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -208,7 +209,12 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		return
 	end
 
-	if itemInfo.special_data.combat then
+	local context = GetPlayerContext(localPlayer)
+	if not context then
+		return
+	end
+
+	if context.config["display_attack_range"] and itemInfo.special_data.combat then
 		local ind = new.insight_combat_range_indicator
 		if not ind then
 			return
@@ -850,18 +856,15 @@ AddPlayerPostInit(function(player)
 			if context.config["blink_range"] then
 				AttachBlinkRangeIndicator(player)
 			end
-
-			if player.components.inspectable == nil then
-				player:AddComponent("inspectable")
-			end
 		end)
 
 		player:ListenForEvent("newactiveitem", function(...)
 			highlighting.SetActiveItem(...)
 		end)
 
+		local insight = GetInsight(player)
 		for ent in pairs(delayed_actives) do
-			GetInsight(player):EntityActive(ent)
+			insight:EntityActive(ent)
 		end
 		delayed_actives = {}
 
@@ -921,10 +924,6 @@ AddPlayerPostInit(function(player)
 	end)
 end)
 
-AddPrefabPostInitAny(function(inst)
-	entityManager:Manage(inst)
-end)
-
 if IsDS() then
 	require("components/dst_deployhelper")
 	AddComponentPostInit("placer", function(self)
@@ -951,6 +950,40 @@ if IsDS() then
 end
 
 -- Misc
+AddPrefabPostInitAny(entityManager.Manage)
+
+local function OnEntityManagerEventDST(self, event, inst)
+	if event == "sleep" then
+		if (Is_Client_Host and localPlayer) then 
+			inst:DoTaskInTime(0, highlighting.SetEntitySleep)
+
+			if localPlayer.replica.insight then
+				localPlayer.replica.insight:EntityInactive(inst)
+			end
+
+		end
+		delayed_actives[inst] = nil
+	elseif event == "awake" then
+		if localPlayer and localPlayer.replica.insight then
+			localPlayer.replica.insight:EntityActive(inst)
+		else
+			delayed_actives[inst] = true
+		end
+	end
+end
+
+local function OnEntityManagerEventDS(self, event, inst)
+
+end
+
+
+if IsDST() then
+	entityManager:AddListener("insight", OnEntityManagerEventDST)
+else
+	entityManager:AddListener("insight", OnEntityManagerEventDS)
+end
+
+--[[
 entityManager:AddListener("insight", function(self, event, inst)
 	if event == "sleep" then
 		-- highlighting
@@ -985,6 +1018,44 @@ entityManager:AddListener("insight", function(self, event, inst)
 		end
 	end
 end)
+
+--]]
+
+--[[
+entityManager:AddListener("insight", function(self, event, inst)
+	if event == "sleep" then
+		-- highlighting
+		if Is_DS or (not Is_DS and localPlayer) then 
+			highlighting.SetEntitySleep(inst)
+		end
+
+		if not Is_DS then
+			-- networking
+			if localPlayer and localPlayer.components.insight then
+				--localPlayer.components.insight:EntityInactive(inst)
+			else
+				delayed_actives[inst] = nil
+			end
+		end
+	elseif event == "awake" then
+		-- highlighting
+		if Is_DS then 
+			-- give entities time to get their replicas
+			inst:DoTaskInTime(0, highlighting.SetEntityAwake)
+		end
+
+		if not Is_DS then
+			-- networking
+			if localPlayer and localPlayer.replica.insight then
+				localPlayer.replica.insight:EntityActive(inst)
+			else
+				delayed_actives[inst] = true
+			end
+		end
+	end
+end)
+--]]
+
 
 AddLocalPlayerPostInit(highlighting.Activate, true)
 AddLocalPlayerPostRemove(highlighting.Deactivate, true)

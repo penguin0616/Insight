@@ -18,14 +18,21 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- atrium_gate.lua
-local function Describe(self)
-	local cooldown = self.inst.components.timer:GetTimeLeft("cooldown")
+-- winterometer.lua [Prefab]
+local is_dst = IsDST()
 
+local function Describe(inst, context)
+	local description = nil
+
+	local temperature = (is_dst and TheWorld.state.temperature) or (not is_dst and GetSeasonManager():GetCurrentTemperature())
+	-- SHOWWORLDTEMP
+	if not context.external_config["combined_status"]["SHOWWORLDTEMP"] then
+		description = string.format(context.lstr.world_temperature, Round(temperature, 0))
+	end
+	
 	return {
 		priority = 0,
-		description = nil,
-		cooldown = cooldown
+		description = description
 	}
 end
 

@@ -90,119 +90,6 @@ local CUSTOM_RANGES = {
 	},
 }
 
-local function IsWinter()
-	if IsDST() then
-		return TheWorld.state.iswinter
-	else
-		return GetSeasonManager():IsWinter()
-	end
-end
-
-local base_canary_poison_chance = 10*(100 / 12)/100
-local function GetCanaryData(inst)
-	if inst._gaslevel == nil then
-		return {}
-	end
-
-	local data = { gas_level=inst._gaslevel }
-
-	if inst._gasuptask then
-		data.increasing = true
-		data.decreasing = false
-		data.time = GetTaskRemaining(inst._gasuptask)
-	elseif inst._gasdowntask then
-		data.increasing = false
-		data.decreasing = true
-		data.time = GetTaskRemaining(inst._gasdowntask)
-	end
-
-	return data
-end
-
-local function GetCanaryDescription(inst, context)
-    local description = nil
-    local data = GetCanaryData(inst)
-
-    -- gaslevel > 12 and math.random() * 12 < gaslevel - 12
-
-    --[[
-	math.random() <= 1
-		10% chance seems to be fair
-			
-	math.random() * 12 <= 1
-		* 12 means its harder to fall in <= 1 
-		
-	]]
-    -- math.random() <= 1== 1 / 10 == 10% chance
-    -- math.random() * 12 < 1, *12 means its harder to be under <1, which means lesser chance...
-    -- but how much less...?
-    -- perhaps i could argue that its 12 times less often
-
-    --[[
-		> x=0; for i = 1, 10000 do local r = math.random() if r <= .1 then x = x + 1 end end; print(x);
-		987
-
-		we'll call this 1.0
-
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		824
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		824
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		835
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		827
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		808
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		805
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		857
-		> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
-		836
-
-		-- we'll call it 0.8333
-	]]
-    if data.gas_level then
-        -- 0.8333 = 10*(100 / 12)/100
-        local strs = {}
-        local poison_string
-
-        table.insert(strs, string.format(context.lstr.canary.gas_level, data.gas_level, 13))
-        if data.increasing then
-            table.insert(strs, string.format(context.lstr.canary.gas_level_increase, context.time:SimpleProcess(data.time)))
-        elseif data.decreasing then
-            table.insert(strs, string.format(context.lstr.canary.gas_level_decrease, context.time:SimpleProcess(data.time)))
-        end
-
-        description = table.concat(strs, ", ")
-
-        if data.gas_level > 12 then
-            poison_string = string.format(context.lstr.canary.poison_chance, 10 * base_canary_poison_chance * (data.gas_level - 12))
-        end
-
-        description = CombineLines(description, poison_string)
-	end
-	
-	return description
-end
-
-local function GetRobotChargeTime(self, context)
-	if self.inst.charge_time <= 0 then
-		return
-	end
-	
-	return {
-		priority = 1,
-		description = string.format(context.lstr.wx78_charge, context.time:SimpleProcess(self.inst.charge_time)),
-		icon = {
-			tex = "ladybolt.tex",
-			atlas = "images/ladybolt.xml"
-		},
-		playerly = true
-	}
-end
-
 local function GetPlayerServerDeaths(context, amount)
 	return {
 		priority = 1,
@@ -214,10 +101,6 @@ end
 local function PlayerDescribe(self, context)
 	local inst = self.inst
 	local stuff = {}
-
-	if inst.prefab == "wx78" and inst.charge_time and inst.charge_time > 0 then -- inspectable manually added in DS
-		table.insert(stuff, GetRobotChargeTime(self, context))
-	end
 
 	if false and (DEBUG_ENABLED or inst ~= context.player) and inst.userid ~= "" then
 		local their_context = GetPlayerContext(inst)
@@ -270,9 +153,11 @@ local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
 
+	--[[
 	if inst:HasTag("player") then
 		return PlayerDescribe(self, context)
 	end
+	--]]
 
 	--mprint("checking range", HasRange(inst))
 	if HasRange(inst) then
@@ -297,56 +182,7 @@ local function Describe(self, context)
 	--]]
 
 	if context.player.prefab ~= "winona" and inst.prefab:sub(1, 14) == "wagstaff_tool_" then
-		description = string.format("The name of this tool is: %s", ApplyColour(GetPrefabNameOrElse(inst.prefab, "\"%s\""), Insight.COLORS.ENLIGHTENMENT))
-	end
-
-	if inst.prefab == "catcoonden" then
-		if inst.lives_left then
-			description = string.format(context.lstr.catcoonden.lives, inst.lives_left, 9)
-
-			if inst.lives_left <= 0 and inst.delay_end then
-				local remaining_time = inst.delay_end - GetTime()
-
-				if remaining_time > 0 then
-					description = description .. "\n" .. string.format(context.lstr.catcoonden.regenerate, context.time:SimpleProcess(remaining_time))
-				else
-					description = description .. "\n" .. context.lstr.catcoonden.waiting_for_sleep
-				end
-			end
-		end
-	end
-
-	if inst.prefab == "chester_eyebone" or inst.prefab == "hutch_fishbowl" then
-		if inst.respawntask and inst.respawntime then
-			description = string.format("Will respawn in: %s", context.time:SimpleProcess(inst.respawntime - GetTime()))
-		end
-	end
-
-	if inst.prefab == "stagehand" and IsDST() then -- lots of stuff here done to make it make more sense / flow better
-		local mem = inst.sg.mem
-		local hits_left = mem.hits_left or TUNING.STAGEHAND_HITS_TO_GIVEUP -- something to display if no hits registered
-		local hit_string = nil
-		local reset_string = nil
-
-		if mem.prevtimeworked then
-			local offset = GetTime() - mem.prevtimeworked
-			local remaining_time = TUNING.SEG_TIME * 0.5 - offset
-
-			if remaining_time >= 0 then
-				reset_string = string.format(context.lstr.stagehand.time_to_reset, context.time:SimpleProcess(remaining_time))
-			else
-				hits_left = TUNING.STAGEHAND_HITS_TO_GIVEUP -- we're technically reset to 86, though it doesn't take place until the next hit.
-			end
-		end
-		
-		hit_string = string.format(context.lstr.stagehand.hits_remaining, hits_left) 
-
-		description = CombineLines(hit_string, reset_string)
-	end
-
-	if inst.prefab == "canary" then
-		description = GetCanaryDescription(inst, context)
-		--description = string.format("gas up: %s, gas down: %s, gas level: %s", up_time, down_time, inst._gaslevel or "?")
+		description = string.format(context.lstr.wagstaff_tool, ApplyColour(inst.prefab, Insight.COLORS.ENLIGHTENMENT))
 	end
 
 	if inst:HasTag("winter_tree") then
@@ -362,93 +198,17 @@ local function Describe(self, context)
 			end
 		end
 	end
-
-	if inst.prefab == "fossil_stalker" then
-		local needed_pieces = 5 - inst.moundsize
-		if needed_pieces > 0 then
-			description = string.format(context.lstr.fossil_stalker.pieces_needed, needed_pieces)
-		else
-			if inst.form == 1 then
-				description = context.lstr.fossil_stalker.correct
-			else
-				description = context.lstr.fossil_stalker.incorrect
-			end
-		end
-	end
-
-	if inst.prefab == "lureplant" then
-		if inst.hibernatetask and not IsWinter() then
-			description = string.format(context.lstr.lureplant_active, context.time:SimpleProcess(GetTaskRemaining(inst.hibernatetask)))
-		end
-	end
-
-	if inst.prefab == "walrus_camp" then
-		if inst.data.regentime then
-			local strs = {}
-			for prefab, targettime in pairs(inst.data.regentime) do
-				local respawn_in = targettime - GetTime()
-				if respawn_in >= 0 then
-					respawn_in = context.time:SimpleProcess(respawn_in)
-					table.insert(strs, string.format(context.lstr.walrus_camp_respawn, STRINGS.NAMES[string.upper(prefab)] or ("\"" .. prefab .. "\""), respawn_in))
-				end
-			end
-			description = table.concat(strs, "\n")
-		end
-	end
-
-	if inst.prefab == "archive_lockbox" and inst.product_orchestrina then
-		description = string.format(context.lstr.unlocks, GetPrefabNameOrElse(inst.product_orchestrina, "\"%s\""))
-	end
 	
-	if inst.prefab == "dirtpile" or inst.prefab == "whale_bubbles" then
-		return Insight.descriptors.hunter.DescribeTrack(inst, context)
-	end
-
-	if inst.prefab == "rainometer" then
-		local wetness = nil
-		local precipitation_rate = nil
-		local frog_rain_chance = nil
-
-		if IsDST() then
-			wetness = string.format(context.lstr.global_wetness, Round(TheWorld.state.wetness, 1))
-			
-			if TheWorld.state.precipitationrate > 0 then
-				precipitation_rate = string.format(context.lstr.precipitation_rate, Round(TheWorld.state.precipitationrate, 2))
-			end
-
-			local frog_rain = TheWorld.components.frograin
-			if frog_rain and TheWorld.state.isspring then
-				if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
-					frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(TUNING.FROG_RAIN_CHANCE * 100, 1))
-				else
-					frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(frog_rain:OnSave().chance * 100, 1))
-				end
-			end
-		end
-
-		description = CombineLines(wetness, precipitation_rate, frog_rain_chance)
-	end
-
-	if inst.prefab == "winterometer" then
-		local world_temperature = nil
-
-		if IsDST() then
-			-- SHOWWORLDTEMP
-			if not context.external_config["combined_status"]["SHOWWORLDTEMP"] then
-				world_temperature = string.format(context.lstr.world_temperature, Round(TheWorld.state.temperature, 0))
-			end
-		end
-
-		description = world_temperature
-	end
-
 	if inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
-		local data = Insight.descriptors.weapon.GetSlingshotAmmoData(inst)
-		local damage = data and data.damage
-		description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage or "?")
+		local func = Insight.descriptors.weapon and Insight.descriptors.weapon.GetSlingshotAmmoData
+		if func then
+			local data = func(inst)
+			local damage = data and data.damage
+			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage or "?")
+		end
 	end
 
-	if inst:HasTag("abigail_flower") and context.player.components.ghostlybond then
+	if context.player.components.ghostlybond and inst:HasTag("abigail_flower") then
 		local ghostlybond = context.player.components.ghostlybond
 
 		if ghostlybond.bondleveltimer then
@@ -481,5 +241,4 @@ end
 
 return {
 	Describe = Describe,
-	GetCanaryDescription = GetCanaryDescription
 }

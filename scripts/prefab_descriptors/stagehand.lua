@@ -18,30 +18,31 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- timer.lua
-local function Describe(self, context)
+-- stagehand.lua [Prefab]
+local function Describe(inst, context)
 	local description = nil
 
-	if not context.config["display_timers"] then
-		return
-	end
+	-- lots of logic/math done here to make result make more sense / flow better
+	local mem = inst.sg.mem
+	local hits_left = mem.hits_left or TUNING.STAGEHAND_HITS_TO_GIVEUP -- something to display if no hits registered
+	local hit_string = nil
+	local reset_string = nil
 
-	local timers = {}
+	if mem.prevtimeworked then
+		local offset = GetTime() - mem.prevtimeworked
+		local remaining_time = TUNING.SEG_TIME * 0.5 - offset
 
-	for name in pairs(self.timers) do
-		local paused = self:IsPaused(name)
-		local time_left = not paused and self:GetTimeLeft(name) or nil
-
-		local time_string = (paused and context.lstr.timer.paused) or (time_left and context.time:SimpleProcess(time_left))
-		if time_string then
-			timers[#timers+1] = string.format(context.lstr.timer.label, name, time_string)
+		if remaining_time >= 0 then
+			reset_string = string.format(context.lstr.stagehand.time_to_reset, context.time:SimpleProcess(remaining_time))
+		else
+			hits_left = TUNING.STAGEHAND_HITS_TO_GIVEUP -- we're technically reset to 86, though it doesn't take place until the next hit.
 		end
 	end
+	
+	hit_string = string.format(context.lstr.stagehand.hits_remaining, hits_left) 
 
-	if #timers > 0 then
-		description = table.concat(timers, "\n")
-	end
-
+	description = CombineLines(hit_string, reset_string)
+	
 	return {
 		priority = 0,
 		description = description

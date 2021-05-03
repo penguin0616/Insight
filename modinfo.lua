@@ -27,7 +27,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.1.0" -- ds is 2.9.7_ds
+version = "3.1.5" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -77,7 +77,7 @@ local translations = {}
 local english = {
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Highlighting update (now configurable), Eye of the Storm Beta information, Bug fixes",
+	update_info = "Added lureplant inventory information, added pink highlighting, Loot Stash locations, battlesong information, performance optimization, saddle information, added orange highlighting, finiteuses max uses on inspection.",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 	mod_explanation = "Basically Show Me but with more features.",
@@ -254,8 +254,8 @@ local english = {
 				HOVER = "Blue"
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Cyan",
-				HOVER = "Cyan"
+				DESCRIPTION = "Light Blue",
+				HOVER = "Light Blue",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",
@@ -267,9 +267,17 @@ local english = {
 			},
 			["WHITE"] = {
 				DESCRIPTION = "White",
-				HOVER = "White"
-			}
-		}
+				HOVER = "White",
+			},
+			["ORANGE"] = {
+				DESCRIPTION = "Orange",
+				HOVER = "Orange",
+			},
+			["PINK"] = {
+				DESCRIPTION = "Pink",
+				HOVER = "Pink",
+			},
+		},
 	},
 	fuel_highlighting = {
 		LABEL = "Fuel Highlighting",
@@ -302,8 +310,8 @@ local english = {
 				HOVER = "Blue"
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Cyan",
-				HOVER = "Cyan"
+				DESCRIPTION = "Light Blue",
+				HOVER = "Light Blue",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "Purple",
@@ -315,23 +323,17 @@ local english = {
 			},
 			["WHITE"] = {
 				DESCRIPTION = "White",
-				HOVER = "White"
-			}
-		}
-	},
-	extended_info_indicator = {
-		LABEL = "More Information Hint",
-		HOVER = "Whether an asterisk is present for entities with more information.",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The indicator is not shown."
+				HOVER = "White",
 			},
-			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The indicator is shown."
-			}
-		}
+			["ORANGE"] = {
+				DESCRIPTION = "Orange",
+				HOVER = "Orange",
+			},
+			["PINK"] = {
+				DESCRIPTION = "Pink",
+				HOVER = "Pink",
+			},
+		},
 	},
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
@@ -369,8 +371,8 @@ local english = {
 		}
 	},
 	hover_range_indicator = {
-		LABEL = "Item/Mob Range Hover",
-		HOVER = "Whether an item or mob's range is shown upon hovering.",
+		LABEL = "Item Range Hover",
+		HOVER = "Whether an item's range is shown upon hovering.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
@@ -533,6 +535,20 @@ local english = {
 				HOVER = "Both ranges are shown."
 			}
 		}
+	},
+	klaus_sack_markers = {
+		LABEL = "Loot Stash Markers (Server Only)",
+		HOVER = "Whether Loot Stash spawning locations are marked. *Only the server's choice matters.*",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Markers are shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Markers are not shown."
+			},
+		},
 	},
 	sinkhole_marks = {
 		LABEL = "Sinkhole Marks",
@@ -1143,6 +1159,48 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	display_crafting_lookup_button = {
+		LABEL = "Crafting Lookup Button",
+		HOVER = "Whether the crafting lookup button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
+	display_insight_menu_button = {
+		LABEL = "Insight Menu Button",
+		HOVER = "Whether the insight menu button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
+	extended_info_indicator = {
+		LABEL = "More Information Hint",
+		HOVER = "Whether an asterisk is present for entities with more information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The indicator is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The indicator is shown."
+			},
+		},
+	},
 	unrandomizer = {
 		LABEL = "Unrandomizer",
 		HOVER = '[Server Only] "Solves" the randomness of some situations.',
@@ -1487,8 +1545,8 @@ local chinese = {
 				HOVER = "蓝色"
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "青色",
-				HOVER = "青色"
+				DESCRIPTION = "亮蓝色",
+				HOVER = "亮蓝色",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "紫色",
@@ -1500,9 +1558,17 @@ local chinese = {
 			},
 			["WHITE"] = {
 				DESCRIPTION = "白色",
-				HOVER = "白色"
-			}
-		}
+				HOVER = "白色",
+			},
+			["ORANGE"] = {
+				DESCRIPTION = "橙色",
+				HOVER = "橙色",
+			},
+			["PINK"] = {
+				DESCRIPTION = "粉色",
+				HOVER = "粉色",
+			},
+		},
 	},
 	fuel_highlighting = {
 		LABEL = "燃料高亮显示",
@@ -1535,8 +1601,8 @@ local chinese = {
 				HOVER = "蓝色"
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "青色",
-				HOVER = "青色"
+				DESCRIPTION = "亮蓝色",
+				HOVER = "亮蓝色",
 			},
 			["PURPLE"] = {
 				DESCRIPTION = "紫色",
@@ -1548,23 +1614,17 @@ local chinese = {
 			},
 			["WHITE"] = {
 				DESCRIPTION = "白色",
-				HOVER = "白色"
-			}
-		}
-	},
-	extended_info_indicator = {
-		LABEL = "更多信息提示",
-		HOVER = "是否在有更多信息的物体上显示星号",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "否",
-				HOVER = "不显示提示"
+				HOVER = "白色",
 			},
-			["true"] = {
-				DESCRIPTION = "是",
-				HOVER = "显示提示"
-			}
-		}
+			["ORANGE"] = {
+				DESCRIPTION = "橙色",
+				HOVER = "橙色",
+			},
+			["PINK"] = {
+				DESCRIPTION = "粉色",
+				HOVER = "粉色",
+			},
+		},
 	},
 	--------------------------------------------------------------------------
 	--[[ Indicators ]]
@@ -1766,6 +1826,20 @@ local chinese = {
 				HOVER = "同时显示脱离战歌和被战歌鼓舞的生效范围"
 			}
 		}
+	},
+	klaus_sack_markers = {
+		LABEL = "Loot Stash Markers (Server Only)",
+		HOVER = "Whether Loot Stash spawning locations are marked. *Only the server's choice matters.*",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Markers are shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Markers are not shown."
+			},
+		},
 	},
 	sinkhole_marks = {
 		LABEL = "落水洞标记",
@@ -2376,6 +2450,48 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
+	display_crafting_lookup_button = {
+		LABEL = "Crafting Lookup Button",
+		HOVER = "Whether the crafting lookup button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
+	display_insight_menu_button = {
+		LABEL = "Insight Menu Button",
+		HOVER = "Whether the insight menu button is displayed or not.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The button is shown."
+			},
+		},
+	},
+	extended_info_indicator = {
+		LABEL = "More Information Hint",
+		HOVER = "Whether an asterisk is present for entities with more information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "The indicator is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "The indicator is shown."
+			},
+		},
+	},
 	unrandomizer = {
 		LABEL = "去随机化",
 		HOVER = '[服务器] 是否 "移除" 某些情况下的随机性.',
@@ -2730,8 +2846,10 @@ configuration_options = {
 			{data = "LIGHT_BLUE"},
 			{data = "PURPLE"},
 			{data = "YELLOW"},
-			{data = "WHITE"}
-		},
+			{data = "WHITE"},
+			{data = "ORANGE"},
+			{data = "PINK"},
+		}, 
 		default = "GREEN",
 		client = true,
 		tags = {}
@@ -2755,23 +2873,15 @@ configuration_options = {
 			{data = "LIGHT_BLUE"},
 			{data = "PURPLE"},
 			{data = "YELLOW"},
-			{data = "WHITE"}
-		},
+			{data = "WHITE"},
+			{data = "ORANGE"},
+			{data = "PINK"},
+		}, 
 		default = "RED",
 		client = true,
 		tags = {}
 	},
-	{
-		name = "extended_info_indicator",
-		options = {
-			{data = false},
-			{data = true}
-		},
-		default = true,
-		client = true,
-		tags = {}
-	},
-	AddSectionTitle(T "sectiontitle_indicators"),
+	AddSectionTitle(T"sectiontitle_indicators"),
 	{
 		name = "display_attack_range",
 		options = {
@@ -2901,6 +3011,15 @@ configuration_options = {
 		default = "both",
 		client = true,
 		tags = {"dst_only"}
+	},
+	{
+		name = "klaus_sack_markers",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"dst_only", "server_only"},
 	},
 	{
 		name = "sinkhole_marks",
@@ -3276,7 +3395,37 @@ configuration_options = {
 		default = 2,
 		tags = {"undefined"}
 	},
-	AddSectionTitle(T "sectiontitle_miscellaneous"),
+	AddSectionTitle(T"sectiontitle_miscellaneous"),
+	{
+		name = "display_crafting_lookup_button",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "display_insight_menu_button",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "extended_info_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
 	--[[
 	{
 		name = "unrandomizer",

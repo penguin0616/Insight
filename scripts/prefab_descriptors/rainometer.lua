@@ -18,33 +18,35 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- occuppiable.lua
-local function Describe(self, context)
-	local inst = self.inst
+-- rainometer.lua [Prefab]
+local is_dst = IsDST()
+
+local function Describe(inst, context)
 	local description = nil
-	local perishable_string = nil
-	local canary_string = nil
-	
-	if self:IsOccupied() then
-		--description = GetEntityInformation(self.occupant, context.player)
-		if self.occupant.components.perishable then
-			local descriptor = Insight.descriptors.perishable
-			if descriptor and descriptor.Describe then
-				local res = descriptor.Describe(self.occupant.components.perishable, context)
-				perishable_string = res and res.description or nil
-			end
+
+	local wetness = nil
+	local precipitation_rate = nil
+	local frog_rain_chance = nil
+
+	if is_dst then
+		wetness = string.format(context.lstr.global_wetness, Round(TheWorld.state.wetness, 1))
+		
+		if TheWorld.state.precipitationrate > 0 then
+			precipitation_rate = string.format(context.lstr.precipitation_rate, Round(TheWorld.state.precipitationrate, 2))
 		end
 
-		if self.occupant.prefab == "canary" then
-			local descriptor = Insight.prefab_descriptors.canary
-			if descriptor and descriptor.GetCanaryDescription then
-				canary_string = descriptor.GetCanaryDescription(self.occupant, context)
+		local frog_rain = TheWorld.components.frograin
+		if frog_rain and TheWorld.state.isspring then
+			if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+				frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(TUNING.FROG_RAIN_CHANCE * 100, 1))
+			else
+				frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(frog_rain:OnSave().chance * 100, 1))
 			end
 		end
-
-		description = CombineLines(perishable_string, canary_string)
 	end
 
+	description = CombineLines(wetness, precipitation_rate, frog_rain_chance)
+	
 	return {
 		priority = 0,
 		description = description

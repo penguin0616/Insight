@@ -18,9 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- timer.lua
+-- worldsettingstimer.lua
 local function Describe(self, context)
-	local description = nil
+	local alt_description = nil
 
 	if not context.config["display_timers"] then
 		return
@@ -32,19 +32,19 @@ local function Describe(self, context)
 		local paused = self:IsPaused(name)
 		local time_left = not paused and self:GetTimeLeft(name) or nil
 
-		local time_string = (paused and context.lstr.timer.paused) or (time_left and context.time:SimpleProcess(time_left))
+		local time_string = (paused and context.lstr.worldsettingstimer.paused) or (time_left and context.time:SimpleProcess(time_left))
 		if time_string then
-			timers[#timers+1] = string.format(context.lstr.timer.label, name, time_string)
+			timers[#timers+1] = string.format(context.lstr.worldsettingstimer.label, name, time_string)
 		end
 	end
 
 	if #timers > 0 then
-		description = table.concat(timers, "\n")
+		alt_description = table.concat(timers, "\n")
 	end
 
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 end
 
