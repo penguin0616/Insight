@@ -44,8 +44,6 @@ local catcoon = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
 -- perishable
 local stale = adjectiveToNoun(STRINGS.UI.HUD.STALE)
 
--- TODO: Mixed up time replacables, to fix
-
 return {
 	-- insightservercrash.lua
 	server_crash = "由于未知原因，服务器崩溃",
@@ -55,12 +53,12 @@ return {
 
 	-- time.lua
 	-- there;s no comma after days, minutes and hours in chinese expressions
-	time_segments = "%s 个时段",
-	time_days = "%s 天 ",
-	time_days_short = "%s 天",
-	time_seconds = "%s 秒",
-	time_minutes = "%s 分 ",
-	time_hours = "%s 小时 ",
+	time_segments = " %s 个时段",
+	time_days = " %s 天",
+	time_days_short = " %s 天",
+	time_seconds = " %s 秒",
+	time_minutes = " %s 分",
+	time_hours = " %s 小时",
 
 	-- meh
 	seasons = {
@@ -111,7 +109,7 @@ return {
 	breeder_fish5 = "<color=#9ADFDE>霓虹鱼</color>",
 	breeder_fishstring = "%s: %s / %s",
 	breeder_nextfishtime = "%s后有新鱼", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
-	breeder_possiblepredatortime = "可能于 %s后生成捕食者",
+	breeder_possiblepredatortime = "可能于%s后生成捕食者",
 
 	-- burnable.lua
 	burnable = {
@@ -192,9 +190,9 @@ return {
 	incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
 
 	-- diseaseable.lua
-	disease_in = "将于 %s后感染疾病",
-	disease_spread = "将于 %s后传播疾病",
-	disease_delay = "疾病被延迟 %s",
+	disease_in = "将于%s后感染疾病",
+	disease_spread = "将于%s后传播疾病",
+	disease_delay = "疾病被延迟%s",
 
 	-- domesticatable.lua
 	domesticatable = {
@@ -248,8 +246,8 @@ return {
 		instant_temperature = "温度变化: %s, (瞬间)",
 		antihistamine = "花粉症延时: %ss"
 	},
-	foodmemory = "最近食用: %s / %s，将忘记于 %s后",
-	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消逝于 %s后",
+	foodmemory = "最近食用: %s / %s，将忘记于%s后",
+	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消逝于%s后",
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
@@ -365,7 +363,7 @@ return {
 	leader = "主人: %s", -- "主人" should mean "master" here by free translation, "领导者" is literal translation and not precise?
 	loyalty_duration = "忠诚持续时间: %s",
 	ghostlybond = "等级: %s / %s, %s后升级", -- Originally "+1 in: %s", by free translation meaning "Upgrade in %s after"
-	ghostlybond_self = "你的等级: %s / %s,  %s后升级", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	ghostlybond_self = "你的等级: %s / %s, %s后升级", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	-- forcecompostable.lua
 	forcecompostable = "肥料值: %s",
 
@@ -522,8 +520,8 @@ return {
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
-		transition = "<color=MONSTER>%s</color>于 %s后", -- This is correct
-		transition_extended = "<color=MONSTER>%s</color>于 %s后 (<color=MONSTER>%s%%</color>)",
+		transition = "<color=MONSTER>%s</color>于%s后", -- This is correct
+		transition_extended = "<color=MONSTER>%s</color>于%s后 (<color=MONSTER>%s%%</color>)",
 		paused = "当前暂停腐烂"
 	},
 
@@ -704,7 +702,7 @@ return {
 	upgradeable_incomplete = "不可升级",
 
 	-- walrus_camp.lua [Prefab]
-	walrus_camp_respawn = "<color=MOB_SPAWN><prefab=%s></color> 重生于 <color=FROZEN>%s后</color>",
+	walrus_camp_respawn = "<color=MOB_SPAWN><prefab=%s></color>重生于<color=FROZEN>%s后</color>",
 
 	-- waterproofer.lua
 	waterproofness = "<color=WET>防水</color>: <color=WET>%s%%</color>",
