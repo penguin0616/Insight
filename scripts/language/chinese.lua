@@ -24,7 +24,7 @@ directory. If not, please refer to
 	1. Not break Chinese characters with space, even color tags. 
 	2. Only break when meeting pucntuations or numbers or player names.
 	3. Remove unneccessary colons to make strings into a natural sentence (reads better). If it's field-like then keep the colon, eg. "Sanity: %s" -> "理智： %s".
-	4. If english "Will die in: %s", then chinese "将死于 %s后". Notice there should be no space before "后".
+	4. If english "Will die in: %s", then chinese "%s后死亡". Notice there should be no space before "后".
 	5. Translate "Sanity" as "理智" instead of "精神" by dst wiki: https://dontstarve.fandom.com/zh/wiki/%E7%90%86%E6%99%BA?variant=zh-cn
 ]]
 
@@ -108,8 +108,8 @@ return {
 	breeder_fish4 = "<color=#DED15E>小丑鱼</color>",
 	breeder_fish5 = "<color=#9ADFDE>霓虹鱼</color>",
 	breeder_fishstring = "%s: %s / %s",
-	breeder_nextfishtime = "加鱼于 %s后", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
-	breeder_possiblepredatortime = "可能生成捕食者于 %s后",
+	breeder_nextfishtime = "%s后有新鱼", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
+	breeder_possiblepredatortime = "可能于%s后生成捕食者",
 
 	-- burnable.lua
 	burnable = {
@@ -137,7 +137,7 @@ return {
 	chessnavy_ready = "等待你回到犯罪地点",
 
 	-- chester_eyebone.lua [Prefab]
-	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color>将生成于 %s后",
+	chester_respawn = "%s后<color=MOB_SPAWN><prefab=chester></color>将生成",
 
 	-- childspawner.lua
 	childspawner = {
@@ -175,14 +175,14 @@ return {
 	buff_text = "<color=MAGIC>加成</color>: <color=MAGIC>%s</color>, %s",
 	debuffs = {
 		-- ugh
-		["buff_attack"] = "攻击加强 <color=HEALTH>%s%%</color>, 持续 %s 秒.",
-		["buff_playerabsorption"] = "伤害减少 <color=MEAT>%s%%</color>, 持续 %s 秒.",
-		["buff_workeffectiveness"] = "效率提升 <color=#DED15E>%s%%</color>, 持续 %s 秒.",
-		["buff_moistureimmunity"] = "免疫<color=WET>潮湿</color>, 持续 %s 秒.",
-		["buff_electricattack"] = "攻击<color=WET>带电</color>, 持续 %s 秒.",
-		["buff_sleepresistance"] = "抵抗<color=MONSTER>睡眠</color>, 持续 %s 秒.",
-		["tillweedsalve_buff"] = "回复 <color=HEALTH>%s 健康</color>于 %s 秒.",
-		["healthregenbuff"] = "回复 <color=HEALTH>%s 健康</color>于 %s 秒.",
+		["buff_attack"] = "攻击加强 <color=HEALTH>%s%%</color>, 持续 %s 秒。",
+		["buff_playerabsorption"] = "伤害减少 <color=MEAT>%s%%</color>, 持续 %s 秒。",
+		["buff_workeffectiveness"] = "效率提升 <color=#DED15E>%s%%</color>, 持续 %s 秒。",
+		["buff_moistureimmunity"] = "免疫<color=WET>潮湿</color>, 持续 %s 秒。",
+		["buff_electricattack"] = "攻击<color=WET>带电</color>, 持续 %s 秒。",
+		["buff_sleepresistance"] = "抵抗<color=MONSTER>睡眠</color>, 持续 %s 秒。",
+		["tillweedsalve_buff"] = "回复 <color=HEALTH>%s 健康</color>于 %s 秒。",
+		["healthregenbuff"] = "回复 <color=HEALTH>%s 健康</color>于 %s 秒。",
 		["sweettea_buff"] = "回复 <color=SANITY>%s 理智</color>于 %s 秒."
 	},
 
@@ -190,8 +190,8 @@ return {
 	incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
 
 	-- diseaseable.lua
-	disease_in = "将感染疾病于 %s后",
-	disease_spread = "将传播疾病于 %s后",
+	disease_in = "将于 %s后感染疾病",
+	disease_spread = "将于 %s后传播疾病",
 	disease_delay = "疾病被延迟 %s",
 
 	-- domesticatable.lua
@@ -246,7 +246,7 @@ return {
 		instant_temperature = "温度变化: %s, (瞬间)",
 		antihistamine = "花粉症延时: %ss"
 	},
-	foodmemory = "最近食用: %s / %s，会忘记于 %s后",
+	foodmemory = "最近食用: %s / %s，将忘记于 %s后",
 	wereeater = "已食用<color=MONSTER>怪兽肉</color>: %s / %s, 将消逝于 %s后",
 
 	-- equippable.lua
@@ -254,7 +254,7 @@ return {
 	speed = "<color=DAIRY>移动速度</color>: %s%%",
 	hunger_slow = "<color=HUNGER>饥饿速度降低</color>: <color=HUNGER>%s%%</color>",
 	hunger_drain = "<color=HUNGER>饥饿度降低</color>: <color=HUNGER>%s%%</color>",
-	insulated = "保护你免遭雷击.",
+	insulated = "保护你免遭雷击。",
 
 	-- example.lua
 	why = "[为什么我是空的]",
@@ -265,7 +265,7 @@ return {
 
 	-- farmplantable.lua
 	farmplantable = {
-		product = "将长成 <color=NATURE><prefab=%s></color>.",
+		product = "将长成 <color=NATURE><prefab=%s></color>。",
 		nutrient_consumption = "消耗养分: [<color=NATURE>%d<sub>催长剂</sub></color>, <color=CAMO>%d<sub>堆肥</sub></color>, <color=INEDIBLE>%d<sub>粪肥</sub></color>]",
 		good_seasons = "生长季节: %s"
 	},
@@ -308,7 +308,7 @@ return {
 		growth_value = "缩短 <color=NATURE>%s</color> 秒<color=NATURE>生长时间</color>",
 		nutrient_value = "养分: [<color=NATURE>%s<sub>催长剂</sub></color>, <color=CAMO>%s<sub>堆肥</sub></color>, <color=INEDIBLE>%s<sub>粪肥</sub></color>]",
 		wormwood = {
-			formula_growth = "加速<color=LIGHT_PINK>开花</color> <color=LIGHT_PINK>%s</color>.",
+			formula_growth = "加速<color=LIGHT_PINK>开花</color> <color=LIGHT_PINK>%s</color>。",
 			compost_heal = "<color=HEALTH>回复</color>你的<color=HEALTH>%+d</color>于 <color=HEALTH>%s</color> 秒."
 		}
 	},
@@ -351,9 +351,9 @@ return {
 
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
-	fish_recharge = "+1 条鱼于 %s后",
+	fish_recharge = "%s后增加一条鱼",
 
-	--fish_wait_time = "抓一条鱼将花费 <color=SHALLOWS>%s 秒</color>.",
+	--fish_wait_time = "抓一条鱼将花费 <color=SHALLOWS>%s 秒</color>。",
 
 	-- fishingrod.lua
 	fishingrod_waittimes = "等待时间: <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
@@ -362,8 +362,8 @@ return {
 	-- follower.lua
 	leader = "主人: %s", -- "主人" should mean "master" here by free translation, "领导者" is literal translation and not precise?
 	loyalty_duration = "忠诚持续时间: %s",
-	ghostlybond = "等级: %s / %s. 于 %s后升级", -- Originally "+1 in: %s", by free translation meaning "Upgrade in %s after"
-	ghostlybond_self = "你的等级: %s / %s. 于 %s后升级", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	ghostlybond = "等级: %s / %s, %s后升级", -- Originally "+1 in: %s", by free translation meaning "Upgrade in %s after"
+	ghostlybond_self = "你的等级: %s / %s,  %s后升级", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	-- forcecompostable.lua
 	forcecompostable = "肥料值: %s",
 
@@ -372,7 +372,7 @@ return {
 		pieces_needed = "有 20%% 几率组装错误在组装上 %s 片后",
 		correct = "组装正确",
 		incorrect = "组装错误",
-		gateway_too_far = "This skeleton is %s tile(s) too far."
+		gateway_too_far = "这个骷髅距离是 %s 个格子"
 	},
 
 	-- friendlevels.lua
@@ -380,8 +380,8 @@ return {
 
 	-- fuel.lua
 	fuel = {
-		fuel = "<color=LIGHT>%s</color> 秒的燃料.",
-		fuel_verbose = "<color=LIGHT>%s</color> 秒的 <color=LIGHT>%s</color>",
+		fuel = "<color=LIGHT>%s</color> 秒的燃料",
+		fuel_verbose = "<color=LIGHT>%s</color> 秒的<color=LIGHT>%s</color>",
 		type = "燃料类型: %s"
 	},
 
@@ -396,7 +396,7 @@ return {
 	-- growable.lua
 	growth_stage = "'%s' 阶段: %s / %s: ",
 	growth_paused = "暂停生长",
-	growth_next_stage = "下一阶段于 %s后",
+	growth_next_stage = "%s后进入下一阶段",
 
 	-- grower.lua
 	harvests = "<color=NATURE>剩余使用次数</color>: <color=NATURE>%s</color> / <color=NATURE>%s</color>",
@@ -439,11 +439,11 @@ return {
 	hunter = {
 		hunt_progress = "脚印: %s / %s",
 		impending_ambush = "下一个脚印为猎物。",
-		alternate_beast_chance = "<color=#b51212>%s%% 几率</color> 是一只 <color=MOB_SPAWN>座狼</color> or <color=MOB_SPAWN>钢羊</color>."
+		alternate_beast_chance = "<color=#b51212>%s%% 几率</color>是一只<color=MOB_SPAWN>座狼</color>或<color=MOB_SPAWN>钢羊</color>."
 	},
 
 	-- hutch_fishbowl.lua [Prefab]
-	hutch_respawn = "<color=MOB_SPAWN><prefab=hutch></color> will respawn in: %s",
+	hutch_respawn = "%s后将生成<color=MOB_SPAWN><prefab=hutch></color>",
 
 	-- inspectable.lua
 	wagstaff_tool = "The name of this tool is: <prefab=%s>",
@@ -464,11 +464,11 @@ return {
 
 	-- lureplant.lua [Prefab]
 	lureplant = {
-		become_active = "开始活动于 %s后"
+		become_active = "%s后开始活动"
 	},
 
 	-- madsciencelab.lua
-	madsciencelab_finish = "完成于 %s后",
+	madsciencelab_finish = "%s后完成",
 
 	-- malbatrossspawner.lua
 	malbatross_spawnsin = "%s",
@@ -486,7 +486,7 @@ return {
 		active = "每 %s 秒检查一次触发器",
 		inactive = "不检查触发器",
 		beemine_bees = "将飞出 %s 个蜜蜂",
-		trap_starfish_cooldown = "重组于 %s后"
+		trap_starfish_cooldown = "%s后重组"
 	},
 
 	-- moisture.lua
@@ -496,15 +496,15 @@ return {
 	moonstormmanager = {
 		wagstaff_hunt = {
 			progress = "目的地进度: %s / %s",
-			time_for_next_tool = "另一个工具将需要于 %s.",
-			experiment_time = "实验将完成于 %s."
+			time_for_next_tool = "另一个工具将需要于 %s",
+			experiment_time = "实验将完成于 %s"
 		},
-		storm_move = "%s%% 几率于第 %d 天月球风暴"
+		storm_move = "%s%% 几率于第 %d 天月球风暴。"
 	},
 
 	-- nightmareclock.lua
 	nightmareclock = "<color=%s>阶段: %s</color>, %s", -- "阶段 Stage" by free translation, same term used in dst wiki
-	nightmareclock_lock = "被<color=#CE3D45>远古钥匙</color>锁住",
+	nightmareclock_lock = "被<color=#CE3D45>远古钥匙</color>锁住。",
 
 	-- oar.lua
 	oar_force = "<color=INEDIBLE>力度</color>: <color=INEDIBLE>%s%%</color>",
@@ -520,13 +520,13 @@ return {
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
-		transition = "<color=MONSTER>%s</color>于 %s后", -- This is correct
-		transition_extended = "<color=MONSTER>%s</color>于 %s后 (<color=MONSTER>%s%%</color>)",
+		transition = "%s后<color=MONSTER>%s</color>", -- This is correct
+		transition_extended = "%s后<color=MONSTER>%s</color> (<color=MONSTER>%s%%</color>)",
 		paused = "当前暂停腐烂"
 	},
 
 	-- petrifiable.lua
-	petrify = "石化于 %s后",
+	petrify = "%s后石化",
 
 	-- pickable.lua
 	regrowth = "<color=NATURE>重新生长</color>于 <color=NATURE>%s</color>后", -- has grammar problem, left because too annoying
@@ -537,15 +537,15 @@ return {
 	pollination = "花朵授粉: (%s) / %s",
 
 	-- preservative.lua
-	preservative = "恢复 %s%% 新鲜度.",
+	preservative = "恢复 %s%% 新鲜度。",
 
 	-- quaker.lua
-	next_quake = "<color=INEDIBLE>地震</color>于 %s后", -- same thing as perishable transition
+	next_quake = "%s后<color=INEDIBLE>地震</color>", -- same thing as perishable transition
 	-- questowner.lua
 	questowner = {
 		pipspook = {
 			toys_remaining = "剩余玩具数: %s",
-			assisted_by = "这个小惊吓正在受到 %s 的帮助"
+			assisted_by = "这个小惊吓正在受到 %s 的帮助。"
 		}
 	},
 
@@ -587,13 +587,13 @@ return {
 
 	-- rocmanager.lua
 	rocmanager = {
-		cant_spawn = "无法生成"
+		cant_spawn = "无法生成。"
 	},
 
 	-- saddler.lua
 	saddler = {
-		bonus_damage = "<color=HEALTH>Bonus damage</color>: <color=HEALTH>%s</color>",
-		bonus_speed = "<color=DAIRY>Bonus speed</color>: %s%%"
+		bonus_damage = "<color=HEALTH>额外伤害</color>: <color=HEALTH>%s</color>",
+		bonus_speed = "<color=DAIRY>额外速度</color>: %s%%"
 	},
 
 	-- sanity.lua
@@ -607,18 +607,18 @@ return {
 	scenariorunner = {
 		opened_already = "这个已经打开过了",
 		chest_labyrinth = {
-			sanity = "66% 几率改变<color=SANITY>理智</color>，从 <color=SANITY>-20</color> 到 <color=SANITY>20</color>",
-			hunger = "66% 几率改变<color=HUNGER>饥饿</color>，从 <color=HUNGER>-20</color> 到 <color=HUNGER>20</color>",
-			health = "66% 几率改变<color=HEALTH>健康</color>，从 <color=HEALTH>0</color> 到 <color=HEALTH>20</color>",
-			inventory = "66% 几率增加 20% <color=LIGHT>耐久</color>或<color=MONSTER>新鲜</color>",
-			summonmonsters = "66% 几率召唤 1-3 个<color=MOB_SPAWN>穴居悬蛛</color>"
+			sanity = "66% 几率改变<color=SANITY>理智</color>，从 <color=SANITY>-20</color> 到 <color=SANITY>20</color>。",
+			hunger = "66% 几率改变<color=HUNGER>饥饿</color>，从 <color=HUNGER>-20</color> 到 <color=HUNGER>20</color>。",
+			health = "66% 几率改变<color=HEALTH>健康</color>，从 <color=HEALTH>0</color> 到 <color=HEALTH>20</color>。",
+			inventory = "66% 几率增加 20% <color=LIGHT>耐久</color>或<color=MONSTER>新鲜</color>。",
+			summonmonsters = "66% 几率召唤 1-3 个<color=MOB_SPAWN>穴居悬蛛</color>."
 		}
 	},
 
 	-- shadowsubmissive.lua
 	shadowsubmissive = {
 		shadowcreature = {
-			spawned_for = "生成于 %s.",
+			spawned_for = "生成于 %s。",
 			sanity_reward = "<color=SANITY>理智</color>奖励: <color=SANITY>%s</color>",
 			sanity_reward_split = "<color=SANITY>理智</color>奖励: <color=SANITY>%s</color> / <color=SANITY>%s</color>"
 		}
@@ -627,13 +627,13 @@ return {
 	-- singable.lua
 	singable = {
 		battlesong = {
-			battlesong_durability = "<color=HEALTH>Weapons</color> last <color=#aaaaee>%s%%</color> longer.",
-			battlesong_healthgain = "Hitting enemies restores <color=HEALTH>%s health</color> (<color=HEALTH>%s</color> for Wigfrids).",
-			battlesong_sanitygain = "Hitting enemies restores <color=SANITY>%s sanity</color>.",
-			battlesong_sanityaura = "Negative <color=SANITY>sanity auras</color> are <color=SANITY>%s%%</color> less effective.",
-			battlesong_fireresistance = "Take <color=HEALTH>%s%% less damage</color> from <color=LIGHT>fire</color>.",
-			battlesong_instant_taunt = "Taunts all nearby enemies within song radius.",
-			battlesong_instant_panic = "Panics nearby hauntable enemies for %s second(s)."
+			battlesong_durability = "<color=HEALTH>武器</color>增加 <color=#aaaaee>%s%%</color> 持续时间。",
+			battlesong_healthgain = "攻击敌人回复 <color=HEALTH>%s 生命</color> (薇格弗德为 <color=HEALTH>%s</color>)。",
+			battlesong_sanitygain = "攻击敌人回复 <color=SANITY>%s 理智</color>。",
+			battlesong_sanityaura = "<color=SANITY>负理智光环</color>效果减少 <color=SANITY>%s%%</color>。",
+			battlesong_fireresistance = "受到 <color=HEALTH>%s%% 更少</color>的<color=LIGHT>火焰</color>伤害。", -- need optimization
+			battlesong_instant_taunt = "嘲讽所有战歌范围内附近的敌人。",
+			battlesong_instant_panic = "惊恐附近可惊恐的敌人 %s 秒."
 		},
 		cost = "Costs %s inspiration to use."
 	},
@@ -645,8 +645,8 @@ return {
 	skinner_beefalo = "凶猛: %s, 喜庆: %s, 正式: %s",
 
 	-- soul.lua
-	wortox_soul_heal = "<color=HEALTH>治疗</color> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>.",
-	wortox_soul_heal_range = "<color=HEALTH>治疗</color> <color=#DED15E>%s 个格子</color> 内的玩家.",
+	wortox_soul_heal = "<color=HEALTH>治疗</color> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>。",
+	wortox_soul_heal_range = "<color=HEALTH>治疗</color> <color=#DED15E>%s 个格子</color> 内的玩家。",
 
 	-- spawner.lua
 	spawner = {
@@ -663,9 +663,9 @@ return {
 	-- stewer.lua
 	stewer = {
 		product = "<color=HUNGER><prefab=%s></color>(<color=HUNGER>%s</color>)",
-		cooktime_remaining = "<color=HUNGER><prefab=%s></color>(<color=HUNGER>%s</color>) 将在 %s 秒后完成",
+		cooktime_remaining = "<color=HUNGER><prefab=%s></color>(<color=HUNGER>%s</color>) 将在 %s 秒后完成。",
 		cooker = "由 <color=%s>%s</color> 烹饪",
-		cooktime_modifier_slower = "烹调食物 <color=#DED15E>%s%%</color> 减慢.",
+		cooktime_modifier_slower = "烹调食物 <color=#DED15E>%s%%</color> 减慢。",
 		cooktime_modifier_faster = "烹调食物 <color=NATURE>%s%%</color> 加快."
 	},
 
@@ -676,7 +676,7 @@ return {
 	temperature = "温度: %s",
 
 	-- tigersharker.lua
-	tigershark_spawnin = "重生于 %s后",
+	tigershark_spawnin = "%s后重生",
 	tigershark_waiting = "重生准备就绪",
 	tigershark_exists = "当前虎鲨出没",
 
@@ -708,7 +708,7 @@ return {
 	waterproofness = "<color=WET>防水</color>: <color=WET>%s%%</color>",
 
 	-- watersource.lua
-	watersource = "这是一个水源.",
+	watersource = "这是一个水源。",
 
 	-- wateryprotection.lua
 	wateryprotection = {
@@ -751,7 +751,7 @@ return {
 
 	-- wintertreegiftable.lua
 	wintertreegiftable = {
-		ready = "你已可以打开<color=#DED15E>稀有礼物</color>.",
+		ready = "你已可以打开<color=#DED15E>稀有礼物</color>。",
 		not_ready = "你必须<color=#ffbbbb>等待 %s 天</color>才能再次获得一个<color=#DED15E>稀有礼物</color>."
 	},
 
@@ -769,7 +769,7 @@ return {
 
 	-- worldmigrator.lua
 	worldmigrator = {
-		disabled = "切换世界已被禁用.",
+		disabled = "切换世界已被禁用。",
 		target_shard = "目标世界: %s",
 		received_portal = "传送门: %s",
 		id = "这是 #: %s"
