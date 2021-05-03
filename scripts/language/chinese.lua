@@ -396,7 +396,7 @@ return {
 	hunter = {
 		hunt_progress = "脚印: %s / %s",
 		impending_ambush = "下一个脚印为猎物。",
-		alternate_beast_chance = "<color=#b51212>%s%% 概率</color> 是一只 <color=MOB_SPAWN>座狼</color> or <color=MOB_SPAWN>钢羊</color>.",
+		alternate_beast_chance = "<color=#b51212>%s%% 几率</color> 是一只 <color=MOB_SPAWN>座狼</color> or <color=MOB_SPAWN>钢羊</color>.",
 	},
 
 	-- inspectable.lua
@@ -412,7 +412,7 @@ return {
 	},
 	canary = { -- 金丝雀（在洞穴）
 		gas_level = "<color=#DBC033>空气值</color>: %s / %s", -- canary, max saturation canary
-		poison_chance = "变为<color=#522E61>有毒</color>的概率: <color=#D8B400>%d%%</color>",
+		poison_chance = "变为<color=#522E61>有毒</color>的几率: <color=#D8B400>%d%%</color>",
 		gas_level_increase = "增加于 %s.",
 		gas_level_decrease = "减少于 %s."
 	},
@@ -475,7 +475,7 @@ return {
 			time_for_next_tool = "另一个工具将需要于 %s.",
 			experiment_time = "实验将完成于 %s.",
 		},
-		storm_move = "%s%% 概率于第 %d 天月球风暴",
+		storm_move = "%s%% 几率于第 %d 天月球风暴",
 	},
 
 	-- nightmareclock.lua
@@ -574,11 +574,11 @@ return {
 	scenariorunner = {
 		opened_already = "这个已经打开过了",
 		chest_labyrinth = {
-			sanity = "66% 概率改变<color=SANITY>理智</color>，从 <color=SANITY>-20</color> 到 <color=SANITY>20</color>",
-			hunger = "66% 概率改变<color=HUNGER>饥饿</color>，从 <color=HUNGER>-20</color> 到 <color=HUNGER>20</color>",
-			health = "66% 概率改变<color=HEALTH>健康</color>，从 <color=HEALTH>0</color> 到 <color=HEALTH>20</color>",
-			inventory = "66% 概率增加 20% <color=LIGHT>耐久</color>或<color=MONSTER>新鲜</color>",
-			summonmonsters = "66% 概率召唤 1-3 个<color=MOB_SPAWN>穴居悬蛛</color>",
+			sanity = "66% 几率改变<color=SANITY>理智</color>，从 <color=SANITY>-20</color> 到 <color=SANITY>20</color>",
+			hunger = "66% 几率改变<color=HUNGER>饥饿</color>，从 <color=HUNGER>-20</color> 到 <color=HUNGER>20</color>",
+			health = "66% 几率改变<color=HEALTH>健康</color>，从 <color=HEALTH>0</color> 到 <color=HEALTH>20</color>",
+			inventory = "66% 几率增加 20% <color=LIGHT>耐久</color>或<color=MONSTER>新鲜</color>",
+			summonmonsters = "66% 几率召唤 1-3 个<color=MOB_SPAWN>穴居悬蛛</color>",
 		},
 	},
 
