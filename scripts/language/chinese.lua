@@ -44,6 +44,8 @@ local catcoon = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
 -- perishable
 local stale = adjectiveToNoun(STRINGS.UI.HUD.STALE)
 
+-- TODO: Mixed up time replacables, to fix
+
 return {
 	-- insightservercrash.lua
 	server_crash = "由于未知原因，服务器崩溃",
