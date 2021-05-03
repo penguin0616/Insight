@@ -111,7 +111,7 @@ return {
 	breeder_fish5 = "<color=#9ADFDE>霓虹鱼</color>",
 	breeder_fishstring = "%s: %s / %s",
 	breeder_nextfishtime = "%s后有新鱼", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
-	breeder_possiblepredatortime = "可能于%s后生成捕食者",
+	breeder_possiblepredatortime = "可能于 %s后生成捕食者",
 
 	-- burnable.lua
 	burnable = {
@@ -522,8 +522,8 @@ return {
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
-		transition = "%s后<color=MONSTER>%s</color>", -- This is correct
-		transition_extended = "%s后<color=MONSTER>%s</color> (<color=MONSTER>%s%%</color>)",
+		transition = "<color=MONSTER>%s</color>于 %s后", -- This is correct
+		transition_extended = "<color=MONSTER>%s</color>于 %s后 (<color=MONSTER>%s%%</color>)",
 		paused = "当前暂停腐烂"
 	},
 

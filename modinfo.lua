@@ -2135,15 +2135,15 @@ local chinese = {
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "否",
-				HOVER = "植物压力值将不会显示"
+				HOVER = "植物的压力将不会显示"
 			},
 			["1"] = {
-				DESCRIPTION = "有园艺帽时",
-				HOVER = "如果你身上有，或戴上远古园艺帽时，显示植物的压力值。"
+				DESCRIPTION = "佩戴园艺帽时",
+				HOVER = "如果你身上有，或戴上远古园艺帽时，显示植物的压力"
 			},
 			["2"] = {
 				DESCRIPTION = "总是",
-				HOVER = "总是显示植物的压力值"
+				HOVER = "总是显示植物的压力"
 			}
 		}
 	},
@@ -2198,7 +2198,7 @@ local chinese = {
 				HOVER = "不显示洞穴暴动的阶段信息。"
 			},
 			["1"] = {
-				DESCRIPTION = "需要铥矿勋章",
+				DESCRIPTION = "拥有铥矿勋章",
 				HOVER = "拥有铥矿勋章时显示。"
 			},
 			["2"] = {
@@ -2451,44 +2451,44 @@ local chinese = {
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
 	display_crafting_lookup_button = {
-		LABEL = "Crafting Lookup Button",
-		HOVER = "Whether the crafting lookup button is displayed or not.",
+		LABEL = "建造查看按钮",
+		HOVER = "是否显示建造查看按钮",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The button is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示按钮"
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "The button is shown."
+				HOVER = "显示按钮"
 			},
 		},
 	},
 	display_insight_menu_button = {
-		LABEL = "Insight Menu Button",
-		HOVER = "Whether the insight menu button is displayed or not.",
+		LABEL = "Insight 目录按钮",
+		HOVER = "是否显示 Insight 目录按钮",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The button is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示按钮"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The button is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示按钮"
 			},
 		},
 	},
 	extended_info_indicator = {
-		LABEL = "More Information Hint",
-		HOVER = "Whether an asterisk is present for entities with more information.",
+		LABEL = "更多信息提示",
+		HOVER = "是否在有更多信息的实体上显示星号",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The indicator is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示星号"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The indicator is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示星号"
 			},
 		},
 	},
