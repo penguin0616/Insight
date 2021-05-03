@@ -330,7 +330,7 @@ return {
 		uses_plain = "使用",
 		sleepin = "睡觉",
 		fan = "扇风",
-		play = "演奏", -- beefalo horn
+		play = "演奏", -- beefalo horn, could be "吹奏" if it's ONLY for horn
 		hammer = "锤",
 		chop = "砍",
 		mine = "开采",
@@ -374,7 +374,7 @@ return {
 
 	-- fossil_stalker.lua [Prefab]
 	fossil_stalker = {
-		pieces_needed = "有 20%% 几率组装错误在组装上 %s 片后",
+		pieces_needed = "还有 %s 片组装的错误几率为 20%% ",
 		correct = "组装正确",
 		incorrect = "组装错误",
 		gateway_too_far = "这个骷髅距离是 %s 个格子"
