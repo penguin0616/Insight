@@ -61,7 +61,7 @@ local function SummarizeInventory(inst)
 		local perish_percent = ""
 		if item[3] and Insight.descriptors.perishable and Insight.descriptors.perishable.GetPerishData then
 			local data = Insight.descriptors.perishable.GetPerishData(item[3])
-			perish_percent = data.percent and ("<color=MONSTER>" .. Round(data.percent * 100, 1) .. "</color>") 
+			perish_percent = data and data.percent and ("<color=MONSTER>" .. Round(data.percent * 100, 1) .. "</color>") or ""
 		end
 		local str = string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>) %s", "#eeeeee", item[1], item[2], perish_percent)
 		inventory_string = (inventory_string or "") .. str

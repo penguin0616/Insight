@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.1.5" -- ds is 2.9.7_ds
+version = "3.1.6" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -1291,20 +1291,6 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Debugging ]]
 	--------------------------------------------------------------------------
-	log_reporter = {
-		LABEL = "Log Reporter",
-		HOVER = "Provides button in game for manual logs, attempts to automatically report crashes. Logs have debug, mods, world info.",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The log reporting is disabled."
-			},
-			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The log reporting is enabled."
-			},
-		},
-	},
 	crash_reporter = {
 		LABEL = "Crash Reporter",
 		HOVER = "**Attempts** to report your crashes (debug, mods, world info) automatically to my server.",

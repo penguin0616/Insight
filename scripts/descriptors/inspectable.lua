@@ -160,7 +160,7 @@ local function Describe(self, context)
 	--]]
 
 	--mprint("checking range", HasRange(inst))
-	if HasRange(inst) then
+	if not inst.components.spellcaster and HasRange(inst) then
 		return RangedDescribe(self, context)
 	end
 
