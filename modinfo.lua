@@ -542,11 +542,11 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Markers are shown."
+				HOVER = "Markers are not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Markers are not shown."
+				HOVER = "Markers are shown."
 			},
 		},
 	},
@@ -1828,16 +1828,16 @@ local chinese = {
 		}
 	},
 	klaus_sack_markers = {
-		LABEL = "Loot Stash Markers (Server Only)",
-		HOVER = "Whether Loot Stash spawning locations are marked. *Only the server's choice matters.*",
+		LABEL = "克劳斯袋子标记 (服务器选项)",
+		HOVER = "是否标记克劳斯袋子的位置 *该选项仅服务器有效*",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Markers are shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示标记"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Markers are not shown."
+				DESCRIPTION = "是",
+				HOVER = "显示标记"
 			},
 		},
 	},

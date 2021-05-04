@@ -57,7 +57,7 @@ local function Describe(self, context)
 			-- healing over time
 			local healing = TUNING.WORMWOOD_COMPOST_HEAL_VALUES[math.ceil(compost / 8)] or TUNING.WORMWOOD_COMPOST_HEAL_VALUES[1]
 			local duration = healing * (TUNING.WORMWOOD_COMPOST_HEALOVERTIME_TICK / TUNING.WORMWOOD_COMPOST_HEALOVERTIME_HEALTH)
-			compost_value_string = string.format(context.lstr.fertilizer.wormwood.compost_heal, healing, duration)
+			compost_value_string = GetDescription(context.lstr.fertilizer.wormwood.compost_heal, healing, duration)
 		end
 
 		if manure > 0 then

@@ -39,7 +39,7 @@ local function Describe(self, context)
 	end
 
 	if respawn_time then
-		description = string.format(context.lstr.spawner.next, GetPrefabNameOrElse(self.childname, "\"%s\""), context.time:SimpleProcess(respawn_time))
+		description = GetDescription(context.lstr.spawner.next, GetPrefabNameOrElse(self.childname, "\"%s\""), context.time:SimpleProcess(respawn_time))
 	else
 		alt_description = string.format(context.lstr.spawner.child, GetPrefabNameOrElse(self.childname, "\"%s\""))
 	end

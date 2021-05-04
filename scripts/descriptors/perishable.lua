@@ -316,7 +316,7 @@ local function Describe(self, context)
 
 		return {
 			priority = 0,
-			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.rot, context.time:SimpleProcess(context.bundleitem.perishremainingtime)),
+			description = GetDescription(context.lstr.perishable.transition, context.lstr.perishable.rot, context.time:SimpleProcess(context.bundleitem.perishremainingtime)),
 			perishmodifier = modifier,
 		}
 	end
@@ -333,8 +333,8 @@ local function Describe(self, context)
 		local time_to_perish = context.time:SimpleProcess(math.abs(data.time_to_perish))
 		local alt_time_to_perish = context.time:SimpleProcess(math.abs(data.alt_time_to_perish))
 
-		description = string.format(context.lstr.perishable.transition, context.lstr.perishable[data.perish_type], time_to_perish)
-		alt_description = string.format(context.lstr.perishable.transition_extended, context.lstr.perishable[data.alt_perish_type], alt_time_to_perish, Round(data.percent * 100, 1))
+		description = GetDescription(context.lstr.perishable.transition, context.lstr.perishable[data.perish_type], time_to_perish)
+		alt_description = GetDescription(context.lstr.perishable.transition_extended, context.lstr.perishable[data.alt_perish_type], alt_time_to_perish, Round(data.percent * 100, 1))
 	end
 
 	return {

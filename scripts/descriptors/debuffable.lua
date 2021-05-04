@@ -128,7 +128,7 @@ local function Describe(self, context)
 					remaining_time = "No timer specified"
 				end
 				
-				local text = string.format(context.lstr.buff_text, definition.name or ("\"" .. debuffPrefab .. "\""), remaining_time)
+				local text = GetDescription(context.lstr.buff_text, definition.name or ("\"" .. debuffPrefab .. "\""), remaining_time)
 
 				--dprint("server", debuffPrefab, text)
 

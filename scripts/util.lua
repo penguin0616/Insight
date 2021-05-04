@@ -636,11 +636,10 @@ end
 -- @str string to replace
 -- @param replacing fields
 -- @return replaced string
-local _StringFormat = string.format
-string.format = function(str, ...)
-	str2 = _StringFormat(str, ...)
+function GetDescription(str, ...)
+	str2 = string.format(str, ...)
 	if(str2 == str) then
-		for index, field in ipairs{...} do
+		for index, field in pairs{...} do
 			str2 = str2:gsub("$" .. index,  field)
 		end
 		return str2
