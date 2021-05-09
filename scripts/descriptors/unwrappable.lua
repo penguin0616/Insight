@@ -174,7 +174,7 @@ local function Describe(self, context)
 
 	local contents = GetItems(self, context)
 
-	if not context.onlyContents and bundlingAlreadyHandled == false then
+	if not context.onlyContents and bundlingAlreadyHandled == false and context.config["display_unwrappable"] then
 		description, alt_description = MakeDescription(contents, context)
 	end
 

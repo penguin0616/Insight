@@ -26,6 +26,10 @@ for i,v in pairs(FOREST_MIGRATOR_IMAGES) do
 end
 
 local function Describe(self, context)
+	if not context.config["display_worldmigrator"] then
+		return
+	end
+	
 	local description = nil
 
 	-- self.id = int, migrator #

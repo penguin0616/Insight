@@ -669,6 +669,13 @@ end)
 --]]
 
 AddPrefabPostInit("insight_combat_range_indicator", import("helpers/combat").HookClientIndicator)
+AddPrefabPostInit("insight_ghost_klaus_sack", function(inst)
+	AddLocalPlayerPostInit(function(insight, context)
+		if not context.config["klaus_sack_markers"] then
+			inst.AnimState:OverrideMultColour(0, 0, 0, 0)
+		end
+	end)
+end)
 
 --[[
 AddPrefabPostInit("klaus_sack", function(inst)

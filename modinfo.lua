@@ -547,16 +547,16 @@ local english = {
 		},
 	},
 	klaus_sack_markers = {
-		LABEL = "Loot Stash Markers (Server Only)",
-		HOVER = "Whether Loot Stash spawning locations are marked. *Only the server's choice matters.*",
+		LABEL = "Loot Stash Markers",
+		HOVER = "Whether Loot Stash spawning locations are marked.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Markers are shown."
+				HOVER = "Loot Stash markers are shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Markers are not shown."
+				HOVER = "Loot Stash markers are not shown."
 			},
 		},
 	},
@@ -735,6 +735,34 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "The stats are shown."
+			},
+		},
+	},
+	display_worldmigrator = {
+		LABEL = "Portal information",
+		HOVER = "Whether portal (sinkhole) information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Portal information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Portal information is shown."
+			},
+		},
+	},
+	display_unwrappable = {
+		LABEL = "Bundle information",
+		HOVER = "Whether bundle information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Bundle information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Bundle information is shown."
 			},
 		},
 	},
@@ -1815,16 +1843,16 @@ local chinese = {
 		},
 	},
 	klaus_sack_markers = {
-		LABEL = "Loot Stash Markers (Server Only)",
-		HOVER = "Whether Loot Stash spawning locations are marked. *Only the server's choice matters.*",
+		LABEL = "Loot Stash Markers",
+		HOVER = "Whether Loot Stash spawning locations are marked.",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Markers are shown."
+				HOVER = "Loot Stash markers are shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Markers are not shown."
+				HOVER = "Loot Stash markers are not shown."
 			},
 		},
 	},
@@ -2003,6 +2031,34 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示数据"
+			},
+		},
+	},
+	display_worldmigrator = {
+		LABEL = "Portal information",
+		HOVER = "Whether portal (sinkhole) information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Portal information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Portal information is shown."
+			},
+		},
+	},
+	display_unwrappable = {
+		LABEL = "Bundle information",
+		HOVER = "Whether bundle information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Bundle information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Bundle information is shown."
 			},
 		},
 	},
@@ -2991,7 +3047,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		tags = {"dst_only", "server_only"},
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "sinkhole_marks",
@@ -3109,6 +3165,24 @@ configuration_options = {
 		},
 		default = true,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_worldmigrator",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_unwrappable",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
 	},
 	{
 		name = "display_fishing_information",
