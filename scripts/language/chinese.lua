@@ -67,6 +67,12 @@ return {
 	durability = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
 	durability_unwrappable = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color>",
 
+	-- batbat.lua [Prefab]
+	batbat = {
+		health_restore = "Restores <color=HEALTH>%s health</color> per hit.",
+		sanity_cost = "Drains <color=SANITY>%s sanity</color> per hit.",
+	},
+
 	-- beard.lua
 	beard = "你的胡子将在 %s 天后长好.",
 
@@ -421,11 +427,16 @@ return {
 	hutch_respawn = "<color=MOB_SPAWN><prefab=hutch></color> will respawn in: %s",
 
 	-- inspectable.lua
-	wagstaff_tool = "The name of this tool is: <prefab=%s>",
+	wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
 	
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>隔热效果</color>: <color=FROZEN>%s</color>",
+
+	-- inventory.lua
+	inventory = {
+		hat_describe = "[Hat]: ",
+	},
 
 	-- klaussackloot.lua
 	klaussackloot = "Notable loot:",
@@ -624,8 +635,8 @@ return {
 
 	-- spawner.lua
 	spawner = {
-		next = "将生成 <color=MOB_SPAWN>%s</color> 于 %s",
-		child = "生成一个 <color=#ff9999>%s</color>",
+		next = "将生成 <color=MOB_SPAWN><prefab=%s></color> 于 %s",
+		child = "生成一个 <color=#ff9999><prefab=%s></color>",
 	},
 
 	-- stagehand.lua [Prefab]

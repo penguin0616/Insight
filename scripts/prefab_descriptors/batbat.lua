@@ -18,21 +18,17 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- alterguardianhat.lua [Prefab]
+-- batbat.lua [Prefab]
 local function Describe(inst, context)
 	local description = nil
-	
-	local minimum_sanity_string = context.player.components.sanity and string.format(context.lstr.alterguardianhat.minimum_sanity, 
-		math.ceil(context.player.components.sanity.max * TUNING.SANITY_BECOME_ENLIGHTENED_THRESH),
-		TUNING.SANITY_BECOME_ENLIGHTENED_THRESH * 100
-	)
 
-	local gestalt_damage_string = string.format(context.lstr.alterguardianhat.summoned_gestalt_damage, TUNING.ALTERGUARDIANHAT_GESTALT_DAMAGE)
+	local heal_string = string.format(context.lstr.batbat.health_restore, Round(TUNING.BATBAT_DRAIN, 1))
+	local sanity_string = string.format(context.lstr.batbat.sanity_cost, Round(0.5 * TUNING.BATBAT_DRAIN, 1))
 	
-	description = CombineLines(minimum_sanity_string, gestalt_damage_string)
-
+	description = heal_string .. "\n" .. sanity_string
+	
 	return {
-		priority = 0,
+		priority = 2,
 		description = description
 	}
 end
@@ -42,4 +38,3 @@ end
 return {
 	Describe = Describe
 }
-

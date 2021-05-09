@@ -67,6 +67,12 @@ return {
 	durability = "<icon=health> %s / %s",
 	durability_unwrappable = "<icon=armorwood> %s",
 
+	-- batbat.lua [Prefab]
+	batbat = {
+		--health_restore = "Restores <color=HEALTH>%s health</color> per hit.",
+		--sanity_cost = "Drains <color=SANITY>%s sanity</color> per hit.",
+	},
+
 	-- beard.lua
 	--beard = "Beard will improve in %s day(s).",
 
@@ -421,11 +427,16 @@ return {
 	hutch_respawn = "<color=MOB_SPAWN><prefab=hutch></color> will respawn in: %s",
 
 	-- inspectable.lua
-	--wagstaff_tool = "The name of this tool is: <prefab=%s>",
-
+	--wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
+	
 	-- insulator.lua
 	insulation_winter = "<icon=beargervest> <color=FROZEN>%s</color>",
 	insulation_summer = "<icon=icehat> <color=FROZEN>%s</color>",
+
+	-- inventory.lua
+	inventory = {
+		hat_describe = "[Hat]: ",
+	},
 
 	-- klaussackloot.lua
 	klaussackloot = "Notable loot:",
@@ -624,8 +635,8 @@ return {
 
 	-- spawner.lua
 	spawner = {
-		--next = "Will spawn a <color=MOB_SPAWN>%s</color> in %s.",
-		--child = "Spawns a <color=#ff9999>%s</color>",
+		--next = "Will spawn a <color=MOB_SPAWN><prefab=%s></color> in %s.",
+		--child = "Spawns a <color=#ff9999><prefab=%s></color>",
 	},
 
 	-- stagehand.lua [Prefab]

@@ -100,7 +100,7 @@ local function Describe(self, context)
 
 	return {
 		name = "sanityaura",
-		priority = 0,
+		priority = 28,
 		description = description
 	}
 end

@@ -83,7 +83,7 @@ local function Describe(self, context)
 			local player_naughtiness
 			if ShouldShowPlayerNaughtiness(context) then
 				player_naughtiness = GetNaughtiness(context.player, context)
-				player_naughtiness = string.format(context.lstr.player_naughtiness, player_naughtiness.actions, player_naughtiness.threshold)
+				player_naughtiness = player_naughtiness and string.format(context.lstr.player_naughtiness, player_naughtiness.actions, player_naughtiness.threshold) or nil
 			end
 			
 			--[[

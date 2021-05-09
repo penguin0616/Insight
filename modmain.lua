@@ -219,7 +219,7 @@ local descriptors_ignore = {
 	
 
 	"inventoryitem", "moisturelistener", "propagator", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", "book", -- don't care
-	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", "inventory", -- don't care
+	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", -- don't care
 	"named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
 	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", "tiletracker", "payable", "useableitem", "drawable", "shaver", -- don't care
 	"gridnudger", "entitytracker", "appeasable", "currency", "mateable", "sizetweener", "saltlicker", "sinkable", "sticker", "projectile", "hiddendanger", "deciduoustreeupdater", -- don't care
@@ -759,8 +759,8 @@ local function GetEntityInformation(entity, player, params)
 	end
 
 	player_context.fromInspection = params.fromInspection or false
-
 	params.is_forge = IsForge() -- why call this multiple times later?
+	player_context.params = params
 
 	local chunks = {}
 
@@ -1973,7 +1973,7 @@ if IsDST() then
 
 		
 
-		TheWorld:DoPeriodicTask(0.5, function()
+		Insight.shard_sync_task = TheWorld:DoPeriodicTask(0.5, function()
 			local data = TheWorld.shard.components.shard_insight:UpdateLocalWorldData()
 
 			for id, shard in pairs(Shard_GetConnectedShards()) do
@@ -1998,7 +1998,7 @@ if IsDST() then
 		end
 		--]]
 
-		TheWorld:DoPeriodicTask(1, function()
+		Insight.player_stat_sync_task = TheWorld:DoPeriodicTask(1, function()
 			if not GetModConfigData("display_shared_stats") then -- forbidden by server
 				return
 			end

@@ -25,8 +25,7 @@ local function FormatCondition(condition, context)
 end
 
 local function Describe(self, context)
-	local inst = self.inst
-	local description = nil
+	--local description = nil
 	local durabilityValue = Round(self.condition, 0)
 
 	-- orange red #FF5926
@@ -41,12 +40,15 @@ local function Describe(self, context)
 	local protection = string.format(context.lstr.protection, (self.absorb_percent and self.absorb_percent * 100) or "?")
 	local durability = string.format(context.lstr.durability, durabilityValue, Round(self.maxcondition, 0))
 
-	description = CombineLines(protection, durability)
-
 	return {
+		name = "armor_durability",
 		priority = 1,
-		description = description,
+		description = durability,
 		durabilityValue = durabilityValue
+	}, {
+		name = "armor_protection",
+		priority = 1.1,
+		description = protection
 	}
 end
 
