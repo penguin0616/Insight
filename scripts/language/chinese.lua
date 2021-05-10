@@ -342,9 +342,7 @@ return {
 	-- follower.lua
 	leader = "领导者: %s", -- cy "主人: %s", but GT says it comes out to "the host"
 	loyalty_duration = "忠臣持续时间: %s",
-	ghostlybond = "等级: %s / %s. +1在%s后",
-	ghostlybond_self = "你的等级: %s / %s. +1在%s后", -- i did this one myself ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+	
 	-- forcecompostable.lua
 	forcecompostable = "肥料值: %s",
 
@@ -372,6 +370,28 @@ return {
 		time_verbose = "<color=LIGHT>%s</color> 持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 		efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
 		units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
+	},
+
+	-- ghostlybond.lua
+	ghostlybond = {
+		abigail = "<color=%s>等级</color>: %s / %s.,
+		flower = "你的<color=%s>等级</color>: %s / %s.", -- i did this one myself ~~~~
+		levelup = " +1在%s后",
+	},
+
+	-- ghostlyelixir.lua
+	ghostlyelixir = {
+		ghostlyelixir_slowregen = "Regenerates <color=HEALTH>%s health</color> over %s (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
+		ghostlyelixir_fastregen = "Regenerates <color=HEALTH>%s health</color> over %s (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
+		ghostlyelixir_attack = "Maximizes <color=HEALTH>damage</color> for %s.",
+		ghostlyelixir_speed = "Increases <color=DAIRY>speed</color> by <color=DAIRY>%s%%</color> for %s.",
+		ghostlyelixir_shield = "Increases shield duration to 1 second for %s.",
+		ghostlyelixir_retaliation = "Shield reflects <color=HEALTH>%s damage</color> for %s.", -- concatenated with shield
+	},
+
+	-- ghostlyelixirable.lua
+	ghostlyelixirable = {
+		remaining_buff_time = "<color=#737CD0><prefab=%s></color> buff duration: %s.",
 	},
 
 	-- growable.lua

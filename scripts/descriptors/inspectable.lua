@@ -149,28 +149,6 @@ local function InsightFalseCombatDescribe(self, context)
 	}
 end
 
-local potion_tunings = nil do
-	local exec = loadfile("scripts/prefabs/ghostly_elixirs.lua")
-	if type(exec) ~= "function" then
-		potion_tunings = {}
-	else
-		local env = setmetatable({
-			Prefab = function(...)
-				potion_tunings = potion_tunings or util.getupvalue(debug.getinfo(2).func, "potion_tunings")
-				return {...}
-			end,
-		}, {__index=Insight.env})
-		setfenv(exec, env)
-		exec()
-
-		--table.foreach(potion_tunings, print)
-	end
-end
-
-local function GhostlyElixirDescribe(inst, context)
-
-end
-
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
@@ -220,10 +198,6 @@ local function Describe(self, context)
 			end
 		end
 	end
-
-	if inst:HasTag("ghostlyelixir") then
-		return GhostlyElixirDescribe(inst, context)
-	end
 	
 	if inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
 		local func = Insight.descriptors.weapon and Insight.descriptors.weapon.GetSlingshotAmmoData
@@ -231,15 +205,6 @@ local function Describe(self, context)
 			local data = func(inst)
 			local damage = data and data.damage
 			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage or "?")
-		end
-	end
-
-	if context.player.components.ghostlybond and inst:HasTag("abigail_flower") then
-		local ghostlybond = context.player.components.ghostlybond
-
-		if ghostlybond.bondleveltimer then
-			local ghostlybond_levelup_time = context.time:SimpleProcess(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer)
-			description = string.format(context.lstr.ghostlybond_self, ghostlybond.bondlevel, ghostlybond.maxbondlevel, ghostlybond_levelup_time)
 		end
 	end
 

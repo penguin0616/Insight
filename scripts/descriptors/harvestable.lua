@@ -19,12 +19,17 @@ directory. If not, please refer to
 ]]
 
 -- harvestable.lua
-local COLORS = {
+local COLORS = setmetatable({
 	honey = Insight.COLORS.SWEETENER,
 	red_cap = "#A64E47",
 	green_cap = "#446B4A",
 	blue_cap = "#719BA5",
-}
+}, {
+	__index = function(self, index)
+		rawset(self, index, "#ffffff")
+		return rawget(self, index)
+	end
+})
 
 local function Describe(self, context)
 	local description = nil
@@ -37,7 +42,7 @@ local function Describe(self, context)
 		description = string.format(context.lstr.harvestable.product, self.product, self.produce, self.maxproduce)
 	else
 		local name = self.product--GetPrefabNameOrElse(self.product, "\"%s\"")
-		name = string.format("<color=%s><prefab=%s></color>", COLORS[self.product] or "#ffffff", name)
+		name = string.format("<color=%s><prefab=%s></color>", COLORS[self.product], name)
 
 		description = string.format(context.lstr.lang.harvestable.product, name, self.produce, self.maxproduce)
 

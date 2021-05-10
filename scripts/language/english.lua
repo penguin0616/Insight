@@ -342,8 +342,6 @@ return {
 	-- follower.lua
 	leader = "Leader: %s",
 	loyalty_duration = "Loyalty duration: %s",
-	ghostlybond = "Sisterly bond: %s / %s. +1 in %s.",
-	ghostlybond_self = "Your sisterly bond: %s / %s. +1 in %s.",
 
 	-- forcecompostable.lua
 	forcecompostable = "Compost value: %s",
@@ -372,6 +370,28 @@ return {
 		time_verbose = "<color=LIGHT>%s</color> remaining (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 		efficiency = "<color=LIGHT>Fuel efficiency</color>: <color=LIGHT>%s%%</color>",
 		units = "<color=LIGHT>Fuel</color>: <color=LIGHT>%s</color>",
+	},
+
+	-- ghostlybond.lua
+	ghostlybond = {
+		abigail = "<color=%s>Sisterly bond</color>: %s / %s.",
+		flower = "Your <color=%s>sisterly bond</color>: %s / %s. ",
+		levelup = " +1 in %s.",
+	},
+
+	-- ghostlyelixir.lua
+	ghostlyelixir = {
+		ghostlyelixir_slowregen = "Regenerates <color=HEALTH>%s health</color> over %s (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
+		ghostlyelixir_fastregen = "Regenerates <color=HEALTH>%s health</color> over %s (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
+		ghostlyelixir_attack = "Maximizes <color=HEALTH>damage</color> for %s.",
+		ghostlyelixir_speed = "Increases <color=DAIRY>speed</color> by <color=DAIRY>%s%%</color> for %s.",
+		ghostlyelixir_shield = "Increases shield duration to 1 second for %s.",
+		ghostlyelixir_retaliation = "Shield reflects <color=HEALTH>%s damage</color> for %s.", -- concatenated with shield
+	},
+
+	-- ghostlyelixirable.lua
+	ghostlyelixirable = {
+		remaining_buff_time = "<color=#737CD0><prefab=%s></color> duration: %s.",
 	},
 
 	-- growable.lua

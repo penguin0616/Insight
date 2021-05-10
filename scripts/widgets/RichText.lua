@@ -98,7 +98,7 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 		if is_object then
 			-- prefab class
 			local prefab = chunk.object.value
-			text = GetPrefabNameOrElse(prefab, "\"%s\"")
+			text = GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
 		else
 			text = chunk.text
 		end

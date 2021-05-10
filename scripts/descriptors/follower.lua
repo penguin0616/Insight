@@ -22,7 +22,7 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
-	local remaining_time, ghostlybond_levelup, leader_name = nil, nil, nil
+	local remaining_time, leader_name = nil, nil
 
 	local isAbigail = inst:HasTag("abigail") and IsDST()
 
@@ -31,29 +31,18 @@ local function Describe(self, context)
 		return
 	end
 
-	if self.leader then
+	local leader = self:GetLeader()
+
+	if leader then
 		leader_name = string.format(context.lstr.leader, self.leader:GetDisplayName())
 
 		if self.targettime then
 			remaining_time = string.format(context.lstr.loyalty_duration, context.time:SimpleProcess(self.targettime - GetTime()))
 		end
 	end
-
-	-- Abigail Level Timer
-	if isAbigail and self:GetLeader() then -- ghostly bond
-		local leader = self:GetLeader()
-		local ghostlybond = leader.components.ghostlybond
-
-		if ghostlybond and ghostlybond.bondleveltimer then
-			local ghostlybond_levelup_time = context.time:SimpleProcess(ghostlybond.bondlevelmaxtime - ghostlybond.bondleveltimer)
-			ghostlybond_levelup = string.format(context.lstr.ghostlybond, ghostlybond.bondlevel, ghostlybond.maxbondlevel, ghostlybond_levelup_time)
-		end
-	end
 	
 	if context.config["follower_info"] then
-		description = CombineLines(leader_name, remaining_time, ghostlybond_levelup)
-	elseif isAbigail then
-		description = CombineLines(leader_name, ghostlybond_levelup)
+		description = CombineLines(leader_name, (not isAbigail and remaining_time) or nil)
 	end
 
 	if false then
@@ -62,6 +51,7 @@ local function Describe(self, context)
 	end
 
 	return {
+		name = "follower",
 		priority = 0,
 		description = description
 	}

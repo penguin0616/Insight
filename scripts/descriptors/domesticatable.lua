@@ -23,12 +23,17 @@ directory. If not, please refer to
 -- x, y, z = 40, 20, 20; print(x * 2, x+y+z) -> 80 80
 -- so in other words, dominant trait must be 50% of overall points
 
-local TENDENCY_COLORS = {
+local TENDENCY_COLORS = setmetatable({
 	[TENDENCY.DEFAULT] = "#bbbbbb",
 	[TENDENCY.ORNERY] = "#B33C34", --"#A22B23",
 	[TENDENCY.RIDER] = Insight.COLORS.ENLIGHTENMENT,
 	[TENDENCY.PUDGY] = Insight.COLORS.HUNGER,
-}
+}, {
+	__index = function(self, index)
+		rawset(self, index, "#ffffff")
+		return rawget(self, index)
+	end,
+})
 
 -- order to display
 --local ORDER = {TENDENCY.DEFAULT, TENDENCY.ORNERY, TENDENCY.RIDER, TENDENCY.PUDGY}
@@ -61,7 +66,7 @@ local function Describe(self, context)
 	--local obedience_extended_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience_extended, obedience, TUNING.BEEFALO_SADDLEABLE_OBEDIENCE, TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE, self.minobedience or "?") or nil
 	local obedience_extended_string = obedience_string
 
-	local dominant_tendency_string = self.inst.tendency and ApplyColour(context.lstr.domesticatable.tendencies[self.inst.tendency] or "???", TENDENCY_COLORS[self.inst.tendency] or "#ffffff")
+	local dominant_tendency_string = self.inst.tendency and ApplyColour(context.lstr.domesticatable.tendencies[self.inst.tendency] or "???", TENDENCY_COLORS[self.inst.tendency])
 	local tendency_string = dominant_tendency_string and string.format(context.lstr.domesticatable.tendency, dominant_tendency_string) or nil
 	
 	local full_tendency_string = ""

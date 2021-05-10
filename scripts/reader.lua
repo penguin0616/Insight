@@ -132,11 +132,11 @@ function Reader:ReadTag()
 		end
 	elseif string.sub(self.buffer, 1, 1) == "<" then -- maybe opening tag
 		--print'opening tag check'
-		local whole_tag = string.match(self.buffer, "<([^>]+)>")
+		--local whole_tag = string.match(self.buffer, "<([^>]+)>")
 	
 		--print(string.match == self.buffer.match)
 		--print(pcall(string.dump, string.match))
-		local tag, value, fin = string.match(self.buffer, "^<(%w+)=?([#_%w]*)>()")
+		local tag, value, fin = string.match(self.buffer, "^<(%w+)=?([^>]*)>()") -- "^<(%w+)=?([#_%w]*)>()"
 		--print(tag, value, fin)
 		if value == "" then
 			value = nil

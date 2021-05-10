@@ -244,8 +244,8 @@ local descriptors_ignore = {
 	"touchstonetracker", "constructionbuilderuidata", "birdattractor", "attuner", "builder", "bundler", "carefulwalker", "catcher", "colouradder", "colourtweener", "inkable", "walkingplankuser", -- from mousing over player
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", -- don't care
-	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "ghostlyelixirable", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
-	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", -- don't care
+	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
+	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
 	"markable_proxy", "saved_scale", "gingerbreadhunter", -- don't care
 
 	-- NEW:
@@ -584,7 +584,7 @@ function cprint(...)
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
-local function InvalidDescriptorIndex(self, index)
+local function InvalidDescriptorIndex(self, index) -- causes crash when checking for stuff :p
 	error(string.format("Descriptor '%s' does not have index '%s'", tostring(self.name), tostring(index)))
 end
 
@@ -605,7 +605,7 @@ local function GetComponentDescriptor(name)
 
 			if getmetatable(res) == nil then
 				res.name = res.name or name
-				setmetatable(res, { __index=InvalidDescriptorIndex })
+				setmetatable(res, { })
 			end
 
 			return res

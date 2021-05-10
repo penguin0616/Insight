@@ -68,12 +68,17 @@ for i,v in pairs(icons) do
 	end
 end
 
-local colors = { -- paint.net eyedropper on the medallions
+local colors = setmetatable({ -- paint.net eyedropper on the medallions
 	calm = "#897559",
 	warn = "#663235",
 	nightmare = "#CE3D45",
 	dawn = "#E99A68",
-}
+}, {
+	__index = function(self, index)
+		rawset(self, index, "#0000ff")
+		return rawget(self, index)
+	end
+})
 
 local function Describe(self, context)
 	local description = nil
@@ -114,7 +119,7 @@ local function Describe(self, context)
 
 		local phase = save_data.phase == "wild" and "nightmare" or save_data.phase
 
-		description = string.format(context.lstr.nightmareclock, colors[phase] or "#0000ff", phase:sub(1,1):upper() .. phase:sub(2):lower(), remaining_time)
+		description = string.format(context.lstr.nightmareclock, colors[phase], phase:sub(1,1):upper() .. phase:sub(2):lower(), remaining_time)
 		icon = icons[phase]
 	end
 
