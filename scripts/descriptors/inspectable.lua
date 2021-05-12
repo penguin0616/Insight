@@ -198,15 +198,6 @@ local function Describe(self, context)
 			end
 		end
 	end
-	
-	if inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
-		local func = Insight.descriptors.weapon and Insight.descriptors.weapon.GetSlingshotAmmoData
-		if func then
-			local data = func(inst)
-			local damage = data and data.damage
-			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage or "?")
-		end
-	end
 
 	--[[
 	if IsDST() and inst.components.inventoryitem then

@@ -18,27 +18,24 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- explosive.lua
+-- reloaditem.lua
 local function Describe(self, context)
-	local inst = self.inst
 	local description = nil
-	
-	local damage = string.format(context.lstr.explosive_damage, self.explosivedamage)
-	local range = string.format(context.lstr.explosive_range, self.explosiverange)
 
-	description = CombineLines(damage, range)
+	if self.inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
+		local func = Insight.descriptors.weapon and Insight.descriptors.weapon.GetSlingshotAmmoData
+		if func then
+			local data = func(self.inst)
+			local damage = data and data.damage or 0
+			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage)
+		end
+	end
+
+
 
 	return {
-		name = "explosive",
-		priority = 0,
+		priority = 49,
 		description = description
-	}, {
-		name = "insight_ranged",
-		priority = 0,
-		description = nil,
-		range = self.explosiverange,
-		color = "#ff0000",
-		attach_player = false
 	}
 end
 

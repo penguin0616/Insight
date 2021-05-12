@@ -34,7 +34,7 @@ local function Describe(self, context)
 	local leader = self:GetLeader()
 
 	if leader then
-		leader_name = string.format(context.lstr.leader, self.leader:GetDisplayName())
+		leader_name = string.format(context.lstr.leader, leader:GetDisplayName())
 
 		if self.targettime then
 			remaining_time = string.format(context.lstr.loyalty_duration, context.time:SimpleProcess(self.targettime - GetTime()))

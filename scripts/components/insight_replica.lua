@@ -27,6 +27,7 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 local Indicators = import("indicators")
 local cooking = require("cooking")
 
+local Entity_HasTag = Entity.HasTag
 local Is_DST = IsDST()
 local Is_DS = IsDS()
 
@@ -964,7 +965,8 @@ function Insight:EntityActive(ent)
 
 	--self.entity_count = self.entity_count + 1
 
-	local delay = ((ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") and 0) or math.random(3, 10) / (TheWorld.ismastersim and 4 or 10)
+	--print(ent, Entity_HasTag(ent.entity, "INLIMBO"), ent.entity:GetDebugString())
+	local delay = ((ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit" or false) and 0) or math.random(3, 10) / (TheWorld.ismastersim and 4 or 10)
 	if delay > 0 then
 		SetDebounce(self, ent)
 	end

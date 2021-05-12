@@ -374,7 +374,7 @@ return {
 
 	-- ghostlybond.lua
 	ghostlybond = {
-		abigail = "<color=%s>等级</color>: %s / %s.,
+		abigail = "<color=%s>等级</color>: %s / %s.",
 		flower = "你的<color=%s>等级</color>: %s / %s.", -- i did this one myself ~~~~
 		levelup = " +1在%s后",
 	},

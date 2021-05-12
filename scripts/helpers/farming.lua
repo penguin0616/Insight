@@ -92,7 +92,8 @@ end
 
 --- Gets tile moisture at point
 local function GetTileMoistureAtPoint(x, y, z)
-	return GetTileDataAtPoint(false, x, y, z).soilmoisture
+	local data = GetTileDataAtPoint(false, x, y, z)
+	return data and data.soilmoisture or nil
 end
 
 --- Returns the current world moisture rate.

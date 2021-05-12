@@ -76,7 +76,7 @@ local function Describe(self, context)
 				-- self.burnrate*(-self.hungerrate*dt)
 				
 				local burn_per_second = Round(burn_rate * -self.hungerrate * (self.period or 1), 2) -- self.period missing in DST
-				burn_str = string.format(context.lstr.hunger_burn, burn_per_second * TUNING.SEG_TIME, burn_per_second)
+				burn_str = string.format(context.lstr.hunger_burn, burn_per_second * TUNING.TOTAL_DAY_TIME, burn_per_second)
 			else
 				burn_str = context.lstr.hunger_paused
 			end
