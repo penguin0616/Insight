@@ -301,7 +301,7 @@ end
 local function OnEntityInvalidate(inst)
 	local insight = GetInsight(inst)
 	if insight and insight.net_invalidate:value() then -- some wx78 had a nil inst
-		self:RequestInformation(insight.net_invalidate:value())
+		insight:RequestInformation(insight.net_invalidate:value())
 	end
 end
 
