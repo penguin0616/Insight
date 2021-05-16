@@ -474,6 +474,21 @@ local function ForceStateChange(inst, state)
 	OnIndicatorStateDirty(inst, true)
 end
 
+local function OnIndicatorParentRemoved(inst)
+	if not inst.insight_combat_range_indicator then
+		return
+	end
+	
+	inst.insight_combat_range_indicator.OnStateDirty = nil
+	inst.insight_combat_range_indicator.OnCanDecayDirty = nil
+	inst.insight_combat_range_indicator.OnAttackRangeDirty = nil
+	inst.insight_combat_range_indicator.OnHitRangeDirty = nil
+	inst.insight_combat_range_indicator.OnIncludePhysicsRadiusDirty = nil
+	inst.insight_combat_range_indicator.ForceStateChange = nil
+
+	inst.insight_combat_range_indicator = nil
+end
+
 local function HookClientIndicator(inst, delay)
 	inst:DoTaskInTime(delay or 0, function()
 		local parent = inst.entity:GetParent()
@@ -496,6 +511,8 @@ local function HookClientIndicator(inst, delay)
 		inst.OnHitRangeDirty = OnHitRangeDirty
 		inst.OnIncludePhysicsRadiusDirty = OnIncludePhysicsRadiusDirty
 		inst.ForceStateChange = ForceStateChange
+
+		parent:ListenForEvent("onremove", OnIndicatorParentRemoved)
 		
 		parent.insight_combat_range_indicator = inst
 

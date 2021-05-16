@@ -584,6 +584,18 @@ function cprint(...)
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
+local function DoNetworkMoonCycle(inst)
+	local moon_cycle = GetMoonCycle(inst)
+	if not moon_cycle then return end
+
+	for _, player in pairs(AllPlayers) do
+		local ist = GetInsight(player)
+		if ist then
+			ist:SendMoonCycle(moon_cycle)
+		end
+	end
+end
+
 local function InvalidDescriptorIndex(self, index) -- causes crash when checking for stuff :p
 	error(string.format("Descriptor '%s' does not have index '%s'", tostring(self.name), tostring(index)))
 end
@@ -1174,6 +1186,21 @@ function GetNaughtiness(inst, context)
 	end
 end
 
+function GetMoonCycle(world)
+	if not (world.net and world.net.components.clock) then
+		return
+	end
+
+	local data = world.net.components.clock:OnSave()
+	local moon_cycle = type(data) == "table" and data.mooomphasecycle
+
+	if not type(moon_cycle) == "number" then
+		return
+	end
+
+	return moon_cycle
+end
+
 local function sprint(c)
 	local x = c
 	while #x > 0 do
@@ -1546,6 +1573,10 @@ if IsDST() then
 		end
 	end)
 	rawset(_G, "RE", function(str) rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), str) end)
+
+	rpcNetwork.AddModRPCHandler(modname, "ClientInitialized", function(player)
+		
+	end)
 
 	rpcNetwork.AddShardModRPCHandler(modname, "CrashReporter", function(sending_shard_id, data)
 		if data.server_owner_enabled then
@@ -1971,7 +2002,9 @@ if IsDST() then
 		
 		-- [both] player is nil in DST, exists in DS
 
-		
+		TheWorld:ListenForEvent("ms_cyclecomplete", function(inst)
+			inst:DoTaskInTime(0, DoNetworkMoonCycle)
+		end)
 
 		Insight.shard_sync_task = TheWorld:DoPeriodicTask(0.5, function()
 			local data = TheWorld.shard.components.shard_insight:UpdateLocalWorldData()

@@ -44,11 +44,14 @@ local function FollowOwner(inst)
 		return
 	end
 
-	local x, y, z = inst.Transform:GetWorldPosition()
+	--local x, y, z = inst.Transform:GetWorldPosition()
 	local px, py, pz = inst.owner.Transform:GetWorldPosition()
 
-	if x ~= px or y ~= py or z ~= pz then
-		inst.Transform:SetPosition(px, py, pz)
+	if inst._x ~= px or inst._y ~= py or inst._z ~= pz then
+		inst._x, inst._y, inst._z = px, py, pz
+
+		local x, y, z = TheWorld.Map:GetTileCenterPoint(px, py, pz)
+		inst.Transform:SetPosition(x, y, z)
 	end
 end
 

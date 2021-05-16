@@ -111,7 +111,7 @@ local function GetTileMoistureDelta(x, y, z)
 	local tile_data = GetTileDataAtPoint(false, x, y, z)
 	
 	local obj_rate = 0
-	if tile_data.soil_drinkers ~= nil then
+	if tile_data and tile_data.soil_drinkers ~= nil then
 		for obj, _ in pairs(tile_data.soil_drinkers) do
 			obj_rate = obj_rate + obj.components.farmsoildrinker:GetMoistureRate()
 		end
@@ -224,7 +224,7 @@ end
 local function GetTileNutrientDelta(x, y, z)
 	local tile_data = GetTileDataAtPoint(false, x, y, z)
 	
-	local nutrient_delta = { formula=0, compost=0, manure=0}
+	local nutrient_delta = { formula=0, compost=0, manure=0 }
 	if tile_data.soil_drinkers ~= nil then
 		for obj, _ in pairs(tile_data.soil_drinkers) do
 			local plant_def = obj.weed_def or obj.plant_def

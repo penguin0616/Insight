@@ -290,7 +290,7 @@ function GetMouseTargetItem()
 
 	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab
 	-- 5/2/2020
-	if target ~= nil and not IsPrefab(target) then
+	if target ~= nil and (not IsPrefab(target) or not target:IsValid()) then
 		return nil
 	end
 
@@ -454,7 +454,6 @@ local function LoadLocalPlayer(player)
 			
 			if todo.persists then
 				x = x + 1
-				mprint("\tIt persists.")
 			else
 				table.remove(onLocalPlayerReady, x + 1)
 			end
@@ -464,6 +463,8 @@ local function LoadLocalPlayer(player)
 		if FASCINATING then
 			mprint(modname)
 		end
+
+		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ClientInitialized"))
 
 		-- people irritate me.
 		-- i suppose this approach is better than what i initially planned. after all, who's fault is it? the uploader who stole, or the user who used the stolen version?

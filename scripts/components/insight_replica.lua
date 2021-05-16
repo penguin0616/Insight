@@ -298,6 +298,21 @@ local function OnEntityNetworkActive(ent, self)
 	end
 end
 
+local function OnEntityInvalidate(inst)
+	local insight = GetInsight(inst)
+	if insight and insight.net_invalidate:value() then -- some wx78 had a nil inst
+		self:RequestInformation(insight.net_invalidate:value())
+	end
+end
+
+local function OnMoonCycleDirty(inst)
+	local insight = GetInsight(inst)
+	if insight and TheWorld then
+		local moon_cycle = insight.net_moon_cycle:value()
+		TheWorld:PushEvent("moon_cycle_dirty", { moon_cycle=moon_cycle })
+	end
+end
+
 --------------------------------------------------------------------------
 --[[ Insight ]]
 --------------------------------------------------------------------------
@@ -373,7 +388,7 @@ local Insight = Class(function(self, inst)
 
 	self.entity_count = 0
 	self.world_data = nil -- await
-	self.entity_data = setmetatable(createTable(500), { __mode="k" }) -- {[entity] = {data}}
+	self.entity_data = setmetatable(createTable(800), { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = {}
 
 	self.queuer = Queuer(8) -- shouldn't encounter crashes with this
@@ -405,6 +420,8 @@ local Insight = Class(function(self, inst)
 		self.net_hunt_target = net_entity(self.inst.GUID, "insight_hunt_target", "insight_hunt_target_dirty")
 		-- net_bool
 		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty")
+		-- net_smallbyte
+		self.net_moon_cycle = net_smallbyte(self.inst.GUID, "insight_net_moon_cycle", "insight_net_moon_cycle_dirty")
 
 		self.inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty)
 
@@ -417,6 +434,8 @@ local Insight = Class(function(self, inst)
 			self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
 				self.net_battlesong_active:set(player.components.singinginspiration:IsSinging())
 			end)
+
+			self:SendMoonCycle(GetMoonCycle(TheWorld))
 			
 			--[[
 			local function Send()
@@ -481,12 +500,9 @@ local Insight = Class(function(self, inst)
 
 		if self.is_client and Is_DST then
 			-- client
-			self.inst:ListenForEvent("insight_invalidate_dirty", function(...)
-				local inst = GetInsight(...).net_invalidate:value()
-				if inst then -- some wx78 had a nil inst
-					self:RequestInformation(inst)
-				end
-			end)
+			self.inst:ListenForEvent("insight_invalidate_dirty", OnEntityInvalidate)
+
+			self.inst:ListenForEvent("insight_net_moon_cycle_dirty", OnMoonCycleDirty)
 		end
 	end
 
@@ -644,6 +660,20 @@ function Insight:SetEntityData(entity, data)
 		self.queue_tracker[entity] = #self.queue
 	end
 	--]==]
+end
+
+function Insight:SendMoonCycle(int)
+	if not TheWorld.ismastersim then
+		return
+	end
+
+	if not int then
+		dprint("Missing int for SendMoonCycle?")
+		return
+	end
+
+	self.net_moon_cycle:set_local(int)
+	self.net_moon_cycle:set(int)
 end
 
 function Insight:SendNaughtiness()

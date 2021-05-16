@@ -58,7 +58,8 @@ end
 -- @param inst The indicator
 -- @number radius The radius the indicator will be set to. Interpreted as number of tiles.
 local function SetRadius(inst, radius)
-	if not inst.entity:GetParent() then
+	local parent = inst.entity:GetParent()
+	if not parent then
 		error("attempt to call SetRadius with no entity parent")
 		return
 	end
@@ -68,7 +69,7 @@ local function SetRadius(inst, radius)
 	-- and i guess i thought of how it was a square/circle thing. nice!
 
 
-	local a, b, c = inst.entity:GetParent().Transform:GetScale()
+	local a, b, c = parent.Transform:GetScale()
 
 	inst.Transform:SetScale(scale / a, scale / b, scale / c)
 	
