@@ -1578,6 +1578,83 @@ if IsDST() then
 		
 	end)
 
+	rpcNetwork.AddShardModRPCHandler(modname, "UpdateTimerNetworking", function(sending_shard_id, data)
+		local a, b = pcall(json.decode, data)
+		if not a then 
+			mprint("Received invalid UpdateTimerNetworking data:", data)
+			return
+		end
+
+		data = b;
+
+		if data.selected_cave_shard and Insight.selected_cave_shard ~= tostring(data.selected_cave_shard) then
+			Insight.selected_cave_shard = tostring(data.selected_cave_shard)
+			mprint(string.format("Shard (%s) got selected for cave data, %s.", 
+				data.selected_cave_shard, 
+				tostring(data.selected_cave_shard)==TheShard:GetShardId() and "aka Us" or "not Us"
+			))
+		end
+		
+		if data.selected_forest_shard and Insight.selected_forest_shard ~= tostring(data.selected_forest_shard) then
+			Insight.selected_forest_shard = tostring(data.selected_forest_shard)
+			mprint(string.format("Shard (%s) got selected for forest data, %s.", 
+				data.selected_forest_shard, 
+				tostring(data.selected_forest_shard)==TheShard:GetShardId() and "aka Us" or "not Us"
+			))
+		end
+
+		--[[
+		if world_prefab == "cave" then
+			Insight.selected_cave_shard = TheShard:GetShardId()
+			mprint(string.format("I (%s) got selected for networking: %s", TheShard:GetShardId(), world_prefab))
+		elseif world_prefab == "forest" then
+			Insight.selected_forest_shard = TheShard:GetShardId()
+			mprint(string.format("I (%s) got selected for networking: %s", TheShard:GetShardId(), world_prefab))
+		end
+		--]]
+	end)
+
+	rpcNetwork.AddShardModRPCHandler(modname, "Initialized", function(sending_shard_id, data)
+		local a, b = pcall(json.decode, data)
+		if not a then 
+			mprint("Received invalid shard initialization data:", data)
+			return
+		end
+
+		data = b;
+
+		-- master will coordinate
+		if not TheShard:IsMaster() then
+			return
+		end
+
+		mprint("Master received shard initialization from:", sending_shard_id, type(sending_shard_id), "with world prefab:", data.world_prefab)
+		if data.world_prefab == "cave" and Insight.selected_cave_shard == nil then
+			mprint("Setting SelectedCaveShard to", sending_shard_id)
+			Insight.selected_cave_shard = tostring(sending_shard_id)
+			--rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "UpdateTimerNetworking"), sending_shard_id, data.world_prefab)
+
+		elseif data.world_prefab == "forest" and Insight.selected_forest_shard == nil then
+			mprint("Setting SelectedForestShard to", sending_shard_id)
+			Insight.selected_forest_shard = tostring(sending_shard_id)
+			--rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "UpdateTimerNetworking"), sending_shard_id, data.world_prefab)
+		end
+
+		rpcNetwork.SendModRPCToAllShards(GetShardModRPC(modname, "UpdateTimerNetworking"), json.encode{
+			selected_cave_shard = Insight.selected_cave_shard,
+			selected_forest_shard = Insight.selected_forest_shard
+		})
+
+		--[[
+		mprint("got sending shard:", sending_shard_id, type(sending_shard_id))
+		if TheShard:IsMaster() and Insight.selected_cave_shard == nil and data.world_prefab == "cave" then
+			print("winner:", )
+			Insight.selected_cave_shard = sending_shard_id
+			rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "UpdateTimerNetworking"), sending_shard_id)
+		end 
+		--]]
+	end)
+
 	rpcNetwork.AddShardModRPCHandler(modname, "CrashReporter", function(sending_shard_id, data)
 		if data.server_owner_enabled then
 			SERVER_OWNER_HAS_OPTED_IN = true
@@ -1585,7 +1662,11 @@ if IsDST() then
 	end)
 
 	rpcNetwork.AddShardModRPCHandler(modname, "WorldData", function(sending_shard_id, data)
-		TheWorld:PushEvent("insight_gotworlddata", { sending_shard_id=sending_shard_id, data=data })
+		--cprint("Got:", sending_shard_id, Insight.selected_forest_shard, Insight.selected_cave_shard)
+		if Insight.selected_cave_shard == TheShard:GetShardId() or Insight.selected_forest_shard == TheShard:GetShardId() then
+			--cprint("\tPassed")
+			TheWorld:PushEvent("insight_gotworlddata", { sending_shard_id=sending_shard_id, data=data })
+		end
 	end)
 	
 	rpcNetwork.AddClientModRPCHandler(modname, "EntityInformation", function(data)
@@ -1888,6 +1969,36 @@ if IsDST() then
 			return
 		end
 
+		if TheShard:IsMaster() then
+			if TheWorld.worldprefab == "forest" then
+				Insight.selected_forest_shard = TheShard:GetShardId()
+			elseif TheWorld.worldprefab == "cave" then
+				Insight.selected_cave_shard = TheShard:GetShardId()
+			end
+		else
+			local function OnShardReady()
+				if not next(Shard_GetConnectedShards()) then
+					if TheWorld and TheWorld:IsValid() then
+						TheWorld:DoTaskInTime(1, OnShardReady)
+					end
+					return
+				end
+				
+				mprint("Sending Shard Initialization")
+				rpcNetwork.SendModRPCToAllShards(GetShardModRPC(modname, "Initialized"),
+					json.encode(
+						{
+							world_prefab = TheWorld.worldprefab
+						}
+					)
+				)
+				
+			end
+
+			mprint("Awaiting Shard Initialization")
+			OnShardReady()
+		end
+
 		TheWorld:ListenForEvent("ms_playerjoined", function(_, player)
 			--dprint("Player Joined:", player, player.userid)
 		end)
@@ -2005,16 +2116,23 @@ if IsDST() then
 		TheWorld:ListenForEvent("ms_cyclecomplete", function(inst)
 			inst:DoTaskInTime(0, DoNetworkMoonCycle)
 		end)
-
+		
+		
 		Insight.shard_sync_task = TheWorld:DoPeriodicTask(0.5, function()
 			local data = TheWorld.shard.components.shard_insight:UpdateLocalWorldData()
 
+			--cprint("Sync Task", TheShard:GetShardId(), type(TheShard:GetShardId()), Insight.selected_cave_shard, type(Insight.selected_cave_shard), Insight.selected_forest_shard)
+			if not (TheShard:GetShardId() == Insight.selected_cave_shard or TheShard:GetShardId() == Insight.selected_forest_shard) then
+				--cprint("\tRejected")
+				return
+			end
+			
 			for id, shard in pairs(Shard_GetConnectedShards()) do
 				--mprint("sending data to:", id)
 				rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "WorldData"), id, compress(data))
 			end
 		end)
-		
+
 		--[[
 		if TheWorld.ismastershard then
 			TheWorld:DoPeriodicTask(0.33, function()

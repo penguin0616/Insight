@@ -55,6 +55,10 @@ local function Describe(self, context)
 	end
 
 	-- figure out stats
+	if not type(self.domestication) == "number" or not type(self.obedience) == "number" then
+		return
+	end
+
 	local domestication = Round(self.domestication * 100, 2)
 	local obedience = Round(self.obedience * 100, 1)
 	local total_tendency_points = GetTotalTendencyPoints(self)

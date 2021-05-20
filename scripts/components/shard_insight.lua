@@ -119,22 +119,22 @@ local function GetWorldData()
 		beequeenhive_timer = remaining_time
 	end
 
-	local bearger = TheWorld.components.beargerspawner and _G.Insight.descriptors.beargerspawner.GetBeargerData(TheWorld.components.beargerspawner) or nil
+	local bearger = TheWorld.components.beargerspawner and _G.Insight.descriptors.beargerspawner and _G.Insight.descriptors.beargerspawner.GetBeargerData(TheWorld.components.beargerspawner) or nil
 	--[[
 	if TheWorld.components.beargerspawner then
 		bearger = _G.Insight.descriptors.beargerspawner.GetBeargerData(TheWorld.components.beargerspawner)
 	end
 	--]]
 
-	local crabking = TheWorld.components.crabkingspawner and notables.crabking_spawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(notables.crabking_spawner) or nil
+	local crabking = TheWorld.components.crabkingspawner and notables.crabking_spawner and _G.Insight.descriptors.crabkingspawner and _G.Insight.descriptors.crabkingspawner.GetCrabKingData(notables.crabking_spawner) or nil
 
-	local deerclops = TheWorld.components.deerclopsspawner and _G.Insight.descriptors.deerclopsspawner.GetDeerclopsData(TheWorld.components.deerclopsspawner) or nil
+	local deerclops = TheWorld.components.deerclopsspawner and _G.Insight.descriptors.deerclopsspawner and _G.Insight.descriptors.deerclopsspawner.GetDeerclopsData(TheWorld.components.deerclopsspawner) or nil
 
-	local klaussack = TheWorld.components.klaussackspawner and _G.Insight.descriptors.klaussackspawner.GetKlausSackData(TheWorld.components.klaussackspawner) or nil
+	local klaussack = TheWorld.components.klaussackspawner and _G.Insight.descriptors.klaussackspawner and _G.Insight.descriptors.klaussackspawner.GetKlausSackData(TheWorld.components.klaussackspawner) or nil
 
-	local malbatross = TheWorld.components.malbatrossspawner and _G.Insight.descriptors.malbatrossspawner.GetMalbatrossData(TheWorld.components.malbatrossspawner) or nil
+	local malbatross = TheWorld.components.malbatrossspawner and _G.Insight.descriptors.malbatrossspawner and _G.Insight.descriptors.malbatrossspawner.GetMalbatrossData(TheWorld.components.malbatrossspawner) or nil
 
-	local toadstool = TheWorld.components.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner.GetToadstoolData(TheWorld.components.toadstoolspawner) or nil
+	local toadstool = TheWorld.components.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner.GetToadstoolData(TheWorld.components.toadstoolspawner) or nil
 
 	return {
 		antlion = antlion,

@@ -174,7 +174,7 @@ end
 
 
 rpcNetwork.SendModRPCToServer = function(id_table, ...)
-	--dprint(string.format("SEND MOD RPC SERVER [namespace \"%s\", rpc \"%s\"]", id_table.namespace, GetRPCName(id_table)))
+	--print(string.format("SEND MOD RPC SERVER [namespace \"%s\", rpc \"%s\"]", id_table.namespace, GetRPCName(id_table)))
 
 	if IS_CLIENT_HOST == nil then
 		IS_CLIENT_HOST = IsClientHost()
@@ -203,6 +203,21 @@ rpcNetwork.SendModRPCToShard = function(id_table, sender_list, ...)
 
 	if IS_CLIENT_HOST == nil then
 		IS_CLIENT_HOST = IsClientHost()
+	end
+
+	SendModRPCToShard(id_table, sender_list, ...)
+end
+
+rpcNetwork.SendModRPCToAllShards = function(id_table, ...)
+	--dprint(string.format("SEND MOD RPC SHARD ALL [namespace \"%s\", rpc \"%s\"]", id_table.namespace, GetRPCName(id_table)))
+
+	if IS_CLIENT_HOST == nil then
+		IS_CLIENT_HOST = IsClientHost()
+	end
+	
+	local sender_list = {}
+	for i,v in pairs(Shard_GetConnectedShards()) do
+		sender_list[#sender_list+1] = i
 	end
 
 	SendModRPCToShard(id_table, sender_list, ...)

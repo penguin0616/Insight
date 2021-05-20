@@ -778,8 +778,8 @@ return {
 	worldmigrator = {
 		disabled = "Worldmigrator disabled.",
 		target_shard = "Target Shard: %s",
-		received_portal = "Shard Migrator: %s",
-		id = "This #: %s",
+		received_portal = "Target WorldMigrator: %s", -- Shard Migrator
+		id = "This WorldMigrator: %s",
 	},
 
 	-- worldsettingstimer.lua

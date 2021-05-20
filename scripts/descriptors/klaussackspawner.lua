@@ -34,7 +34,7 @@ local function GetKlausSackData(self)
 	local time_to_spawn = nil
 	local sack = util.getupvalue(self.GetDebugString, "_sack")
 	local save_data = self:OnSave()
-	if sack and sack.despawnday and sack_can_despawn(sack) then
+	if sack and sack:IsValid() and sack.despawnday and sack_can_despawn(sack) then
 		despawn_day = sack.despawnday
 	else
 		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
