@@ -419,9 +419,9 @@ local Insight = Class(function(self, inst)
 		self.net_invalidate = net_entity(self.inst.GUID, "insight_invalidate", "insight_invalidate_dirty")
 		self.net_hunt_target = net_entity(self.inst.GUID, "insight_hunt_target", "insight_hunt_target_dirty")
 		-- net_bool
-		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty")
+		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
 		-- net_smallbyte
-		self.net_moon_cycle = net_smallbyte(self.inst.GUID, "insight_net_moon_cycle", "insight_net_moon_cycle_dirty")
+		self.net_moon_cycle = net_smallbyte(self.inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- 3674213233
 
 		self.inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty)
 
@@ -502,7 +502,7 @@ local Insight = Class(function(self, inst)
 			-- client
 			self.inst:ListenForEvent("insight_invalidate_dirty", OnEntityInvalidate)
 
-			self.inst:ListenForEvent("insight_net_moon_cycle_dirty", OnMoonCycleDirty)
+			self.inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty)
 		end
 	end
 

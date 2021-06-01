@@ -22,7 +22,7 @@ directory. If not, please refer to
 
 return {
 	-- insightservercrash.lua
-	server_crash = "由于未知原因，服务器崩溃",
+	server_crash = "服务器崩溃",
 
 	-- modmain.lua
 	dragonfly_ready = "准备战斗",

@@ -22,7 +22,7 @@ directory. If not, please refer to
 
 return {
 	-- insightservercrash.lua
-	server_crash = "This server has crashed. The cause is unknown.",
+	server_crash = "This server has crashed.",
 	
 	-- modmain.lua
 	dragonfly_ready = "Ready to fight.",
