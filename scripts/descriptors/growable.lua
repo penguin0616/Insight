@@ -33,11 +33,11 @@ local function Describe(self, context)
 		if verbosity == 1 then -- 1 == minimal
 			description = ""
 		elseif verbosity == 2 then -- 2 == all
-			description = string.format(context.lstr.growth_stage, self:GetCurrentStageData().name or "MISSING_NAME", self.stage, #self.stages)
+			description = string.format(context.lstr.growable.stage, self:GetCurrentStageData().name or "MISSING_NAME", self.stage, #self.stages)
 		end
 
 		if self.pausedremaining then
-			description = description .. context.lstr.growth_paused
+			description = description .. context.lstr.growable.paused
 			
 		elseif self.targettime and context.config["time_style"] ~= "none" then -- we need a target time so.
 			local remaining_time = self.targettime - GetTime()
@@ -46,10 +46,10 @@ local function Describe(self, context)
 			if self.task and remaining_time > 0 then
 				remaining_time = context.time:SimpleProcess(remaining_time)
 				--description = string.format("%sNext stage in %s.", description, remaining_time)
-				description = description .. string.format(context.lstr.growth_next_stage, remaining_time)
+				description = description .. string.format(context.lstr.growable.next_stage, remaining_time)
 			else
 				--description = string.format("%sGrowth paused.", description)
-				description = description .. context.lstr.growth_paused
+				description = description .. context.lstr.growable.paused
 			end
 		end
 	end

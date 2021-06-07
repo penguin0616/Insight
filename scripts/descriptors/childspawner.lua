@@ -91,7 +91,8 @@ local function Describe(self, context)
 			end
 
 			regen_time = regen_time and context.time:SimpleProcess(regen_time) or "?"
-			regen = string.format(context.lstr.childspawner.regenerating, to_regen, regen_time)
+			--regen = string.format(context.lstr.childspawner.regenerating, to_regen, regen_time)
+			regen = subfmt(context.lstr.childspawner.regenerating, { to_regen=to_regen, regen_time=regen_time })
 		end
 	end
 

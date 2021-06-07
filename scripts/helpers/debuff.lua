@@ -140,12 +140,14 @@ local function GetItemEffects(inst, context)
 	for buffname, buffdata in pairs(effects) do
 		local data = buffdata.data
 		if data.duration and data.value then -- percent based spices
-			strs[#strs+1] = string.format(context.lstr.debuffs[buffdata.prefab], Round(data.value * 100, 0), data.duration)
+			strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { percent=Round(data.value * 100, 0), duration=data.duration })
+
 		elseif data.duration and data.tick_rate and data.tick_value then -- regenerators
 			local total_stat_gain = (data.duration or 0) / (data.tick_rate or 1) * (data.tick_value or 1)
-			strs[#strs+1] = string.format(context.lstr.debuffs[buffdata.prefab], total_stat_gain, data.duration)
-		elseif data.duration then
-			strs[#strs+1] = string.format(context.lstr.debuffs[buffdata.prefab], data.duration)
+			strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { amount=total_stat_gain, duration=data.duration })
+
+		elseif data.duration then -- just a buff
+			strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { duration=data.duration })
 		else
 			local duration = data.duration
 			local value = data.value
