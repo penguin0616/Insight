@@ -181,7 +181,7 @@ rpcNetwork.SendModRPCToServer = function(id_table, ...)
 	end
 
 	if IS_CLIENT_HOST then
-		local player = localPlayer or AllPlayers[1] -- first player
+		local player = localPlayer or UserToPlayer(TheNet:GetUserID()) or AllPlayers[1] -- first player
 
 		if not player then error("UNABLE TO PROCESS RPC 1") end
 
