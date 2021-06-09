@@ -132,11 +132,11 @@ local english = {
 		HOVER = "Whether you want to use icons or text.",
 		OPTIONS = {
 			["text"] = {
-				DESCRIPTION = "No",
+				DESCRIPTION = "Text",
 				HOVER = "Text will be used"
 			},
 			["icon"] = {
-				DESCRIPTION = "Yes",
+				DESCRIPTION = "Icon",
 				HOVER = "Icons will be used over text where possible."
 			},
 		},
@@ -597,7 +597,7 @@ local english = {
 	},
 	food_style = {
 		LABEL = "Food style",
-		HOVER = "Food information length.",
+		HOVER = "How food information is displayed.",
 		OPTIONS = {
 			["short"] = {
 				DESCRIPTION = "Short",
@@ -629,7 +629,7 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Food units will NOT be displayed."
+				HOVER = "Food units will not be displayed."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
@@ -969,6 +969,52 @@ local english = {
 			},
 		},
 	},
+	display_hunger = {
+		LABEL = "Hunger",
+		HOVER = "How much hunger detail is shown.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "Will not display hunger."
+			},
+			["1"] = {
+				DESCRIPTION = "Standard",
+				HOVER = "Will display standard hunger information."
+			},
+			["2"] = {
+				DESCRIPTION = "All",
+				HOVER = "Will display all hunger information."
+			},
+		},
+	},
+	display_sanity = {
+		LABEL = "Sanity",
+		HOVER = "Whether sanity information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity information."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity information."
+			},
+		},
+	},
+	display_sanityaura = {
+		LABEL = "Sanity Auras",
+		HOVER = "Whether sanity auras are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity auras."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity auras."
+			},
+		},
+	},
 	display_mob_attack_damage = {
 		LABEL = "Mob Attack Damage",
 		HOVER = "Whether mob attack damage is shown.",
@@ -1062,7 +1108,7 @@ local english = {
 		},
 	},
 	follower_info = {
-		LABEL = "Follower information",
+		LABEL = "Followers",
 		HOVER = "Whether follower information is displayed.",
 		OPTIONS = {
 			["false"] = {
@@ -1076,7 +1122,7 @@ local english = {
 		},
 	},
 	herd_information = {
-		LABEL = "Herd information",
+		LABEL = "Herds",
 		HOVER = "Whether herd information is displayed.",
 		OPTIONS = {
 			["false"] = {
@@ -1090,7 +1136,7 @@ local english = {
 		},
 	},
 	domestication_information = {
-		LABEL = "Domestication info",
+		LABEL = "Domestication",
 		HOVER = "Whether domestication information is displayed.",
 		OPTIONS = {
 			["false"] = {
@@ -1114,38 +1160,6 @@ local english = {
 			["true"] = {
 				DESCRIPTION = "Enabled",
 				HOVER = "Will display pollination information."
-			},
-		},
-	},
-	display_hunger = {
-		LABEL = "Hunger",
-		HOVER = "How much hunger detail is shown.",
-		OPTIONS = {
-			["0"] = {
-				DESCRIPTION = "No",
-				HOVER = "Will not display hunger."
-			},
-			["1"] = {
-				DESCRIPTION = "Standard",
-				HOVER = "Will display standard hunger information."
-			},
-			["2"] = {
-				DESCRIPTION = "All",
-				HOVER = "Will display all hunger information."
-			},
-		},
-	},
-	display_sanityaura = {
-		LABEL = "Sanity Auras",
-		HOVER = "Whether sanity auras are shown.",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "Disabled",
-				HOVER = "Will not display sanity auras."
-			},
-			["true"] = {
-				DESCRIPTION = "Enabled",
-				HOVER = "Will display sanity auras."
 			},
 		},
 	},
@@ -1190,10 +1204,24 @@ local english = {
 				HOVER = "Standard fuel information will show."
 			},
 			["2"] = {
-				DESCRIPTION = "Maximum",
+				DESCRIPTION = "All",
 				HOVER = "All fuel information will show."
 			},
 		},
+	},
+	unique_info = {
+		LABEL = "Unique Inforation",
+		HOVER = "Whether to display unique information for certain entities.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "No unique information is shown."
+			},
+			["1"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Unique information is shown."
+			},
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
@@ -1421,8 +1449,8 @@ local chinese = {
 		--------------------------------------------------------------------------
 		--[[ Formatting ]]
 		--------------------------------------------------------------------------
-		LABEL = "语言",
-		HOVER = "以何种语言来显示",
+		LABEL = "图标模式",
+		HOVER = "是否显示图标或文字",
 		OPTIONS = {
 			["automatic"] = {
 				DESCRIPTION = "自动",
@@ -1443,200 +1471,200 @@ local chinese = {
 		HOVER = "选择图标模式还是文字模式。",
 		OPTIONS = {
 			["text"] = {
-				DESCRIPTION = "否",
-				HOVER = "文字模式"
+				DESCRIPTION = "文字",
+				HOVER = "显示纯文字"
 			},
 			["icon"] = {
-				DESCRIPTION = "是",
-				HOVER = "图标会替代文字来显示。"
+				DESCRIPTION = "图标",
+				HOVER = "显示图标替代文字"
 			},
 		},
 	},
 	text_coloring = {
-		LABEL = "文字的颜色",
+		LABEL = "文字着色",
 		HOVER = "是否启用文字着色。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "禁用",
-				HOVER = "文字着色功能将被禁用。 :("
+				HOVER = "禁用文字着色 :("
 			},
 			["true"] = {
 				DESCRIPTION = "启用",
-				HOVER = "文字着色功能将被启用。"
+				HOVER = "启用文字着色"
 			},
 		},
 	},
 	alt_only_information = {
-		LABEL = "仅检查",
-		HOVER = "是否仅当按住Alt键时显示信息。",
+		LABEL = "仅在检查时显示",
+		HOVER = "是否仅当按住 Alt 键时显示信息",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "关闭",
-				HOVER = "信息将正常显示。"
+				DESCRIPTION = "禁用",
+				HOVER = "信息正常显示"
 			},
 			["true"] = {
-				DESCRIPTION = "开启",
-				HOVER = "仅当按住Alt键时显示信息。"
-			},
-		},
+				DESCRIPTION = "启用",
+				HOVER = "仅当按住 Alt 键时显示信息"
+			}
+		}
 	},
 	itemtile_display = {
-		LABEL = "物品格子信息",
-		HOVER = "也就是显示信息的种类而不是以百分比的形式显示。",
+		LABEL = "库存物品栏信息",
+		HOVER = "物品栏信息显示的类型",
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "无",
-				HOVER = "物品将不会显示任何信息。"
+				HOVER = "不显示任何信息",
 			},
 			["1"] = {
-				DESCRIPTION = "数字型",
-				HOVER = "在物品格子里显示数字。"
+				DESCRIPTION = "数字",
+				HOVER = "显示具体次数",
 			},
 			["2"] = {
-				DESCRIPTION = "百分比型",
-				HOVER = "在物品格子里显示百分比。"
+				DESCRIPTION = "百分比",
+				HOVER = "显示默认百分比",
 			},
 		},
 	},
 	time_style = {
-		LABEL = "时间风格",
-		HOVER = "如何显示时间信息。",
+		LABEL = "时间样式",
+		HOVER = "如何显示时间信息",
 		OPTIONS = {
 			["gametime"] = {
 				DESCRIPTION = "游戏时间",
-				HOVER = "以游戏内时间为基础显示时间信息：天数，时间小段。"
+				HOVER = "以游戏内时间为基础显示时间信息：天数，时间小段"
 			},
 			["realtime"] = {
 				DESCRIPTION = "现实时间",
-				HOVER = "以现实时间为基础现实时间信息：时，分，秒。"
+				HOVER = "以现实时间为基础现实时间信息：时，分，秒"
 			},
 			["both"] = {
 				DESCRIPTION = "兼用两种模式",
 				HOVER = "使用两种显示形式：天，时间小段（时，分，秒）"
 			},
 			["gametime_short"] = {
-				DESCRIPTION = "游戏时间（精简模式）",
-				HOVER = "简化版的以游戏内时间为基础显示时间信息。"
+				DESCRIPTION = "游戏时间（精简）",
+				HOVER = "简化版的以游戏内时间为基础显示时间信息"
 			},
 			["realtime_short"] = {
-				DESCRIPTION = "现实时间（精简模式）",
-				HOVER = "简化版的以现实时间为基础显示时间信息。"
+				DESCRIPTION = "现实时间（精简）",
+				HOVER = "简化版的以现实时间为基础显示时间信息"
 			},
 			["both_short"] = {
-				DESCRIPTION = "兼用两种模式（简化版）",
-				HOVER = "简化版的双模式显示。"
+				DESCRIPTION = "兼用两种模式（精简）",
+				HOVER = "简化版的双模式显示"
 			},
 		},
 	},
 	highlighting = {
-		LABEL = "启用高亮显示模式",
-		HOVER = "物品高亮模式是否开启。 (\"物品查找器\")",
+		LABEL = "高亮显示",
+		HOVER = "是否启用箱子/物品的高亮显示 (\"物品查找器\")",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "物品不会触发箱子智能查找，不会高亮显示。"
+				HOVER = "箱子/物品不会高亮显示",
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "智能高亮开启，箱子内有物品会高亮显示。"
+				HOVER = "箱子/物品会高亮显示",
 			},
 		},
 	},
 	highlighting_color = {
-		LABEL = "Highlighting Color",
-		HOVER = "The color to use for highlighting.",
+		LABEL = "高亮颜色",
+		HOVER = "高亮显示时的颜色",
 		OPTIONS = {
 			["RED"] = {
-				DESCRIPTION = "Red",
-				HOVER = "Red",
+				DESCRIPTION = "红色",
+				HOVER = "红色",
 			},
 			["GREEN"] = {
-				DESCRIPTION = "Green",
-				HOVER = "Green",
+				DESCRIPTION = "绿色",
+				HOVER = "绿色",
 			},
 			["BLUE"] = {
-				DESCRIPTION = "Blue",
-				HOVER = "Blue",
+				DESCRIPTION = "蓝色",
+				HOVER = "蓝色",
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Light Blue",
-				HOVER = "Light Blue",
+				DESCRIPTION = "亮蓝色",
+				HOVER = "亮蓝色",
 			},
 			["PURPLE"] = {
-				DESCRIPTION = "Purple",
-				HOVER = "Purple",
+				DESCRIPTION = "紫色",
+				HOVER = "紫色",
 			},
 			["YELLOW"] = {
-				DESCRIPTION = "Yellow",
-				HOVER = "Yellow",
+				DESCRIPTION = "黄色",
+				HOVER = "黄色",
 			},
 			["WHITE"] = {
-				DESCRIPTION = "White",
-				HOVER = "White",
+				DESCRIPTION = "白色",
+				HOVER = "白色",
 			},
 			["ORANGE"] = {
-				DESCRIPTION = "Orange",
-				HOVER = "Orange",
+				DESCRIPTION = "橙色",
+				HOVER = "橙色",
 			},
 			["PINK"] = {
-				DESCRIPTION = "Pink",
-				HOVER = "Pink",
+				DESCRIPTION = "粉色",
+				HOVER = "粉色",
 			},
 		},
 	},
 	fuel_highlighting = {
 		LABEL = "燃料高亮显示",
-		HOVER = "是否开启燃料高亮显示。",
+		HOVER = "是否开启燃料高亮显示",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "燃料高亮显示模式关闭。"
+				HOVER = "禁用燃料高亮显示"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "燃料高亮显示模式开启。"
+				HOVER = "启用燃料高亮显示"
 			},
 		},
 	},
 	fuel_highlighting_color = {
-		LABEL = "Fuel Highlighting Color",
-		HOVER = "The color to use for fuel highlighting.",
+		LABEL = "燃料高亮颜色",
+		HOVER = "燃料高亮显示时的颜色",
 		OPTIONS = {
 			["RED"] = {
-				DESCRIPTION = "Red",
-				HOVER = "Red",
+				DESCRIPTION = "红色",
+				HOVER = "红色",
 			},
 			["GREEN"] = {
-				DESCRIPTION = "Green",
-				HOVER = "Green",
+				DESCRIPTION = "绿色",
+				HOVER = "绿色",
 			},
 			["BLUE"] = {
-				DESCRIPTION = "Blue",
-				HOVER = "Blue",
+				DESCRIPTION = "蓝色",
+				HOVER = "蓝色",
 			},
 			["LIGHT_BLUE"] = {
-				DESCRIPTION = "Light Blue",
-				HOVER = "Light Blue",
+				DESCRIPTION = "亮蓝色",
+				HOVER = "亮蓝色",
 			},
 			["PURPLE"] = {
-				DESCRIPTION = "Purple",
-				HOVER = "Purple",
+				DESCRIPTION = "紫色",
+				HOVER = "紫色",
 			},
 			["YELLOW"] = {
-				DESCRIPTION = "Yellow",
-				HOVER = "Yellow",
+				DESCRIPTION = "黄色",
+				HOVER = "黄色",
 			},
 			["WHITE"] = {
-				DESCRIPTION = "White",
-				HOVER = "White",
+				DESCRIPTION = "白色",
+				HOVER = "白色",
 			},
 			["ORANGE"] = {
-				DESCRIPTION = "Orange",
-				HOVER = "Orange",
+				DESCRIPTION = "橙色",
+				HOVER = "橙色",
 			},
 			["PINK"] = {
-				DESCRIPTION = "Pink",
-				HOVER = "Pink",
+				DESCRIPTION = "粉色",
+				HOVER = "粉色",
 			},
 		},
 	},
@@ -1645,7 +1673,7 @@ local chinese = {
 	--------------------------------------------------------------------------
 	display_attack_range = {
 		LABEL = "攻击范围",
-		HOVER = "是否显示攻击范围.",
+		HOVER = "是否显示攻击范围",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -1670,37 +1698,37 @@ local chinese = {
 				HOVER = "显示攻击范围"
 			},
 			["both"] = {
-				DESCRIPTION = "两者",
+				DESCRIPTION = "兼用",
 				HOVER = "同时显示敲击和攻击范围"
 			},
 
 		},
 	},
 	hover_range_indicator = {
-		LABEL = "鼠标放置显示物品生效范围",
-		HOVER = "将鼠标放置于物品上时该物品的生效范围是否显示。",
+		LABEL = "物品范围",
+		HOVER = "是否显示鼠标悬停物品的生效范围。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "物品范围不显示。"
+				HOVER = "不显示物品范围"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "物品范围将显示。"
+				HOVER = "显示物品范围。"
 			},
 		},
 	},
 	boss_indicator = {
 		LABEL = "Boss 指示器",
-		HOVER = "是否开启 Boss 指示器功能。",
+		HOVER = "是否显示 Boss 指示器功能。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "Boss指示器不会显示。"
+				HOVER = "不显示 Boss 指示器。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示Boss指示器。"
+				HOVER = "显示 Boss 指示器。"
 			},
 		},
 	},
@@ -1710,11 +1738,11 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "指示器将被禁用。"
+				HOVER = "不显示指示器。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "指示器将被显示。"
+				HOVER = "显示指示器。"
 			},
 		},
 	},
@@ -1752,39 +1780,39 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "脚印指示器将不会显示。"
+				HOVER = "不显示脚印指示器。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "脚印指示器会被显示。"
+				HOVER = "显示脚印指示器。"
 			},
 		},
 	},
 	orchestrina_indicator = {
-		LABEL = "Archive Puzzle Helper",
-		HOVER = "Whether the solution to the puzzle is displayed or not.",
+		LABEL = "远古迷宫",
+		HOVER = "是否显示远古迷宫的答案。",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The solution is not displayed."
+				DESCRIPTION = "否",
+				HOVER = "不显示答案。"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The solution is displayed."
+				DESCRIPTION = "是",
+				HOVER = "显示答案。"
 			}
 		}
 	},
 	lightningrod_range = {
 		LABEL = "避雷针范围",
-		HOVER = "避雷针生效范围的生效方式。",
+		HOVER = "避雷针生效范围的显示方式。",
 		OPTIONS = {
 			["0"] = {
-				DESCRIPTION = "关闭",
+				DESCRIPTION = "禁用",
 				HOVER = "不显示避雷针的生效范围。"
 			},
 			["1"] = {
 				DESCRIPTION = "策略性地显示",
-				HOVER = "只在放置避雷针时、使用草叉时、种植时才会显示生效范围。"
+				HOVER = "只在放置避雷针时、使用草叉时、种植时显示生效范围。"
 			},
 			["2"] = {
 				DESCRIPTION = "总是",
@@ -1794,35 +1822,35 @@ local chinese = {
 	},
 	blink_range = {
 		LABEL = "瞬移范围",
-		HOVER = "你是否可以看见你的瞬移的范围，如灵魂跳跃，橙色法杖等。",
+		HOVER = "是否显示你的瞬移的范围，如灵魂跳跃，橙色法杖等。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "瞬移范围将不会被显示。"
+				HOVER = "不显示瞬移范围。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "瞬移范围将会被显示。"
+				HOVER = "显示瞬移范围。"
 			},
 		},
 	},
 	wortox_soul_range = {
 		LABEL = "沃拓克斯灵魂范围",
-		HOVER = "开启后可以看到沃拓克斯拾取灵魂的范围和灵魂治疗范围。",
+		HOVER = "是否显示沃拓克斯拾取灵魂的范围和灵魂治疗范围。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "灵魂范围功能禁用。"
+				HOVER = "不显示灵魂范围功能。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "灵魂范围功能启用。"
+				HOVER = "显示灵魂范围功能。"
 			},
 		},
 	},
 	battlesong_range = {
 		LABEL = "战歌生效范围",
-		HOVER = "战歌生效范围是否会被显示。",
+		HOVER = "如何显示战歌的生效范围。",
 		OPTIONS = {
 			["none"] = {
 				DESCRIPTION = "无",
@@ -1837,40 +1865,40 @@ local chinese = {
 				HOVER = "显示你被战歌鼓舞的生效范围。"
 			},
 			["both"] = {
-				DESCRIPTION = "两者",
+				DESCRIPTION = "兼用",
 				HOVER = "同时显示脱离战歌和被战歌鼓舞的生效范围"
 			},
 		},
 	},
 	klaus_sack_markers = {
-		LABEL = "Loot Stash Markers",
-		HOVER = "Whether Loot Stash spawning locations are marked.",
+		LABEL = "克劳斯袋子标记 (服务器选项)",
+		HOVER = "是否标记克劳斯袋子的位置 *该选项仅服务器有效*",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Loot Stash markers are shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示标记"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Loot Stash markers are not shown."
+				DESCRIPTION = "是",
+				HOVER = "显示标记"
 			},
 		},
 	},
 	sinkhole_marks = {
 		LABEL = "落水洞标记",
-		HOVER = "如何显示落水洞的标记。",
+		HOVER = "如何显示落水洞的着色标记。",
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "无",
-				HOVER = "不做任何落水洞的着色标记。"
+				HOVER = "不着色标记任何落水洞洞口。"
 			},
 			["1"] = {
 				DESCRIPTION = "仅地图模式",
-				HOVER = "只会显示在地图图标上。"
+				HOVER = "仅着色标记地图图标。"
 			},
 			["2"] = {
-				DESCRIPTION = "两者",
-				HOVER = "同时显示在地图图标和落水洞本身上"
+				DESCRIPTION = "兼用",
+				HOVER = "同时着色标记地图图标和落水洞洞口。",
 			},
 		},
 	},
@@ -1893,15 +1921,15 @@ local chinese = {
 	},
 	food_style = {
 		LABEL = "食物属性格式",
-		HOVER = "食物属性信息详细或简短展示。",
+		HOVER = "如何显示食物属性信息。",
 		OPTIONS = {
 			["short"] = {
-				DESCRIPTION = "简短",
+				DESCRIPTION = "精简",
 				HOVER = "+X / -X / +X"
 			},
 			["long"] = {
 				DESCRIPTION = "详细",
-				HOVER = "饥饿度： +X / 理智值： -X / 生命值： +X"
+				HOVER = "饥饿：+X / 理智：-X / 生命：+X"
 			},
 		},
 	},
@@ -1911,81 +1939,81 @@ local chinese = {
 		OPTIONS = {
 			["interface"] = {
 				DESCRIPTION = "界面",
-				HOVER = "饥饿值 / 理智值 / 生命值"
+				HOVER = "饥饿 / 理智 / 生命"
 			},
 			["wiki"] = {
 				DESCRIPTION = "维基",
-				HOVER = "生命值 / 饥饿值 / 理智值"
+				HOVER = "生命 / 饥饿 / 理智"
 			},
 		},
 	},
 	food_units = {
-		LABEL = "食物系数显示",
-		HOVER = "是否显示食物的系数（果、菜、蛋度等等）",
+		LABEL = "食物系数",
+		HOVER = "是否显示食物的系数（果、菜、蛋度等等）。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "食物度功能禁用。"
+				HOVER = "不显示食物度。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "食物度功能启用。"
+				HOVER = "显示食物度。"
 			},
 		},
 	},
 	food_effects = {
-		LABEL = "食物加成属性显示",
-		HOVER = "食物的特殊加成属性是否会显示。",
+		LABEL = "食物加成属性",
+		HOVER = "是否显示食物的特殊加成属性。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "特殊的食物属性将不会被显示。"
+				HOVER = "不显示特殊的食物属性。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "特殊的食物属性将会被显示。"
+				HOVER = "显示特殊的食物属性。"
 			},
 		},
 	},
 	stewer_chef = {
 		LABEL = "烹饪厨师显示",
-		HOVER = "这个料理的制作人的信息是否会被显示。",
+		HOVER = "是否显示料理的制作人。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不会被显示。"
+				HOVER = "不显示料理的制作人。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "会被显示。"
+				HOVER = "显示料理的制作人。"
 			},
 		},
 	},
 	food_memory = {
 		LABEL = "瓦力大厨的食物计时",
-		HOVER = "你的食物计时是否会显示。",
+		HOVER = "是否显示瓦力大厨的食物计时。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "你的食物计时不会被显示。"
+				HOVER = "不显示食物计时。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "你的食物计时会被显示。"
+				HOVER = "显示食物计时。"
 			},
 		},
 	},
 	display_perishable = {
-		LABEL = "Perishing",
-		HOVER = "Whether perishable information is displayed.",
+		LABEL = "腐烂信息",
+		HOVER = "是否显示腐烂信息",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Perishable information is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示腐烂信息"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Perishable information is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示腐烂信息"
 			},
 		},
 	},
@@ -1993,36 +2021,36 @@ local chinese = {
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
 	display_yotb_winners = {
-		LABEL = "Pageant Winners [YOTB]",
-		HOVER = "Whether Pageant winners are shown.",
+		LABEL = "选美大赛冠军 [\"皮弗娄牛之年\" 更新]",
+		HOVER = "是否显示选美大赛冠军",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The pageant winners are not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示选美大赛冠军"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The pageant winners are shown."
+				DESCRIPTION = "是",
+				HOVER = "显示选美大赛冠军"
 			},
 		},
 	},
 	display_yotb_appraisal = {
-		LABEL = "Appraisal Values [YOTB]",
-		HOVER = "Whether appraisal values are shown.",
+		LABEL = "评价值 [\"皮弗娄牛之年\" 更新]",
+		HOVER = "是否显示评价值",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The appraisal values are not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示评价值"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The appraisal values are shown."
+				DESCRIPTION = "是",
+				HOVER = "显示评价值"
 			},
 		},
 	},
 	display_shared_stats = {
 		LABEL = "玩家列表中的数据",
-		HOVER = "是否将服务器中其他玩家的数据显示在玩家列表中",
+		HOVER = "是否在玩家列表中显示服务器中其他玩家的数据",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -2063,8 +2091,8 @@ local chinese = {
 		},
 	},
 	display_fishing_information = {
-		LABEL = "Fishing information",
-		HOVER = "Whether fishing information is shown.",
+		LABEL = "垂钓信息",
+		HOVER = "是否显示垂钓信息",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
@@ -2081,11 +2109,11 @@ local chinese = {
 		HOVER = "是否显示生物生成计时信息（猪人、兔人等）。",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "关闭",
+				DESCRIPTION = "禁用",
 				HOVER = "不显示生物生成计时信息。"
 			},
 			["true"] = {
-				DESCRIPTION = "开启",
+				DESCRIPTION = "启用",
 				HOVER = "显示生物生成计时信息。"
 			},
 		},
@@ -2120,27 +2148,27 @@ local chinese = {
 	},
 	soil_moisture = {
 		LABEL = "土壤潮湿度",
-		HOVER = "土壤/植物的潮湿度如何显示。",
+		HOVER = "如何显示土壤/植物的潮湿度。",
 		OPTIONS = {
 			["0"] = {
-				DESCRIPTION = "关闭",
-				HOVER = "土壤潮湿度不显示。",
+				DESCRIPTION = "禁用",
+				HOVER = "不显示土壤潮湿度。"
 			},
 			["1"] = {
 				DESCRIPTION = "仅土壤",
-				HOVER = "仅显示土壤的潮湿度。",
+				HOVER = "仅显示土壤的潮湿度。"
 			},
 			["2"] = {
 				DESCRIPTION = "土壤/植株",
-				HOVER = "显示土壤潮湿度和植株耗水率。",
+				HOVER = "显示土壤潮湿度和植株耗水率。"
 			},
 			["3"] = {
 				DESCRIPTION = "土壤，植株，耕地",
-				HOVER = "显示土壤潮湿度，植株耗水率，耕地潮湿度。",
+				HOVER = "显示土壤潮湿度，植株耗水率，耕地潮湿度。"
 			},
 			["4"] = {
 				DESCRIPTION = "全部",
-				HOVER = "显示土壤潮湿度，植株耗水率，总耕地潮湿度。",
+				HOVER = "显示土壤潮湿度，植株耗水率，总耕地潮湿度。"
 			}
 		}
 	},
@@ -2149,7 +2177,7 @@ local chinese = {
 		HOVER = "如何显示土壤/植株的养分值。",
 		OPTIONS = {
 			["0"] = {
-				DESCRIPTION = "关闭",
+				DESCRIPTION = "禁用",
 				HOVER = "不显示土壤养分值。",
 			},
 			["1"] = {
@@ -2162,37 +2190,37 @@ local chinese = {
 			},
 			["3"] = {
 				DESCRIPTION = "土壤，植株，耕地",
-				HOVER = "土壤养分值，植株耗肥率，耕地养分值全部显示。",
+				HOVER = "显示土壤养分值，植株耗肥率，耕地养分值。",
 			},
 			--[[
 			["4"] = {
 				DESCRIPTION = "全部",
-				HOVER = "土壤养分值，植株耗肥率，总耕地养分值将被显示。",
+				HOVER = "显示土壤养分值，植株耗肥率，总耕地养分值。",
 			}
 			--]]
 		}
 	},
 	display_plant_stressors = {
-		LABEL = "植物压力值",
-		HOVER = "决定是否展示植物压力值",
+		LABEL = "植物压力",
+		HOVER = "决定是否显示植物的压力",
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "否",
-				HOVER = "植物压力值将不会显示",
+				HOVER = "植物的压力将不会显示",
 			},
 			["1"] = {
-				DESCRIPTION = "有园艺帽时",
-				HOVER = "如果你身上有，或戴上远古园艺帽时，显示植物的压力值。",
+				DESCRIPTION = "佩戴园艺帽时",
+				HOVER = "如果你身上有，或戴上远古园艺帽时，显示植物的压力",
 			},
 			["2"] = {
 				DESCRIPTION = "总是",
-				HOVER = "总是显示植物的压力值"
+				HOVER = "总是显示植物的压力",
 			}
 		}
 	},
 	display_weighable = {
-		LABEL = "物品的重量数值",
-		HOVER = "决定物品的重量值是否会显示",
+		LABEL = "物品重量",
+		HOVER = "是否显示物品的重量",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -2205,8 +2233,8 @@ local chinese = {
 		}
 	},
 	display_world_events = {
-		LABEL = "显示大世界事件",
-		HOVER = "此选项决定世界事件是否会被显示。世界事件有：猎犬/蠕虫，世界Boss，地震和其他事件。",
+		LABEL = "世界事件",
+		HOVER = "是否显示世界事件。世界事件有：猎犬/蠕虫，Boss，地震和其他事件。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -2214,13 +2242,13 @@ local chinese = {
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示大世界事件。"
+				HOVER = "显示世界事件。"
 			},
 		},
 	},
 	display_weather = {
-		LABEL = "显示天气信息",
-		HOVER = "此项决定天气信息是否显示。",
+		LABEL = "天气信息",
+		HOVER = "是否显示天气信息。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -2234,61 +2262,107 @@ local chinese = {
 	},
 	nightmareclock_display = {
 		LABEL = "洞穴暴动阶段",
-		HOVER = "决定玩家是否可以看到洞穴暴动的具体阶段。",
+		HOVER = "是否显示洞穴暴动的具体阶段。",
 		OPTIONS = {
 			["0"] = {
-				DESCRIPTION = "关闭",
+				DESCRIPTION = "禁用",
 				HOVER = "不显示洞穴暴动的阶段信息。"
 			},
 			["1"] = {
-				DESCRIPTION = "需要铥矿勋章",
-				HOVER = "拥有铥矿勋章时，暴动阶段信息才会显示。"
+				DESCRIPTION = "拥有铥矿勋章",
+				HOVER = "拥有铥矿勋章时显示。",
 			},
 			["2"] = {
-				DESCRIPTION = "开启",
+				DESCRIPTION = "启用",
 				HOVER = "总是显示暴动阶段的信息。"
 			},
 		},
 	},
 	display_health = {
 		LABEL = "生命值",
-		HOVER = "生命值的信息是否会被显示。",
+		HOVER = "是否显示生命值的信息。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示生命值信息"
+				HOVER = "不显示生命值信息。",
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示生命值信息"
+				HOVER = "显示生命值信息。",
+			},
+		},
+	},
+	display_hunger = {
+		LABEL = "物品饥饿值",
+		HOVER = "如何显示物品的饥饿值。",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "否",
+				HOVER = "不显示饥饿值。",
+			},
+			["1"] = {
+				DESCRIPTION = "标准",
+				HOVER = "显示标准的饥饿值。",
+			},
+			["2"] = {
+				DESCRIPTION = "完整",
+				HOVER = "显示完整物品的饥饿值。",
+			},
+		},
+	},
+	display_sanity = {
+		LABEL = "Sanity",
+		HOVER = "Whether sanity information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity information."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity information."
+			},
+		},
+	},
+	display_sanityaura = {
+		LABEL = "理智光环",
+		HOVER = "是否显示理智光环。",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "否",
+				HOVER = "不显示理智光环。",
+			},
+			["true"] = {
+				DESCRIPTION = "是",
+				HOVER = "显示理智光环。",
 			},
 		},
 	},
 	display_mob_attack_damage = {
-		LABEL = "Mob Attack Damage",
-		HOVER = "Whether mob attack damage is shown.",
+		LABEL = "怪物攻击范围",
+		HOVER = "是否显示怪物的攻击范围",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Mob attack damage is not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示怪物的攻击范围",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Mob attack damage is shown.",
+				DESCRIPTION = "是",
+				HOVER = "显示怪物的攻击范围",
 			},
 		},
 	},
 	growth_verbosity = {
 		LABEL = "植物生长阶段",
-		HOVER = "展示植物生长的具体信息。",
+		HOVER = "显示植物生长的具体信息。",
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "无",
-				HOVER = "完全不展示会生长的物品的信息。"
+				HOVER = "不显示会生长的物品的信息。"
 			},
 			["1"] = {
 				DESCRIPTION = "简短",
-				HOVER = "只显示生长到下一阶段所需的时间。"
+				HOVER = "仅显示生长到下一阶段所需的时间。"
 			},
 			["2"] = {
 				DESCRIPTION = "详细",
@@ -2326,7 +2400,7 @@ local chinese = {
 	},
 	display_upgradeable = {
 		LABEL = "可升级物品显示",
-		HOVER = "是否显示可升级物品的信息。",
+		HOVER = "可升级物品",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
@@ -2339,34 +2413,34 @@ local chinese = {
 		},
 	},
 	naughtiness_verbosity = {
-		LABEL = "淘气值显示",
-		HOVER = "决定以何种形式展示淘气值。Combined Status这个模组显示淘气值的优先度优于本模组。",
+		LABEL = "淘气值",
+		HOVER = "如何显示淘气值。Combined Status 模组的淘气值显示优先于本模组。",
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "禁用",
-				HOVER = "不显示淘气值信息。"
+				HOVER = "不显示淘气值。",
 			},
 			["1"] = {
 				DESCRIPTION = "生物的淘气值",
-				HOVER = "杀死此生物增加多少淘气值会被显示。"
+				HOVER = "显示击杀生物的淘气值。",
 			},
 			["2"] = {
 				DESCRIPTION = "玩家/生物的淘气值",
-				HOVER = "玩家已有的淘气值和生物的淘气值会一同显示。"
+				HOVER = "同时显示玩家已有的淘气值和击杀生物的淘气值。",
 			},
 		},
 	},
 	follower_info = {
-		LABEL = "随从的信息",
-		HOVER = "是否会显示你的跟随者的信息。",
+		LABEL = "随从信息",
+		HOVER = "是否显示你的跟随者的信息。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "禁用",
-				HOVER = "跟随者的信息不会被显示。"
+				HOVER = "不显示跟随者的信息。",
 			},
 			["true"] = {
 				DESCRIPTION = "启用",
-				HOVER = "跟随者的信息会被显示。"
+				HOVER = "显示跟随者的信息。",
 			},
 		},
 	},
@@ -2385,16 +2459,16 @@ local chinese = {
 		},
 	},
 	domestication_information = {
-		LABEL = "牛驯服度显示",
-		HOVER = "是否会显示牛的驯服度。",
+		LABEL = "牛驯服度",
+		HOVER = "是否显示牛的驯服度。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "禁用",
-				HOVER = "不显示驯服度信息。"
+				HOVER = "不显示牛的驯服度信息。",
 			},
 			["true"] = {
 				DESCRIPTION = "启用",
-				HOVER = "显示驯服度的信息。"
+				HOVER = "显示牛的驯服度信息。",
 			},
 		},
 	},
@@ -2403,149 +2477,131 @@ local chinese = {
 		HOVER = "是否显示蜜蜂、蝴蝶的授粉信息。",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "关闭",
+				DESCRIPTION = "禁用",
 				HOVER = "不显示授粉信息。"
 			},
 			["true"] = {
-				DESCRIPTION = "开启",
-				HOVER = "将显示授粉信息。"
-			},
-		},
-	},
-	display_hunger = {
-		LABEL = "物品的饥饿值",
-		HOVER = "物品饥饿值的具体信息将会显示。",
-		OPTIONS = {
-			["0"] = {
-				DESCRIPTION = "否",
-				HOVER = "不会显示饥饿值。"
-			},
-			["1"] = {
-				DESCRIPTION = "标准化",
-				HOVER = "标准的饥饿值显示。"
-			},
-			["2"] = {
-				DESCRIPTION = "所有",
-				HOVER = "将会显示所有物品的具体饥饿值。"
-			},
-		},
-	},
-	display_sanityaura = {
-		LABEL = "精神光环",
-		HOVER = "是否显示精神光环。",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "否",
-				HOVER = "不显示精神光环。"
-			},
-			["true"] = {
-				DESCRIPTION = "是",
-				HOVER = "显示精神光环。"
+				DESCRIPTION = "启用",
+				HOVER = "显示授粉信息。",
 			},
 		},
 	},
 	item_worth = {
-		LABEL = "显示物品的价值",
-		HOVER = "是否会显示物品的价值。",
+		LABEL = "物品价值",
+		HOVER = "是否会显示物品的黄金或金币价值。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不会显示物品值多少黄金或金币。"
+				HOVER = "不显示物品的价值。",
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示物品值多少黄金或金币。"
+				HOVER = "显示物品值的价值。",
 			},
 		},
 	},
 	appeasement_value = {
-		LABEL = "显示蚁狮献祭时间的信息",
+		LABEL = "蚁狮",
 		HOVER = "是否显示蚁狮献祭时间和作乱的信息。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不会展示蚁狮相关的信息。"
+				HOVER = "不显示蚁狮的信息。",
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "将会展示蚁狮的信息。"
+				HOVER = "显示蚁狮的信息。",
 			},
 		},
 	},
 	fuel_verbosity = {
-		LABEL = "燃料信息",
-		HOVER = "燃料的信息如何显示。",
+		LABEL = "燃料",
+		HOVER = "如何显示燃料的信息。",
 		OPTIONS = {
 			["0"] = {
 				DESCRIPTION = "无",
 				HOVER = "不显示燃料信息"
 			},
 			["1"] = {
-				DESCRIPTION = "标准化",
+				DESCRIPTION = "标准",
 				HOVER = "显示标准的燃料信息"
 			},
 			["2"] = {
-				DESCRIPTION = "最大化",
+				DESCRIPTION = "全面",
 				HOVER = "显示全面的燃料信息"
 			},
 		},
+	},
+	unique_info = {
+		LABEL = "Unique Inforation",
+		HOVER = "Whether to display unique information for certain entities.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "No",
+				HOVER = "No unique information is shown."
+			},
+			["1"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Unique information is shown."
+			},
+		}
 	},
 	--------------------------------------------------------------------------
 	--[[ Miscellaneous ]]
 	--------------------------------------------------------------------------
 	display_crafting_lookup_button = {
-		LABEL = "Crafting Lookup Button",
-		HOVER = "Whether the crafting lookup button is displayed or not.",
+		LABEL = "建造查看按钮",
+		HOVER = "是否显示建造查看按钮",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The button is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示按钮",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The button is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示按钮"
 			},
 		},
 	},
 	display_insight_menu_button = {
-		LABEL = "Insight Menu Button",
-		HOVER = "Whether the insight menu button is displayed or not.",
+		LABEL = "Insight 目录按钮",
+		HOVER = "是否显示 Insight 目录按钮",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The button is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示按钮",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The button is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示按钮",
 			},
 		},
 	},
 	extended_info_indicator = {
-		LABEL = "More Information Hint",
-		HOVER = "Whether an asterisk is present for entities with more information.",
+		LABEL = "更多信息提示",
+		HOVER = "是否在有更多信息的实体上显示星号",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "The indicator is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示星号",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "The indicator is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示星号",
 			},
 		},
 	},
 	unrandomizer = {
-		LABEL = "Unrandomizer",
-		HOVER = "[Server Only] \"Solves\" the randomness of some situations.",
+		LABEL = "去随机化",
+		HOVER = "[服务器] 是否 \"移除\" 某些情况下的随机性.",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Off"
+				DESCRIPTION = "否",
+				HOVER = "禁用",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "On"
+				DESCRIPTION = "是",
+				HOVER = "启用",
 			}
 		}
 	},
@@ -2555,42 +2611,42 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "伤害按照原始数据计算。"
+				HOVER = "显示伤害的原始数据。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "伤害将按照玩家拥有的加成和削弱状态来计算。"
+				HOVER = "显示伤害及其加成和削弱状态后的数据。"
 			},
 		},
 	},
 	info_preload = {
-		LABEL = "Information preloading",
-		HOVER = "Whether information is preloaded when entities become visible. Trades network usage for faster performance. Recommended to use \"All\".",
+		LABEL = "信息预载",
+		HOVER = "是否预先加载可见范围内所有实体的信息。消耗更多网络以获取更好的表现。推荐使用 \"所有\"。",
 		OPTIONS = {
 			["0"] = {
-				DESCRIPTION = "No",
-				HOVER = "SEVERE FPS DROP! NOT RECOMMENDED!" -- most severe fps drop
+				DESCRIPTION = "否",
+				HOVER = "严重帧数降低，不推荐", -- most severe fps drop
 			},
 			["1"] = {
-				DESCRIPTION = "Containers",
-				HOVER = "POSSIBLE FPS DROP. NOT RECOMMENDED. CAN USE FOR SMALL, CLEAN BASES."
+				DESCRIPTION = "容器",
+				HOVER = "小幅帧数降低，不推荐。可用于小型简单的基地。",
 			},
 			["2"] = {
-				DESCRIPTION = "All",
-				HOVER = "FASTEST. RECOMMENDED."
+				DESCRIPTION = "所有",
+				HOVER = "最高帧率，推荐。",
 			},
 		},
 	},
 	refresh_delay = {
 		LABEL = "信息刷新延时",
-		HOVER = "设定对同一物品的信息多久一次更新。",
+		HOVER = "多久更新物品的信息。",
 		OPTIONS = {
 			["true"] = {
 				DESCRIPTION = "自动设定",
-				HOVER = "取决于玩家和游戏性能，动态更新。"
+				HOVER = "基于玩家和游戏性能，动态更新。"
 			},
 			["0"] = {
-				DESCRIPTION = "无设定",
+				DESCRIPTION = "实时",
 				HOVER = "信息实时更新。"
 			},
 			["0_25"] = {
@@ -2615,7 +2671,7 @@ local chinese = {
 	--[[ Debugging ]]
 	--------------------------------------------------------------------------
 	crash_reporter = {
-		LABEL = "崩溃报错器",
+		LABEL = "崩溃报告器",
 		HOVER = "**尝试**自动上报你的崩溃（调试情况，模组，世界信息）至我的服务器。",
 		OPTIONS = {
 			["false"] = {
@@ -2629,58 +2685,58 @@ local chinese = {
 		},
 	},
 	DEBUG_SHOW_NOTIMPLEMENTED = {
-		LABEL = "执行调试展示信息",
+		LABEL = "执行调试显示信息",
 		HOVER = "如果游戏内元件来源未明，错误自于某个模组时，发出警告并显示其来源。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "未找出错误原因时，不会发出警告。"
+				HOVER = "未找出错误原因时，不发出警告。"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "未找出错误原因时，将会向你发出警告。"
+				HOVER = "未找出错误原因时，发出警告。"
 			},
 		},
 	},
 	DEBUG_SHOW_DISABLED = {
-		LABEL = "禁用调试展示",
-		HOVER = "发出警告，显示我手动禁用的元件。",
+		LABEL = "禁用调试显示",
+		HOVER = "发出警告，显示我手动禁用的组件。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不会展示已禁用的描述符的信息。"
+				HOVER = "不显示已禁用的描述符的信息。",
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示已禁用的描述符的信息。"
+				HOVER = "显示已禁用的描述符的信息。",
 			},
 		},
 	},
 	DEBUG_SHOW_PREFAB = {
 		LABEL = "预设调试显示",
-		HOVER = "在物品上显示预设选项的名称。",
+		HOVER = "在物品上显示实体的预设名称。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示物品的预设项信息。"
+				HOVER = "不显示物品的预设名称。",
 			},
 			["true"] = {
 				DESCRIPTION = "否",
-				HOVER = "显示物品的预设项信息。"
+				HOVER = "显示物品的预设名称。",
 			},
 		},
 	},
 	DEBUG_ENABLED = { -- this will need revision at some point. dunno why i wrote the original like that.
 		LABEL = "开启调试功能",
-		HOVER = "打开你的Insight的调试功能。",
+		HOVER = "打开你的 Insight 调试功能。",
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示禁用的描述选项"
+				HOVER = "不显示调试信息"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示禁用的描述选项"
+				HOVER = "显示调试信息"
 			},
 		},
 	},
@@ -3302,6 +3358,34 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	{
+		name = "display_hunger",
+		options = {
+			{data = 0},
+			{data = 1},
+			{data = 2},
+		}, 
+		default = 1,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_sanity",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_sanityaura",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"undefined"},
+	},
+	{
 		name = "display_mob_attack_damage",
 		options = {
 			{data = false},
@@ -3395,25 +3479,6 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	{
-		name = "display_hunger",
-		options = {
-			{data = 0},
-			{data = 1},
-			{data = 2},
-		}, 
-		default = 1,
-		tags = {"undefined"},
-	},
-	{
-		name = "display_sanityaura",
-		options = {
-			{data = false},
-			{data = true},
-		}, 
-		default = true,
-		tags = {"undefined"},
-	},
-	{
 		name = "item_worth",
 		options = {
 			{data = false},
@@ -3439,6 +3504,15 @@ configuration_options = {
 			{data = 2},
 		}, 
 		default = 2,
+		tags = {"undefined"},
+	},
+	{
+		name = "unique_info",
+		options = {
+			{data = 0},
+			{data = 1},
+		}, 
+		default = 1,
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_miscellaneous"),

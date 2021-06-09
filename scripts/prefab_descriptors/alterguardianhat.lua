@@ -22,6 +22,11 @@ directory. If not, please refer to
 local function Describe(inst, context)
 	local description = nil
 	
+
+	if not context.config["unique_info"] == 1 then
+		return
+	end
+	
 	local minimum_sanity_string = context.player.components.sanity and string.format(context.lstr.alterguardianhat.minimum_sanity, 
 		math.ceil(context.player.components.sanity.max * TUNING.SANITY_BECOME_ENLIGHTENED_THRESH),
 		TUNING.SANITY_BECOME_ENLIGHTENED_THRESH * 100

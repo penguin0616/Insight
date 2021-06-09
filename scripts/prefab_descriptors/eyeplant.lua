@@ -22,6 +22,10 @@ directory. If not, please refer to
 local function Describe(inst, context)
 	local description = nil
 
+	if not context.config["unique_info"] == 1 then
+		return
+	end
+
 	if Insight.prefab_descriptors.lureplant and Insight.prefab_descriptors.lureplant.SummarizeInventory then
 		description = Insight.prefab_descriptors.lureplant.SummarizeInventory(inst)
 	end

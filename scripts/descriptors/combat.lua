@@ -198,6 +198,11 @@ local function Describe(self, context)
 		return
 	end
 
+	if self.inst:HasTag("player") then
+		-- meh.
+		return
+	end
+	
 	if self.inst == context.player then
 		-- shouldn't be calculating damage towards myself
 		return

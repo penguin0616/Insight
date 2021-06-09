@@ -22,10 +22,12 @@ directory. If not, please refer to
 local function Describe(inst, context)
 	local description = nil
 
-	local heal_string = string.format(context.lstr.batbat.health_restore, Round(TUNING.BATBAT_DRAIN, 1))
-	local sanity_string = string.format(context.lstr.batbat.sanity_cost, Round(0.5 * TUNING.BATBAT_DRAIN, 1))
-	
-	description = heal_string .. "\n" .. sanity_string
+	if inst.components.combat and inst.components.combat.onattack and context.config["unique_info"] == 1 then
+		local heal_string = string.format(context.lstr.batbat.health_restore, Round(TUNING.BATBAT_DRAIN, 1))
+		local sanity_string = string.format(context.lstr.batbat.sanity_cost, Round(0.5 * TUNING.BATBAT_DRAIN, 1))
+		
+		description = heal_string .. "\n" .. sanity_string
+	end
 	
 	return {
 		priority = 2,

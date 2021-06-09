@@ -284,7 +284,7 @@ local function Describe(self, context)
 			advanced_effect_table = {
 				name = "edible_advancedfoodeffects",
 				priority = 1.8, 
-				alt_description = table.concat(advanced_effects, "\n")
+				description = table.concat(advanced_effects, "\n")
 			}
 		end
 	end

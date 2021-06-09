@@ -242,11 +242,12 @@ local descriptors_ignore = {
 	"playerinspectable", "playeractionpicker", "playervision", "pinnable", "playercontroller", "playervoter", "singingshelltrigger", "tackler", "sleepingbaguser", "skinner", "playermetrics",-- from mousing over player
 	"sheltered", "grue", "wisecracker", "constructionbuilder", "playerlightningtarget", "rider", "distancetracker", "frostybreather", "foodaffinity", "stormwatcher", "areaaware", "age", "steeringwheeluser", -- from mousing over player
 	"touchstonetracker", "constructionbuilderuidata", "birdattractor", "attuner", "builder", "bundler", "carefulwalker", "catcher", "colouradder", "colourtweener", "inkable", "walkingplankuser", -- from mousing over player
+	"sandstormwatcher", "reader", "plantregistryupdater", "moonstormwatcher", "hudindicatable", "cookbookupdater", "wereeater", -- from mousing over player
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
-	"markable_proxy", "saved_scale", "gingerbreadhunter", -- don't care
+	"markable_proxy", "saved_scale", "gingerbreadhunter", 
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",

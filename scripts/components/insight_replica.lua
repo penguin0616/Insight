@@ -421,7 +421,7 @@ local Insight = Class(function(self, inst)
 		-- net_bool
 		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
 		-- net_smallbyte
-		self.net_moon_cycle = net_smallbyte(self.inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- 3674213233
+		self.net_moon_cycle = net_smallbyte(self.inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- "insight_net_moon_cycle" 3674213233
 
 		self.inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty)
 

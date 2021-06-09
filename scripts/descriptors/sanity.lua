@@ -48,7 +48,10 @@ local function GetData(self)
 end
 
 local function Describe(self, context)
-	local inst = self.inst
+	if not context.config["display_sanity"] then
+		return
+	end
+	
 	local description = nil
 
 	local sanity_type = context.lstr.sanity
