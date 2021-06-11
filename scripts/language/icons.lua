@@ -98,6 +98,32 @@ return {
 		--burn_time = "Remaining <color=LIGHT>burn time</color>: <color=LIGHT>%s</color>",
 	},
 
+	-- carnivaldecor.lua
+	carnivaldecor = {
+		--value = "Decor value: %s",
+	},
+
+	-- carnivaldecor_figure.lua [Prefab]
+
+	-- carnivaldecor_figure_kit.lua [Prefab]
+	carnivaldecor_figure_kit = {
+		rarity_types = {
+			--rare = "Rare",
+			--uncommon = "Uncommon",
+			--common = "Common",
+			--unknown = "Unknown",
+		},
+		--shape = "Shape: %s",
+		--rarity = "Rarity: %s",
+		--undecided = "Must be placed before contents are determined."
+	},
+
+	-- carnivaldecorranker.lua
+	carnivaldecorranker = {
+		--rank = "<color=%s>Rank</color>: <color=%s>%s</color> / <color=%s>%s</color>",
+		--decor = "Total decor: %s",
+	},
+
 	-- canary.lua [Prefab]
 	canary = {
 		--gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
@@ -328,6 +354,7 @@ return {
 		row = "oar",
 		--row_fail = "oar",
 		till = "farm_hoe",
+		pour_water = "wateringcan",
 	},
 
 	-- fishable.lua

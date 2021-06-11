@@ -665,7 +665,7 @@ local function GetPrefabDescriptor(name)
 
 			if getmetatable(res) == nil then
 				res.name = res.name or name
-				setmetatable(res, { __index=InvalidDescriptorIndex })
+				setmetatable(res, {  })
 			end
 
 			return res
@@ -2536,7 +2536,7 @@ AddPrefabPostInit("archive_orchestrina_small", function(inst)
 	inst:ListenForEvent("insight_active_dirty", function(inst)
 		local context = localPlayer and GetPlayerContext(localPlayer)
 
-		if not context.config["orchestrina_indicator"] then
+		if not context or not context.config["orchestrina_indicator"] then
 			return
 		end
 		--inst.indicator:SetVisible(inst.insight_active:value())

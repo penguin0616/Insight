@@ -55,7 +55,10 @@ local function Describe(self, context)
 		if inst.components.weapon then
 			local whack_wear = 1
 			whack_wear = inst.components.weapon.attackwear or whack_wear
-			consumptions[ACTIONS.ATTACK] = whack_wear * (efficientuser and efficientuser:GetMultiplier(ACTIONS.ATTACK) or 1)
+
+			local attack_wear_multiplier = inst.components.weapon.attackwearmultipliers and inst.components.weapon.attackwearmultipliers:Get() or 1
+
+			consumptions[ACTIONS.ATTACK] = whack_wear * (efficientuser and efficientuser:GetMultiplier(ACTIONS.ATTACK) or 1) * attack_wear_multiplier
 		end
 
 		-- for fishingrod
@@ -70,7 +73,12 @@ local function Describe(self, context)
 			end
 		end
 
-		
+		-- for wateringcan
+		if (inst.prefab == "wateringcan" or inst.prefab == "premiumwateringcan") and inst:HasTag("wateringcan") then
+			consumptions[ACTIONS.POUR_WATER] = 1
+			-- POUR_WATER
+			-- POUR_WATER_GROUNDTILE
+		end
 
 		local consumptions2 = {}
 		local num_actions = 0
@@ -95,19 +103,25 @@ local function Describe(self, context)
 		local actions = createTable(num_actions)
 		local actions_verbose = createTable(num_actions)
 
+		local c = 1
 		for i = 1, num_actions do
 			local v = consumptions2[i]
 			local action, amount = v[1], v[2]
 			local action_id = action.id:lower()
 
-			local uses = math.ceil(self.current / amount)
-			local max_uses = math.ceil(self.total / amount)
-			if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(context.lstr.actions[action_id]) then
-				actions[i] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
-				actions_verbose[i] = string.format(context.lstr.action_uses_verbose, context.lstr.actions[action_id], uses, max_uses)
-			else
-				actions[i] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses)
-				actions_verbose[i] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses, max_uses)
+			-- ∞
+			if amount ~= 0 then
+				local uses = math.ceil(self.current / amount)
+				local max_uses = math.ceil(self.total / amount)
+				if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(context.lstr.actions[action_id]) then
+					actions[c] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
+					actions_verbose[c] = string.format(context.lstr.action_uses_verbose, context.lstr.actions[action_id], uses, max_uses)
+				else
+					actions[c] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses)
+					actions_verbose[c] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses, max_uses)
+				end
+				
+				c = c + 1
 			end
 		end
 

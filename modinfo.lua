@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.1.12" -- ds is 2.9.7_ds
+version = "3.1.13" -- ds is 2.9.7_ds
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Bug fixes. Added information for ghostly elixirs, and more of other stuff. Check the changelog for more info.",
+	update_info = "Cawnival information, bug fixes, more configuration options. Check changelog for more details.",
 	update_info_ds = "performance increase, bug fixes",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -128,7 +128,7 @@ local english = {
 		},
 	},
 	info_style = {
-		LABEL = "Icon Mode",
+		LABEL = "Display style",
 		HOVER = "Whether you want to use icons or text.",
 		OPTIONS = {
 			["text"] = {
@@ -696,6 +696,20 @@ local english = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	display_cawnival = {
+		LABEL = "Cawnival Information",
+		HOVER = "Whether Midsummer Cawnvival information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Cawnival information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Cawnival information is shown.",
+			},
+		},
+	},
 	display_yotb_winners = {
 		LABEL = "Pageant Winners [YOTB]",
 		HOVER = "Whether Pageant winners are shown.",
@@ -706,7 +720,7 @@ local english = {
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "The pageant winners  are shown."
+				HOVER = "The pageant winners are shown."
 			},
 		},
 	},
@@ -894,7 +908,6 @@ local english = {
 			}
 		}
 	},
-	
 	display_weighable = {
 		LABEL = "Item Weight",
 		HOVER = "Determines whether item weight is shown.",
@@ -2020,6 +2033,20 @@ local chinese = {
 	--------------------------------------------------------------------------
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
+	display_cawnival = {
+		LABEL = "Cawnival Information",
+		HOVER = "Whether Midsummer Cawnvival information is shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Cawnival information is not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Cawnival information is shown.",
+			},
+		},
+	},
 	display_yotb_winners = {
 		LABEL = "选美大赛冠军 [\"皮弗娄牛之年\" 更新]",
 		HOVER = "是否显示选美大赛冠军",
@@ -3195,6 +3222,15 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_informationcontrol"),
+	{
+		name = "display_cawnival",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"dst_only", "undefined"},
+	},
 	{
 		name = "display_yotb_winners",
 		options = {
