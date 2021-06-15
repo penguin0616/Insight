@@ -3049,10 +3049,11 @@ end
 	https://steamcommunity.com/sharedfiles/filedetails/?id=1301033176 (Chinese Language Pack For Server)
 	https://steamcommunity.com/sharedfiles/filedetails/?id=1859406419 ([DST]Chinese translation Mod) -- also screws KnownModIndex:InitializeModInfo, but does it tolerably better. they also seem to like tampering with a whole bunch of stuff.
 	https://steamcommunity.com/sharedfiles/filedetails/?id=2111490085 (Keeth Client) probably the most egregious offender i have laid eyes on.
+	https://steamcommunity.com/sharedfiles/filedetails/?id=2486801875 (繁體中文包 Traditional Chinese Language) here again yet again once again.
 --]]
 
 
-if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") or KnownModIndex:IsModEnabled("workshop-1859406419") or KnownModIndex:IsModEnabled("workshop-2111490085") then
+if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") or KnownModIndex:IsModEnabled("workshop-1859406419") or KnownModIndex:IsModEnabled("workshop-2111490085") or KnownModIndex:IsModEnabled("workshop-2486801875") then
 	if KnownModIndex:IsModEnabled("workshop-1111711682") then
 		mprint("'Traditional Chinese Language Pack' is enabled, restoring string.match for Insight")
 	end
@@ -3071,6 +3072,10 @@ if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabl
 
 	if KnownModIndex:IsModEnabled("workshop-2111490085") then
 		mprint("'Keeth Client' is enabled, restoring string.match for Insight")
+	end
+
+	if KnownModIndex:IsModEnabled("workshop-2486801875") then
+		mprint("'繁體中文包 Traditional Chinese Language' is enabled, restoring string.match for Insight")
 	end
 
 	if pcall(string.dump, string.match) then

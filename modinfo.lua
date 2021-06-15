@@ -125,6 +125,12 @@ local english = {
 				DESCRIPTION = "Chinese",
 				HOVER = "Chinese"
 			},
+			--[[
+			["ru"] = {
+				DESCRIPTION = "Russian"
+				HOVER = "Russian"
+			},
+			]]
 		},
 	},
 	info_style = {
@@ -1477,6 +1483,12 @@ local chinese = {
 				DESCRIPTION = "中文",
 				HOVER = "中文"
 			},
+			--[[
+			["ru"] = {
+				DESCRIPTION = "Russian"
+				HOVER = "Russian"
+			},
+			]]
 		},
 	},
 	info_style = {

@@ -77,7 +77,7 @@ local function OnNotableRemove(inst)
 end
 
 local function GetWorldData()
-	local antlion = notables.antlion and notables.antlion.components.sinkholespawner and _G.Insight.descriptors.sinkholespawner.GetAntlionData(notables.antlion) or nil
+	local antlion = notables.antlion and notables.antlion.components.sinkholespawner and _G.Insight.descriptors.sinkholespawner and _G.Insight.descriptors.sinkholespawner.GetAntlionData(notables.antlion) or nil
 
 	local atriumgate_timer
 	if notables.atrium_gate then

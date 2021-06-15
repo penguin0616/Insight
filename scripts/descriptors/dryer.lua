@@ -41,7 +41,9 @@ local function Describe(self, context)
 			end
 		elseif self:IsDone() and self:GetTimeToSpoil() then
 			-- TODO: check for rot later
-			description = string.format(context.lstr.perishable.transition, context.lstr.perishable.spoil, context.time:SimpleProcess(self:GetTimeToSpoil()))
+			description = subfmt(context.lstr.perishable.transition, 
+				{ next_stage=context.lstr.perishable.spoil, time=context.time:SimpleProcess(self:GetTimeToSpoil()) }
+			)
 		end
 	end
 
