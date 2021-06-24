@@ -18,25 +18,30 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- healer.lua
-local debuffHelper = import("helpers/debuff")
-
+-- attunable.lua
+local yep = { colour=Color.new(1, 1, 1, 1) }
 local function Describe(self, context)
-	local inst = self.inst
-	local description
+	local description = nil
 
-	if inst.prefab == "tillweedsalve" then
-		local effects = debuffHelper.GetItemEffects(self.inst, context)
-		if effects and #effects > 0 then
-			description = CombineLines(description, table.concat(effects, "\n"))
-		end
-	elseif inst.prefab == "spider_healer_item" then
-		local webber_heal = string.format(context.lstr.healer.webber_heal, TUNING.HEALING_MEDSMALL)
-		local spider_heal = string.format(context.lstr.healer.spider_heal, TUNING.SPIDER_HEALING_ITEM_AMOUNT)
-		description = CombineLines(webber_heal, spider_heal)
-	else
-		description = string.format(context.lstr.healer.heal, self.health)
+	local players = {}
+	for player in pairs(self.attuned_players) do
+		local client_table = TheNet:GetClientTableForUser(player.userid) or yep
+		local player_string = string.format(context.lstr.attunable.player, 
+			Color.ToHex(client_table.colour),
+			player.name or "?",
+			player.prefab or "?"
+		)
+		players[#players+1] = player_string
 	end
+
+	local offline_users = {}
+	for userid in pairs(self.attuned_userids) do
+		offline_users[#offline_users+1] = userid
+	end
+
+	local linked = string.format(context.lstr.attunable.linked, table.concat(players, ", "))
+	local offline = string.format(context.lstr.attunable.offline_linked, #offline_users)
+	description = CombineLines(description, offline)
 
 	return {
 		priority = 0,

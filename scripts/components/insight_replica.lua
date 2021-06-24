@@ -857,7 +857,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 
 		for i = 1, #bundle_contents do
 			local v = bundle_contents[i]
-			if things[v.prefab .. (v.name or "")] then
+			if v.prefab and things[v.prefab .. (v.name or "")] then
 				return true
 			end
 		end

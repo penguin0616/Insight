@@ -63,7 +63,7 @@ local function Describe(self, context)
 		if manure > 0 then
 			-- immediate heal
 			local health_amount = TUNING.WORMWOOD_MANURE_HEAL_VALUES[math.ceil(manure / 8)] or TUNING.WORMWOOD_MANURE_HEAL_VALUES[1]
-			health_value_string = string.format(context.lstr.heal, health_amount)
+			health_value_string = string.format(context.lstr.healer.heal, health_amount)
 		end
 	end
 

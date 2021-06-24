@@ -18,26 +18,14 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- healer.lua
-local debuffHelper = import("helpers/debuff")
+-- spider_healer.lua [Prefab]
+local function Describe(inst, context)
+	local description = nil
 
-local function Describe(self, context)
-	local inst = self.inst
-	local description
-
-	if inst.prefab == "tillweedsalve" then
-		local effects = debuffHelper.GetItemEffects(self.inst, context)
-		if effects and #effects > 0 then
-			description = CombineLines(description, table.concat(effects, "\n"))
-		end
-	elseif inst.prefab == "spider_healer_item" then
-		local webber_heal = string.format(context.lstr.healer.webber_heal, TUNING.HEALING_MEDSMALL)
-		local spider_heal = string.format(context.lstr.healer.spider_heal, TUNING.SPIDER_HEALING_ITEM_AMOUNT)
-		description = CombineLines(webber_heal, spider_heal)
-	else
-		description = string.format(context.lstr.healer.heal, self.health)
-	end
-
+	local webber_heal = string.format(context.lstr.spider_healer.webber_heal, TUNING.HEALING_MEDSMALL)
+	local spider_heal = string.format(context.lstr.spider_healer.spider_heal, TUNING.SPIDER_HEALING_ITEM_AMOUNT)
+	description = CombineLines(webber_heal, spider_heal)
+	
 	return {
 		priority = 0,
 		description = description

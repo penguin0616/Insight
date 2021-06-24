@@ -76,6 +76,13 @@ return {
 	durability = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
 	durability_unwrappable = "<color=#C0C0C0>耐久度</color>: <color=#C0C0C0>%s</color>",
 
+	-- attunable.lua
+	attunable = {
+		linked = "Linked to: %s",
+		offline_linked = "Offline links: %s",
+		player = "<color=%s>%s</color> (<prefab=%s>)",	
+	},
+
 	-- batbat.lua [Prefab]
 	batbat = {
 		health_restore = "Restores <color=HEALTH>%s health</color> per hit.",
@@ -457,7 +464,11 @@ return {
 	},
 
 	-- healer.lua
-	heal = "<color=HEALTH>生命</color>: <color=HEALTH>%+d</color>",
+	healer = {
+		heal = "<color=HEALTH>生命</color>: <color=HEALTH>%+d</color>",
+		webber_heal = "Webber <color=HEALTH>Health</color>: <color=HEALTH>%+d</color>",
+		spider_heal = "Spider <color=HEALTH>Health</color>: <color=HEALTH>%+d</color>",
+	},
 
 	-- health.lua
 	health = "<color=HEALTH>生命</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
@@ -695,6 +706,12 @@ return {
 	spawner = {
 		next = "{respawn_time}后生成 <color=MOB_SPAWN><prefab={child_name}></color>",
 		child = "生成一个 <color=#ff9999><prefab=%s></color>",
+	},
+
+	-- spider_healer.lua [Prefab]
+	spider_healer = {
+		webber_heal = "<color=HEALTH>Heals</color> Webber for <color=HEALTH>%+d</color>",
+		spider_heal = "<color=HEALTH>Heals</color> spiders for <color=HEALTH>%+d</color>",
 	},
 
 	-- stagehand.lua [Prefab]
