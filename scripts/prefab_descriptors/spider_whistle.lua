@@ -20,9 +20,13 @@ directory. If not, please refer to
 
 -- example.lua [Prefab]
 local function Describe(inst, context)
-	TUNING.SPIDER_WHISTLE_RANGE
 	return {
-
+		name = "insight_ranged",
+		priority = 0,
+		description = nil,
+		range = TUNING.SPIDER_WHISTLE_RANGE,
+		color = Insight.COLORS.MONSTER,
+		attach_player = false
 	}
 end
 
