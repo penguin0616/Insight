@@ -40,8 +40,8 @@ local function Describe(self, context)
 	end
 
 	local linked = string.format(context.lstr.attunable.linked, table.concat(players, ", "))
-	local offline = string.format(context.lstr.attunable.offline_linked, #offline_users)
-	description = CombineLines(description, offline)
+	local offline = #offline_users > 0 and string.format(context.lstr.attunable.offline_linked, #offline_users) or nil
+	description = CombineLines(linked, offline)
 
 	return {
 		priority = 0,

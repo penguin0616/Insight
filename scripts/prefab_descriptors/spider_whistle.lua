@@ -18,17 +18,11 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- spider_healer.lua [Prefab]
+-- example.lua [Prefab]
 local function Describe(inst, context)
-	local description = nil
-
-	local webber_heal = string.format(context.lstr.spider_healer.webber_heal, TUNING.HEALING_MEDSMALL)
-	local spider_heal = string.format(context.lstr.spider_healer.spider_heal, TUNING.SPIDER_HEALING_AMOUNT)
-	description = CombineLines(webber_heal, spider_heal)
-	
+	TUNING.SPIDER_WHISTLE_RANGE
 	return {
-		priority = 0,
-		description = description
+
 	}
 end
 

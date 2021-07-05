@@ -21,6 +21,10 @@ directory. If not, please refer to
 -- deerclopsspawner.lua [Worldly]
 local DEERCLOPS_TIMERNAME
 local function GetDeerclopsData(self)
+	if DEERCLOPS_TIMERNAME == false then
+		return {}
+	end
+
 	if not self.inst.updatecomponents[self] then
 		return {}
 	end
@@ -28,7 +32,8 @@ local function GetDeerclopsData(self)
 	local time_to_attack
 	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 		if DEERCLOPS_TIMERNAME == nil then
-			DEERCLOPS_TIMERNAME = assert(util.getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME"), "Unable to find \"DEERCLOPS_TIMERNAME\"") --"deerclops_timetoattack"
+			--DEERCLOPS_TIMERNAME = assert(util.getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME"), "Unable to find \"DEERCLOPS_TIMERNAME\"") --"deerclops_timetoattack"
+			DEERCLOPS_TIMERNAME = util.getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME") or false
 		end
 		time_to_attack = TheWorld.components.worldsettingstimer:GetTimeLeft(DEERCLOPS_TIMERNAME)
 	else

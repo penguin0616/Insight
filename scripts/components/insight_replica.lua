@@ -391,7 +391,7 @@ local Insight = Class(function(self, inst)
 	self.entity_data = setmetatable(createTable(800), { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = {}
 
-	self.queuer = Queuer(8) -- shouldn't encounter crashes with this
+	self.queuer = Queuer(10) -- shouldn't encounter crashes with this
 	--[[
 		with the above listed setup, 
 			5 queues: had text lengths of roughly 14000-18000
@@ -815,9 +815,9 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 			-- check the contents of the bundle
 			for j = 1, #v.contents do
 				local k = v.contents[j]
-				if is_unwrappable then -- if what the original thing we were searching for is a bundle
+				if is_unwrappable and k.prefab then -- if what the original thing we were searching for is a bundle
 					things[k.prefab .. (k.name or "")] = true
-				else 
+				elseif k.prefab then
 					if isSearchingForFoodTag == true then
 						-- k.prefab == inventoryitem
 						-- prefab == food_tag

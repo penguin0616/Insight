@@ -82,7 +82,7 @@ local function GetRealDamage(damage, attacker, target, settings)
 	-- immunity
 	-- is this something even worth considering
 	if target and (target.is_teleporting or target.components.health.invincible or target:HasTag("alwaysblock")) then
-		return 0
+		--return 0
 	end
 
 	if not damage then
