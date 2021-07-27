@@ -247,7 +247,7 @@ local descriptors_ignore = {
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
-	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler",
+	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -2952,7 +2952,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 	end)
 end
 
-if IsDST() then
+if false and IsDST() then
 	local select = select
 	--local toarray = toarray
 	local tostring = tostring

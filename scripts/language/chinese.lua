@@ -95,6 +95,13 @@ return {
 	-- beargerspawner.lua
 	incoming_bearger_targeted = "<color=%s>目标: %s</color> -> %s",
 
+	-- boatdrag.lua
+	boatdrag = {
+		drag = "Drag: %.5f",
+		max_velocity_mod = "Max Velocity Mod: %.3f",
+		force_dampening = "Force Dampening: %.3f",
+	},
+
 	-- boathealth.lua
 	-- use 'health' from 'health'
 
@@ -517,6 +524,11 @@ return {
 	-- leader.lua
 	followers = "跟随者数量: %s",
 
+	-- lightningblocker.lua
+	lightningblocker = {
+		range = "Lightning protection range: %s wall units",
+	},
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "%s后开始活动",
@@ -676,6 +688,12 @@ return {
 			sanity_reward = "<color=SANITY>理智</color>奖励: <color=SANITY>%s</color>",
 			sanity_reward_split = "<color=SANITY>理智</color>奖励: <color=SANITY>%s</color> / <color=SANITY>%s</color>",
 		},
+	},
+
+	-- sheltered
+	sheltered = {
+		range = "Shelter range: %s wall units",
+		shelter = "Shelter ",
 	},
 
 	-- singable.lua

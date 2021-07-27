@@ -149,7 +149,35 @@ local function InsightFalseCombatDescribe(self, context)
 	}
 end
 
+local function DescribeSheltered(inst, context)
+	local description
+	if inst:HasTag("shelter") then
+		description = string.format(context.lstr.sheltered.range, 2)
+	elseif inst:HasTag("shadecanopy") then
+		description = string.format(context.lstr.sheltered.range, TUNING.SHADE_CANOPY_RANGE / WALL_STUDS_PER_TILE)
+	elseif inst:HasTag("shadecanopysmall") then
+		description = string.format(context.lstr.sheltered.range, TUNING.SHADE_CANOPY_RANGE_SMALL / WALL_STUDS_PER_TILE)
+	end
+
+	if description then
+		local waterproofness_amount = context.player.components.sheltered and context.player.components.sheltered.waterproofness
+		local waterproofness = waterproofness_amount and (context.lstr.sheltered.shelter .. string.format(context.lstr.waterproofness, waterproofness_amount * 100)) or nil
+		
+		local insulation_amount = context.player.components.temperature and context.player.components.temperature.shelterinsulation
+		local insulation = insulation_amount and (context.lstr.sheltered.shelter .. string.format(context.lstr.insulation_summer, insulation_amount)) or nil
+		
+		return {
+			name = "insight_shelter",
+			priority = 0.1,
+			description = description,
+			alt_description = CombineLines(description, insulation, waterproofness)
+		}
+	end
+end
+
 local function Describe(self, context)
+	local to_return = {}
+
 	local inst = self.inst
 	local description = nil
 
@@ -213,10 +241,16 @@ local function Describe(self, context)
 	end
 	--]]
 
-	return {
+	to_return[1] = {
+		name = "inspectable",
 		priority = 0,
 		description = description
 	}
+
+	local sheltered = DescribeSheltered(inst, context)
+	if sheltered then to_return[#to_return+1] = sheltered end  
+	
+	return unpack(to_return)
 end
 
 
