@@ -446,7 +446,7 @@ return {
 
 	-- growable.lua
 	growable = {
-		stage = "'%s' 阶段: %s / %s: ",
+		stage = "<color=#8c8c8c>'%s'</color> 阶段: %s / %s: ",
 		paused = "暂停生长",
 		next_stage = "%s后进入下一阶段",
 	},
@@ -760,7 +760,7 @@ return {
 
 	-- timer.lua
 	timer = {
-		label = "计时 '%s': %s",
+		label = "计时 <color=#8c8c8c>'%s'</color>: %s",
 		paused = "暂停",
 	},
 
@@ -857,7 +857,7 @@ return {
 
 	-- worldsettingstimer.lua
 	worldsettingstimer = {
-		label = "世界计时器 '%s': %s",
+		label = "世界计时器 <color=#8c8c8c>'%s'</color>: %s",
 		paused = "已暂停",
 	},
 

@@ -437,7 +437,7 @@ return {
 
 	-- growable.lua
 	growable = {
-		stage = "Stage '%s': %s / %s: ",
+		stage = "Stage <color=#8c8c8c>'%s'</color>: %s / %s: ",
 		paused = "Growth paused.",
 		next_stage = "Next stage in %s.",
 	},
@@ -751,7 +751,7 @@ return {
 
 	-- timer.lua
 	timer = {
-		label = "Timer '%s': %s",
+		label = "Timer <color=#8c8c8c>'%s'</color>: %s",
 		paused = "Paused",
 	},
 
@@ -848,7 +848,7 @@ return {
 
 	-- worldsettingstimer.lua
 	worldsettingstimer = {
-		label = "WSTimer '%s': %s",
+		label = "WSTimer <color=#8c8c8c>'%s'</color>: %s",
 		paused = "Paused",
 	},
 

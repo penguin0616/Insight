@@ -442,7 +442,7 @@ return {
 
 	-- growable.lua
 	growable = {
-		--stage = "Stage '%s': %s / %s: ",
+		--stage = "Stage <color=#8c8c8c>'%s'</color>: %s / %s: ",
 		--paused = "Growth paused.",
 		next_stage = "<icon=arrow> %s.",
 	},
@@ -751,8 +751,8 @@ return {
 
 	-- timer.lua
 	timer = {
-		label = "Timer '%s': %s",
-		paused = "Paused",
+		--label = "Timer <color=#8c8c8c>'%s':</color> %s",
+		--paused = "Paused",
 	},
 
 	-- tool.lua
@@ -848,8 +848,8 @@ return {
 
 	-- worldsettingstimer.lua
 	worldsettingstimer = {
-		label = "WSTimer '%s': %s",
-		paused = "Paused",
+		--label = "WSTimer <color=#8c8c8c>'%s'</color>: %s",
+		--paused = "Paused",
 	},
 
 	-- wx78.lua [Prefab]

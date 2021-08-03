@@ -32,7 +32,7 @@ directory. If not, please refer to
 	}
 	ex: <object_class=object_value>
 --]]
-
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
 local skip_closing = {icon=true, prefab=true}
 
@@ -165,13 +165,14 @@ function Reader:Save(str)
 	
 	if lastChunk and lastChunk.text then -- has to be a text chunk
 		if SameContents(lastChunk.tags, tags) then
-			lastChunk.text = lastChunk.text .. str; return
+			lastChunk.text = lastChunk.text .. str;
+			return
 		end
 	end
 
 	self.chunks[#self.chunks+1] = Chunk:new{
 		text = str,
-		tags = {unpack(self.currentTags)}
+		tags = tags
 	}
 end
 
@@ -210,7 +211,7 @@ function Reader:Read()
 	
 	if #self.currentTags > 0 then
 		local err = GenerateErrorString(self, "reader terminated with tags not resolved")
-		printtable(self.currentTags)
+		if printtable then printtable(self.currentTags) end
 		error(err, 0)
 		return
 	end

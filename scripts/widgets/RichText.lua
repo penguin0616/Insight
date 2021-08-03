@@ -235,6 +235,7 @@ function RichText:SetString(str, forced)
 
 	local lines = {}
 
+	-- TODO: fix error with tagged data spanning lines
 	for line in string.gmatch(str, "([^\n]+)\n*") do
 		lines[#lines+1] = Reader:new(line):Read()
 	end
