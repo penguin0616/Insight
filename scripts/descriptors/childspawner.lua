@@ -64,17 +64,20 @@ local function Describe(self, context)
 		local missingchildren = self.numchildrenoutside + self.childreninside < self.maxchildren
         local missingemergencychildren = self.numemergencychildrenoutside + self.emergencychildreninside < self.maxemergencychildren
         
-		if (self.childname and self.childname ~= "" and missingchildren) or (self.emergencychildname and self.emergencychildname ~= "" and missingemergencychildren) then
+		local validMissingChildren = (self.childname and self.childname ~= "" and missingchildren)
+		local validMissingEmergencyChildren = (self.emergencychildname and self.emergencychildname ~= "" and missingemergencychildren)
+
+		if validMissingChildren or validMissingEmergencyChildren then
 			local to_regen = ""
 
-			if missingchildren and missingemergencychildren then
+			if validMissingChildren and validMissingEmergencyChildren then
 				to_regen = string.format(context.lstr.childspawner.both_regen, 
-					self.childname or "<color=#FF0000>ERROR</color>", --GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
-					self.emergencychildname or "<color=#FF0000>ERROR</color>" --GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
+					self.childname or "?", --GetPrefabNameOrElse(self.childname, NO_NAME_PREFAB), 
+					self.emergencychildname or "?" --GetPrefabNameOrElse(self.emergencychildname, NO_NAME_PREFAB),
 				)
-			elseif missingchildren then
+			elseif validMissingChildren then
 				to_regen = string.format(context.lstr.childspawner.entity, self.childname)
-			elseif missingemergencychildren then
+			elseif validMissingEmergencyChildren then
 				to_regen = string.format(context.lstr.childspawner.entity, self.emergencychildname)
 			end
 

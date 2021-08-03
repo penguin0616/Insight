@@ -1228,8 +1228,22 @@ local english = {
 			},
 		},
 	},
+	display_shelter_info = {
+		LABEL = "Shelter Information",
+		HOVER = "Whether to display shelter information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Shelter information is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Shelter information is shown."
+			},
+		}
+	},
 	unique_info = {
-		LABEL = "Unique Inforation",
+		LABEL = "Unique Information",
 		HOVER = "Whether to display unique information for certain entities.",
 		OPTIONS = {
 			["0"] = {
@@ -2571,8 +2585,22 @@ local chinese = {
 			},
 		},
 	},
+	display_shelter_info = {
+		LABEL = "Shelter Information",
+		HOVER = "Whether to display shelter information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Shelter information is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Shelter information is shown."
+			},
+		}
+	},
 	unique_info = {
-		LABEL = "Unique Inforation",
+		LABEL = "Unique Information",
 		HOVER = "Whether to display unique information for certain entities.",
 		OPTIONS = {
 			["0"] = {
@@ -3552,6 +3580,15 @@ configuration_options = {
 			{data = 2},
 		}, 
 		default = 2,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_shelter_info",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
 		tags = {"undefined"},
 	},
 	{

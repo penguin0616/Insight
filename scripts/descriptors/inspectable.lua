@@ -150,13 +150,20 @@ local function InsightFalseCombatDescribe(self, context)
 end
 
 local function DescribeSheltered(inst, context)
+	if not context.config["display_shelter_info"] then
+		return
+	end
+
 	local description
+	--local ranged_data
 	if inst:HasTag("shelter") then
 		description = string.format(context.lstr.sheltered.range, 2)
 	elseif inst:HasTag("shadecanopy") then
-		description = string.format(context.lstr.sheltered.range, TUNING.SHADE_CANOPY_RANGE / WALL_STUDS_PER_TILE)
+		description = string.format(context.lstr.sheltered.range, TUNING.SHADE_CANOPY_RANGE)
+		--ranged_data = TUNING.SHADE_CANOPY_RANGE
 	elseif inst:HasTag("shadecanopysmall") then
-		description = string.format(context.lstr.sheltered.range, TUNING.SHADE_CANOPY_RANGE_SMALL / WALL_STUDS_PER_TILE)
+		description = string.format(context.lstr.sheltered.range, TUNING.SHADE_CANOPY_RANGE_SMALL)
+		--ranged_data = TUNING.SHADE_CANOPY_RANGE_SMALL
 	end
 
 	if description then
@@ -166,12 +173,24 @@ local function DescribeSheltered(inst, context)
 		local insulation_amount = context.player.components.temperature and context.player.components.temperature.shelterinsulation
 		local insulation = insulation_amount and (context.lstr.sheltered.shelter .. string.format(context.lstr.insulation_summer, insulation_amount)) or nil
 		
+		--[[
+		if ranged_data then
+			ranged_data = {
+				name = "insight_ranged",
+				priority = 0,
+				description = nil,
+				range = ranged_data / WALL_STUDS_PER_TILE,
+				attach_player = false
+			}
+		end
+		--]]
+
 		return {
 			name = "insight_shelter",
 			priority = 0.1,
 			description = description,
 			alt_description = CombineLines(description, insulation, waterproofness)
-		}
+		}--, ranged_data
 	end
 end
 

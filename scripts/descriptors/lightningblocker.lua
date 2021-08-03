@@ -20,11 +20,21 @@ directory. If not, please refer to
 
 -- lightningblocker.lua
 local function Describe(self, context)
-	local description = self.block_rsq and string.format(context.lstr.lightningblocker.range, math.sqrt(self.block_rsq) / WALL_STUDS_PER_TILE) or nil
+	if not self.block_rsq then return end
 
+	local wall_units = math.sqrt(self.block_rsq)
+	local description = string.format(context.lstr.lightningblocker.range, wall_units)
+	
 	return {
+		name = "lightningblocker",
 		priority = 0,
 		description = description
+	}, {
+		name = "insight_ranged",
+		priority = 0,
+		color = Insight.COLORS.LIGHT,
+		range = wall_units,
+		attach_player = false
 	}
 end
 

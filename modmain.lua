@@ -177,7 +177,6 @@ if false and DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 2")
 end
 
-PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_ghost_klaus_sack"}
 string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end})
 import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
@@ -195,6 +194,10 @@ widgetLib = {
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
 SHOW_INFO_ORIGIN = false
 DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
+
+-- maybe one day i'll do something 64-bit specific or something
+is64bit = #tostring{}:match("(%w+)$") == 16
+is32bit = not is64bit
 
 local player_contexts = {}
 local mod_component_cache = {}
@@ -1346,6 +1349,11 @@ end
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
+PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
+if IsDST() then
+	table.insert(PrefabFiles, "insight_ghost_klaus_sack")
+end
+
 setmetatable(Insight.descriptors, {
 	__index = function(self, index)
 		-- If we're here, this means that we're requesting an unloaded descriptor.
@@ -2780,7 +2788,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 		mprint("Status:", data.status)
 		mprint("State:", data.state)
 
-		if TheWorld.ismastersim then
+		if TheNet:GetIsMasterSimulation() then
 			--data.status = status
 			local ids = {}
 			for i,v in pairs(AllPlayers) do
@@ -2806,6 +2814,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 			input_devices = TheInput:GetInputDevices(),
 		}
 
+		report.bit_version = (is64bit and "64") or (is32bit and "32") or "?"
 		report.game_version = APP_VERSION
 		report.mods = GetMods() -- in case of compatability issues
 		report.platform = GetPlatform() -- please be steam on windows
@@ -3050,60 +3059,26 @@ end
 	https://steamcommunity.com/sharedfiles/filedetails/?id=1859406419 ([DST]Chinese translation Mod) -- also screws KnownModIndex:InitializeModInfo, but does it tolerably better. they also seem to like tampering with a whole bunch of stuff.
 	https://steamcommunity.com/sharedfiles/filedetails/?id=2111490085 (Keeth Client) probably the most egregious offender i have laid eyes on.
 	https://steamcommunity.com/sharedfiles/filedetails/?id=2486801875 (繁體中文包 Traditional Chinese Language) here again yet again once again.
+	workshop-2532301630..........
 --]]
 
+if pcall(string.dump, string.match) then
+	mprint("string.match has been modified.")
+	local dbg = debug.getinfo(string.match, "S")
+	mprint("\tModification was created at:", dbg.source or "?")
 
-if KnownModIndex:IsModEnabled("workshop-1111711682") or KnownModIndex:IsModEnabled("workshop-1418746242") or KnownModIndex:IsModEnabled("workshop-1301033176") or KnownModIndex:IsModEnabled("workshop-1859406419") or KnownModIndex:IsModEnabled("workshop-2111490085") or KnownModIndex:IsModEnabled("workshop-2486801875") then
-	if KnownModIndex:IsModEnabled("workshop-1111711682") then
-		mprint("'Traditional Chinese Language Pack' is enabled, restoring string.match for Insight")
-	end
-
-	if KnownModIndex:IsModEnabled("workshop-1418746242") then
-		mprint("'Chinese++' is enabled, restoring string.match for Insight")
-	end
-
-	if KnownModIndex:IsModEnabled("workshop-1301033176") then
-		mprint("'Chinese Language Pack for Server' is enabled, restoring string.match for Insight")
-	end
-
-	if KnownModIndex:IsModEnabled("workshop-1859406419") then
-		mprint("'[DST]Chinese translation Mod' is enabled, restoring string.match for Insight")
-	end
-
-	if KnownModIndex:IsModEnabled("workshop-2111490085") then
-		mprint("'Keeth Client' is enabled, restoring string.match for Insight")
-	end
-
-	if KnownModIndex:IsModEnabled("workshop-2486801875") then
-		mprint("'繁體中文包 Traditional Chinese Language' is enabled, restoring string.match for Insight")
-	end
-
-	if pcall(string.dump, string.match) then
-		mprint("string.match has been modified by:", debug.getinfo(string.match, "S").source or "?")
-		local string_match = util.getupvalue(string.match, "oldmatch") -- they all call it oldmatch
-
-		if type(string_match) ~= "function" then
-			local dbg = debug.getinfo(string.match, "S")
-			mprint("Modification created at:", dbg.source or "?")
-			error("[Insight]: string.match has been modified but cannot find the original w/ debug.")
+	-- tired of this
+	local upvalues = util.recursive_getupvalues(string.match)
+	for _, upv in pairs(upvalues) do
+		if type(upv.value) == "function" and pcall(string.dump, upv.value) then
+			local _, err = pcall(function() string.match() end)
+			-- stdin:1: bad argument #1 to 'match' (string expected, got no value)
+			if err:match("bad argument #1 to 'match'") then
+				string.match = upv.value
+				mprint("string.match repaired successfully")
+				break
+			end
 		end
-
-		string.match = string_match
-		
-		if pcall(string.dump, string.match) then
-			error("[Insight]: string.match repair failed..")
-		else
-			mprint("string.match repaired successfully")
-		end
-	else
-		mprint("string.match has not been modified even though suspicious mods are enabled..")
-	end
-else
-	local modified = pcall(string.dump, string.match)
-	if modified then
-		mprint("string.match has been modified.")
-		local dbg = debug.getinfo(string.match, "S")
-		mprint("\tModification was created at:", dbg.source or "?")
 	end
 end
 
@@ -3321,3 +3296,4 @@ GLOBAL.check = function(client_config)
 	print'-------------------------------'
 end
 ]]
+
