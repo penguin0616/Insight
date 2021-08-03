@@ -23,6 +23,10 @@ directory. If not, please refer to
 local world_type = GetWorldType()
 
 local function Describe(self, context)
+	if context.config["fuel_verbosity"] == 0 then
+		return
+	end
+
 	local inst = self.inst
 	local description, alt_description = nil, nil
 
@@ -43,19 +47,22 @@ local function Describe(self, context)
 
 	-- fuel penalty
 	if world_type == -1 then -- IsDST()
-		if inst:GetIsWet() then
-			value = value * TUNING.WET_FUEL_PENALTY
-		end
+		local wetness_mult = inst:GetIsWet() and TUNING.WET_FUEL_PENALTY or 1
+		--local mastery_mult = context.player.components.fuelmaster and context.player.components.fuelmaster:GetBonusMult(item, self.inst) or 1
+		
+       value = value * wetness_mult
 	elseif world_type >= 1 then
 		if not GetWorld().components.moisturemanager:IsEntityDry(inst) then
 			value = value * TUNING.WET_FUEL_PENALTY
 		end
 	end
 
+
 	local fuel_type_string = "'" .. (Insight.FUEL_TYPES[self.fueltype] or "Fuel") .. "'"
 	if self.secondaryfueltype then
 		fuel_type_string = fuel_type_string .. "/'" .. (Insight.FUEL_TYPES[self.secondaryfueltype] or "?") .. "'"
 	end
+	
 
 	-- format
 	local fuel_string_verbose = string.format(context.lstr.fuel.fuel_verbose, value, fuel_type_string)

@@ -22,6 +22,10 @@ directory. If not, please refer to
 local wsth = import("helpers/worldsettingstimer")
 
 local function Describe(self, context)
+	if not context.config["display_pickable"] then
+		return
+	end
+	
 	local description = nil
 	local remaining_harvests = nil
 

@@ -32,6 +32,10 @@ local COLORS = setmetatable({
 })
 
 local function Describe(self, context)
+	if not context.config["display_harvestable"] then
+		return
+	end
+	
 	local description = nil
 
 	if not self.product then

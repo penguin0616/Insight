@@ -1066,6 +1066,34 @@ local english = {
 			},
 		},
 	},
+	display_pickable = {
+		LABEL = "Pickable Information",
+		HOVER = "Whether pickable information should be shown (ex: Berry Bushes)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Pickable information will not be displayed."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Pickable information will be displayed."
+			},
+		},
+	},
+	display_harvestable = {
+		LABEL = "Harvestable Information",
+		HOVER = "Whether harvestable information should be shown (ex: Bee Boxes)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Harvestable information will not be displayed."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Harvestable information will be displayed."
+			},
+		},
+	},
 	display_finiteuses = {
 		LABEL = "Tool Durability",
 		HOVER = "Whether tool durability is displayed.",
@@ -2423,6 +2451,34 @@ local chinese = {
 			},
 		},
 	},
+	display_pickable = {
+		LABEL = "Pickable Information",
+		HOVER = "Whether pickable information should be shown (ex: Berry Bushes)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Pickable information will not be displayed."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Pickable information will be displayed."
+			},
+		},
+	},
+	display_harvestable = {
+		LABEL = "Harvestable Information",
+		HOVER = "Whether harvestable information should be shown (ex: Bee Boxes)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "Harvestable information will not be displayed."
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "Harvestable information will be displayed."
+			},
+		},
+	},
 	display_finiteuses = {
 		LABEL = "工具耐久度",
 		HOVER = "是否显示工具的耐久度",
@@ -3479,6 +3535,24 @@ configuration_options = {
 		}, 
 		default = 1,
 		tags = {"undefined"},
+	},
+	{
+		name = "display_pickable",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {},
+	},
+	{
+		name = "display_harvestable",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {},
 	},
 	{
 		name = "display_finiteuses",
