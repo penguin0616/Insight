@@ -29,7 +29,7 @@ local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
 local imageLib = import("widgets/image_lib")
-local Reader = import("reader")
+local Reader, Chunk = import("reader")
 
 local CalculateSize = CalculateSize
 local Is_DST = IsDST()
@@ -158,6 +158,8 @@ function RichText:GetColour()
 end
 
 function RichText:SetColour(clr, ...) -- Text::SetColour
+	local old = self.default_colour
+
 	if type(clr) == "string" then
 		assert(Color.IsValidHex(clr), "RichText:SetColour with invalid hex")
 
@@ -173,7 +175,9 @@ function RichText:SetColour(clr, ...) -- Text::SetColour
 		self.default_colour = clr:ToHex()
 	end
 
-	self:SetString(self:GetString(), true)
+	if self.default_colour ~= old then
+		self:SetString(self:GetString(), true)
+	end
 end
 
 function RichText:GetFont()
@@ -181,6 +185,10 @@ function RichText:GetFont()
 end
 
 function RichText:SetFont(font)
+	if self.font == font then
+		return
+	end
+
 	self.font = font
 	self:SetString(self:GetString(), true)
 end
@@ -235,9 +243,56 @@ function RichText:SetString(str, forced)
 
 	local lines = {}
 
-	-- TODO: fix error with tagged data spanning lines
-	for line in string.gmatch(str, "([^\n]+)\n*") do
-		lines[#lines+1] = Reader:new(line):Read()
+	local chunks = Reader:new(str):Read()
+	local i = 1;
+	local lineCount = 1
+	--print(str)
+	while chunks[i] do
+		-- create line if missing
+		lines[lineCount] = lines[lineCount] or {}
+		local line = lines[lineCount]
+
+		-- figure out chunk data
+		local chunk = chunks[i]
+		local is_object = chunk:IsObject()
+
+		if (is_object and chunk.object.class == "prefab") or (not is_object) then
+			-- text based chunk
+			local text = (is_object and GetPrefabNameOrElse(chunk.object.value, "[prefab \"%s\"]")) or chunk.text
+
+			-- It seems the first line has some logic different to the rest of the processed text, but the comments in the for loop still hold.
+
+			for a, x, b in string.gmatch(text, "(\n*)([^\n]+)(\n*)") do
+				--print("\t", x, ("(%s, %s)"):format(#a, #b))
+
+				-- I'm not 100% sure why I needed a AND b, but I guess "a" works for situations where there is a previous separator to be parsed.
+				-- Without it, information separated in multiple descriptors largely doesn't work properly. So,
+				-- This is responsible for separating descriptor returns with newlines.
+				for j = 1, #a do -- so we don't skip any empty lines if we have a \n\n (untested)
+					lineCount = lineCount + j
+					lines[lineCount] = lines[lineCount] or {}
+					line = lines[lineCount]
+				end
+				
+				-- Redo the chunk
+				line[#line+1] = Chunk:new{
+					text = x,
+					tags = chunk.tags
+				}
+
+				-- This is responsible for allowing descriptors that have descriptions with multiple lines to be separated.
+				for j = 1, #b do -- so we don't skip any empty lines if we have a \n\n (untested)
+					lineCount = lineCount + j
+					lines[lineCount] = lines[lineCount] or {}
+					line = lines[lineCount]
+				end
+			end
+		else
+			-- miscellaneous chunk, add it to the line
+			line[#line+1] = chunk
+		end
+
+		i = i + 1
 	end
 
 	for i = 1, #lines do

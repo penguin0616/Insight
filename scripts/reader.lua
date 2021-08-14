@@ -265,4 +265,4 @@ end
 --local str = "<color=#E4FF01> #E4FF01 </color> <color=#E4FF01> FAT </color>"
 --local chks = Reader:new(str):Read()
 
-return Reader
+return Reader, Chunk

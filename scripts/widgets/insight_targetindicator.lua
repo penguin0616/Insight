@@ -65,6 +65,7 @@ local function StartIndicator(target, self)
 	self.inst.OnRemoveEntity = nil
 	-- Me
 	self.colour = (target.playercolour and Color.new(unpack(target.playercolour))) or self.config_data.color or PORTAL_TEXT_COLOUR
+	self.name_label:SetColour(self.colour)
 	-- Klei
 	self:StartUpdating()
 	self:OnUpdate()
@@ -226,7 +227,7 @@ function InsightTargetIndicator:OnUpdate()
 	--self.headbg:SetTint(0.5 + self.colour[1]/2, 0.5 + self.colour[2]/2, 0.5 + self.colour[3]/2, alpha)
 	local bgclr = self.colour/2 + 0.5
 	self.headbg:SetTint(bgclr.r, bgclr.g, bgclr.b, alpha)
-	self.name_label:SetColour(self.colour)
+	--self.name_label:SetColour(self.colour) -- this should NOT be called every OnUpdate...
 
 	-- Klei
 	self.head:SetTint(1, 1, 1, alpha)
