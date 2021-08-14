@@ -256,14 +256,16 @@ function RichText:SetString(str, forced)
 		local chunk = chunks[i]
 		local is_object = chunk:IsObject()
 
+		--local r = (is_object and GetPrefabNameOrElse(chunk.object.value, "[prefab \"%s\"]")) or chunk.text
+		--print(i, (is_object and GetPrefabNameOrElse(chunk.object.value, "[prefab \"%s\"]")) or chunk.text, type(r)=="string" and #r or nil)
+
 		if (is_object and chunk.object.class == "prefab") or (not is_object) then
 			-- text based chunk
 			local text = (is_object and GetPrefabNameOrElse(chunk.object.value, "[prefab \"%s\"]")) or chunk.text
 
 			-- It seems the first line has some logic different to the rest of the processed text, but the comments in the for loop still hold.
-
-			for a, x, b in string.gmatch(text, "(\n*)([^\n]+)(\n*)") do
-				--print("\t", x, ("(%s, %s)"):format(#a, #b))
+			for a, x, b in string.gmatch(text, "(\n*)([^\n]*)(\n*)") do
+				--print("\t", x, ("(%s, %s, %s)"):format(#a, #x, #b))
 
 				-- I'm not 100% sure why I needed a AND b, but I guess "a" works for situations where there is a previous separator to be parsed.
 				-- Without it, information separated in multiple descriptors largely doesn't work properly. So,
@@ -274,11 +276,14 @@ function RichText:SetString(str, forced)
 					line = lines[lineCount]
 				end
 				
-				-- Redo the chunk
-				line[#line+1] = Chunk:new{
-					text = x,
-					tags = chunk.tags
-				}
+				-- This check and the * specifier in the not-newline match is dealing with chunks where it's just an empty newline character.
+				if #x > 0 then
+					-- Redo the chunk
+					line[#line+1] = Chunk:new{
+						text = x,
+						tags = chunk.tags
+					}
+				end
 
 				-- This is responsible for allowing descriptors that have descriptions with multiple lines to be separated.
 				for j = 1, #b do -- so we don't skip any empty lines if we have a \n\n (untested)
@@ -296,7 +301,10 @@ function RichText:SetString(str, forced)
 	end
 
 	for i = 1, #lines do
-		self:NewLine(lines[i])
+		-- Only render lines that aren't empty. Added because there's sometimes a newline left over at the end with no text after. 
+		if #lines[i] > 0 then
+			self:NewLine(lines[i])
+		end
 	end
 end
 
