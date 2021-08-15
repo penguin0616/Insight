@@ -3070,13 +3070,16 @@ if pcall(string.dump, string.match) then
 	-- tired of this
 	local upvalues = util.recursive_getupvalues(string.match)
 	for _, upv in pairs(upvalues) do
-		if type(upv.value) == "function" and pcall(string.dump, upv.value) then
-			local _, err = pcall(function() string.match() end)
+		if type(upv.value) == "function" and not pcall(string.dump, upv.value) then
+			local _, err = pcall(function() upv.value() end)
 			-- stdin:1: bad argument #1 to 'match' (string expected, got no value)
-			if err:match("bad argument #1 to 'match'") then
-				string.match = upv.value
-				mprint("string.match repaired successfully")
-				break
+			if err:match("bad argument #1 to '[^']+' %(string expected, got no value%)") then
+				local x, a, b, c = pcall(upv.value, "<testing=#222>!wow!</testing>", "<(%w+)=([#%w]+)>([^>]+)<")
+				if x and a == "testing" and b == "#222" and c == "!wow!" then
+					string.match = upv.value
+					mprint("string.match repaired successfully")
+					break
+				end
 			end
 		end
 	end

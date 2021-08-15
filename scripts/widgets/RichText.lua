@@ -302,7 +302,7 @@ function RichText:SetString(str, forced)
 
 	for i = 1, #lines do
 		-- Only render lines that aren't empty. Added because there's sometimes a newline left over at the end with no text after. 
-		if #lines[i] > 0 then
+		if lines[i] and #lines[i] > 0 then
 			self:NewLine(lines[i])
 		end
 	end
