@@ -85,9 +85,10 @@ local function DescribeNutrients(self, context, definition)
 		return
 	end
 
-	local tile_nutrients = farmingHelper.GetTileNutrientsAtPoint(self.inst.Transform:GetWorldPosition())
+	local x, y, z = self.inst.Transform:GetWorldPosition() 
+	local tile_nutrients = farmingHelper.GetTileNutrientsAtPoint(x, y, z)
 	local net_nutrients = farmingHelper.GetPlantNutrientModifier(definition)
-	local tile_nutrient_delta = farmingHelper.GetTileNutrientDelta(self.inst.Transform:GetWorldPosition())
+	local tile_nutrient_delta = farmingHelper.GetTileNutrientDelta(x, y, z)
 	
 	local alt_description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant_tile,
 		tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,

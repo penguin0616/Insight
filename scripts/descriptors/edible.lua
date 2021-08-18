@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- edible.lua
+local uncompromising = KnownModIndex:IsModEnabled("workshop-2039181790")
 local debuffHelper = import("helpers/debuff")
 local cooking = require("cooking")
 local world_type = GetWorldType()
@@ -176,7 +177,7 @@ local function Describe(self, context)
 			description = alt_description -- .. " ! Missing stats due to a broken mod !" -- won't be processed by advanced food stat calculations
 		end
 	end
-
+	
 	if safe_food and IsEdible(owner, self.inst) and context.config["display_food"] then -- i think this filters out wurt's meat stats.
 		local eater = owner.components.eater
 
@@ -198,16 +199,18 @@ local function Describe(self, context)
 
 		local base_mult = foodmemory ~= nil and foodmemory:GetFoodMultiplier(self.inst.prefab) or 1 -- warly? added while was doing food stat modifiers
 		if not stats or (type(stats) == 'table' and not stats.fixed) then
-			hunger, sanity, health = hunger * base_mult * eater.hungerabsorption, 
-				sanity * base_mult * eater.sanityabsorption, 
-				health * base_mult * eater.healthabsorption
+			-- uncompromising mode sets absorptions to 0 on first eat event and stores the original as a variable in the player.
+			-- \init\init_food\init_foodregen.lua in local function oneat, August 17, 2021.
+			hunger = hunger * base_mult * (uncompromising and owner.hungerabsorption or eater.hungerabsorption)
+			sanity = sanity * base_mult * (uncompromising and owner.sanityabsorption or eater.sanityabsorption)
+			health = health * base_mult * (uncompromising and owner.healthabsorption or eater.healthabsorption)
 		end
 
-		if health < 0 and owner.components.health.absorb then
+		if health < 0 then
 			if world_type > 0 then -- RoG+
-				health = health - (health * owner.components.health.absorb)
+				health = health - health * (owner.components.health.absorb or 0)
 			elseif world_type == -1 then -- DST
-				health = health * math.clamp(1 - owner.components.health.absorb, 0, 1) * math.clamp(1 - owner.components.health.externalabsorbmodifiers:Get(), 0, 1)
+				health = health * math.clamp(1 - (owner.components.health.absorb or 0), 0, 1) * math.clamp(1 - (owner.components.health.externalabsorbmodifiers:Get() or 0), 0, 1)
 			end
 		end
 

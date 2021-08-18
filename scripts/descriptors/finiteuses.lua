@@ -107,10 +107,10 @@ local function Describe(self, context)
 		for i = 1, num_actions do
 			local v = consumptions2[i]
 			local action, amount = v[1], v[2]
-			local action_id = action.id:lower()
+			local action_id = action.id and action.id:lower() or nil
 
 			-- ∞
-			if amount ~= 0 then
+			if action_id and amount ~= 0 then
 				local uses = math.ceil(self.current / amount)
 				local max_uses = math.ceil(self.total / amount)
 				if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(context.lstr.actions[action_id]) then

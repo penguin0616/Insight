@@ -225,7 +225,7 @@ local function GetTileNutrientDelta(x, y, z)
 	local tile_data = GetTileDataAtPoint(false, x, y, z)
 	
 	local nutrient_delta = { formula=0, compost=0, manure=0 }
-	if tile_data.soil_drinkers ~= nil then
+	if tile_data and tile_data.soil_drinkers ~= nil then
 		for obj, _ in pairs(tile_data.soil_drinkers) do
 			local plant_def = obj.weed_def or obj.plant_def
 			local plant_nutrient_modifier = GetPlantNutrientModifier(plant_def)
