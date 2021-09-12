@@ -318,7 +318,7 @@ end
 --------------------------------------------------------------------------
 local Insight = Class(function(self, inst)
 	--mprint("Registering Insight replica for", inst, "but I am", ThePlayer)
-
+	
 	if IsClient() then
 		assert(ThePlayer, "[Insight]: Failed to load replica since you're missing")
 		if inst ~= ThePlayer then
@@ -374,7 +374,6 @@ local Insight = Class(function(self, inst)
 	elseif Is_DS then
 		self.is_client = true
 	end
-
 	--self.is_client = (self.is_client == nil and inst == ThePlayer) or self.is_client
 	self.inst = inst
 	
@@ -408,8 +407,9 @@ local Insight = Class(function(self, inst)
 	self.tracked_entities = {}
 	self.pipspook_toys = {}
 	self.pipspook_queue = setmetatable({}, { __mode="v" })
-
+	
 	if Is_DST then
+		
 		self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
 			
 		-- net_string
@@ -428,7 +428,7 @@ local Insight = Class(function(self, inst)
 		self.inst:ListenForEvent("insight_naughtiness_dirty", OnNaughtinessDirty)
 
 		self.inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty)
-
+		
 		if TheWorld.ismastersim then
 			-- server
 			self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
@@ -437,13 +437,6 @@ local Insight = Class(function(self, inst)
 
 			self:SendMoonCycle(GetMoonCycle(TheWorld))
 			
-			--[[
-			local function Send()
-				
-				self.inst:DoTaskInTime(0.07 * (self.performance_ratings:GetHost() + 1), Send)
-			end
-			--]]
-
 			self.inst:DoPeriodicTask(0.07, function() -- 0.07 normally
 				for i = 1, self.queuer.queue_count do
 					--print("queue [server]", i, ":::::", compress(self.queuer.queues[i].items))
@@ -453,49 +446,7 @@ local Insight = Class(function(self, inst)
 					end
 				end
 				self.queuer:Flush()
-				--[[
-				local to_send = {}
-				to_send = self.queue -- meh
-
-				if #to_send > 0 then
-					--mprint(to_send[1] and to_send[1].information)
-					rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "EntityInformation"), self.inst.userid, compress(to_send))
-
-					self.queue = {}
-					self.queue_tracker = {}
-				end
-				--]]
 			end)
-			
-			--[[
-			self.inst:DoPeriodicTask(0.07, function()
-				for i, r in pairs(self.net_entity_datas) do
-					--dprint(string.format("Transmitter #%d has a queue length of [%d]", i, #r.queue))
-					if #r.queue > 0 then
-						local to_set = {}
-
-						for _ = 1, math.min(self.queue_pop_count, #r.queue) do
-
-							local item = table.remove(r.queue, 1)
-							table.insert(to_set, item)
-						end
-
-						to_set = compress(to_set)
-
-						r.net:set(to_set)
-					end
-
-					if #r.queue > self.queue_threshold then
-						if self.queue_flushing and #r.queue > self.queue_threshold * 2 then
-							mprint(string.format("[Insight]: !!CRITICAL!! Queue length is %s/%s for '%s' on transmitter [%s]. Queue has been cleared. Please report this on Insight's bug page.", #r.queue, self.queue_threshold, self.inst.name, i))
-							r.queue = {}
-						else
-							mprint(string.format("[Insight]: Queue length is %s/%s for '%s' on transmitter [%s]. Dangerous queue length reached.", #r.queue, self.queue_threshold, self.inst.name, i))
-						end
-					end
-				end
-			end)
-			--]]
 		end
 
 		if self.is_client and Is_DST then
@@ -514,7 +465,6 @@ local Insight = Class(function(self, inst)
 		-- hud was sometimes missing in OnUpdate
 		self.inst:DoPeriodicTask(0.33, function(inst)
 			self:Update()
-
 			if self.performance_ratings then -- requires is_client, which is only true in DST
 				self.performance_ratings:Refresh()
 			end
@@ -1052,7 +1002,7 @@ function Insight:Update()
 		mprint("===============================================================================================================================================")
 		return
 	end
-
+	
 	-- TheWorld and related analyzation
 	self:GetWorldInformation()
 	self:RequestInformation(self.inst, {raw=true})
@@ -1071,9 +1021,33 @@ function Insight:Update()
 	end
 	
 	-- inventory
-	if Is_DST and HUD.controls.inv then
-		-- self.inv:Hide()
-		HUD.controls.inv:Refresh()
+	if Is_DST and not TheWorld.ismastersim and HUD.controls.inv and HUD.controls.inv.equip then
+		-- only needs to be refreshed if a client, mastersim host gets free updates by nature of being the sim
+		-- (APP_VERSION 478130, September 11 2021) this was in place to refresh usages for equipped items, so waiting on a percent change wasn't needed.
+		-- however, this eventually calls inventoryitem_classified:DeserializeRecharge() and :DeserializeRechargeTime()
+		-- these methods will trigger OnRechargeDirty, which replaces the stored inst._recharge with the netvar's value (inst.recharge:value() == 0)
+		-- this continually resets the recharge back to 0, because inst.recharge:value() is 0 as it is never updated
+		-- HUD.controls.inv:Refresh()
+
+		for slotname, itemslot in pairs(HUD.controls.inv.equip) do
+			local item = itemslot.tile and itemslot.tile.item
+			if item then
+				local classified = item.replica and item.replica.inventoryitem and item.replica.inventoryitem.classified
+				if classified then
+					if classified.DeserializePercentUsed then
+						classified:DeserializePercentUsed()
+					end
+					if classified.DeserializePerish then
+						classified:DeserializePerish()
+					end
+
+					--if DEV_TESTING then
+					--classified:DeserializeRecharge() -- messes up rechargeable
+					--classified:DeserializeRechargeTime() -- messes up rechargeable
+					--end
+				end
+			end
+		end
 	end
 	
 	if Is_DST and HUD.controls.insight_menu and TheInput:ControllerAttached() then

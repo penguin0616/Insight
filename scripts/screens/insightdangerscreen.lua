@@ -24,7 +24,7 @@ local Text = require "widgets/text"
 local Image = require "widgets/image"
 
 local strs = {
-	"YOU ARE USING A TAMPERED VERSION OF Insight, PLEASE USE THE OFFICIAL ONE ON STEAM.", -- en
+	"YOU ARE USING A TAMPERED VERSION OF Insight, PLEASE USE THE OFFICIAL VERSION ON STEAM.", -- en
 	"USTED ESTÁ UTILIZANDO UNA VERSIÓN PELIGROSA DE Insight, POR FAVOR UTILICE EL OFICIAL EN Steam.", -- sp
 	"您正在使用Insight的篡改版本，请在Steam上使用正式版本。", -- ch
 	"Вы используете поддельную версию Insight, пожалуйста, используйте официальную версию в Steam.", -- ru

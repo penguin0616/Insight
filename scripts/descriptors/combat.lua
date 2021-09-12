@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- combat.lua
+local ConvertHealthAmountToAge = Insight.descriptors.oldager and Insight.descriptors.oldager.ConvertHealthAmountToAge or function() return 0 end
 local world_type = GetWorldType()
 
 local function GetAttackerDamageData(attacker, target)
@@ -153,7 +154,8 @@ local function GetRealDamage(damage, attacker, target, settings)
 		* damage_percent_for_players
 		* pvp_damage_multiplier
 		* external_damage_taken_multiplier
-
+		--* (attacker.components.combat.customdamagemultfn ~= nil and attacker.components.combat.customdamagemultfn(attacker, target, weapon, multiplier, mount) or 1)
+	-- todo maybe fix that for wanda
 
 	if world_type == -1 then 
 		damage = damage * math.clamp(1 - absorb, 0, 1) * math.clamp(1 - external_absorb, 0, 1)
@@ -184,9 +186,9 @@ local function DescribeDamageForPlayer(damage, target, context)
 		damage_to_player = GetRealDamage(damage, nil, target)
 	end
 
-	local description = string.format(context.lstr.damage, Round(damage, 1))
+	local description = string.format(context.lstr.combat.damage, Round(damage, 1))
 	if damage_to_player ~= damage then
-		description = description .. string.format(context.lstr.damageToYou, Round(damage_to_player, 1))
+		description = description .. string.format(context.lstr.combat.damageToYou, Round(damage_to_player, 1))
 	end
 
 	return description
@@ -208,62 +210,37 @@ local function Describe(self, context)
 		return
 	end
 	
-	local description = nil
+	local description, alt_description = nil, nil
 	local damage = GetAttackerDamageData(self.inst, context.player)
 
 	if damage ~= 0 then
 		local damage_to_player = GetRealDamage(damage, self.inst, context.player, { ignoreAttackerMultiplier=true })
 
-		description = string.format(context.lstr.damage, Round(damage, 1))
+		description = string.format(context.lstr.combat.damage, Round(damage, 1))
 
 		if damage_to_player ~= damage then
-			description = description .. string.format(context.lstr.damageToYou, Round(damage_to_player, 1))
+			description = description .. string.format(context.lstr.combat.damageToYou, Round(damage_to_player, 1))
+		end
+
+		if context.player.components.oldager then
+			alt_description = description
+			
+			local age_damage = ConvertHealthAmountToAge(-damage)
+			description = string.format(context.lstr.combat.age_damage, Round(age_damage, 1))
+
+			if damage_to_player ~= damage then
+				local age_damage_to_player = ConvertHealthAmountToAge(-damage_to_player)
+				description = description .. string.format(context.lstr.combat.age_damageToYou, Round(age_damage_to_player, 1))
+			end
 		end
 	end
-	
-	--[[
 
-	local player = context.player --GetPlayer()
-	local damage_reduction = (context.config["account_combat_modifiers"] and player and player.components.health.absorb) or 0
-
-	local weapon = inst.components.inventory ~= nil and inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-	local damage = self.defaultdamage --Round(self.defaultdamage, 1)
-
-	if weapon and weapon.components.weapon then -- monkeys
-		if IsDST() or GetWorldType() >= 2 then
-			-- DS Weapon:GetDamage()
-			--DST Weapon:GetDamage(attacker, target)
-			damage = weapon.components.weapon:GetDamage(inst, player) or damage
-		else
-			damage = weapon.components.weapon.damage or damage
-		end
-	end
-	
-	if type(damage) == "number" and damage ~= 0 then
-		local playerDamage = damage * (self.playerdamagepercent or 1)
-		playerDamage = playerDamage - (playerDamage * damage_reduction)
-
-		--playerDamage = Round(playerDamage, 1)
-
-		description = string.format(context.lstr.damage, Round(damage, 1))
-
-		if playerDamage ~= damage then
-			description = description .. string.format(context.lstr.damageToYou, Round(playerDamage, 1))
-		end
-	elseif damage == nil then
-		if DEBUG_ENABLED then
-			description = "[no damage]"
-		end
-	end
-	--]]
-
-	-- defaultdamage
-	-- playerdamagepercent
 
 	return {
 		priority = 49,
 		forge_enabled = true,
 		description = description,
+		alt_description = alt_description,
 	}
 end
 

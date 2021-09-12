@@ -151,6 +151,10 @@ local SPECIAL_FOODS = {
 }
 
 local function Describe(self, context)
+	if not context.player.components.eater then
+		return
+	end
+
 	local description, alt_description = nil, nil
 
 	local owner = context.player --GetPlayer()
@@ -206,6 +210,19 @@ local function Describe(self, context)
 			health = health * base_mult * (uncompromising and owner.healthabsorption or eater.healthabsorption)
 		end
 
+		-- new very helpful function by klei
+		if context.player.components.eater.custom_stats_mod_fn then
+			health, hunger, sanity = context.player.components.eater.custom_stats_mod_fn(context.player, health, hunger, sanity, self.inst, context.player)
+		end
+
+		-- make sure they are able to receive this healing from the food
+		if health > 0 and context.player.components.oldager then
+			if not context.player.components.oldager.valid_healing_causes[self.inst.prefab] then
+				health = 0
+			end
+		end
+
+		-- stats get "consumed" now
 		if health < 0 then
 			if world_type > 0 then -- RoG+
 				health = health - health * (owner.components.health.absorb or 0)

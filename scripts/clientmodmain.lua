@@ -458,18 +458,14 @@ local function LoadLocalPlayer(player)
 				table.remove(onLocalPlayerReady, x + 1)
 			end
 		end
-		mprint("Initializers complete" ..  ((FASCINATING and "...") or "!"))
-
-		if FASCINATING then
-			mprint(modname)
-		end
+		mprint("Initializers complete" ..  ((DEV_TESTING and "...") or "!"))
 
 		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ClientInitialized"))
 
 		-- people irritate me.
 		-- i suppose this approach is better than what i initially planned. after all, who's fault is it? the uploader who stole, or the user who used the stolen version?
 		--[[
-		if FASCINATING or (modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 49, 56, 57, 48, 48, 52, 49, 54, 50) and modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 48, 56, 49, 50, 53, 52, 49, 53, 52)) then
+		if DEV_TESTING or (modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 49, 56, 57, 48, 48, 52, 49, 54, 50) and modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 48, 56, 49, 50, 53, 52, 49, 53, 52)) then
 			TheGlobalInstance:DoTaskInTime(5 * math.random() + 2, function()
 				for i = 1, 1 do
 					TheFrontEnd:PushScreen(import("s" .. "c" .. "re" .. "e" .. "ns" .. "/" .. "i" .. "n" .. "si" .. "g" .. "h" .. "td" .. "ang" .. "ers" .. "cr" .. "e" .. "e" .. "n")())
@@ -965,14 +961,14 @@ local function OnEntityManagerEventDST(self, event, inst)
 		if (Is_Client_Host and localPlayer) then 
 			inst:DoTaskInTime(0, highlighting.SetEntitySleep)
 
-			if localPlayer.replica.insight then
+			if localPlayer.replica.insight and localPlayer.replica.insight.EntityInactive then
 				localPlayer.replica.insight:EntityInactive(inst)
 			end
 
 		end
 		delayed_actives[inst] = nil
 	elseif event == "awake" then
-		if localPlayer and localPlayer.replica.insight then
+		if localPlayer and localPlayer.replica.insight and localPlayer.replica.insight.EntityActive then
 			localPlayer.replica.insight:EntityActive(inst)
 		else
 			delayed_actives[inst] = true

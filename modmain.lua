@@ -101,6 +101,7 @@ local Insight = {
 		SANITY = "#C67823",
 		HEALTH = "#A22B23",
 		ENLIGHTENMENT = "#ACC5C3",
+		AGE = "#714E85", -- age meter
 
 		-- mechanic
 		LIGHT = "#CCBC78", -- light tab icon
@@ -221,7 +222,7 @@ local descriptors_ignore = {
 	"bundlemaker", --used in bundling wrap before items
 	
 
-	"inventoryitem", "moisturelistener", "propagator", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", "book", -- don't care
+	"inventoryitem", "moisturelistener", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", "book", -- don't care
 	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", -- don't care
 	"named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
 	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", "tiletracker", "payable", "useableitem", "drawable", "shaver", -- don't care
@@ -250,7 +251,7 @@ local descriptors_ignore = {
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
-	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", -- don't care
+	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -295,6 +296,7 @@ local descriptors_ignore = {
 
 }
 
+DEV_TESTING = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 --================================================================================================================================================================--
 --= Functions ====================================================================================================================================================--
 --================================================================================================================================================================--
@@ -1425,6 +1427,8 @@ end)
 
 
 AddPrefabPostInit("cave_entrance_open", function(inst)
+	if not FOREST_MIGRATOR_IMAGES then return end
+	if not CAVE_MIGRATOR_IMAGES then return end
 	inst:ListenForEvent("migration_available", function()
 		local id = inst.components.worldmigrator.receivedPortal
 		if not FOREST_MIGRATOR_IMAGES[id] then
@@ -1444,6 +1448,8 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 end)
 
 AddPrefabPostInit("cave_exit", function(inst)
+	if not FOREST_MIGRATOR_IMAGES then return end
+	if not CAVE_MIGRATOR_IMAGES then return end
 	inst:ListenForEvent("migration_available", function()
 		local id = inst.components.worldmigrator.receivedPortal
 		if not FOREST_MIGRATOR_IMAGES[id] then
@@ -1512,12 +1518,15 @@ if IsDST() then
 	
 	rpcNetwork.AddModRPCHandler(modname, "GetWorldInformation", function(player)
 		local info = GetWorldInformation(player)
+
+		local insight = GetInsight(player)
+		if not insight then return end
 		--local a = json.encode(info)
 		--local b = DataDumper(info, nil, true)
 		--print(string.format("World Info [JSON (#%d)]: %s", #a, a))
 		--print(string.format("World Info [DataDumper (#%d)]: %s", #b, b)) 
 		
-		GetInsight(player).net_world_data:set(json.encode(info))
+		insight.net_world_data:set(json.encode(info))
 	end)
 
 	AddModRPCHandler(modname, "RequestEntityInformation", function(player, entity, params)
@@ -1961,6 +1970,10 @@ if IsDST() then
 
 	-- Post Init Functions
 	AddSimPostInit(function(player)
+		if DEV_TESTING then
+			-- todo figure out how sim quitting during the reading affects sessions for full separations
+			TheSim:Quit()
+		end
 		--[[
 			Reconstructing topology	
 			[00:05:31]: 	...Sorting points	
@@ -2485,7 +2498,7 @@ else
 	end
 end
 
-AddPlayerPostInit(function(player)
+AddPlayerPostInit(function(player) 
 	if IsDS() then
 		player:AddComponent("insight")
 		mprint("Added Insight component for", player)
@@ -3141,10 +3154,6 @@ if KnownModIndex:IsModEnabled("workshop-842702425") then
 	end
 end
 
-if not KnownModIndex:IsModEnabled("workshop-2189004162") and not KnownModIndex:IsModEnabled("workshop-2081254154") then
-	-- hm.
-	FASCINATING = true
-end
 
 if KnownModIndex:IsModEnabled("workshop-1378549454") then
 	mprint("Gemcore active")
@@ -3300,3 +3309,4 @@ GLOBAL.check = function(client_config)
 end
 ]]
 
+mprint("Insight main initialized" .. (DEV_TESTING and "..." or "!"))

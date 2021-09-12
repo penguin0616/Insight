@@ -49,7 +49,7 @@ local function GetDappernessForPlayer(self, player)
 		return 0
 	end
 
-	local dapperness = self:GetDapperness(player, sanity and sanity.no_moisture_penalty or false)
+	local dapperness = (sanity.get_equippable_dappernessfn and sanity.get_equippable_dappernessfn(player, self)) or self:GetDapperness(player, sanity and sanity.no_moisture_penalty or false)
 	dapperness = dapperness * (sanity.dapperness_mult or 1) * (TUNING.SANITY_DAPPERNESS or 1) * (sanity.rate_modifier or 1)
 
 	return dapperness

@@ -344,6 +344,7 @@ end
 local function Comparator(held, inst)
 	if not localPlayer then return end
 	local insight = (Is_DST and localPlayer.replica.insight) or localPlayer.components.insight
+	if not insight then return end
 	-- returned color applies to inst
 
 	local held_prefab = held.prefab or held
@@ -413,6 +414,7 @@ end
 
 local function GetContainerRelevance(ctr)
 	local insight = (Is_DST and localPlayer.replica.insight) or localPlayer.components.insight
+	if not insight then return end
 	--mprint(ctr, ctr.classified, ctr.inst, activeItem, activeItem and ctr:Has(activeItem.prefab, 1))
 
 	--[[

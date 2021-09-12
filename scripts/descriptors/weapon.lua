@@ -37,6 +37,32 @@ for i,v in pairs(_G.Prefabs) do
 	end
 end
 
+--[[
+local function GetCombatCustomDamageMult(player, weapon)
+	-- 		* (self.customdamagemultfn ~= nil and self.customdamagemultfn(self.inst, target, weapon, multiplier, mount) or 1)
+	if player.components.combat and player.components.combat.customdamagemultfn then
+		-- this is more or less a really bad idea
+		return player.components.combat.customdamagemultfn(player, nil, weapon, nil, player.components.rider and player.components.rider.mount or nil)
+	end
+end
+--]]
+local function WandaCustomCombatDamage(inst, target, weapon, multiplier, mount)
+    if mount == nil then
+        if weapon ~= nil and weapon:HasTag("shadow_item") then
+			return inst.age_state == "old" and TUNING.WANDA_SHADOW_DAMAGE_OLD
+					or inst.age_state == "normal" and TUNING.WANDA_SHADOW_DAMAGE_NORMAL
+					or TUNING.WANDA_SHADOW_DAMAGE_YOUNG
+		else
+			return inst.age_state == "old" and TUNING.WANDA_REGULAR_DAMAGE_OLD
+					or inst.age_state == "normal" and TUNING.WANDA_REGULAR_DAMAGE_NORMAL
+					or TUNING.WANDA_REGULAR_DAMAGE_YOUNG
+        end
+    end
+
+    return 1
+end
+
+
 local function GetSlingshotAmmoData(inst)
 	--mprint(require("/prefabs/slingshotammo"))
 	-- prefabs/slingshotammo.lua
@@ -140,6 +166,11 @@ local function Describe(self, context)
 
 	-- Get Damage
 	local damage = GetDamage(self, owner, nil) or owner.components.combat.defaultdamage
+
+	-- i think this goes here?
+	if context.player.prefab == "wanda" then
+		damage = damage * WandaCustomCombatDamage(context.player, nil, self.inst, nil, context.player.components.rider and context.player.components.rider.mount or nil)
+	end
 
 	local _stimuli = self.stimuli
 	-- Weapon type

@@ -179,8 +179,12 @@ return {
 	},
 
 	-- combat.lua
-	damage = "<color=HEALTH>伤害</color>: <color=HEALTH>%s</color>",
-	damageToYou = " (对你的伤害 <color=HEALTH>%s</color>)",
+	combat = {
+		damage = "<color=HEALTH>伤害</color>: <color=HEALTH>%s</color>",
+		damageToYou = " (对你的伤害 <color=HEALTH>%s</color>)",
+		age_damage = "<color=HEALTH>Damage <color=AGE>(Age)</color></color>: <color=AGE>%s</color>",
+		age_damageToYou = " (<color=AGE>%+d</color> to you)",
+	},
 
 	-- container.lua
 	container = {
@@ -576,6 +580,11 @@ return {
 	-- oar.lua
 	oar_force = "<color=INEDIBLE>力度</color>: <color=INEDIBLE>%s%%</color>",
 
+	-- oldager.lua
+	oldager = {
+		age_change = "<color=AGE>Age</color>: <color=714E85>%+d</color>",
+	},
+
 	-- periodicthreat.lua
 	worms_incoming = "%s",
 	worms_incoming_danger = "<color=HEALTH>%s</color>",
@@ -621,6 +630,18 @@ return {
 	global_wetness = "<color=FROZEN>世界潮湿度</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>降水率</color>: <color=WET>%s</color>",
 	frog_rain_chance = "<color=FROG>青蛙雨几率</color>: <color=FROG>%s%%</color>",
+
+	-- recallmark.lua
+	recallmark = {
+		shard_id = "Shard Id: %s",
+		shard_type = "Shard type: %s",
+	},
+
+	-- rechargeable.lua
+	rechargeable = {
+		charged_in = "Charged in: %s",
+		charge = "Charge: %s / %s"
+	},
 
 	-- repairer.lua
 	repairer = {

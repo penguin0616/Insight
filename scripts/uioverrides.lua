@@ -442,6 +442,12 @@ if IsDST() then
 		-- there's self.details_root, and this details_root, so its technically self.details_root.details_root even though that doesnt actually work
 		local details_root = oldPopulateRecipeDetailPanel(self, data)
 
+		local context = localPlayer and GetPlayerContext(localPlayer)
+		if not context or not context.config["display_crafting_lookup_button"] then
+			--dprint("rejected, 1", self.recipe and self.recipe.product)
+			return
+		end
+
 		local header
 		for i,v in pairs(details_root:GetChildren()) do
 			if v.name == "Text" and v:GetString() == data.name then
