@@ -25,6 +25,13 @@ local EN = Color.fromHex("#ffffff") --Color.fromHex("#D1FFFF")
 local function Describe(self, context)
 	local description, alt_description = nil, nil
 
+	-- myth words theme has a myth_rechargeable component that screws with this.
+	-- why insight picks up a component with that name as rechargeable, i don't know.
+	-- they probably did something dumb.
+	if not self.GetTimeToCharge or not self.current or not self.total then
+		return
+	end
+
 	local remaining = self:GetTimeToCharge()
 	description = string.format(context.lstr.rechargeable.charged_in, 
 		ApplyColour(context.time:SimpleProcess(remaining), ST:Lerp(EN, self.current / self.total))

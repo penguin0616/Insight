@@ -182,7 +182,7 @@ return {
 	combat = {
 		damage = "<color=HEALTH>伤害</color>: <color=HEALTH>%s</color>",
 		damageToYou = " (对你的伤害 <color=HEALTH>%s</color>)",
-		age_damage = "<color=HEALTH>Damage <color=AGE>(Age)</color></color>: <color=AGE>%s</color>",
+		age_damage = "<color=HEALTH>Damage <color=AGE>(Age)</color></color>: <color=AGE>%+d</color>",
 		age_damageToYou = " (<color=AGE>%+d</color> to you)",
 	},
 

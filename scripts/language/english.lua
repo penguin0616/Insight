@@ -173,7 +173,7 @@ return {
 	combat = {
 		damage = "<color=HEALTH>Damage</color>: <color=HEALTH>%s</color>",
 		damageToYou = " (<color=HEALTH>%s</color> to you)",
-		age_damage = "<color=HEALTH>Damage <color=AGE>(Age)</color></color>: <color=AGE>%s</color>",
+		age_damage = "<color=HEALTH>Damage <color=AGE>(Age)</color></color>: <color=AGE>%+d</color>",
 		age_damageToYou = " (<color=AGE>%+d</color> to you)",
 	},
 
