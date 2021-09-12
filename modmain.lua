@@ -442,8 +442,8 @@ local function GetComponentOrigin(componentname)
 		return mod_component_cache[componentname]
 	end
 
-	local cmp = require("components/" .. componentname)
-	if not cmp then
+	local found, cmp = pcall(require, "components/" .. componentname)
+	if not found or not cmp then
 		mod_component_cache[componentname] = false
 		return GetComponentOrigin(componentname)
 	end

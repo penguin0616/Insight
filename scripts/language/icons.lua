@@ -173,7 +173,7 @@ return {
 	combat = {
 		damage = "<icon=swords> <color=HEALTH>%s</color>",
 		--damageToYou = " (<color=HEALTH>%s</color> to you)",
-		age_damage = "<color=swords> <color=AGE>%+d</color>",
+		age_damage = "<icon=swords> <color=AGE>%+d</color>",
 		--age_damageToYou = " (<color=AGE>%+d</color> to you)",
 	},
 	
