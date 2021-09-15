@@ -204,7 +204,7 @@ local player_contexts = {}
 local mod_component_cache = {}
 
 local log_buffer = ""
-local LOG_LIMIT = 4500000 -- 4.5 million
+local LOG_LIMIT = 0600000 -- 0.6 million
 local SERVER_OWNER_HAS_OPTED_IN = nil
 
 local descriptors_ignore = {
@@ -216,7 +216,7 @@ local descriptors_ignore = {
 	"fixable", -- hamlet pig houses
 	
 	"lootdropper", "periodicspawner", "shearable", "mystery", "eater", "poisonable", "sleeper", "freezable",  -- may be interesting looking into
-	"thief", "characterspecific", "resurrector", "brushable", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
+	"thief", "characterspecific", "resurrector", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
 
 	--notable
 	"bundlemaker", --used in bundling wrap before items
@@ -2843,7 +2843,13 @@ if IsDST() then -- not in UI overrides because server needs access too
 		report.server.reporter_is_admin = TheNet:GetIsServerAdmin() -- same as above
 		report.server.other_name = TheNet:GetServerName() -- penguin0616's world
 
-		report.log = log or (string.rep("!!!!!!!!!!!! FAILURE TO FETCH CORRECT LOGS !!!!!!!!!!!!\n", 3) .. log_buffer)
+		report.log = log
+
+		local no_logs = false
+		if not log then
+			no_logs = true
+			report.log = (string.rep("!!!!!!!!!!!! FAILURE TO FETCH CORRECT LOGS !!!!!!!!!!!!\n", 3) .. log_buffer)
+		end
 		
 		if #report.log > LOG_LIMIT then
 			report.log = report.log:sub(#report.log - LOG_LIMIT + 1, #report.log)
@@ -2869,10 +2875,15 @@ if IsDST() then -- not in UI overrides because server needs access too
 			function(res, isSuccessful, statusCode)
 				mprint("Report:", res, isSuccessful, statusCode)
 
+				if no_logs and #log_buffer == 0 then
+					isSuccessful = false
+				end
+
 				local state = 0
 				local status = "???"
 				
 				if not isSuccessful then
+					print("Can't find logs.")
 					status = "Failed to report crash."
 					state = 1
 				elseif isSuccessful then
@@ -2974,7 +2985,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 	end)
 end
 
-if false and IsDST() then
+if IsDST() then
 	local select = select
 	--local toarray = toarray
 	local tostring = tostring
@@ -3004,13 +3015,25 @@ if false and IsDST() then
 	Sim.LuaPrint = function(self, ...)
 		log_buffer = log_buffer .. packstring(...) .. "\n";
 
-		if #log_buffer > (LOG_LIMIT / 2) then
-			log_buffer = log_buffer:sub(LOG_LIMIT / 2)
+		if #log_buffer > (LOG_LIMIT) then
+			log_buffer = log_buffer:sub(LOG_LIMIT)
 		end
 
 		return oldLuaPrint(self, ...)
 	end
+
+	if not TheNet:GetIsMasterSimulation() then
+		TheSim:GetPersistentStringInClusterSlot(1, "../..", "../client_log.txt", function(success)
+			if success then
+				Sim.LuaPrint = oldLuaPrint
+				log_buffer = ""
+			end
+		end)
+	end
 end
+
+
+
 
 --==========================================================================================================================
 --==========================================================================================================================
