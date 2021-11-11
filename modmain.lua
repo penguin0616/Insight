@@ -907,7 +907,7 @@ function RequestEntityInformation(entity, player, params)
 		if IsDST() then
 			mprint(string.format("%s requested information for %s, mastersim: %s", player.name, tostring(entity), tostring(TheWorld.ismastersim)))
 		else
-			mprint(string.format("Requested information for %s", tostring(entity)))
+			mprint(string.format("[Request failure] Requested information for %s", tostring(entity)))
 		end
 
 		return {GUID = params.id or 0, info = "not a real entity?", special_data = {}}
@@ -922,9 +922,12 @@ function RequestEntityInformation(entity, player, params)
 	
 	if IsDS() then
 		-- DS
+		--if not entity:HasTag"player" then dprint("DS - passing in got entity info", entity) end
 		local info = GetEntityInformation(entity, player, params)
 		info.GUID = params.id
 		insight.entity_data[entity] = info
+
+		insight:OnEntityGotInformation(entity)
 
 		return info
 	end
@@ -1506,6 +1509,31 @@ if true then
 	end
 end
 
+local function OnItemChange(inst)
+	if AllPlayers then
+		for i,v in pairs(AllPlayers) do
+			local insight = GetInsight(v)
+			if insight then
+				insight:InvalidateCacheFor(inst)
+			end
+		end
+	else
+		local player = GetPlayer()
+		local insight = player and GetInsight(player)
+		if insight then
+			insight:InvalidateCacheFor(inst)
+		end
+	end
+end
+
+AddComponentPostInit("container", function(self)
+	if TheWorld and not TheWorld.ismastersim then return end -- implicit DST check
+	
+	self.inst:ListenForEvent("itemget", OnItemChange)
+	self.inst:ListenForEvent("itemlose", OnItemChange)
+	self.inst:ListenForEvent("onclose", OnItemChange)
+end)
+
 if IsDST() then 
 	-- replicable
 	AddReplicableComponent("insight")
@@ -1774,17 +1802,7 @@ if IsDST() then
 	
 	--======================= PostInits =======================================================================================
 
-	local function SendContainerData(player, inst)
-		-- clients need to be the one to request the information, server can't just send it to them. don't know what GUID they have for each entity.
-		--mprint("invalidating")
-		local insight = GetInsight(player)
-		if not insight then
-			return
-		end
-
-		insight.net_invalidate:set_local(nil) -- force next :set() to be dirty
-		insight.net_invalidate:set(inst)
-	end
+	
 
 	AddComponentPostInit("grower", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end
@@ -1802,34 +1820,6 @@ if IsDST() then
 		Insight.descriptors.klaussackloot.Initialize(self)
 	end)
 	--]]
-	
-	AddComponentPostInit("container", function(self)
-		if not (TheWorld and TheWorld.ismastersim) then return end -- implicit DST check
-		
-		self.inst:ListenForEvent("itemget", function()
-			for i,v in pairs(AllPlayers) do
-				if v.userid ~= "" then
-					SendContainerData(v, self.inst)
-				end
-			end
-		end)
-
-		self.inst:ListenForEvent("itemlose", function()
-			for i,v in pairs(AllPlayers) do
-				if v.userid ~= "" then
-					SendContainerData(v, self.inst)
-				end
-			end
-		end)
-
-		self.inst:ListenForEvent("onclose", function()
-			for i,v in pairs(AllPlayers) do
-				if v.userid ~= "" then
-					SendContainerData(v, self.inst)
-				end
-			end
-		end)
-	end)
 		
 	AddPrefabPostInit("shard_network", function(self)
 		if TheWorld.ismastersim then
@@ -1971,7 +1961,7 @@ if IsDST() then
 	-- Post Init Functions
 	AddSimPostInit(function(player)
 		if DEV_TESTING then
-			-- todo figure out how sim quitting during the reading affects sessions for full separations
+			-- TODO: figure out how sim quitting during the reading affects sessions for full separations
 			TheSim:Quit()
 		end
 		--[[
@@ -2490,6 +2480,11 @@ else
 		if not rawget(_G, "c_revealmap") then
 			dprint"adding revealmap"
 			_G.c_revealmap = function() GetWorld().minimap.MiniMap:ShowArea(0,0,0,10000) end
+		end
+
+		_G.c_save = function() SaveGameIndex:SaveCurrent() end
+		_G.c_reset = function()
+			TheSim:Reset()
 		end
 
 		_G.c_nextday = function() GetClock():MakeNextDay() end

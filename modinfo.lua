@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.2.2" -- ds is 2.9.7_ds
+version = "2.10.5" -- dst is 3.2.2, ds is 2.10.5
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -1377,11 +1377,11 @@ local english = {
 	},
 	refresh_delay = {
 		LABEL = "Refresh delay",
-		HOVER = "How often clients can re-request information for the same item.",
+		HOVER = "How often you can re-request information for the same item.",
 		OPTIONS = {
 			["true"] = {
 				DESCRIPTION = "Automatic",
-				HOVER = "Dynamic updates based on players and performance."
+				HOVER = "Dynamicly chosen based on current performance stats."
 			},
 			["0"] = {
 				DESCRIPTION = "None",
@@ -3750,7 +3750,7 @@ configuration_options = {
 			{data = 3},
 		},
 		default = true,
-		tags = {"dst_only", "undefined"},
+		tags = {"undefined"},
 	},
 	AddSectionTitle(T"sectiontitle_debugging"),
 	{

@@ -460,7 +460,9 @@ local function LoadLocalPlayer(player)
 		end
 		mprint("Initializers complete" ..  ((DEV_TESTING and "...") or "!"))
 
-		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ClientInitialized"))
+		if IsDST() then 
+			rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ClientInitialized"))
+		end
 
 		-- people irritate me.
 		-- i suppose this approach is better than what i initially planned. after all, who's fault is it? the uploader who stole, or the user who used the stolen version?

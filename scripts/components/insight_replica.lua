@@ -300,8 +300,10 @@ end
 
 local function OnEntityInvalidate(inst)
 	local insight = GetInsight(inst)
-	if insight and insight.net_invalidate:value() then -- some wx78 had a nil inst
-		insight:RequestInformation(insight.net_invalidate:value())
+	local ent = insight and insight.net_invalidate:value()
+	if ent then -- some wx78 had a nil inst
+		insight.entity_data[ent] = nil
+		insight:RequestInformation(ent)
 	end
 end
 
@@ -388,7 +390,7 @@ local Insight = Class(function(self, inst)
 	self.entity_count = 0
 	self.world_data = nil -- await
 	self.entity_data = setmetatable(createTable(800), { __mode="k" }) -- {[entity] = {data}}
-	self.entity_debounces = {}
+	self.entity_debounces = setmetatable({}, { __mode="kv" })
 
 	self.queuer = Queuer(10) -- shouldn't encounter crashes with this
 	--[[
@@ -471,6 +473,29 @@ local Insight = Class(function(self, inst)
 		end)
 	end
 end)
+
+function Insight:OnEntityGotInformation(ent)
+	-- Only meant for use in DS
+	local data = self.entity_data[ent]
+	if not data or not data.special_data then
+		return nil
+	end
+	if data.special_data.fuel or data.special_data.fueled or ent.components.container or IsBundleWrap(ent) then
+		--dprint("set entity awake", ent)
+		highlighting.SetEntityAwake(ent)
+	end
+end
+
+
+function Insight:InvalidateCacheFor(inst)
+	if self.net_invalidate then
+		self.net_invalidate:set_local(nil) -- force next :set() to be dirty
+		self.net_invalidate:set(inst)
+	else -- DS
+		self.entity_data[inst] = nil
+		self:RequestInformation(inst)
+	end
+end
 
 function Insight:PipspookToyFound(inst) 
 	local network_id = inst.Network:GetNetworkID()
@@ -715,6 +740,8 @@ function Insight:BundleHasPrefab(inst, prefab, isSearchingForFoodTag)
 end
 
 function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
+	-- container is a container inst
+	-- can't i just use the default container methods in DS?
 	local prefab = inst.prefab
 	if not prefab then
 		if type(inst) ~= "string" then
@@ -731,7 +758,9 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 
 	-- Load Container Info
 	if container_info == nil then
-		self:RequestInformation(container, { debounce=1 })
+		--mprint("container info nil")
+		self:RequestInformation(container, { debounce=1 }) -- issue with doing this in DS is that it all happens on the same runstack so it'll end up returning true then returning nil in the same original call
+		-- explains alot
 		--dprint(container, container:IsValid(), "missing container info")
 		return nil -- 0
 	end
@@ -745,6 +774,8 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 			return nil
 		end
 	end
+
+	--dprint("begin searching", container, "for", inst)
 
 	-- resolved named stuff (avoid IsPrefab check for overhead)
 	local inst_name = inst and ( (inst.components and inst.components.named) or (inst.replica and inst.replica.named) )
@@ -848,13 +879,8 @@ function Insight:RequestInformation(item, params)
 	local params = params or { raw=false }
 	params.id = item.GUID
 
-	if Is_DS then
-		-- we don't care about the rest of this in DS
-		RequestEntityInformation(item, self.inst, params)
-		return true
-	end
-
-	if item.Network == nil then -- not networked
+	if not Is_DS and item.Network == nil then -- not networked
+		--dprint('rejected', item, self.entity_debounces[item])
 		return false, "NOT_NETWORKED"
 	end
 
@@ -868,7 +894,7 @@ function Insight:RequestInformation(item, params)
 	local context = self.context
 	if not context then
 		-- cant do anything without context
-		--mprint('Insight:RequestEntityInformation missing context')
+		--dprint('Insight:RequestEntityInformation missing context')
 		return false, "NO_CONTEXT"
 	end
 
@@ -885,10 +911,10 @@ function Insight:RequestInformation(item, params)
 	local debounce = params.debounce or context.config["refresh_delay"]
 	
 	if debounce == true then
-		local host = self.performance_ratings:GetHost()
-		local client = self.performance_ratings:GetClient()
+		local host = self.performance_ratings and self.performance_ratings:GetHost() or 0
+		local client = self.performance_ratings and self.performance_ratings:GetClient() or 0
 		local ents = math.floor(self:CountEntities() / 1000) -- (2000 - host * 500) -- host? client? who knows which is better.
-		local plrs = math.ceil(#(TheNet:GetClientTable() or {}) / 4)
+		local plrs = TheNet and math.ceil(#(TheNet:GetClientTable() or {}) / 4) or 0
 		-- min is 170, max seen is 3370
 		
 		debounce = (0.50 * host) + (1/3 * client) + (0.125 * ents) + (0.125 * plrs)
@@ -906,6 +932,15 @@ function Insight:RequestInformation(item, params)
 
 	if debounce > 0 then
 		SetDebounce(self, item, debounce)
+	end
+
+	if Is_DS then
+		-- we don't care about the rest of this in DS
+		
+		-- push this to the next frame to simulate the delay in DST
+		--RequestEntityInformation(item, self.inst, params)
+		item:DoTaskInTime(0, RequestEntityInformation, self.inst, params) 
+		return true
 	end
 
 	params = json.encode(params) -- encode for rpc transfer

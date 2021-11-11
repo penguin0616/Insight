@@ -238,7 +238,11 @@ local function RemoveHighlight(inst)
 			local previous = inst[highlightColorKey]
 			
 			if is_client_host or previous[5] == COLOR_TYPES.ERROR or previous[5] == COLOR_TYPES.UNKNOWN then
-				inst.AnimState:OverrideMultColour(previous[1], previous[2], previous[3], previous[4])
+				if inst.AnimState.OverrideMultColour then
+					inst.AnimState:OverrideMultColour(previous[1], previous[2], previous[3], previous[4])
+				else
+					inst.AnimState:SetMultColour(previous[1], previous[2], previous[3], previous[4])
+				end
 			else
 				inst.AnimState:SetLightOverride(0)
 				inst.AnimState:SetAddColour(previous[1], previous[2], previous[3], previous[4])
@@ -267,10 +271,14 @@ local function ApplyHighlight(inst, color_key)
 
 			local color_table = (use_mult and mult_colors_to_use) or add_colors_to_use
 			local color = color_table[color_key] or color_table.ERROR
-
+			
 			if use_mult then
 				inst[highlightColorKey] = {COLORS_MULT.NOTHING[1], COLORS_MULT.NOTHING[2], COLORS_MULT.NOTHING[3], COLORS_MULT.NOTHING[4], color_key}
-				inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
+				if inst.AnimState.OverrideMultColour then
+					inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
+				else
+					inst.AnimState:SetMultColour(color[1], color[2], color[3], color[4])
+				end
 			else
 				inst[highlightColorKey] = {inst.AnimState:GetAddColour()}
 				inst.AnimState:SetLightOverride(.4)
@@ -430,20 +438,21 @@ local function GetContainerRelevance(ctr)
 		local res = insight:ContainerHas(ctr.inst, activeIngredientFocus, isSearchingForFoodTag)
 		
 		if res == nil then
-			return 1
+			return 1 -- unknown
 		elseif res == true then
-			return 2
+			return 2 -- has
 		end
 
 		
 	elseif activeItem then
+		--dprint(ctr.inst, "searching for:", activeItem)
 		local res = insight:ContainerHas(ctr.inst, activeItem, isSearchingForFoodTag)
-		--dprint("activeItem_check", activeItem, res)
+		--dprint("resx:", res)
 		
 		if res == nil then
-			return 1
+			return 1 -- unknown
 		elseif res == true then
-			return 2
+			return 2 -- has
 		end
 	end
 
