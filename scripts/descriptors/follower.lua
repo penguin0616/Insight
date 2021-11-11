@@ -31,7 +31,7 @@ local function Describe(self, context)
 		return
 	end
 
-	local leader = self:GetLeader()
+	local leader = self.GetLeader and self:GetLeader() or self.leader
 
 	if leader then
 		leader_name = string.format(context.lstr.leader, leader:GetDisplayName())

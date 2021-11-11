@@ -62,10 +62,10 @@ local function Describe(self, context)
 	-- regenerating children
 	if self.regening then
 		local missingchildren = self.numchildrenoutside + self.childreninside < self.maxchildren
-        local missingemergencychildren = self.numemergencychildrenoutside + self.emergencychildreninside < self.maxemergencychildren
+        local missingemergencychildren = self.maxemergencychildren and self.numemergencychildrenoutside + self.emergencychildreninside < self.maxemergencychildren
         
 		local validMissingChildren = (self.childname and self.childname ~= "" and missingchildren)
-		local validMissingEmergencyChildren = (self.emergencychildname and self.emergencychildname ~= "" and missingemergencychildren)
+		local validMissingEmergencyChildren = (missingemergencychildren and self.emergencychildname and self.emergencychildname ~= "")
 
 		if validMissingChildren or validMissingEmergencyChildren then
 			local to_regen = ""

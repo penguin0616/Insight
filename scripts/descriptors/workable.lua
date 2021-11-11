@@ -22,7 +22,7 @@ directory. If not, please refer to
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheWorld, TUNING = TheWorld, TUNING
 
-local function GetDeciduousSpawnChance(days_survived)
+local function GetDeciduousSpawnChance_DST(days_survived)
 	local chance =
 		(TheWorld.state.isautumn and TUNING.DECID_MONSTER_SPAWN_CHANCE_AUTUMN) or
 		(TheWorld.state.isspring and TUNING.DECID_MONSTER_SPAWN_CHANCE_SPRING) or
@@ -42,6 +42,23 @@ local function GetDeciduousSpawnChance(days_survived)
 	return chance * chance_mod
 end
 
+local function GetDeciduousSpawnChance(days_survived)
+	local chance = TUNING.DECID_MONSTER_SPAWN_CHANCE_BASE
+	local thresh_chance = { TUNING.DECID_MONSTER_SPAWN_CHANCE_LOW, TUNING.DECID_MONSTER_SPAWN_CHANCE_MED, TUNING.DECID_MONSTER_SPAWN_CHANCE_HIGH }
+	for i = 1, #TUNING.DECID_MONSTER_DAY_THRESHOLDS do
+		local v = TUNING.DECID_MONSTER_DAY_THRESHOLDS[i]
+		if days_survived >= v then
+			chance = thresh_chance[i]
+		else
+			break
+		end
+	end
+
+	return chance
+end
+
+local is_dst = IsDST()
+
 local function Describe(self, context)
 	local inst = self.inst
 
@@ -49,15 +66,21 @@ local function Describe(self, context)
 	
 	local player_chance, npc_chance
 
-	local player_days = context.player.components.age ~= nil and context.player.components.age:GetAgeInDays() or TheWorld.state.cycles -- crab king attacks and players are the only things with age
-	local npc_days = TheWorld.state.cycles
+	local player_days, npc_days
+	if is_dst then
+		npc_days = TheWorld.state.cycles
+		player_days = context.player.components.age ~= nil and context.player.components.age:GetAgeInDays() or npc_days -- crab king attacks and players are the only things with age
+	else
+		npc_days = GetClock().numcycles
+		player_days = npc_chance
+	end
 
 	if inst.prefab == "deciduoustree" then
 		if inst.components.growable ~= nil and inst.components.growable.stage == 3 then 
 			player_chance, npc_chance = 0, 0
 
-			if player_days >= TUNING.DECID_MONSTER_MIN_DAY then
-				player_chance = GetDeciduousSpawnChance(player_days)
+			if is_dst and player_days >= TUNING.DECID_MONSTER_MIN_DAY then
+				player_chance = GetDeciduousSpawnChance_DST(player_days)
 
 				if context.player:HasTag("beaver") then
 					player_chance = player_chance * TUNING.BEAVER_DECID_MONSTER_CHANCE_MOD
@@ -67,20 +90,20 @@ local function Describe(self, context)
 			end
 
 			if npc_days >= TUNING.DECID_MONSTER_MIN_DAY then
-				npc_chance = GetDeciduousSpawnChance(npc_days)
+				npc_chance = is_dst and GetDeciduousSpawnChance_DST(npc_days) or GetDeciduousSpawnChance(npc_chance)
 			end
 		end 
 	elseif inst.prefab == "evergreen" or inst.prefab == "evergreen_sparse" then
 		player_chance, npc_chance = 0, 0
 
-		if player_days >= TUNING.LEIF_MIN_DAY then
+		if is_dst and player_days >= TUNING.LEIF_MIN_DAY then
 			player_chance = TUNING.LEIF_PERCENT_CHANCE
 
 			if context.player:HasTag("beaver") then
-                player_chance = player_chance * TUNING.BEAVER_LEIF_CHANCE_MOD
-            elseif context.player:HasTag("woodcutter") then
-                player_chance = player_chance * TUNING.WOODCUTTER_LEIF_CHANCE_MOD
-            end
+				player_chance = player_chance * TUNING.BEAVER_LEIF_CHANCE_MOD
+			elseif context.player:HasTag("woodcutter") then
+				player_chance = player_chance * TUNING.WOODCUTTER_LEIF_CHANCE_MOD
+			end
 			--print(player_chance, player_chance * 100, Round(player_chance * 100, 0))
 		end
 
@@ -93,7 +116,11 @@ local function Describe(self, context)
 		return
 	end
 
-	alt_description = string.format(context.lstr.workable.treeguard_chance, Round(player_chance * 100, 2), Round(npc_chance * 100, 2))
+	if is_dst then
+		alt_description = string.format(context.lstr.workable.treeguard_chance_dst, Round(player_chance * 100, 2), Round(npc_chance * 100, 2))
+	else
+		alt_description = string.format(context.lstr.workable.treeguard_chance, Round(npc_chance * 100, 2))
+	end
 
 	return {
 		priority = 0,

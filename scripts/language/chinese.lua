@@ -115,6 +115,11 @@ return {
 	breeder_nextfishtime = "%s后有新鱼", -- cy "额外的鱼: %s", but GT says latter is "extra fish" while former is "add fish".
 	breeder_possiblepredatortime = "可能于%s后生成捕食者",
 
+	-- brushable.lua
+	brushable = {
+		last_brushed = "Brushed %s days ago."
+	},
+
 	-- burnable.lua
 	burnable = {
 		smolder_time = "即将<color=LIGHT>燃起</color>: <color=LIGHT>%s</color>",
@@ -203,6 +208,12 @@ return {
 	-- crop.lua
 	crop_paused = "暂停",
 	growth = "<color=NATURE><prefab=%s></color>: <color=NATURE>%s</color>",
+
+	-- cyclable.lua
+	cyclable = {
+		step = "Step: %s / %s",
+		note = ", note: %s",
+	},
 
 	-- dapperness.lua
 	dapperness = "<color=SANITY>理智</color>: <color=SANITY>%s/分</color>",
@@ -865,7 +876,8 @@ return {
 
 	-- workable.lua
 	workable = {
-		treeguard_chance = "<color=#636C5C>树精守卫几率</color>: <sub>你</sub> %s%% & <sub>NPC</sub> %s%%",
+		treeguard_chance_dst = "<color=#636C5C>树精守卫几率</color>: <sub>你</sub> %s%% & <sub>NPC</sub> %s%%",
+		treeguard_chance = "<color=#636C5C>树精守卫几率</color>: %s%%",
 	},
 
 	-- worldmigrator.lua

@@ -630,5 +630,16 @@ function module.replaceupvalue(func, name, replacement)
 	end
 end
 
+if not table.invert then
+	-- whatever
+	function table.invert(t)
+		local invt = {}
+		for k, v in pairs(t) do
+			invt[v] = k
+		end
+		return invt
+	end
+end
+
 -- end
 return module

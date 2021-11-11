@@ -106,6 +106,11 @@ return {
 	--breeder_nextfishtime = "Additional fish in: %s",
 	--breeder_possiblepredatortime = "May spawn a predator in: %s",
 
+	-- brushable.lua
+	brushable = {
+		--last_brushed = "Brushed %s days ago."
+	},
+
 	-- burnable.lua
 	burnable = {
 		--smolder_time = "Will <color=LIGHT>ignite</color> in: <color=LIGHT>%s</color>",
@@ -195,6 +200,12 @@ return {
 	-- crop.lua
 	--crop_paused = "Paused.",
 	growth = "<icon=%s> <color=NATURE>%s</color>",
+
+	-- cyclable.lua
+	cyclable = {
+		--step = "Step: %s / %s",
+		--note = ", note: %s",
+	},
 
 	-- dapperness.lua
 	dapperness = "<icon=sanity> <color=SANITY>%s/min</color>",
@@ -857,7 +868,8 @@ return {
 
 	-- workable.lua
 	workable = {
-		--treeguard_chance = "<color=#636C5C>Treeguard chance</color>: %s%%<sub>You</sub> & %s%%<sub>NPC</sub>"
+		--treeguard_chance_dst = "<color=#636C5C>Treeguard chance</color>: %s%%<sub>You</sub> & %s%%<sub>NPC</sub>"
+		--treeguard_chance = "<color=#636C5C>Treeguard chance</color>: %s%%",
 	},
 
 	-- worldmigrator.lua
