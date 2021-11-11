@@ -166,10 +166,16 @@ end)
 -- Handler for ItemTile:SetPercent()
 -- created for issue #5
 local oldItemTile_SetPercent = ItemTile.SetPercent
-local ITEMTILE_DISPLAY = 2; AddLocalPlayerPostInit(function(_, context) ITEMTILE_DISPLAY = context.config["itemtile_display"] end);
-function ItemTile:SetPercent(...)
+local ITEMTILE_DISPLAY = "percentages"; 
+AddLocalPlayerPostInit(function(_, context) 
+	ITEMTILE_DISPLAY = context.config["itemtile_display"] 
+	if IsDS() then localPlayer.HUD.controls.inv:Refresh() end
+end);
+
+function ItemTile:SetPercent(percent, ...)
+	--mprint("setpercent", ITEMTILE_DISPLAY, percent, ...)
 	if not localPlayer then
-		return oldItemTile_SetPercent(self, ...)
+		return oldItemTile_SetPercent(self, percent, ...)
 	end
 	
 	--dprint('yep', GetModConfigData("itemtile_display", true))
@@ -177,26 +183,30 @@ function ItemTile:SetPercent(...)
 
 	local cfg = ITEMTILE_DISPLAY
 	
-	if (cfg == 2) or IsForge() then
-		return oldItemTile_SetPercent(self, ...)
+	if (cfg == "percentages") or IsForge() then
+		return oldItemTile_SetPercent(self, percent, ...)
 	end
 
 	--dprint('hello')
 	
 	if not self.percent then
 		-- have klei take care of setting up the percent first.
-		oldItemTile_SetPercent(self, ...)
+		oldItemTile_SetPercent(self, percent, ...)
 		if not self.percent then
 			--dprint("Unable to :SetPercent()")
 		end
 
 	end
 
-	if cfg == 0 then
+	if cfg == "none" then
 		if self.item and self.percent then
 			self.percent:SetString(nil)
 		end
 
+		return
+	end
+
+	if self.item:HasTag("hide_percentage") then
 		return
 	end
 
@@ -210,13 +220,19 @@ function ItemTile:SetPercent(...)
 			if itemInfo.special_data.temperature then -- thermal stone, coming in STRONG
 				value = itemInfo.special_data.temperature.temperatureValue
 
-			elseif itemInfo.special_data.armor then
-				value = itemInfo.special_data.armor.durabilityValue
+			elseif itemInfo.special_data.armor_durability then
+				value = itemInfo.special_data.armor_durability.durabilityValue
 
 			elseif itemInfo.special_data.fueled then
-				--mprint('asdf', itemInfo.special_data.fueled.remaining_time)
-				value = itemInfo.special_data.fueled.remaining_time
-				
+				if cfg == "numbers" then
+					value = itemInfo.special_data.fueled.remaining_time
+				else
+					local val_to_show = percent*100
+					if val_to_show > 0 and val_to_show < 1 then
+						val_to_show = 1
+					end
+					value = string.format("%2.0f%%", val_to_show)
+				end
 			elseif itemInfo.special_data.finiteuses then
 				value = itemInfo.special_data.finiteuses.uses
 
@@ -226,7 +242,7 @@ function ItemTile:SetPercent(...)
 		--dprint("hey", value)
 
 		if value then
-			--dprint('right')
+			--dprint('right', value)
 			value = tostring(value)
 			self.percent:SetString(value)
 
@@ -235,7 +251,7 @@ function ItemTile:SetPercent(...)
 					-- today i learned Text:SetSize() does nothing, because they messed up while coding the text widget and made :GetSize() into :SetSize() overriding the working one.
 					-- real nice. 
 					--self.percent.inst.TextWidget:SetSize((LOC and LOC.GetTextScale() or 1) * (42 - (#value - 4) * 2))
-					self.percent:InsightSetSize((#value - 4) * 2)
+					self.percent:InsightSetSize(42 - (#value - 4) * 3)
 				else
 					--self.percent:SetSize(42) -- default
 					self.percent:InsightSetSize(42) -- default
@@ -445,7 +461,7 @@ if IsDST() then
 		local context = localPlayer and GetPlayerContext(localPlayer)
 		if not context or not context.config["display_crafting_lookup_button"] then
 			--dprint("rejected, 1", self.recipe and self.recipe.product)
-			return
+			return details_root
 		end
 
 		local header

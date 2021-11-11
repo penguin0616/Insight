@@ -195,17 +195,21 @@ local english = {
 		LABEL = "Inv Slot Info",
 		HOVER = "What kind of information shows instead of percentages on item slots.",
 		OPTIONS = {
-			["0"] = {
+			["none"] = {
 				DESCRIPTION = "None",
 				HOVER = "Will not provide ANY information on item slots."
 			},
-			["1"] = {
+			["numbers"] = {
 				DESCRIPTION = "Numbers",
 				HOVER = "Will provide durability numbers on item slots."
 			},
-			["2"] = {
+			["percentages"] = {
 				DESCRIPTION = "Percentages",
 				HOVER = "Will provide use default percentages on item slots."
+			},
+			["mixed"] = {
+				DESCRIPTION = "Mixed",
+				HOVER = "Will provide use default percentages on refuelables, numbers for everything else."
 			},
 		},
 	},
@@ -1579,17 +1583,21 @@ local chinese = {
 		LABEL = "库存物品栏信息",
 		HOVER = "物品栏信息显示的类型",
 		OPTIONS = {
-			["0"] = {
+			["none"] = {
 				DESCRIPTION = "无",
 				HOVER = "不显示任何信息",
 			},
-			["1"] = {
+			["numbers"] = {
 				DESCRIPTION = "数字",
 				HOVER = "显示具体次数",
 			},
-			["2"] = {
+			["percentages"] = {
 				DESCRIPTION = "百分比",
 				HOVER = "显示默认百分比",
+			},
+			["mixed"] = {
+				DESCRIPTION = "Mixed",
+				HOVER = "Will provide use default percentages on refuelables, numbers for everything else."
 			},
 		},
 	},
@@ -3011,11 +3019,12 @@ configuration_options = {
 	{
 		name = "itemtile_display",
 		options = {
-			{data = 0},
-			{data = 1},
-			{data = 2},
+			{data = "none"},
+			{data = "numbers"},
+			{data = "percentages"},
+			{data = "mixed"}
 		}, 
-		default = 2,
+		default = "percentages",
 		client = true,
 		tags = {},
 	},

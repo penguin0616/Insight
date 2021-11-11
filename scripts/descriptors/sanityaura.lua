@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- sanityaura.lua
+local is_dst = IsDST()
+
 local function IsAuraImmune(inst, player)
 	local sanity = player.components.sanity
 
@@ -26,11 +28,11 @@ local function IsAuraImmune(inst, player)
 		return true -- can't be affected by sanity auras if you don't have sanity ;)
 	end
 
-	if sanity.sanity_aura_immune then
+	if is_dst and sanity.sanity_aura_immune then
 		return true
 	end
 
-	if sanity.sanity_aura_immunities ~= nil then
+	if is_dst and sanity.sanity_aura_immunities ~= nil then
 		for tag in pairs(sanity.sanity_aura_immunities) do
 			if inst:HasTag(tag) then
 				return true
@@ -58,15 +60,21 @@ local function GetAuraValue(self, player)
 	]]
 	
 	if value < 0 then
-		if sanity.neg_aura_absorb > 0 then
+		if sanity.neg_aura_absorb and sanity.neg_aura_absorb > 0 then
 			-- having this means the aura gets inverted inside sanity (instead of hivehat) for some reason. 
 			value = sanity.neg_aura_absorb * -value
 		end
 
-		value = value * sanity:GetAuraMultipliers()
+		if is_dst then
+			-- implicitly handles neg_aura_mult
+			value = value * sanity:GetAuraMultipliers()
+		elseif value < 0 then
+			-- DS sanity doesn't have a method to handle it implicitly
+			value = value * sanity.neg_aura_mult
+		end
 
 		-- if we are still negative after the neg_aura_absorb check, need to nullify if we are immune to negative auras
-		if value < 0 and sanity.neg_aura_immune then
+		if value < 0 and is_dst and sanity.neg_aura_immune then
 			value = 0
 		end
 	end

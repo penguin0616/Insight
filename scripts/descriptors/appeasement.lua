@@ -20,11 +20,16 @@ directory. If not, please refer to
 
 
 -- appeasement.lua (Shipwrecked)
+local world_type = GetWorldType()
 local function Describe(self, context)
-	local inst = self.inst
 	local description = nil
 
-	if context.config["appeasement_value"] and GetWorldType() >= 2 and GetVolcanoManager() and GetVolcanoManager():IsActive() then
+	if not context.config["appeasement_value"] then
+		return
+	end
+
+	local volcano_manager = world_type >= 2 and GetVolcanoManager()
+	if volcano_manager and volcano_manager:IsActive() then
 		if self.appeasementvalue < 0 then
 			description = context.lstr.appease_bad
 			--description = "Hasten eruption: "

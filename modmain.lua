@@ -297,6 +297,32 @@ local descriptors_ignore = {
 }
 
 DEV_TESTING = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
+
+-- i don't want datadumper saving the metatable
+--[[
+_modinfo = deepcopy(modinfo)
+setmetatable(_modinfo.configuration_options, {
+	__index = function(self, index)
+		for k,v in pairs(self) do
+			if v.name == index then
+				return v
+			end
+		end
+	end
+})
+for i,v in pairs(_modinfo.configuration_options) do
+	setmetatable(v.options, {
+		__index = function(self, index)
+			for k,v in pairs(self) do
+				if v.description == index then
+					return v
+				end
+			end
+		end
+	})
+end
+--]]
+
 --================================================================================================================================================================--
 --= Functions ====================================================================================================================================================--
 --================================================================================================================================================================--
@@ -1354,6 +1380,18 @@ end
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
+-- Config Retrofit
+if tonumber(GetModConfigData("itemtile_display")) then
+	mprint("Retrofitting itemtile_display...")
+	for i,v in pairs(modinfo.configuration_options) do
+		if v.name == "itemtile_display" then
+			v.default = "percentages"
+			v.saved = "percentages"
+		end
+	end
+	KnownModIndex:SaveConfigurationOptions(function() mprint("Retrofitted itemtile_display.") end, modname, modinfo.configuration_options)
+end
+
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
 if IsDST() then
 	table.insert(PrefabFiles, "insight_ghost_klaus_sack")
@@ -1405,7 +1443,7 @@ end)
 --]]
 
 AddComponentPostInit("combat", function(self)
-	if IsDS() or (IsDST() and TheWorld.ismastersim) then
+	if IsDS() or (TheWorld.ismastersim) then
 		combatHelper.HookCombat(self)
 	end
 end)
@@ -2490,6 +2528,54 @@ else
 		_G.c_nextday = function() GetClock():MakeNextDay() end
 		_G.c_tools = function() c_give('multitool_axe_pickaxe') c_give('nightsword', 2) c_give('fireflies', 5) c_give('minerhat', 1) end
 		_G.c_lightning = function() GetSeasonManager():DoLightningStrike(TheInput:GetWorldPosition():Get()) end
+
+		_G.c_spawntest = function()
+			-- eehhhhh
+			local to_spawn = {"deerclops", "bearger", "beefalo", "spiderden_2", "meatrack", "pond", "firepit", "fast_farmplot", "beebox", "beemine", "saddle_basic"}
+			local to_give = {"armormarble", "brush", "walrushat", "bonestew", "meat", "nightsword", "cane", "poop", "multitool_axe_pickaxe", "fishingrod"}
+		
+			local spawned = {}
+			for i,v in pairs(to_spawn) do
+				table.insert(spawned, SpawnPrefab(v))
+			end
+
+			_G.formcircle(spawned, { radius=2*#spawned })
+
+			for i,v in pairs(to_give) do
+				c_give(v)
+			end
+		end
+
+		_G.c_formcircle = function(list, params)
+			assert(type(list) == "table")
+			params = (type(params) == "table" and params) or {}
+			
+			local player = GetPlayer()
+			if player == nil then
+				return true
+			end
+
+			if params.radius then
+				print("Using params.radius =", params.radius)
+			end
+
+			if params.center then
+				print("Using params.center =", params.center)
+			end
+
+			local max = PI * 2
+			local increment = max / #list
+			local center = params.center or player
+			center = Vector3(center.Transform:GetWorldPosition())
+			local radius = params.radius or (1 + 1 * #list)
+
+			for i = 1, #list do
+				local x = i * increment
+				local new_pos = center + Vector3(radius * math.cos(x), 0, -radius * math.sin(x))
+
+				list[i].Transform:SetPosition(new_pos:Get())
+			end
+		end
 	end
 end
 
@@ -2590,7 +2676,7 @@ AddPrefabPostInit("heatrock", function(inst)
 	if IsDST() then return end
 	--local cache = 0 -- stop network spam
 	inst:ListenForEvent("temperaturedelta", function()
-		if GetModConfigData("itemtile_display", true) == 1 then
+		if GetModConfigData("itemtile_display", true) == "numbers" then
 			--local temp = Round(inst.components.temperature:GetCurrent(), 1)
 
 			--if temp ~= cache then
