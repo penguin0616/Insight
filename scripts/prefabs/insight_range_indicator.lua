@@ -106,35 +106,6 @@ local function SetVisible(inst, bool)
 end
 
 
-local function OnCombatIndicatorStateDirty(inst, ...)
-	if inst.OnStateDirty then
-		inst.OnStateDirty(inst, ...)
-	end
-end
-
-local function OnCombatIndicatorCanDecayDirty(inst, ...)
-	if inst.OnCanDecayDirty then
-		inst.OnCanDecayDirty(inst, ...)
-	end
-end
-
-local function OnCombatIndicatorAttackRangeDirty(inst, ...)
-	if inst.OnAttackRangeDirty then
-		inst.OnAttackRangeDirty(inst, ...)
-	end
-end
-
-local function OnCombatIndicatorHitRangeDirty(inst, ...)
-	if inst.OnHitRangeDirty then
-		inst.OnHitRangeDirty(inst, ...)
-	end
-end
-
-local function OnCombatIndicatorIncludePhysicsRadiusDirty(inst, ...)
-	if inst.OnIncludePhysicsRadiusDirty then
-		inst.OnIncludePhysicsRadiusDirty(inst, ...)
-	end
-end
 
 local function Attach(inst, to)
 	-- setting a player's parent to itself is an immediate crash with no error
@@ -150,17 +121,6 @@ local function Attach(inst, to)
 		
 	end)
 	--]]
-end
-
-
-local function SetState(inst, state)
-	if inst.net_state then
-		--inst.net_state:set_local(state)
-		inst._laststate = inst.net_state:value()
-		inst.net_state:set(state)
-	else
-		error("missing inst net_state")
-	end
 end
 
 local function base_fn()
@@ -215,11 +175,172 @@ local function normal_fn()
 	return base_fn()
 end
 
+--------------------------------------------------------------------------
+--[[ Combat ]]
+--------------------------------------------------------------------------
+-- this is such a mess
+--[[ Dirty event functions ]]
+local function OnCombatIndicatorStateDirty(inst, ...)
+	inst._state = inst.net_state:value()
+
+	if inst.OnStateDirty then
+		inst:OnStateDirty(...)
+	end
+end
+
+local function OnCombatIndicatorAttackRangeDirty(inst, ...)
+	inst._attack_range = inst.net_attack_range:value()
+
+	if inst.OnAttackRangeDirty then
+		inst:OnAttackRangeDirty(...)
+	end
+end
+
+local function OnCombatIndicatorHitRangeDirty(inst, ...)
+	inst._hit_range = inst.net_hit_range:value()
+
+	if inst.OnHitRangeDirty then
+		inst:OnHitRangeDirty(...)
+	end
+end
+
+local function OnCombatIndicatorIncludePhysicsRadiusDirty(inst, ...)
+	inst._include_physics_radius = inst.net_include_physics_radius:value()
+
+	if inst.OnIncludePhysicsRadiusDirty then
+		inst:OnIncludePhysicsRadiusDirty(...)
+	end
+end
+
+local function OnCombatIndicatorCanDecayDirty(inst, ...)
+	inst._indicator_can_decay = inst.net_indicator_can_decay:value()
+	
+	if inst.OnCanDecayDirty then
+		inst:OnCanDecayDirty(...)
+	end
+end
+
+--[[ inst functions ]]
+-- state
+local function GetState(inst)
+	if inst._state ~= nil then 
+		return inst._state
+	end
+
+	if inst.net_state then
+		return inst.net_state:value() 
+	end
+end
+
+local function SetState(inst, state)
+	inst._state = state
+
+	if inst.net_state then
+		inst.net_state:set(state)
+	elseif inst.OnStateDirty then
+		inst:OnStateDirty(inst)
+	end
+end
+
+-- attack range
+local function GetAttackRange(inst)
+	if inst._attack_range ~= nil then
+		return inst._attack_range	
+	end
+	
+	if inst.net_attack_range then
+		return inst.net_attack_range:value()
+	end
+end
+
+local function SetAttackRange(inst, attack_range)
+	inst._attack_range = attack_range
+
+	if inst.net_attack_range then
+		inst.net_attack_range:set(attack_range)
+	elseif inst.OnAttackRangeDirty then
+		inst:OnAttackRangeDirty()
+	end
+end
+
+-- hit range
+local function GetHitRange(inst)
+	if inst._hit_range ~= nil then
+		return inst._hit_range
+	end
+	
+	if inst.net_hit_range then
+		return inst.net_hit_range:value()
+	end
+end
+
+local function SetHitRange(inst, hit_range)
+	inst._hit_range = hit_range
+	
+	if inst.net_hit_range then
+		inst.net_hit_range:set(hit_range)
+	elseif inst.OnHitRangeDirty then
+		inst:OnHitRangeDirty()
+	end
+end
+
+-- include physics radius
+local function GetIncludePhysicsRadius(inst)
+	if inst._include_physics_radius ~= nil then
+		return inst._include_physics_radius
+	end
+	
+	if inst.net_include_physics_radius then
+		return inst.net_include_physics_radius:value()
+	end
+end
+
+local function SetIncludePhysicsRadius(inst, include)
+	inst._include_physics_radius = include
+
+	if inst.net_include_physics_radius then
+		inst.net_include_physics_radius:set(include)
+	elseif inst.OnIncludePhysicsRadiusDirty then
+		inst:OnIncludePhysicsRadiusDirty()
+	end
+end
+
+-- can decay
+local function GetIndicatorCanDecay(inst)
+	if inst._indicator_can_decay ~= nil then
+		return inst._indicator_can_decay
+	end
+	
+	if inst.net_indicator_can_decay then
+		return inst.net_indicator_can_decay:value()
+	end
+end
+
+local function SetIndicatorCanDecay(inst, can_decay)
+	inst._indicator_can_decay = can_decay
+
+	if inst.net_indicator_can_decay then
+		inst.net_indicator_can_decay:set(can_decay)
+	elseif inst.OnIndicatorStateDirty then
+		inst:OnIndicatorStateDirty()
+	end
+end
+
+
 local function combat_fn()
 	local inst = base_fn()
 
-	inst._laststate = 0
+	inst._state = 0
+	inst.GetState = GetState
 	inst.SetState = SetState
+	inst.GetIndicatorCanDecay = GetIndicatorCanDecay
+	inst.SetIndicatorCanDecay = SetIndicatorCanDecay
+	inst.GetAttackRange = GetAttackRange
+	inst.SetAttackRange = SetAttackRange
+	inst.GetHitRange = GetHitRange
+	inst.SetHitRange = SetHitRange
+	inst.GetIncludePhysicsRadius = GetIncludePhysicsRadius
+	inst.SetIncludePhysicsRadius = SetIncludePhysicsRadius
 
 	if IsDST() then
 		inst.entity:AddNetwork() -- only net vars made after network work properly
@@ -228,7 +349,7 @@ local function combat_fn()
 		inst:ListenForEvent("insight_indicator_state_dirty", OnCombatIndicatorStateDirty)
 
 		inst.net_indicator_can_decay = net_bool(inst.GUID, "insight_indicator_can_decay", "insight_indicator_can_decay_dirty")
-		inst.net_indicator_can_decay:set(true)
+		inst:SetIndicatorCanDecay(true)
 		inst:ListenForEvent("insight_indicator_can_decay_dirty", OnCombatIndicatorCanDecayDirty)
 
 		inst.net_attack_range = net_float(inst.GUID, "insight_combat_attack_range", "insight_combat_attack_range_dirty")
@@ -237,7 +358,7 @@ local function combat_fn()
 		inst.net_hit_range = net_float(inst.GUID, "insight_combat_hit_range", "insight_combat_hit_range_dirty")
 		
 		inst.net_include_physics_radius = net_bool(inst.GUID, "insight_combat_include_physics_radius", "insight_combat_include_physics_radius_dirty")
-		inst.net_include_physics_radius:set(true)
+		inst:SetIncludePhysicsRadius(true)
 		inst:ListenForEvent("insight_combat_include_physics_radius", OnCombatIndicatorIncludePhysicsRadiusDirty)
 		
 

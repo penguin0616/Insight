@@ -95,7 +95,7 @@ local function AccountForPhysics(inst)
 		return 0
 	end
 
-	if inst.net_include_physics_radius:value() then
+	if inst:GetIncludePhysicsRadius() then
 		return localPlayer:GetPhysicsRadius(0)
 	end
 
@@ -127,6 +127,7 @@ end
 local function AdjustIndicatorState(inst, state)
 	--mprint("adjust indicator state", inst, table.invert(NET_STATES)[state])
 	if not inst.insight_combat_range_indicator then
+		--mprint("\tmissing indicator")
 		return
 	end
 
@@ -143,8 +144,8 @@ local function PushNewIndicatorRange(inst)
 		--mprint(self.inst, self.attackrange, self.hitrange, offset)
 
 		local combat = inst.insight_combat or inst.components.combat
-		inst.insight_combat_range_indicator.net_attack_range:set(combat:GetAttackRange())
-		inst.insight_combat_range_indicator.net_hit_range:set(combat:GetHitRange())
+		inst.insight_combat_range_indicator:SetAttackRange(combat:GetAttackRange())
+		inst.insight_combat_range_indicator:SetHitRange(combat:GetHitRange())
 	end
 end
 
@@ -287,7 +288,7 @@ local function SetAreaDamage(self, range, percent, areahitcheck, ...)
 	oldSetAreaDamage(self, range, percent, areahitcheck, ...)
 
 	if self.inst.insight_combat_range_indicator then
-		--self.inst.insight_combat_range_indicator.net_hit_range:set(self.areahitrange or (self.hitrange + self.inst:GetPhysicsRadius(0)))
+		--self.inst.insight_combat_range_indicator:SetHitRange(self.areahitrange or (self.hitrange + self.inst:GetPhysicsRadius(0)))
 	end
 end
 
@@ -351,6 +352,11 @@ local function HookCombat(self)
 	
 	-- meh
 	local indicator = SpawnPrefab("insight_combat_range_indicator")
+	if not indicator then
+		mprint("wtf", Prefabs.insight_range_indicator, Prefabs.insight_combat_range_indicator, _G.Prefabs.insight_range_indicator, _G.Prefabs.insight_combat_range_indicator)
+		--return
+		error("missing insight indicator???")
+	end
 	indicator:Attach(self.inst)
 	self.inst.insight_combat_range_indicator = indicator
 	PushNewIndicatorRange(self.inst)
@@ -366,7 +372,7 @@ end
 
 
 local function OnIndicatorStateDirty(inst, forced)
-	local state = inst.net_state:value()
+	local state = inst:GetState()
 	inst.state_forced = forced
 
 	if inst.hide_task then
@@ -382,21 +388,21 @@ local function OnIndicatorStateDirty(inst, forced)
 		local range
 
 		if my_context.config["attack_range_type"] == "attack" or my_context.config["attack_range_type"] == "both" then
-			range = inst.net_attack_range:value()
+			range = inst:GetAttackRange()
 		elseif my_context.config["attack_range_type"] == "hit" then
-			range = inst.net_hit_range:value()
+			range = inst:GetHitRange()
 		end
 
 		
 
-		inst.hide_task = (not forced and inst.net_indicator_can_decay:value()) and inst:DoTaskInTime(8, function()
+		inst.hide_task = (not forced and inst:GetIndicatorCanDecay()) and inst:DoTaskInTime(8, function()
 			AdjustIndicator(inst, nil, false)
 		end)
 
 		--mprint("LOCAL STATE - TARGETTING")
 		AdjustIndicator(inst, Color.fromHex("#60ffff"), true, range + AccountForPhysics(inst))
 	else -- attacking
-		inst.hide_task = (not forced and inst.net_indicator_can_decay:value()) and inst:DoTaskInTime(8, function()
+		inst.hide_task = (not forced and inst:GetIndicatorCanDecay()) and inst:DoTaskInTime(8, function()
 			AdjustIndicator(inst, nil, false)
 		end)
 		
@@ -408,14 +414,14 @@ local function OnIndicatorStateDirty(inst, forced)
 		--mprint(my_context.config["attack_range_type"])
 		
 		if my_context.config["attack_range_type"] == "attack" then
-			range = inst.net_attack_range:value()
+			range = inst:GetAttackRange()
 		elseif my_context.config["attack_range_type"] == "hit" then
-			range = inst.net_hit_range:value()
+			range = inst:GetHitRange()
 		end
 
 		if state == NET_STATES.ATTACK_BEGIN then
 			--mprint("LOCAL STATE - ATTACK_BEGIN")
-			range = range or inst.net_hit_range:value()
+			range = range or inst:GetHitRange()
 			--mprint("hit range:", range)
 
 			AdjustIndicator(inst, Color.fromHex("#ff0000"), true, range + AccountForPhysics(inst))
@@ -423,7 +429,7 @@ local function OnIndicatorStateDirty(inst, forced)
 
 		elseif state == NET_STATES.ATTACK_END then
 			--mprint("LOCAL STATE - ATTACK_END")
-			range = range or inst.net_attack_range:value()
+			range = range or inst:GetAttackRange()
 			--mprint("attack range:", range)
 			
 			AdjustIndicator(inst, Color.fromHex("#60ffff"), true, range + AccountForPhysics(inst)) -- #b0593a
@@ -433,7 +439,7 @@ local function OnIndicatorStateDirty(inst, forced)
 end
 
 local function OnCanDecayDirty(inst)
-	local can_decay = inst.net_indicator_can_decay:value()
+	local can_decay = inst:GetIndicatorCanDecay()
 	if can_decay == false then
 		if inst.hide_task then
 			inst.hide_task:Cancel()
@@ -447,8 +453,8 @@ local function OnCanDecayDirty(inst)
 end
 
 local function OnAttackRangeDirty(inst)
-	local state = inst.net_state:value()
-	local range = inst.net_attack_range:value()
+	local state = inst:GetState()
+	local range = inst:GetAttackRange()
 
 	if state == NET_STATES.ATTACK_END and CanUseRangeType("attack") then
 		AdjustIndicator(inst, nil, nil, range + AccountForPhysics(inst))
@@ -456,8 +462,8 @@ local function OnAttackRangeDirty(inst)
 end
 
 local function OnHitRangeDirty(inst)
-	local state = inst.net_state:value()
-	local range = inst.net_hit_range:value()
+	local state = inst:GetState()
+	local range = inst:GetHitRange()
 
 	if state == NET_STATES.ATTACK_BEGIN and CanUseRangeType("hit") then
 		AdjustIndicator(inst, nil, nil, range + AccountForPhysics(inst))
@@ -465,12 +471,12 @@ local function OnHitRangeDirty(inst)
 end
 
 local function OnIncludePhysicsRadiusDirty(inst)
-	local range = CanUseRangeType("attack") and inst.net_attack_range:value() or inst.net_hit_range:value()
+	local range = CanUseRangeType("attack") and inst:GetAttackRange() or inst:GetHitRange()
 	AdjustIndicator(inst, nil, nil, range + AccountForPhysics(inst))
 end
 
 local function ForceStateChange(inst, state)
-	inst.net_state:set_local(state)
+	inst._state = state -- this was a set_local
 	OnIndicatorStateDirty(inst, true)
 end
 
@@ -516,7 +522,7 @@ local function HookClientIndicator(inst, delay)
 		
 		parent.insight_combat_range_indicator = inst
 
-		local range = CanUseRangeType("attack") and inst.net_attack_range:value() or inst.net_hit_range:value()
+		local range = (CanUseRangeType("attack") and inst:GetAttackRange()) or inst:GetHitRange()
 		AdjustIndicator(inst, nil, nil, range + AccountForPhysics(inst))
 
 		OnIndicatorStateDirty(inst)
@@ -529,8 +535,8 @@ local function RegisterFalseCombat(inst, data)
 	indicator:Attach(inst)
 	inst.insight_combat_range_indicator = indicator
 	inst.insight_combat = InsightCombat(inst, data)
-	inst.insight_combat_range_indicator.net_indicator_can_decay:set(false)
-	inst.insight_combat_range_indicator.net_include_physics_radius:set(false)
+	inst.insight_combat_range_indicator:SetIndicatorCanDecay(false)
+	inst.insight_combat_range_indicator:SetIncludePhysicsRadius(false)
 	PushNewIndicatorRange(inst)
 
 	AdjustIndicatorState(inst, NET_STATES.ATTACK_BEGIN)
