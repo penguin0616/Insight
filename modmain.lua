@@ -1381,15 +1381,18 @@ end
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
 -- Config Retrofit
-if tonumber(GetModConfigData("itemtile_display")) then
+if tonumber(GetModConfigData("itemtile_display", IsDST())) then
 	mprint("Retrofitting itemtile_display...")
 	for i,v in pairs(modinfo.configuration_options) do
 		if v.name == "itemtile_display" then
+			mprint(string.format("\tFound, Default: %s, Saved: %s", v.default, v.saved))
 			v.default = "percentages"
 			v.saved = "percentages"
+			break
 		end
 	end
-	KnownModIndex:SaveConfigurationOptions(function() mprint("Retrofitted itemtile_display.") end, modname, modinfo.configuration_options)
+	-- might have reset configuration in DST?
+	KnownModIndex:SaveConfigurationOptions(function() mprint("Retrofitted itemtile_display.") end, modname, modinfo.configuration_options, IsDST())
 end
 
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}

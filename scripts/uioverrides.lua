@@ -173,7 +173,7 @@ AddLocalPlayerPostInit(function(_, context)
 end);
 
 function ItemTile:SetPercent(percent, ...)
-	--mprint("setpercent", ITEMTILE_DISPLAY, percent, ...)
+	--dprint("setpercent", ITEMTILE_DISPLAY, percent, ...)
 	if not localPlayer then
 		return oldItemTile_SetPercent(self, percent, ...)
 	end
@@ -270,7 +270,7 @@ function ItemTile:SetPercent(percent, ...)
 	end
 	
 
-	return oldItemTile_SetPercent(self, ...)
+	return oldItemTile_SetPercent(self, percent, ...)
 end
 
 --==========================================================================================================================
@@ -333,12 +333,15 @@ end
 --==========================================================================================================================
 local recipe_urls = {}
 local function GetRecipeURL(recipe)
+	-- Returns URL, modded
+	-- if not good, URL is nil
 	if recipe_urls[recipe.name] then
 		return unpack(recipe_urls[recipe.name])
 	end
 
-	--print('lookup', recipe and recipe.product)
+	print('lookup', recipe and recipe.product)
 	if not _G.Prefabs[recipe.product] or not _G.Prefabs[recipe.product].fn then
+		dprint('[GetRecipeURL] Rejected e1, cannot find recipe product in prefabs')
 		return nil
 	end
 
@@ -350,7 +353,10 @@ local function GetRecipeURL(recipe)
 	local mod_folder_name = parent and string.match(parent, "mods%/([^/]+)%/")
 	--mprint("hey:", recipe.product, info.source, parent, mod_folder_name)
 
-	if info.source == "scripts/prefabutil.lua" or parent == "" then
+	-- if DST, parent is empty string
+	-- if DS, source is @C:/Program Files (x86)/Steam/steamapps/common/dont_starve/data/scripts/prefabs/scienceprototyper.lua
+	--	and parent is @C:/Program Files (x86)/Steam/steamapps/common/dont_starve/data/
+	if info.source == "scripts/prefabutil.lua" or (parent == "" or parent:sub(-17) == "dont_starve/data/") then
 		-- vanilla
 		if not STRINGS.NAMES[string.upper(recipe.product)] then
 			recipe_urls[recipe.name] = {nil, nil}
@@ -387,6 +393,7 @@ end
 
 local oldRecipePopup_Refresh = RecipePopup.Refresh
 function RecipePopup:Refresh()
+	--mprint"refresh"
 	local mod = {0, 1, 0, 1}
 	local normal = {1, 1, 1, 1}
 
@@ -398,6 +405,7 @@ function RecipePopup:Refresh()
 	end
 	
 	if self.lookup and self.lookup.inst:IsValid() then 
+		--dprint("Lookup already exists, adjusting.")
 		self.lookup:SetPosition(self.name:GetRegionSize() / 2 + self.name:InsightGetSize() / 2, 0)
 		local url, modded = GetRecipeURL(self.recipe)
 		if url then

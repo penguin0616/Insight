@@ -400,13 +400,13 @@ return {
 	leader = "<icon=pigcrownhat> %s",
 	loyalty_duration = "<icon=pigcrownhat><icon=pocket_scale> %s",
 
+	-- forcecompostable.lua
+	--forcecompostable = "Compost value: %s",
+
 	-- lightningblocker.lua
 	lightningblocker = {
 		--range = "Lightning protection range: %s wall units",
 	},
-
-	-- forcecompostable.lua
-	--forcecompostable = "Compost value: %s",
 
 	-- fossil_stalker.lua [Prefab]
 	fossil_stalker = {
@@ -535,6 +535,9 @@ return {
 
 	-- leader.lua
 	--followers = "Followers: %s",
+
+	-- lightninggoat.lua
+	lightninggoat_charge = "Will discharge in %s day(s).",
 
 	-- lureplant.lua [Prefab]
 	lureplant = {

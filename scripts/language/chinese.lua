@@ -544,6 +544,9 @@ return {
 		range = "Lightning protection range: %s wall units",
 	},
 
+	-- lightninggoat.lua
+	lightninggoat_charge = "Will discharge in %s day(s).",
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "%s后开始活动",
