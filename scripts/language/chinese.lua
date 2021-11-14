@@ -29,6 +29,28 @@ local catcoon = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
 local stale = AdjectiveToNoun(STRINGS.UI.HUD.STALE)
 --]]
 
+-- in case string is missing
+local function proxy(real)
+	return setmetatable({_real = real}, {
+		__index = function(self, index)
+			print("proxy index", self, index, value)
+			local value = self._real[index]
+			if type(value) == "table" then
+				return proxy(value)
+			else
+				return value
+			end
+		end,
+		__tostring = function(self)
+			return "proxy of " .. tostring(self._real)
+		end,
+		__mode = "kv"
+	})
+end
+
+--local _STRINGS = STRINGS
+--local STRINGS = proxy(_STRINGS)
+
 return {
 	-- insightservercrash.lua
 	server_crash = "服务器崩溃",
@@ -90,7 +112,7 @@ return {
 	},
 
 	-- beard.lua
-	beard = "你的" .. STRINGS.UI.COLLECTIONSCREEN.BEARD .. "将于 %s 天后长好", -- "胡须"
+	beard = "你的" .. "胡须" .. "将于 %s 天后长好", -- 胡须 used to be STRINGS.UI.COLLECTIONSCREEN.BEARD
 
 	-- beargerspawner.lua
 	incoming_bearger_targeted = "<color=%s>目标: %s</color> -> %s",
@@ -162,8 +184,8 @@ return {
 
 	-- catcoonden.lua [Prefab]
 	catcoonden = {
-		lives = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon .. "寿命: %s / %s", 
-		regenerate = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon .. "%s后复活",
+		lives = "一只浣熊" .. "寿命: %s / %s", -- STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
+		regenerate = "一只浣熊" .. "%s后复活", -- STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
 		waiting_for_sleep = "等待附近的玩家走开.",
 	},
 
@@ -606,7 +628,7 @@ return {
 	-- perishable.lua
 	perishable = {
 		rot = "腐烂",
-		stale = AdjectiveToNoun(STRINGS.UI.HUD.STALE), -- cy: "陈旧", GT says "obsolete"
+		stale = AdjectiveToNoun("陈腐"), -- AdjectiveToNoun(STRINGS.UI.HUD.STALE)
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
