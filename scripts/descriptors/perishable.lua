@@ -21,6 +21,8 @@ directory. If not, please refer to
 -- perishable.lua
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
+local world_type = GetWorldType()
+
 local function Perish(self, bundle)
 	local inst
 	if bundle then
@@ -38,7 +40,7 @@ local function Perish(self, bundle)
 
 	if owner then
 		if owner:HasTag("fridge") then
-			if GetWorldType() == 0 then
+			if world_type == 0 then
 				modifier = TUNING.PERISH_FRIDGE_MULT 
 			else -- rog, sw, hamlet
 				if inst:HasTag("frozen") and not owner:HasTag("nocool") and not owner:HasTag("lowcool") then
@@ -57,14 +59,15 @@ local function Perish(self, bundle)
 		modifier = TUNING.PERISH_GROUND_MULT
 	end
 
-	if GetWorldType() > 0 then -- dlcs
+	local season_manager = GetSeasonManager and GetSeasonManager()
+	if world_type > 0 then -- dlcs
 		-- Cool off hot foods over time (faster if in a fridge)
 		if inst.components.edible and inst.components.edible.temperaturedelta and inst.components.edible.temperaturedelta > 0 then
 			if owner and owner:HasTag("fridge") then
 				if not owner:HasTag("nocool") then
 					inst.components.edible.temperatureduration = inst.components.edible.temperatureduration - 1
 				end
-			elseif GetSeasonManager() and GetSeasonManager():GetCurrentTemperature() < TUNING.OVERHEAT_TEMP - 5 then
+			elseif season_manager and season_manager:GetCurrentTemperature() < TUNING.OVERHEAT_TEMP - 5 then
 				inst.components.edible.temperatureduration = inst.components.edible.temperatureduration - .25
 			end
 			if inst.components.edible.temperatureduration < 0 then inst.components.edible.temperatureduration = 0 end
@@ -76,7 +79,7 @@ local function Perish(self, bundle)
 		end
 	end
 
-	if GetSeasonManager() and GetSeasonManager():GetCurrentTemperature() < 0 then
+	if season_manager and season_manager:GetCurrentTemperature() < 0 then
 		-- PERISHABLE only
 		if self then
 			-- only dlcs have frozen tag
@@ -93,8 +96,8 @@ local function Perish(self, bundle)
 		modifier = modifier * TUNING.PERISH_FROZEN_FIRE_MULT
 	end
 
-	if GetWorldType() > 0 then
-		if GetSeasonManager() and GetSeasonManager():GetCurrentTemperature() > TUNING.OVERHEAT_TEMP then
+	if world_type > 0 then
+		if season_manager and season_manager:GetCurrentTemperature() > TUNING.OVERHEAT_TEMP then
 			modifier = modifier * TUNING.PERISH_SUMMER_MULT
 		end	
 	end
@@ -199,6 +202,8 @@ local function GetPerishData(self)
 		-- SmartCrockPot (https://steamcommunity.com/sharedfiles/filedetails/?id=732554330) when mousing over the prediction, NextTime returns nil
 		-- not sure why, but self.updatetask.nexttick is nil, so :NextTime() is nil
 		-- 5/3/2020
+		
+		-- also seems to happen in DS birdcages, though they are paused
 		return
 	end
 
@@ -209,7 +214,7 @@ local function GetPerishData(self)
 	local inst = self.inst
 	local is_critter = inst:HasTag("critter")
 
-	if (inst.components.occupier == nil or inst.components.occupier:GetOwner() == nil) and (inst.components.health and inst.components.inventoryitem and not inst.components.inventoryitem:IsHeld()) then
+	if (inst.components.occupier == nil or (inst.components.occupier.GetOwner and inst.components.occupier:GetOwner() == nil)) and (inst.components.health and inst.components.inventoryitem and not inst.components.inventoryitem:IsHeld()) then
 		-- no description for non-held creatures, or critters
 		return nil
 	end
