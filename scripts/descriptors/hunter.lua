@@ -19,8 +19,13 @@ directory. If not, please refer to
 ]]
 
 -- hunter.lua
+local world_type = GetWorldType()
 local function GetAlternateBeastChance()
-    local day = TheWorld.state.cycles
+	if world_type == 0 then
+		return nil
+	end
+
+    local day = world_type == -1 and TheWorld.state.cycles or GetClock():GetNumCycles()
     local chance = Lerp(TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MIN, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MAX, day/100)
     return math.clamp(chance, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MIN, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MAX)
 end
@@ -75,7 +80,7 @@ local function DescribeTrack(inst, context)
 	if hunt_data.ambush_track_num and hunt_data.ambush_track_num == hunt_data.trackspawned + 1 then -- will it spawn on the next track?
 		ambush = context.lstr.hunter.impending_ambush
 	end
-	local chance = (hunt_data.trackspawned+1 == hunt_data.numtrackstospawn) and string.format(context.lstr.hunter.alternate_beast_chance, Round(hunt_data.chance_of_alternate_beast * 100, 0)) or nil
+	local chance = hunt_data.chance_of_alternate_beast and (hunt_data.trackspawned+1 == hunt_data.numtrackstospawn) and string.format(context.lstr.hunter.alternate_beast_chance, Round(hunt_data.chance_of_alternate_beast * 100, 0)) or nil
 
 	local description = CombineLines(progress, ambush, chance)
 
