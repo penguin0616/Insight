@@ -168,8 +168,13 @@ end)
 local oldItemTile_SetPercent = ItemTile.SetPercent
 local ITEMTILE_DISPLAY = "percentages"; 
 AddLocalPlayerPostInit(function(_, context) 
-	ITEMTILE_DISPLAY = context.config["itemtile_display"] 
-	if IsDS() then localPlayer.HUD.controls.inv:Refresh() end
+	ITEMTILE_DISPLAY = context.config["itemtile_display"]
+	if IsDS() then 
+		-- thought only refresh was needed, but creating a Hamlet as Willow leads to a crash because components.inventory.itemslots has the lighter,
+		-- but controls.inv.inv is missing the slots so...  
+		localPlayer.HUD.controls.inv:Rebuild()
+		localPlayer.HUD.controls.inv:Refresh()
+	end
 end);
 
 function ItemTile:SetPercent(percent, ...)
