@@ -361,7 +361,7 @@ local function GetRecipeURL(recipe)
 	-- if DST, parent is empty string
 	-- if DS, source is @C:/Program Files (x86)/Steam/steamapps/common/dont_starve/data/scripts/prefabs/scienceprototyper.lua
 	--	and parent is @C:/Program Files (x86)/Steam/steamapps/common/dont_starve/data/
-	if info.source == "scripts/prefabutil.lua" or (parent == "" or parent:sub(-17) == "dont_starve/data/") then
+	if info.source == "scripts/prefabutil.lua" or (parent and (parent == "" or parent:sub(-17) == "dont_starve/data/")) then
 		-- vanilla
 		if not STRINGS.NAMES[string.upper(recipe.product)] then
 			recipe_urls[recipe.name] = {nil, nil}

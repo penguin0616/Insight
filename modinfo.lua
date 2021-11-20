@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.2.7" -- dst is 3.2.2, ds is 3.2.6
+version = "3.2.9" -- dst is 3.2.2, ds is 3.2.6
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Wanda support. Check changelog for more details.",
+	update_info = "Brought up to date with DS branch, minor tweaks. Check changelog for more details.",
 	update_info_ds = "Brought up to DST branch, check change notes.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
