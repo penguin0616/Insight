@@ -1,0 +1,6 @@
+<Atlas>
+	<Texture filename="Twinofterror1.tex"/>
+	<Elements>
+		<Element name="Twinofterror1.tex" u1="0" u2="1" v1="0" v2="1"/>
+	</Elements>
+</Atlas>

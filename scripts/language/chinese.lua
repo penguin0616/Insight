@@ -810,6 +810,14 @@ return {
 	-- temperature.lua
 	temperature = "温度: %s",
 
+	-- terrarium.lua [Prefab]
+	terrarium = {
+		day_recovery = "Recovers <color=HEALTH>%s</color> health per unfought day.",
+		eot_health = "<prefab=eyeofterror> <color=HEALTH>Health</color> on return: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		retinazor_health = "<prefab=TWINOFTERROR1> <color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		spazmatism_health = "<prefab=TWINOFTERROR2> <color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+	},
+
 	-- tigersharker.lua
 	tigershark_spawnin = "%s后重生",
 	tigershark_waiting = "重生准备就绪",

@@ -251,7 +251,7 @@ local descriptors_ignore = {
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
-	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", -- don't care
+	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -1145,6 +1145,21 @@ function GetWorldInformation(player) -- refactor?
 			data.raw["beequeenhive"] = context.time:SimpleProcess(beequeen_respawn)
 		end
 
+		-- terrarium
+		local terrarium_cooldown = helper:GetTerrariumCooldown() or -1
+		if terrarium_cooldown >= 0 then
+			data.special_data["terrarium_cd"] = {
+				icon = {
+					atlas = "images/Terrarium.xml",
+					tex = "Terrarium.tex",
+				},
+				worldly = true,
+				from = "prefab"
+			}
+
+			data.raw["terrarium_cd"] = context.time:SimpleProcess(terrarium_cooldown)
+		end
+
 		-- bearger
 		if data.raw["beargerspawner"] == nil and helper:GetBeargerData() then
 			context.bearger_data = helper:GetBeargerData()
@@ -1871,6 +1886,11 @@ if IsDST() then
 	AddPrefabPostInit("atrium_gate", function(inst)
 		if not TheWorld.ismastersim then return end
 		TheWorld.shard.components.shard_insight:SetAtriumGate(inst)
+	end)
+	
+	AddPrefabPostInit("terrarium", function(inst)
+		if not TheWorld.ismastersim then return end
+		TheWorld.shard.components.shard_insight:SetTerrarium(inst)
 	end)
 
 	AddPrefabPostInit("antlion", function(inst)

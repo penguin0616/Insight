@@ -749,7 +749,7 @@ return {
 	-- spawner.lua
 	spawner = {
 		next = "Will spawn a <color=MOB_SPAWN><prefab={child_name}></color> in {respawn_time}.",
-		child = "Spawns a <color=#ff9999><prefab=%s></color>",
+		child = "Spawns a <color=MOB_SPAWN><prefab=%s></color>",
 	},
 
 	-- spider_healer.lua [Prefab]
@@ -778,6 +778,14 @@ return {
 
 	-- temperature.lua
 	temperature = "Temperature: %s",
+
+	-- terrarium.lua [Prefab]
+	terrarium = {
+		day_recovery = "Recovers <color=HEALTH>%s</color> health per unfought day.",
+		eot_health = "<prefab=eyeofterror> <color=HEALTH>Health</color> on return: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		retinazor_health = "<prefab=TWINOFTERROR1> <color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		spazmatism_health = "<prefab=TWINOFTERROR2> <color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+	},
 
 	-- tigersharker.lua
 	tigershark_spawnin = "Can spawn in: %s",

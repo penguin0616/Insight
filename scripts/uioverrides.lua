@@ -104,7 +104,10 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	controls.insight_menu = controls.top_root:AddChild(menu)
 
 	local mb = InsightButton()
-	mb:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
+	function mb:ResetPosition()
+		self:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
+	end
+	mb:ResetPosition()
 	mb:SetDraggable(true)
 	mb.allowcontroller = IsDS() -- false
 	mb:SetOnDragFinish(function(oldpos, newpos)
@@ -136,6 +139,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 
 	AddLocalPlayerPostInit(function(insight, context)
 		if not context.config["display_insight_menu_button"] then
+			dprint("Display Insight Menu Button is disabled.")
 			mb:Kill()
 			return
 		end
@@ -344,7 +348,7 @@ local function GetRecipeURL(recipe)
 		return unpack(recipe_urls[recipe.name])
 	end
 
-	print('lookup', recipe and recipe.product)
+	--dprint('lookup', recipe and recipe.product)
 	if not _G.Prefabs[recipe.product] or not _G.Prefabs[recipe.product].fn then
 		dprint('[GetRecipeURL] Rejected e1, cannot find recipe product in prefabs')
 		return nil

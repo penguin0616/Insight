@@ -24,6 +24,7 @@ setfenv(1, _G.Insight.env)
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
+local R15_QOL_WORLDSETTINGS = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS")
 local BEE_QUEEN_HIVE_STAGES = {
 	[1] = "hivegrowth1",
 	[2] = "hivegrowth2",
@@ -66,8 +67,9 @@ local notables = {
 	dragonfly_spawner = nil,
 	beequeenhive = nil,
 	crabking_spawner = nil,
+	terrarium = nil
 }
-local DRAGONFLY_SPAWNTIMER = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(_G.Prefabs.dragonfly_spawner.fn, "DRAGONFLY_SPAWNTIMER"), "Unable to find \"DRAGONFLY_SPAWNTIMER\"") --"regen_dragonfly"
+local DRAGONFLY_SPAWNTIMER = R15_QOL_WORLDSETTINGS and assert(util.getupvalue(_G.Prefabs.dragonfly_spawner.fn, "DRAGONFLY_SPAWNTIMER"), "Unable to find \"DRAGONFLY_SPAWNTIMER\"") --"regen_dragonfly"
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -84,7 +86,7 @@ local function GetWorldData()
 		-- destabilizing = time before reset
 		-- cooldown = time before can resocket the key
 		-- destabilizedelay = time before can pulse on rejoin
-		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+		if R15_QOL_WORLDSETTINGS then
 			atriumgate_timer = notables.atrium_gate.components.worldsettingstimer:GetTimeLeft("cooldown")
 		else
 			atriumgate_timer = notables.atrium_gate.components.timer:GetTimeLeft("cooldown")
@@ -93,7 +95,7 @@ local function GetWorldData()
 
 	local dragonfly_spawner_timer = notables.dragonfly_spawner and notables.dragonfly_spawner.components.worldsettingstimer:GetTimeLeft(DRAGONFLY_SPAWNTIMER) or nil
 	if notables.dragonfly_spawner then
-		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+		if R15_QOL_WORLDSETTINGS then
 			dragonfly_spawner_timer = notables.dragonfly_spawner.components.worldsettingstimer:GetTimeLeft(DRAGONFLY_SPAWNTIMER)
 		else
 			dragonfly_spawner_timer = notables.dragonfly_spawner.components.timer:GetTimeLeft("regen_dragonfly")
@@ -119,6 +121,13 @@ local function GetWorldData()
 		beequeenhive_timer = remaining_time
 	end
 
+	local terrarium_timer
+	if notables.terrarium then
+		if notables.terrarium.components.worldsettingstimer then
+			terrarium_timer = notables.terrarium.components.worldsettingstimer:GetTimeLeft("cooldown")
+		end
+	end
+
 	local bearger = TheWorld.components.beargerspawner and _G.Insight.descriptors.beargerspawner and _G.Insight.descriptors.beargerspawner.GetBeargerData(TheWorld.components.beargerspawner) or nil
 	--[[
 	if TheWorld.components.beargerspawner then
@@ -135,12 +144,13 @@ local function GetWorldData()
 	local malbatross = TheWorld.components.malbatrossspawner and _G.Insight.descriptors.malbatrossspawner and _G.Insight.descriptors.malbatrossspawner.GetMalbatrossData(TheWorld.components.malbatrossspawner) or nil
 
 	local toadstool = TheWorld.components.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner.GetToadstoolData(TheWorld.components.toadstoolspawner) or nil
-
+	
 	return {
 		antlion = antlion,
 		atriumgate_timer = atriumgate_timer,
 		dragonfly_spawner_timer = dragonfly_spawner_timer,
 		beequeenhive_timer = beequeenhive_timer,
+		terrarium_timer = terrarium_timer,
 
 		bearger = bearger,
 		crabking = crabking,
@@ -173,6 +183,7 @@ local function OnWorldDataDirty(src, event_data, world_data)
 	self.atriumgate_timer = data.atriumgate_timer
 	self.dragonfly_spawner_timer = data.dragonfly_spawner_timer
 	self.beequeenhive_timer = data.beequeenhive_timer
+	self.terrarium_timer = data.terrarium_timer
 
 	self.bearger = data.bearger
 	self.crabking = data.crabking
@@ -208,6 +219,7 @@ local Shard_Insight = Class(function(self, inst)
 	self.atriumgate_timer = nil -- time until the ancient gateway can be reactivated
 	self.dragonfly_spawner_timer = nil -- time until dragonfly respawns
 	self.beequeenhive_timer = nil -- time until bee queen's hive respawns
+	self.terrarium_timer = nil
 
 	self.bearger = nil -- bearger data
 	self.crabking = nil -- crabking data
@@ -247,6 +259,10 @@ end
 
 function Shard_Insight:GetBeeQueenRespawnTime()
 	return self.beequeenhive_timer or GetWorldData().beequeenhive_timer
+end
+
+function Shard_Insight:GetTerrariumCooldown()
+	return self.terrarium_timer or GetWorldData().terrarium_timer
 end
 
 function Shard_Insight:GetBeargerData()
@@ -322,6 +338,18 @@ function Shard_Insight:SetBeeQueenHive(entity)
 
 	entity:ListenForEvent("onremove", OnNotableRemove)
 	mprint("Got beequeenhive")
+end
+
+function Shard_Insight:SetTerrarium(entity)
+	if notables.terrarium then
+		mprint("Attempt to replace terrarium.")
+		return
+	end
+
+	notables.terrarium = entity
+
+	entity:ListenForEvent("onremove", OnNotableRemove)
+	mprint("Got terrarium")
 end
 
 function Shard_Insight:SetCrabKingSpawner(entity)

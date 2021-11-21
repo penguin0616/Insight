@@ -212,6 +212,11 @@ function GetPrefabNameOrElse(prefab, other)
 	if STRINGS.NAMES[upper] then
 		return STRINGS.NAMES[upper]
 	end
+
+	-- antler?
+	if string.sub(upper, 1, 11) == "DEER_ANTLER" then
+		return STRINGS.NAMES.DEER_ANTLER
+	end
 	
 	-- ornament?
 	local ornament_type = string.match(upper, "WINTER_ORNAMENT_(%a+)")
