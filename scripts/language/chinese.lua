@@ -457,6 +457,7 @@ return {
 		time_verbose = "<color=LIGHT>%s</color>持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 		efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
 		units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
+		held_refuel = "Held <color=SWEETENER><prefab=%s></color> will refuel <color=LIGHT>%s%%</color>.",
 	},
 
 	-- ghostlybond.lua

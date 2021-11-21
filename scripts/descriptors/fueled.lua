@@ -19,8 +19,28 @@ directory. If not, please refer to
 ]]
 
 -- fueled.lua
+local world_type = GetWorldType()
+local moisturemanager = world_type > 0 and GetWorld().components.moisturemanager
+
 local function FormatFuel(fuel, context)
 	return string.format(context.lstr.fueled.units, context.time:SimpleProcess(fuel))
+end
+
+local function GetFuelValue(self, item, doer)
+	-- wetness multiplier
+	local is_wet = false
+	if world_type == -1 then
+		is_wet = item:GetIsWet()
+	elseif world_type > 0 and moisturemanager then
+		is_wet = not moisturemgr:IsEntityDry(item)
+	end
+
+	local wetness_mult = is_wet and TUNING.WET_FUEL_PENALTY or 1
+
+	-- mastery multiplier
+    local mastery_mult = world_type == -1 and doer ~= nil and doer.components.fuelmaster ~= nil and doer.components.fuelmaster:GetBonusMult(item, self.inst) or 1
+
+	return item.components.fuel.fuelvalue * self.bonusmult * wetness_mult * mastery_mult
 end
 
 local function Describe(self, context)
@@ -35,13 +55,14 @@ local function Describe(self, context)
 	
 	-- remaining fuel
 	if self.rate > 0 then
+		local current_percent = self:GetPercent()
 		local fuel_time = context.time:SimpleProcess(remaining_time)
-		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(self:GetPercent() * 100, 0), fuel_time)
+		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(current_percent * 100, 0), fuel_time)
 
 		if fuel_verbosity == 2 then
 			time_string = time_string_verbose
 		elseif fuel_verbosity == 1 then
-			time_string = string.format(context.lstr.fueled.time, Round(self:GetPercent() * 100, 0), fuel_time)
+			time_string = string.format(context.lstr.fueled.time, Round(current_percent * 100, 0), fuel_time)
 		end
 	end
 
@@ -59,9 +80,40 @@ local function Describe(self, context)
 	fuel_type_string = string.format(context.lstr.fuel.type, fuel_type_string)
 	--]]
 
+	-- held item?
+	local refuel_string
+	local held_item = context.player.components.inventory and context.player.components.inventory:GetActiveItem()
+	if held_item and held_item.components.fuel then
+		if self:CanAcceptFuelItem(held_item) then
+			local fuel_value = GetFuelValue(self, held_item, context.player)
+			local percent_restore = 0
+			if self.maxfuel > 0 then
+				--[[
+				if world_type == -1 then
+					new_percent = math.max(0, math.min(1, (self.currentfuel + fuel_value) / self.maxfuel))
+				else
+					new_percent = math.min(1, (self.currentfuel + fuel_value) / self.maxfuel)
+				end
+				--]]
+
+				percent_restore = fuel_value / self.maxfuel
+			end
+
+			refuel_string = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))
+		end
+	elseif held_item and held_item.components.sewing then
+		local USAGE_FUELTYPE = world_type == -1 and FUELTYPE.USAGE or "USAGE"
+		if self.fueltype == USAGE_FUELTYPE or self.secondaryfueltype == USAGE_FUELTYPE then
+			-- can sew
+			local percent_restore = held_item.components.sewing.repair_value / self.maxfuel
+
+			refuel_string = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))
+		end
+	end
+
 	-- combine
-	description = CombineLines(time_string, efficiency_string)
-	alt_description = CombineLines(time_string_verbose, efficiency_string)
+	description = CombineLines(time_string, efficiency_string, refuel_string)
+	alt_description = CombineLines(time_string_verbose, efficiency_string, refuel_string)
 
 	return {
 		priority = 1,
