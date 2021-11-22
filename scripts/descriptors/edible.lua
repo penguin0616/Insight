@@ -86,7 +86,6 @@ local function GetFoodUnits(inst, context)
 end
 
 local function FormatFoodStats(hunger, sanity, health, context)
-
 	-- for handling different styles
 	local style = context.config["food_style"]
 	local order = context.config["food_order"] -- interface (default), wiki
@@ -150,6 +149,71 @@ local SPECIAL_FOODS = {
 	}
 }
 
+local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatable)
+	feeder = feeder or eating_entity
+
+	if account_eatable then
+		if not IsEdible(eating_entity, self.inst) then
+			return nil
+		end
+	end
+
+	-- get hunger values
+	local hunger, sanity, health = self:GetHunger(eating_entity) or 0, self:GetSanity(eating_entity) or 0, self:GetHealth(eating_entity) or 0 -- DST's food affinity is included in all 3
+	local eater = eating_entity.components.eater
+
+	-- food effects
+	if eater and world_type ~= 0 then -- accounting for strong stomach in anywhere except base game since no one cares there
+		if sanity < 0 and eater:DoFoodEffects(self.inst) == false then
+			sanity = 0
+		end
+		if health < 0 and eater:DoFoodEffects(self.inst) == false then
+			health = 0
+		end
+	end
+
+	-- food multipliers
+	local base_mult = eating_entity.components.foodmemory ~= nil and eating_entity.components.foodmemory:GetFoodMultiplier(self.inst.prefab) or 1 -- warly? added while was doing food stat modifiers
+	if not stats or (type(stats) == 'table' and not stats.fixed) then
+		-- uncompromising mode sets absorptions to 0 on first eat event and stores the original as a variable in the player.
+		-- \init\init_food\init_foodregen.lua in local function oneat, August 17, 2021.
+		hunger = hunger * base_mult * (uncompromising and eating_entity.hungerabsorption or eater.hungerabsorption)
+		sanity = sanity * base_mult * (uncompromising and eating_entity.sanityabsorption or eater.sanityabsorption)
+		health = health * base_mult * (uncompromising and eating_entity.healthabsorption or eater.healthabsorption)
+	end
+
+	-- new very helpful function by klei
+	if eater and eater.custom_stats_mod_fn then
+		health, hunger, sanity = eater.custom_stats_mod_fn(eating_entity, health, hunger, sanity, self.inst, feeder)
+	end
+
+	-- make sure they are able to receive this healing from the food
+	if health > 0 and eating_entity.components.oldager then
+		if not eating_entity.components.oldager.valid_healing_causes[self.inst.prefab] then
+			health = 0
+		end
+	end
+
+	-- stats get "consumed" now
+	if health < 0 and eating_entity.components.health then
+		if world_type > 0 then -- RoG+
+			health = health - health * (eating_entity.components.health.absorb or 0)
+		elseif world_type == -1 then -- DST
+			health = health * math.clamp(1 - (eating_entity.components.health.absorb or 0), 0, 1) * math.clamp(1 - (eating_entity.components.health.externalabsorbmodifiers:Get() or 0), 0, 1)
+		end
+	end
+
+	-- dark petals
+	local special_stats = SPECIAL_FOODS[self.inst.prefab] 
+	if special_stats then
+		if special_stats.SANITY and eating_entity.components.sanity then
+			sanity = special_stats.SANITY
+		end
+	end
+
+	return hunger, sanity, health
+end
+
 local function Describe(self, context)
 	if not context.player.components.eater then
 		return
@@ -189,55 +253,9 @@ local function Describe(self, context)
 		if type(stats) == 'table' then
 			hunger, sanity, health = stats.hunger, stats.sanity, stats.health
 		else
-			hunger, sanity, health = self:GetHunger(owner), self:GetSanity(owner), self:GetHealth(owner) -- DST's food affinity is included in all 3
-
-			if world_type ~= 0 then -- accounting for strong stomach in anywhere except base game since no one cares there
-				if sanity < 0 and eater:DoFoodEffects(self.inst) == false then
-					sanity = 0
-				end
-				if health < 0 and eater:DoFoodEffects(self.inst) == false then
-					health = 0
-				end
-			end
-		end	
-
-		local base_mult = foodmemory ~= nil and foodmemory:GetFoodMultiplier(self.inst.prefab) or 1 -- warly? added while was doing food stat modifiers
-		if not stats or (type(stats) == 'table' and not stats.fixed) then
-			-- uncompromising mode sets absorptions to 0 on first eat event and stores the original as a variable in the player.
-			-- \init\init_food\init_foodregen.lua in local function oneat, August 17, 2021.
-			hunger = hunger * base_mult * (uncompromising and owner.hungerabsorption or eater.hungerabsorption)
-			sanity = sanity * base_mult * (uncompromising and owner.sanityabsorption or eater.sanityabsorption)
-			health = health * base_mult * (uncompromising and owner.healthabsorption or eater.healthabsorption)
+			hunger, sanity, health = GetFoodStatsForEntity(self, context.player, nil, false)
 		end
-
-		-- new very helpful function by klei
-		if context.player.components.eater.custom_stats_mod_fn then
-			health, hunger, sanity = context.player.components.eater.custom_stats_mod_fn(context.player, health, hunger, sanity, self.inst, context.player)
-		end
-
-		-- make sure they are able to receive this healing from the food
-		if health > 0 and context.player.components.oldager then
-			if not context.player.components.oldager.valid_healing_causes[self.inst.prefab] then
-				health = 0
-			end
-		end
-
-		-- stats get "consumed" now
-		if health < 0 then
-			if world_type > 0 then -- RoG+
-				health = health - health * (owner.components.health.absorb or 0)
-			elseif world_type == -1 then -- DST
-				health = health * math.clamp(1 - (owner.components.health.absorb or 0), 0, 1) * math.clamp(1 - (owner.components.health.externalabsorbmodifiers:Get() or 0), 0, 1)
-			end
-		end
-
-		local special_stats = SPECIAL_FOODS[self.inst.prefab] 
-		if special_stats then
-			if special_stats.SANITY then
-				sanity = special_stats.SANITY
-			end
-		end
-
+		
 		hunger = (hunger ~= 0 and FormatDecimal(hunger, hunger%1==0 and 0 or 1)) or hunger
 		sanity = (sanity ~= 0 and FormatDecimal(sanity, sanity%1==0 and 0 or 1)) or sanity
 		health = (health ~= 0 and FormatDecimal(health, health%1==0 and 0 or 1)) or health
@@ -320,5 +338,7 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetFoodStatsForEntity = GetFoodStatsForEntity,
+	FormatFoodStats = FormatFoodStats
 }

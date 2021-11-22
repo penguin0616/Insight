@@ -255,6 +255,14 @@ return {
 	--dryer_paused = "Drying paused.",
 	dry_time = "<icon=%s> %s",
 
+	-- eater.lua
+	eater = {
+		--eot_loot = "Food restores <color=HUNGER>hunger %s%%</color> + <color=HEALTH>health %s%%</color> as durability.",
+		--eot_tofeed_restore = "Feeding held <color=MEAT><prefab=%s></color> will restore <color=#C0C0C0>%s</color> (<color=#C0C0C0>%s%%</color>) durability.",
+		--eot_tofeed_restore_advanced = "Feeding held <color=MEAT><prefab=%s></color> will restore <color=#C0C0C0>%s</color> (<color=HUNGER>%s</color> + <color=HEALTH>%s</color>) (<color=#C0C0C0>%s%%</color>) durability.",
+		--tofeed_restore = "Feeding held <color=MEAT><prefab=%s></color> will restore %s.",
+	},
+
 	-- edible.lua
 	food_unit = "<color=%s>%s</color><icon=%s>", 
 	edible_interface = "<icon=hunger> <color=HUNGER>%s</color> / <icon=sanity> <color=SANITY>%s</color> / <icon=health> <color=HEALTH>%s</color>",

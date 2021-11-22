@@ -285,6 +285,14 @@ return {
 	dryer_paused = "暂停晾干",
 	dry_time = "完成还需: %s",
 
+	-- eater.lua
+	eater = {
+		eot_loot = "Food restores <color=HUNGER>hunger %s%%</color> + <color=HEALTH>health %s%%</color> as durability.",
+		eot_tofeed_restore = "Feeding held <color=MEAT><prefab=%s></color> will restore <color=#C0C0C0>%s</color> (<color=#C0C0C0>%s%%</color>) durability.",
+		eot_tofeed_restore_advanced = "Feeding held <color=MEAT><prefab=%s></color> will restore <color=#C0C0C0>%s</color> (<color=HUNGER>%s</color> + <color=HEALTH>%s</color>) (<color=#C0C0C0>%s%%</color>) durability.",
+		tofeed_restore = "Feeding held <color=MEAT><prefab=%s></color> will restore %s.",
+	},
+
 	-- edible.lua
 	food_unit = "<color=%s>%s</color> 个单位的<color=%s>%s</color>",
 	edible_interface = "<color=HUNGER>饥饿</color>: <color=HUNGER>%s</color> / <color=SANITY>理智</color>: <color=SANITY>%s</color> / <color=HEALTH>生命</color>: <color=HEALTH>%s</color>",
