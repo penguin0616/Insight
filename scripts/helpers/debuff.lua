@@ -248,7 +248,7 @@ local SPICES_STATS = {
 
 
 for prefab, data in pairs(spicedfoods) do
-	if data.spice ~= "SPICE_SALT" then
+	if SPICES[data.spice].prefabs and SPICES[data.spice].prefabs[1] then
 		local spice_buff = SPICES[data.spice].prefabs[1]
 		debuff_effects[prefab] = {
 			[spice_buff] = {

@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.3.0" -- dst is 3.2.2, ds is 3.2.6
+version = "3.3.1" -- dst is 3.2.2, ds is 3.2.6
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -107,6 +107,17 @@ local english = {
 
 	-- Formatting
 	language = {
+		--[[
+		LABEL = "How to find Client Config",
+		HOVER = "The language you want information to display in.",
+		OPTIONS = {
+			["yep"] = {
+				DESCRIPTION = "",
+				HOVER = ""
+			},
+		},
+		--]]
+
 		--------------------------------------------------------------------------
 		--[[ Formatting ]]
 		--------------------------------------------------------------------------

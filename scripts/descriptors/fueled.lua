@@ -38,7 +38,7 @@ local function GetFuelValue(self, item, doer)
 	local wetness_mult = is_wet and TUNING.WET_FUEL_PENALTY or 1
 
 	-- mastery multiplier
-    local mastery_mult = world_type == -1 and doer ~= nil and doer.components.fuelmaster ~= nil and doer.components.fuelmaster:GetBonusMult(item, self.inst) or 1
+	local mastery_mult = world_type == -1 and doer ~= nil and doer.components.fuelmaster ~= nil and doer.components.fuelmaster:GetBonusMult(item, self.inst) or 1
 
 	return item.components.fuel.fuelvalue * self.bonusmult * wetness_mult * mastery_mult
 end

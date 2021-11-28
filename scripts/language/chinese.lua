@@ -789,7 +789,7 @@ return {
 	-- spawner.lua
 	spawner = {
 		next = "{respawn_time}后生成 <color=MOB_SPAWN><prefab={child_name}></color>",
-		child = "生成一个 <color=#ff9999><prefab=%s></color>",
+		child = "生成一个 <color=MOB_SPAWN><prefab=%s></color>",
 	},
 
 	-- spider_healer.lua [Prefab]

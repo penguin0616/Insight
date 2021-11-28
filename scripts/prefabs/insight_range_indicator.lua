@@ -356,13 +356,14 @@ local function combat_fn()
 		inst:ListenForEvent("insight_combat_attack_range_dirty", OnCombatIndicatorAttackRangeDirty)
 
 		inst.net_hit_range = net_float(inst.GUID, "insight_combat_hit_range", "insight_combat_hit_range_dirty")
+		inst:ListenForEvent("insight_combat_hit_range_dirty", OnCombatIndicatorHitRangeDirty)
 		
 		inst.net_include_physics_radius = net_bool(inst.GUID, "insight_combat_include_physics_radius", "insight_combat_include_physics_radius_dirty")
 		inst:SetIncludePhysicsRadius(true)
 		inst:ListenForEvent("insight_combat_include_physics_radius", OnCombatIndicatorIncludePhysicsRadiusDirty)
 		
 
-		inst:ListenForEvent("insight_combat_hit_range", OnCombatIndicatorHitRangeDirty)
+		
 
 		--[[
 		inst.net_radius = net_float(inst.GUID, "indicator_radius", "indicator_radius_dirty")

@@ -759,7 +759,7 @@ return {
 	-- spawner.lua
 	spawner = {
 		--next = "Will spawn a <color=MOB_SPAWN><prefab={child_name}></color> in {respawn_time}.",
-		--child = "Spawns a <color=#ff9999><prefab=%s></color>",
+		--child = "Spawns a <color=MOB_SPAWN><prefab=%s></color>",
 	},
 
 	-- spider_healer.lua [Prefab]
