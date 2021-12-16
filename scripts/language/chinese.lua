@@ -397,32 +397,16 @@ return {
 	action_uses = "<color=#aaaaee>%s</color>: %s",
 	action_uses_verbose = "<color=#aaaaee>%s</color>: %s / %s",
 	actions = {
-		uses_plain = "使用",
-		sleepin = "睡觉",
-		fan = "扇风",
-		play = "演奏", -- beefalo horn, could be "吹奏" if it's ONLY for horn
-		hammer = "锤",
-		chop = "砍",
-		mine = "开采",
-		net = "抓",
-		hack = "劈", -- sw
-		terraform = "铲地",
-		dig = "挖",
-		brush = "刷",
-		gas = "喷", -- hamlet
-		disarm = "拆", -- hamlet
-		pan = "淘", -- hamlet
-		dislodge = "凿", -- hamlet
-		spy = "调查", -- hamlet
-		throw = "扔", -- sw
-		unsaddle = "解鞍",
-		shear = "剪",
-		attack = "攻击",
-		fish = "钓",
-		row = "划",
-		row_fail = "划（失败）",
-		till = "耕种",
-		pour_water = "Water",
+		USES_PLAIN = "使用",w
+		TERRAFORM = "铲地",
+		GAS = "喷", -- hamlet
+		DISARM = "拆", -- hamlet
+		PAN = "淘", -- hamlet
+		DISLODGE = "凿", -- hamlet
+		SPY = "调查", -- hamlet
+		THROW = "扔", -- sw
+		ROW_FAIL = "划（失败）",
+		ATTACK = STRINGS.ACTIONS.ATTACK.GENERIC,
 	},
 
 	-- fishable.lua
@@ -550,7 +534,8 @@ return {
 
 	-- inspectable.lua
 	wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
-	
+	gym_weight_value = "Gym weight value: %s",
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>隔热效果</color>: <color=FROZEN>%s</color>",
@@ -596,6 +581,13 @@ return {
 
 	-- mermcandidate.lua
 	mermcandidate = "卡路里: %s / %s",
+
+	-- mightygym.lua
+	mightygym = {
+		weight = "Gym weight: %s",
+		mighty_gains = "Normal <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>, Perfect <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>",
+		hunger_drain = "<color=HUNGER>Hunger drain</color>: <color=HUNGER>x%d</color>",
+	},
 
 	-- mine.lua
 	mine = {

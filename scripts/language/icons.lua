@@ -368,31 +368,31 @@ return {
 	action_uses_verbose = "<icon=%s> %s / %s",
 	actions = {
 		--uses_plain = "Uses",
-		sleepin = "bedroll_straw",
-		fan = "featherfan",
-		play = "horn", -- beefalo horn
-		hammer = "hammer",
-		chop = "axe",
-		mine = "pickaxe",
-		net = "bugnet",
-		hack = "machete", -- sw
-		terraform = "pitchfork",
-		dig = "shovel",
-		brush = "brush",
-		gas = "bugrepellant", -- hamlet
-		disarm = "disarmingkit", -- hamlet
-		pan = "goldpan", -- hamlet
-		dislodge = "littlehammer", -- hamlet
-		spy = "magnifying_glass", -- hamlet
-		throw = "monkeyball", -- sw
-		unsaddle = "saddlehorn",
-		shear = "shears",
-		attack = "spear",
-		fish = "fishingrod",
-		row = "oar",
-		--row_fail = "oar",
-		till = "farm_hoe",
-		pour_water = "wateringcan",
+		SLEEPIN = "bedroll_straw",
+		FAN = "featherfan",
+		PLAY = "horn", -- beefalo horn
+		HAMMER = "hammer",
+		CHOP = "axe",
+		MINE = "pickaxe",
+		NET = "bugnet",
+		HACK = "machete", -- sw
+		TERRAFORM = "pitchfork",
+		DIG = "shovel",
+		BRUSH = "brush",
+		GAS = "bugrepellant", -- hamlet
+		DISARM = "disarmingkit", -- hamlet
+		PAN = "goldpan", -- hamlet
+		DISLODGE = "littlehammer", -- hamlet
+		SPY = "magnifying_glass", -- hamlet
+		THROW = "monkeyball", -- sw
+		UNSADDLE = "saddlehorn",
+		SHEAR = "shears",
+		ATTACK = "spear",
+		FISH = "fishingrod",
+		ROW = "oar",
+		--ROW_FAIL = "oar",
+		TILL = "farm_hoe",
+		POUR_WATER = "wateringcan",
 	},
 
 	-- fishable.lua
@@ -525,7 +525,8 @@ return {
 
 	-- inspectable.lua
 	--wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
-	
+	--gym_weight_value = "Gym weight value: %s",
+
 	-- insulator.lua
 	insulation_winter = "<icon=beargervest> <color=FROZEN>%s</color>",
 	insulation_summer = "<icon=icehat> <color=FROZEN>%s</color>",
@@ -566,6 +567,13 @@ return {
 
 	-- mermcandidate.lua
 	--mermcandidate = "Calories: %s / %s",
+
+	-- mightygym.lua
+	mightygym = {
+		--weight = "Gym weight: %s",
+		--mighty_gains = "Normal <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>, Perfect <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>",
+		--hunger_drain = "<color=HUNGER>Hunger drain</color>: <color=HUNGER>x%d</color>",
+	},
 
 	-- mine.lua
 	mine = {

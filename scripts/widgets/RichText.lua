@@ -45,6 +45,19 @@ local function _LookupIcon(icon) -- took me a minute but i remember that this is
 	return LookupIcon(icon)
 end
 
+local function LookupString(str)
+	local fields = string.split(str, ".")
+	local current = STRINGS
+	for i,v in ipairs(fields) do
+		current = current[v]
+		if not current then
+			return nil
+		end
+	end
+
+	return current
+end
+
 local function InterpretReaderChunk(chunk, richtext) -- text, color
 	local color = chunk:GetTag("color") or richtext.default_colour
 
@@ -61,7 +74,7 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 	local obj = nil
 	local is_object = chunk:IsObject()
 
-	if is_object and chunk.object.class ~= "prefab" then
+	if is_object and chunk.object.class ~= "prefab" and chunk.object.class ~= "string" then
 		-- object
 		if chunk.object.class == "icon" then
 			local tex, atlas = _LookupIcon(chunk.object.value)
@@ -96,9 +109,17 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 
 		local text = nil
 		if is_object then
-			-- prefab class
-			local prefab = chunk.object.value
-			text = GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
+			if chunk.object.class == "prefab" then
+				-- prefab class
+				local prefab = chunk.object.value
+				text = GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
+			elseif chunk.object.class == "string" then
+				text = LookupString(chunk.object.value)
+				local typ = type(text)
+				if typ ~= "string" then
+					text = "[string \"" .. chunk.object.value .. "\" -> " .. typ .. "]"
+				end 
+			end
 		else
 			text = chunk.text
 		end

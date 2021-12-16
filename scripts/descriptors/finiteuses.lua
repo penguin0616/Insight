@@ -107,7 +107,7 @@ local function Describe(self, context)
 		for i = 1, num_actions do
 			local v = consumptions2[i]
 			local action, amount = v[1], v[2]
-			local action_id = action.id and action.id:lower() or nil
+			local action_id = action.id
 
 			-- ∞
 			if action_id and amount ~= 0 then
@@ -117,8 +117,8 @@ local function Describe(self, context)
 					actions[c] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
 					actions_verbose[c] = string.format(context.lstr.action_uses_verbose, context.lstr.actions[action_id], uses, max_uses)
 				else
-					actions[c] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses)
-					actions_verbose[c] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions[action_id] or ("\"" .. action_id .. "\""), uses, max_uses)
+					actions[c] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("<string=ACTIONS." .. action.id .. ">"), uses)
+					actions_verbose[c] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions[action_id] or ("<string=ACTIONS." .. action.id .. ">"), uses, max_uses)
 				end
 				
 				c = c + 1

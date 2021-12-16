@@ -366,32 +366,16 @@ return {
 	action_uses = "<color=#aaaaee>%s</color>: %s",
 	action_uses_verbose = "<color=#aaaaee>%s</color>: %s / %s",
 	actions = {
-		uses_plain = "Uses",
-		sleepin = "Sleep",
-		fan = "Fan",
-		play = "Play", -- beefalo horn
-		hammer = "Hammer",
-		chop = "Chop",
-		mine = "Mine",
-		net = "Catch",
-		hack = "Hack", -- sw
-		terraform = "Terraform",
-		dig = "Dig",
-		brush = "Brush",
-		gas = "Gas", -- hamlet
-		disarm = "Disarm", -- hamlet
-		pan = "Pan", -- hamlet
-		dislodge = "Chisel", -- hamlet
-		spy = "Investigate", -- hamlet
-		throw = "Throw", -- sw -- Action string is "Throw At"
-		unsaddle = "Unsaddle",
-		shear = "Shear",
-		attack = "Attack",
-		fish = "Fish",
-		row = "Row",
-		row_fail = "Failed row",
-		till = "Till",
-		pour_water = "Water",
+		USES_PLAIN = "Uses",
+		TERRAFORM = "Terraform",
+		GAS = "Gas", -- hamlet
+		DISARM = "Disarm", -- hamlet
+		PAN = "Pan", -- hamlet
+		DISLODGE = "Chisel", -- hamlet
+		SPY = "Investigate", -- hamlet
+		THROW = "Throw", -- sw -- Action string is "Throw At"
+		ROW_FAIL = "Row Fail",
+		ATTACK = STRINGS.ACTIONS.ATTACK.GENERIC,
 	},
 
 	-- fishable.lua
@@ -519,7 +503,8 @@ return {
 
 	-- inspectable.lua
 	wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
-	
+	gym_weight_value = "Gym weight value: %s",
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>Insulation (Winter)</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>Insulation (Summer)</color>: <color=FROZEN>%s</color>",
@@ -565,6 +550,13 @@ return {
 
 	-- mermcandidate.lua
 	mermcandidate = "Calories: %s / %s",
+
+	-- mightygym.lua
+	mightygym = {
+		weight = "Gym weight: %s",
+		mighty_gains = "Normal <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>, Perfect <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>",
+		hunger_drain = "<color=HUNGER>Hunger drain</color>: <color=HUNGER>x%d</color>",
+	},
 
 	-- mine.lua
 	mine = {
