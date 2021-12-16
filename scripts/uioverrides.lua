@@ -122,7 +122,13 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			return
 		end
 
-		local pos = json.decode(str).position
+		local safe, pos = pcall(function() return json.decode(str).position end)
+		if not safe then
+			mprint("Invalid JSON persistentstring in 'insightmenubutton'")
+			mprint(str)
+			return
+		end
+		
 		dprint("Loaded old position:", pos.x, pos.y, pos.z)
 		mb:SetPosition(pos.x, pos.y, pos.z)
 	end)

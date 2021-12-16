@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.3.1" -- dst is 3.2.2, ds is 3.2.6
+version = "3.3.2" -- dst is 3.2.2, ds is 3.2.6
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Terraria crossover update, item hover on hover addition. Check changelog for more details.",
+	update_info = "Wolfgang refresh update. Check changelog for more details.",
 	update_info_ds = "Brought up to DST branch, check change notes.",
 	crashreporter_info = "**Crash reporter added**, you should enable it in the client & server config",
 
@@ -1377,8 +1377,8 @@ local english = {
 		HOVER = "Whether information is preloaded when entities become visible. Trades network usage for faster performance. Recommended to use \"All\".",
 		OPTIONS = {
 			["0"] = {
-				DESCRIPTION = "No",
-				HOVER = "SEVERE FPS DROP! NOT RECOMMENDED!" -- most severe fps drop
+				DESCRIPTION = "None",
+				HOVER = "CAN CAUSE SEVERE FPS DROPS. NOT RECOMMENDED." -- most severe fps drop
 			},
 			["1"] = {
 				DESCRIPTION = "Containers",
@@ -3751,7 +3751,7 @@ configuration_options = {
 	{
 		name = "info_preload",
 		options = {
-			--{data = 0}, -- probably not going to let people use this one
+			{data = 0},
 			{data = 1},
 			{data = 2},
 		},

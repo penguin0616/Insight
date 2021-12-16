@@ -1076,7 +1076,7 @@ function Insight:Update()
 						classified:DeserializePerish()
 					end
 
-					--if DEV_TESTING then
+					--if SIM_DEV then
 					--classified:DeserializeRecharge() -- messes up rechargeable
 					--classified:DeserializeRechargeTime() -- messes up rechargeable
 					--end

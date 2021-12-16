@@ -102,6 +102,7 @@ local Insight = {
 		HEALTH = "#A22B23",
 		ENLIGHTENMENT = "#ACC5C3",
 		AGE = "#714E85", -- age meter
+		MIGHTINESS = "#0B704A",
 
 		-- mechanic
 		LIGHT = "#CCBC78", -- light tab icon
@@ -251,7 +252,7 @@ local descriptors_ignore = {
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", -- don't care
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
-	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", -- don't care
+	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -295,8 +296,6 @@ local descriptors_ignore = {
 	"worldvoter", -- idc to look enough into
 
 }
-
-DEV_TESTING = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
 -- i don't want datadumper saving the metatable
 --[[
@@ -1395,6 +1394,8 @@ end
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
+SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
+
 -- Config Retrofit
 if tonumber(GetModConfigData("itemtile_display", IsDST())) then
 	mprint("Retrofitting itemtile_display...")
@@ -2021,10 +2022,6 @@ if IsDST() then
 
 	-- Post Init Functions
 	AddSimPostInit(function(player)
-		if DEV_TESTING then
-			-- TODO: figure out how sim quitting during the reading affects sessions for full separations
-			TheSim:Quit()
-		end
 		--[[
 			Reconstructing topology	
 			[00:05:31]: 	...Sorting points	
@@ -2070,6 +2067,11 @@ if IsDST() then
 
 			mprint("Awaiting Shard Initialization")
 			OnShardReady()
+		end
+
+		if SIM_DEV then
+			-- mastersim only??
+			TheSim:Quit()
 		end
 
 		TheWorld:ListenForEvent("ms_playerjoined", function(_, player)
@@ -3436,4 +3438,4 @@ GLOBAL.check = function(client_config)
 end
 ]]
 
-mprint("Insight main initialized" .. (DEV_TESTING and "..." or "!"))
+mprint("Insight main initialized" .. (SIM_DEV and "..." or "!"))

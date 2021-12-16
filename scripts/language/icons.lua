@@ -568,6 +568,14 @@ return {
 	-- mermcandidate.lua
 	--mermcandidate = "Calories: %s / %s",
 
+	-- mightiness.lua
+	mightiness = "<color=MIGHTINESS>Mightiness</color>: <color=MIGHTINESS>%s</color> / <color=MIGHTINESS>%s</color>",
+
+	-- mightydumbbell.lua
+	mightydumbbell = {
+		mightness_per_use = "<color=MIGHTINESS>Mightiness</color> per use: ",
+	},
+	
 	-- mightygym.lua
 	mightygym = {
 		--weight = "Gym weight: %s",

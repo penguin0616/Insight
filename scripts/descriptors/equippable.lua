@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- equippable.lua
+local world_type = GetWorldType()
 --[[
 	x=ThePlayer.components.sanity.current; print(x)
 	ThePlayer.components.inventory:Equip(c_findnext'walrushat');
@@ -55,9 +56,25 @@ local function GetDappernessForPlayer(self, player)
 	return dapperness
 end
 
-local function Describe(self, context)
-	local world_type = GetWorldType()
+local function GetSpeedModifier(self, player)
+	local speed_modifier = world_type < 2 and self:GetWalkSpeedMult() or self.walkspeedmult or 1.0
+	-- alright so in DST, DS, RoG, its a number from 0 to 1. (ie "ARMORMARBLE_SLOW" is 0.7)
+	-- in SW & Hamlet, its a negative number. (ie "ARMORMARBLE_SLOW" is -0.3)
 
+	-- so this makes SW and Hamlet consistent with the other versions
+	if world_type >= 2 then
+		speed_modifier = speed_modifier + 1
+	end
+
+	-- account for wolfgang's speed modifiers
+	if world_type == -1 and speed_modifier > 0 and speed_modifier < 1 and player and player.components.mightiness and player.components.mightiness:GetState() == "mighty" then
+		speed_modifier = math.min(1, speed_modifier + TUNING.MIGHTY_HEAVY_SPEED_MULT_BONUS)
+	end
+
+	return speed_modifier
+end
+
+local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
 	local hunger_modifier_string = nil
@@ -65,29 +82,16 @@ local function Describe(self, context)
 	local owner = context.player --GetPlayer() --GetItemPossessor(inst) or GetPlayer()
 	-- bug where one man band has .dapperfn and it needs leader component of holder, just assume owner is GetPlayer()
 
-	-- in locomotor:GetSpeedMultiplier()
-	-- the numbers are added to a base value of 1
-	-- that base value is multiplied in conjunction with other stuff
-	-- so i'm not sure why the equippables would return a walkspeedmult of 1 through the method :GetWalkSpeedMult()
-	-- probabaly why it was commented out anyway.
-	local speed_modifier = self.walkspeedmult or 0.0
-
-	--speed_modifier = Round(speed_modifier, 2) -- Round is leaving hidden floating point error? (Round(1.2) - 1 ~= 1.2 - 1); precision error isn't shown unless you use FormatNumber's formatting pattern
-	-- precision errors somewhere
-
+	local speed_modifier = GetSpeedModifier(self, owner) - 1
 	if speed_modifier ~= 0 then
-		if world_type == -1 or world_type == 0 or world_type == 1 then -- same thing here
-			-- consistency
-			speed_modifier = speed_modifier - 1
-		end
-		speed_modifier = string.format(context.lstr.speed, FormatDecimal(speed_modifier * 100, 0)) -- FormatNumber had a precision error too. FormatNumber((1.2-1)*100) == +19
+		-- Round is leaving hidden floating point error? (Round(1.2) - 1 ~= 1.2 - 1); precision error isn't shown unless you use FormatNumber's formatting pattern
+		-- FormatNumber had a precision error too. FormatNumber((1.2-1)*100) == +19
+		speed_modifier = string.format(context.lstr.speed, FormatDecimal(speed_modifier * 100, 0)) 
 	else
 		speed_modifier = nil
 	end
-	
 
 	-- expressed as sanity gain/loss per SECOND. we want it per MINUTE.
-
 	local dapperness = GetDappernessForPlayer(self, owner)
 
 	if not dapperness or dapperness == 0 then
@@ -95,28 +99,6 @@ local function Describe(self, context)
 	else
 		dapperness = string.format(context.lstr.dapperness, FormatDecimal(dapperness * 60, 1))
 	end
-
-	--[[
-	if (inst.components.dapperness) then
-		-- dapperness is seperated from equippable in the base game
-		-- let dapperness.lua take care of this, maybe other mods are using the component as well
-
-	elseif self.GetDapperness then -- does not exist in RoG
-		local sanity = context.player.components.sanity
-		if sanity and sanity.only_magic_dapperness then
-			
-		end
-
-		dapperness = self:GetDapperness(owner, sanity and sanity.no_moisture_penalty)
-		dapperness = dapperness * 60
-
-		if dapperness ~= 0 then
-			dapperness = string.format(context.lstr.dapperness, FormatDecimal(dapperness, 1))
-		else
-			dapperness = nil
-		end
-	end
-	--]]
 
 	-- might modify hunger rate
 	if owner and owner.components.hunger then

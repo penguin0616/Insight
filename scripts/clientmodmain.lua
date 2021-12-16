@@ -458,28 +458,13 @@ local function LoadLocalPlayer(player)
 				table.remove(onLocalPlayerReady, x + 1)
 			end
 		end
-		mprint("Initializers complete" ..  ((DEV_TESTING and "...") or "!"))
+		mprint("Initializers complete" ..  ((SIM_DEV and "...") or "!"))
 
 		if IsDST() then 
 			rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ClientInitialized"))
 		end
 
-		-- people irritate me.
-		-- i suppose this approach is better than what i initially planned. after all, who's fault is it? the uploader who stole, or the user who used the stolen version?
-		--[[
-		if DEV_TESTING or (modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 49, 56, 57, 48, 48, 52, 49, 54, 50) and modname ~= string.char(119, 111, 114, 107, 115, 104, 111, 112, 45, 50, 48, 56, 49, 50, 53, 52, 49, 53, 52)) then
-			TheGlobalInstance:DoTaskInTime(5 * math.random() + 2, function()
-				for i = 1, 1 do
-					TheFrontEnd:PushScreen(import("s" .. "c" .. "re" .. "e" .. "ns" .. "/" .. "i" .. "n" .. "si" .. "g" .. "h" .. "td" .. "ang" .. "ers" .. "cr" .. "e" .. "e" .. "n")())
-				end
-				
-				TheGlobalInstance:DoTaskInTime(5, function()
-					TheSim:Quit()
-					--require("widgets/text")(UIFONT, 45, string.rep("no\n", 2^16))
-				end)
-			end)
-		end
-		--]]
+
 	else
 		player:DoTaskInTime(1 / 30, LoadLocalPlayer)
 	end

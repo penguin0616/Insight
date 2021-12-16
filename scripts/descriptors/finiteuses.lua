@@ -80,6 +80,11 @@ local function Describe(self, context)
 			-- POUR_WATER_GROUNDTILE
 		end
 
+		-- for dumbbells
+		if inst:HasTag("dumbbell") and inst.components.mightydumbbell and inst.components.mightydumbbell.consumption then
+			consumptions[ACTIONS.LIFT_DUMBBELL] = inst.components.mightydumbbell.consumption
+		end
+
 		local consumptions2 = {}
 		local num_actions = 0
 		for action, amount in pairs(consumptions) do

@@ -246,6 +246,10 @@ local function Describe(self, context)
 		end
 	end
 
+	if inst:HasTag("heavy") then
+		description = string.format(context.lstr.gym_weight_value, inst.gymweight or 2)
+	end
+
 	--[[
 	if IsDST() and inst.components.inventoryitem then
 		if context.player.components.itemaffinity then
