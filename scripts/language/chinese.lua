@@ -397,7 +397,7 @@ return {
 	action_uses = "<color=#aaaaee>%s</color>: %s",
 	action_uses_verbose = "<color=#aaaaee>%s</color>: %s / %s",
 	actions = {
-		USES_PLAIN = "使用",w
+		USES_PLAIN = "使用",
 		TERRAFORM = "铲地",
 		GAS = "喷", -- hamlet
 		DISARM = "拆", -- hamlet
@@ -589,7 +589,7 @@ return {
 	mightydumbbell = {
 		mightness_per_use = "<color=MIGHTINESS>Mightiness</color> per use: ",
 	},
-	
+
 	-- mightygym.lua
 	mightygym = {
 		weight = "Gym weight: %s",
