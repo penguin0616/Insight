@@ -949,7 +949,7 @@ function RequestEntityInformation(entity, player, params)
 		-- DS
 		--if not entity:HasTag"player" then dprint("DS - passing in got entity info", entity) end
 		local info = GetEntityInformation(entity, player, params)
-		info.GUID = params.id
+		info.GUID = params.id or info.GUID -- DS doesn't include the GUID in params
 		insight.entity_data[entity] = info
 
 		insight:OnEntityGotInformation(entity)

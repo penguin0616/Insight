@@ -32,7 +32,7 @@ local function GetFuelValue(self, item, doer)
 	if world_type == -1 then
 		is_wet = item:GetIsWet()
 	elseif world_type > 0 and moisturemanager then
-		is_wet = not moisturemgr:IsEntityDry(item)
+		is_wet = not moisturemanager:IsEntityDry(item)
 	end
 
 	local wetness_mult = is_wet and TUNING.WET_FUEL_PENALTY or 1
