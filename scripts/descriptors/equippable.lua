@@ -57,7 +57,7 @@ local function GetDappernessForPlayer(self, player)
 end
 
 local function GetSpeedModifier(self, player)
-	local speed_modifier = world_type < 2 and self:GetWalkSpeedMult() or self.walkspeedmult or 1.0
+	local speed_modifier = world_type < 2 and self:GetWalkSpeedMult() or self.walkspeedmult or 0.0
 	-- alright so in DST, DS, RoG, its a number from 0 to 1. (ie "ARMORMARBLE_SLOW" is 0.7)
 	-- in SW & Hamlet, its a negative number. (ie "ARMORMARBLE_SLOW" is -0.3)
 

@@ -241,13 +241,13 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		if itemInfo.special_data.insight_ranged.attach_player == false then
 			if new:HasTag("INLIMBO") then
 				--print'moved to player'
-				new.insight_hover_range:Attach(ThePlayer)
+				new.insight_hover_range:Attach(localPlayer)
 			else
 				--print'moved to self'
 				new.insight_hover_range:Attach(new)
 			end
 		else
-			new.insight_hover_range:Attach(ThePlayer)
+			new.insight_hover_range:Attach(localPlayer)
 		end
 		new.insight_hover_range:SetRadius(range / WALL_STUDS_PER_TILE)
 		if color then

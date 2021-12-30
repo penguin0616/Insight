@@ -51,7 +51,9 @@ local function FollowOwner(inst)
 		inst._x, inst._y, inst._z = px, py, pz
 
 		local x, y, z = TheWorld.Map:GetTileCenterPoint(px, py, pz)
-		inst.Transform:SetPosition(x, y, z)
+		if x and y and z then
+			inst.Transform:SetPosition(x, y, z)
+		end
 	end
 end
 
