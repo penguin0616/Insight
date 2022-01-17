@@ -322,6 +322,8 @@ local function OnHelperStateChange(inst, active, recipename, placerinst)
 		inst.lightningrod_range:SetVisible(active)
 	elseif inst.prefab == "firesuppressor" then
 		inst.snowball_range:SetVisible(active)
+	else
+		inst.range_indicator:SetVisible(active)
 	end
 end
 
@@ -770,6 +772,31 @@ AddPrefabPostInit("firesuppressor", function(inst)
 	inst.snowball_range:SetRadius(TUNING.FIRE_DETECTOR_RANGE / WALL_STUDS_PER_TILE)
 	inst.snowball_range:SetColour(Color.fromHex(Insight.COLORS.WET))
 	inst.snowball_range:SetVisible(false)
+
+	inst:AddComponent("dst_deployhelper")
+	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+end)
+
+AddPrefabPostInit("sprinkler", function(inst) 
+	if IsDST() then return end
+	inst.range_indicator = SpawnPrefab("insight_range_indicator")
+	inst.range_indicator:Attach(inst)
+	inst.range_indicator:SetRadius(8 / WALL_STUDS_PER_TILE)
+	inst.range_indicator:SetColour(Color.fromHex(Insight.COLORS.WET))
+	inst.range_indicator:SetVisible(false)
+
+	inst:AddComponent("dst_deployhelper")
+	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+end)
+
+AddPrefabPostInit("basefan", function(inst) 
+	-- tuning says default range is 15
+	if IsDST() then return end
+	inst.range_indicator = SpawnPrefab("insight_range_indicator")
+	inst.range_indicator:Attach(inst)
+	inst.range_indicator:SetRadius(30 / WALL_STUDS_PER_TILE)
+	inst.range_indicator:SetColour(Color.fromHex(Insight.COLORS.WET))
+	inst.range_indicator:SetVisible(false)
 
 	inst:AddComponent("dst_deployhelper")
 	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
