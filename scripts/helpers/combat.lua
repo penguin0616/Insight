@@ -357,6 +357,7 @@ local function HookCombat(self)
 		--return
 		error("missing insight indicator???")
 	end
+	indicator.client_ready = false
 	indicator:Attach(self.inst)
 	self.inst.insight_combat_range_indicator = indicator
 	PushNewIndicatorRange(self.inst)
@@ -491,6 +492,7 @@ local function OnIndicatorParentRemoved(inst)
 	inst.insight_combat_range_indicator.OnHitRangeDirty = nil
 	inst.insight_combat_range_indicator.OnIncludePhysicsRadiusDirty = nil
 	inst.insight_combat_range_indicator.ForceStateChange = nil
+	inst.insight_combat_range_indicator.client_ready = nil
 
 	inst.insight_combat_range_indicator = nil
 end
@@ -511,6 +513,7 @@ local function HookClientIndicator(inst, delay)
 			return
 		end
 
+		inst.client_ready = true
 		inst.OnStateDirty = OnIndicatorStateDirty
 		inst.OnCanDecayDirty = OnCanDecayDirty
 		inst.OnAttackRangeDirty = OnAttackRangeDirty

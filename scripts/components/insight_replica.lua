@@ -222,24 +222,26 @@ end
 
 -- Dirty functions
 local function OnWorldDataDirty(inst)
-	if not GetInsight(inst).is_client then
+	local insight = GetInsight(inst)
+	if not insight.is_client then
 		--dprint("[OnWorldDataDirty]: Rejected for nonclient")
 		return
 	end
 
-	local str = GetInsight(inst).net_world_data:value()
+	local str = insight.net_world_data:value()
 	local data = json.decode(str)
 
-	GetInsight(inst).world_data = data
+	insight.world_data = data
 end
 
 local function OnNaughtinessDirty(inst)
-	if not GetInsight(inst).is_client then
+	local insight = GetInsight(inst)
+	if not insight.is_client then
 		--dprint("[OnNaughtinessDirty]: Rejected for nonclient")
 		return
 	end
 
-	local str = GetInsight(inst).net_naughtiness:value()
+	local str = insight.net_naughtiness:value()
 	if str == "" then
 		return
 	end
@@ -250,7 +252,8 @@ local function OnNaughtinessDirty(inst)
 end
 
 local function OnHuntTargetDirty(inst, target)
-	if Is_DST and not GetInsight(inst).is_client then
+	local insight = GetInsight(inst)
+	if Is_DST and not insight.is_client then
 		--dprint("[OnHuntTargetDirty]: Rejected for nonclient")
 		return
 	end
@@ -259,10 +262,10 @@ local function OnHuntTargetDirty(inst, target)
 		error("[Insight]: OnHuntTargetDirty(DS) missing target.")
 	end
 
-	local target = target or GetInsight(inst).net_hunt_target:value()
+	local target = target or insight.net_hunt_target:value()
 
-	if GetInsight(inst).hunt_target then
-		GetInsight(inst):StopTrackingEntity(GetInsight(inst).hunt_target)
+	if insight.hunt_target then
+		insight:StopTrackingEntity(insight.hunt_target)
 		--inst.HUD:RemoveTargetIndicator(GetInsight(inst).hunt_target)
 	end
 
@@ -270,8 +273,8 @@ local function OnHuntTargetDirty(inst, target)
 		return
 	end
 
-	GetInsight(inst).hunt_target = target
-	GetInsight(inst):StartTrackingEntity(target, {removeOnFound = target.components.health ~= nil or (target.replica and target.replica.health ~= nil)})
+	insight.hunt_target = target
+	insight:StartTrackingEntity(target, {removeOnFound = target.components.health ~= nil or (target.replica and target.replica.health ~= nil)})
 
 	--inst.HUD:AddTargetIndicator(target, {})
 end

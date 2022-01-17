@@ -216,7 +216,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 
 	if context.config["display_attack_range"] and itemInfo.special_data.combat then
 		local ind = new.insight_combat_range_indicator
-		if not ind then
+		if not ind or not ind.client_ready then -- DS: spawning a beehive with an immediate hover could sometimes error because the client combat side hadn't loaded yet but the server had
 			return
 		end
 

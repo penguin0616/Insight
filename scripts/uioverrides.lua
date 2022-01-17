@@ -421,7 +421,7 @@ function RecipePopup:Refresh()
 	
 	if self.lookup and self.lookup.inst:IsValid() then 
 		--dprint("Lookup already exists, adjusting.")
-		self.lookup:SetPosition(self.name:GetRegionSize() / 2 + self.name:InsightGetSize() / 2, 0)
+		self.lookup:SetPosition(self.name:GetRegionSize() / 2 + self.name:InsightGetSize() / 2 - 8, 2)
 		local url, modded = GetRecipeURL(self.recipe)
 		if url then
 			if modded then
@@ -450,11 +450,12 @@ function RecipePopup:Refresh()
 	
 	local header = self.name
 	self.lookup = header:AddChild(InsightButton())
+	self.lookup.button:SetTextures("images/Magnifying_Glass.xml", "Magnifying_Glass.tex")
 	widgetLib.imagebutton.ForceImageSize(self.lookup.button, header:InsightGetSize(), header:InsightGetSize())
 	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:InsightGetSize() / 2, 0)
 	self.lookup.button.scale_on_focus = false
 	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
-	self.lookup.button:SetTooltip("Click to lookup item")
+	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
 
 	if modded then
 		self.lookup.button.image:SetTint(unpack(mod))
