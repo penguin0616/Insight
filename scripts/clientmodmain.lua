@@ -49,7 +49,10 @@ local delayed_actives = {}
 local Is_DS = IsDS()
 local Is_DST = IsDST()
 local Is_Client_Host = IsClientHost()
-local insight_subscribed = not KnownModIndex:IsModTempEnabled("workshop-2189004162")
+insight_subscribed = Is_DS or KnownModIndex.savedata.known_mods["workshop-2189004162"].enabled ~= nil
+-- game has to be exited and reopened for the savedata to update i guess
+-- the difference between unsubbed and subbed is that subbed has "enabled" and "temp_disabled" fields
+-- if subscribed and the world is just forest, nonhosts have enabled=false but temp_enabled = true
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -167,6 +170,7 @@ local function GenerateConfiguration()
 			end
 
 			if v.client then
+				print(v.name, insight_subscribed, (util.table_find(v.tags, "undefined") and server_choice == "undefined"))
 				if insight_subscribed or (util.table_find(v.tags, "undefined") and server_choice == "undefined") then
 					winner = client_choice
 				else

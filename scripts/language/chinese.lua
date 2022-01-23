@@ -609,6 +609,12 @@ return {
 	-- moisture.lua
 	moisture = "<color=WET>潮湿</color>: <color=WET>%s%%</color>",
 
+	-- mood.lua
+	mood = {
+		exit = "Will exit mood in %s day(s).",
+		enter = "Will enter mood in %s day(s).",
+	},
+
 	-- moonstormmanager.lua
 	moonstormmanager = {
 		wagstaff_hunt = {
