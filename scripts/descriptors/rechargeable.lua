@@ -32,9 +32,12 @@ local function Describe(self, context)
 		return
 	end
 
+	local percent = self.current / self.total
+	percent = not isbadnumber(percent) and percent or 0
+
 	local remaining = self:GetTimeToCharge()
 	description = string.format(context.lstr.rechargeable.charged_in, 
-		ApplyColour(context.time:SimpleProcess(remaining), ST:Lerp(EN, self.current / self.total))
+		ApplyColour(context.time:SimpleProcess(remaining), ST:Lerp(EN, percent))
 	)
 	alt_description = string.format(context.lstr.rechargeable.charge, Round(self.current, 0), Round(self.total, 0)) .. ", " .. description
 

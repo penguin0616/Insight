@@ -44,7 +44,12 @@ directory. If not, please refer to
 ]]
 
 -- volcanomanager.lua [Worldly]
+local world_type = GetWorldType()
 local function Describe(self, context)
+	if world_type < 2 then
+		return
+	end 
+	
 	-- SW only
 	local description = nil
 

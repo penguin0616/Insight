@@ -67,8 +67,10 @@ local function GetSpeedModifier(self, player)
 	end
 
 	-- account for wolfgang's speed modifiers
-	if world_type == -1 and speed_modifier > 0 and speed_modifier < 1 and player and player.components.mightiness and player.components.mightiness:GetState() == "mighty" then
-		speed_modifier = math.min(1, speed_modifier + TUNING.MIGHTY_HEAVY_SPEED_MULT_BONUS)
+	if world_type == -1 and speed_modifier > 0 and speed_modifier < 1 then
+		if player and player.components.mightiness and player.components.mightiness:GetState() == "mighty" then
+			speed_modifier = math.min(1, speed_modifier + TUNING.MIGHTY_HEAVY_SPEED_MULT_BONUS)
+		end
 	end
 
 	return speed_modifier
