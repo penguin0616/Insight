@@ -165,8 +165,12 @@ function GetPlayerColour(arg)
 			end
 		end
 	elseif IsPrefab(arg) and arg:HasTag("player") then
-		return Color.new(unpack(arg.Network:GetPlayerColour()))
+		return Color.new(unpack(arg.Network:GetPlayerColour())) -- 0,0,0,0 if not owned
 	end
+	
+	local default = PORTAL_TEXT_COLOUR or {243/255, 244/255, 243/255, 255/255}
+
+	return Color.new(unpack(default))
 end
 
 -- functions i took out of modmain for organization reasons

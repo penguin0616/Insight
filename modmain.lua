@@ -1592,10 +1592,46 @@ AddComponentPostInit("container", function(self)
 end)
 
 if IsDST() then 
+	--[[
+	local sim_paused = false
+
+	local oldOnSimPaused = OnSimPaused
+	function _G.OnSimPaused(...)
+		sim_paused = true
+		print("!!!!!!!! SIM PAUSED", ...)
+
+		TickRPCQueue()
+		rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "Stagger"), TheShard:GetShardId(), "test")
+
+		return oldOnSimPaused(...)
+	end
+
+	local oldOnSimUnpaused = OnSimUnpaused
+	function _G.OnSimUnpaused(...)
+		sim_paused = false
+		print("!!!!!!!! SIM UNPAUSED", ...)
+		return oldOnSimUnpaused(...)
+	end
+	--]]
+	 
+
 	-- replicable
 	AddReplicableComponent("insight")
 
 	--======================= RPCs ============================================================================================
+	--[[
+	rpcNetwork.AddShardModRPCHandler(modname, "Stagger", function(sending_shard, data)
+		print("Got Shard RPC Stagger:", data)
+		if sim_paused then
+			print("\t Sim still paused, so staggering further.")
+			TickRPCQueue()
+			return rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "Stagger"), TheShard:GetShardId(), "test")
+		else
+			print("\t Sim not paused, will not stagger.")
+		end
+	end)
+	--]]
+	
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
 		data = json.decode(data)
 		CreatePlayerContext(player, data.config, data.external_config, data.etc)

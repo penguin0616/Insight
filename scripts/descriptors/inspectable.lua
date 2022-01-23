@@ -246,6 +246,15 @@ local function Describe(self, context)
 		end
 	end
 
+	-- mushrooms, tags only exists for the cap..
+	if inst.rain and inst.data and inst.data.name and inst.data.name:sub(-8) == "mushroom" then
+		-- probably a mushroom
+		if inst.components.pickable ~= nil and not inst.components.pickable.canbepicked then -- and TheWorld.state.israining 
+			-- in regrowth mode
+			description = string.format(context.lstr.mushroom_rain, inst.rain)
+		end
+	end
+
 	if inst:HasTag("heavy") then
 		description = string.format(context.lstr.gym_weight_value, inst.gymweight or 2)
 	end

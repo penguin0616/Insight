@@ -526,6 +526,7 @@ return {
 	-- inspectable.lua
 	--wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
 	--gym_weight_value = "Gym weight value: %s",
+	--mushroom_rain = "<color=WET>Rain</color> needed: %s",
 
 	-- insulator.lua
 	insulation_winter = "<icon=beargervest> <color=FROZEN>%s</color>",
@@ -593,6 +594,12 @@ return {
 
 	-- moisture.lua
 	moisture = "<icon=wetness> %s%%",
+
+	-- mood.lua
+	mood = {
+		--exit = "Will exit mood in %s day(s).",
+		--enter = "Will enter mood in %s day(s).",
+	},
 
 	-- moonstormmanager.lua
 	moonstormmanager = {

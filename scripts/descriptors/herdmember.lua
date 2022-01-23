@@ -20,24 +20,45 @@ directory. If not, please refer to
 
 -- herdmember.lua
 local function Describe(self, context)
-	local alt_description
-
 	-- afaik, no way to mouse over herd component
 	-- so just taking care of this one
 
-	local herd = self:GetHerd()
-
-	if context.config["herd_information"] and herd then
-		herd = herd.components.herd
-		-- maxsize = 12
-		-- membercount = 0
-		alt_description = string.format(context.lstr.herd_size, herd.membercount, herd.maxsize)
+	if not context.config["herd_information"] then
+		return
 	end
 
-	return {
+	local herdobject = self:GetHerd()
+	if not herdobject then
+		return
+	end
+
+	local herd = herdobject.components.herd
+	local mood = herdobject.components.mood
+
+	local herd_info = herd and {
+		name = "herd",
+		priority = 0
+	} or nil
+
+	local mood_info = mood and {
+		name = "mood",
 		priority = 0,
-		alt_description = alt_description
-	}
+	} or nil
+
+	if herd then
+		herd_info.alt_description = string.format(context.lstr.herd_size, herd.membercount, herd.maxsize)
+	end
+
+	if mood and mood.enabled and mood.daystomoodchange then
+		if mood.isinmood then
+			mood_info.description = string.format(context.lstr.mood.exit, mood.daystomoodchange)
+		else
+			mood_info.description = string.format(context.lstr.mood.enter, mood.daystomoodchange)
+		end
+		--mood_info.description = mood:GetDebugString()
+	end
+
+	return herd_info, mood_info
 end
 
 

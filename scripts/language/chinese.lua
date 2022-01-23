@@ -535,6 +535,7 @@ return {
 	-- inspectable.lua
 	wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "Gym weight value: %s",
+	mushroom_rain = "<color=WET>Rain</color> needed: %s",
 
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",

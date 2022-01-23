@@ -49,6 +49,7 @@ local delayed_actives = {}
 local Is_DS = IsDS()
 local Is_DST = IsDST()
 local Is_Client_Host = IsClientHost()
+local insight_subscribed = not KnownModIndex:IsModTempEnabled("workshop-2189004162")
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -166,7 +167,11 @@ local function GenerateConfiguration()
 			end
 
 			if v.client then
-				winner = client_choice
+				if insight_subscribed or (util.table_find(v.tags, "undefined") and server_choice == "undefined") then
+					winner = client_choice
+				else
+					winner = server_choice
+				end
 
 			elseif util.table_find(v.tags, "undefined") and server_choice == "undefined" then
 				winner = client_choice
