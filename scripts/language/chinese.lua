@@ -517,6 +517,12 @@ return {
 	-- herdmember.lua
 	herd_size = "群体大小: %s / %s",
 
+	-- hideandseekgame.lua
+	hideandseekgame = {
+		hiding_range = "Hiding range: %s to %s",
+		needed_hiding_spots = "Needed hiding spots: %s",
+	},
+
 	-- hunger.lua
 	hunger = "<color=HUNGER>饥饿</color>: <color=HUNGER>%s</color> / <color=HUNGER>%s</color>",
 	hunger_burn = "<color=HUNGER>饥饿速度</color>: <color=HUNGER>%+d/天</color> (<color=HUNGER>%s/秒</color>)",
@@ -544,6 +550,11 @@ return {
 	-- inventory.lua
 	inventory = {
 		hat_describe = "[Hat]: ",
+	},
+
+	-- kitcoonden.lua
+	kitcoonden = {
+		number_of_kitcoons = "Number of kitcoons: %s"
 	},
 
 	-- klaussackloot.lua

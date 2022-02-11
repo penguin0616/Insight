@@ -661,7 +661,7 @@ function Insight:SendNaughtiness()
 	if not tbl or not tbl.actions or not tbl.threshold then
 		mprint("GetNaughtiness failed:", tbl)
 		if tbl then
-			table.foreach(tbl, mprint)
+			--table.foreach(tbl, mprint)
 		end
 		return
 	end

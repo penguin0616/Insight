@@ -229,6 +229,7 @@ local function DoAttack(self, target, ...)
 	return oldDoAttack(self, target, ...)
 end
 
+
 --[[
 	Method Call (target)
 		if sg has attack, return true
@@ -481,20 +482,35 @@ local function ForceStateChange(inst, state)
 	OnIndicatorStateDirty(inst, true)
 end
 
+local function TerminateIndicator(inst)
+	inst.OnStateDirty = nil
+	inst.OnCanDecayDirty = nil
+	inst.OnAttackRangeDirty = nil
+	inst.OnHitRangeDirty = nil
+	inst.OnIncludePhysicsRadiusDirty = nil
+	inst.ForceStateChange = nil
+	inst.client_ready = nil
+end
+
 local function OnIndicatorParentRemoved(inst)
+	--mprint('onindicatorparentremoved', inst)
 	if not inst.insight_combat_range_indicator then
 		return
 	end
-	
-	inst.insight_combat_range_indicator.OnStateDirty = nil
-	inst.insight_combat_range_indicator.OnCanDecayDirty = nil
-	inst.insight_combat_range_indicator.OnAttackRangeDirty = nil
-	inst.insight_combat_range_indicator.OnHitRangeDirty = nil
-	inst.insight_combat_range_indicator.OnIncludePhysicsRadiusDirty = nil
-	inst.insight_combat_range_indicator.ForceStateChange = nil
-	inst.insight_combat_range_indicator.client_ready = nil
+
+	TerminateIndicator(inst.insight_combat_range_indicator)
 
 	inst.insight_combat_range_indicator = nil
+end
+
+local function OnIndicatorRemoved(inst)
+	TerminateIndicator(inst)
+
+	local parent = inst.entity:GetParent()
+
+	if parent then
+		parent.insight_combat_range_indicator = nil
+	end
 end
 
 local function HookClientIndicator(inst, delay)
@@ -522,7 +538,10 @@ local function HookClientIndicator(inst, delay)
 		inst.ForceStateChange = ForceStateChange
 
 		parent:ListenForEvent("onremove", OnIndicatorParentRemoved)
-		
+		-- in hamlet, this gets removed by interiorspawner.lua:1376 (SetPropToInteriorLimbo)
+		--mprint("----------------------- indicator removed", inst, inst.entity:GetParent(), ...)
+		--print(debugstack())
+		inst:ListenForEvent("onremove", OnIndicatorRemoved)
 		parent.insight_combat_range_indicator = inst
 
 		local range = (CanUseRangeType("attack") and inst:GetAttackRange()) or inst:GetHitRange()

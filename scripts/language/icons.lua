@@ -508,6 +508,12 @@ return {
 	-- herdmember.lua
 	--herd_size = "Herd size: %s / %s",
 
+	-- hideandseekgame.lua
+	hideandseekgame = {
+		--hiding_range = "Hiding range: %s to %s",
+		--needed_hiding_spots = "Needed hiding spots: %s",
+	},
+
 	-- hunger.lua
 	hunger = "<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>",
 	--hunger_burn = "<color=HUNGER>Hunger</color> decay: <color=HUNGER>%+d/day</color> (<color=HUNGER>%+d/s</color>)",
@@ -535,6 +541,11 @@ return {
 	-- inventory.lua
 	inventory = {
 		hat_describe = "[Hat]: ",
+	},
+
+	-- kitcoonden.lua
+	kitcoonden = {
+		--number_of_kitcoons = "Number of kitcoons: %s"
 	},
 
 	-- klaussackloot.lua

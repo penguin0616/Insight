@@ -253,6 +253,7 @@ local descriptors_ignore = {
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
 	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
+	"cattoy", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -1631,7 +1632,7 @@ if IsDST() then
 		end
 	end)
 	--]]
-	
+
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
 		data = json.decode(data)
 		CreatePlayerContext(player, data.config, data.external_config, data.etc)
@@ -2188,13 +2189,17 @@ if IsDST() then
 					rawset(self, player, playerdata)
 
 					-- register threshold
-					OnKilledOther(player, {
-						-- fake a victim
-						victim = {
-							prefab = "glommer",
-						},
-						stackmult = 0, -- no naughtiness gained since it multiplies naughtiness by this value
-					})
+					if TUNING.KRAMPUS_THRESHOLD ~= -1 then
+						OnKilledOther(player, {
+							-- fake a victim
+							victim = {
+								prefab = "glommer",
+							},
+							stackmult = 0, -- no naughtiness gained since it multiplies naughtiness by this value
+						})
+					else
+						Insight.kramped.players[player].threshold = 0
+					end
 
 					if GetInsight(player) then
 						GetInsight(player):SendNaughtiness()

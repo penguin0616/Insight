@@ -90,7 +90,7 @@ local function Describe(self, context)
 
 		-- #aaaaee
 		if effectiveness ~= 1 then
-			actions[#actions+1] = string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", tostring(effectiveness * 100))
+			actions[#actions+1] = string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", Round(effectiveness * 100, 0))
 		end
 	end
 

@@ -170,7 +170,7 @@ local function GenerateConfiguration()
 			end
 
 			if v.client then
-				print(v.name, insight_subscribed, (util.table_find(v.tags, "undefined") and server_choice == "undefined"))
+				--print(v.name, insight_subscribed, (util.table_find(v.tags, "undefined") and server_choice == "undefined"))
 				if insight_subscribed or (util.table_find(v.tags, "undefined") and server_choice == "undefined") then
 					winner = client_choice
 				else

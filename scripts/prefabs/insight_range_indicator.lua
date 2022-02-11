@@ -33,6 +33,10 @@ local assets = {
 local PLACER_SCALE = 1.55 -- from firesuppressor
 local ratio = 1 / PLACER_SCALE -- "s" in placer_postinit_fn in firesuppressor
 
+-- standing 1 tile from a red gem, ThePlayer:GetDistanceSqToInst(redgem) == 16, sqrt = 4
+-- 2 tiles away, dist sq == 64, sqrt = 8
+-- some range details in hideandseekgame.lua
+
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
