@@ -178,6 +178,7 @@ end
 --------------------------------------------------------------------------
 local function GotEntityInformation(inst, data)
 	local insight = GetInsight(inst)
+	if not insight then print("got entity information missing insight") return end
 
 
 	--mprint("got:", #data.data, data.data:sub(#data.data-32))

@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.3.10" -- dst is 3.3.10, ds is 3.3.10
+version = "3.3.11" -- dst is 3.3.10, ds is 3.3.10
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
