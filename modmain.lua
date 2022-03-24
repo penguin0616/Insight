@@ -78,23 +78,7 @@ local Insight = {
 	active_hunts = {},
 	descriptors = {}, -- 130 descriptors as of April 17, 2021
 	prefab_descriptors = {}, 
-	FUEL_TYPES = {
-		BURNABLE = "Fuel",
-		CAVE = "Light", -- miner hat / lanterns, light bulbs n stuff
-		CHEMICAL = "Fuel",
-		CORK = "Fuel",
-		GASOLINE = "Gasoline", -- DS: not actually used anywhere?
-		MAGIC = "Durability", -- amulets that aren't refuelable (ex. chilled amulet)
-		MECHANICAL = "Durability", -- SW: iron wind
-		MOLEHAT = "Night vision", -- Moggles
-		NIGHTMARE = "Nightmare fuel",
-		NONE = "Time", -- will never be refueled...............................
-		ONEMANBAND = "Durability",
-		PIGTORCH = "Fuel",
-		SPIDERHAT = "Durability", -- Spider Hat
-		TAR = "Tar", -- SW
-		USAGE = "Durability",
-	},
+	
 	COLORS = {
 		-- stats
 		HUNGER = "#DEB639", 
@@ -154,8 +138,9 @@ local Insight = {
 -- Provide to Global
 _G.Insight = Insight
 
--- meh
+-- miscellaneous debug stuff
 MyKleiID = "KU_md6wbcj2"
+ALLOW_SERVER_DEBUGGING = false -- todo make a more accessible for standard users with mod compatibility issues?
 WORKSHOP_ID_DS = "workshop-2081254154"
 WORKSHOP_ID_DST = "workshop-2189004162"
 
@@ -605,13 +590,12 @@ function cprint(...)
 		local v = select(i,...)
 		msg = msg .. tostring(v) .. ( (i < argnum) and "\t" or "" )
 	end
-	
-	local res = "[" .. ModInfoname(modname) .. " - SERVER]: " .. msg 
 
 	if IsClient() then
-		print(res)
-	else
-		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), MyKleiID, res)
+		msg = "[" .. ModInfoname(modname) .. " - SERVER (BUT ACTUALLY CLIENT)]: " .. msg 
+	elseif ALLOW_SERVER_DEBUGGING then
+		msg = "[" .. ModInfoname(modname) .. " - SERVER]: " .. msg 
+		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), MyKleiID, msg)
 	end
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
@@ -1666,7 +1650,7 @@ if IsDST() then
 	end)
 
 	rpcNetwork.AddModRPCHandler(modname, "RemoteExecute", function(player, str)
-		if player.userid == MyKleiID then
+		if ALLOW_SERVER_DEBUGGING and player.userid == MyKleiID then
 			local function tostr(...)
 				local msg, argnum = "", select("#",...)
 				for i = 1, argnum do
@@ -1714,8 +1698,8 @@ if IsDST() then
 	end)
 	rawset(_G, "RE", function(str) rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RemoteExecute"), str) end)
 
-	rpcNetwork.AddModRPCHandler(modname, "ClientInitialized", function(player)
-		
+
+	rpcNetwork.AddModRPCHandler(modname, "ClientInitialized", function(player)	
 	end)
 
 	rpcNetwork.AddShardModRPCHandler(modname, "UpdateTimerNetworking", function(sending_shard_id, data)
@@ -3132,7 +3116,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 	end)
 end
 
-if IsDST() then
+if false and IsDST() then
 	local select = select
 	--local toarray = toarray
 	local tostring = tostring

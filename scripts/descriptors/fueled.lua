@@ -47,7 +47,7 @@ local function Describe(self, context)
 	local description, alt_description = nil, nil
 
 	local fuel_verbosity = context.config["fuel_verbosity"]
-	local primary_fuel_type = Insight.FUEL_TYPES[self.fueltype] or "Fuel"
+	local primary_fuel_type = context.lstr.fuel.types[self.fueltype] or "Fuel"
 	local remaining_time = self.currentfuel / self.rate
 	local time_string, time_string_verbose
 	local efficiency = self.bonusmult

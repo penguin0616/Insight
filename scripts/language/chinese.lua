@@ -441,6 +441,23 @@ return {
 		fuel = "<color=LIGHT>%s</color> 秒的燃料",
 		fuel_verbose = "<color=LIGHT>%s</color> 秒的<color=LIGHT>%s</color>",
 		type = "燃料类型: %s",
+		types = {
+			BURNABLE = "Fuel",
+			CAVE = "Light", -- miner hat / lanterns, light bulbs n stuff
+			CHEMICAL = "Fuel",
+			CORK = "Fuel",
+			GASOLINE = "Gasoline", -- DS: not actually used anywhere?
+			MAGIC = "Durability", -- amulets that aren't refuelable (ex. chilled amulet)
+			MECHANICAL = "Durability", -- SW: iron wind
+			MOLEHAT = "Night vision", -- Moggles
+			NIGHTMARE = "Nightmare fuel",
+			NONE = "Time", -- will never be refueled...............................
+			ONEMANBAND = "Durability",
+			PIGTORCH = "Fuel",
+			SPIDERHAT = "Durability", -- Spider Hat
+			TAR = "Tar", -- SW
+			USAGE = "Durability",
+		},
 	},
 
 	-- fueled.lua

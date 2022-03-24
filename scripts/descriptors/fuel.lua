@@ -58,9 +58,9 @@ local function Describe(self, context)
 	end
 
 
-	local fuel_type_string = "'" .. (Insight.FUEL_TYPES[self.fueltype] or "Fuel") .. "'"
+	local fuel_type_string = "'" .. (context.lstr.fuel.types[self.fueltype] or "Fuel") .. "'"
 	if self.secondaryfueltype then
-		fuel_type_string = fuel_type_string .. "/'" .. (Insight.FUEL_TYPES[self.secondaryfueltype] or "?") .. "'"
+		fuel_type_string = fuel_type_string .. "/'" .. (context.lstr.fuel.types[self.secondaryfueltype] or "?") .. "'"
 	end
 	
 
