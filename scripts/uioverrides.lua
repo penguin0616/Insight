@@ -25,6 +25,9 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Basic ===========================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local CraftingMenuWidget = CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget");
+local CraftingMenuHUD = CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud");
+
 local ItemTile = require("widgets/itemtile")
 local CraftSlot = require("widgets/craftslot")
 local IngredientUI = require("widgets/ingredientui")
@@ -35,8 +38,11 @@ local Is_DS = IsDS()
 local Is_DST = IsDST()
 
 local SHIF_TASK = nil
+local SHIF_DELAY = IsDST() and 0 or 0.09
 local function SetHighlightIngredientFocus(arg)
+	--mprint("SetHighlightIngredientFocus", arg)
 	if SHIF_TASK then
+		--mprint("\tCANCEL")
 		SHIF_TASK:Cancel()
 		SHIF_TASK = nil
 	end
@@ -46,7 +52,8 @@ local function SetHighlightIngredientFocus(arg)
 		return
 	end
 
-	SHIF_TASK = TheGlobalInstance:DoTaskInTime(0.09, function()
+	SHIF_TASK = TheGlobalInstance:DoTaskInTime(SHIF_DELAY, function()
+		--mprint("\tCOMMIT", arg)
 		highlighting.SetActiveIngredientUI(arg)
 	end)
 end
@@ -288,6 +295,138 @@ function ItemTile:SetPercent(percent, ...)
 	return oldItemTile_SetPercent(self, percent, ...)
 end
 
+
+--==========================================================================================================================
+--==========================================================================================================================
+--======================================== Crafting Menu ===================================================================
+--==========================================================================================================================
+--==========================================================================================================================
+--[==[
+local function CMW_OnGainFocus(self, ...)
+	mprint'ongainfocus'
+	if self.data and self.data.recipe and self.data.recipe.product then
+		SetHighlightIngredientFocus({ prefab=self.data.recipe.product })
+	end
+	--[[
+table.foreach(self.data.recipe, mprint)
+[00:27:32]: [workshop-2189004162 (Insight)]:	nounlock	false	
+[00:27:32]: [workshop-2189004162 (Insight)]:	atlas	images/inventoryimages2.xml	
+[00:27:32]: [workshop-2189004162 (Insight)]:	build_distance	1	
+[00:27:32]: [workshop-2189004162 (Insight)]:	is_deconstruction_recipe	false	
+[00:27:32]: [workshop-2189004162 (Insight)]:	character_ingredients	table: 000000010A6B9610	
+[00:27:32]: [workshop-2189004162 (Insight)]:	rpc_id	107	
+[00:27:32]: [workshop-2189004162 (Insight)]:	min_spacing	3.2	
+[00:27:32]: [workshop-2189004162 (Insight)]:	product	pickaxe	
+[00:27:32]: [workshop-2189004162 (Insight)]:	build_mode	1	
+[00:27:32]: [workshop-2189004162 (Insight)]:	image	pickaxe.tex	
+[00:27:32]: [workshop-2189004162 (Insight)]:	name	pickaxe	
+[00:27:32]: [workshop-2189004162 (Insight)]:	sortkey	107	
+[00:27:32]: [workshop-2189004162 (Insight)]:	numtogive	1	
+[00:27:32]: [workshop-2189004162 (Insight)]:	level	table: 00000000599BE800	
+[00:27:32]: [workshop-2189004162 (Insight)]:	ingredients	table: 000000010A6B8990	
+[00:27:32]: [workshop-2189004162 (Insight)]:	tech_ingredients	table: 000000010A6B92A0	
+	]]
+end
+--]==]
+
+function OnCellRootClick(self, widget)
+	dprint("oncellrootclick")
+	if not localPlayer then return end;
+	-- yikes.
+	--local is_current = widget.data == localPlayer.HUD.controls.craftingmenu.craftingmenu.details_root.data
+	--local details_root_data = table.getfield(localPlayer, "HUD.controls.craftingmenu.craftingmenu.details_root.data")
+	local details_root_data = localPlayer.HUD.controls.craftingmenu:GetCurrentRecipeState()
+	if not details_root_data then return end
+
+	--[[
+	local is_current = widget.data == details_root_data
+	if is_current then
+		-- assume we've already clicked this
+		return
+	end
+	--]]
+
+	if widget.data and widget.data.recipe and widget.data.recipe.product then
+		SetHighlightIngredientFocus({ prefab = widget.data.recipe.product })
+	end
+end
+
+function ItemWidgetOnGainFocus(self, ...)
+	dprint('ongainfocus', self.data.recipe.product)
+	if self.data and self.data.recipe and self.data.recipe.product then
+		SetHighlightIngredientFocus({ prefab = self.data.recipe.product })
+	end
+end
+
+function ItemWidgetOnLoseFocus(self, ...)
+	dprint('onlosefocus', self.data.recipe.product)
+	SetHighlightIngredientFocus(nil)
+end
+
+if CraftingMenuWidget and CraftingMenuHUD then
+	local oldTEMPLATES = util.getupvalue(CraftingMenuWidget.MakeRecipeList, "TEMPLATES")
+
+	local fakeTemplates = setmetatable({
+		ScrollingGrid = function(...)
+			local items, opts = ...
+			
+			local oldItemCtorFn = opts.item_ctor_fn
+			local oldApplyFn = opts.apply_fn
+
+			opts.item_ctor_fn = function(...)
+				mprint("ReplacementCtor")
+				local widget = oldItemCtorFn(...)
+				--widget.OnGainFocus = ItemWidgetOnGainFocus;
+				--widget.OnLoseFocus = ItemWidgetOnLoseFocus;
+				
+				
+				local oldOnClick = widget.cell_root.onclick
+				widget.cell_root:SetOnClick(function(...) -- normally no args
+					OnCellRootClick(widget.cell_root, widget)
+					if oldOnClick then -- should exist, but just in case...
+						return oldOnClick(...)
+					end
+				end)
+				
+
+				return widget;
+			end
+
+			return oldTEMPLATES.ScrollingGrid(...)
+		end,
+	}, {
+		__index = oldTEMPLATES;
+		__newindex = oldTEMPLATES;
+	})
+
+	util.replaceupvalue(CraftingMenuWidget.MakeRecipeList, "TEMPLATES", fakeTemplates);
+
+
+	local oldOpen = CraftingMenuHUD.Open
+	function CraftingMenuHUD:Open(...)
+		if not localPlayer then return end
+		local details_root_data = localPlayer.HUD.controls.craftingmenu:GetCurrentRecipeState()
+		if details_root_data then
+			if details_root_data and details_root_data.recipe and details_root_data.recipe.product then
+				SetHighlightIngredientFocus({ prefab = details_root_data.recipe.product })
+			end
+		end
+		return oldOpen(self, ...)
+	end
+
+	local oldClose = CraftingMenuHUD.Close
+	function CraftingMenuHUD:Close(...)
+		SetHighlightIngredientFocus(nil)
+		return oldClose(self, ...)
+	end
+end
+
+
+
+
+
+
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Ingredient UI ===================================================================
@@ -323,6 +462,7 @@ end
 --======================================== Craft Slot ======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+-- Removed in new crafting menu
 if CraftSlot then
 
 local oldCraftSlot_OnGainFocus = CraftSlot.OnGainFocus

@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- eater.lua
+local world_type = GetWorldType()
+
 local function Describe(self, context)
 	local description, alt_description = nil, nil
 
@@ -51,6 +53,12 @@ local function Describe(self, context)
 				alt_held_string = held_string
 			end
 		end
+	end
+
+	-- eater diet
+	local eater_diet_string = nil
+	if world_type == -1 then
+		
 	end
 
 	description = CombineLines(eot_string, held_string)

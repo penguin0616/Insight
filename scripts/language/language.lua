@@ -22,6 +22,8 @@ local languages = {
 	icons = "icons",
 	en = "english",
 	zh = "chinese", ch = "chinese",
+	es = "spanish",
+	br = "portuguese"
 }
 
 local __newindex = function(self) error(tostring(self) .. " is readonly") end
@@ -52,7 +54,7 @@ local function main(config, locale)
 		selected = config["language"]
 	end
 
-	local secondaryLanguage = languages[selected] or error("[Insight]: Invalid language selected (report bug please): " .. tostring(config["language"]) .. "|" .. tostring(selected))
+	local secondaryLanguage = languages[selected] or error("[Insight]: Invalid language selected (report bug please): " .. tostring(config["language"]) .. "|" .. tostring(selected) .. "|" .. TheNet:GetLanguageCode()) 
 	local primaryLanguage = (usingIcons and "icons") or secondaryLanguage
 
 	local tertiaryLanguage = deepcopy(import("language/" .. languages.en))
