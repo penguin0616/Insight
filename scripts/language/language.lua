@@ -22,7 +22,7 @@ local languages = {
 	icons = "icons",
 	en = "english",
 	zh = "chinese", ch = "chinese",
-	es = "spanish",
+	es = "spanish", mex = "spanish",
 	br = "portuguese"
 }
 
@@ -75,9 +75,6 @@ local function main(config, locale)
 			end
 		end
 		
-
-	
-
 		setmetatable(secondaryLanguage, { __index = tertiaryLanguage, __newindex = __newindex, __metatable = __metatable }) -- just in case
 	end
 

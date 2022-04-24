@@ -49,8 +49,8 @@ return {
 	
 	-- alterguardianhat.lua [Prefab]
 	alterguardianhat = {
-		minimum_sanity = "Proporciona luz sobre: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>) de <color=SANITY>sanidad</color>",
-		current_sanity = "Tu <color=SANITY>sanidad</color> es: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+		minimum_sanity = "Proporciona luz sobre: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>) de <color=SANITY>cordura</color>",
+		current_sanity = "Tu <color=SANITY>cordura</color> es: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		summoned_gestalt_damage = "Invoca <color=ENLIGHTENMENT>Gestalts</color> con <color=HEALTH>%s</color> de <color=HEALTH>daño</color>",
 	},
 
@@ -79,7 +79,7 @@ return {
 	-- batbat.lua [Prefab]
 	batbat = {
 		health_restore = "Restaura <color=HEALTH>%s</color> de <color=HEALTH>salud</color> por golpe",
-		sanity_cost = "Drena <color=SANITY>%s</color> de <color=SANITY>sanidad</color> por golpe",
+		sanity_cost = "Drena <color=SANITY>%s</color> de <color=SANITY>cordura</color> por golpe",
 	},
 
 	-- beard.lua
@@ -209,7 +209,7 @@ return {
 	},
 
 	-- dapperness.lua
-	dapperness = "<color=SANITY>Sanidad</color>: <color=SANITY>%s/min</color>",
+	dapperness = "<color=SANITY>Cordura</color>: <color=SANITY>%s/min</color>",
 
 	-- debuffable.lua
 	buff_text = "<color=MAGIC>Bonificación</color>: %s, %s",
@@ -224,7 +224,7 @@ return {
 		
 		["tillweedsalve_buff"] = "Regenera <color=HEALTH>{amount}</color> de <color=HEALTH>salud</color> por {duration}(s)",
 		["healthregenbuff"] = "Regenera <color=HEALTH>{amount}</color> de <color=HEALTH>salud</color> por {duration}(s)",
-		["sweettea_buff"] = "Regenera <color=SANITY>{amount}</color> de <color=SANITY>sanidad</color> por {duration}(s)",
+		["sweettea_buff"] = "Regenera <color=SANITY>{amount}</color> de <color=SANITY>cordura</color> por {duration}(s)",
 	},
 
 	-- deerclopsspawner.lua
@@ -266,8 +266,8 @@ return {
 
 	-- edible.lua
 	food_unit = "<color=%s>%s</color> unidad(es) de <color=%s>%s</color>", 
-	edible_interface = "<color=HUNGER>Hambre</color>: <color=HUNGER>%s</color> / <color=SANITY>Sanidad</color>: <color=SANITY>%s</color> / <color=HEALTH>Salud</color>: <color=HEALTH>%s</color>",
-	edible_wiki = "<color=HEALTH>Salud</color>: <color=HEALTH>%s</color> / <color=HUNGER>Hambre</color>: <color=HUNGER>%s</color> / <color=SANITY>Sanidad</color>: <color=SANITY>%s</color>",
+	edible_interface = "<color=HUNGER>Hambre</color>: <color=HUNGER>%s</color> / <color=SANITY>Cordura</color>: <color=SANITY>%s</color> / <color=HEALTH>Salud</color>: <color=HEALTH>%s</color>",
+	edible_wiki = "<color=HEALTH>Salud</color>: <color=HEALTH>%s</color> / <color=HUNGER>Hambre</color>: <color=HUNGER>%s</color> / <color=SANITY>Cordura</color>: <color=SANITY>%s</color>",
 	edible_foodtype = {
 		meat = "carne",
 		monster = "monstruo",
@@ -735,17 +735,17 @@ return {
 	},
 
 	-- sanity.lua
-	sanity = "<color=SANITY>Sanidad</color>: <color=SANITY>%s</color>/<color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+	sanity = "<color=SANITY>Cordura</color>: <color=SANITY>%s</color>/<color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 	enlightenment = "<color=ENLIGHTENMENT>Iluminación</color>: <color=ENLIGHTENMENT>%s</color>/<color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
 
 	-- sanityaura.lua
-	sanityaura = "<color=SANITY>Aura de sanidad</color>: <color=SANITY>%s/min</color>",
+	sanityaura = "<color=SANITY>Aura de cordura</color>: <color=SANITY>%s/min</color>",
 
 	-- scenariorunner.lua
 	scenariorunner = {
 		opened_already = "Ya ha sido abierto.",
 		chest_labyrinth = {
-			sanity = "66% de prob. de cambiar la <color=SANITY>sanidad</color> de <color=SANITY>-20</color> a <color=SANITY>20</color>.",
+			sanity = "66% de prob. de cambiar la <color=SANITY>cordura</color> de <color=SANITY>-20</color> a <color=SANITY>20</color>.",
 			hunger = "66% de prob. de cambiar el <color=HUNGER>hambre</color> de <color=HUNGER>-20</color> a <color=HUNGER>20</color>.",
 			health = "66% de prob. de cambiar la <color=HEALTH>salud</color> de <color=HEALTH>0</color> a <color=HEALTH>20</color>.",
 			inventory = "66% de prob. de cambiar la <color=LIGHT>durabilidad</color> o <color=MONSTER>frescura</color> en un 20%.",
@@ -757,8 +757,8 @@ return {
 	shadowsubmissive = {
 		shadowcreature = {
 			spawned_for = "Generado por %s.",
-			sanity_reward = "Recompensa de <color=SANITY>sanidad</color>: <color=SANITY>%s</color>",
-			sanity_reward_split = "Recompensa de <color=SANITY>sanidad</color>: <color=SANITY>%s</color>/<color=SANITY>%s</color>",
+			sanity_reward = "Recompensa de <color=SANITY>cordura</color>: <color=SANITY>%s</color>",
+			sanity_reward_split = "Recompensa de <color=SANITY>cordura</color>: <color=SANITY>%s</color>/<color=SANITY>%s</color>",
 		},
 	},
 
@@ -774,7 +774,7 @@ return {
 			battlesong_durability = "Las <color=HEALTH>armas</color> duran <color=#aaaaee>%s%%</color> más",
 			battlesong_healthgain = "Golpear enemigos restaura <color=HEALTH>%s</color> de <color=HEALTH>health</color> (<color=HEALTH>%s</color> para Wigfrids)",
 			battlesong_sanitygain = "Golpear enemigos restaura <color=SANITY>%s</color> de <color=SANITY>sanity</color>",
-			battlesong_sanityaura = "Las <color=SANITY>auras de sanidad</color> son <color=SANITY>%s%%</color> menos efectivas",
+			battlesong_sanityaura = "Las <color=SANITY>auras de cordura</color> son <color=SANITY>%s%%</color> menos efectivas",
 			battlesong_fireresistance = "Mitiga <color=HEALTH>%s%%</color> el <color=HEALTH>daño</color> por <color=LIGHT>fuego</color>",
 			battlesong_instant_taunt = "Provoca a todos los enemigos cercanos",
 			battlesong_instant_panic = "Asusta a todos enemigos menores por %s segundo(s)",
