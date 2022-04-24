@@ -293,7 +293,7 @@ local function OnEntityNetworkActive(ent, self)
 	local config_enabled = self.context and (self.context.config["info_preload"] == 2 or (self.context.config["info_preload"] == 1 and ent.replica.container)) 
 
 	if (ent.prefab == "cave_entrance_open" or ent.prefab == "cave_exit") or (config_enabled) then
-		local a, b = self:RequestInformation(ent, (ent == ThePlayer and {raw = true}) or nil)
+		local a, b = self:RequestInformation(ent, (ent == ThePlayer and {RAW = true}) or nil)
 		if not a then
 			--dprint("Failed to query:", b, ent)
 		else
@@ -384,6 +384,7 @@ local Insight = Class(function(self, inst)
 	self.inst = inst
 	
 	self.performance_ratings = self.is_client and Is_DST and PerformanceRatings()
+	self.entity_request_queue = self.is_client and Is_DST and {}
 
 	-- Exceeded maximum data length serializing entity channel for entity woodie[117470]......
 	-- could i possibly attach a secondary entity and listen to it?
@@ -476,6 +477,32 @@ local Insight = Class(function(self, inst)
 			end
 		end)
 	end
+
+	
+	-- Request Entity Information queuer
+	if self.is_client and Is_DST then
+		self.inst:DoPeriodicTask(0.1, function()
+			local idx = 1
+			local array = {}
+			for ent, params in pairs(self.entity_request_queue) do
+				array[idx] = ent
+				array[idx + 1] = EncodeRequestParams(params)
+				idx = idx + 2
+
+				self.entity_request_queue[ent] = nil
+
+				if idx >= 50 then -- max rpc arguments
+					break
+				end
+			end
+
+			if #array > 0 then
+				SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), unpack(array))
+			end
+
+		end)
+	end
+	
 end)
 
 function Insight:OnEntityGotInformation(ent)
@@ -868,29 +895,30 @@ function Insight:GetInformation(item)
 	end
 end
 
-function Insight:RequestInformation(item, params)
+function Insight:RequestInformation(entity, params)
+	params = params or { RAW=true }
+
 	if not self.is_client then
-		--dprint("insight for", self.inst, "tried to request information for", item)
+		--dprint("insight for", self.inst, "tried to request information for", entity)
 		return false, "IS_CLIENT"
 	end
 
 	if TRACK_INFORMATION_REQUESTS then
-		dprint("Client requesting information for", item)
+		dprint("Client requesting information for", entity)
 	end
 
 	--if true then mprint("requestinfo denied client") return nil end
 
-	local params = params or { raw=false }
-	params.id = item.GUID
+	-- Calculate Params
 
-	if not Is_DS and item.Network == nil then -- not networked
-		--dprint('rejected', item, self.entity_debounces[item])
+	if not Is_DS and entity.Network == nil then -- not networked
+		--dprint('rejected', entity, self.entity_debounces[entity])
 		return false, "NOT_NETWORKED"
 	end
 
 	-- check if there is a debounce
-	if self.entity_debounces[item] then
-		--dprint('rejected', item, self.entity_debounces[item])
+	if self.entity_debounces[entity] then
+		--dprint('rejected', entity, self.entity_debounces[entity])
 		return false, "DEBOUNCE"
 	end
 
@@ -903,11 +931,13 @@ function Insight:RequestInformation(item, params)
 	end
 
 	--[[
-	if not self.entity_data[item] then
-		--dprint("requesting information for unregistered entity:", item)
+	if not self.entity_data[entity] then
+		--dprint("requesting information for unregistered entity:", entity)
 		return
 	end
 	--]]
+
+	params.GUID = entity.GUID
 
 	-- check for debounces
 	--mprint("context", context)
@@ -935,20 +965,22 @@ function Insight:RequestInformation(item, params)
 	end
 
 	if debounce > 0 then
-		SetDebounce(self, item, debounce)
+		SetDebounce(self, entity, debounce)
 	end
+
+	params.debounce = nil
 
 	if Is_DS then
 		-- we don't care about the rest of this in DS
 		
 		-- push this to the next frame to simulate the delay in DST
-		--RequestEntityInformation(item, self.inst, params)
-		item:DoTaskInTime(0, RequestEntityInformation, self.inst, params) 
+		--RequestEntityInformation(entity, self.inst, params)
+		entity:DoTaskInTime(0, RequestEntityInformation, self.inst, params) 
 		return true
 	end
 
-	params = json.encode(params) -- encode for rpc transfer
-	SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), item, params)
+	--SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), entity, params)
+	self.entity_request_queue[entity] = params
 	return true
 end
 
@@ -1044,7 +1076,7 @@ function Insight:Update()
 	
 	-- TheWorld and related analyzation
 	self:GetWorldInformation()
-	self:RequestInformation(self.inst, {raw=true})
+	self:RequestInformation(self.inst, {RAW=true})
 
 	local world_data = self.world_data
 	local player_data = self:GetInformation(self.inst)

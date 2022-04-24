@@ -25,17 +25,16 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Basic ===========================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-local CraftingMenuWidget = CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget");
-local CraftingMenuHUD = CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud");
-
 local ItemTile = require("widgets/itemtile")
 local CraftSlot = require("widgets/craftslot")
 local IngredientUI = require("widgets/ingredientui")
-local RecipePopup = require("widgets/recipepopup") 
 local InsightButton = import("widgets/insightbutton")
 local RichText = import("widgets/RichText")
 local Is_DS = IsDS()
 local Is_DST = IsDST()
+
+local CraftingMenuWidget = Is_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget");
+local CraftingMenuHUD = Is_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud");
 
 local SHIF_TASK = nil
 local SHIF_DELAY = IsDST() and 0 or 0.09
@@ -236,7 +235,7 @@ function ItemTile:SetPercent(percent, ...)
 		--dprint('oh')
 		local value
 		
-		local itemInfo = RequestEntityInformation(self.item, localPlayer, { fromInspection=true, ignore_worldly=true })
+		local itemInfo = RequestEntityInformation(self.item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 
 		if itemInfo then
 			if itemInfo.special_data.temperature then -- thermal stone, coming in STRONG
@@ -491,135 +490,11 @@ end
 --======================================== Recipe Popup ====================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-local recipe_urls = {}
-local function GetRecipeURL(recipe)
-	-- Returns URL, modded
-	-- if not good, URL is nil
-	if recipe_urls[recipe.name] then
-		return unpack(recipe_urls[recipe.name])
-	end
-
-	--dprint('lookup', recipe and recipe.product)
-	if not _G.Prefabs[recipe.product] or not _G.Prefabs[recipe.product].fn then
-		dprint('[GetRecipeURL] Rejected e1, cannot find recipe product in prefabs')
-		return nil
-	end
-
-	local ctor = _G.Prefabs[recipe.product].fn
-	local info = debug.getinfo(ctor, "S")
-
-	
-	local parent = string.match(info.source, "(.*)scripts%/prefabs%/")
-	local mod_folder_name = parent and string.match(parent, "mods%/([^/]+)%/")
-	--mprint("hey:", recipe.product, info.source, parent, mod_folder_name)
-
-	-- if DST, parent is empty string
-	-- if DS, source is @C:/Program Files (x86)/Steam/steamapps/common/dont_starve/data/scripts/prefabs/scienceprototyper.lua
-	--	and parent is @C:/Program Files (x86)/Steam/steamapps/common/dont_starve/data/
-	if info.source == "scripts/prefabutil.lua" or (parent and (parent == "" or parent:sub(-17) == "dont_starve/data/")) then
-		-- vanilla
-		if not STRINGS.NAMES[string.upper(recipe.product)] then
-			recipe_urls[recipe.name] = {nil, nil}
-			return recipe_urls[recipe.name]
-		end
-
-		local url = "https://dontstarve.fandom.com/wiki/" .. STRINGS.NAMES[string.upper(recipe.product)]:gsub("%s", "_")
-		recipe_urls[recipe.name] = {url, false}
-
-		return url, false
-	end
-
-	-- modded
-	for _, modname in pairs(ModManager:GetEnabledModNames()) do
-		if modname == mod_folder_name then
-			local modinfo = KnownModIndex:GetModInfo(modname)
-			if type(modinfo.forumthread) == "string" and modinfo.forumthread ~= "" then
-				recipe_urls[recipe.name] = {modinfo.forumthread, true}
-				return unpack(recipe_urls[recipe.name])
-			else
-				local workshop_id = string.match(mod_folder_name, "workshop%-(%d+)")
-				if workshop_id then
-					local url = "https://steamcommunity.com/sharedfiles/filedetails/?id=" .. workshop_id
-					recipe_urls[recipe.name] = {url, true}
-					return url, true
-				end
-			end
-		end
-	end
-
-	recipe_urls[recipe.name] = {nil, nil}
-	return nil
+local recipeLookupModule = import("uichanges/recipelookup")
+if recipeLookupModule.IsRecipePopupAvailable() then
+	recipeLookupModule.HookRecipePopup()
 end
 
-if RecipePopup then
-
-local oldRecipePopup_Refresh = RecipePopup.Refresh
-function RecipePopup:Refresh()
-	--mprint"refresh"
-	local mod = {0, 1, 0, 1}
-	local normal = {1, 1, 1, 1}
-
-	oldRecipePopup_Refresh(self)
-	local context = localPlayer and GetPlayerContext(localPlayer)
-	if not context or not context.config["display_crafting_lookup_button"] then
-		--dprint("rejected, 1", self.recipe and self.recipe.product)
-		return
-	end
-
-	if not self.name then
-		return
-	end
-	
-	if self.lookup and self.lookup.inst:IsValid() then 
-		--dprint("Lookup already exists, adjusting.")
-		self.lookup:SetPosition(self.name:GetRegionSize() / 2 + self.name:InsightGetSize() / 2 - 8, 2)
-		local url, modded = GetRecipeURL(self.recipe)
-		if url then
-			if modded then
-				self.lookup.button.image:SetTint(unpack(mod))
-			else
-				self.lookup.button.image:SetTint(unpack(normal))
-			end
-		else
-			self.lookup:Kill()
-			self.lookup = nil
-		end
-		--dprint("rejected, 2", self.recipe and self.recipe.product)
-		return
-	end
-
-	if not self.recipe then
-		--dprint("rejected, 3", self.recipe and self.recipe.product)
-		return
-	end
-
-	local url, modded = GetRecipeURL(self.recipe)
-	if not url then
-		--dprint("rejected, 4", self.recipe and self.recipe.product)
-		return
-	end
-	
-	local header = self.name
-	self.lookup = header:AddChild(InsightButton())
-	self.lookup.button:SetTextures("images/Magnifying_Glass.xml", "Magnifying_Glass.tex")
-	widgetLib.imagebutton.ForceImageSize(self.lookup.button, header:InsightGetSize(), header:InsightGetSize())
-	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:InsightGetSize() / 2, 0)
-	self.lookup.button.scale_on_focus = false
-	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
-	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
-
-	if modded then
-		self.lookup.button.image:SetTint(unpack(mod))
-	else
-		self.lookup.button.image:SetTint(unpack(normal))
-	end
-
-	self.lookup:SetOnClick(function()
-		VisitURL(GetRecipeURL(self.recipe))
-	end)
-end
-
-end
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Crock Pot =======================================================================
@@ -877,7 +752,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		--
 		-- information
 		local item = GetMouseTargetItem()
-		local entityInformation = RequestEntityInformation(item, localPlayer, { fromInspection=true, ignore_worldly=true })
+		local entityInformation = RequestEntityInformation(item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 		local itemDescription = nil
 
 		if item and DEBUG_SHOW_PREFAB then
@@ -1087,7 +962,7 @@ AddClassPostConstruct("widgets/inventorybar", function(inventoryBar)
 
 		local lineHeight = 25
 
-		local itemInfo = RequestEntityInformation(inv_item or active_item, localPlayer, { fromInspection=true, ignore_worldly=true })
+		local itemInfo = RequestEntityInformation(inv_item or active_item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 
 		if itemInfo then
 			itemInfo = itemInfo.information
@@ -1164,7 +1039,7 @@ local function init()
 
 			processed[followText] = true
 
-			local itemInfo = RequestEntityInformation(target, localPlayer, { fromInspection=true, ignore_worldly=true })
+			local itemInfo = RequestEntityInformation(target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 
 			if itemInfo then
 				itemInfo = itemInfo.information

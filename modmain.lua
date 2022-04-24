@@ -131,7 +131,12 @@ local Insight = {
 	CONTROLS = {
 		-- CONTROL_MENU_MISC_3 = L
 		TOGGLE_INSIGHT_MENU = CONTROL_OPEN_CRAFTING, -- L2
+	},
 
+	ENTITY_INFORMATION_FLAGS = {
+		RAW = 1,
+		FROM_INSPECTION = 2,
+		IGNORE_WORLDLY = 4,
 	}
 }
 
@@ -140,7 +145,6 @@ _G.Insight = Insight
 
 -- miscellaneous debug stuff
 MyKleiID = "KU_md6wbcj2"
-ALLOW_SERVER_DEBUGGING = false -- todo make a more accessible for standard users with mod compatibility issues?
 WORKSHOP_ID_DS = "workshop-2081254154"
 WORKSHOP_ID_DST = "workshop-2189004162"
 
@@ -155,6 +159,8 @@ DEBUG_ENABLED = (
 		TheSim:GetUserID() == "317172400@steam" -- steamid32
 	)
 	or GetModConfigData("DEBUG_ENABLED", true) or false 
+
+ALLOW_SERVER_DEBUGGING = DEBUG_ENABLED -- todo make a more accessible for standard users with mod compatibility issues?
 
 if false and DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 1")
@@ -238,7 +244,7 @@ local descriptors_ignore = {
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
 	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
-	"cattoy", -- don't care
+	"cattoy", "updatelooper", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -384,7 +390,7 @@ function GetPlayerContext(player)
 	end
 
 	if context then
-		return setmetatable({ fromInspection=false }, { __index=context })
+		return setmetatable({ FROM_INSPECTION=false }, { __index=context })
 	end
 
 	--return context
@@ -596,6 +602,8 @@ function cprint(...)
 	elseif ALLOW_SERVER_DEBUGGING then
 		msg = "[" .. ModInfoname(modname) .. " - SERVER]: " .. msg 
 		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), MyKleiID, msg)
+	else
+		mprint("cprint is disabled")
 	end
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
@@ -716,7 +724,7 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 	for i, d in pairs(datas) do
 	--for i = 1, #datas do -- doesn't account for nils
 		--local d = datas[i]
-		if d and ((not params.ignore_worldly) or (params.ignore_worldly == true and not d.worldly)) then
+		if d and ((not params.IGNORE_WORLDLY) or (params.IGNORE_WORLDLY == true and not d.worldly)) then
 			assert(type(d.priority)=="number", "Invalid priority for:" .. name)
 
 			if d.name ~= nil and type(d.name) ~= "string" then
@@ -768,7 +776,7 @@ local function GetEntityInformation(entity, player, params)
 		information = "", --string.rep("hello there <color=HEALTH> monty python 123</color> dingo bongo\n" .. GetTime(), 4),
 		alt_information = "",
 		special_data = {},
-		raw = (params.raw and {}) or nil,
+		raw_information = (params.RAW and {}) or nil,
 	}
 
 	--[[
@@ -781,12 +789,12 @@ local function GetEntityInformation(entity, player, params)
 
 	local player_context = GetPlayerContext(player)
 	if not player_context then
-		assembled.raw = nil
+		assembled.raw_information = nil
 		assembled.information = "missing player context for " .. player.name
 		return assembled
 	end
 
-	player_context.fromInspection = params.fromInspection or false
+	player_context.FROM_INSPECTION = params.FROM_INSPECTION or false
 	params.is_forge = IsForge() -- why call this multiple times later?
 	player_context.params = params
 
@@ -865,8 +873,8 @@ local function GetEntityInformation(entity, player, params)
 				--assembled.alt_information = assembled.alt_information .. "\n"
 			end
 
-			if params.raw == true then
-				assembled.raw[v.name] = v.description
+			if params.RAW == true then
+				assembled.raw_information[v.name] = v.description
 			end
 		end
 
@@ -920,21 +928,21 @@ function RequestEntityInformation(entity, player, params)
 			mprint(string.format("[Request failure] Requested information for %s", tostring(entity)))
 		end
 
-		return {GUID = params.id or 0, info = "not a real entity?", special_data = {}}
+		return {GUID = params.GUID or 0, info = "not a real entity?", special_data = {}}
 	end
 
 	local insight = GetInsight(player)
 
 	if not insight then
 		mprint(player.name, "is missing insight component.")
-		return {GUID = params.id or 0, info = "missing insight component", special_data = {}}
+		return { GUID = params.GUID or 0, info = "missing insight component", special_data = {} }
 	end
 	
 	if IsDS() then
 		-- DS
 		--if not entity:HasTag"player" then dprint("DS - passing in got entity info", entity) end
 		local info = GetEntityInformation(entity, player, params)
-		info.GUID = params.id or info.GUID -- DS doesn't include the GUID in params
+		info.GUID = params.GUID or info.GUID -- DS doesn't include the GUID in params
 		insight.entity_data[entity] = info
 
 		insight:OnEntityGotInformation(entity)
@@ -945,7 +953,7 @@ function RequestEntityInformation(entity, player, params)
 
 
 
-	local id = params.id
+	local id = params.GUID
 
 	-- GUIDs vary between server and client
 	if TheWorld.ismastersim then
@@ -1006,24 +1014,24 @@ function GetWorldInformation(player) -- refactor?
 			GUID = world.GUID,
 			information = nil,
 			special_data = {},
-			raw = {}
+			raw_information = {}
 		}
 	end
 
-	local data = GetEntityInformation(world, player, {raw = true})
+	local data = GetEntityInformation(world, player, {RAW = true})
 	--[[
 		-- cant visualize this at the moment
 		{
 			GUID = ...
 			information = ...,
 			special_data = {...},
-			raw = {
+			raw_information = {
 				component = description
 			}
 		}
 	]]
 
-	for i,v in pairs(data.raw) do
+	for i,v in pairs(data.raw_information) do
 		data.special_data[i].worldly = true
 	end
 
@@ -1031,7 +1039,7 @@ function GetWorldInformation(player) -- refactor?
 	for i = 1, 7 do
 		local x = "test" .. i
 		data.special_data[x] = { worldly=true }
-		data.raw[x] = x
+		data.raw_information[x] = x
 	end
 	--]]
 	
@@ -1050,7 +1058,7 @@ function GetWorldInformation(player) -- refactor?
 				end
 			end
 
-			data.raw["krakener"] = krakener.description
+			data.raw_information["krakener"] = krakener.description
 			data.special_data["krakener"].worldly = true
 		end
 	end
@@ -1071,17 +1079,17 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["antlion"] = context.time:SimpleProcess(antlion_timer)
+			data.raw_information["antlion"] = context.time:SimpleProcess(antlion_timer)
 		end
 		--]]
 		
 
 		-- antlion (could use sinkholespawner)
-		if data.raw["antlion"] == nil and helper:GetAntlionData() then
+		if data.raw_information["antlion"] == nil and helper:GetAntlionData() then
 			context.antlion_data = helper:GetAntlionData()
 			local res = Insight.descriptors.sinkholespawner and Insight.descriptors.sinkholespawner.Describe(nil, context) or nil
 			data.special_data["antlion"] = res and GetSpecialData(res) or nil
-			data.raw["antlion"] = res and res.description or nil
+			data.raw_information["antlion"] = res and res.description or nil
 		end
 
 		-- ancient gateway
@@ -1096,7 +1104,7 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["atrium_gate"] = context.time:SimpleProcess(atrium_gate_cooldown)
+			data.raw_information["atrium_gate"] = context.time:SimpleProcess(atrium_gate_cooldown)
 		end
 
 		-- dragonfly
@@ -1111,7 +1119,7 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["dragonfly_spawner"] = context.time:SimpleProcess(dragonfly_respawn)	
+			data.raw_information["dragonfly_spawner"] = context.time:SimpleProcess(dragonfly_respawn)	
 		end
 
 		-- bee queen
@@ -1126,7 +1134,7 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["beequeenhive"] = context.time:SimpleProcess(beequeen_respawn)
+			data.raw_information["beequeenhive"] = context.time:SimpleProcess(beequeen_respawn)
 		end
 
 		-- terrarium
@@ -1141,69 +1149,69 @@ function GetWorldInformation(player) -- refactor?
 				from = "prefab"
 			}
 
-			data.raw["terrarium_cd"] = context.time:SimpleProcess(terrarium_cooldown)
+			data.raw_information["terrarium_cd"] = context.time:SimpleProcess(terrarium_cooldown)
 		end
 
 		-- bearger
-		if data.raw["beargerspawner"] == nil and helper:GetBeargerData() then
+		if data.raw_information["beargerspawner"] == nil and helper:GetBeargerData() then
 			context.bearger_data = helper:GetBeargerData()
 			local res = Insight.descriptors.beargerspawner and Insight.descriptors.beargerspawner.Describe(nil, context) or nil
 			data.special_data["beargerspawner"] = res and GetSpecialData(res) or nil
-			data.raw["beargerspawner"] = res and res.description or nil
+			data.raw_information["beargerspawner"] = res and res.description or nil
 		end
 
 		-- crabking
-		if data.raw["crabkingspawner"] == nil and helper:GetCrabKingData() then
+		if data.raw_information["crabkingspawner"] == nil and helper:GetCrabKingData() then
 			context.crabking_data = helper:GetCrabKingData()
 			local res = Insight.descriptors.crabkingspawner and Insight.descriptors.crabkingspawner.Describe(nil, context) or nil
 			data.special_data["crabkingspawner"] = res and GetSpecialData(res) or nil
-			data.raw["crabkingspawner"] = res and res.description or nil
+			data.raw_information["crabkingspawner"] = res and res.description or nil
 		end
 
 		-- deerclops
-		if data.raw["deerclopsspawner"] == nil and helper:GetDeerclopsData() then
+		if data.raw_information["deerclopsspawner"] == nil and helper:GetDeerclopsData() then
 			context.deerclops_data = helper:GetDeerclopsData()
 			local res = Insight.descriptors.deerclopsspawner and Insight.descriptors.deerclopsspawner.Describe(nil, context) or nil
 			data.special_data["deerclopsspawner"] = res and GetSpecialData(res) or nil
-			data.raw["deerclopsspawner"] = res and res.description or nil
+			data.raw_information["deerclopsspawner"] = res and res.description or nil
 		end
 
 		-- klaussack
-		if data.raw["klaussackspawner"] == nil and helper:GetKlausSackData() then
+		if data.raw_information["klaussackspawner"] == nil and helper:GetKlausSackData() then
 			context.klaussack_data = helper:GetKlausSackData()
 			local res = Insight.descriptors.klaussackspawner and Insight.descriptors.klaussackspawner.Describe(nil, context) or nil
 			data.special_data["klaussackspawner"] = res and GetSpecialData(res) or nil
-			data.raw["klaussackspawner"] = res and res.description or nil
+			data.raw_information["klaussackspawner"] = res and res.description or nil
 		end
 
 		-- malbatross
-		if data.raw["malbatrossspawner"] == nil and helper:GetMalbatrossData() then
+		if data.raw_information["malbatrossspawner"] == nil and helper:GetMalbatrossData() then
 			context.malbatross_data = helper:GetMalbatrossData()
 			local res = Insight.descriptors.malbatrossspawner and Insight.descriptors.malbatrossspawner.Describe(nil, context) or nil
 			data.special_data["malbatrossspawner"] = res and GetSpecialData(res) or nil
-			data.raw["malbatrossspawner"] = res and res.description or nil
+			data.raw_information["malbatrossspawner"] = res and res.description or nil
 		end
 
 		-- toadstool
-		if data.raw["toadstoolspawner"] == nil and helper:GetToadstoolData() then
+		if data.raw_information["toadstoolspawner"] == nil and helper:GetToadstoolData() then
 			context.toadstool_data = helper:GetToadstoolData()
 			local res = Insight.descriptors.toadstoolspawner and Insight.descriptors.toadstoolspawner.Describe(nil, context) or nil
 			data.special_data["toadstoolspawner"] = res and GetSpecialData(res) or nil
-			data.raw["toadstoolspawner"] = res and res.description or nil
+			data.raw_information["toadstoolspawner"] = res and res.description or nil
 		end
 
 		-- add data from network
 		-- TheWorld.net == forest_network or cave_network
-		local secondary_data = GetEntityInformation(world.net, player, {raw = true})
+		local secondary_data = GetEntityInformation(world.net, player, {RAW = true})
 		for i,v in pairs(secondary_data.special_data) do
 			assert(data.special_data[i]==nil, "[Insight]: attempt to overwrite special_data: " .. tostring(i))
 			data.special_data[i] = v
 			data.special_data[i].from = "net"
 		end
 
-		for i,v in pairs(secondary_data.raw) do
-			assert(data.raw[i]==nil, "[Insight]: attempt to overwrite raw: " .. tostring(i))
-			data.raw[i] = v
+		for i,v in pairs(secondary_data.raw_information) do
+			assert(data.raw_information[i]==nil, "[Insight]: attempt to overwrite raw_information: " .. tostring(i))
+			data.raw_information[i] = v
 		end
 	end
 
@@ -1376,6 +1384,56 @@ function decompress2(str)
 	return res()
 end
 
+function EncodeRequestParams(params)
+	if not bit then
+		error("What happened to the bit library?")
+	end
+
+	-- guid part
+	local data = ""
+	data = data .. params.GUID .. ";"
+	params.GUID = nil
+
+	-- make bitmask
+	local mask = 0
+	for key in pairs(params) do
+		if Insight.ENTITY_INFORMATION_FLAGS[key] == nil then
+			error(string.format("Missing bit for flag '%s'", key))
+		end
+
+		mask = mask + Insight.ENTITY_INFORMATION_FLAGS[key]
+	end
+
+	data = data .. mask
+
+	return data
+end
+
+function DecodeRequestParams(encoded)
+	local params = {}
+
+	if not bit then
+		error("What happened to the bit library?")
+	end
+
+	local guid, mask = encoded:match("(%d+);(%d+)")
+	if not guid then
+		error("DecodeRequestParams failed:" + encoded);
+	end
+
+	guid, mask = tonumber(guid), tonumber(mask)
+
+	params.GUID = guid
+
+	for key, num in pairs(Insight.ENTITY_INFORMATION_FLAGS) do
+		if bit.band(mask, num) ~= 0 then
+			params[key] = true
+		end
+	end
+
+	return params
+end
+
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
@@ -1449,6 +1507,8 @@ end)
 AddComponentPostInit("combat", function(self)
 	if IsDS() or (TheWorld.ismastersim) then
 		combatHelper.HookCombat(self)
+	else
+		dprint("oh no")
 	end
 end)
 
@@ -1635,17 +1695,46 @@ if IsDST() then
 		insight.net_world_data:set(json.encode(info))
 	end)
 
-	AddModRPCHandler(modname, "RequestEntityInformation", function(player, entity, params)
+	AddModRPCHandler(modname, "RequestEntityInformation", function(player, ...)
 		if TRACK_INFORMATION_REQUESTS then
-			mprint("[RPC RequestEntityInformation] player:", player, "entity:", entity)
+			--mprint("[RPC RequestEntityInformation] player:", player, "entity:", entity)
 		end
 
-		params = json.decode(params)
+		local num = select("#", ...)
+		local array = {...}
 
-		if false and TheGlobalInstance then
-			TheGlobalInstance:DoTaskInTime(0, function() RequestEntityInformation(entity, player, params) end)
-		else
-			RequestEntityInformation(entity, player, params)
+		--dprint(unpack(array))
+		--dprint("got:", num);
+
+		for idx = 1, num, 2 do
+			local entity, params = array[idx], array[idx + 1]
+			if not entity or not params then
+				mprint(idx, "/", num)
+				mprint(unpack(array))
+				mprint(entity)
+				mprint(params)
+				error("missing ent or metadata")
+			end
+			
+			params = DecodeRequestParams(params)
+
+			if false and TheGlobalInstance then
+				TheGlobalInstance:DoTaskInTime(0, function() RequestEntityInformation(entity, player, params) end)
+			else
+				RequestEntityInformation(entity, player, params)
+			end
+		end
+	end)
+
+	AddModRPCHandler(modname, "ArgTest", function(player, ...)
+		local argn = select("#", ...);
+		cprint("Number of args:", argn);
+		
+		local list = {...}
+		for i,v in pairs(list) do
+			if v == nil then
+				cprint("\tMissing entry:", i);
+			end
 		end
 	end)
 
@@ -3433,6 +3522,34 @@ _G.printtable = printtable
 
 _G.cprint = cprint
 
+--[[
+susTbl={[1]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={32},[9]={32},[10]={32},[11]={32},[12]={226,163,160},[13]={226,163,164},[14]={226,163,164},[15]={226,163,164},[16]={226,163,164},[17]={226,163,164},[18]={226,163,182},[19]={226,163,166},[20]={226,163,164},[21]={226,163,132},[22]={226,161,128},[23]={32},[24]={32},[25]={32},[26]={32},[27]={32},[28]={32},[29]={32},[30]={32}},[2]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={32},[9]={226,162,128},[10]={226,163,180},[11]={226,163,191},[12]={226,161,191},[13]={226,160,155},[14]={226,160,137},[15]={226,160,153},[16]={226,160,155},[17]={226,160,155},[18]={226,160,155},[19]={226,160,155},[20]={226,160,187},[21]={226,162,191},[22]={226,163,191},[23]={226,163,183},[24]={226,163,164},[25]={226,161,128},[26]={32},[27]={32},[28]={32},[29]={32},[30]={32}},[3]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={32},[9]={226,163,188},[10]={226,163,191},[11]={226,160,139},[12]={32},[13]={32},[14]={32},[15]={32},[16]={32},[17]={32},[18]={32},[19]={226,162,128},[20]={226,163,128},[21]={226,163,128},[22]={226,160,136},[23]={226,162,187},[24]={226,163,191},[25]={226,163,191},[26]={226,161,132},[27]={32},[28]={32},[29]={32},[30]={32}},[4]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={226,163,184},[9]={226,163,191},[10]={226,161,143},[11]={32},[12]={32},[13]={32},[14]={226,163,160},[15]={226,163,182},[16]={226,163,190},[17]={226,163,191},[18]={226,163,191},[19]={226,163,191},[20]={226,160,191},[21]={226,160,191},[22]={226,160,191},[23]={226,162,191},[24]={226,163,191},[25]={226,163,191},[26]={226,163,191},[27]={226,163,132},[28]={32},[29]={32},[30]={32}},[5]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={226,163,191},[9]={226,163,191},[10]={226,160,129},[11]={32},[12]={32},[13]={226,162,176},[14]={226,163,191},[15]={226,163,191},[16]={226,163,175},[17]={226,160,129},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={226,160,136},[26]={226,160,153},[27]={226,162,191},[28]={226,163,183},[29]={226,161,132},[30]={32}},[6]={[1]={32},[2]={32},[3]={226,163,128},[4]={226,163,164},[5]={226,163,180},[6]={226,163,182},[7]={226,163,182},[8]={226,163,191},[9]={226,161,159},[10]={32},[11]={32},[12]={32},[13]={226,162,184},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,134},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32},[26]={32},[27]={32},[28]={226,163,191},[29]={226,163,183},[30]={32}},[7]={[1]={32},[2]={226,162,176},[3]={226,163,191},[4]={226,161,159},[5]={226,160,139},[6]={226,160,137},[7]={226,163,185},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={226,160,152},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,183},[19]={226,163,166},[20]={226,163,164},[21]={226,163,164},[22]={226,163,164},[23]={226,163,182},[24]={226,163,182},[25]={226,163,182},[26]={226,163,182},[27]={226,163,191},[28]={226,163,191},[29]={226,163,191},[30]={32}},[8]={[1]={32},[2]={226,162,184},[3]={226,163,191},[4]={226,161,135},[5]={32},[6]={32},[7]={226,163,191},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={226,160,185},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,163,191},[20]={226,163,191},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,163,191},[25]={226,163,191},[26]={226,163,191},[27]={226,163,191},[28]={226,161,191},[29]={226,160,131},[30]={32}},[9]={[1]={32},[2]={226,163,184},[3]={226,163,191},[4]={226,161,135},[5]={32},[6]={32},[7]={226,163,191},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={226,160,137},[16]={226,160,187},[17]={226,160,191},[18]={226,163,191},[19]={226,163,191},[20]={226,163,191},[21]={226,163,191},[22]={226,161,191},[23]={226,160,191},[24]={226,160,191},[25]={226,160,155},[26]={226,162,187},[27]={226,163,191},[28]={226,161,135},[29]={32},[30]={32}},[10]={[1]={32},[2]={226,163,191},[3]={226,163,191},[4]={226,160,129},[5]={32},[6]={32},[7]={226,163,191},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={32},[16]={32},[17]={32},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32},[26]={226,162,184},[27]={226,163,191},[28]={226,163,167},[29]={32},[30]={32}},[11]={[1]={32},[2]={226,163,191},[3]={226,163,191},[4]={32},[5]={32},[6]={32},[7]={226,163,191},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={32},[16]={32},[17]={32},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32},[26]={226,162,184},[27]={226,163,191},[28]={226,163,191},[29]={32},[30]={32}},[12]={[1]={32},[2]={226,163,191},[3]={226,163,191},[4]={32},[5]={32},[6]={32},[7]={226,163,191},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={32},[16]={32},[17]={32},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32},[26]={226,162,184},[27]={226,163,191},[28]={226,163,191},[29]={32},[30]={32}},[13]={[1]={32},[2]={226,162,191},[3]={226,163,191},[4]={226,161,134},[5]={32},[6]={32},[7]={226,163,191},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={32},[16]={32},[17]={32},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32},[26]={226,162,184},[27]={226,163,191},[28]={226,161,135},[29]={32},[30]={32}},[14]={[1]={32},[2]={226,160,184},[3]={226,163,191},[4]={226,163,167},[5]={226,161,128},[6]={32},[7]={226,163,191},[8]={226,163,191},[9]={226,161,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={32},[16]={32},[17]={32},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32},[26]={226,163,191},[27]={226,163,191},[28]={226,160,131},[29]={32},[30]={32}},[15]={[1]={32},[2]={32},[3]={226,160,155},[4]={226,162,191},[5]={226,163,191},[6]={226,163,191},[7]={226,163,191},[8]={226,163,191},[9]={226,163,135},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={226,163,176},[16]={226,163,191},[17]={226,163,191},[18]={226,163,183},[19]={226,163,182},[20]={226,163,182},[21]={226,163,182},[22]={226,163,182},[23]={226,160,182},[24]={32},[25]={226,162,160},[26]={226,163,191},[27]={226,163,191},[28]={32},[29]={32},[30]={32}},[16]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={226,163,191},[9]={226,163,191},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={226,163,191},[16]={226,163,191},[17]={226,161,135},[18]={32},[19]={226,163,189},[20]={226,163,191},[21]={226,161,143},[22]={226,160,129},[23]={32},[24]={32},[25]={226,162,184},[26]={226,163,191},[27]={226,161,135},[28]={32},[29]={32},[30]={32}},[17]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={226,163,191},[9]={226,163,191},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={226,163,191},[16]={226,163,191},[17]={226,161,135},[18]={32},[19]={226,162,185},[20]={226,163,191},[21]={226,161,134},[22]={32},[23]={32},[24]={32},[25]={226,163,184},[26]={226,163,191},[27]={226,160,135},[28]={32},[29]={32},[30]={32}},[18]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={226,162,191},[9]={226,163,191},[10]={226,163,166},[11]={226,163,132},[12]={226,163,128},[13]={226,163,160},[14]={226,163,180},[15]={226,163,191},[16]={226,163,191},[17]={226,160,129},[18]={32},[19]={226,160,136},[20]={226,160,187},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,163,191},[25]={226,161,191},[26]={226,160,143},[27]={32},[28]={32},[29]={32},[30]={32}},[19]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={32},[8]={226,160,136},[9]={226,160,155},[10]={226,160,187},[11]={226,160,191},[12]={226,160,191},[13]={226,160,191},[14]={226,160,191},[15]={226,160,139},[16]={226,160,129},[17]={32},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32},[26]={32},[27]={32},[28]={32},[29]={32},[30]={32}}}
+susTbl2={[1]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={226,162,128},[7]={226,163,180},[8]={226,161,190},[9]={226,160,191},[10]={226,160,191},[11]={226,160,191},[12]={226,160,191},[13]={226,162,182},[14]={226,163,166},[15]={226,163,132},[16]={32},[17]={32},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32}},[2]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,162,160},[6]={226,163,191},[7]={226,160,129},[8]={32},[9]={32},[10]={32},[11]={226,163,128},[12]={226,163,128},[13]={226,163,128},[14]={226,163,136},[15]={226,163,187},[16]={226,163,183},[17]={226,161,132},[18]={32},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32}},[3]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,163,190},[6]={226,161,135},[7]={32},[8]={32},[9]={226,163,190},[10]={226,163,159},[11]={226,160,155},[12]={226,160,139},[13]={226,160,137},[14]={226,160,137},[15]={226,160,153},[16]={226,160,155},[17]={226,162,183},[18]={226,163,132},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32}},[4]={[1]={226,162,128},[2]={226,163,164},[3]={226,163,180},[4]={226,163,182},[5]={226,163,191},[6]={32},[7]={32},[8]={226,162,184},[9]={226,163,191},[10]={226,163,191},[11]={226,163,167},[12]={32},[13]={32},[14]={32},[15]={32},[16]={226,162,128},[17]={226,163,128},[18]={226,162,185},[19]={226,161,134},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32}},[5]={[1]={226,162,184},[2]={226,161,143},[3]={32},[4]={226,162,184},[5]={226,163,191},[6]={32},[7]={32},[8]={32},[9]={226,162,191},[10]={226,163,191},[11]={226,163,191},[12]={226,163,183},[13]={226,163,182},[14]={226,163,182},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,160,131},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32}},[6]={[1]={226,163,188},[2]={226,161,135},[3]={32},[4]={226,162,184},[5]={226,163,191},[6]={32},[7]={32},[8]={32},[9]={226,160,136},[10]={226,160,187},[11]={226,160,191},[12]={226,163,191},[13]={226,163,191},[14]={226,160,191},[15]={226,160,191},[16]={226,160,155},[17]={226,162,187},[18]={226,161,135},[19]={32},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32}},[7]={[1]={226,163,191},[2]={226,161,135},[3]={32},[4]={226,162,184},[5]={226,163,191},[6]={32},[7]={32},[8]={32},[9]={32},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={226,163,128},[16]={226,163,164},[17]={226,163,188},[18]={226,163,183},[19]={226,163,182},[20]={226,163,182},[21]={226,163,182},[22]={226,163,164},[23]={226,161,128},[24]={32},[25]={32}},[8]={[1]={226,163,191},[2]={226,161,135},[3]={32},[4]={226,162,184},[5]={226,163,191},[6]={32},[7]={32},[8]={32},[9]={32},[10]={32},[11]={32},[12]={226,163,128},[13]={226,163,180},[14]={226,163,190},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,163,191},[20]={226,163,191},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,163,166},[25]={226,161,128}},[9]={[1]={226,162,187},[2]={226,161,135},[3]={32},[4]={226,162,184},[5]={226,163,191},[6]={32},[7]={32},[8]={32},[9]={32},[10]={226,162,128},[11]={226,163,190},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,161,191},[20]={226,160,191},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,163,191},[25]={226,161,135}},[10]={[1]={226,160,136},[2]={226,160,187},[3]={226,160,183},[4]={226,160,190},[5]={226,163,191},[6]={32},[7]={32},[8]={32},[9]={32},[10]={226,163,190},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,161,135},[20]={32},[21]={226,162,184},[22]={226,163,191},[23]={226,163,191},[24]={226,163,191},[25]={226,163,135}},[11]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,163,191},[6]={32},[7]={32},[8]={32},[9]={32},[10]={226,163,191},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,160,131},[20]={32},[21]={226,162,184},[22]={226,163,191},[23]={226,163,191},[24]={226,163,191},[25]={226,161,191}},[12]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,162,191},[6]={226,163,167},[7]={226,163,128},[8]={226,163,160},[9]={226,163,180},[10]={226,161,191},[11]={226,160,153},[12]={226,160,155},[13]={226,160,191},[14]={226,160,191},[15]={226,160,191},[16]={226,160,191},[17]={226,160,137},[18]={32},[19]={32},[20]={226,162,160},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,163,191},[25]={226,160,135}},[13]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={226,162,136},[7]={226,163,169},[8]={226,163,173},[9]={226,163,165},[10]={226,163,164},[11]={226,163,164},[12]={226,163,164},[13]={226,163,164},[14]={226,163,164},[15]={226,163,164},[16]={226,163,164},[17]={226,163,164},[18]={226,163,164},[19]={226,163,182},[20]={226,163,191},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,160,143},[25]={32}},[14]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,163,180},[6]={226,163,191},[7]={226,163,191},[8]={226,163,191},[9]={226,163,191},[10]={226,163,191},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,163,191},[20]={226,163,191},[21]={226,163,191},[22]={226,161,191},[23]={226,160,139},[24]={32},[25]={32}},[15]={[1]={32},[2]={32},[3]={32},[4]={226,162,184},[5]={226,163,191},[6]={226,163,191},[7]={226,163,191},[8]={226,161,159},[9]={226,160,155},[10]={226,160,155},[11]={226,160,155},[12]={226,160,155},[13]={226,160,155},[14]={226,160,155},[15]={226,160,155},[16]={226,160,155},[17]={226,160,155},[18]={226,160,155},[19]={226,160,155},[20]={226,160,139},[21]={226,160,129},[22]={32},[23]={32},[24]={32},[25]={32}},[16]={[1]={32},[2]={32},[3]={32},[4]={226,162,184},[5]={226,163,191},[6]={226,163,191},[7]={226,163,191},[8]={226,163,183},[9]={226,163,132},[10]={226,163,128},[11]={226,163,128},[12]={226,163,128},[13]={226,163,128},[14]={226,163,128},[15]={226,163,128},[16]={226,163,128},[17]={226,163,128},[18]={226,163,128},[19]={226,161,128},[20]={32},[21]={32},[22]={32},[23]={32},[24]={32},[25]={32}},[17]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,160,187},[6]={226,163,191},[7]={226,163,191},[8]={226,163,191},[9]={226,163,191},[10]={226,163,191},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,163,191},[20]={226,163,183},[21]={226,163,166},[22]={226,161,128},[23]={32},[24]={32},[25]={32}},[18]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={226,160,136},[7]={226,160,155},[8]={226,160,191},[9]={226,160,191},[10]={226,163,191},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,160,191},[16]={226,160,191},[17]={226,162,191},[18]={226,163,191},[19]={226,163,191},[20]={226,163,191},[21]={226,163,191},[22]={226,163,191},[23]={226,161,132},[24]={32},[25]={32}},[19]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={226,162,128},[8]={226,163,128},[9]={226,163,128},[10]={226,163,128},[11]={226,161,128},[12]={32},[13]={32},[14]={32},[15]={32},[16]={32},[17]={32},[18]={226,162,128},[19]={226,163,185},[20]={226,163,191},[21]={226,163,191},[22]={226,163,191},[23]={226,161,135},[24]={32},[25]={32}},[20]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={226,162,176},[7]={226,163,191},[8]={226,163,191},[9]={226,163,191},[10]={226,163,191},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,163,191},[20]={226,163,191},[21]={226,163,191},[22]={226,161,191},[23]={226,160,129},[24]={32},[25]={32}},[21]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,163,188},[6]={226,163,191},[7]={226,163,191},[8]={226,163,191},[9]={226,163,191},[10]={226,163,191},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,163,191},[20]={226,160,191},[21]={226,160,155},[22]={226,160,129},[23]={32},[24]={32},[25]={32}},[22]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,163,191},[6]={226,163,191},[7]={226,163,191},[8]={226,163,191},[9]={226,160,129},[10]={32},[11]={32},[12]={32},[13]={32},[14]={32},[15]={226,160,137},[16]={226,160,137},[17]={226,160,129},[18]={226,162,164},[19]={226,163,164},[20]={226,163,164},[21]={226,163,164},[22]={226,163,164},[23]={226,163,164},[24]={226,163,164},[25]={226,161,128}},[23]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,162,191},[6]={226,163,191},[7]={226,163,191},[8]={226,163,191},[9]={226,163,183},[10]={226,163,182},[11]={226,163,182},[12]={226,163,182},[13]={226,163,182},[14]={226,163,190},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,134},[19]={226,162,187},[20]={226,163,191},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,163,191},[25]={226,161,135}},[24]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={226,160,136},[6]={226,160,187},[7]={226,163,191},[8]={226,163,191},[9]={226,163,191},[10]={226,163,191},[11]={226,163,191},[12]={226,163,191},[13]={226,163,191},[14]={226,163,191},[15]={226,163,191},[16]={226,163,191},[17]={226,163,191},[18]={226,163,191},[19]={226,163,166},[20]={226,160,187},[21]={226,163,191},[22]={226,163,191},[23]={226,163,191},[24]={226,161,191},[25]={226,160,129}},[25]={[1]={32},[2]={32},[3]={32},[4]={32},[5]={32},[6]={32},[7]={226,160,136},[8]={226,160,153},[9]={226,160,155},[10]={226,160,155},[11]={226,160,155},[12]={226,160,155},[13]={226,160,155},[14]={226,160,155},[15]={226,160,155},[16]={226,160,155},[17]={226,160,155},[18]={226,160,155},[19]={226,160,137},[20]={32},[21]={226,160,153},[22]={226,160,155},[23]={226,160,137},[24]={32},[25]={32}}}
+
+bx=255
+bz=430
+function plot(x, y, prefab)
+	local p = SpawnPrefab(prefab);
+	p.Transform:SetPosition(bx+x, 0, bz+y);
+end;
+
+_G.sus = function(outline, body)
+	for y, line in pairs(susTbl2) do
+		for x, charBytes in pairs(line) do
+			if charBytes[1] == 32 then
+				-- space, do nothing
+				if body then 
+					plot(x*1, y, body) 
+				end
+			elseif charBytes[1] == 226 then
+				plot(x*.8, y, outline)
+			else
+				-- idk
+			end
+		end
+	end
+end
+--]]
 
 --[[
 	print("client:", GetModConfigData("giants", true))

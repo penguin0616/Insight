@@ -241,7 +241,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 	local player_page = self:GetPage("player")
 
 	if world_page and world_data then
-		for component, desc in pairs(world_data.raw) do
+		for component, desc in pairs(world_data.raw_information) do
 			if world_data.special_data[component].worldly == true then
 				--mprint(component, desc)
 				desc = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", world_data.special_data[component].from or "cmp", component) .. desc) or desc
@@ -257,7 +257,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		local to_remove = {}
 
 		for _, item in pairs(world_page:GetItems()) do
-			if world_data.raw[item.key] == nil then
+			if world_data.raw_information[item.key] == nil then
 				table.insert(to_remove, item.key)
 			end
 		end
@@ -287,8 +287,8 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 			end
 		end
 		
-		if info.raw then
-			for component, desc in pairs(info.raw) do
+		if info.raw_information then
+			for component, desc in pairs(info.raw_information) do
 				if info.special_data[component].playerly == true then
 					did[component] = true
 					

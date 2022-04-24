@@ -181,7 +181,7 @@ local function Describe(self, context)
 	end
 
 	--[[
-	if not context.fromInspection then
+	if not context.FROM_INSPECTION then
 		contents = GetItems(self, context)
 	end
 	--]]

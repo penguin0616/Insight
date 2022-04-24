@@ -111,7 +111,7 @@ local function Describe(self, context)
 	local description
 	local items = GetContainerContents(self, context)
 
-	if context.fromInspection and self.inst.prefab == "pandoraschest" then
+	if context.FROM_INSPECTION and self.inst.prefab == "pandoraschest" then
 		if self.inst.components.scenariorunner == nil then
 			description = context.lstr.scenariorunner.opened_already
 		else
