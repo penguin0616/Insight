@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.4.0" -- dst is 3.4.0, ds is 3.3.10
+version = "3.4.0" -- dst is 3.4.0, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -4327,6 +4327,1433 @@ local portuguese = {
 	},
 }
 translations["br"] = portuguese
+
+local spanish = {
+
+	-- description
+	ds_not_enabled = "El mod debe estar habilitado para que funcione el modinfo.",
+	update_info = "Actualización general de la nueva interfaz de creación. Consulta el registro de cambios para más detalles.",
+	update_info_ds = "Corrección de errores, consulte las notas de cambio.",
+	crashreporter_info = "Insight tiene un informe de fallos que puedes activar en la configuración del cliente y del servidor.",
+
+	mod_explanation = "Básicamente Show Me pero con más funciones.",
+	config_paths = "Configuración de servidor: Menú principal -> Crear partida -> Mods -> Mods servidor -> Insight -> Configurar mod\n-------------------------\nConfiguración del cliente: Menú principal -> Mods -> Mods servidor -> Insight -> Configurar mod",
+
+	config_disclaimer = "Asegúrese de comprobar las opciones de configuración.",
+	version = "Versión",
+	latest_update = "Última actualización",
+
+	-- section titles
+	sectiontitle_formatting = "Formato",
+	sectiontitle_indicators = "Indicadores",
+	sectiontitle_foodrelated = "Alimentos",
+	sectiontitle_informationcontrol = "Información",
+	sectiontitle_miscellaneous = "Varios",
+	sectiontitle_debugging = "Depuración",
+
+	-- etc
+	undefined = "Indefinido",
+	undefined_description = "Por defecto es: ",
+
+	-- Formatting
+	language = {
+		--[[
+		LABEL = "How to find Client Config",
+		HOVER = "The language you want information to display in.",
+		OPTIONS = {
+			["yep"] = {
+				DESCRIPTION = "",
+				HOVER = ""
+			},
+		},
+		--]]
+
+		--------------------------------------------------------------------------
+		--[[ Formatting ]]
+		--------------------------------------------------------------------------
+		LABEL = "Idioma",
+		HOVER = "El idioma en el que se muestra la información.",
+		OPTIONS = {
+			["automatic"] = {
+				DESCRIPTION = "Automático",
+				HOVER = "Utiliza tu configuración de idioma actual."
+			},
+			["en"] = {
+				DESCRIPTION = "Inglés",
+				HOVER = "Inglés"
+			},
+			["zh"] = {
+				DESCRIPTION = "Chino",
+				HOVER = "Chino"
+			},
+			["br"] = {
+				DESCRIPTION = "Portugués",
+				HOVER = "Portugués",
+			},
+			["es"] = {
+				DESCRIPTION = "Español",
+				HOVER = "Español"
+			},
+			--[[
+			["ru"] = {
+				DESCRIPTION = "Russian"
+				HOVER = "Russian"
+			},
+			]]
+		},
+	},
+	info_style = {
+		LABEL = "Estilo de información",
+		HOVER = "Configura el uso de texto o iconos en la información.",
+		OPTIONS = {
+			["text"] = {
+				DESCRIPTION = "Texto",
+				HOVER = "Solo se utiliza texto."
+			},
+			["icon"] = {
+				DESCRIPTION = "Iconos",
+				HOVER = "Se usan iconos cuando sea posible."
+			},
+		},
+	},
+	text_coloring = {
+		LABEL = "Coloreado de textos",
+		HOVER = "Configura el uso de coloreado de texto.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se utiliza el coloreado de texto. :("
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se utiliza el coloreado de texto."
+			},
+		},
+	},
+	alt_only_information = {
+		LABEL = "Solo inspeccionar",
+		HOVER = "Insight sólo muestra información cuando mantengas pulsado Alt izq.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "La información se muestra normalmente."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Sólo se muestra en la inspección."
+			},
+		},
+	},
+	--[[
+	alt_only_is_verbose = {
+		LABEL = "Inspect Only Verbosity",
+		HOVER = "*ONLY MATTERS WHEN \"Inspect Only\" IS ENABLED.*\nWhether holding alt shows the standard or extended information.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Standard",
+				HOVER = "Standard information is shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Extended",
+				HOVER = "Extended information is shown."
+			},
+		},
+	},
+	--]]
+	itemtile_display = {
+		LABEL = "Información de ranuras",
+		HOVER = "Configura qué tipo de información se muestra en lugar de porcentajes en las ranuras de tu inventario.",
+		OPTIONS = {
+			["none"] = {
+				DESCRIPTION = "Ninguno",
+				HOVER = "No muestra ninguna información sobre las ranuras de inventario."
+			},
+			["numbers"] = {
+				DESCRIPTION = "Números",
+				HOVER = "Utiliza números de durabilidad en las ranuras de inventario."
+			},
+			["percentages"] = {
+				DESCRIPTION = "Porcentajes",
+				HOVER = "Utiliza porcentajes por defecto en las ranuras de inventario."
+			},
+			["mixed"] = {
+				DESCRIPTION = "Mixto",
+				HOVER = "Utiliza porcentajes por defecto en items recargables, números para todo lo demás."
+			},
+		},
+	},
+	time_style = {
+		LABEL = "Estilo del tiempo",
+		HOVER = "Configura como mostrar información de la hora.",
+		OPTIONS = {
+			["gametime"] = {
+				DESCRIPTION = "Tiempo de juego",
+				HOVER = "Muestra información del tiempo basada en el tiempo de juego: días, segmentos"
+			},
+			["realtime"] = {
+				DESCRIPTION = "Tiempo real",
+				HOVER = "Muestra información del tiempo basada en el tiempo real: horas, minutos, segundos."
+			},
+			["both"] = {
+				DESCRIPTION = "Ambos",
+				HOVER = "Utiliza ambos estilos de tiempo: días, segmentos (horas, minutos, segundos)"
+			},
+			["gametime_short"] = {
+				DESCRIPTION = "Tiempo de juego (corto)",
+				HOVER = "Muestra información de tiempo reducido basado en el tiempo de juego"
+			},
+			["realtime_short"] = {
+				DESCRIPTION = "Tiempo real (corto)",
+				HOVER = "Muestra información de tiempo reducido basada en el tiempo real: horas:minutos:segundos."
+			},
+			["both_short"] = {
+				DESCRIPTION = "Both (Short)",
+				HOVER = "Utiliza ambos estilos reducidos: x.y días (horas:minutos:segundos)."
+			},
+		},
+	},
+	highlighting = {
+		LABEL = "Resaltado",
+		HOVER = "Configura si se activa el resaltado de objetos. (\"Buscador\")",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se resaltarán objetos."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Los cofres y objetos se resaltarán."
+			},
+		},
+	},
+	highlighting_color = {
+		LABEL = "Color de resaltado",
+		HOVER = "Configura el color a utilizar para resaltar.",
+		OPTIONS = {
+			["RED"] = {
+				DESCRIPTION = "Rojo",
+				HOVER = "Rojo",
+			},
+			["GREEN"] = {
+				DESCRIPTION = "Verde",
+				HOVER = "Verde",
+			},
+			["BLUE"] = {
+				DESCRIPTION = "Azul",
+				HOVER = "Azul",
+			},
+			["LIGHT_BLUE"] = {
+				DESCRIPTION = "Azul claro",
+				HOVER = "Azul claro",
+			},
+			["PURPLE"] = {
+				DESCRIPTION = "Púrpura",
+				HOVER = "Púrpura",
+			},
+			["YELLOW"] = {
+				DESCRIPTION = "Amarillo",
+				HOVER = "Amarillo",
+			},
+			["WHITE"] = {
+				DESCRIPTION = "Blanco",
+				HOVER = "Blanco",
+			},
+			["ORANGE"] = {
+				DESCRIPTION = "Naranja",
+				HOVER = "Naranja",
+			},
+			["PINK"] = {
+				DESCRIPTION = "Rosa",
+				HOVER = "Rosa",
+			},
+		},
+	},
+	fuel_highlighting = {
+		LABEL = "Resaltado del combustible",
+		HOVER = "Configura el resaltado del combustible.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se resaltan objetos de combustible."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Los objetos de combustible serán resaltadas."
+			},
+		},
+	},
+	fuel_highlighting_color = {
+		LABEL = "Color de resaltado del combustible",
+		HOVER = "Configura el color a utilizar para resaltar el combustible.",
+		OPTIONS = {
+			["RED"] = {
+				DESCRIPTION = "Rojo",
+				HOVER = "Rojo",
+			},
+			["GREEN"] = {
+				DESCRIPTION = "Verde",
+				HOVER = "Verde",
+			},
+			["BLUE"] = {
+				DESCRIPTION = "Azul",
+				HOVER = "Azul",
+			},
+			["LIGHT_BLUE"] = {
+				DESCRIPTION = "Azul claro",
+				HOVER = "Azul claro",
+			},
+			["PURPLE"] = {
+				DESCRIPTION = "Púrpura",
+				HOVER = "Púrpura",
+			},
+			["YELLOW"] = {
+				DESCRIPTION = "Amarillo",
+				HOVER = "Amarillo",
+			},
+			["WHITE"] = {
+				DESCRIPTION = "Blanco",
+				HOVER = "Blanco",
+			},
+			["ORANGE"] = {
+				DESCRIPTION = "Naranja",
+				HOVER = "Naranja",
+			},
+			["PINK"] = {
+				DESCRIPTION = "Rosa",
+				HOVER = "Rosa",
+			},
+		},
+	},
+	--------------------------------------------------------------------------
+	--[[ Indicators ]]
+	--------------------------------------------------------------------------
+	display_attack_range = {
+		LABEL = "Rango de ataque",
+		HOVER = "Configura si se muestra los rangos de ataque.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los rangos de ataque."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los rangos de ataque."
+			},
+		},
+	},
+	attack_range_type = {
+		LABEL = "Tipo de rango de ataque",
+		HOVER = "Tipo de rango de ataque a mostrar.",
+		OPTIONS = {
+			["hit"] = {
+				DESCRIPTION = "Golpe",
+				HOVER = "Se muestra el rango de golpe."
+			},
+			["attack"] = {
+				DESCRIPTION = "Ataque",
+				HOVER = "Se muestra el rango de ataque."
+			},
+			["both"] = {
+				DESCRIPTION = "Ambos",
+				HOVER = "Se muestra tanto el rango de golpe como el de ataque."
+			},
+		},
+	},
+	hover_range_indicator = {
+		LABEL = "Rango de objeto",
+		HOVER = "Configura si el rango de un objeto se muestra al pasar el ratón por encima.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra el rango."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el rango."
+			},
+		},
+	},
+	boss_indicator = {
+		LABEL = "Indicador de jefes",
+		HOVER = "Configura si se muestra los indicadores de jefes.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los indicadores de jefes."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los indicadores del jefes."
+			},
+		},
+	},
+	notable_indicator = {
+		LABEL = "Indicador notable",
+		HOVER = "Configura si se muestra los indicadores notables (Chester, Hutch, etc.)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los indicadores notables."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los indicadores notables."
+			},
+		},
+	},
+	pipspook_indicator = {
+		LABEL = "Indicadores de juguetes Pipspook",
+		HOVER = "Configura si se muestra los indicadores de juguetes Pipspook.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los indicadores de juguetes Pipspook."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los indicadores de juguetes Pipspook."
+			},
+		},
+	},
+	bottle_indicator = {
+		LABEL = "Indicador de botella",
+		HOVER = "Configura si se muestra los indicadores de botellas de mensajes.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los indicadores de mensajes."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los indicadores de mensajes."
+			},
+		},
+	},
+	hunt_indicator = {
+		LABEL = "Indicador de caza",
+		HOVER = "Configura si se muestra los indicadores de caza.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los indicadores de caza."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los indicadores de caza."
+			},
+		},
+	},
+	orchestrina_indicator = {
+		LABEL = "Ayuda en puzle de Archivos",
+		HOVER = "Configura si la solución del puzle se muestra.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la solución."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la solución."
+			}
+		}
+	},
+	lightningrod_range = {
+		LABEL = "Rango del pararrayos",
+		HOVER = "Configura como se muestra el alcance del pararrayos.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No mostrar el alcance del pararrayos."
+			},
+			["1"] = {
+				DESCRIPTION = "Estratégico",
+				HOVER = "Mostrar sólo al construir estructuras."
+			},
+			["2"] = {
+				DESCRIPTION = "Siempre",
+				HOVER = "Mostrar siempre el alcance del pararrayos."
+			},
+		},
+	},
+	blink_range = {
+		LABEL = "Rango de teletransporte",
+		HOVER = "Configura si se muestra el rango de teletransporte (Explorador Perezoso, almas de Wortox).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra el rango de teletransporte."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el rango de teletransporte."
+			},
+		},
+	},
+	wortox_soul_range = {
+		LABEL = "Rango de almas de Wortox",
+		HOVER = "Configura si se muestra el rango de recogida de Wortox para sus almas.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los rangos de recogida de almas."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los rangos de recogida de almas."
+			},
+		},
+	},
+	battlesong_range = {
+		LABEL = "Rango de canciones de batalla",
+		HOVER = "Configura como se muestra los rangos de canciones de batalla.",
+		OPTIONS = {
+			["none"] = {
+				DESCRIPTION = "Ninguno",
+				HOVER = "No se muestra rangos de canciones de batalla."
+			},
+			["detach"] = {
+				DESCRIPTION = "Desprendimiento",
+				HOVER = "Se muestra el rango de desprendimiento de la canción."
+			},
+			["attach"] = {
+				DESCRIPTION = "Fijación",
+				HOVER = "Se muestra el rango de fijación de la canción."
+			},
+			["both"] = {
+				DESCRIPTION = "Ambos",
+				HOVER = "Se muestra ambos rangos."
+			},
+		},
+	},
+	klaus_sack_markers = {
+		LABEL = "Indicador de Saco de Klaus",
+		HOVER = "Configura si se marcan las ubicaciones de aparición del Saco de Klaus.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Se muestra los marcadores del Saco de Klaus."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "No se muestra los marcadores del Saco de Klaus."
+			},
+		},
+	},
+	sinkhole_marks = {
+		LABEL = "Indicador de sumidero",
+		HOVER = "Configura como se muestra los indicadores de sumideros",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Ninguno",
+				HOVER = "No se muestra ningún indicador."
+			},
+			["1"] = {
+				DESCRIPTION = "Sólo mapa",
+				HOVER = "Sólo se colorea iconos del mapa."
+			},
+			["2"] = {
+				DESCRIPTION = "Sumidero/mapa",
+				HOVER = "Colorear tanto a iconos del mapa como a los sumideros"
+			},
+		},
+	},
+	--------------------------------------------------------------------------
+	--[[ Food Related ]]
+	--------------------------------------------------------------------------
+	display_food = {
+		LABEL = "Información de alimentos",
+		HOVER = "Configura si se muestra la información de los alimentos.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la información de alimentos.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de alimentos."
+			},
+		},
+	},
+	food_style = {
+		LABEL = "Estilo de comida",
+		HOVER = "Configura como se muestra la información de los alimentos.",
+		OPTIONS = {
+			["short"] = {
+				DESCRIPTION = "Reducida",
+				HOVER = "+X / -X / +X"
+			},
+			["long"] = {
+				DESCRIPTION = "Larga",
+				HOVER = "Hambre: +X / Cordura: -X / Salud: +X"
+			},
+		},
+	},
+	food_order = {
+		LABEL = "Orden de comida",
+		HOVER = "Configura en qué orden se muestra las estadísticas de los alimentos (si eliges Wiki estás muerto para mí).",
+		OPTIONS = {
+			["interface"] = {
+				DESCRIPTION = "Interfaz",
+				HOVER = "Hambre / Cordura / Salud"
+			},
+			["wiki"] = {
+				DESCRIPTION = "Wiki",
+				HOVER = "Salud / Hambre / Cordura"
+			},
+		},
+	},
+	food_units = {
+		LABEL = "Expositor de comida",
+		HOVER = "Configura si se muestra las unidades de la comida.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra unidades de comida."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra unidades de comida."
+			},
+		},
+	},
+	food_effects = {
+		LABEL = "Efectos de comida",
+		HOVER = "Configura si se muestra los efectos especiales de la comida.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los efectos especiales de la comida."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los efectos especiales de la comida."
+			},
+		},
+	},
+	stewer_chef = {
+		LABEL = "Identificador de chef",
+		HOVER = "Configura si se muestra el chef de una receta.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "El chef no se muestra."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra al chef."
+			},
+		},
+	},
+	food_memory = {
+		LABEL = "Memoria de comida",
+		HOVER = "Configura si se muestra la memoria de comida (Warly).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "La memoria de alimentos no se muestra."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra su memoria de alimentos."
+			},
+		},
+	},
+	display_perishable = {
+		LABEL = "Putrefacción",
+		HOVER = "Configura si se muestra información de la putrefacción.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la información de putrefacción."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de putrefacción."
+			},
+		},
+	},
+	--------------------------------------------------------------------------
+	--[[ Information Control ]]
+	--------------------------------------------------------------------------
+	display_cawnival = {
+		LABEL = "Información de Cawnvival",
+		HOVER = "Configura si se muestra la información de Midsummer Cawnvival.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la información de cawnvival.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de cawnival.",
+			},
+		},
+	},
+	display_yotb_winners = {
+		LABEL = "Ganadores de concurso [YOTB]",
+		HOVER = "Configura si se muestran los ganadores del concurso.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Los ganadores del concurso no se muestra.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra los ganadores del concurso."
+			},
+		},
+	},
+	display_yotb_appraisal = {
+		LABEL = "Valores de tasación [YOTB]",
+		HOVER = "Configura si se muestran los valores de tasación.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Los valores de tasación no se muestran.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestran los valores de tasación."
+			},
+		},
+	},
+	display_shared_stats = {
+		LABEL = "Estadísticas de jugadores",
+		HOVER = "Configura si se muestran en la lista las estadísticas de jugadores en el servidor.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Las estadísticas no se muestran.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestran las estadísticas."
+			},
+		},
+	},
+	display_worldmigrator = {
+		LABEL = "Información de portal",
+		HOVER = "Configura si se muestra la información del portal (sumidero).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "La información de portal no se muestra.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de portal."
+			},
+		},
+	},
+	display_unwrappable = {
+		LABEL = "Información de paquete",
+		HOVER = "Configura si se muestra la información de paquete.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "La información de paquete no se muestra.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de paquete."
+			},
+		},
+	},
+	display_fishing_information = {
+		LABEL = "Información de pesca",
+		HOVER = "Configura si se muestra la información de pesca.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "La información de pesca no se muestra.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de pesca."
+			},
+		},
+	},
+	display_spawner_information = {
+		LABEL = "Información de spawner",
+		HOVER = "Configura si se muestra la información de spawners",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "La información de spawners no se muestra.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de spawners."
+			},
+		},
+	},
+	weapon_damage = {
+		LABEL = "Daño de arma",
+		HOVER = "Configura si se muestra el daño del arma.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "El daño de arma no se muestra.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el daño de arma."
+			},
+		},
+	},
+	repair_values = {
+		LABEL = "Valor de reparación",
+		HOVER = "Configura si se muestra la información de reparación (en inspección).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "El valor de reparación se muestra.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "No se muestra el valor de reparación.",
+			},
+		}
+	},
+	soil_moisture = {
+		LABEL = "Humedad del suelo",
+		HOVER = "Configura como se muestra la humedad del suelo/de las plantas.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la humedad del suelo.",
+			},
+			["1"] = {
+				DESCRIPTION = "Suelo",
+				HOVER = "Solo se muestra la humedad del suelo.",
+			},
+			["2"] = {
+				DESCRIPTION = "Suelo / Planta",
+				HOVER = "Se muestra la humedad del suelo y la tasa de consumo de la planta.",
+			},
+			["3"] = {
+				DESCRIPTION = "Suelo, planta y baldosa",
+				HOVER = "Se muestra la humedad del suelo, el consumo de las plantas y la tasa de humedad de las baldosas.",
+			},
+			["4"] = {
+				DESCRIPTION = "Todo",
+				HOVER = "Humedad del suelo, consumo de las plantas, y se muestra la tasa de humedad de la baldosa **RED**.",
+			}
+		}
+	},
+	soil_nutrients = {
+		LABEL = "Nutrientes del suelo",
+		HOVER = "Configura como se muestran los nutrientes del suelo/de las plantas.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra los nutrientes.",
+			},
+			["1"] = {
+				DESCRIPTION = "Suelo",
+				HOVER = "Solo se muestra los nutrientes del suelo.",
+			},
+			["2"] = {
+				DESCRIPTION = "Suelo / Planta",
+				HOVER = "Se muestra los nutrientes del suelo y la tasa de consumo de las plantas.",
+			},
+			["3"] = {
+				DESCRIPTION = "Suelo, planta y baldosa",
+				HOVER = "Se muestra los nutrientes del suelo, el consumo de las plantas y la tasa de nutrientes de las baldosas.",
+			},
+			--[[
+			["4"] = {
+				DESCRIPTION = "All",
+				HOVER = "Soil nutrients, plant consumption, and the **NET** tile nutrients rate is shown.",
+			}
+			--]]
+		}
+	},
+	display_plant_stressors = {
+		LABEL = "Estrés de planta",
+		HOVER = "Configura si se muestra el estrés de las plantas.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra el estrés.",
+			},
+			["1"] = {
+				DESCRIPTION = "Con sombrero",
+				HOVER = "El estrés se mostrará si se tiene un Gardeneer Hat.",
+			},
+			["2"] = {
+				DESCRIPTION = "Siempre",
+				HOVER = "Se muestra siempre el estrés de la planta."
+			}
+		}
+	},
+	display_weighable = {
+		LABEL = "Peso de artículo",
+		HOVER = "Configura si se muestra el peso de artículos.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra el peso.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el peso.",
+			},
+		}
+	},
+	display_world_events = {
+		LABEL = "Eventos del mundo",
+		HOVER = "Configura si se muestra los eventos del mundo (sabuesos/gusanos, jefes, terremotos, etc.)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestran los eventos."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestran los eventos."
+			},
+		},
+	},
+	display_weather = {
+		LABEL = "Información meteorológica",
+		HOVER = "Configura si se muestra la información meteorológica.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "El clima no se muestra."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el clima."
+			},
+		},
+	},
+	nightmareclock_display = {
+		LABEL = "Ciclo pesadilla",
+		HOVER = "Configura cuando los usuarios reciben información sobre los ciclos pesadilla.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra información del ciclo pesadilla."
+			},
+			["1"] = {
+				DESCRIPTION = "Medallón necesario",
+				HOVER = "Se muestra información si se tiene un medallón de tulecita."
+			},
+			["2"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra siempre la información del ciclo pesadilla."
+			},
+		},
+	},
+	display_health = {
+		LABEL = "Salud",
+		HOVER = "Configura si muestra información de salud.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra información de salud."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de salud."
+			},
+		},
+	},
+	display_hunger = {
+		LABEL = "Hambre",
+		HOVER = "Configura cuántos detalles de hambre se muestra.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra el hambre."
+			},
+			["1"] = {
+				DESCRIPTION = "Standard",
+				HOVER = "Muestra la información estándar del hambre."
+			},
+			["2"] = {
+				DESCRIPTION = "All",
+				HOVER = "Muestra toda la información del hambre."
+			},
+		},
+	},
+	display_sanity = {
+		LABEL = "Cordura",
+		HOVER = "Configura se muestra la información de cordura.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra información de cordura."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra información de cordura."
+			},
+		},
+	},
+	display_sanityaura = {
+		LABEL = "Auras de cordura",
+		HOVER = "Configura si se muestra las auras de cordura.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra auras de cordura."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra auras de cordura."
+			},
+		},
+	},
+	display_mob_attack_damage = {
+		LABEL = "Daño de ataque de mobs",
+		HOVER = "Configura si se muestra el daño de ataque de mobs.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra el daño de ataque de mobs.",
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el daño de ataque de mobs.",
+			},
+		},
+	},
+	growth_verbosity = {
+		LABEL = "Verbosidad de crecimiento",
+		HOVER = "Configura cómo de detallada es la información sobre el crecimiento de entidades.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Nula",
+				HOVER = "No muestra nada sobre las entidades que pueden crecer."
+			},
+			["1"] = {
+				DESCRIPTION = "Mínima",
+				HOVER = "Muestra el tiempo hasta la siguiente etapa."
+			},
+			["2"] = {
+				DESCRIPTION = "Completa",
+				HOVER = "Muestra el nombre de la etapa actual, el número de etapas y el tiempo hasta la siguiente etapa."
+			},
+		},
+	},
+	display_pickable = {
+		LABEL = "Información de recolección",
+		HOVER = "Configura si se muestra la información seleccionable (por ej., arbustos de bayas)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la información de recolección."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información seleccionable."
+			},
+		},
+	},
+	display_harvestable = {
+		LABEL = "Información de cosecha",
+		HOVER = "Configura si se muestra la información cosechable (por ej., cajas de abejas)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la información de cosecha."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la información de cosecha."
+			},
+		},
+	},
+	display_finiteuses = {
+		LABEL = "Durabilidad de herramientas",
+		HOVER = "Configura si se muestra la durabilidad de herramientas.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra la durabilidad de las herramientas."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra la durabilidad de las herramientas."
+			},
+		},
+	},
+	display_timers = {
+		LABEL = "Temporizadores",
+		HOVER = "Configura si se muestra temporizadores de eventos.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra temporizadores."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra temporizadores."
+			},
+		},
+	},
+	display_upgradeable = {
+		LABEL = "Etapas",
+		HOVER = "Configura si se muestra la información de etapas en estructuras (árboles, nidos de araña, etc.)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra información de etapas."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra información de etapas."
+			},
+		},
+	},
+	naughtiness_verbosity = {
+		LABEL = "Verbosidad de maldad",
+		HOVER = "Elige como es de detallada la información de maldad. Combined Status tiene prioridad sobre Insight.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "La mayoría de valores de maldad no se mostrarán."
+			},
+			["1"] = {
+				DESCRIPTION = "Criatura",
+				HOVER = "Se mostrarán los valores de maldad de los mobs."
+			},
+			["2"] = {
+				DESCRIPTION = "Jgd/Criatura",
+				HOVER = "Se mostrarán los valores de maldad de jugadores y mobs."
+			},
+		},
+	},
+	follower_info = {
+		LABEL = "Seguidores",
+		HOVER = "Configura si se muestra la información de seguidores (Chester, Gloomer, etc.)",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No mostrará información de los seguidores."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra información de los seguidores."
+			},
+		},
+	},
+	herd_information = {
+		LABEL = "Manadas",
+		HOVER = "Configura si se muestra información de la manada.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra información de la manada."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra información de la manada."
+			},
+		},
+	},
+	domestication_information = {
+		LABEL = "Domesticación",
+		HOVER = "Configura si muestra información de domesticación.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra información de domesticación."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra información sobre la domesticación."
+			},
+		},
+	},
+	display_pollination = {
+		LABEL = "Polinización",
+		HOVER = "Configura si se muestra información de polinización.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra información sobre la polinización."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra información sobre la polinización."
+			},
+		},
+	},
+	item_worth = {
+		LABEL = "Valor de objeto",
+		HOVER = "Configura si muestra el valor de un objeto (oro y doblones).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No mostrará ningún valor."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Mostrará el valor en oro y doblones."
+			},
+		},
+	},
+	appeasement_value = {
+		LABEL = "Valor de apaciguamiento",
+		HOVER = "Configura si se muestra el valor de apaciguamiento.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra ningún valor."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra el valor de apaciguamiento."
+			},
+		},
+	},
+	fuel_verbosity = {
+		LABEL = "Verbosidad del combustible",
+		HOVER = "Configura como es de extensa es la información sobre el combustible.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Ninguno",
+				HOVER = "No se muestra ninguna información sobre el combustible."
+			},
+			["1"] = {
+				DESCRIPTION = "Estándar",
+				HOVER = "Se muestra información estándar del combustible."
+			},
+			["2"] = {
+				DESCRIPTION = "Todo",
+				HOVER = "Se muestra toda la información sobre el combustible."
+			},
+		},
+	},
+	display_shelter_info = {
+		LABEL = "Información del refugio",
+		HOVER = "Configura si se muestra información del refugio.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra información del refugio."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra información del refugio."
+			},
+		}
+	},
+	unique_info = {
+		LABEL = "Información única",
+		HOVER = "Configura si se muestra información única de ciertas entidades.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No se muestra ninguna información única."
+			},
+			["1"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra información única."
+			},
+		}
+	},
+	--------------------------------------------------------------------------
+	--[[ Miscellaneous ]]
+	--------------------------------------------------------------------------
+	display_crafting_lookup_button = {
+		LABEL = "Botón de búsqueda",
+		HOVER = "Configura si se muestra un botón de búsqueda (de creación).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "El botón no se muestra."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el botón."
+			},
+		},
+	},
+	display_insight_menu_button = {
+		LABEL = "Botón menú de Insight",
+		HOVER = "Configura si se muestra el botón del menú de Insight.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "The button is not shown."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "The button is shown."
+			},
+		},
+	},
+	extended_info_indicator = {
+		LABEL = "Indicador de información extra",
+		HOVER = "Muestra un asterisco sobre entidades con más información disponible.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "El indicador no se muestra."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Se muestra el indicador."
+			},
+		},
+	},
+	unrandomizer = {
+		LABEL = "Desaleatorizador",
+		HOVER = "[Solo servidor] \"Resuelve\" la aleatoriedad de algunas situaciones.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Desactivado."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Activado."
+			}
+		}
+	},
+	account_combat_modifiers = {
+		LABEL = "Modificadores de combate",
+		HOVER = "Se se consideran los aumentos de daño y las resistencias.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Los indicadores de daño solo usarán los valores originales."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Los indicadores de daño tendrán en cuenta cualquier buff/nerf que tenga tu personaje."
+			},
+		},
+	},
+	info_preload = {
+		LABEL = "Precarga de información",
+		HOVER = "Precarga información solo cuando las entidades son visibles. Intercambia el uso de la red mejorar el rendimiento.",
+		OPTIONS = {
+			["0"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "PUEDE CAUSAR GRAVES CAÍDAS DE FPS. NO SE RECOMIENDA." -- most severe fps drop
+			},
+			["1"] = {
+				DESCRIPTION = "En bloques",
+				HOVER = "Posible caída de FPS. No se recomienda. Puede usarse para bases pequeñas y limpias."
+			},
+			["2"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Lo más rápido. Recomendado."
+			},
+		},
+	},
+	refresh_delay = {
+		LABEL = "Retardo de actualización",
+		HOVER = "La frecuencia con la que puede volver a solicitar información para el mismo elemento.",
+		OPTIONS = {
+			["true"] = {
+				DESCRIPTION = "Automático",
+				HOVER = "Cambia dinámicamente en función de las estadísticas de rendimiento actuales."
+			},
+			["0"] = {
+				DESCRIPTION = "None",
+				HOVER = "La información está en vivo."
+			},
+			["0_25"] = {
+				DESCRIPTION = "0.25s",
+				HOVER = "La información se actualiza cada 0,25 segundos."
+			},
+			["0_5"] = {
+				DESCRIPTION = "0.5s",
+				HOVER = "La información se actualiza cada 0,5 segundos."
+			},
+			["1"] = {
+				DESCRIPTION = "1s",
+				HOVER = "La información se actualiza cada 1 segundo."
+			},
+			["3"] = {
+				DESCRIPTION = "3s",
+				HOVER = "La información se actualiza cada 3 segundos."
+			},
+		},
+	},
+	--------------------------------------------------------------------------
+	--[[ Debugging ]]
+	--------------------------------------------------------------------------
+	crash_reporter = {
+		LABEL = "Reporte de fallos",
+		HOVER = "**Intenta** reportar los crasheos (depuración, mods, información del mundo) automáticamente.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Reporte de fallos desactivado."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Reporte de fallos activado."
+			},
+		},
+	},
+	DEBUG_SHOW_NOTIMPLEMENTED = {
+		LABEL = "DEBUG_SHOW_NOTIMPLEMENTED",
+		HOVER = "Muestra una advertencia si algún componente no fue registrado, y si el origen es de un mod.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra una advertencia si hay algún componente no registrado."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra una advertencia si hay algún componente no registrado."
+			},
+		},
+	},
+	DEBUG_SHOW_DISABLED = {
+		LABEL = "DEBUG_SHOW_DISABLED",
+		HOVER = "Muestra una advertencia de los componentes que se desactivaron manualmente.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra información de componentes deshabilitados."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra información de componentes deshabilitados."
+			},
+		},
+	},
+	DEBUG_SHOW_PREFAB = {
+		LABEL = "DEBUG_SHOW_PREFAB",
+		HOVER = "Muestra el nombre de prefab en las entidades.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "No muestra el prefab (código) en la entidad."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Muestra el prefab (código) en la entidad."
+			},
+		},
+	},
+	DEBUG_ENABLED = {
+		LABEL = "DEBUG_ENABLED",
+		HOVER = "Configura el modo de depuración de Insight.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Desactivado",
+				HOVER = "Insight no muestra información de depuración."
+			},
+			["true"] = {
+				DESCRIPTION = "Activado",
+				HOVER = "Insight muestra información de depuración."
+			},
+		},
+	},
+}
+translations["es"] = spanish
+translations["mex"] = spanish
 
 --=============================================================================================================================================================================================================================================
 --=================================================== DO NOT TRANSLATE PAST THIS LINE =========================================================================================================================================================
