@@ -1076,7 +1076,7 @@ function Insight:Update()
 	
 	-- TheWorld and related analyzation
 	self:GetWorldInformation()
-	self:RequestInformation(self.inst, {RAW=true})
+	self:RequestInformation(self.inst, {RAW=true, debounce=1})
 
 	local world_data = self.world_data
 	local player_data = self:GetInformation(self.inst)

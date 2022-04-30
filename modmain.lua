@@ -244,7 +244,7 @@ local descriptors_ignore = {
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
 	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
-	"cattoy", "updatelooper", -- don't care
+	"cattoy", "updatelooper", "upgrademoduleremover", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -1426,8 +1426,14 @@ function DecodeRequestParams(encoded)
 	params.GUID = guid
 
 	for key, num in pairs(Insight.ENTITY_INFORMATION_FLAGS) do
-		if bit.band(mask, num) ~= 0 then
+		local band = bit.band(mask, num)
+		if band ~= 0 then
 			params[key] = true
+			mask = mask - band
+		end
+
+		if mask == 0 then
+			break
 		end
 	end
 
