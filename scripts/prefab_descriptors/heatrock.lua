@@ -18,13 +18,13 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- temperature.lua
+-- heatrock.lua [Prefab]
 local world_type = GetWorldType()
 
 local relative_temperature_thresholds = { -30, -10, 10, 30 } -- world ambient temperature is 0
-local colors = { [1]=Color.fromHex("#00C6FF"), [6]=Color.fromRGB(255, 0, 0) }
+local colors = { [1] = Color.fromHex("#00C6FF"), [6] = Color.fromRGB(255, 0, 0) }
 for i = 1, 4 do
-	colors[i+1] = colors[1]:Lerp(colors[6], i / 5)
+	colors[i + 1] = colors[1]:Lerp(colors[6], i / 5)
 end
 --[[
 colors[2] = colors[1]:Lerp(colors[6], .2)
@@ -41,7 +41,7 @@ local function GetTemperatureThresholds(temp, ambient)
 	for i = 1, #relative_temperature_thresholds do
 		if temp < ambient + relative_temperature_thresholds[i] then -- have we not crossed the threshold?
 			next_threshold = i
-			break 
+			break
 		end
 	end
 
@@ -63,34 +63,37 @@ local function GetTemperatureThresholds(temp, ambient)
 	return min, max, level
 end
 
-local function Describe(self, context)
+local function Describe(inst, context)
+	local temperatureComponent = inst.components.temperature
+	if not temperatureComponent then return end -- who knows?
+
 	local description, alt_description
 
-	local temp = self:GetCurrent()
+	local temp = temperatureComponent:GetCurrent()
 	local temperatureValue = Round(temp, 1)
 
 	description = string.format(context.lstr.temperature, temperatureValue)
 
-	if world_type == -1 and self.inst.prefab == "heatrock" then
+	if world_type == -1 then
 		local min, max, level = GetTemperatureThresholds(temp, TheWorld.state.temperature)
-		min = min or self.mintemp
-		max = max or self.maxtemp
+		min = min or temperatureComponent.mintemp
+		max = max or temperatureComponent.maxtemp
 
-		local percent = math.clamp((temp - min) / (max - min), 0, 1) -- during testing, appears that this never goes past 0 or 1. 
+		local percent = math.clamp((temp - min) / (max - min), 0, 1) -- during testing, appears that this never goes past 0 or 1.
 
-		local target_color = colors[level+1]
+		local target_color = colors[level + 1]
 
-		alt_description = string.format(context.lstr.temperature, string.format("%s < %s < %s", 
+		alt_description = string.format(context.lstr.temperature, string.format("%s < %s < %s",
 			ApplyColour(Round(min, 1), colors[level]), -- 1
 			--ApplyColour(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(target_color, percent)),
 			ApplyColour(
-				"<sub>" .. level .. " </sub>" .. temperatureValue .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>", 
+				"<sub>" .. level .. " </sub>" .. temperatureValue .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>",
 				(
-					colors[level]:Lerp(target_color, percent)
-				) or 
+				colors[level]:Lerp(target_color, percent)
+				) or
 				"#ffffff"
 			),
-			ApplyColour(Round(max, 1), target_color) -- 4
+			ApplyColour(Round(max, 1), target_color)-- 4
 		))
 	end
 
@@ -102,6 +105,6 @@ local function Describe(self, context)
 	}
 end
 
-
-
-return {}
+return {
+	Describe = Describe
+}
