@@ -19,11 +19,21 @@ directory. If not, please refer to
 ]]
 
 -- wx78.lua [Prefab]
+local wx78_refresh = IsDST() and CurrentRelease.GreaterOrEqualTo("R21_REFRESH_WX78")
+local CHARGEREGEN_TIMERNAME = "chargeregenupdate"
+
 local function Describe(inst, context)
 	local description = nil
 
-	if inst.charge_time and inst.charge_time > 0 then -- inspectable manually added in DS
+	if not wx78_refresh and inst.charge_time and inst.charge_time > 0 then -- inspectable manually added in DS
 		description = string.format(context.lstr.wx78_charge, context.time:SimpleProcess(inst.charge_time))
+	end
+
+	if wx78_refresh then
+		local time_left = inst.components.timer and inst.components.timer:GetTimeLeft(CHARGEREGEN_TIMERNAME)
+		if inst.components.upgrademoduleowner and time_left and time_left > 0 then
+			description = string.format(context.lstr.wx78.gain_charge_time, context.time:SimpleProcess(time_left))
+		end
 	end
 
 	return {

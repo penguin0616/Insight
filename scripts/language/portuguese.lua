@@ -943,7 +943,10 @@ return {
 	},
 
 	-- wx78.lua [Prefab]
-	wx78_charge = "Carga restante: %s",
+	wx78 = {
+		remaining_charge_time = "Carga restante: %s",
+		gain_charge_time = "Will gain a charge in: %s",
+	},
 
 	-- yotb_sewer.lua
 	yotb_sewer = "Vai terminar de costurar em: %s",
