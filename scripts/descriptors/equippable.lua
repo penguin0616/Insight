@@ -80,6 +80,85 @@ local function GetSpeedModifier(self, player)
 	return speed_modifier
 end
 
+local function GetHungerDrainModifier(self, player)
+	local hunger_modifier
+
+	if world_type == -1 then
+		-- the problem with using CalculateModifierFromSource is that it has to be equipped to report the real number
+		--[[
+		-- example of total hunger modifier: 1 * (0.75 [from beargervest]) * (0.6 [from armorslurper]) = 0.45
+		local hunger_modifier = owner.components.hunger.burnratemodifiers._modifiers[inst] and owner.components.hunger.burnratemodifiers:CalculateModifierFromSource(inst)
+		if hunger_modifier then
+			hunger_modifier = (1 - hunger_modifier) -- 1 - 0.75 = 0.25
+
+			if hunger_modifier > 0 then -- slower
+				hunger_modifier_string = string.format(context.lstr.hunger_slow, hunger_modifier * 100)
+			elseif hunger_modifier < 0 then -- faster
+				hunger_modifier_string = string.format(context.lstr.hunger_drain, -hunger_modifier * 100)
+			else
+				hunger_modifier_string = "¯\\_(ツ)_/¯"
+			end
+		end
+
+		--]]
+		if inst.prefab == "red_mushroomhat" or inst.prefab == "green_mushroomhat" or inst.prefab == "blue_mushroomhat" then
+			hunger_modifier = TUNING.MUSHROOMHAT_SLOW_HUNGER
+		elseif inst.prefab == "beargervest" then
+			hunger_modifier = TUNING.ARMORBEARGER_SLOW_HUNGER
+		elseif inst.prefab == "armorslurper" then
+			hunger_modifier = TUNING.ARMORSLURPER_SLOW_HUNGER
+		end
+
+		if hunger_modifier then
+			--[[
+			if hunger_modifier > 0 then -- slower
+				hunger_modifier_string = string.format(context.lstr.hunger_slow, hunger_modifier * 100)
+			elseif hunger_modifier < 0 then -- faster
+				hunger_modifier_string = string.format(context.lstr.hunger_drain, -hunger_modifier * 100)
+			else
+				hunger_modifier_string = "¯\\_(ツ)_/¯"
+			end
+			--]]
+		end
+	elseif world_type == 0 or world_type == 1 then -- base game and RoG
+		-- ARMORSLURPER_SLOW_HUNGER in this case is 0.6
+		-- ARMORBEARGER_SLOW_HUNGER is 0.75
+
+		-- hardcoding.jpg
+		if inst.prefab == "armorslurper" then
+			--hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORSLURPER_SLOW_HUNGER) * 100)
+			hunger_modifier = TUNING.ARMORSLURPER_SLOW_HUNGER
+		elseif inst.prefab == "beargervest" then
+			hunger_modifier = TUNING.ARMORSLURPER_SLOW_HUNGER
+			--hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORBEARGER_SLOW_HUNGER) * 100)
+		end
+
+	else -- SW and Hamlet, it is additive here
+		-- hardcoding.jpg
+		if inst.prefab == "armorslurper" then
+			--hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORSLURPER_SLOW_HUNGER) * 100)
+			hunger_modifier = 1 + TUNING.ARMORSLURPER_SLOW_HUNGER
+		elseif inst.prefab == "beargervest" then
+			hunger_modifier = 1 + TUNING.ARMORSLURPER_SLOW_HUNGER
+			--hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORBEARGER_SLOW_HUNGER) * 100)
+		end
+
+		--[[
+		local hunger_modifier = owner.components.hunger.burn_rate_modifiers[inst.prefab] or owner.components.hunger.burn_rate_modifiers[inst] or owner.components.hunger.burn_rate_modifiers[inst.prefab:gsub("_", "")] -- beargervest is -0.25
+		ARMORSLURPER_SLOW_HUNGER
+		if hunger_modifier then
+			if hunger_modifier < 0 then -- slower
+				hunger_modifier_string = string.format(context.lstr.hunger_slow, -hunger_modifier * 100)
+			elseif hunger_modifier > 0 then -- faster
+				hunger_modifier_string = string.format(context.lstr.hunger_drain, hunger_modifier * 100)
+			end
+		end
+		--]]
+	end
+
+	return hunger_modifier
+end
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
@@ -108,65 +187,9 @@ local function Describe(self, context)
 
 	-- might modify hunger rate
 	if owner and owner.components.hunger then
-		if world_type == -1 then
-			
-
-			-- the problem with using CalculateModifierFromSource is that it has to be equipped to report the real number
-			--[[
-			-- example of total hunger modifier: 1 * (0.75 [from beargervest]) * (0.6 [from armorslurper]) = 0.45
-			local hunger_modifier = owner.components.hunger.burnratemodifiers._modifiers[inst] and owner.components.hunger.burnratemodifiers:CalculateModifierFromSource(inst)
-			if hunger_modifier then
-				hunger_modifier = (1 - hunger_modifier) -- 1 - 0.75 = 0.25
-
-				if hunger_modifier > 0 then -- slower
-					hunger_modifier_string = string.format(context.lstr.hunger_slow, hunger_modifier * 100)
-				elseif hunger_modifier < 0 then -- faster
-					hunger_modifier_string = string.format(context.lstr.hunger_drain, -hunger_modifier * 100)
-				else
-					hunger_modifier_string = "¯\\_(ツ)_/¯"
-				end
-			end
-
-			--]]
-			local hunger_modifier
-			if inst.prefab == "red_mushroomhat" or inst.prefab == "green_mushroomhat" or inst.prefab == "blue_mushroomhat" then
-				hunger_modifier = TUNING.MUSHROOMHAT_SLOW_HUNGER
-			elseif inst.prefab == "beargervest" then
-				hunger_modifier = TUNING.ARMORBEARGER_SLOW_HUNGER
-			elseif inst.prefab == "armorslurper" then
-				hunger_modifier = TUNING.ARMORSLURPER_SLOW_HUNGER
-			end
-
-			if hunger_modifier then
-				hunger_modifier = 1 - hunger_modifier -- i used to do -1 instead of 1-
-				if hunger_modifier > 0 then -- slower
-					hunger_modifier_string = string.format(context.lstr.hunger_slow, hunger_modifier * 100)
-				elseif hunger_modifier < 0 then -- faster
-					hunger_modifier_string = string.format(context.lstr.hunger_drain, -hunger_modifier * 100)
-				else
-					hunger_modifier_string = "¯\\_(ツ)_/¯"
-				end
-			end
-
-		elseif world_type == 0 or world_type == 1 then -- base game and RoG
-			-- hardcoding.jpg
-			if inst.prefab == "armorslurper" then
-				hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORSLURPER_SLOW_HUNGER) * 100)
-			elseif inst.prefab == "beargervest" then
-				hunger_modifier_string = string.format(context.lstr.hunger_slow, (1 - TUNING.ARMORBEARGER_SLOW_HUNGER) * 100)
-			end
-
-		else -- SW and Hamlet, it is additive here
-			local hunger_modifier = owner.components.hunger.burn_rate_modifiers[inst.prefab] or owner.components.hunger.burn_rate_modifiers[inst] or owner.components.hunger.burn_rate_modifiers[inst.prefab:gsub("_", "")]-- beargervest is -0.25
-
-			if hunger_modifier then
-				if hunger_modifier < 0 then -- slower
-					hunger_modifier_string = string.format(context.lstr.hunger_slow, -hunger_modifier * 100)
-				elseif hunger_modifier > 0 then -- faster
-					hunger_modifier_string = string.format(context.lstr.hunger_drain, hunger_modifier * 100)
-				end 
-			end
-
+		local hunger_modifier = GetHungerDrainModifier(self, owner)
+		if hunger_modifier then
+			hunger_modifier_string = string.format(context.lstr.hunger_drain, (1 - hunger_modifier) * 100)
 		end
 	end
 
