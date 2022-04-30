@@ -88,6 +88,14 @@ Buffered Action: nil
 end
 --]==]
 
+function GetWidgetChildByName(widget, name)
+	for child in pairs(widget:GetChildren()) do
+		if child.name == name then
+			return child
+		end
+	end
+end
+
 function DoesEntityExistForClient(ent, client)
 	if not TheWorld.ismastersim then
 		return false

@@ -18,11 +18,19 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+-- This is the recipe lookup button related stuff.
 local module = {}
 
--- This is the recipe lookup button related stuff.
-local RecipePopup = require("widgets/recipepopup") -- Old recipe popup
+local InsightButton = import("widgets/insightbutton")
+local RecipePopupExists, RecipePopup = pcall(function() return require("widgets/recipepopup") end) -- Old recipe popup
+local CraftingMenuDetailsExists, CraftingMenuDetails = pcall(function() return require("widgets/redux/craftingmenu_details") end)
 
+local mod_tint = { 0, 1, 0, 1 }
+local normal_tint = { 1, 1, 1, 1 }
+
+--================================================================================================================================================================--
+--= Recipe Thingamjig ============================================================================================================================================--
+--================================================================================================================================================================--
 local recipe_urls = {}
 local function GetRecipeURL(recipe)
 	-- Returns URL, modded
@@ -83,13 +91,12 @@ local function GetRecipeURL(recipe)
 	return nil
 end
 
-
+--================================================================================================================================================================--
+--= Old Crafting Menu ============================================================================================================================================--
+--================================================================================================================================================================--
 --- The replacement for the default RecipePopup.Refresh()
 local function RecipePopup_Refresh(self)
 	--mprint"refresh"
-	local mod = { 0, 1, 0, 1 }
-	local normal = { 1, 1, 1, 1 }
-
 	module.oldRecipePopup_Refresh(self)
 	local context = localPlayer and GetPlayerContext(localPlayer)
 	if not context or not context.config["display_crafting_lookup_button"] then
@@ -140,9 +147,9 @@ local function RecipePopup_Refresh(self)
 	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
 
 	if modded then
-		self.lookup.button.image:SetTint(unpack(mod))
+		self.lookup.button.image:SetTint(unpack(mod_tint))
 	else
-		self.lookup.button.image:SetTint(unpack(normal))
+		self.lookup.button.image:SetTint(unpack(normal_tint))
 	end
 
 	self.lookup:SetOnClick(function()
@@ -150,19 +157,80 @@ local function RecipePopup_Refresh(self)
 	end)
 end
 
-
 --- Returns whether the old crafting system is available.
 -- @return boolean
-module.IsRecipePopupAvailable = function() 
-	return RecipePopup ~= nil
+module.IsUsingOldCraftingMenu = function() 
+	return RecipePopupExists
 end
 
 --- Hooks into the old crafting system's RecipePopup
-module.HookRecipePopup = function()
-	assert(module.IsRecipePopupAvailable(), "Trying to hook RecipePopup despite it not being available.")
+module.HookOldCraftingMenu = function()
+	assert(module.IsUsingOldCraftingMenu(), "Trying to hook RecipePopup despite it not being available.")
 
 	module.oldRecipePopup_Refresh = RecipePopup.Refresh
 	RecipePopup.Refresh = RecipePopup_Refresh
 end
+
+
+--================================================================================================================================================================--
+--= New Crafting Menu ============================================================================================================================================--
+--================================================================================================================================================================--
+local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
+	-- Yeah, yeah. No returning...
+	module.oldCraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
+
+	local data = ...
+	if not data then
+		return
+	end
+
+	local recipe = data.recipe
+	
+	local root_left = GetWidgetChildByName(self, "left_root")
+	if not root_left then
+		dprint("Missing left_root")
+		table.foreach(self:GetChildren(), dprint)
+		return 
+	end
+
+	
+
+	dprint(self.lookup, self.lookup and self.lookup.inst:IsValid())
+
+	local top = -5
+	local width = self.panel_width / 2
+	local name_font_size = 30
+	local y = top
+
+	self.lookup = root_left:AddChild(InsightButton())
+	self.lookup.button:SetTextures("images/Magnifying_Glass.xml", "Magnifying_Glass.tex")
+	widgetLib.imagebutton.ForceImageSize(self.lookup.button, name_font_size, name_font_size)
+	self.lookup:SetPosition(width / 2 + 0, y - name_font_size/2)
+	self.lookup.button.scale_on_focus = false
+	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
+	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
+
+	if modded then
+		self.lookup.button.image:SetTint(unpack(mod_tint))
+	else
+		self.lookup.button.image:SetTint(unpack(normal_tint))
+	end
+
+	self.lookup:SetOnClick(function()
+		VisitURL(GetRecipeURL(recipe))
+	end)
+end
+
+module.IsUsingNewCraftingMenu = function()
+	return CraftingMenuDetailsExists
+end
+
+module.HookNewCraftingMenu = function()
+	assert(module.IsUsingNewCraftingMenu(), "Trying to hook CraftingMenuDetails despite it not being available.")
+
+	module.oldCraftingMenuDetails_PopulateRecipeDetailPanel = CraftingMenuDetails.PopulateRecipeDetailPanel
+	CraftingMenuDetails.PopulateRecipeDetailPanel = CraftingMenuDetails_PopulateRecipeDetailPanel
+end
+
 
 return module

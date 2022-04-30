@@ -491,8 +491,16 @@ end
 --==========================================================================================================================
 --==========================================================================================================================
 local recipeLookupModule = import("uichanges/recipelookup")
-if recipeLookupModule.IsRecipePopupAvailable() then
-	recipeLookupModule.HookRecipePopup()
+if recipeLookupModule.IsUsingNewCraftingMenu() then
+	recipeLookupModule.HookNewCraftingMenu()
+elseif recipeLookupModule.IsUsingOldCraftingMenu() then
+	recipeLookupModule.HookOldCraftingMenu()
+else
+	if DEBUG_ENABLED then
+		error("Unable to detect crafting menu!")
+	else
+		mprint("Unable to detect crafting menu!")
+	end
 end
 
 --==========================================================================================================================
