@@ -194,8 +194,10 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 	end
 
 	
-
-	dprint(self.lookup, self.lookup and self.lookup.inst:IsValid())
+	if self.lookup and self.lookup.inst:IsValid() then
+		return
+	end
+	
 
 	local top = -5
 	local width = self.panel_width / 2
@@ -217,7 +219,8 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 	end
 
 	self.lookup:SetOnClick(function()
-		VisitURL(GetRecipeURL(recipe))
+		if not self.data or not self.data.recipe then return mprint("Missing recipe data for lookup.") end
+		VisitURL(GetRecipeURL(self.data.recipe))
 	end)
 end
 

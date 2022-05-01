@@ -132,10 +132,11 @@ end
 module_describers.music = function(self, context)
 	return string.format(
 		context.lstr.upgrademodule.module_describers.music, 
-		FormatDecimal(TUNING.WX78_MUSIC_SANITYAURA * 60, 1)
+		FormatDecimal(TUNING.WX78_MUSIC_SANITYAURA * 60, 1),
+		math.sqrt(TUNING.WX78_MUSIC_AURADSQ) / 4
 	) .. "\n" .. string.format(
 		context.lstr.upgrademodule.module_describers.music_tend,
-		TUNING.WX78_MUSIC_TENDRANGE
+		TUNING.WX78_MUSIC_TENDRANGE / 4
 	)
 end
 

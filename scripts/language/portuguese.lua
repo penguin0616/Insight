@@ -873,7 +873,7 @@ return {
 			taser = "Deals <color=WET>%d</color> %s to attackers (cooldown: %.1f).",
 			light = "Provides a <color=LIGHT>light radius</color> of <color=LIGHT>%.1f</color> (extras only <color=LIGHT>%.1f</color>).",
 			maxhunger = "Increases <color=HUNGER>max hunger</color> by <color=HUNGER>%d</color>.",
-			music = "Provides a <color=SANITY>sanity aura</color> of <color=SANITY>%+.1f/min</color>.",
+			music = "Provides a <color=SANITY>sanity aura</color> of <color=SANITY>%+.1f/min</color> within <color=SANITY>%.1f</color> tile(s).",
 			music_tend = "Tends to plants within <color=NATURE>%.1f</color> tiles.",
 			bee = "Regenerates <color=HEALTH>%d health/%ds</color> (<color=HEALTH>%d/day</color>).",
 		},
