@@ -32,7 +32,7 @@ local function UpdateChargeLabel(self)
 	if not self.insightChargeTimeLabel then return end
 	local context = GetPlayerContext(localPlayer)
 	local info = localPlayer.replica.insight:GetInformation(localPlayer)
-	if info.special_data.wx78.time_to_gain_charge then
+	if info and info.special_data.wx78.time_to_gain_charge then
 		
 		self.insightChargeTimeLabel:SetString(
 			string.format(
