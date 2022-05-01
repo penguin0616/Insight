@@ -890,6 +890,24 @@ return {
 	upgradeable_complete = "升级 %s%% 完成",
 	upgradeable_incomplete = "不可升级",
 
+	-- upgrademodule.lua
+	upgrademodule = {
+		module_describers = {
+			maxhealth = "Increases <color=HEALTH>max health</color> by <color=HEALTH>%d</color>.",
+			maxsanity = "Increases <color=SANITY>max sanity</color> by <color=SANITY>%d</color>.",
+			movespeed = "Increases <color=DAIRY>speed</color> by %s.",
+			heat = "Increases <color=#cc0000>minimum temperature</color> by <color=#cc0000>%d</color>.",
+			heat_drying = "Increases <color=#cc000>drying rate</color> by <color=#cc0000>%.1f</color>.",
+			cold = "Decreases <color=#00C6FF>minimum temperature</color> by <color=#00C6FF>%d</color>.",
+			taser = "Deals <color=WET>%d</color> %s to attackers (cooldown: %.1f).",
+			light = "Provides a <color=LIGHT>light radius</color> of <color=LIGHT>%.1f</color> (extras only <color=LIGHT>%.1f</color>).",
+			maxhunger = "Increases <color=HUNGER>max hunger</color> by <color=HUNGER>%d</color>.",
+			music = "Provides a <color=SANITY>sanity aura</color> of <color=SANITY>%+.1f/min</color>.",
+			music_tend = "Tends to plants within <color=NATURE>%.1f</color> tiles.",
+			bee = "Regenerates <color=HEALTH>%d health/%ds</color> (<color=HEALTH>%d/day</color>).",
+		},
+	},
+
 	-- walrus_camp.lua [Prefab]
 	walrus_camp_respawn = "<color=MOB_SPAWN><prefab=%s></color>重生于<color=FROZEN>%s后</color>",
 
