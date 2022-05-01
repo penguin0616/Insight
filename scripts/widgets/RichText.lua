@@ -105,6 +105,14 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 			-- superscript
 			size = size * 2/3
 			modifiers.sup = true
+		elseif chunk:HasTag("u") then
+			-- i brought it back
+			local w, h = obj:GetRegionSize()
+			local underline = obj:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
+			underline:SetTint(color.r, color.g, color.b, color.a)
+			underline:SetSize(w - 2, 2)
+			underline:SetPosition(-4, -15 + 3)
+			underline:MoveToBack()
 		end
 
 		local text = nil
@@ -127,17 +135,9 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 		obj:SetColour(color)
 		obj.modifiers = modifiers
 
-		--[[
-		-- note: if this is brought back, cannot apply when either sub or sup is active. stick it last in the elseif.
-		if chunk:HasTag("u") then
-			local w, h = obj:GetRegionSize()
-			local underline = obj:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
-			underline:SetTint(color.r, color.g, color.b, color.a)
-			underline:SetSize(w - 2, 2)
-			underline:SetPosition(-4, -15 + 3)
-			underline:MoveToBack()
-		end
-		--]]
+		
+		
+		
 	end
 
 	return obj

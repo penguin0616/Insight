@@ -646,7 +646,7 @@ local function GetComponentDescriptor(name)
 
 			return res
 		else
-			error(string.format("Attempt to return %s '%s' in descriptor '%s'", type(res), tostring(res), name))
+			error(string.format("Attempt to return %s (type %s) in descriptor '%s'", type(res), tostring(res), name))
 			--Insight.descriptors[name] = false
 			return false
 		end

@@ -81,6 +81,7 @@ local function GetSpeedModifier(self, player)
 end
 
 local function GetHungerDrainModifier(self, player)
+	local inst = self.inst
 	local hunger_modifier
 
 	if world_type == -1 then
