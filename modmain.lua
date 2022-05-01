@@ -856,7 +856,7 @@ local function GetEntityInformation(entity, player, params)
 
 		-- collect the description if one was provided
 		if v.description then -- type(v.description) == "string"
-			v.description = ResolveColors(v.description) -- resolve any color tags that reference the Insight table's colors
+			--v.description = ResolveColors(v.description) -- resolve any color tags that reference the Insight table's colors
 
 			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
 
@@ -880,7 +880,7 @@ local function GetEntityInformation(entity, player, params)
 
 
 		if v.alt_description then -- type(v.alt_description) == "string"
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. ResolveColors(v.alt_description)
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.alt_description
 			if i < #chunks then
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end

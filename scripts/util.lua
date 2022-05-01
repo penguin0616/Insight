@@ -199,10 +199,12 @@ function vararg(packed)
 end
 
 --- best description
+local function ResolveColorsReplaceFn(clr, str)
+	return string.format("<color=%s>", Insight.COLORS[clr] or clr, str)
+end
+
 function ResolveColors(str)
-	local res = str:gsub("<color=([#%w_]+)>", function(clr, str)
-		return string.format("<color=%s>", Insight.COLORS[clr] or clr, str)
-	end)
+	local res = str:gsub("<color=([#%w_]+)>", ResolveColorsReplaceFn)
 
 	return res
 	--return string.format("<color=%s>%s</color>", Insight.COLORS[c] or c, s)

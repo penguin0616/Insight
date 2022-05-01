@@ -92,7 +92,7 @@ end)
 
 function ItemDetail:SetText(str)
 	if type(str) == "string" then
-		str = ResolveColors(str)
+		--str = ResolveColors(str)
 	end
 
 	if str == nil then

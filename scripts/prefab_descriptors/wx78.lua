@@ -24,6 +24,7 @@ local CHARGEREGEN_TIMERNAME = "chargeregenupdate"
 
 local function Describe(inst, context)
 	local description = nil
+	local time_to_gain_charge
 
 	if not wx78_refresh and inst.charge_time and inst.charge_time > 0 then -- inspectable manually added in DS
 		description = string.format(context.lstr.wx78_charge, context.time:SimpleProcess(inst.charge_time))
@@ -33,6 +34,7 @@ local function Describe(inst, context)
 		local time_left = inst.components.timer and inst.components.timer:GetTimeLeft(CHARGEREGEN_TIMERNAME)
 		if inst.components.upgrademoduleowner and time_left and time_left > 0 then
 			description = string.format(context.lstr.wx78.gain_charge_time, context.time:SimpleProcess(time_left))
+			time_to_gain_charge = time_left
 		end
 	end
 
@@ -43,7 +45,8 @@ local function Describe(inst, context)
 			tex = "ladybolt.tex",
 			atlas = "images/ladybolt.xml"
 		},
-		playerly = true
+		playerly = true,
+		time_to_gain_charge = time_to_gain_charge
 	}
 end
 

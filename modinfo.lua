@@ -28,7 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
-version = "3.4.0" -- dst is 3.4.0, ds is 3.4.0
+version = "3.4.1" -- dst is 3.4.1, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "General update for new crafting UI. Check changelog for more details.",
+	update_info = "Update for WX-78 refresh information and other miscellaneous changes. Check changelog for more details.",
 	update_info_ds = "Bug fixes, check change notes.",
 	crashreporter_info = "Insight has a crash reporter you can enable in the client & server config",
 
@@ -6115,7 +6115,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		tags = {"dst_only", "undefined"},
 	},
 	{
@@ -6214,7 +6214,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		},
-		default = true,
+		default = false,
 		tags = {"dst_only", "undefined"},
 	},
 	{

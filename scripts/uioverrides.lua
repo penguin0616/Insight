@@ -373,7 +373,7 @@ if CraftingMenuWidget and CraftingMenuHUD then
 			local oldApplyFn = opts.apply_fn
 
 			opts.item_ctor_fn = function(...)
-				mprint("ReplacementCtor")
+				--mprint("ReplacementCtor")
 				local widget = oldItemCtorFn(...)
 				--widget.OnGainFocus = ItemWidgetOnGainFocus;
 				--widget.OnLoseFocus = ItemWidgetOnLoseFocus;
@@ -501,6 +501,16 @@ else
 	else
 		mprint("Unable to detect crafting menu!")
 	end
+end
+
+--==========================================================================================================================
+--==========================================================================================================================
+--======================================== WX-78 Charge Timer ==============================================================
+--==========================================================================================================================
+--==========================================================================================================================
+local wxChargeDisplayModule = import("uichanges/wxchargedisplay")
+if wxChargeDisplayModule.CanHookUpgradeModuleDisplay() then
+	wxChargeDisplayModule.HookUpgradeModuleDisplay()
 end
 
 --==========================================================================================================================
@@ -1203,21 +1213,21 @@ local function UpdatePlayerListing(self)
 	local asd = {}
 
 	if data.health then
-		local f = ResolveColors(string.format("<icon=health> <color=HEALTH>%s</color> / <color=HEALTH>%s</color>", data.health.health, data.health.max_health))
+		local f = string.format("<icon=health> <color=HEALTH>%s</color> / <color=HEALTH>%s</color>", data.health.health, data.health.max_health)
 		table.insert(asd, f)
 	end
 
 	if data.sanity then
 		local str = data.sanity.lunacy and "ENLIGHTENMENT" or "SANITY"
-		local f = ResolveColors(string.format("<icon=" .. str:lower() .. "> <color=" .. str .. ">%s</color> / <color=" .. str .. ">%s</color>", data.sanity.sanity, data.sanity.max_sanity))
+		local f = string.format("<icon=" .. str:lower() .. "> <color=" .. str .. ">%s</color> / <color=" .. str .. ">%s</color>", data.sanity.sanity, data.sanity.max_sanity)
 		table.insert(asd, f)
 	end
 
 	if data.wereness and data.wereness.weremode then
-		local f = ResolveColors(string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.hunger.hunger, data.hunger.max_hunger))
+		local f = string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.hunger.hunger, data.hunger.max_hunger)
 		table.insert(asd, f)
 	elseif data.hunger then
-		local f = ResolveColors(string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.hunger.hunger, data.hunger.max_hunger))
+		local f = string.format("<icon=hunger> <color=HUNGER>%s</color> / <color=HUNGER>%s</color>", data.hunger.hunger, data.hunger.max_hunger)
 		table.insert(asd, f)
 	end
 

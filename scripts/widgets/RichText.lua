@@ -264,6 +264,8 @@ function RichText:SetString(str, forced)
 
 	local lines = {}
 
+	str = ResolveColors(str)
+
 	local chunks = Reader:new(str):Read()
 	local i = 1;
 	local lineCount = 1

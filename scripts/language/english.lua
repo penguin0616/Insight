@@ -961,7 +961,7 @@ return {
 	-- wx78.lua [Prefab]
 	wx78 = {
 		remaining_charge_time = "Remaining charge: %s",
-		gain_charge_time = "Will gain a charge in: %s",
+		gain_charge_time = "Will gain a <color=LIGHT>charge</color> in: <color=LIGHT>%s</color>",
 	},
 
 	-- yotb_sewer.lua
