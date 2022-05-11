@@ -42,6 +42,8 @@ local ItemDetail = Class(Widget, function(self, info)
 	assert(info.width, "info.width must be specified")
 	assert(info.height, "info.height must be specified")
 
+	self.component = nil
+
 	--[[
 	self.yep = self:AddChild(Image(DEBUG()))
 	self.yep:SetTint(1, 1, 1, .5)
@@ -89,6 +91,30 @@ local ItemDetail = Class(Widget, function(self, info)
 	self.heckler:SetPosition(icon_holder_width/2 - 10, 0) -- subtract 10 to keep icon_holder and text still bordering eachother
 	--]]
 end)
+
+function ItemDetail:OnControl(control, down)
+	-- Check input
+	if self.component and control == CONTROL_ACCEPT and down and TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
+		-- Check localplayer status
+		if localPlayer and localPlayer.HUD._StatusAnnouncer then
+			-- Check component status
+			local special_data = localPlayer.replica.insight.world_data.special_data[self.component]
+			local describer = special_data and (
+				(special_data.prefably and Insight.prefab_descriptors[self.component] and Insight.prefab_descriptors[self.component].StatusAnnoucementsDescribe) or
+				(Insight.descriptors[self.component] and Insight.descriptors[self.component].StatusAnnoucementsDescribe)
+			)
+
+			if describer then
+				local str = describer(special_data, GetPlayerContext(localPlayer))
+				if str then
+					localPlayer.HUD._StatusAnnouncer:Announce(str, self.component)
+				end
+			end
+		end
+	end
+
+	return Widget.OnControl(self, control, down)
+end
 
 function ItemDetail:SetText(str)
 	if type(str) == "string" then

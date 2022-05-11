@@ -18,19 +18,19 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- example.lua [Prefab]
-local function Describe(inst, context)
-	local description = context.lstr.why
-	
-	return {
-		priority = 0,
-		description = description,
-		prefably = true
-	}
+-- atrium_gate.lua [Prefab]
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.cooldown then
+		-- Not like we can do anything...
+		return
+	end
+
+	return string.format(
+		ProcessRichTextPlainly(context.lstr.atrium_gate.cooldown),
+		context.time:TryStatusAnnouncementsTime(special_data.cooldown)
+	)
 end
 
-
-
 return {
-	Describe = Describe
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

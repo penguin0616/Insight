@@ -343,6 +343,12 @@ function IsClientHost()
 	--return IsDST() and TheNet:IsDedicated() == false and TheWorld.ismastersim == true
 end
 
+--- Checks whether the mod is running on something that has full game control. Essentially anything in DS and worlds in DST where you are the host.
+-- @treturn boolean
+function IsExecutiveAuthority()
+	return TheSim:GetGameID() == "DS" or TheNet:GetIsMasterSimulation() == true
+end
+
 --- Checks whether the mod is running in The Forge.
 -- @treturn boolean
 function IsForge()
@@ -1084,12 +1090,12 @@ function GetWorldInformation(player) -- refactor?
 		--]]
 		
 
-		-- antlion (could use sinkholespawner)
-		if data.raw_information["antlion"] == nil and helper:GetAntlionData() then
+		-- sinkholespawner (used to be "antlion" but for consistency's sake for client descriptors)
+		if data.raw_information["sinkholespawner"] == nil and helper:GetAntlionData() then
 			context.antlion_data = helper:GetAntlionData()
 			local res = Insight.descriptors.sinkholespawner and Insight.descriptors.sinkholespawner.Describe(nil, context) or nil
-			data.special_data["antlion"] = res and GetSpecialData(res) or nil
-			data.raw_information["antlion"] = res and res.description or nil
+			data.special_data["sinkholespawner"] = res and GetSpecialData(res) or nil
+			data.raw_information["sinkholespawner"] = res and res.description or nil
 		end
 
 		-- ancient gateway
@@ -1100,8 +1106,10 @@ function GetWorldInformation(player) -- refactor?
 					atlas = "images/Atrium_Gate.xml",
 					tex = "Atrium_Gate.tex"
 				},
-				worldly = true,
-				from = "prefab"
+				worldly = true, -- meeeh
+				prefably = true,
+				from = "prefab",
+				cooldown = atrium_gate_cooldown,
 			}
 
 			data.raw_information["atrium_gate"] = context.time:SimpleProcess(atrium_gate_cooldown)
@@ -1115,8 +1123,10 @@ function GetWorldInformation(player) -- refactor?
 					atlas = "images/Dragonfly.xml",
 					tex = "Dragonfly.tex",
 				},
-				worldly = true,
-				from = "prefab"
+				worldly = true, -- meeeh
+				prefably = true,
+				from = "prefab",
+				time_to_respawn = dragonfly_respawn,
 			}
 
 			data.raw_information["dragonfly_spawner"] = context.time:SimpleProcess(dragonfly_respawn)	
@@ -1130,14 +1140,17 @@ function GetWorldInformation(player) -- refactor?
 					atlas = "images/Beequeen.xml",
 					tex = "Beequeen.tex",
 				},
-				worldly = true,
-				from = "prefab"
+				worldly = true, -- meeeh
+				prefably = true,
+				from = "prefab",
+				time_to_respawn = beequeen_respawn,
 			}
 
 			data.raw_information["beequeenhive"] = context.time:SimpleProcess(beequeen_respawn)
 		end
 
 		-- terrarium
+		--[[
 		local terrarium_cooldown = helper:GetTerrariumCooldown() or -1
 		if terrarium_cooldown >= 0 then
 			data.special_data["terrarium_cd"] = {
@@ -1151,6 +1164,15 @@ function GetWorldInformation(player) -- refactor?
 
 			data.raw_information["terrarium_cd"] = context.time:SimpleProcess(terrarium_cooldown)
 		end
+		--]]
+		
+		-- unfinished
+		if data.raw_information["terrarium"] == nil and helper:GetTerrariumCooldown() then
+			local res = Insight.prefab_descriptors.terrarium and Insight.prefab_descriptors.terrarium.DescribeCooldown(nil, context) or nil
+			data.special_data["terrarium"] = res and GetSpecialData(res) or nil
+			data.raw_information["terrarium"] = res and res.description or nil
+		end
+		
 
 		-- bearger
 		if data.raw_information["beargerspawner"] == nil and helper:GetBeargerData() then
@@ -1204,13 +1226,21 @@ function GetWorldInformation(player) -- refactor?
 		-- TheWorld.net == forest_network or cave_network
 		local secondary_data = GetEntityInformation(world.net, player, {RAW = true})
 		for i,v in pairs(secondary_data.special_data) do
-			assert(data.special_data[i]==nil, "[Insight]: attempt to overwrite special_data: " .. tostring(i))
+			if data.special_data[i] ~= nil then
+				dumptable(data.special_data[i])
+				error("[Insight]: attempt to overwrite special_data: " .. tostring(i))
+				return
+			end
 			data.special_data[i] = v
 			data.special_data[i].from = "net"
 		end
 
 		for i,v in pairs(secondary_data.raw_information) do
-			assert(data.raw_information[i]==nil, "[Insight]: attempt to overwrite raw_information: " .. tostring(i))
+			if data.raw_information[i] ~= nil then
+				dumptable(data.special_data[i])
+				error("[Insight]: attempt to overwrite raw_information: " .. tostring(i))
+				return
+			end
 			data.raw_information[i] = v
 		end
 	end

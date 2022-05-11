@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- hounded.lua [Worldly]
+local Is_DST = IsDST()
+
 local icons = {
 	forest = {
 		atlas = "images/Hound.xml",
@@ -35,33 +37,56 @@ local icons = {
 }
 
 local function Describe(self, context)
-	local worldprefab = nil
+	local world_prefab = nil
 	local description = nil
 
 	local time_to_attack = nil
 	
-	if IsDST() then
+	if Is_DST then
 		time_to_attack = self:GetTimeToAttack()
-		worldprefab = TheWorld.worldprefab
+		world_prefab = TheWorld.worldprefab
 	else
 		time_to_attack = self.timetoattack
-		worldprefab = GetWorld().prefab
+		world_prefab = GetWorld().prefab
 	end
 
 	if time_to_attack > 0 then
 		description = context.time:SimpleProcess(time_to_attack)
+	else
+		time_to_attack = nil
 	end
 
 	return {
 		priority = 5,
 		description = description,
-		icon = icons[worldprefab],
+		icon = icons[world_prefab],
+		time_to_attack = time_to_attack,
 		worldly = true
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_attack then
+		-- Not like we can do anything...
+		return
+	end
 
+	local world_prefab = (Is_DST and TheWorld.worldprefab) or GetWorld().prefab
+	local attack_type = (world_prefab == "forest" and context.lstr.hounded.time_until_hounds) or 
+		(world_prefab == "cave" and context.lstr.hounded.time_until_worms) or 
+		nil
+
+	if not attack_type then
+		return
+	end
+
+	return string.format(
+		ProcessRichTextPlainly(attack_type),
+		context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
+	)
+end
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

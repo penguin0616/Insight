@@ -80,59 +80,81 @@ local colors = setmetatable({ -- paint.net eyedropper on the medallions
 	end
 })
 
+local is_dst = IsDST()
+
 local function Describe(self, context)
 	local description = nil
 	local control = context.config["nightmareclock_display"] 
 	local hasMedallion = false
 	local icon = nil
 
-	if context.player.components.inventory:Has("nightmare_timepiece", 1) then
-		hasMedallion = true
-	elseif IsDST() and context.player.components.inventory:GetOverflowContainer() and context.player.components.inventory:GetOverflowContainer():Has("nightmare_timepiece", 1) then
-		hasMedallion = true
-	end
-
-	if (control == 1 and hasMedallion) or (control == 2) then
-		local save_data = self:OnSave() --[[ {
-			lengths = {},
-			phase = PHASE_NAMES[_phase:value()],
-			totaltimeinphase = _totaltimeinphase:value(),
-			remainingtimeinphase = _remainingtimeinphase:value(),
-			lockedphase = _lockedphase ~= nil and PHASE_NAMES[_lockedphase] or nil,
-		}
-		]]
-
-		--dprint(save_data.phase, "|", save_data.totaltimeinphase, "|", save_data.remainingtimeinphase)
-
-		local remaining_time
-
-		if save_data.lockedphase then -- DST only
-			-- it has been locked with an ancient key
-			remaining_time = context.lstr.nightmareclock_lock
-		else
-			if IsDST() then
-				remaining_time = context.time:SimpleProcess(save_data.remainingtimeinphase)
-			else
-				remaining_time = context.time:SimpleProcess(self:GetTimeLeftInEra())
-			end
+	if control == 1 then
+		if context.player.components.inventory:Has("nightmare_timepiece", 1) then
+			hasMedallion = true
+		elseif is_dst and context.player.components.inventory:GetOverflowContainer() and context.player.components.inventory:GetOverflowContainer():Has("nightmare_timepiece", 1) then
+			hasMedallion = true
 		end
-
-		local phase = save_data.phase == "wild" and "nightmare" or save_data.phase
-
-		description = string.format(context.lstr.nightmareclock, colors[phase], phase:sub(1,1):upper() .. phase:sub(2):lower(), remaining_time)
-		icon = icons[phase]
 	end
+
+	if not ((control == 1 and hasMedallion) or control == 2) then
+		return
+	end
+
+	local save_data = self:OnSave() --[[ {
+		lengths = {},
+		phase = PHASE_NAMES[_phase:value()],
+		totaltimeinphase = _totaltimeinphase:value(),
+		remainingtimeinphase = _remainingtimeinphase:value(),
+		lockedphase = _lockedphase ~= nil and PHASE_NAMES[_lockedphase] or nil,
+	}
+	]]
+
+	--dprint(save_data.phase, "|", save_data.totaltimeinphase, "|", save_data.remainingtimeinphase)
+
+	local remaining_time
+
+	if save_data.lockedphase then -- DST only
+		-- it has been locked with an ancient key
+		remaining_time = context.lstr.nightmareclock.phase_locked
+	else
+		if is_dst then
+			remaining_time = context.time:SimpleProcess(save_data.remainingtimeinphase)
+		else
+			remaining_time = context.time:SimpleProcess(self:GetTimeLeftInEra())
+		end
+	end
+
+	local phase = save_data.phase == "wild" and "nightmare" or save_data.phase
+
+	description = string.format(context.lstr.nightmareclock.phase_info, colors[phase], phase:sub(1, 1):upper() .. phase:sub(2):lower(), remaining_time)
+	icon = icons[phase]
 
 	return {
 		priority = 0,
 		description = description,
 		icon = icon,
 		worldly = true,
+		locked_phase = save_data.lockedphase,
+		remaining_time_in_phase = save_data.remainingtimeinphase,
+		phase = phase
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if special_data.locked_phase then
+		return ProcessRichTextPlainly(context.lstr.nightmareclock.announce_phase_locked)
+	elseif special_data.remaining_time_in_phase and special_data.phase then
+		return ProcessRichTextPlainly(string.format(
+			context.lstr.nightmareclock.announce_phase,
+			special_data.phase,
+			context.time:TryStatusAnnouncementsTime(special_data.remaining_time_in_phase)
+		))
+	end
 
+	
+end
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

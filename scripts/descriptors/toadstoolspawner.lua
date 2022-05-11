@@ -62,13 +62,24 @@ local function Describe(self, context)
 			atlas = "images/Toadstool.xml",
 			tex = "Toadstool.tex",
 		},
-		worldly = true
+		worldly = true,
+		time_to_respawn = data.time_to_respawn
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_respawn then
+		return
+	end
 
+	return string.format(
+		ProcessRichTextPlainly(context.lstr.toadstoolspawner.time_to_respawn),
+		context.time:TryStatusAnnouncementsTime(special_data.time_to_respawn)
+	)
+end
 
 return {
 	Describe = Describe,
 	GetToadstoolData = GetToadstoolData,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

@@ -238,7 +238,7 @@ function Reader:new(line)
 	return o
 end
 
-function Reader.Stringify(chunks)
+function Reader.Stringify(chunks, tagless)
 	local rebuilt = ""
 
 	for i = 1, #chunks do
@@ -248,9 +248,11 @@ function Reader.Stringify(chunks)
 		else
 			local str = chunk.text
 
-			for x = 1, #chunks.tags do
+			for x = 1, #chunk.tags do
 				local v = chunk.tags[x]
-				str = string.format("<%s=%s>%s</%s>", v.name, v.value, str, v.name)
+				if not tagless then
+					str = string.format("<%s=%s>%s</%s>", v.name, v.value, str, v.name)
+				end
 			end
 
 			rebuilt = rebuilt .. str

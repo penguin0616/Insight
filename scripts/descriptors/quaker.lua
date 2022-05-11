@@ -50,7 +50,7 @@ local function Describe(self, context)
 	end
 
 	if next_quake then
-		description = string.format(context.lstr.next_quake, context.time:SimpleProcess(next_quake))
+		description = string.format(context.lstr.quaker.next_quake, context.time:SimpleProcess(next_quake))
 	end
 
 	--local _, tex, atlas = PrefabHasIcon("rocks") -- cant think of a reason this wouldnt exist
@@ -60,12 +60,23 @@ local function Describe(self, context)
 		priority = 0,
 		description = description,
 		icon = icon,
-		worldly = true
+		worldly = true,
+		next_quake = next_quake
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.next_quake then
+		return
+	end
 
+	return string.format(
+		ProcessRichTextPlainly(context.lstr.quaker.next_quake),
+		context.time:TryStatusAnnouncementsTime(special_data.next_quake)
+	)
+end
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

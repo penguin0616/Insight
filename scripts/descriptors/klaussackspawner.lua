@@ -67,10 +67,10 @@ local function Describe(self, context)
 	end
 
 	if data.despawn_day then
-		description = string.format(context.lstr.klaussack_despawn, data.despawn_day)
+		description = string.format(context.lstr.klaussackspawner.klaussack_despawn, data.despawn_day)
 
 	elseif data.time_to_spawn then
-		description = string.format(context.lstr.klaussack_spawnsin, context.time:SimpleProcess(data.time_to_spawn))
+		description = string.format(context.lstr.klaussackspawner.klaussack_spawnsin, context.time:SimpleProcess(data.time_to_spawn))
 	end
 
 	return {
@@ -81,12 +81,27 @@ local function Describe(self, context)
 			tex = "Klaus_Sack.tex",
 		},
 		worldly = true,
+		despawn_day = data.despawn_day,
+		time_to_spawn = data.time_to_spawn,
 	}
 end
 
-
+local function StatusAnnoucementsDescribe(special_data, context)
+	if special_data.despawn_day then
+		return ProcessRichTextPlainly(string.format(
+			context.lstr.klaussackspawner.announce_despawn,
+			special_data.despawn_day
+		))
+	elseif special_data.time_to_spawn then
+		return ProcessRichTextPlainly(string.format(
+			context.lstr.klaussackspawner.announce_spawn,
+			context.time:TryStatusAnnouncementsTime(special_data.time_to_spawn)
+		))
+	end
+end
 
 return {
 	Describe = Describe,
-	GetKlausSackData = GetKlausSackData
+	GetKlausSackData = GetKlausSackData,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
 }

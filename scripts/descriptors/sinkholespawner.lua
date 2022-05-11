@@ -42,7 +42,9 @@ local function Describe(self, context)
 	local time_to_rage = data.time_to_rage
 
 	if time_to_rage and time_to_rage > 0 then
-		description = string.format(context.lstr.antlion_rage, context.time:SimpleProcess(time_to_rage))
+		description = context.time:SimpleProcess(time_to_rage)
+	else
+		time_to_rage = nil
 	end
 
 	return {
@@ -52,13 +54,24 @@ local function Describe(self, context)
 			atlas = "images/Antlion.xml",
 			tex = "Antlion.tex",
 		},
-		worldly = true, -- not really but might as well be, means timer doesn't show up on antlion though
+		worldly = true, -- not really but might as well be, means timer doesn't show up on antlion though,
+		time_to_rage = time_to_rage
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_rage then
+		return
+	end
 
+	return string.format(
+		context.lstr.antlion_rage,
+		context.time:TryStatusAnnouncementsTime(special_data.time_to_rage)
+	)
+end
 
 return {
 	Describe = Describe,
-	GetAntlionData = GetAntlionData
+	GetAntlionData = GetAntlionData,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

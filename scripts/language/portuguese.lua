@@ -69,6 +69,11 @@ return {
 	durability = "<color=#C0C0C0>Durabilidade</color>: <color=#C0C0C0>%s</color> / <color=#C0C0C0>%s</color>",
 	durability_unwrappable = "<color=#C0C0C0>Durabilidade</color>: <color=#C0C0C0>%s</color>",
 
+	-- atrium_gate.lua [Prefab]
+	atrium_gate = {
+		cooldown = "<prefab=atrium_gate> will reset in %s",
+	},
+
 	-- attunable.lua
 	attunable = {
 		linked = "Conectado a: %s",
@@ -86,7 +91,16 @@ return {
 	beard = "Texurso irá surgir em %s dia(s).",
 
 	-- beargerspawner.lua
-	incoming_bearger_targeted = "<color=%s>Alvo: %s</color> -> %s",
+	beargerspawner = {
+		incoming_bearger_targeted = "<color=%s>Alvo: %s</color> -> %s",
+		announce_bearger_target = "<prefab=bearger> will spawn on %s (<prefab=%s>) in %s.",
+		bearger_attack = "<prefab=bearger> will attack in %s."
+	},
+
+	-- beequeenhive.lua [Prefab]
+	beequeenhive = {
+		time_to_respawn = "<prefab=beequeen> will respawn in %s.",
+	},
 
 	-- boatdrag.lua
 	boatdrag = {
@@ -193,7 +207,10 @@ return {
 	cooldown = "Tempo restante: %s",
 
 	-- crabkingspawner.lua
-	crabking_spawnsin = "%s",
+	crabkingspawner = {
+		crabking_spawnsin = "%s",
+		time_to_respawn = "<prefab=crabking> will respawn in %s.",
+	},
 
 	-- crittertraits.lua
 	dominant_trait = "Traço dominante: %s",
@@ -228,7 +245,11 @@ return {
 	},
 
 	-- deerclopsspawner.lua
-	incoming_deerclops_targeted = "<color=%s>Alvo: %s</color> -> %s",
+	deerclopsspawner = {
+		incoming_deerclops_targeted = "<color=%s>Alvo: %s</color> -> %s",
+		announce_deerclops_target = "<prefab=deerclops> will spawn on %s (<prefab=%s>) in %s.",
+		deerclops_attack = "<prefab=deerclops> will attack in %s.",
+	},
 
 	-- diseaseable.lua
 	disease_in = "Ficará doente em: %s",
@@ -248,6 +269,11 @@ return {
 			[TENDENCY.RIDER] = "Cavaleiro",
 			[TENDENCY.PUDGY] = "Rechonchuda"
 		},
+	},
+
+	-- dragonfly_spawner.lua [Prefab]
+	dragonfly_spawner = {
+		time_to_respawn = "<prefab=dragonfly> will respawn in %s.",
 	},
 
 	-- drivable.lua
@@ -511,6 +537,11 @@ return {
 		needed_hiding_spots = "Esconderijos necessários: %s",
 	},
 
+	-- hounded.lua
+	hounded = {
+		time_until_hounds = "Hounds will attack in %s.",
+	},
+
 	-- hunger.lua
 	hunger = "<color=HUNGER>Fome</color>: <color=HUNGER>%s</color> / <color=HUNGER>%s</color>",
 	hunger_burn = "Decaimento de <color=HUNGER>Fome</color>: <color=HUNGER>%+d/day</color> (<color=HUNGER>%s/s</color>)",
@@ -549,8 +580,10 @@ return {
 	klaussackloot = "Loot notável:",
 
 	-- klaussackspawner.lua
-	klaussack_spawnsin = "%s",
-	klaussack_despawn = "Desaparece no dia: %s",
+	klaussackspawner = {
+		klaussack_spawnsin = "%s",
+		klaussack_despawn = "Desaparece no dia: %s",
+	},
 
 	-- leader.lua
 	followers = "Seguidores: %s",
@@ -572,8 +605,11 @@ return {
 	madsciencelab_finish = "Terminará em: %s",
 
 	-- malbatrossspawner.lua
-	malbatross_spawnsin = "%s",
-	malbatross_waiting = "Esperando que alguém vá para um cardume.",
+	malbatrossspawner = {
+		malbatross_spawnsin = "%s",
+		malbatross_waiting = "Esperando que alguém vá para um cardume.",
+		time_to_respawn = "<prefab=malbatross> will respawn in %s.",
+	},
 
 	-- mast.lua
 	mast_sail_force = "Força da vela: %s",
@@ -625,8 +661,12 @@ return {
 	},
 
 	-- nightmareclock.lua
-	nightmareclock = "<color=%s>Fase: %s</color>, %s",
-	nightmareclock_lock = "Bloqueada pela <color=#CE3D45>Chave Anciã</color>.",
+	nightmareclock = {
+		phase_info = "<color=%s>Fase: %s</color>, %s",
+		phase_locked = "Bloqueada pela <color=#CE3D45>Chave Anciã</color>.",
+		announce_phase_locked = "The ruins are currently locked in the nightmare phase.",
+		announce_phase = "The ruins are in the %s phase (%s remaining).",
+	},
 
 	-- oar.lua
 	oar_force = "<color=INEDIBLE>Força</color>: <color=INEDIBLE>%s%%</color>",
@@ -667,7 +707,9 @@ return {
 	preservative = "Restaura %s%% de frescor.",
 
 	-- quaker.lua
-	next_quake = "<color=INEDIBLE>Terremoto</color> em %s",
+	quaker = {
+		next_quake = "<color=INEDIBLE>Terremoto</color> em %s",
+	},
 
 	-- questowner.lua
 	questowner = {
@@ -783,7 +825,7 @@ return {
 	},
 
 	-- sinkholespawner.lua
-	antlion_rage = "%s",
+	antlion_rage = "Antlion will rage in %s",
 
 	-- skinner_beefalo.lua
 	skinner_beefalo = "Temível: %s, Festivo: %s, Formal: %s",
@@ -831,6 +873,7 @@ return {
 		eot_health = "<prefab=eyeofterror> <color=HEALTH>Vida</color> no retorno: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 		retinazor_health = "<prefab=TWINOFTERROR1> <color=HEALTH>Vida</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 		spazmatism_health = "<prefab=TWINOFTERROR2> <color=HEALTH>Vida</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		announce_cooldown = "<prefab=terrarium> will be ready in %s.",
 	},
 
 	-- tigersharker.lua
@@ -842,6 +885,11 @@ return {
 	timer = {
 		label = "Temporizador <color=#8c8c8c>'%s'</color>: %s",
 		paused = "Pausado",
+	},
+
+	-- toadstoolspawner.lua
+	toadstoolspawner = {
+		time_to_respawn = "<prefab=toadstool> will respawn in %s.",
 	},
 
 	-- tool.lua
@@ -964,6 +1012,7 @@ return {
 	wx78 = {
 		remaining_charge_time = "Carga restante: %s",
 		gain_charge_time = "Will gain a <color=LIGHT>charge</color> in: <color=LIGHT>%s</color>",
+		full_charge = "Fully charged!",
 	},
 
 	-- yotb_sewer.lua

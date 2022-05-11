@@ -52,7 +52,9 @@ local function Describe(self, context)
 	end
 
 	if data.time_to_respawn and data.time_to_respawn > 0 then
-		description = string.format(context.lstr.malbatross_spawnsin, context.time:SimpleProcess(data.time_to_respawn))
+		description = string.format(context.lstr.malbatrossspawner.malbatross_spawnsin, context.time:SimpleProcess(data.time_to_respawn))
+	else
+		data.time_to_respawn = nil
 	end
 
 	return {
@@ -63,12 +65,23 @@ local function Describe(self, context)
 			tex = "Malbatross.tex",
 		},
 		worldly = true,
+		time_to_respawn = data.time_to_respawn
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_respawn then
+		return
+	end
 
+	return string.format(
+		ProcessRichTextPlainly(context.lstr.malbatrossspawner.time_to_respawn),
+		context.time:TryStatusAnnouncementsTime(special_data.time_to_respawn)
+	)
+end
 
 return {
 	Describe = Describe,
-	GetMalbatrossData = GetMalbatrossData
+	GetMalbatrossData = GetMalbatrossData,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

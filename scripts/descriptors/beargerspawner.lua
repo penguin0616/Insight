@@ -66,7 +66,7 @@ local function ProcessInformation(context, time_to_attack, target)
 	else
 		local target_string = string.format("%s - %s", target.name, target.prefab)
 		return string.format(
-			context.lstr.incoming_bearger_targeted, 
+			context.lstr.beargerspawner.incoming_bearger_targeted, 
 			Color.ToHex(
 				client_table.colour
 			), 
@@ -100,12 +100,36 @@ local function Describe(self, context)
 			tex = "Bearger.tex",
 		},
 		worldly = true,
+		time_to_attack = data.time_to_attack,
+		target_userid = data.target and data.target.userid or nil
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_attack then
+		return
+	end
 
+	local target = special_data.target_userid and TheNet:GetClientTableForUser(special_data.target_userid)
+
+	if target then
+		-- Bearger is targetting someone
+		return ProcessRichTextPlainly(string.format(
+			context.lstr.beargerspawner.announce_bearger_target,
+			target.name,
+			target.prefab,
+			context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
+		))
+	else
+		return ProcessRichTextPlainly(string.format(
+			context.lstr.beargerspawner.bearger_attack,
+			context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
+		))
+	end
+end
 
 return {
 	Describe = Describe,
-	GetBeargerData = GetBeargerData
+	GetBeargerData = GetBeargerData,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

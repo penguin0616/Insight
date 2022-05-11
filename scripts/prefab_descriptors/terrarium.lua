@@ -22,6 +22,30 @@ directory. If not, please refer to
 local HEALTH_PER_DAY = TUNING.EYEOFTERROR_HEALTHPCT_PERDAY * TUNING.EYEOFTERROR_HEALTH -- =250
 local MAX_GAIN_DAYS = 1/TUNING.EYEOFTERROR_HEALTHPCT_PERDAY -- =20
 
+
+local function DescribeCooldown(inst, context)
+	local cooldown = TheWorld.shard.components.shard_insight:GetTerrariumCooldown() or -1
+
+	if cooldown < 0 then
+		return
+	end
+
+	return {
+		name = "terrarium",
+		priority = 0,
+		description = context.time:SimpleProcess(cooldown),
+		icon = {
+			atlas = "images/Terrarium.xml",
+			tex = "Terrarium.tex",
+		},
+		worldly = true,
+		prefably = true,
+		from = "prefab",
+		cooldown = cooldown,
+	}
+end
+
+
 local function Describe(inst, context)
 	local description, alt_description = nil, nil
 
@@ -87,17 +111,35 @@ local function Describe(inst, context)
 	else
 		--alt_description = string.format("eot exists: %s", tostring(eot ~= nil))
 	end
-
-
 	
+	-- so i have to display information about the cooldown and the boss health stuff
+	-- if i want to do the latter, it can't be worldly but can't show cooldown
+	-- if i want to do the former, it has to be worldly but can't show health
+	-- this is what i am resorting to
+	-- i don't even remember why i put the worldly check in place. wonder what would happen if i removed it.
+	-- but i don't want to bother with it for now, so i'll do this.
 	return {
+		name = "terrarium_health",
 		priority = 0,
-		description = description
+		description = description,
+		prefably = true,
 	}
+
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.cooldown then
+		return
+	end
 
+	return ProcessRichTextPlainly(string.format(
+		context.lstr.terrarium.announce_cooldown,
+		context.time:TryStatusAnnouncementsTime(special_data.cooldown)
+	))
+end
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	DescribeCooldown = DescribeCooldown,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

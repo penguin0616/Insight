@@ -71,7 +71,9 @@ return {
 	beard = "Beard will improve in %s day(s).",
 
 	-- beargerspawner.lua
-	incoming_bearger_targeted = "<color=%s>Target: %s</color> -> %s",
+	beargerspawner = {
+		incoming_bearger_targeted = "<color=%s>Target: %s</color> -> %s",
+	},
 
 	-- boathealth.lua
 	-- use 'health' from 'health'
@@ -136,7 +138,9 @@ return {
 	cooldown = "Cooldown: %s",
 
 	-- crabkingspawner.lua
-	crabking_spawnsin = "%s",
+	crabkingspawner = {
+		crabking_spawnsin = "%s",
+	},
 
 	-- crittertraits.lua
 	dominant_trait = "Dominant trait: %s",
@@ -165,7 +169,13 @@ return {
 	},
 
 	-- deerclopsspawner.lua
-	incoming_deerclops_targeted = "<color=%s>Target: %s</color> -> %s",
+	deerclopsspawner = {
+		deerclopsspawner = {
+		incoming_deerclops_targeted = "<color=%s>Target: %s</color> -> %s",
+		announce_deerclops_target = "<prefab=deerclops> will spawn on %s (<prefab=%s>) in %s.",
+		deerclops_attack = "<prefab=deerclops> will attack in %s.",
+	},
+	},
 
 	-- diseaseable.lua
 	disease_in = "Will become diseased in: %s",
@@ -185,6 +195,11 @@ return {
 			[TENDENCY.RIDER] = "Rider",
 			[TENDENCY.PUDGY] = "Pudgy"
 		},
+	},
+
+	-- dragonfly_spawner.lua [Prefab]
+	dragonfly_spawner = {
+		time_to_respawn = "Dragonfly will respawn in %s",
 	},
 
 	-- drivable.lua
@@ -430,8 +445,10 @@ return {
 	klaussackloot = "Notable loot:",
 
 	-- klaussackspawner.lua
-	klaussack_spawnsin = "%s",
-	klaussack_despawn = "Despawns on day: %s",
+	klaussackspawner = {
+		klaussack_spawnsin = "%s",
+		klaussack_despawn = "Despawns on day: %s",
+	},
 
 	-- leader.lua
 	followers = "Followers: %s",
@@ -443,6 +460,7 @@ return {
 	madsciencelab_finish = "Will finish in: %s",
 
 	-- malbatrossspawner.lua
+	malbatrossspawner = {
 	malbatross_spawnsin = "%s",
 	malbatross_waiting = "Waiting for someone to go to a shoal.",
 
@@ -475,8 +493,10 @@ return {
 	},
 
 	-- nightmareclock.lua
-	nightmareclock = "<color=%s>Phase: %s</color>, %s",
-	nightmareclock_lock = "Locked by the <color=#CE3D45>Ancient Key</color>.",
+	nightmareclock = {
+		phase_info = "<color=%s>Phase: %s</color>, %s",
+		phase_locked = "Locked by the <color=#CE3D45>Ancient Key</color>.",
+	},
 
 	-- oar.lua
 	oar_force = "<color=INEDIBLE>Force</color>: <color=INEDIBLE>%s%%</color>",
@@ -512,7 +532,9 @@ return {
 	preservative = "Restores %s%% of freshness.",
 
 	-- quaker.lua
-	next_quake = "<color=INEDIBLE>Earthquake</color> in %s",
+	quaker = {
+		next_quake = "<color=INEDIBLE>Earthquake</color> in %s",
+	},
 
 	-- questowner.lua
 	questowner = {
@@ -635,6 +657,11 @@ return {
 	timer = {
 		label = "Timer '%s': %s",
 		paused = "Paused",
+	},
+
+	-- toadstoolspawner.lua
+	toadstoolspawner = {
+		time_to_respawn = "<prefab=toadstool> will respawn in %s.",
 	},
 
 	-- tool.lua

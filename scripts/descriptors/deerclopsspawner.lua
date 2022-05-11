@@ -65,7 +65,7 @@ local function ProcessInformation(context, time_to_attack, target)
 	else
 		local target_string = string.format("%s - %s", target.name, target.prefab)
 		return string.format(
-			context.lstr.incoming_deerclops_targeted, 
+			context.lstr.deerclopsspawner.incoming_deerclops_targeted, 
 			Color.ToHex(
 				client_table.colour
 			),
@@ -98,13 +98,37 @@ local function Describe(self, context)
 			atlas = "images/Deerclops.xml",
 			tex = "Deerclops.tex",
 		},
-		worldly = true
+		worldly = true,
+		time_to_attack = data.time_to_attack,
+		target_userid = data.target and data.target.userid or nil
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_attack then
+		return
+	end
 
+	local target = special_data.target_userid and TheNet:GetClientTableForUser(special_data.target_userid)
+
+	if target then
+		-- Bearger is targetting someone
+		return ProcessRichTextPlainly(string.format(
+			context.lstr.deerclopsspawner.announce_deerclops_target,
+			target.name,
+			target.prefab,
+			context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
+		))
+	else
+		return ProcessRichTextPlainly(string.format(
+			context.lstr.deerclopsspawner.deerclops_attack,
+			context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
+		))
+	end
+end
 
 return {
 	Describe = Describe,
-	GetDeerclopsData = GetDeerclopsData
+	GetDeerclopsData = GetDeerclopsData,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

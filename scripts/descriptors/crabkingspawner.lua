@@ -44,7 +44,7 @@ local function Describe(self, context)
 	end
 
 	if data.time_to_respawn then
-		description = string.format(context.lstr.crabking_spawnsin, context.time:SimpleProcess(data.time_to_respawn))
+		description = context.time:SimpleProcess(data.time_to_respawn)
 	end
 
 	return {
@@ -55,12 +55,23 @@ local function Describe(self, context)
 			tex = "Crabking.tex",
 		},
 		worldly = true,
+		time_to_respawn = data.time_to_respawn
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_respawn then
+		return
+	end
 
+	return ProcessRichTextPlainly(string.format(
+		context.lstr.crabkingspawner.time_to_respawn,
+		context.time:TryStatusAnnouncementsTime(special_data.time_to_respawn)
+	))
+end
 
 return {
 	Describe = Describe,
-	GetCrabKingData = GetCrabKingData
+	GetCrabKingData = GetCrabKingData,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

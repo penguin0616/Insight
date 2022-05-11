@@ -72,9 +72,11 @@ local function MakeGrid()
 				end
 				
 				widget:SetText(data.text)
+				widget.component = data.component
 			else
 				widget:SetText(nil)
 				widget:SetIcon(nil, nil)
+				widget.component = nil
 			end
 		end,
 			item_ctor_fn = function(context, index)

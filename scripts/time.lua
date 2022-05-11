@@ -158,6 +158,17 @@ function Time:SimpleProcess(base_seconds, override)
 	end
 end
 
+function Time:TryStatusAnnouncementsTime(seconds)
+	if not self.context then
+		return
+	end
+
+	if localPlayer and localPlayer.HUD._StatusAnnouncer.SecondsToTimeRemainingString then
+		return localPlayer.HUD._StatusAnnouncer:SecondsToTimeRemainingString(math.floor(seconds))
+	end
+
+	return self:SimpleProcess(seconds)
+end
 
 function Time:__tostring()
 	return string.format("%s | %s", self:GetReasonableGameTime(), self:GetReasonableRealTime())

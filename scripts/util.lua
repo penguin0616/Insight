@@ -28,6 +28,7 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 local STRINGS = STRINGS
 
 local module = {}
+local Reader = import("reader")
 
 
 local LoadComponent
@@ -60,6 +61,27 @@ function GetEntityByNetworkID(network_id, to_search)
 			return v
 		end
 	end
+end
+
+
+function ProcessRichTextPlainly(string)
+	-- Assumes string is just a single line
+	local str = ""
+	local chunks = Reader:new(string):Read()
+	
+	for i = 1, #chunks do
+		local chunk = chunks[i]
+		if chunk:IsObject() then
+			if chunk.object.class == "prefab" then
+				local prefab = chunk.object.value
+				str = str .. GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
+			end
+		else
+			str = str .. chunk.text
+		end
+	end
+
+	return str
 end
 
 --[==[

@@ -18,19 +18,18 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- example.lua [Prefab]
-local function Describe(inst, context)
-	local description = context.lstr.why
-	
-	return {
-		priority = 0,
-		description = description,
-		prefably = true
-	}
+-- beequeenhive.lua [Prefab]
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.time_to_respawn then
+		return
+	end
+
+	return string.format(
+		ProcessRichTextPlainly(context.lstr.beequeenhive.time_to_respawn),
+		context.time:TryStatusAnnouncementsTime(special_data.time_to_respawn)
+	)
 end
 
-
-
 return {
-	Describe = Describe
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

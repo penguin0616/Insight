@@ -247,9 +247,9 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 				desc = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", world_data.special_data[component].from or "cmp", component) .. desc) or desc
 				if world_page:GetItem(component) == nil then
 					--mprint("adding insightmenu segment for:", component)
-					world_page:AddItem(component, { text=desc, icon=world_data.special_data[component].icon })
+					world_page:AddItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component })
 				else
-					world_page:EditItem(component, { text=desc, icon=world_data.special_data[component].icon })
+					world_page:EditItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component })
 				end
 			end
 		end
