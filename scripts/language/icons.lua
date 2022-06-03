@@ -148,6 +148,7 @@ return {
 		},
 		--shape = "Shape: %s",
 		--rarity = "Rarity: %s",
+		--season = "Season: %d",
 		--undecided = "Must be placed before contents are determined."
 	},
 

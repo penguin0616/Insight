@@ -179,6 +179,7 @@ return {
 		},
 		shape = "Shape: %s",
 		rarity = "Rarity: %s",
+		season = "Season: %d",
 		undecided = "Must be placed before contents are determined."
 	},
 
@@ -433,6 +434,7 @@ return {
 		THROW = "扔", -- sw
 		ROW_FAIL = "划（失败）",
 		ATTACK = STRINGS.ACTIONS.ATTACK.GENERIC,
+		POUR_WATER = STRINGS.ACTIONS.POUR_WATER.GENERIC,
 	},
 
 	-- fishable.lua

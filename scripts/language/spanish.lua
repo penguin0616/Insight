@@ -150,6 +150,7 @@ return {
 		},
 		shape = "Forma: %s",
 		rarity = "Rareza: %s",
+		season = "Season: %d",
 		undecided = "Debe colocarse antes para determinar el contenido."
 	},
 
@@ -404,6 +405,7 @@ return {
 		THROW = "Lanzar", -- sw -- Action string is "Throw At"
 		ROW_FAIL = "Row Fail",
 		ATTACK = "Ataques", -- "STRINGS.ACTIONS.ATTACK.GENERIC"
+		POUR_WATER = STRINGS.ACTIONS.POUR_WATER.GENERIC,
 	},
 
 	-- fishable.lua

@@ -82,7 +82,7 @@ local english = {
 
 	-- description
 	ds_not_enabled = "Mod must be enabled for functioning modinfo",
-	update_info = "Status Announcements integration. Check changelog for more details.",
+	update_info = "Cawnival update, Status Announcements integration. Check changelog for more details.",
 	update_info_ds = "Bug fixes, check change notes.",
 	crashreporter_info = "Insight has a crash reporter you can enable in the client & server config",
 
@@ -581,11 +581,11 @@ local english = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "No",
-				HOVER = "Loot Stash markers are shown."
+				HOVER = "Loot Stash markers are not shown."
 			},
 			["true"] = {
 				DESCRIPTION = "Yes",
-				HOVER = "Loot Stash markers are not shown."
+				HOVER = "Loot Stash markers are shown."
 			},
 		},
 	},

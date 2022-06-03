@@ -18,6 +18,4 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-return { 
-	Describe = Insight.prefab_descriptors.carnivaldecor_figure_kit and Insight.prefab_descriptors.carnivaldecor_figure_kit.Describe or nil
-}
+return Insight.prefab_descriptors.carnivaldecor_figure_kit
