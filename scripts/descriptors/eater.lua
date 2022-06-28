@@ -58,7 +58,7 @@ local function Describe(self, context)
 	-- eater diet
 	local eater_diet_string = nil
 	if world_type == -1 then
-		
+		-- prefers to eat, can eat. UGH.
 	end
 
 	description = CombineLines(eot_string, held_string)
