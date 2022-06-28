@@ -47,13 +47,13 @@ local function StatusAnnoucementsDescribe(special_data, context, inst)
 	end
 
 	local description = ProcessRichTextPlainly(string.format(
-		context.lstr.announce_chester_respawn,
+		context.lstr.polly_rogershat.announce_respawn,
 		context.time:TryStatusAnnouncementsTime(respawn_time)
 	))
 
 	return {
 		description = description,
-		append = false
+		append = true
 	}
 end
 

@@ -1125,7 +1125,7 @@ if IsDST() then
 					local data = Insight.prefab_descriptors[data.item.prefab].StatusAnnoucementsDescribe(info.special_data[data.item.prefab], context, data.item)
 					if data and data.description then
 						if data.append then
-							return announcement_string .. " " .. my_announcment
+							return announcement_string .. " " .. data.description
 						else
 							return data.description
 						end
