@@ -75,7 +75,7 @@ return {
 	},
 
 	-------------------------------------------------------------------------------------------------------------------------
-	
+
 	-- alterguardianhat.lua [Prefab]
 	alterguardianhat = {
 		minimum_sanity = "最低<color=SANITY>理智</color>光源: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
@@ -100,20 +100,20 @@ return {
 
 	-- atrium_gate.lua [Prefab]
 	atrium_gate = {
-		cooldown = "<prefab=atrium_gate> will reset in %s",
+		cooldown = "<prefab=atrium_gate>会重置于 %s 后",
 	},
 
 	-- attunable.lua
 	attunable = {
-		linked = "Linked to: %s",
-		offline_linked = "Offline links: %s",
-		player = "<color=%s>%s</color> (<prefab=%s>)",	
+		linked = "与 %s 连接",
+		offline_linked = "下线的连接者: %s",
+		player = "<color=%s>%s</color> (<prefab=%s>)",
 	},
 
 	-- batbat.lua [Prefab]
 	batbat = {
-		health_restore = "Restores <color=HEALTH>%s health</color> per hit.",
-		sanity_cost = "Drains <color=SANITY>%s sanity</color> per hit.",
+		health_restore = "每次攻击恢复 <color=HEALTH>%s 生命</color>.",
+		sanity_cost = "每次攻击消耗 <color=SANITY>%s 理智</color>.",
 	},
 
 	-- beard.lua
@@ -122,18 +122,18 @@ return {
 	-- beargerspawner.lua
 	beargerspawner = {
 		incoming_bearger_targeted = "<color=%s>目标: %s</color> -> %s",
-		announce_bearger_target = "<prefab=bearger> will spawn on %s (<prefab=%s>) in %s.",
-		bearger_attack = "<prefab=bearger> will attack in %s."
+		announce_bearger_target = "<prefab=bearger> 会生成在 %s (<prefab=%s>) 周围于 %s 后.",
+		bearger_attack = "<prefab=bearger> 会在 %s 后攻击."
 	},
 
 	-- beequeenhive.lua [Prefab]
 	beequeenhive = {
-		time_to_respawn = "<prefab=beequeen> will respawn in %s.",
+		time_to_respawn = "<prefab=beequeen> 会重生于 %s 后.",
 	},
 
 	-- boatdrag.lua
 	boatdrag = {
-		drag = "Drag: %.5f",
+		drag = "拉力: %.5f",
 		max_velocity_mod = "Max Velocity Mod: %.3f",
 		force_dampening = "Force Dampening: %.3f",
 	},
@@ -153,7 +153,7 @@ return {
 
 	-- brushable.lua
 	brushable = {
-		last_brushed = "Brushed %s days ago."
+		last_brushed = " %s 天前刷过."
 	},
 
 	-- burnable.lua
@@ -172,29 +172,28 @@ return {
 	-- carnivaldecor_figure_kit.lua [Prefab]
 	carnivaldecor_figure_kit = {
 		rarity_types = {
-			rare = "Rare",
-			uncommon = "Uncommon",
-			common = "Common",
-			unknown = "Unknown",
+			rare = "稀有",
+			uncommon = "不常见",
+			common = "常见",
+			unknown = "未知",
 		},
-		shape = "Shape: %s",
-		rarity = "Rarity: %s",
-		season = "Season: %d",
-		undecided = "Must be placed before contents are determined."
+		shape = "形状: %s",
+		rarity = "稀有度: %s",
+		undecided = "需要放置后决定内容。"
 	},
 
 	-- carnivaldecorranker.lua
 	carnivaldecorranker = {
-		rank = "<color=%s>Rank</color>: <color=%s>%s</color> / <color=%s>%s</color>",
-		decor = "Total decor: %s",
+		rank = "<color=%s>级别</color>: <color=%s>%s</color> / <color=%s>%s</color>",
+		decor = "总装饰: %s",
 	},
-	
+
 	-- canary.lua [Prefab]
 	canary = {
-		gas_level = "<color=#DBC033>Gas level</color>: %s / %s", -- canary, max saturation canary
-		poison_chance = "Chance of becoming <color=#522E61>poisoned</color>: <color=#D8B400>%d%%</color>",
-		gas_level_increase = "Increases in %s.",
-		gas_level_decrease = "Decreases in %s."
+		gas_level = "<color=#DBC033>毒气等级</color>: %s / %s", -- canary, max saturation canary
+		poison_chance = "<color=#522E61>被毒害</color>的概率: <color=#D8B400>%d%%</color>",
+		gas_level_increase = "增加于 %s 后.",
+		gas_level_decrease = "减少于 %s 后."
 	},
 
 	-- catcoonden.lua [Prefab]
@@ -206,10 +205,10 @@ return {
 
 	-- chessnavy.lua
 	chessnavy_timer = "%s",
-	chessnavy_ready = "等待你回到犯罪地点",
+	chessnavy_ready = "等待你回到罪行地点",
 
 	-- chester_eyebone.lua [Prefab]
-	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> will respawn in: %s",
+	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> 会重生于 %s 后",
 	announce_chester_respawn = "My <prefab=chester> will respawn in %s.",
 
 	-- childspawner.lua
@@ -225,13 +224,13 @@ return {
 	combat = {
 		damage = "<color=HEALTH>伤害</color>: <color=HEALTH>%s</color>",
 		damageToYou = " (对你的伤害 <color=HEALTH>%s</color>)",
-		age_damage = "<color=HEALTH>Damage <color=AGE>(Age)</color></color>: <color=AGE>%+d</color>",
+		age_damage = "<color=HEALTH>伤害 <color=AGE>(Age)</color></color>: <color=AGE>%+d</color>",
 		age_damageToYou = " (<color=AGE>%+d</color> to you)",
 	},
 
 	-- container.lua
 	container = {
-		
+
 	},
 
 	-- cooldown.lua
@@ -240,7 +239,7 @@ return {
 	-- crabkingspawner.lua
 	crabkingspawner = {
 		crabking_spawnsin = "%s",
-		time_to_respawn = "<prefab=crabking> will respawn in %s.",
+		time_to_respawn = "<prefab=crabking> 会重生于 %s 后.",
 	},
 
 	-- crittertraits.lua
@@ -252,8 +251,8 @@ return {
 
 	-- cyclable.lua
 	cyclable = {
-		step = "Step: %s / %s",
-		note = ", note: %s",
+		step = "音级: %s / %s",
+		note = ", 音符: %s",
 	},
 
 	-- dapperness.lua
@@ -278,8 +277,8 @@ return {
 	-- deerclopsspawner.lua
 	deerclopsspawner = {
 		incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
-		announce_deerclops_target = "<prefab=deerclops> will spawn on %s (<prefab=%s>) in %s.",
-		deerclops_attack = "<prefab=deerclops> will attack in %s.",
+		announce_deerclops_target = "<prefab=deerclops> 会生成在 %s (<prefab=%s>) 周围于 %s 后.",
+		deerclops_attack = "<prefab=deerclops>会在 %s 后攻击.",
 	},
 
 	-- diseaseable.lua
@@ -304,7 +303,7 @@ return {
 
 	-- dragonfly_spawner.lua [Prefab]
 	dragonfly_spawner = {
-		time_to_respawn = "<prefab=dragonfly> will respawn in %s.",
+		time_to_respawn = "<prefab=dragonfly>会重生于 %s 后.",
 	},
 
 	-- drivable.lua
@@ -315,10 +314,10 @@ return {
 
 	-- eater.lua
 	eater = {
-		eot_loot = "Food restores <color=HUNGER>hunger %s%%</color> + <color=HEALTH>health %s%%</color> as durability.",
-		eot_tofeed_restore = "Feeding held <color=MEAT><prefab=%s></color> will restore <color=#C0C0C0>%s</color> (<color=#C0C0C0>%s%%</color>) durability.",
-		eot_tofeed_restore_advanced = "Feeding held <color=MEAT><prefab=%s></color> will restore <color=#C0C0C0>%s</color> (<color=HUNGER>%s</color> + <color=HEALTH>%s</color>) (<color=#C0C0C0>%s%%</color>) durability.",
-		tofeed_restore = "Feeding held <color=MEAT><prefab=%s></color> will restore %s.",
+		eot_loot = "食物回复 <color=HUNGER>饥饿值 %s%%</color> + <color=HEALTH>生命值 %s%%</color> 作为耐久值.",
+		eot_tofeed_restore = "使用<color=MEAT><prefab=%s></color>喂养会回复<color=#C0C0C0>%s</color> (<color=#C0C0C0>%s%%</color>) 耐久度.",
+		eot_tofeed_restore_advanced = "使用<color=MEAT><prefab=%s></color>喂养会回复<color=#C0C0C0>%s</color> (<color=HUNGER>%s</color> + <color=HEALTH>%s</color>) (<color=#C0C0C0>%s%%</color>) 耐久度.",
+		tofeed_restore = "使用<color=MEAT><prefab=%s></color>喂养会回复%s.",
 	},
 
 	-- edible.lua
@@ -405,7 +404,7 @@ return {
 		soil_plant_tile = "养分: [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>]<sub>tile</sub>   (Δ[<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>]<sub>植物</sub> [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>]<sub>格Δ</sub>)"
 		--soil_plant_tile_net = "养分: [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>] ([<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>便</sub></color>] + [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>] = [<color=NATURE>%+d<sub>催</sub></color>, <color=CAMO>%+d<sub>堆</sub></color>, <color=INEDIBLE>%+d<sub>粪</sub></color>])",
 	},
-	
+
 	-- fertilizer.lua
 	fertilizer = {
 		growth_value = "缩短 <color=NATURE>%s</color> 秒<color=NATURE>生长时间</color>",
@@ -450,7 +449,7 @@ return {
 	-- follower.lua
 	leader = "主人: %s", -- "主人" should mean "master" here by free translation, "领导者" is literal translation and not precise?
 	loyalty_duration = "忠诚持续时间: %s",
-	
+
 	-- forcecompostable.lua
 	forcecompostable = "肥料值: %s",
 
@@ -495,7 +494,7 @@ return {
 		time_verbose = "<color=LIGHT>%s</color>持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 		efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
 		units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
-		held_refuel = "Held <color=SWEETENER><prefab=%s></color> will refuel <color=LIGHT>%s%%</color>.",
+		held_refuel = "Held <color=SWEETENER><prefab=%s></color> 将补充燃料 <color=LIGHT>%s%%</color>.",
 	},
 
 	-- ghostlybond.lua
@@ -507,17 +506,17 @@ return {
 
 	-- ghostlyelixir.lua
 	ghostlyelixir = {
-		ghostlyelixir_slowregen = "Regenerates <color=HEALTH>%s health</color> over %s (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
-		ghostlyelixir_fastregen = "Regenerates <color=HEALTH>%s health</color> over %s (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
-		ghostlyelixir_attack = "Maximizes <color=HEALTH>damage</color> for %s.",
-		ghostlyelixir_speed = "Increases <color=DAIRY>speed</color> by <color=DAIRY>%s%%</color> for %s.",
-		ghostlyelixir_shield = "Increases shield duration to 1 second for %s.",
-		ghostlyelixir_retaliation = "Shield reflects <color=HEALTH>%s damage</color> for %s.", -- concatenated with shield
+		ghostlyelixir_slowregen = "回复<color=HEALTH>%s health</color>在 %s 内 (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
+		ghostlyelixir_fastregen = "回复<color=HEALTH>%s health</color>在 %内 (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>).",
+		ghostlyelixir_attack = "最大化<color=HEALTH>伤害</color>持续%s.",
+		ghostlyelixir_speed = "增加<color=DAIRY>移速</color><color=DAIRY>%s%%</color>持续 %s.",
+		ghostlyelixir_shield = "增加护盾持续时间到1秒持续%s.",
+		ghostlyelixir_retaliation = "护盾反射 <color=HEALTH>%s 伤害</color>持续%s.", -- concatenated with shield
 	},
 
 	-- ghostlyelixirable.lua
 	ghostlyelixirable = {
-		remaining_buff_time = "<color=#737CD0><prefab=%s></color> buff duration: %s.",
+		remaining_buff_time = "<color=#737CD0><prefab=%s></color> 增益持续时间: %s.",
 	},
 
 	-- growable.lua
@@ -549,8 +548,8 @@ return {
 	-- healer.lua
 	healer = {
 		heal = "<color=HEALTH>生命</color>: <color=HEALTH>%+d</color>",
-		webber_heal = "Webber <color=HEALTH>Health</color>: <color=HEALTH>%+d</color>",
-		spider_heal = "Spider <color=HEALTH>Health</color>: <color=HEALTH>%+d</color>",
+		webber_heal = "韦伯<color=HEALTH>生命值</color>: <color=HEALTH>%+d</color>",
+		spider_heal = "蜘蛛<color=HEALTH>生命值</color>: <color=HEALTH>%+d</color>",
 	},
 
 	-- health.lua
@@ -565,13 +564,13 @@ return {
 
 	-- hideandseekgame.lua
 	hideandseekgame = {
-		hiding_range = "Hiding range: %s to %s",
-		needed_hiding_spots = "Needed hiding spots: %s",
+		hiding_range = "躲藏范围: %s to %s",
+		needed_hiding_spots = "需要的躲藏地点: %s",
 	},
 
 	-- hounded.lua
 	hounded = {
-		time_until_hounds = "Hounds will attack in %s.",
+		time_until_hounds = "猎犬会攻击于%s后.",
 	},
 
 	-- hunger.lua
@@ -587,13 +586,13 @@ return {
 	},
 
 	-- hutch_fishbowl.lua [Prefab]
-	hutch_respawn ="%s后将生成<color=MOB_SPAWN><prefab=hutch></color>",
+	hutch_respawn = "%s后将生成<color=MOB_SPAWN><prefab=hutch></color>",
 	announce_hutch_respawn = "My <prefab=hutch> will respawn in %s.",
-
+	
 	-- inspectable.lua
-	wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
-	gym_weight_value = "Gym weight value: %s",
-	mushroom_rain = "<color=WET>Rain</color> needed: %s",
+	wagstaff_tool = "这个工具的名字是: <color=ENLIGHTENMENT><prefab=%s></color>",
+	gym_weight_value = "健身房重量数值: %s",
+	mushroom_rain = "需要的<color=WET>雨</color>: %s",
 
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
@@ -606,7 +605,7 @@ return {
 
 	-- kitcoonden.lua
 	kitcoonden = {
-		number_of_kitcoons = "Number of kitcoons: %s"
+		number_of_kitcoons = "小浣猫数量: %s"
 	},
 
 	-- klaussackloot.lua
@@ -623,11 +622,11 @@ return {
 
 	-- lightningblocker.lua
 	lightningblocker = {
-		range = "Lightning protection range: %s wall units",
+		range = "闪电保护范围: %s 墙体单位",
 	},
 
 	-- lightninggoat.lua
-	lightninggoat_charge = "Will discharge in %s day(s).",
+	lightninggoat_charge = "充能将消失于%s 后.",
 
 	-- lureplant.lua [Prefab]
 	lureplant = {
@@ -641,7 +640,7 @@ return {
 	malbatrossspawner = {
 		malbatross_spawnsin = "%s",
 		malbatross_waiting = "等待某人前往鱼群",
-		time_to_respawn = "<prefab=malbatross> will respawn in %s.",
+		time_to_respawn = "<prefab=malbatross>将重生于%s后.",
 	},
 
 	-- mast.lua
@@ -652,18 +651,18 @@ return {
 	mermcandidate = "卡路里: %s / %s",
 
 	-- mightiness.lua
-	mightiness = "<color=MIGHTINESS>Mightiness</color>: <color=MIGHTINESS>%s</color> / <color=MIGHTINESS>%s</color>",
-	
+	mightiness = "<color=MIGHTINESS>力量值</color>: <color=MIGHTINESS>%s</color> / <color=MIGHTINESS>%s</color>",
+
 	-- mightydumbbell.lua
 	mightydumbbell = {
-		mightness_per_use = "<color=MIGHTINESS>Mightiness</color> per use: ",
+		mightness_per_use = "<color=MIGHTINESS>力量值</color>每次使用: ",
 	},
 
 	-- mightygym.lua
 	mightygym = {
-		weight = "Gym weight: %s",
-		mighty_gains = "Normal <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>, Perfect <color=MIGHTINESS>lift</color>: <color=MIGHTINESS>%+.1f</color>",
-		hunger_drain = "<color=HUNGER>Hunger drain</color>: <color=HUNGER>x%d</color>",
+		weight = "健身房重量: %s",
+		mighty_gains = "普通<color=MIGHTINESS>举起</color>: <color=MIGHTINESS>%+.1f</color>, 完美<color=MIGHTINESS>举起</color>: <color=MIGHTINESS>%+.1f</color>",
+		hunger_drain = "<color=HUNGER>饥饿值消耗</color>: <color=HUNGER>x%d</color>",
 	},
 
 	-- mine.lua
@@ -679,8 +678,8 @@ return {
 
 	-- mood.lua
 	mood = {
-		exit = "Will exit mood in %s day(s).",
-		enter = "Will enter mood in %s day(s).",
+		exit = "发情结束于%s天后.",
+		enter = "开始发情于%s天后.",
 	},
 
 	-- moonstormmanager.lua
@@ -697,8 +696,8 @@ return {
 	nightmareclock = {
 		phase_info = "<color=%s>阶段: %s</color>, %s", -- "阶段 Stage" by free translation, same term used in dst wiki
 		phase_locked = "被<color=#CE3D45>远古钥匙</color>锁住。",
-		announce_phase_locked = "The ruins are currently locked in the nightmare phase.",
-		announce_phase = "The ruins are in the %s phase (%s remaining).",
+		announce_phase_locked = "遗迹现在锁定在暴动期",
+		announce_phase = "遗迹现在在%s期 (还剩%s).",
 	},
 
 	-- oar.lua
@@ -706,7 +705,7 @@ return {
 
 	-- oldager.lua
 	oldager = {
-		age_change = "<color=AGE>Age</color>: <color=714E85>%+d</color>",
+		age_change = "<color=AGE>年龄</color>: <color=714E85>%+d</color>",
 	},
 
 	-- periodicthreat.lua
@@ -764,23 +763,23 @@ return {
 
 	-- recallmark.lua
 	recallmark = {
-		shard_id = "Shard Id: %s",
-		shard_type = "Shard type: %s",
+		shard_id = "世界编号: %s",
+		shard_type = "世界类型: %s",
 	},
 
 	-- rechargeable.lua
 	rechargeable = {
-		charged_in = "Charged in: %s",
-		charge = "Charge: %s / %s"
+		charged_in = "充能于: %s后",
+		charge = "充能: %s / %s"
 	},
 
 	-- repairer.lua
 	repairer = {
 		type = "修复工具: <color=#aaaaaa>%s</color>",
 		health = "<color=HEALTH>生命恢复</color>: <color=HEALTH>%s</color> + <color=HEALTH>%s%%</color>",
-		health2 = "<color=HEALTH>%s<sub>flat HP</sub></color> + <color=HEALTH>%s%%<sub>percent HP</sub></color>",
-		work = "<color=#DED15E>工作修复</color>: <color=#DED15E>%s</color>",
-		work2 = "<color=#DED15E>%s<sub>work</sub></color>",
+		health2 = "<color=HEALTH>%s<sub>净血量</sub></color> + <color=HEALTH>%s%%<sub>百分比血量</sub></color>",
+		work = "<color=#DED15E>做工修复</color>: <color=#DED15E>%s</color>",
+		work2 = "<color=#DED15E>%s<sub>做工</sub></color>",
 		perish = "<color=MONSTER>提鲜</color>: <color=MONSTER>%s%%</color>",
 		perish2 = "<color=MONSTER>提鲜</color>: <color=MONSTER>%s%%</color>",
 		materials = (IsDST() and {
@@ -844,8 +843,8 @@ return {
 
 	-- sheltered
 	sheltered = {
-		range = "Shelter range: %s wall units",
-		shelter = "Shelter ",
+		range = "遮蔽范围: %s墙体单位",
+		shelter = "遮蔽处",
 	},
 
 	-- singable.lua
@@ -859,11 +858,11 @@ return {
 			battlesong_instant_taunt = "嘲讽所有战歌范围内附近的敌人。",
 			battlesong_instant_panic = "惊恐附近可惊恐的敌人 %s 秒.",
 		},
-		cost = "Costs %s inspiration to use.",
+		cost = "消耗%s灵感值来使用.",
 	},
 
 	-- sinkholespawner.lua
-	antlion_rage = "Antlion will rage in %s",
+	antlion_rage = "蚁狮会发怒于%s后",
 
 	-- skinner_beefalo.lua
 	skinner_beefalo = "凶猛: %s, 喜庆: %s, 正式: %s",
@@ -880,14 +879,14 @@ return {
 
 	-- spider_healer.lua [Prefab]
 	spider_healer = {
-		webber_heal = "<color=HEALTH>Heals</color> Webber for <color=HEALTH>%+d</color>",
-		spider_heal = "<color=HEALTH>Heals</color> spiders for <color=HEALTH>%+d</color>",
+		webber_heal = "<color=HEALTH>治愈</color>韦伯<color=HEALTH>%+d</color>",
+		spider_heal = "<color=HEALTH>治愈</color>蜘蛛<color=HEALTH>%+d</color>",
 	},
 
 	-- stagehand.lua [Prefab]
 	stagehand = {
 		hits_remaining = "剩余<color=#aaaaee>敲击</color>: <color=#aaaaee>%s</color>",
-		time_to_reset = "%s后重置", 
+		time_to_reset = "%s后重置",
 	},
 
 	-- stewer.lua
@@ -907,11 +906,11 @@ return {
 
 	-- terrarium.lua [Prefab]
 	terrarium = {
-		day_recovery = "Recovers <color=HEALTH>%s</color> health per unfought day.",
-		eot_health = "<prefab=eyeofterror> <color=HEALTH>Health</color> on return: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
-		retinazor_health = "<prefab=TWINOFTERROR1> <color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
-		spazmatism_health = "<prefab=TWINOFTERROR2> <color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
-		announce_cooldown = "<prefab=terrarium> will be ready in %s.",
+		day_recovery = "每个非战斗天恢复<color=HEALTH>%s</color>血量.",
+		eot_health = "<prefab=eyeofterror>在回归时的<color=HEALTH>血量</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		retinazor_health = "<prefab=TWINOFTERROR1> <color=HEALTH>血量</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		spazmatism_health = "<prefab=TWINOFTERROR2> <color=HEALTH>血量</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
+		announce_cooldown = "<prefab=terrarium>会就绪于%s后.",
 	},
 
 	-- tigersharker.lua
@@ -927,7 +926,7 @@ return {
 
 	-- toadstoolspawner.lua
 	toadstoolspawner = {
-		time_to_respawn = "<prefab=toadstool> will respawn in %s.",
+		time_to_respawn = "<prefab=toadstool>将重生于%s后.",
 	},
 
 	-- tool.lua
@@ -950,18 +949,18 @@ return {
 	-- upgrademodule.lua
 	upgrademodule = {
 		module_describers = {
-			maxhealth = "Increases <color=HEALTH>max health</color> by <color=HEALTH>%d</color>.",
-			maxsanity = "Increases <color=SANITY>max sanity</color> by <color=SANITY>%d</color>.",
-			movespeed = "Increases <color=DAIRY>speed</color> by %s.",
-			heat = "Increases <color=#cc0000>minimum temperature</color> by <color=#cc0000>%d</color>.",
-			heat_drying = "Increases <color=#cc000>drying rate</color> by <color=#cc0000>%.1f</color>.",
-			cold = "Decreases <color=#00C6FF>minimum temperature</color> by <color=#00C6FF>%d</color>.",
-			taser = "Deals <color=WET>%d</color> %s to attackers (cooldown: %.1f).",
-			light = "Provides a <color=LIGHT>light radius</color> of <color=LIGHT>%.1f</color> (extras only <color=LIGHT>%.1f</color>).",
-			maxhunger = "Increases <color=HUNGER>max hunger</color> by <color=HUNGER>%d</color>.",
-			music = "Provides a <color=SANITY>sanity aura</color> of <color=SANITY>%+.1f/min</color> within <color=SANITY>%.1f</color> tile(s).",
-			music_tend = "Tends to plants within <color=NATURE>%.1f</color> tiles.",
-			bee = "Regenerates <color=HEALTH>%d health/%ds</color> (<color=HEALTH>%d/day</color>).",
+			maxhealth = "增加<color=HEALTH>最大生命值</color><color=HEALTH>%d</color>.",
+			maxsanity = "增加<color=SANITY>最大理智值</color> by <color=SANITY>%d</color>.",
+			movespeed = "增加<color=DAIRY>移速</color>%s.",
+			heat = "提高<color=#cc0000>最低体温</color><color=#cc0000>%d</color>.",
+			heat_drying = "增加<color=#cc000>干燥速率</color><color=#cc0000>%.1f</color>.",
+			cold = "降低<color=#00C6FF>最高体温</color> by <color=#00C6FF>%d</color>.",
+			taser = "给攻击者造成<color=WET>%d</color>%s(冷却时间: %.1f).",
+			light = "提供<color=LIGHT>照明半径</color><color=LIGHT>%.1f</color> (额外的只加<color=LIGHT>%.1f</color>).",
+			maxhunger = "增加<color=HUNGER>最大饥饿值</color><color=HUNGER>%d</color>.",
+			music = "提供<color=SANITY>理智光环</color><color=SANITY>%+.1f/min</color>在<color=SANITY>%.1f</color>个地皮范围内.",
+			music_tend = "照料植物在<color=NATURE>%.1f</color>个地皮范围内.",
+			bee = "回复<color=HEALTH>%d生命值/%ds</color> (<color=HEALTH>%d/day</color>).",
 		},
 	},
 
@@ -1049,8 +1048,8 @@ return {
 	-- wx78.lua [Prefab]
 	wx78 = {
 		remaining_charge_time = "剩余充能: %s",
-		gain_charge_time = "Will gain a <color=LIGHT>charge</color> in: <color=LIGHT>%s</color>",
-		full_charge = "Fully charged!",
+		gain_charge_time = "将会获得一 <color=LIGHT>电荷</color>于: <color=LIGHT>%s</color>",
+		full_charge = "电量已充满!",
 	},
 
 	-- yotb_sewer.lua
