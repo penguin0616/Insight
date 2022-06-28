@@ -48,6 +48,10 @@ end
 	
 
 local function Describe(self, context)
+	if not farmingHelper.IsInitialized() then
+		return { priority = 0; description = "<color=#ff0000>Farming helper not initialized (farmplantable).</color>" }
+	end
+
 	-- self.plant
 	-- farm_plant_randomseed
 	-- farm_plant_potato

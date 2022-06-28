@@ -23,6 +23,12 @@ local Is_DS = IsDS()
 local farmingHelper = import("helpers/farming")
 
 local function Describe(self, context)
+	--[[
+	if not farmingHelper.IsInitialized() then
+		return { priority = 0; description = "<color=#ff0000>Farming helper not initialized (fertilizer).</color>" }
+	end
+	--]]
+
 	local description
 	local growth_value_string
 	local nutrient_value_string

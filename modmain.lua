@@ -912,6 +912,7 @@ end
 
 --- Middleman between GetEntityInformation's server side and the client, really only important for DST
 function RequestEntityInformation(entity, player, params)
+	--dprint("requestentityinformation", entity, player)
 	--if true then return nil end
 
 	assert(type(params) == "table", "RequestEntityInformation expected 'params' as a table")
@@ -937,6 +938,7 @@ function RequestEntityInformation(entity, player, params)
 		return {GUID = params.GUID or 0, info = "not a real entity?", special_data = {}}
 	end
 
+	--dprint('REI insight', player)
 	local insight = GetInsight(player)
 
 	if not insight then
@@ -988,6 +990,7 @@ function RequestEntityInformation(entity, player, params)
 
 		insight:SetEntityData(entity, data)
 	else
+		--dprint'passing to replica'
 		-- client is asking for information
 		insight:RequestInformation(entity, params) -- clients have to go through this at some point, unless client is host and its a forest-only world
 	end
@@ -2276,6 +2279,7 @@ if IsDST() then
 
 			setmetatable(_activeplayers, {
 				__newindex = function(self, player, playerdata)
+					--dprint("newindex player", player, playerdata)
 					-- Load OnKilledOther
 					-- debug.getinfo(2).func's upvalues {_activeplayers [tbl], self [tbl], OnKilledOther [fn]}
 					OnKilledOther = OnKilledOther or util.getupvalue(debug.getinfo(2).func, "OnKilledOther")
@@ -2311,13 +2315,16 @@ if IsDST() then
 					end
 
 					if GetInsight(player) then
+						--dprint'attempt to send naughtiness'
 						GetInsight(player):SendNaughtiness()
+						--dprint'attempt finished'
 					else
 						mprint("Unable to send initial naughtiness to:", player)
 					end
 
 					if firstLoad then
 						util.replaceupvalue(OnKilledOther, "OnNaughtyAction", function(how_naughty, playerdata)
+							--dprint("onnaughtyaction", how_naughty, playerdata, playerdata.player)
 							--mprint("ON NAUGHTY ACTION BEFORE", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
 							oldOnNaughtyAction(how_naughty, playerdata)
 							--mprint("ON NAUGHTY ACTION AFTER", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
@@ -3212,12 +3219,17 @@ if IsDST() then -- not in UI overrides because server needs access too
 				end
 			end
 
-			
-			TheSim:GetPersistentStringInClusterSlot(1, "../..", "../client_log.txt", function(successful, data)
+			local handler = function(successful, data)
 				local from = (IsClientHost() and "client_host") or "client"
 				local log = (successful and data) or nil
 				SendReport(self, from, log)
-			end)
+			end
+
+			if CurrentRelease.GreaterOrEqualTo("R22_PIRATEMONKEYS") then
+				TheSim:GetPersistentString("../../client_log.txt", handler)
+			else
+				TheSim:GetPersistentStringInClusterSlot(1, "../..", "../client_log.txt", handler)
+			end
 		elseif TheNet:GetIsMasterSimulation() == true then -- server by itself
 			mprint("SERVER_OWNER_HAS_OPTED_IN:", SERVER_OWNER_HAS_OPTED_IN)
 			dprint("report_server:", report_server)

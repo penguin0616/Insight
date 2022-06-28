@@ -36,6 +36,7 @@ local FERTILIZER_DEFS = (IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMIN
 local PLANT_DEFS = (IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/farm_plant_defs").PLANT_DEFS) or {}
 
 local farming_manager = nil
+local initialized = false
 local growers = {}
 local lib = nil
 
@@ -44,7 +45,8 @@ local DEFINITION_NUTRIENT_CALCULATION_CACHE = setmetatable({}, { __mode="k" })
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
-local GetTileDataAtPoint = nil --[[
+-- Pre-monkey (pre-tile) changes
+local OldGetTileDataAtPoint = nil --[[
 	belowsoiltile	7	
 	soil_drinkers	table: 4D9E3B20	
 	nutrients_overlay	100038 - nutrients_overlay	
@@ -52,18 +54,68 @@ local GetTileDataAtPoint = nil --[[
 	soilmoisture	90.558837890625	
 ]]
 
+-- Post monkey (post tile) changes
+local _nutrientgrid = nil
+local _moisturegrid = nil
+local _drinkersgrid = nil
+local _overlaygrid = nil
+
 --- Check if we are initialized or not
 local function IsInitialized()
-	return farming_manager ~= nil
+	return initialized
 end
 
 --- Hook
 local function Initialize(self)
 	farming_manager = self
-	GetTileDataAtPoint = util.getupvalue(self.IsSoilMoistAtPoint, "GetTileDataAtPoint")
-	lib.GetTileDataAtPoint = GetTileDataAtPoint
+
+	
+	if CurrentRelease.GreaterOrEqualTo("R22_PIRATEMONKEYS") then
+		self.inst:ListenForEvent("worldmapsetsize", function(...)
+			_nutrientgrid = util.getupvalue(self.OnSave, "_nutrientgrid")
+			_moisturegrid = util.getupvalue(self.OnSave, "_moisturegrid")
+			_drinkersgrid = util.getupvalue(self.GetDebugString, "_drinkersgrid")
+			_overlaygrid = util.getupvalue(self.GetDebugString, "_overlaygrid")
+			initialized = true
+		end)
+		
+	else
+		OldGetTileDataAtPoint = util.getupvalue(self.IsSoilMoistAtPoint, "GetTileDataAtPoint")
+		initialized = true
+	end
+
+	
+
+	--lib.OldGetTileDataAtPoint = OldGetTileDataAtPoint
 	mprint("Farming_Manager has been hooked")
 end
+
+--- This is a blanket wrapper to work with pre-tile changes and post-tile changes.
+-- That way less code gets changed.
+local function GetTileDataAtPoint(x, y, z)
+	if OldGetTileDataAtPoint then
+		return OldGetTileDataAtPoint(false, x, y, z)
+	end
+
+	if not _nutrientgrid or not _moisturegrid or not _drinkersgrid or not _overlaygrid then
+		if not _nutrientgrid then dprint("Missing _nutrientgrid") end
+		if not _moisturegrid then dprint("Missing _moisturegrid") end
+		if not _drinkersgrid then dprint("Missing _drinkersgrid") end
+		if not _overlaygrid then dprint("Missing _overlaygrid") end
+		return
+	end
+	
+	local tx, ty = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
+	
+	return {
+		belowsoiltile = TheWorld.components.undertile and TheWorld.components.undertile:GetTileUnderneath(tx, ty) or nil,
+		soil_drinkers = _drinkersgrid:GetDataAtPoint(tx, ty),
+		nutrients_overlay = _overlaygrid:GetDataAtPoint(tx, ty),
+		nutrients = _nutrientgrid:GetDataAtPoint(tx, ty),
+		soilmoisture = _moisturegrid:GetDataAtPoint(tx, ty)
+	}
+end
+
 
 --- backwards compatibility yaaaaaaaaaaaaaaaaaaaaaaaay
 local function RegisterOldGrower(grower)
@@ -92,7 +144,7 @@ end
 
 --- Gets tile moisture at point
 local function GetTileMoistureAtPoint(x, y, z)
-	local data = GetTileDataAtPoint(false, x, y, z)
+	local data = GetTileDataAtPoint(x, y, z)
 	return data and data.soilmoisture or nil
 end
 
@@ -108,7 +160,7 @@ end
 
 --- Returns the total rate of all the soil drinkers.
 local function GetTileMoistureDelta(x, y, z)
-	local tile_data = GetTileDataAtPoint(false, x, y, z)
+	local tile_data = GetTileDataAtPoint(x, y, z)
 	
 	local obj_rate = 0
 	if tile_data and tile_data.soil_drinkers ~= nil then
@@ -131,11 +183,11 @@ end
 
 --- Get tile nutrients at point
 local function GetTileNutrientsAtPoint(x, y, z)
-	--local tile_data = GetTileDataAtPoint(false, x, y, z);
+	--local tile_data = GetTileDataAtPoint(x, y, z);
 	-- farming_manager:GetTileNutrients
 
 	local x, y = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
-	local nutrients = {TheWorld.components.farming_manager:GetTileNutrients(x, y)}
+	local nutrients = {farming_manager:GetTileNutrients(x, y) }
 
 	-- NUTRIENT_1 = "Growth Formula",
 	-- NUTRIENT_2 = "Compost",
@@ -222,7 +274,7 @@ end
 
 --- Returns the total rate of all the soil nutrient drinkers.
 local function GetTileNutrientDelta(x, y, z)
-	local tile_data = GetTileDataAtPoint(false, x, y, z)
+	local tile_data = GetTileDataAtPoint(x, y, z)
 	
 	local nutrient_delta = { formula=0, compost=0, manure=0 }
 	if tile_data and tile_data.soil_drinkers ~= nil then

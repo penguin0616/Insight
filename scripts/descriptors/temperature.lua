@@ -71,7 +71,7 @@ local function Describe(self, context)
 
 	description = string.format(context.lstr.temperature, temperatureValue)
 
-	if world_type == -1 and self.inst.prefab == "heatrock" then
+	if world_type == -1 and self.inst:HasTag("heatrock") and self.inst.prefab ~= "heatrock" then
 		local min, max, level = GetTemperatureThresholds(temp, TheWorld.state.temperature)
 		min = min or self.mintemp
 		max = max or self.maxtemp

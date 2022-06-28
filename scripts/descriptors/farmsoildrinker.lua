@@ -81,6 +81,7 @@ local function DescribeNutrients(self, context, definition)
 	local description = nil
 	local verbosity = context.config.soil_nutrients
 
+	-- soil_nutrients add config hat whatever check insight comments
 	if verbosity == 0 then
 		return
 	end
@@ -157,7 +158,7 @@ end
 
 local function Describe(self, context)
 	if not farmingHelper.IsInitialized() then
-		return { priority=0; description = "<color=#ff0000>Farming helper not initialized.</color>"}
+		return { priority=0; description = "<color=#ff0000>Farming helper not initialized (farmsoildrinker).</color>"}
 	end
 
 	local definition
