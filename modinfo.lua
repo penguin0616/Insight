@@ -911,12 +911,30 @@ local english = {
 				DESCRIPTION = "Soil, Plant, Tile",
 				HOVER = "Soil nutrients, plant consumption, and the tile nutrients rate are all shown.",
 			},
-			--[[
+			--[==[
 			["4"] = {
 				DESCRIPTION = "All",
 				HOVER = "Soil nutrients, plant consumption, and the **NET** tile nutrients rate is shown.",
 			}
-			--]]
+			--]==]
+		}
+	},
+	soil_nutrients_needs_hat = {
+		LABEL = "Display soil nutrients",
+		HOVER = "When to display soil/plant nutrients.",
+		OPTIONS = {
+			["off"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["hatonly"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["always"] = {
+				DESCRIPTION = "Always",
+				HOVER = "Soil nutrients are always shown.",
+			},
 		}
 	},
 	display_plant_stressors = {
@@ -2314,6 +2332,24 @@ local chinese = {
 				HOVER = "显示土壤养分值，植株耗肥率，总耕地养分值。",
 			}
 			--]]
+		}
+	},
+	soil_nutrients_needs_hat = {
+		LABEL = "Display soil nutrients",
+		HOVER = "When to display soil/plant nutrients.",
+		OPTIONS = {
+			["off"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["hatonly"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["always"] = {
+				DESCRIPTION = "Always",
+				HOVER = "Soil nutrients are always shown.",
+			},
 		}
 	},
 	display_plant_stressors = {
@@ -3743,6 +3779,24 @@ local portuguese = {
 			--]]
 		}
 	},
+	soil_nutrients_needs_hat = {
+		LABEL = "Display soil nutrients",
+		HOVER = "When to display soil/plant nutrients.",
+		OPTIONS = {
+			["off"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["hatonly"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["always"] = {
+				DESCRIPTION = "Always",
+				HOVER = "Soil nutrients are always shown.",
+			},
+		}
+	},
 	display_plant_stressors = {
 		LABEL = "Estresse da planta",
 		HOVER = "Determina se o estresse da planta é mostrado.",
@@ -5169,6 +5223,24 @@ local spanish = {
 			--]]
 		}
 	},
+	soil_nutrients_needs_hat = {
+		LABEL = "Display soil nutrients",
+		HOVER = "When to display soil/plant nutrients.",
+		OPTIONS = {
+			["off"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["hatonly"] = {
+				DESCRIPTION = "Premier Gardeneer Hat",
+				HOVER = "Soil nutrients are only shown with the hat.",
+			},
+			["always"] = {
+				DESCRIPTION = "Always",
+				HOVER = "Soil nutrients are always shown.",
+			},
+		}
+	},
 	display_plant_stressors = {
 		LABEL = "Estrés de planta",
 		HOVER = "Configura si se muestra el estrés de las plantas.",
@@ -6322,6 +6394,16 @@ configuration_options = {
 		},
 		default = 2,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "soil_nutrients_needs_hat",
+		options = {
+			{ data = "off" },
+			{ data = "hatonly" },
+			{ data = "always" },
+		},
+		default = "always",
+		tags = { "dst_only", "undefined" },
 	},
 	{
 		name = "display_plant_stressors",

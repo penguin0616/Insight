@@ -79,11 +79,17 @@ end
 
 local function DescribeNutrients(self, context, definition)
 	local description = nil
-	local verbosity = context.config.soil_nutrients
+	local verbosity = context.config["soil_nutrients"]
 
 	-- soil_nutrients add config hat whatever check insight comments
-	if verbosity == 0 then
+	if verbosity == 0 or context.config["soil_nutrients_needs_hat"] == "none" then
 		return
+	end
+
+	if context.config["soil_nutrients_needs_hat"] == "hatonly" then
+		if not context.player.components.inventory:EquipHasTag("nutrientsvision") then
+			return
+		end
 	end
 
 	local x, y, z = self.inst.Transform:GetWorldPosition() 
