@@ -64,10 +64,15 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
-	return string.format(
+	local description = string.format(
 		context.lstr.antlion_rage,
 		context.time:TryStatusAnnouncementsTime(special_data.time_to_rage)
 	)
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

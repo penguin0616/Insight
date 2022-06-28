@@ -74,10 +74,15 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
-	return string.format(
+	local description = string.format(
 		ProcessRichTextPlainly(context.lstr.malbatrossspawner.time_to_respawn),
 		context.time:TryStatusAnnouncementsTime(special_data.time_to_respawn)
 	)
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

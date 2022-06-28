@@ -21,19 +21,37 @@ directory. If not, please refer to
 -- hutch_fishbowl.lua [Prefab]
 local function Describe(inst, context)
 	local description = nil
+	local respawn_time
 
 	if inst.respawntask and inst.respawntime then
-		description = string.format(context.lstr.hutch_respawn, context.time:SimpleProcess(inst.respawntime - GetTime()))
+		respawn_time = inst.respawntime - GetTime()
+		description = string.format(context.lstr.hutch_respawn, context.time:SimpleProcess(respawn_time))
 	end
 	
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		respawn_time = respawn_time
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context)
+	if not special_data.respawn_time then
+		return
+	end
 
+	local description = ProcessRichTextPlainly(string.format(
+		context.lstr.announce_hutch_respawn,
+		context.time:TryStatusAnnouncementsTime(special_data.respawn_time)
+	))
+
+	return {
+		description = description,
+		append = false
+	}
+end
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

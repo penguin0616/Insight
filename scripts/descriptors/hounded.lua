@@ -71,6 +71,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
+	local description = nil
 	local world_prefab = (Is_DST and TheWorld.worldprefab) or GetWorld().prefab
 	local attack_type = (world_prefab == "forest" and context.lstr.hounded.time_until_hounds) or 
 		(world_prefab == "cave" and context.lstr.hounded.time_until_worms) or 
@@ -80,10 +81,15 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
-	return string.format(
+	description = string.format(
 		ProcessRichTextPlainly(attack_type),
 		context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
 	)
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

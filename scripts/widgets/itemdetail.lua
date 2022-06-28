@@ -105,9 +105,9 @@ function ItemDetail:OnControl(control, down)
 			)
 
 			if describer then
-				local str = describer(special_data, GetPlayerContext(localPlayer))
-				if str then
-					localPlayer.HUD._StatusAnnouncer:Announce(str, self.component)
+				local data = describer(special_data, GetPlayerContext(localPlayer), TheWorld)
+				if data.description then
+					localPlayer.HUD._StatusAnnouncer:Announce(data.description, self.component)
 				end
 			end
 		end

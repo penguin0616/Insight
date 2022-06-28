@@ -141,17 +141,24 @@ local function Describe(self, context)
 end
 
 local function StatusAnnoucementsDescribe(special_data, context)
+	local description
+
 	if special_data.locked_phase then
-		return ProcessRichTextPlainly(context.lstr.nightmareclock.announce_phase_locked)
+		description = ProcessRichTextPlainly(context.lstr.nightmareclock.announce_phase_locked)
 	elseif special_data.remaining_time_in_phase and special_data.phase then
-		return ProcessRichTextPlainly(string.format(
+		description = ProcessRichTextPlainly(string.format(
 			context.lstr.nightmareclock.announce_phase,
 			special_data.phase,
 			context.time:TryStatusAnnouncementsTime(special_data.remaining_time_in_phase)
 		))
+	else
+		return
 	end
 
-	
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

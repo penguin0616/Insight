@@ -87,17 +87,26 @@ local function Describe(self, context)
 end
 
 local function StatusAnnoucementsDescribe(special_data, context)
+	local description = nil
+
 	if special_data.despawn_day then
-		return ProcessRichTextPlainly(string.format(
+		description = ProcessRichTextPlainly(string.format(
 			context.lstr.klaussackspawner.announce_despawn,
 			special_data.despawn_day
 		))
 	elseif special_data.time_to_spawn then
-		return ProcessRichTextPlainly(string.format(
+		description = ProcessRichTextPlainly(string.format(
 			context.lstr.klaussackspawner.announce_spawn,
 			context.time:TryStatusAnnouncementsTime(special_data.time_to_spawn)
 		))
+	else
+		return
 	end
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

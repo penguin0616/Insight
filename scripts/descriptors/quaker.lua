@@ -70,10 +70,15 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
-	return string.format(
+	local description = string.format(
 		ProcessRichTextPlainly(context.lstr.quaker.next_quake),
 		context.time:TryStatusAnnouncementsTime(special_data.next_quake)
 	)
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

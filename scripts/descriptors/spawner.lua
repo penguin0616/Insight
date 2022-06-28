@@ -51,7 +51,8 @@ local function Describe(self, context)
 	return {
 		priority = 1,
 		description = description,
-		alt_description = alt_description
+		alt_description = alt_description,
+		respawn_time = respawn_time
 	}
 end
 

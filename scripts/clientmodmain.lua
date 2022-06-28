@@ -1101,3 +1101,37 @@ if IsDST() then
 	end
 	--]]
 end
+
+-- until i can think of a better place for this
+if IsDST() then
+	AddLocalPlayerPostInit(function(insight_replica, context)
+		if not localPlayer.HUD._StatusAnnouncer then
+			return
+		end
+
+		localPlayer.HUD._StatusAnnouncer:RegisterInterceptor(modname, "ITEM", function(announcement_string, data)
+			--[[
+				local data = {
+					item = item,
+					container = container,
+					slot = slot,
+				}
+			]]
+			if Insight.prefab_descriptors[data.item.prefab] and Insight.prefab_descriptors[data.item.prefab].StatusAnnoucementsDescribe then
+				local info = insight_replica:GetInformation(data.item)
+				table.foreach(info, dprint)
+				table.foreach(info.special_data, dprint)
+				if info then
+					local data = Insight.prefab_descriptors[data.item.prefab].StatusAnnoucementsDescribe(info.special_data[data.item.prefab], context, data.item)
+					if data and data.description then
+						if data.append then
+							return announcement_string .. " " .. my_announcment
+						else
+							return data.description
+						end
+					end
+				end
+			end
+		end)
+	end, true)
+end

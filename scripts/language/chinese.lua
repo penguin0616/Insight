@@ -210,6 +210,7 @@ return {
 
 	-- chester_eyebone.lua [Prefab]
 	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> will respawn in: %s",
+	announce_chester_respawn = "My <prefab=chester> will respawn in %s.",
 
 	-- childspawner.lua
 	childspawner = {
@@ -587,6 +588,7 @@ return {
 
 	-- hutch_fishbowl.lua [Prefab]
 	hutch_respawn ="%s后将生成<color=MOB_SPAWN><prefab=hutch></color>",
+	announce_hutch_respawn = "My <prefab=hutch> will respawn in %s.",
 
 	-- inspectable.lua
 	wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
@@ -733,6 +735,11 @@ return {
 
 	-- pollinator.lua
 	pollination = "花朵授粉: (%s) / %s",
+
+	-- polly_rogershat.lua [Prefab]
+	polly_rogershat = {
+		announce_respawn = "My <prefab=polly_rogers> will respawn in %s."
+	},
 
 	-- preservative.lua
 	preservative = "恢复 %s%% 新鲜度。",

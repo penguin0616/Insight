@@ -132,10 +132,15 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
-	return ProcessRichTextPlainly(string.format(
+	local description = ProcessRichTextPlainly(string.format(
 		context.lstr.terrarium.announce_cooldown,
 		context.time:TryStatusAnnouncementsTime(special_data.cooldown)
 	))
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

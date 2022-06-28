@@ -64,10 +64,15 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
-	return ProcessRichTextPlainly(string.format(
+	local description = ProcessRichTextPlainly(string.format(
 		context.lstr.crabkingspawner.time_to_respawn,
 		context.time:TryStatusAnnouncementsTime(special_data.time_to_respawn)
 	))
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

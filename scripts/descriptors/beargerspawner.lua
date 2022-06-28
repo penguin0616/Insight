@@ -110,22 +110,28 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
+	local description = nil
 	local target = special_data.target_userid and TheNet:GetClientTableForUser(special_data.target_userid)
 
 	if target then
 		-- Bearger is targetting someone
-		return ProcessRichTextPlainly(string.format(
+		description = ProcessRichTextPlainly(string.format(
 			context.lstr.beargerspawner.announce_bearger_target,
 			target.name,
 			target.prefab,
 			context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
 		))
 	else
-		return ProcessRichTextPlainly(string.format(
+		description = ProcessRichTextPlainly(string.format(
 			context.lstr.beargerspawner.bearger_attack,
 			context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
 		))
 	end
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {

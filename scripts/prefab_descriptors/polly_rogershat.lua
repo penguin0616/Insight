@@ -40,6 +40,24 @@ local function Describe(inst, context)
 	}
 end
 
+local function StatusAnnoucementsDescribe(special_data, context, inst)
+	local respawn_time = GetInsight(context.player):GetInformation(inst).special_data.spawner.respawn_time
+	if not respawn_time then
+		return
+	end
+
+	local description = ProcessRichTextPlainly(string.format(
+		context.lstr.announce_chester_respawn,
+		context.time:TryStatusAnnouncementsTime(respawn_time)
+	))
+
+	return {
+		description = description,
+		append = false
+	}
+end
+
 return {
-	Describe = Describe
+	Describe = Describe,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

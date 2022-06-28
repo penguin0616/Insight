@@ -25,10 +25,15 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		return
 	end
 
-	return string.format(
+	local description = string.format(
 		ProcessRichTextPlainly(context.lstr.atrium_gate.cooldown),
 		context.time:TryStatusAnnouncementsTime(special_data.cooldown)
 	)
+
+	return {
+		description = description,
+		append = true
+	}
 end
 
 return {
