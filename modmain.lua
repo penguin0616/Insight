@@ -1230,21 +1230,27 @@ function GetWorldInformation(player) -- refactor?
 		local secondary_data = GetEntityInformation(world.net, player, {RAW = true})
 		for i,v in pairs(secondary_data.special_data) do
 			if data.special_data[i] ~= nil then
-				dumptable(data.special_data[i])
-				error("[Insight]: attempt to overwrite special_data: " .. tostring(i))
-				return
+				if DEBUG_ENABLED then
+					dumptable(data.special_data[i])
+					error("[Insight]: attempt to overwrite special_data: " .. tostring(i))
+					return
+				end
+			else
+				data.special_data[i] = v
+				data.special_data[i].from = "net"
 			end
-			data.special_data[i] = v
-			data.special_data[i].from = "net"
 		end
 
 		for i,v in pairs(secondary_data.raw_information) do
 			if data.raw_information[i] ~= nil then
-				dumptable(data.special_data[i])
-				error("[Insight]: attempt to overwrite raw_information: " .. tostring(i))
-				return
+				if DEBUG_ENABLED then
+					dumptable(data.special_data[i])
+					error("[Insight]: attempt to overwrite raw_information: " .. tostring(i))
+					return
+				end
+			else
+				data.raw_information[i] = v
 			end
-			data.raw_information[i] = v
 		end
 	end
 

@@ -955,6 +955,20 @@ local english = {
 			}
 		}
 	},
+	display_fertilizer = {
+		LABEL = "Fertilizer",
+		HOVER = "Determines whether fertilizer nutrients are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "fertilizer nutrients are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "fertilizer nutrients are shown.",
+			},
+		}
+	}
 	display_weighable = {
 		LABEL = "Item Weight",
 		HOVER = "Determines whether item weight is shown.",
@@ -2368,6 +2382,20 @@ local chinese = {
 				DESCRIPTION = "总是",
 				HOVER = "总是显示植物的压力",
 			}
+		}
+	},
+	display_fertilizer = {
+		LABEL = "Fertilizer",
+		HOVER = "Determines whether fertilizer nutrients are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "fertilizer nutrients are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "fertilizer nutrients are shown.",
+			},
 		}
 	},
 	display_weighable = {
@@ -3815,6 +3843,20 @@ local portuguese = {
 			}
 		}
 	},
+	display_fertilizer = {
+		LABEL = "Fertilizer",
+		HOVER = "Determines whether fertilizer nutrients are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "fertilizer nutrients are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "fertilizer nutrients are shown.",
+			},
+		}
+	},
 	display_weighable = {
 		LABEL = "Peso do item",
 		HOVER = "Determina se o peso do item é mostrado.",
@@ -5259,6 +5301,20 @@ local spanish = {
 			}
 		}
 	},
+	display_fertilizer = {
+		LABEL = "Fertilizer",
+		HOVER = "Determines whether fertilizer nutrients are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "No",
+				HOVER = "fertilizer nutrients are not shown.",
+			},
+			["true"] = {
+				DESCRIPTION = "Yes",
+				HOVER = "fertilizer nutrients are shown.",
+			},
+		}
+	},
 	display_weighable = {
 		LABEL = "Peso de artículo",
 		HOVER = "Configura si se muestra el peso de artículos.",
@@ -6414,6 +6470,15 @@ configuration_options = {
 		},
 		default = 2,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_fertilizer",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
 	},
 	{
 		name = "display_weighable",
