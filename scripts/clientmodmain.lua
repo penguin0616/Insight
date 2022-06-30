@@ -1105,7 +1105,7 @@ end
 -- until i can think of a better place for this
 if IsDST() then
 	AddLocalPlayerPostInit(function(insight_replica, context)
-		if not localPlayer.HUD._StatusAnnouncer then
+		if not localPlayer.HUD._StatusAnnouncer or not localPlayer.HUD._StatusAnnouncer.RegisterInterceptor then
 			return
 		end
 
