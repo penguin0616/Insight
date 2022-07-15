@@ -565,6 +565,7 @@ return {
 	wagstaff_tool = "Esta herramienta se llama: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "Valor en pesas de gimnasio: %s",
 	mushroom_rain = "<color=WET>Lluvia</color> necesaria: %s",
+	ruins_statue_gem = "Contains a <color=%s><prefab=%s></color>.",
 
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>Aislamiento (Invierno)</color>: <color=FROZEN>%s</color>",

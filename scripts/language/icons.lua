@@ -584,6 +584,7 @@ return {
 	--wagstaff_tool = "The name of this tool is: <color=ENLIGHTENMENT><prefab=%s></color>",
 	--gym_weight_value = "Gym weight value: %s",
 	--mushroom_rain = "<color=WET>Rain</color> needed: %s",
+	--ruins_statue_gem = "Contains a <color=%s><prefab=%s></color>.",
 
 	-- insulator.lua
 	insulation_winter = "<icon=beargervest> <color=FROZEN>%s</color>",

@@ -565,6 +565,7 @@ return {
 	wagstaff_tool = "O nome desta ferramente é: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "Valor de peso da academia: %s",
 	mushroom_rain = "<color=WET>Chuva</color> necessária: %s",
+	ruins_statue_gem = "Contains a <color=%s><prefab=%s></color>.",
 
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>Proteção (Inverno)</color>: <color=FROZEN>%s</color>",

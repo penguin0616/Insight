@@ -194,6 +194,38 @@ local function DescribeSheltered(inst, context)
 	end
 end
 
+
+-- just grabbed from inventory icons
+local gem_colors = setmetatable({
+	redgem = "#8C2B31",
+	bluegem = "#37579C",
+	purplegem = "#67317B",
+	orangegem = "#C7873F",
+	yellowgem = "#E4CD41",
+	greengem = "#4C9D34",
+	opalpreciousgem = "#A9DDF4", -- not that accurate and not used, but why not?
+}, {
+	__index = function(self, index)
+		rawset(self, index, "#ffffff")
+		return rawget(self, index)
+	end,
+})
+
+-- prefabs/statueruins
+local function DescribeRuinsStatue(inst, context)
+	if not inst.gemmed then
+		return
+	end
+
+	if not context.config["unique_info"] then
+		return
+	end
+
+	return string.format(context.lstr.ruins_statue_gem, gem_colors[inst.gemmed], inst.gemmed)
+
+end
+
+
 local function Describe(self, context)
 	local to_return = {}
 
@@ -257,6 +289,10 @@ local function Describe(self, context)
 
 	if inst:HasTag("heavy") then
 		description = string.format(context.lstr.gym_weight_value, inst.gymweight or 2)
+	end
+
+	if inst.nameoverride and inst.nameoverride == "ancient_statue" then
+		description = DescribeRuinsStatue(inst, context)
 	end
 
 	--[[

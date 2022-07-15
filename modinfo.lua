@@ -424,7 +424,7 @@ local english = {
 		},
 	},
 	boss_indicator = {
-		LABEL = "Boss Indicator",
+		LABEL = "Boss Indicators",
 		HOVER = "Whether boss indicators are shown.",
 		OPTIONS = {
 			["false"] = {
@@ -438,7 +438,7 @@ local english = {
 		},
 	},
 	notable_indicator = {
-		LABEL = "Notable Indicator",
+		LABEL = "Notable Indicators",
 		HOVER = "Whether the notable (chester, hutch, etc) indicators are shown.",
 		OPTIONS = {
 			["false"] = {
@@ -968,7 +968,7 @@ local english = {
 				HOVER = "fertilizer nutrients are shown.",
 			},
 		}
-	}
+	},
 	display_weighable = {
 		LABEL = "Item Weight",
 		HOVER = "Determines whether item weight is shown.",

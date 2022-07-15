@@ -209,7 +209,7 @@ return {
 
 	-- chester_eyebone.lua [Prefab]
 	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> 会重生于 %s 后",
-	announce_chester_respawn = "My <prefab=chester> will respawn in %s.",
+	announce_chester_respawn = "我的<prefab=chester>会重生于%s后", 
 
 	-- childspawner.lua
 	childspawner = {
@@ -494,7 +494,7 @@ return {
 		time_verbose = "<color=LIGHT>%s</color>持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 		efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
 		units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
-		held_refuel = "Held <color=SWEETENER><prefab=%s></color> 将补充燃料 <color=LIGHT>%s%%</color>.",
+		held_refuel = "使用 <color=SWEETENER><prefab=%s></color> 将补充燃料 <color=LIGHT>%s%%</color>.",
 	},
 
 	-- ghostlybond.lua
@@ -587,12 +587,13 @@ return {
 
 	-- hutch_fishbowl.lua [Prefab]
 	hutch_respawn = "%s后将生成<color=MOB_SPAWN><prefab=hutch></color>",
-	announce_hutch_respawn = "My <prefab=hutch> will respawn in %s.",
+	announce_hutch_respawn = "我的<prefab=hutch>会重生于%s后",
 	
 	-- inspectable.lua
 	wagstaff_tool = "这个工具的名字是: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "健身房重量数值: %s",
 	mushroom_rain = "需要的<color=WET>雨</color>: %s",
+	ruins_statue_gem = "Contains a <color=%s><prefab=%s></color>.",
 
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
@@ -600,7 +601,7 @@ return {
 
 	-- inventory.lua
 	inventory = {
-		hat_describe = "[Hat]: ",
+		hat_describe = "[帽子]: ",
 	},
 
 	-- kitcoonden.lua
@@ -737,7 +738,7 @@ return {
 
 	-- polly_rogershat.lua [Prefab]
 	polly_rogershat = {
-		announce_respawn = "My <prefab=polly_rogers> will respawn in %s."
+		announce_respawn = "我的<prefab=polly_rogers>会重生于%s后",
 	},
 
 	-- preservative.lua
@@ -1048,7 +1049,7 @@ return {
 	-- wx78.lua [Prefab]
 	wx78 = {
 		remaining_charge_time = "剩余充能: %s",
-		gain_charge_time = "将会获得一 <color=LIGHT>电荷</color>于: <color=LIGHT>%s</color>",
+		gain_charge_time = "电量: %d / %d, 下一格<color=LIGHT>电荷</color>于: <color=LIGHT>%s</color>后",
 		full_charge = "电量已充满!",
 	},
 
