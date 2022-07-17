@@ -170,7 +170,10 @@ local function Describe(self, context)
 		local recipe = GetRecipe(self.inst.prefab, self.product)
 
 		if not recipe then
-			food = string.format(context.lstr.stewer.product, "?", "???")
+			--if self.product == self.spoiledproduct then
+			-- we'll show the product and see what happens
+			local base_food_string = context.usingIcons and PrefabHasIcon(self.product) and context.lstr.stewer.product or context.lstr.lang.stewer.product
+			food = string.format(base_food_string, self.product, "?") -- dont know if spoiling sets stack amount to 1
 		else
 			local data = GetRecipeInfo(recipe)
 			if context.usingIcons and PrefabHasIcon(data.name) then -- self.product
