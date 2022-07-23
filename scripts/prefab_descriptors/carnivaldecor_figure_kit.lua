@@ -80,12 +80,12 @@ local shape_rarity = {
 	shape_rarity_season2
 }
 
-local function GetData(inst)
+local function GetData(inst, season)
 	if not inst.shape then
 		return
 	end
 
-	local season_table = shape_rarity[inst.carnival_season]
+	local season_table = shape_rarity[season]
 	if not season_table then
 		return
 	end
@@ -109,7 +109,17 @@ local function Describe(inst, context)
 	if not inst.shape then
 		description = context.lstr.carnivaldecor_figure_kit.undecided
 	else
-		local data = GetData(inst)
+		local carnival_season = inst.carnival_season
+		if not carnival_season then
+			if inst.prefab == "carnivaldecor_figure_kit" then
+				carnival_season = 1
+			elseif inst.prefab == "carnivaldecor_figure_kit_season2" then
+				carnival_season = 2
+			else
+				return
+			end
+		end
+		local data = GetData(inst, carnival_season)
 		if not data then
 			return
 		end
@@ -118,7 +128,7 @@ local function Describe(inst, context)
 		local rarity = string.format(context.lstr.carnivaldecor_figure_kit.rarity,
 			ApplyColour(context.lstr.carnivaldecor_figure_kit.rarity_types[data.rarity], data.rarity_color)
 		)
-		local season = string.format(context.lstr.carnivaldecor_figure_kit.season, inst.carnival_season)
+		local season = string.format(context.lstr.carnivaldecor_figure_kit.season, carnival_season)
 		local decor = string.format(context.lstr.carnivaldecor.value, data.decor)
 		description = CombineLines(shape, rarity, season, decor)
 	end
