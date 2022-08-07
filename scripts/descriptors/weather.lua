@@ -63,14 +63,22 @@ end)
 	CalculatePrecipitationRate = TheWorld.state.precipitationrate
 ]]
 
+local entity_tracker = import("helpers/entitytracker")
+
 local function Describe(self, context)
 	if not OnUpdate then
 		return
 	end
 	
-	if not context.config["display_weather"] then
+	if context.config["display_weather"] == 0 then
 		return
 	end
+
+	--cprint(context.config["display_weather"], entity_tracker:CountInstancesOf("rainometer"))
+	if context.config["display_weather"] == 1 and not entity_tracker:WorldHasInstanceOf("rainometer") then
+		return
+	end
+
 	--[[
 	if not _preciptype then
 		return
@@ -101,7 +109,7 @@ local function Describe(self, context)
 			--local progress = math.clamp(moisture / _moistureceil:value(), 0, 1)
 			local progress = moisture / _moistureceil:value()
 			--description = string.format("Progress to rain: %s%%", Round(progress * 100, 3))
-			description = string.format("Progress to rain: %s / %s", Round(moisture, 1), Round(_moistureceil:value(), 1))
+			description = string.format(context.lstr.weather.progress_to_rain, Round(moisture, 1), Round(_moistureceil:value(), 1))
 
 		elseif DEBUG_ENABLED then
 			description = tostring(_moistureceil:value())
@@ -118,7 +126,7 @@ local function Describe(self, context)
 
 		local progress = (TheWorld.state.moisture - _moisturefloor:value())
 
-		description = string.format("Remaining rain: %s", Round(progress, 1))
+		description = string.format(context.lstr.weather.remaining_rain, Round(progress, 1))
 		--[[
 			local progress = (TheWorld.state.moisture - _moisturefloor:value()) / _moisturefloor:value()
 		if progress <= 1 or progress >= 0 then

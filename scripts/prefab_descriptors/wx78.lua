@@ -56,8 +56,8 @@ local function Describe(inst, context)
 		},
 		playerly = true,
 		time_to_gain_charge = time_to_gain_charge,
-		charge_level = inst.components.upgrademoduleowner.charge_level,
-		max_charge = inst.components.upgrademoduleowner.max_charge,
+		charge_level = inst.components.upgrademoduleowner and inst.components.upgrademoduleowner.charge_level or nil,
+		max_charge = inst.components.upgrademoduleowner and inst.components.upgrademoduleowner.max_charge or nil,
 	}
 end
 

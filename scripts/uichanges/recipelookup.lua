@@ -41,7 +41,7 @@ local function GetRecipeURL(recipe)
 
 	--dprint('lookup', recipe and recipe.product)
 	if not _G.Prefabs[recipe.product] or not _G.Prefabs[recipe.product].fn then
-		dprint('[GetRecipeURL] Rejected e1, cannot find recipe product in prefabs')
+		mprint('[GetRecipeURL] Rejected e1, cannot find recipe product in prefabs')
 		return nil
 	end
 
@@ -220,7 +220,11 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 
 	self.lookup:SetOnClick(function()
 		if not self.data or not self.data.recipe then return mprint("Missing recipe data for lookup.") end
-		VisitURL(GetRecipeURL(self.data.recipe))
+		local url = GetRecipeURL(self.data.recipe)
+		if not url then
+			return
+		end
+		VisitURL(url)
 	end)
 end
 

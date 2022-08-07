@@ -187,7 +187,7 @@ local function GetTileNutrientsAtPoint(x, y, z)
 	-- farming_manager:GetTileNutrients
 
 	local x, y = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
-	local nutrients = {farming_manager:GetTileNutrients(x, y) }
+	local nutrients = {farming_manager:GetTileNutrients(x, y)}
 
 	-- NUTRIENT_1 = "Growth Formula",
 	-- NUTRIENT_2 = "Compost",

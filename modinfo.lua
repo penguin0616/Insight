@@ -998,14 +998,18 @@ local english = {
 		},
 	},
 	display_weather = {
-		LABEL = "Show weather information",
+		LABEL = "Weather information",
 		HOVER = "Determines whether weather information is shown.",
 		OPTIONS = {
-			["false"] = {
+			["0"] = {
 				DESCRIPTION = "No",
 				HOVER = "Weather is not shown."
 			},
-			["true"] = {
+			["1"] = {
+				DESCRIPTION = "With Rainometer",
+				HOVER = "Weather is shown if a Rainometer is in the world."
+			},
+			["2"] = {
 				DESCRIPTION = "Yes",
 				HOVER = "Weather is shown."
 			},
@@ -6501,10 +6505,11 @@ configuration_options = {
 	{
 		name = "display_weather",
 		options = {
-			{data = false},
-			{data = true},
+			{data = 0},
+			{data = 1},
+			{data = 2},
 		}, 
-		default = true,
+		default = 2,
 		tags = {"dst_only", "undefined"},
 	},
 	{

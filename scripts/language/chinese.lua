@@ -989,6 +989,12 @@ return {
 	weapon_damage = "%s: <color=HEALTH>%s</color>",
 	attack_range = "范围: %s",
 
+	-- weather.lua
+	weather = {
+		progress_to_rain = "Progress to rain: %s / %s",
+		remaining_rain = "Remaining rain: %s",
+	},
+
 	-- weighable.lua
 	weighable = {
 		weight = "重量: %s (%s%%)",
