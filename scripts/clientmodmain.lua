@@ -188,10 +188,6 @@ local function GenerateConfiguration()
 				end
 			end
 
-			if v.name == "refresh_delay" then
-				dprint("heckler:", server_choice, client_choice, "| winner:", winner)
-			end
-
 			local_config[v.name] = winner
 			v.selected = client_choice
 		end
@@ -1119,9 +1115,18 @@ if IsDST() then
 			]]
 			if Insight.prefab_descriptors[data.item.prefab] and Insight.prefab_descriptors[data.item.prefab].StatusAnnoucementsDescribe then
 				local info = insight_replica:GetInformation(data.item)
-				table.foreach(info, dprint)
-				table.foreach(info.special_data, dprint)
-				if info then
+				--table.foreach(info, dprint)
+				--table.foreach(info.special_data, dprint)
+
+				
+				
+
+				if info then 
+					-- why is this missing on rare occasion?
+					if not info.special_data[data.item.prefab] then
+						dumptable(info)
+					end
+
 					local data = Insight.prefab_descriptors[data.item.prefab].StatusAnnoucementsDescribe(info.special_data[data.item.prefab], context, data.item)
 					if data and data.description then
 						if data.append then

@@ -1479,24 +1479,84 @@ function DecodeRequestParams(encoded)
 	return params
 end
 
+-- only works for clients
+function RepairInsightConfig(client)
+	mprint("Checking configuration for bad options...")
+	client = client or false
+	assert(client == true, "RepairInsightConfig only works for clients.")
+
+	local cfg = deepcopy(_G.Insight.env.modinfo.configuration_options);
+
+	local changes = {} -- changes we will need to make
+
+	for _, c in pairs(cfg) do
+		-- expected is the currently saved config that we're looking for. we need to make sure it's still a valid configuration option.
+		local config_is_valid = false;
+
+		if c.saved ~= nil then
+			for i, v in pairs(c.options) do
+				if v.data == c.saved then
+					config_is_valid = true;
+					break;
+				end
+			end
+
+			if config_is_valid == false then
+				mprint(
+					string.format("Could not find correct datas for '%s'. Saved cfg was '%s'. Resetting", c.name, tostring(c.saved))
+				);
+				c.saved = c.default;
+				changes[c.name] = c.default
+			end
+		end
+	end
+
+	-- check if we have any docucumented changes
+	if next(changes) ~= nil then
+		mprint("Resetting client configuration...")
+		KnownModIndex:SaveConfigurationOptions(function(...)
+			mprint(string.format("client=%s config reset", tostring(client)), ...)
+		end, modname, cfg, client)
+
+		-- ughhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh.
+		-- server configuration is such a pain. it's messed up and inconsistent, and frankly very irritating to work with and look into
+		if not client then
+			for config_name, default in pairs(changes) do
+				mprint(GetModConfigData(config_name))
+				ShardGameIndex.enabled_mods[modname].configuration_options[config_name] = default
+				mprint(GetModConfigData(config_name))
+				mprint('--------------------------------------------------------------------')
+			end
+		end
+
+		Insight.env.modinfo.configuration_options = cfg
+
+		if KnownModIndex.savedata.known_mods[modname] then
+			KnownModIndex.savedata.known_mods[modname].modinfo.configuration_options = cfg -- Don't know if this is necessary, don't want to check.
+		else
+			mprint("Unable to find mod in known_mods?")
+			table.foreach(KnownModIndex.savedata.known_mods, mprint)
+		end
+	end
+end
+
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
--- Config Retrofit
-if tonumber(GetModConfigData("itemtile_display", IsDST())) then
-	mprint("Retrofitting itemtile_display...")
-	for i,v in pairs(modinfo.configuration_options) do
-		if v.name == "itemtile_display" then
-			mprint(string.format("\tFound, Default: %s, Saved: %s", v.default, v.saved))
-			v.default = "percentages"
-			v.saved = "percentages"
-			break
-		end
+-- Check settings
+if IsDST() then -- server + dedi check
+	if TheNet:IsDedicated() then
+		--RepairInsightConfig(false)
+	elseif IsClientHost() then
+		--RepairInsightConfig(false)
+		RepairInsightConfig(true)
+	elseif IsClient() then
+		RepairInsightConfig(true)
+	else
+		error("Unable to determine network side")
 	end
-	-- might have reset configuration in DST?
-	KnownModIndex:SaveConfigurationOptions(function() mprint("Retrofitted itemtile_display.") end, modname, modinfo.configuration_options, IsDST())
 end
 
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}

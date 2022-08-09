@@ -177,7 +177,7 @@ local function DST_Perish(self, bundle)
 	end
 
 	-- PERISHABLE only
-	if self then
+	if self and self.localPerishMultiplyer then -- for some reason, some modders like to remove the field for one reason or another
 		modifier = modifier * self.localPerishMultiplyer
 	end
 
