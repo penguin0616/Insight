@@ -2307,6 +2307,15 @@ if IsDST() then
 			end
 			mprint("Kramped has been hooked")
 
+			if not kramped.GetDebugString then
+				mprint("Unable to find GetDebugString from kramped. Exiting naughtiness early.")
+				return
+			--[[elseif debug.getinfo(kramped.GetDebugString, "S").source ~= "scripts/components/kramped.lua" then
+				mprint("Unable to setup kramped with non-vanilla kramped file.")
+				return
+				--]]
+			end
+
 			local _activeplayers = util.getupvalue(kramped.GetDebugString, "_activeplayers")
 			if not _activeplayers then
 				local d = debug.getinfo(kramped.GetDebugString, "Sl")
@@ -2342,15 +2351,36 @@ if IsDST() then
 					end
 					break;
 				end 
-			end 
+			end
 
 			setmetatable(_activeplayers, {
 				__newindex = function(self, player, playerdata)
 					--dprint("newindex player", player, playerdata)
 					-- Load OnKilledOther
 					-- debug.getinfo(2).func's upvalues {_activeplayers [tbl], self [tbl], OnKilledOther [fn]}
-					OnKilledOther = OnKilledOther or util.getupvalue(debug.getinfo(2).func, "OnKilledOther")
-					assert(OnKilledOther, "[Insight]: Kramped failed to load OnKilledOther")
+
+					-- Hacky upvalue search, yay.
+					--assert(OnKilledOther, "[Insight]: Kramped failed to load OnKilledOther")
+					if not OnKilledOther then
+						-- this isn't annoying at all!
+						local i = 2
+						while true do
+							local info = debug.getinfo(i)
+
+							if not info then
+								break
+							end
+
+							local func = util.getupvalue(info.func, "OnKilledOther")
+							if type(func) == "function" then
+								OnKilledOther = func
+								if i > 2 then
+									mprint("Got OnKilledOther at a level greater than two.")
+								end
+								break
+							end
+						end
+					end
 
 					-- Load naughtiness values
 					if tonumber(APP_VERSION) > 435626 then -- zark
