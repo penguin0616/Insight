@@ -27,9 +27,10 @@ local function Describe(self, context)
 		local edible_description
 		local descriptor = Insight.descriptors.edible
 		if descriptor then
+			-- prefabs/wortox.lua -> OnEatSoul
 			local stats = {
 				fixed = true,
-				hunger = TUNING.CALORIES_MEDSMALL,
+				hunger = TUNING.CALORIES_MED,
 				sanity = -TUNING.SANITY_TINY,
 				health = 0,
 			}
@@ -37,7 +38,7 @@ local function Describe(self, context)
 			edible_description = descriptor.Describe(self, context).description
 		end
 
-		local heal_string = string.format(context.lstr.wortox_soul_heal, TUNING.HEALING_MED - 7, TUNING.HEALING_MED)
+		local heal_string = string.format(context.lstr.wortox_soul_heal, TUNING.WORTOX_SOULHEAL_MINIMUM_HEAL, TUNING.HEALING_MED)
 		local heal_range = string.format(context.lstr.wortox_soul_heal_range, TUNING.WORTOX_SOULHEAL_RANGE / WALL_STUDS_PER_TILE)
 
 		description = CombineLines(edible_description, heal_string, heal_range)
@@ -46,7 +47,8 @@ local function Describe(self, context)
 	return {
 		name = "soul",
 		priority = 0,
-		description = description
+		description = description,
+		priority = 5 -- from edible
 	}, {
 		name = "insight_ranged",
 		priority = 0,
