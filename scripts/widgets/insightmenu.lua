@@ -334,5 +334,43 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		end
 	end
 end
+--[[
+function InsightMenu:OnControl(control, down)
+	
+	print(control, down, "|||||||||||||||", CONTROL_SCROLLBACK, CONTROL_SCROLLFWD)
+	--self:GetCurrentPage():OnControl(...)
+	print(debugstack())
+	
+	-- back == up == 31
+	-- fwd == down == 32
+
+	--return old(self, ...)
+	
+	InsightMenu._base.OnControl(self, control, down)
+end
+--]]
+
+--[[
+function InsightMenu:OnRawKey(...)
+	print(...)
+
+end
+--]]
+
+
+--rawset(_G, "fff", false)
+--[[
+local PlayerController = util.LoadComponent("playercontroller")
+local oldIsEnabled = PlayerController.IsEnabled
+PlayerController.IsEnabled = function(self, ...)
+	if self.inst == localPlayer then
+		if _G.fff then
+			return false, TheFrontEnd.textProcessorWidget == nil
+		end
+	end
+
+	return oldIsEnabled(self, ...)
+end
+--]]
 
 return InsightMenu

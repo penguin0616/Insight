@@ -30,7 +30,7 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 
 
-local LoadComponent = assert(util.getupvalue(EntityScript.AddComponent, "LoadComponent"), "Failed to retrieve EntityScript -> LoadComponent")
+local LoadComponent = util.LoadComponent
 local yotb_stager = assert(LoadComponent("yotb_stager"), "Failed to load yotb_stager")
 local set_data = assert(require("yotb_costumes"), "Failed to load yotb_costumes")
 local target_thresholds = assert(util.getupvalue(yotb_stager.GetParameterLine, "target_thresholds"), "Failed to load target_thresholds")

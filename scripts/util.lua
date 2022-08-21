@@ -31,7 +31,6 @@ local module = {}
 local Reader = import("reader")
 
 
-local LoadComponent
 
 local Text = require("widgets/text") --FIXED_TEXT
 local known_bundles = setmetatable({}, {__mode = "k"})
@@ -681,6 +680,8 @@ if not table.invert then
 		return invt
 	end
 end
+
+module.LoadComponent = assert(module.getupvalue(EntityScript.AddComponent, "LoadComponent"), "Failed to retrieve EntityScript -> LoadComponent")
 
 -- end
 return module

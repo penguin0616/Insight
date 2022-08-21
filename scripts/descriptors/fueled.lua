@@ -48,6 +48,8 @@ local function Describe(self, context)
 
 	local fuel_verbosity = context.config["fuel_verbosity"]
 	local primary_fuel_type = context.lstr.fuel.types[self.fueltype] or "Fuel"
+	local _currentfuel = self.currentfuel -- this is to just get it to show up in crash logs
+	local _rate = self.rate -- same as above
 	local remaining_time = self.currentfuel / self.rate
 	local time_string, time_string_verbose
 	local efficiency = self.bonusmult

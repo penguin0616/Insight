@@ -31,6 +31,7 @@ local function SortActions(a, b)
 	print(a[1], b[1])
 	print(a[1].id, b[1].id)
 	--]]
+	-- a[1] is the action, a[2] is the amount consumed per action
 	if a[1] and a[1].id and b[1] and b[1].id then
 		return a[1].id:lower() < b[1].id:lower()
 	end
