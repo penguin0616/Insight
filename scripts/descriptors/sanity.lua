@@ -54,13 +54,13 @@ local function Describe(self, context)
 	
 	local description = nil
 
-	local sanity_type = context.lstr.sanity
+	local sanity_type = context.lstr.sanity.current_sanity
 	local max_sanity = nil
 	local lunacy = false
 	
 	if IsDST() then
 		if self:IsLunacyMode() then
-			sanity_type = context.lstr.enlightenment
+			sanity_type = context.lstr.sanity.current_enlightenment
 			lunacy = true
 		end
 		

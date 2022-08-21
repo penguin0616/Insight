@@ -801,8 +801,11 @@ return {
 	},
 
 	-- sanity.lua
-	sanity = "<icon=sanity> <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
-	enlightenment = "<icon=enlightenment> <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+	sanity = {
+		current_sanity = "<icon=sanity> <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+		current_enlightenment = "<icon=enlightenment> <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		--interaction = "<color=SANITY>Sanity</color>: <color=SANITY>%+.1f</color>",
+	},
 
 	-- sanityaura.lua
 	sanityaura = "<icon=sanity> <color=SANITY>%s/min</color>",

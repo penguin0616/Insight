@@ -787,8 +787,11 @@ return {
 	},
 
 	-- sanity.lua
-	sanity = "<color=SANITY>Cordura</color>: <color=SANITY>%s</color>/<color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
-	enlightenment = "<color=ENLIGHTENMENT>Iluminación</color>: <color=ENLIGHTENMENT>%s</color>/<color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+	sanity = {
+		current_sanity = "<color=SANITY>Cordura</color>: <color=SANITY>%s</color>/<color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+		current_enlightenment = "<color=ENLIGHTENMENT>Iluminación</color>: <color=ENLIGHTENMENT>%s</color>/<color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		interaction = "<color=SANITY>Sanity</color>: <color=SANITY>%+.1f</color>",
+	},
 
 	-- sanityaura.lua
 	sanityaura = "<color=SANITY>Aura de cordura</color>: <color=SANITY>%s/min</color>",

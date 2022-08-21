@@ -1093,6 +1093,20 @@ local english = {
 			},
 		},
 	},
+	display_sanity_interactions = {
+		LABEL = "Sanity Interactions",
+		HOVER = "Whether interactions that affect sanity are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity interactions."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity interactions."
+			},
+		},
+	},
 	display_mob_attack_damage = {
 		LABEL = "Mob Attack Damage",
 		HOVER = "Whether mob attack damage is shown.",
@@ -2519,6 +2533,20 @@ local chinese = {
 			["true"] = {
 				DESCRIPTION = "是",
 				HOVER = "显示理智光环。",
+			},
+		},
+	},
+	display_sanity_interactions = {
+		LABEL = "Sanity Interactions",
+		HOVER = "Whether interactions that affect sanity are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity interactions."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity interactions."
 			},
 		},
 	},
@@ -3981,6 +4009,20 @@ local portuguese = {
 			},
 		},
 	},
+	display_sanity_interactions = {
+		LABEL = "Sanity Interactions",
+		HOVER = "Whether interactions that affect sanity are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity interactions."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity interactions."
+			},
+		},
+	},
 	display_mob_attack_damage = {
 		LABEL = "Dano de Ataque de Mobs",
 		HOVER = "Se o dano de ataque de mobs é mostrado.",
@@ -5439,6 +5481,20 @@ local spanish = {
 			},
 		},
 	},
+	display_sanity_interactions = {
+		LABEL = "Sanity Interactions",
+		HOVER = "Whether interactions that affect sanity are shown.",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity interactions."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity interactions."
+			},
+		},
+	},
 	display_mob_attack_damage = {
 		LABEL = "Daño de ataque de mobs",
 		HOVER = "Configura si se muestra el daño de ataque de mobs.",
@@ -6558,6 +6614,29 @@ configuration_options = {
 		}, 
 		default = true,
 		tags = {"undefined"},
+	},
+	{
+		name = "display_sanity_interactions",
+		options = {
+			{ data = false },
+			{ data = true },
+		},
+		default = false,
+		tags = { "undefined" },
+	},
+	display_sanity_interactions = {
+		LABEL = "Sanity Interactions",
+		HOVER = "Whether interactions that affect sanity are shown (like picking flowers).",
+		OPTIONS = {
+			["false"] = {
+				DESCRIPTION = "Disabled",
+				HOVER = "Will not display sanity interactions."
+			},
+			["true"] = {
+				DESCRIPTION = "Enabled",
+				HOVER = "Will display sanity interactions."
+			},
+		},
 	},
 	{
 		name = "display_mob_attack_damage",
