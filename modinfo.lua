@@ -6624,20 +6624,6 @@ configuration_options = {
 		default = false,
 		tags = { "undefined" },
 	},
-	display_sanity_interactions = {
-		LABEL = "Sanity Interactions",
-		HOVER = "Whether interactions that affect sanity are shown (like picking flowers).",
-		OPTIONS = {
-			["false"] = {
-				DESCRIPTION = "Disabled",
-				HOVER = "Will not display sanity interactions."
-			},
-			["true"] = {
-				DESCRIPTION = "Enabled",
-				HOVER = "Will display sanity interactions."
-			},
-		},
-	},
 	{
 		name = "display_mob_attack_damage",
 		options = {
