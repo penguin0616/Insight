@@ -2498,7 +2498,7 @@ if IsDST() then
 end
 
 do
-	local console_commands = import("consolecommands")
+	local console_commands = import("insight_consolecommands")
 	local selected = console_commands[(IsDST() and 1 or 2)]
 
 	for name, fn in pairs(selected) do
