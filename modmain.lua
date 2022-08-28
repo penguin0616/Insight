@@ -619,7 +619,7 @@ local function DoNetworkMoonCycle(inst)
 	if not moon_cycle then return end
 
 	for _, player in pairs(AllPlayers) do
-		local ist = GetInsight(player)
+		local ist = player.components.insight
 		if ist then
 			ist:SendMoonCycle(moon_cycle)
 		end
@@ -915,7 +915,10 @@ function RequestEntityInformation(entity, player, params)
 	--dprint("requestentityinformation", entity, player)
 	--if true then return nil end
 
-	assert(type(params) == "table", "RequestEntityInformation expected 'params' as a table")
+	if type(params) ~= "table" then
+		error("RequestEntityInformation expected 'params' as a table")
+		return
+	end
 
 	if TRACK_INFORMATION_REQUESTS then
 		dprint("SERVER got:", entity, player, params)
@@ -939,7 +942,7 @@ function RequestEntityInformation(entity, player, params)
 	end
 
 	--dprint('REI insight', player)
-	local insight = GetInsight(player)
+	local insight = player.components.insight
 
 	if not insight then
 		mprint(player.name, "is missing insight component.")
@@ -958,7 +961,13 @@ function RequestEntityInformation(entity, player, params)
 		return info
 	end
 
-
+	if not TheWorld.ismastersim then
+		insight = player.replica.insight
+		if not insight then
+			error("Missing Insight replica")
+			return
+		end
+	end
 
 
 	local id = params.GUID
@@ -969,34 +978,31 @@ function RequestEntityInformation(entity, player, params)
 		
 		local data = GetEntityInformation(entity, player, params)
 		
-		
 		if not id then
+			error("missing id")
 			if IsClientHost() then
 				-- understandable
 				id = entity.GUID
 			else
 				-- we shouldn't be here
 				mprint("&&&&&&&&&&&&&& guid missing in server RQST")
+				error('^')
 				id = entity.GUID
 			end
 		end
 		
-
 		data.GUID = id
 		
 		if TRACK_INFORMATION_REQUESTS then
 			dprint("Information set for", entity)
 		end
 
+		-- TheNet:IsDedicated()
 		insight:SetEntityData(entity, data)
 	else
-		--dprint'passing to replica'
-		-- client is asking for information
-		insight:RequestInformation(entity, params) -- clients have to go through this at some point, unless client is host and its a forest-only world
-	end
-
-	if TRACK_INFORMATION_REQUESTS then
-		--dprint("Information returning for", entity)
+		-- We're on a plain client, and that means we're actually requesting information.
+		-- That request has to go through the replica for tracking purposees.
+		insight:RequestInformation(entity, params)
 	end
 	
 	if insight.entity_data[entity] then
@@ -1562,6 +1568,7 @@ end
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
 if IsDST() then
 	table.insert(PrefabFiles, "insight_ghost_klaus_sack")
+	table.insert(PrefabFiles, "insight_classified")
 end
 
 setmetatable(Insight.descriptors, {
@@ -2398,9 +2405,9 @@ if IsDST() then
 						Insight.kramped.players[player].threshold = 0
 					end
 
-					if GetInsight(player) then
+					if player.components.insight then
 						--dprint'attempt to send naughtiness'
-						GetInsight(player):SendNaughtiness()
+						player.components.insight:SendNaughtiness()
 						--dprint'attempt finished'
 					else
 						mprint("Unable to send initial naughtiness to:", player)
@@ -2414,8 +2421,8 @@ if IsDST() then
 							--mprint("ON NAUGHTY ACTION AFTER", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
 							--mprint(playerdata.actions, playerdata.threshold)
 							-- while i could just pass in the playerdata........ i dont feel like it
-							if GetInsight(playerdata.player) then
-								GetInsight(playerdata.player):SendNaughtiness()
+							if playerdata.player.components.insight then
+								playerdata.player.components.insight:SendNaughtiness()
 							end
 						end)
 					end
@@ -2472,7 +2479,7 @@ if IsDST() then
 
 			local shard_players = {}
 			for _, player in pairs(AllPlayers) do
-				local ist = GetInsight(player)
+				local ist = player.components.insight
 				if ist then
 					ist:SendNaughtiness() -- for timetodecay
 				end
@@ -2521,6 +2528,8 @@ AddPlayerPostInit(function(player)
 		player:ListenForEvent("setowner", function(...) 
 			player:AddComponent("insight")
 			mprint("Added Insight component for", player)
+			local classified = SpawnPrefab("insight_classified")
+			classified.entity:SetParent(player.entity)
 		end)
 	end
 end)

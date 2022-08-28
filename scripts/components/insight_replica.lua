@@ -38,75 +38,7 @@ local Is_DS = IsDS()
 	highlighting went from 0.2 to 0.019
 	aWOOOOOOOOOgah
 ]]
---------------------------------------------------------------------------
---[[ Queuer ]]
---------------------------------------------------------------------------
-local Queuer = Class(function(self, queues)
-	self.last_added_queue = 1
-	self.queue_count = queues
 
-	assert(self.queue_count >= self.last_added_queue)
-
-	self.queues = {}
-	
-
-	self.entity_to_queue = {} -- {{queue_id=queue_id, queue_position=queue_position}}
-
-	for i = 1, self.queue_count do
-		-- lua_getn has logarithmic cost (in 5.2 anyway)
-		self.queues[i] = {
-			length = 0,
-			items = {}
-		}
-	end
-end)
-
-function Queuer:Add(entity, data)
-	--mprint('add', entity, data)
-	local place = self.entity_to_queue[entity]
-	if place then
-		--mprint('tweaking', entity)
-		-- existing in a queue
-		self.queues[place.queue_id].items[place.queue_position] = data
-		return
-	end
-
-	self.last_added_queue = self.last_added_queue + 1
-	if self.last_added_queue > self.queue_count then
-		self.last_added_queue = 1
-	end
-
-	local selected = self.queues[self.last_added_queue] 
-	selected.length = selected.length + 1
-	selected.items[selected.length] = data
-
-	self.entity_to_queue[entity] = {queue_id = self.last_added_queue, queue_position = selected.length}
-
-	--mprint(string.format("Queue %s Length: %s", self.last_added_queue, selected.length))
-	
-	-- could just keep track of last queue added and pick next queue?
-	--[[
-	local min, q = math.huge, nil
-	for i = 1, self.queue_count do
-		local v = self.queue_count[i]
-
-		local len = #v
-		if len < min then
-			min = len, q = v
-		end 
-	end
-	--]]
-end
-
-function Queuer:Flush()
-	self.entity_to_queue = {}
-	for i = 1, self.queue_count do
-		self.queues[i] = {
-			length = 0,
-			items = {}
-		}
-	end
-end
 
 
 --------------------------------------------------------------------------
@@ -235,23 +167,6 @@ local function OnWorldDataDirty(inst)
 	insight.world_data = data
 end
 
-local function OnNaughtinessDirty(inst)
-	local insight = GetInsight(inst)
-	if not insight.is_client then
-		--dprint("[OnNaughtinessDirty]: Rejected for nonclient")
-		return
-	end
-
-	local str = insight.net_naughtiness:value()
-	if str == "" then
-		return
-	end
-	local data = json.decode(str)
-
-	--mprint("got and pushed", data.actions, data.threshold)
-	inst:PushEvent("naughtydelta", data)
-end
-
 local function OnHuntTargetDirty(inst, target)
 	local insight = GetInsight(inst)
 	if Is_DST and not insight.is_client then
@@ -311,13 +226,7 @@ local function OnEntityInvalidate(inst)
 	end
 end
 
-local function OnMoonCycleDirty(inst)
-	local insight = GetInsight(inst)
-	if insight and TheWorld then
-		local moon_cycle = insight.net_moon_cycle:value()
-		TheWorld:PushEvent("moon_cycle_dirty", { moon_cycle=moon_cycle })
-	end
-end
+
 
 --------------------------------------------------------------------------
 --[[ Insight ]]
@@ -397,18 +306,7 @@ local Insight = Class(function(self, inst)
 	self.entity_data = setmetatable(createTable(800), { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = setmetatable({}, { __mode="kv" })
 
-	self.queuer = Queuer(10) -- shouldn't encounter crashes with this
-	--[[
-		with the above listed setup, 
-			5 queues: had text lengths of roughly 14000-18000
-			6 queues: had text lengths of roughly 10000-15000
-		
-		ideally want to keep it around 10000 i think, so 7 probably works.
-		
-		RPC was cutting off around 40k iirc
-
-		when setting info_preload to 0, (nothing), massive strings
-	]]
+	
 	
 	self.hunt_target = nil
 	self.tracked_entities = {}
@@ -416,51 +314,11 @@ local Insight = Class(function(self, inst)
 	self.pipspook_queue = setmetatable({}, { __mode="v" })
 	
 	if Is_DST then
-		
-		self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
-			
-		-- net_string
-		self.net_world_data = net_string(self.inst.GUID, "insight_world_data", "insight_world_data_dirty")
-		self.net_naughtiness = net_string(self.inst.GUID, "insight_naughtiness", "insight_naughtiness_dirty")
-		-- net_entity
-		self.net_invalidate = net_entity(self.inst.GUID, "insight_invalidate", "insight_invalidate_dirty")
-		self.net_hunt_target = net_entity(self.inst.GUID, "insight_hunt_target", "insight_hunt_target_dirty")
-		-- net_bool
-		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
-		-- net_smallbyte
-		self.net_moon_cycle = net_smallbyte(self.inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- "insight_net_moon_cycle" 3674213233
-
-		self.inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty)
-
-		self.inst:ListenForEvent("insight_naughtiness_dirty", OnNaughtinessDirty)
-
-		self.inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty)
-		
-		if TheWorld.ismastersim then
-			-- server
-			self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
-				self.net_battlesong_active:set(player.components.singinginspiration:IsSinging())
-			end)
-
-			self:SendMoonCycle(GetMoonCycle(TheWorld))
-			
-			self.inst:DoPeriodicTask(0.07, function() -- 0.07 normally
-				for i = 1, self.queuer.queue_count do
-					--print("queue [server]", i, ":::::", compress(self.queuer.queues[i].items))
-					local queue = self.queuer.queues[i]
-					if queue.length > 0 then
-						rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "EntityInformation"), self.inst.userid, compress(queue.items))
-					end
-				end
-				self.queuer:Flush()
-			end)
-		end
-
 		if self.is_client and Is_DST then
 			-- client
 			self.inst:ListenForEvent("insight_invalidate_dirty", OnEntityInvalidate)
 
-			self.inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty)
+			
 		end
 	end
 
@@ -502,8 +360,35 @@ local Insight = Class(function(self, inst)
 
 		end)
 	end
-	
 end)
+
+
+function Insight:AttachClassified(ent)
+	self.classified = ent
+end
+
+function Insight:DetachClassified()
+	self.classified = nil
+end
+
+function Insight:SetMoonCycle(int)
+	if self.classified ~= nil then
+		self.classified.net_moon_cycle:set_local(int)
+		self.classified.net_moon_cycle:set(int)
+	end
+end
+
+function Insight:SetNaughtiness(str)
+	if self.classified ~= nil then
+		self.classified.net_naughtiness:set(str)
+	end
+end
+
+
+
+
+
+
 
 function Insight:OnEntityGotInformation(ent)
 	-- Only meant for use in DS
@@ -516,7 +401,6 @@ function Insight:OnEntityGotInformation(ent)
 		highlighting.SetEntityAwake(ent)
 	end
 end
-
 
 function Insight:InvalidateCacheFor(inst)
 	if self.net_invalidate then
@@ -651,52 +535,6 @@ function Insight:HandlePipspookQuest(data, ...)
 		self.pipspook_toys = {}
 		self.pipspook_queue = setmetatable({}, { __mode="v" })
 	end
-end
-
-function Insight:SetEntityData(entity, data)
-	assert(TheWorld.ismastersim, "Insight:SetEntityData called from client.")
-
-	self.queuer:Add(entity, data)
-
-	--[==[
-	if self.queue_tracker[entity] then -- tracks index
-		self.queue[self.queue_tracker[entity]] = data -- replace old index
-	else
-		self.queue[#self.queue+1] = data
-		self.queue_tracker[entity] = #self.queue
-	end
-	--]==]
-end
-
-function Insight:SendMoonCycle(int)
-	if not TheWorld.ismastersim then
-		return
-	end
-
-	if not int then
-		dprint("Missing int for SendMoonCycle?")
-		return
-	end
-
-	self.net_moon_cycle:set_local(int)
-	self.net_moon_cycle:set(int)
-end
-
-function Insight:SendNaughtiness()
-	assert(TheWorld.ismastersim, "Insight:DidNaughty() called on client")
-
-	local tbl = GetNaughtiness(self.inst, self.context)
-	if not tbl or not tbl.actions or not tbl.threshold then
-		mprint("GetNaughtiness failed:", tbl)
-		if tbl then
-			--table.foreach(tbl, mprint)
-		end
-		return
-	end
-
-	--mprint("winner winner", tbl.actions, tbl.threshold)
-	
-	self.net_naughtiness:set(json.encode(tbl))
 end
 
 function Insight:HuntFor(target)
