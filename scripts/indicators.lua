@@ -148,6 +148,15 @@ function Indicators:RemoveNextUpdate(target)
 	table.insert(self.cleanup, target)
 end
 
+function Indicators:Kill()
+	self.OnUpdate = function() end
+	self.Add = function() error("Killed") end
+	for i,v in pairs(self.indicators) do
+		v:Kill()
+	end
+	self.indicators = {}
+end
+
 function Indicators:OnUpdate()
 	--print'indicators onupdate'
 	local cleanup = {}

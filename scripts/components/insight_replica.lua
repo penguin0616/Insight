@@ -30,6 +30,7 @@ local cooking = require("cooking")
 local Entity_HasTag = Entity.HasTag
 local IS_DST = IsDST()
 local IS_DS = IsDS()
+local IS_CLIENT_HOST = IsClientHost()
 
 --[[
 	c_chestring({'spear', 'thulecite', 'redgem', 'bluegem', 'yellowgem', 'orangegem', 'purplegem', 'rocks', 'flint'})
@@ -109,9 +110,7 @@ end
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
 local function GotEntityInformation(inst, data)
-	local insight = GetInsight(inst)
-	if not insight then mprint("got entity information missing insight") return end
-
+	local insight = inst.replica.insight
 
 	--mprint("got:", #data.data, data.data:sub(#data.data-32))
 	local safe, items = true, decompress(data.data)
@@ -199,7 +198,9 @@ local Insight = Class(function(self, inst)
 		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
 	end
 
-	self.indicators = nil
+	if IS_DS or IS_CLIENT_HOST then
+		self:SetupIndicators()
+	end
 
 	if IS_DST then
 		if TheWorld.ismastersim then
@@ -214,6 +215,10 @@ function Insight:OnRemoveFromEntity()
 	if self.classified ~= nil then
         if TheWorld.ismastersim then
             self.classified = nil
+			
+			if IS_CLIENT_HOST then
+				self:KillIndicators()
+			end
         else
 			self.classified:RemoveEventCallback("onremove", self.ondetachclassified)
             self:DetachClassified()
@@ -239,6 +244,10 @@ function Insight:AttachClassified(ent)
 	-- Insight cool stuff
 	self.performance_ratings = PerformanceRatings()
 	self.entity_request_queue = {}
+	self:SetupIndicators()
+	
+	self:ListenForEvent("insight_entity_information", GotEntityInformation)
+
 	self:BeginUpdateLoop()
 	self:SetBattleSongActive(false)
 end
@@ -251,6 +260,9 @@ function Insight:DetachClassified()
 
 	self.classified = nil
 	self.ondetachclassified = nil
+	
+	self:KillIndicators()
+	self:StopUpdateLoop()
 end
 
 --- Sets world data. 
@@ -344,20 +356,32 @@ end
 --------------------------------------------------------------------------
 --[[ Methods ]]
 --------------------------------------------------------------------------
+
+--- Initializes indicators.
+function Insight:SetupIndicators()
+	assert(self.indicators == nil, "Attempt to setup indicators more than once")
+	self.indicators = Indicators(inst)
+end
+
+function Insight:KillIndicators()
+	assert(self.indicators, "Attempt to kill nonexistant indicators")
+	self.indicators:Kill()
+	self.indicators = nil
+end
+
+--- Starts the main information loop for DST.
 function Insight:BeginUpdateLoop()
 	if self.updating then
-		error("Attempt to begin update loop more than once.")
+		error("Attempt to begin update loop more than once")
 		return
 	end
 
 	self.updating = true
-
 	mprint("\tInsight replica update loop has begun")
-	self.indicators = Indicators(inst)
 
 	-- self.inst:StartUpdatingComponent(self)
 	-- hud was sometimes missing in OnUpdate
-	self.inst:DoPeriodicTask(1, function(inst)
+	self.update_task = self.inst:DoPeriodicTask(1, function(inst)
 		self:Update()
 		if self.performance_ratings then
 			self.performance_ratings:Refresh()
@@ -366,7 +390,7 @@ function Insight:BeginUpdateLoop()
 
 	if IsClient() then
 		-- Request Entity Information queuer
-		self.inst:DoPeriodicTask(0.1, function()
+		self.request_task = self.inst:DoPeriodicTask(0.1, function()
 			local idx = 1
 			local array = {}
 			for ent, params in pairs(self.entity_request_queue) do
@@ -388,7 +412,13 @@ function Insight:BeginUpdateLoop()
 	end
 end
 
-
+function Insight:StopUpdateLoop()
+	self.update_task:Cancel()
+	self.update_task = nil
+	self.request_task:Cancel()
+	self.request_task = nil
+	self.updating = false
+end
 
 
 
