@@ -38,6 +38,18 @@ local function OnNaughtinessDirty(inst)
 	inst:PushEvent("naughtydelta", { actions = actions, threshold = threshold }) -- This is an event that gets listened to by Combined Status
 end
 
+local function OnInvalidateDirty(inst)
+	local ent = inst.net_invalidate:value()
+	if ent then
+		inst.replica.insight:OnInvalidateCachedEntity(ent)
+	end
+end
+
+local function OnHuntTargetDirty(inst)
+	local target = inst.net_hunt_target:value()
+	inst.replica.insight:OnHuntTargetDirty(target)
+end
+
 local function OnMoonCycleDirty(inst)
 	local moon_cycle = inst.net_moon_cycle:value()
 	TheWorld:PushEvent("moon_cycle_dirty", { moon_cycle = moon_cycle }) -- This is an event that gets listened to by Combined Status
@@ -71,9 +83,19 @@ local function OnEntityReplicated(inst)
 end
 
 local function RegisterNetListeners(inst)
+	-- string
+	--inst:ListenForEvent("insight_world_data_dirty", nil)
 	inst:ListenForEvent("insight_naughtiness_dirty", OnNaughtinessDirty)
+
+	-- entity
+	inst:ListenForEvent("insight_invalidate_dirty", OnInvalidateDirty)
+	inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty)
+
+	-- bool
 	inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty)
 	
+	-- smallbyte
+	--inst:ListenForEvent("insight_moon_cycle_dirty", nil)
 end
 
 --------------------------------------------------------------------------
@@ -95,8 +117,8 @@ local function fn()
 	-- DO NAUGTHTINESS AND CONFIRM MOON CYCLE DONE
 
 	-- net_entity
-	--inst.net_invalidate = net_entity(inst.GUID, "insight_invalidate", "insight_invalidate_dirty")
-	--inst.net_hunt_target = net_entity(inst.GUID, "insight_hunt_target", "insight_hunt_target_dirty")
+	inst.net_invalidate = net_entity(inst.GUID, "insight_invalidate", "insight_invalidate_dirty")
+	inst.net_hunt_target = net_entity(inst.GUID, "insight_hunt_target", "insight_hunt_target_dirty")
 
 	-- net_bool
 	--inst.net_battlesong_active = net_bool(inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343

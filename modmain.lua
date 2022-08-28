@@ -1723,18 +1723,12 @@ if true then
 end
 
 local function OnItemChange(inst)
-	if AllPlayers then
-		for i,v in pairs(AllPlayers) do
-			local insight = GetInsight(v)
-			if insight then
-				insight:InvalidateCacheFor(inst)
-			end
-		end
-	else
-		local player = GetPlayer()
-		local insight = player and GetInsight(player)
+	local players = AllPlayers or {GetPlayer()}
+
+	for i,v in pairs(players) do
+		local insight = v.components.insight
 		if insight then
-			insight:InvalidateCacheFor(inst)
+			insight:InvalidateCachedEntity(inst)
 		end
 	end
 end
@@ -2741,13 +2735,13 @@ AddSimPostInit(function()
 			end
 
 			if target.prefab == "claywarg" or target.prefab == "warg" or target.prefab == "spat" then
-				dprint("skipped sending on a hunt for special hunt target:", target.prefab)
+				mprint("skipped sending on a hunt for special hunt target:", target.prefab)
 				return
 			end
 
 			--mprint"-----------------"
 
-			GetInsight(activeplayer):HuntFor(target)
+			activeplayer.components.insight:SetHuntTarget(target)
 		end
 	end
 	

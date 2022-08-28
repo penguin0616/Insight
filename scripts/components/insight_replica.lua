@@ -28,8 +28,8 @@ local Indicators = import("indicators")
 local cooking = require("cooking")
 
 local Entity_HasTag = Entity.HasTag
-local Is_DST = IsDST()
-local Is_DS = IsDS()
+local IS_DST = IsDST()
+local IS_DS = IsDS()
 
 --[[
 	c_chestring({'spear', 'thulecite', 'redgem', 'bluegem', 'yellowgem', 'orangegem', 'purplegem', 'rocks', 'flint'})
@@ -167,34 +167,6 @@ local function OnWorldDataDirty(inst)
 	insight.world_data = data
 end
 
-local function OnHuntTargetDirty(inst, target)
-	local insight = GetInsight(inst)
-	if Is_DST and not insight.is_client then
-		--dprint("[OnHuntTargetDirty]: Rejected for nonclient")
-		return
-	end
-
-	if Is_DS and target == nil then
-		error("[Insight]: OnHuntTargetDirty(DS) missing target.")
-	end
-
-	local target = target or insight.net_hunt_target:value()
-
-	if insight.hunt_target then
-		insight:StopTrackingEntity(insight.hunt_target)
-		--inst.HUD:RemoveTargetIndicator(GetInsight(inst).hunt_target)
-	end
-
-	if not target then
-		return
-	end
-
-	insight.hunt_target = target
-	insight:StartTrackingEntity(target, {removeOnFound = target.components.health ~= nil or (target.replica and target.replica.health ~= nil)})
-
-	--inst.HUD:AddTargetIndicator(target, {})
-end
-
 local function OnEntityNetworkActive(ent, self)
 	--[[
 	if self.entity_data[ent] == nil then -- outside our range of caring about.
@@ -286,14 +258,14 @@ local Insight = Class(function(self, inst)
 			end
 		]]
 		self.is_client = true
-	elseif Is_DS then
+	elseif IS_DS then
 		self.is_client = true
 	end
 	--self.is_client = (self.is_client == nil and inst == ThePlayer) or self.is_client
 	self.inst = inst
 	
-	self.performance_ratings = self.is_client and Is_DST and PerformanceRatings()
-	self.entity_request_queue = self.is_client and Is_DST and {}
+	self.performance_ratings = self.is_client and IS_DST and PerformanceRatings()
+	self.entity_request_queue = self.is_client and IS_DST and {}
 
 	-- Exceeded maximum data length serializing entity channel for entity woodie[117470]......
 	-- could i possibly attach a secondary entity and listen to it?
@@ -313,8 +285,8 @@ local Insight = Class(function(self, inst)
 	self.pipspook_toys = {}
 	self.pipspook_queue = setmetatable({}, { __mode="v" })
 	
-	if Is_DST then
-		if self.is_client and Is_DST then
+	if IS_DST then
+		if self.is_client and IS_DST then
 			-- client
 			self.inst:ListenForEvent("insight_invalidate_dirty", OnEntityInvalidate)
 
@@ -338,7 +310,7 @@ local Insight = Class(function(self, inst)
 
 	
 	-- Request Entity Information queuer
-	if self.is_client and Is_DST then
+	if self.is_client and IS_DST then
 		self.inst:DoPeriodicTask(0.1, function()
 			local idx = 1
 			local array = {}
@@ -362,15 +334,60 @@ local Insight = Class(function(self, inst)
 	end
 end)
 
+--------------------------------------------------------------------------
+--[[ Classified-related functions ]]
+--------------------------------------------------------------------------
 
+--- Attaches classified for networking
+-- @tparam EntityScript ent
 function Insight:AttachClassified(ent)
+	assert(self.classified == nil, "Attempt to attach classified with one existing already.")
 	self.classified = ent
 end
 
+--- Detaches classified
 function Insight:DetachClassified()
+	assert(self.classified, "Attempt to detach classified without existing one.")
 	self.classified = nil
 end
 
+--- Sets naughtiness on netvar.
+-- @tparam string str String format can be represented as string.format("%d|%d", accumulated, threshold)
+function Insight:SetNaughtiness(str)
+	if self.classified ~= nil then
+		self.classified.net_naughtiness:set(str)
+	end
+end
+
+--- Removes an entity from the local cache.
+-- @tparam EntityScript entity
+function Insight:InvalidateCachedEntity(entity)
+	-- If this in DST, this will need to go through the netvar. 
+	-- Otherwise, we can just handle it here.
+	if IS_DST then
+		if self.classified ~= nil then
+			self.classified.net_invalidate:set_local(nil) -- force next :set() to be dirty
+			self.classified.net_invalidate:set(entity)
+		end
+	else
+		self:OnInvalidateCachedEntity(entity)
+	end
+end
+
+--- Sets hunt target.
+-- @tparam EntityScript target The target entity that will be get an indicator. 
+function Insight:SetHuntTarget(target)
+	-- If this is DST, this will need to go through the netvar.
+	-- In DS, we can directly send it through the handler.
+	if IS_DST then
+		self.classified.net_hunt_target:set(target)
+	else
+		self:OnHuntTargetDirty(target)
+	end
+end
+
+--- Sets moon cycle on netvar.
+-- @tparam integer int The current position in the moon cycle.
 function Insight:SetMoonCycle(int)
 	if self.classified ~= nil then
 		self.classified.net_moon_cycle:set_local(int)
@@ -378,11 +395,36 @@ function Insight:SetMoonCycle(int)
 	end
 end
 
-function Insight:SetNaughtiness(str)
-	if self.classified ~= nil then
-		self.classified.net_naughtiness:set(str)
+--------------------------------------------------------------------------
+--[[ Methods ]]
+--------------------------------------------------------------------------
+
+--- Called when there needs to be a new hunt target.
+-- @tparam EntityScript target
+function Insight:OnHuntTargetDirty(target)
+	if self.hunt_target then
+		self:StopTrackingEntity(self.hunt_target)
+		self.hunt_target = nil
 	end
+
+	if not target then
+		return
+	end
+
+	self.hunt_target = target
+	self:StartTrackingEntity(target, { 
+		removeOnFound = target.components.health ~= nil or (target.replica and target.replica.health ~= nil) 
+	})
 end
+
+--- 
+-- @tparam EntityScript entity
+function Insight:OnInvalidateCachedEntity(entity)
+	self.entity_data[entity] = nil
+	self:RequestInformation(entity)
+end
+
+
 
 
 
@@ -402,15 +444,7 @@ function Insight:OnEntityGotInformation(ent)
 	end
 end
 
-function Insight:InvalidateCacheFor(inst)
-	if self.net_invalidate then
-		self.net_invalidate:set_local(nil) -- force next :set() to be dirty
-		self.net_invalidate:set(inst)
-	else -- DS
-		self.entity_data[inst] = nil
-		self:RequestInformation(inst)
-	end
-end
+
 
 function Insight:PipspookToyFound(inst) 
 	local network_id = inst.Network:GetNetworkID()
@@ -537,17 +571,10 @@ function Insight:HandlePipspookQuest(data, ...)
 	end
 end
 
-function Insight:HuntFor(target)
-	if Is_DST then
-		assert(TheWorld.ismastersim, "Insight:Hunt() called on client")
-		self.net_hunt_target:set(target)
-	else
-		OnHuntTargetDirty(self.inst, target)
-	end
-end
+
 
 function Insight:DoesFuelMatchFueled(fuel, fueled)
-	if Is_DS then
+	if IS_DS then
 		if fuel.components.fuel and fueled.components.fueled then
 			return fueled.components.fueled:CanAcceptFuelItem(fuel)
 		end
@@ -717,7 +744,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 end
 
 function Insight:GetWorldInformation()
-	if Is_DST then
+	if IS_DST then
 		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetWorldInformation"))
 	else
 		--mprint("DS Get World Information")
@@ -749,7 +776,7 @@ function Insight:RequestInformation(entity, params)
 
 	-- Calculate Params
 
-	if not Is_DS and entity.Network == nil then -- not networked
+	if not IS_DS and entity.Network == nil then -- not networked
 		--dprint('rejected', entity, self.entity_debounces[entity])
 		return false, "NOT_NETWORKED"
 	end
@@ -808,7 +835,7 @@ function Insight:RequestInformation(entity, params)
 
 	params.debounce = nil
 
-	if Is_DS then
+	if IS_DS then
 		-- we don't care about the rest of this in DS
 		
 		-- push this to the next frame to simulate the delay in DST
@@ -832,7 +859,7 @@ function Insight:EntityInactive(ent)
 	--]]
 
 	--dprint('inactive', ent)
-	assert(Is_DST, "Insight:EntityInactive called outside DST")
+	assert(IS_DST, "Insight:EntityInactive called outside DST")
 	
 	self.entity_data[ent] = nil
 	--self.entity_count = self.entity_count - 1
@@ -844,7 +871,7 @@ function Insight:EntityActive(ent)
 		return
 	end
 
-	if DEBUG_ENABLED then assert(Is_DST, "Insight:EntityActive called outside DST") end
+	if DEBUG_ENABLED then assert(IS_DST, "Insight:EntityActive called outside DST") end
 
 	self.entity_data[ent] = {
 		GUID = nil,
@@ -925,12 +952,12 @@ function Insight:Update()
 		end	
 	end
 
-	if Is_DST then
+	if IS_DST then
 		--rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetShardPlayers"))
 	end
 	
 	-- inventory
-	if Is_DST and not TheWorld.ismastersim and HUD.controls.inv and HUD.controls.inv.equip then
+	if IS_DST and not TheWorld.ismastersim and HUD.controls.inv and HUD.controls.inv.equip then
 		-- only needs to be refreshed if a client, mastersim host gets free updates by nature of being the sim
 		-- (APP_VERSION 478130, September 11 2021) this was in place to refresh usages for equipped items, so waiting on a percent change wasn't needed.
 		-- however, this eventually calls inventoryitem_classified:DeserializeRecharge() and :DeserializeRechargeTime()
@@ -959,7 +986,7 @@ function Insight:Update()
 		end
 	end
 	
-	if Is_DST and HUD.controls.insight_menu and TheInput:ControllerAttached() then
+	if IS_DST and HUD.controls.insight_menu and TheInput:ControllerAttached() then
 		if HUD.controls.insight_menu.shown then
 			HUD.controls.insight_menu:Hide()
 		end

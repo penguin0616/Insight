@@ -143,15 +143,7 @@ function Insight:SetEntityData(entity, data)
 	--]==]
 end
 
-function Insight:SendMoonCycle(int)
-	if not int then
-		dprint("Missing int for SendMoonCycle?")
-		return
-	end
-
-	self.inst.replica.insight:SetMoonCycle(int)
-end
-
+--- Sends the client's naughtiness.
 function Insight:SendNaughtiness()
 	-- GetNaughtiness normally requires a context for the second arg, but as of right now it doesn't seem like the context gets checked for anything at the moment.
 	local tbl = GetNaughtiness(self.inst, nil)
@@ -165,5 +157,36 @@ function Insight:SendNaughtiness()
 	-- json.encode(tbl)
 	self.inst.replica.insight:SetNaughtiness(tbl.actions .. "|" .. tbl.threshold)
 end
+
+--- Tells the client to remove an entity from its information cache.
+-- @tparam EntityScript entity
+function Insight:InvalidateCachedEntity(entity)
+	self.inst.replica.insight:InvalidateCachedEntity(entity)
+end
+
+function Insight:SetHuntTarget(target)
+	self.inst.replica.insight:SetHuntTarget(target)
+
+	--[[
+	if Is_DST then
+		assert(TheWorld.ismastersim, "Insight:Hunt() called on client")
+		self.net_hunt_target:set(target)
+	else
+		OnHuntTargetDirty(self.inst, target)
+	end
+	--]]
+end
+
+function Insight:SendMoonCycle(int)
+	if not int then
+		dprint("Missing int for SendMoonCycle?")
+		return
+	end
+
+	self.inst.replica.insight:SetMoonCycle(int)
+end
+
+
+
 
 return Insight
