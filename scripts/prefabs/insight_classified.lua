@@ -25,6 +25,13 @@ setfenv(1, _G.Insight.env)
 --------------------------------------------------------------------------
 --[[ Stuff ]]
 --------------------------------------------------------------------------
+local function OnWorldDataDirty(inst)
+	local str = inst.net_world_data:value()
+	local data = json.decode(str)
+
+	inst.replica.insight.world_data = data
+end
+
 local function OnNaughtinessDirty(inst)
 	local str = inst.net_naughtiness:value()
 	if str == "" then return end
@@ -84,7 +91,7 @@ end
 
 local function RegisterNetListeners(inst)
 	-- string
-	--inst:ListenForEvent("insight_world_data_dirty", nil)
+	inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty)
 	inst:ListenForEvent("insight_naughtiness_dirty", OnNaughtinessDirty)
 
 	-- entity
@@ -111,10 +118,8 @@ local function fn()
 
 	--[==========[ Netvars ]==========]
 	-- net_string
-	--inst.net_world_data = net_string(inst.GUID, "insight_world_data", "insight_world_data_dirty")
+	inst.net_world_data = net_string(inst.GUID, "insight_world_data", "insight_world_data_dirty")
 	inst.net_naughtiness = net_string(inst.GUID, "insight_naughtiness", "insight_naughtiness_dirty")
-
-	-- DO NAUGTHTINESS AND CONFIRM MOON CYCLE DONE
 
 	-- net_entity
 	inst.net_invalidate = net_entity(inst.GUID, "insight_invalidate", "insight_invalidate_dirty")
@@ -126,14 +131,6 @@ local function fn()
 	-- net_smallbyte
 	inst.net_moon_cycle = net_smallbyte(inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- "insight_net_moon_cycle" 3674213233
 
-	--[==========[ Listeners ]==========]
-	--inst:ListenForEvent("insight_entity_information", GotEntityInformation)	
-	--inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty)
-	--inst:ListenForEvent("insight_naughtiness_dirty", OnNaughtinessDirty)
-	--inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty)
-	
-
-	
 	inst.entity:SetPristine()
 	if not TheWorld.ismastersim then
 		inst.OnEntityReplicated = OnEntityReplicated

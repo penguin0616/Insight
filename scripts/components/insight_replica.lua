@@ -154,18 +154,7 @@ local function GotEntityInformation(inst, data)
 end
 
 -- Dirty functions
-local function OnWorldDataDirty(inst)
-	local insight = GetInsight(inst)
-	if not insight.is_client then
-		--dprint("[OnWorldDataDirty]: Rejected for nonclient")
-		return
-	end
 
-	local str = insight.net_world_data:value()
-	local data = json.decode(str)
-
-	insight.world_data = data
-end
 
 local function OnEntityNetworkActive(ent, self)
 	--[[
@@ -344,6 +333,15 @@ end
 function Insight:DetachClassified()
 	assert(self.classified, "Attempt to detach classified without existing one.")
 	self.classified = nil
+end
+
+--- Sets world data. 
+-- @tparam string data_string World data table encoded as json string
+function Insight:SetWorldData(data_string)
+	if self.classified ~= nil then
+		-- ...Why don't I just move this to an RPC?
+		self.classified.net_world_data:set(data_string)
+	end
 end
 
 --- Sets naughtiness on netvar.

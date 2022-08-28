@@ -614,8 +614,8 @@ function cprint(...)
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
-local function DoNetworkMoonCycle(inst)
-	local moon_cycle = GetMoonCycle(inst)
+local function DoNetworkMoonCycle()
+	local moon_cycle = GetMoonCycle()
 	if not moon_cycle then return end
 
 	for _, player in pairs(AllPlayers) do
@@ -1273,12 +1273,12 @@ function GetNaughtiness(inst, context)
 	end
 end
 
-function GetMoonCycle(world)
-	if not (world.net and world.net.components.clock) then
+function GetMoonCycle()
+	if not (TheWorld.net and TheWorld.net.components.clock) then
 		return
 	end
 
-	local data = world.net.components.clock:OnSave()
+	local data = TheWorld.net.components.clock:OnSave()
 	local moon_cycle = type(data) == "table" and data.mooomphasecycle
 
 	if not type(moon_cycle) == "number" then
@@ -1776,15 +1776,12 @@ if IsDST() then
 	
 	rpcNetwork.AddModRPCHandler(modname, "GetWorldInformation", function(player)
 		local info = GetWorldInformation(player)
-
-		local insight = GetInsight(player)
-		if not insight then return end
 		--local a = json.encode(info)
 		--local b = DataDumper(info, nil, true)
 		--print(string.format("World Info [JSON (#%d)]: %s", #a, a))
 		--print(string.format("World Info [DataDumper (#%d)]: %s", #b, b)) 
 		
-		insight.net_world_data:set(json.encode(info))
+		player.components.insight:SendWorldData(info)
 	end)
 
 	AddModRPCHandler(modname, "RequestEntityInformation", function(player, ...)

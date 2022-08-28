@@ -113,12 +113,7 @@ local Insight = Class(function(self, inst)
 		when setting info_preload to 0, (nothing), massive strings
 	]]
 
-	self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
-		self:SetBattleSongActive(player.components.singinginspiration:IsSinging())
-	end)
-
-	self:SendMoonCycle(GetMoonCycle(TheWorld))
-
+	--[==========[ Entity information sender ]==========]
 	self.inst:DoPeriodicTask(0.1, function() -- 0.07 normally
 		for i = 1, self.queuer.queue_count do
 			local queue = self.queuer.queues[i]
@@ -128,6 +123,16 @@ local Insight = Class(function(self, inst)
 		end
 		self.queuer:Flush()
 	end)
+
+
+	--[==========[ Battlesongs ]==========]
+	self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
+		self:SetBattleSongActive(player.components.singinginspiration:IsSinging())
+	end)
+	self:SetBattleSongActive(false)
+
+	--[==========[ Moon Cycle ]==========]
+	self:SendMoonCycle(GetMoonCycle())
 end)
 
 function Insight:SetEntityData(entity, data)
@@ -143,6 +148,11 @@ function Insight:SetEntityData(entity, data)
 	--]==]
 end
 
+function Insight:SendWorldData(data)
+	local encoded = json.encode(data)
+	self.inst.replica.insight:SetWorldData(encoded)
+end
+
 --- Sends the client's naughtiness.
 function Insight:SendNaughtiness()
 	-- GetNaughtiness normally requires a context for the second arg, but as of right now it doesn't seem like the context gets checked for anything at the moment.
@@ -153,8 +163,6 @@ function Insight:SendNaughtiness()
 		return
 	end
 
-	--self.net_naughtiness:set(json.encode(tbl))
-	-- json.encode(tbl)
 	self.inst.replica.insight:SetNaughtiness(tbl.actions .. "|" .. tbl.threshold)
 end
 
@@ -166,15 +174,6 @@ end
 
 function Insight:SetHuntTarget(target)
 	self.inst.replica.insight:SetHuntTarget(target)
-
-	--[[
-	if Is_DST then
-		assert(TheWorld.ismastersim, "Insight:Hunt() called on client")
-		self.net_hunt_target:set(target)
-	else
-		OnHuntTargetDirty(self.inst, target)
-	end
-	--]]
 end
 
 function Insight:SetBattleSongActive(bool)
