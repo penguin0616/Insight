@@ -114,7 +114,7 @@ local Insight = Class(function(self, inst)
 	]]
 
 	self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
-		self.net_battlesong_active:set(player.components.singinginspiration:IsSinging())
+		self:SetBattleSongActive(player.components.singinginspiration:IsSinging())
 	end)
 
 	self:SendMoonCycle(GetMoonCycle(TheWorld))
@@ -175,6 +175,10 @@ function Insight:SetHuntTarget(target)
 		OnHuntTargetDirty(self.inst, target)
 	end
 	--]]
+end
+
+function Insight:SetBattleSongActive(bool)
+	self.inst.replica.insight:SetBattleSongActive(bool)
 end
 
 function Insight:SendMoonCycle(int)

@@ -92,10 +92,10 @@ local function RegisterNetListeners(inst)
 	inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty)
 
 	-- bool
-	inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty)
+	--inst:ListenForEvent("insight_battlesong_active_dirty", OnBattleSongActiveDirty)
 	
 	-- smallbyte
-	--inst:ListenForEvent("insight_moon_cycle_dirty", nil)
+	inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty)
 end
 
 --------------------------------------------------------------------------
@@ -121,7 +121,7 @@ local function fn()
 	inst.net_hunt_target = net_entity(inst.GUID, "insight_hunt_target", "insight_hunt_target_dirty")
 
 	-- net_bool
-	--inst.net_battlesong_active = net_bool(inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
+	
 
 	-- net_smallbyte
 	inst.net_moon_cycle = net_smallbyte(inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- "insight_net_moon_cycle" 3674213233

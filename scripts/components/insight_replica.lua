@@ -286,12 +286,7 @@ local Insight = Class(function(self, inst)
 	self.pipspook_queue = setmetatable({}, { __mode="v" })
 	
 	if IS_DST then
-		if self.is_client and IS_DST then
-			-- client
-			self.inst:ListenForEvent("insight_invalidate_dirty", OnEntityInvalidate)
-
-			
-		end
+		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
 	end
 
 	if self.is_client then -- another check to make this is for us only
@@ -335,7 +330,7 @@ local Insight = Class(function(self, inst)
 end)
 
 --------------------------------------------------------------------------
---[[ Classified-related functions ]]
+--[[ Netvar/classified related functions ]]
 --------------------------------------------------------------------------
 
 --- Attaches classified for networking
@@ -386,6 +381,12 @@ function Insight:SetHuntTarget(target)
 	end
 end
 
+--- Sets whether the player is currently singing.
+-- @tparam bool bool
+function Insight:SetBattleSongActive(bool)
+	self.net_battlesong_active:set(bool)
+end
+
 --- Sets moon cycle on netvar.
 -- @tparam integer int The current position in the moon cycle.
 function Insight:SetMoonCycle(int)
@@ -396,8 +397,15 @@ function Insight:SetMoonCycle(int)
 end
 
 --------------------------------------------------------------------------
---[[ Methods ]]
+--[[ Classified Handlers ]]
 --------------------------------------------------------------------------
+
+---
+-- @tparam EntityScript entity
+function Insight:OnInvalidateCachedEntity(entity)
+	self.entity_data[entity] = nil
+	self:RequestInformation(entity)
+end
 
 --- Called when there needs to be a new hunt target.
 -- @tparam EntityScript target
@@ -417,12 +425,13 @@ function Insight:OnHuntTargetDirty(target)
 	})
 end
 
---- 
--- @tparam EntityScript entity
-function Insight:OnInvalidateCachedEntity(entity)
-	self.entity_data[entity] = nil
-	self:RequestInformation(entity)
-end
+--------------------------------------------------------------------------
+--[[ Methods ]]
+--------------------------------------------------------------------------
+
+
+
+
 
 
 
