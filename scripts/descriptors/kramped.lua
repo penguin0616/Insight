@@ -33,7 +33,7 @@ local function GetPlayerNaughtiness(player)
 		end
 	end
 
-	if TheWorld.ismastersim then
+	if not TheWorld.ismastersim then
 		error("[Insight]: GetPlayerNaughtiness called on client")
 		return
 	end

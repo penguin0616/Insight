@@ -959,16 +959,9 @@ function RequestEntityInformation(entity, player, params)
 		insight:OnEntityGotInformation(entity)
 
 		return info
+	else
+		insight = nil
 	end
-
-	if not TheWorld.ismastersim then
-		insight = player.replica.insight
-		if not insight then
-			error("Missing Insight replica")
-			return
-		end
-	end
-
 
 	local id = params.GUID
 
@@ -997,16 +990,21 @@ function RequestEntityInformation(entity, player, params)
 			dprint("Information set for", entity)
 		end
 
-		-- TheNet:IsDedicated()
-		insight:SetEntityData(entity, data)
+		player.components.insight:SetEntityData(entity, data)
 	else
 		-- We're on a plain client, and that means we're actually requesting information.
 		-- That request has to go through the replica for tracking purposees.
-		insight:RequestInformation(entity, params)
+		player.replica.insight:RequestInformation(entity, params)
 	end
-	
+
+	--[[
 	if insight.entity_data[entity] then
 		return insight.entity_data[entity]
+	end
+	--]]
+
+	if player.replica.insight.entity_data[entity] then
+		return player.replica.insight.entity_data[entity]
 	end
 
 	return ok or nil

@@ -67,8 +67,7 @@ end
 --------------------------------------------------------------------------
 local function OnRemoveEntity(inst)
 	if inst._parent ~= nil then
-		--inst._parent.insight_classified = nil
-		inst._parent.replica.insight:DetachClassified()
+		inst._parent.insight_classified = nil
 	end
 	error("Why did Insight classified get removed?")
 end
@@ -83,7 +82,7 @@ local function OnEntityReplicated(inst)
 		mprint("Unable to initialize classified data for insight_classified, no Insight")
 
 	else
-		--inst._parent.insight_classified = inst
+		inst._parent.insight_classified = inst
 		inst._parent.replica.insight:AttachClassified(inst)
 		inst.OnRemoveEntity = OnRemoveEntity
 	end

@@ -154,8 +154,6 @@ local function GotEntityInformation(inst, data)
 end
 
 -- Dirty functions
-
-
 local function OnEntityNetworkActive(ent, self)
 	--[[
 	if self.entity_data[ent] == nil then -- outside our range of caring about.
@@ -178,97 +176,20 @@ local function OnEntityNetworkActive(ent, self)
 	end
 end
 
-local function OnEntityInvalidate(inst)
-	local insight = GetInsight(inst)
-	local ent = insight and insight.net_invalidate:value()
-	if ent then -- some wx78 had a nil inst
-		insight.entity_data[ent] = nil
-		insight:RequestInformation(ent)
-	end
-end
-
-
-
 --------------------------------------------------------------------------
 --[[ Insight ]]
 --------------------------------------------------------------------------
 local Insight = Class(function(self, inst)
 	--mprint("Registering Insight replica for", inst, "but I am", ThePlayer)
-	
-	if IsClient() then
-		assert(ThePlayer, "[Insight]: Failed to load replica since you're missing")
-		if inst ~= ThePlayer then
-			--mprint("\tRejected Insight replica for non-localplayer")
-			self.is_client = false
-		else
-			self.is_client = true
-		end
-	elseif IsClientHost() and inst == ThePlayer then
-		-- now that im waiting for "SetOwner" to trigger on players, ThePlayer ~= nil whereas before ThePlayer == nil
-		--[[
-			-- apparent simplified process
-			function FN1(? this, int a2)
-				int v4;
-				if (a2) then
-					fn...(v4, -10002, "Ents")
-				else
-					-- ?
-				end
-
-				fn...(v4, -10002, ThePlayer) -- set
-			end
-
-			function FN2(char *this, int a2)
-				-- blah
-				BOOL result;
-				if (...) then
-					if (...) then
-						if (...) then
-						end
-						if (...) then
-							FN1(..., 0)
-						end
-					else
-						if (...) then
-							-- throw an error about existing owner?
-						end
-
-						if (...) then
-							if (...) then
-								FN1(..., ...) -- ThePlayer
-							end
-						end
-
-						result = fn...(..., "setowner", ...);
-					end
-				end
-
-				return result
-			end
-		]]
-		self.is_client = true
-	elseif IS_DS then
-		self.is_client = true
-	end
-	--self.is_client = (self.is_client == nil and inst == ThePlayer) or self.is_client
 	self.inst = inst
-	
-	self.performance_ratings = self.is_client and IS_DST and PerformanceRatings()
-	self.entity_request_queue = self.is_client and IS_DST and {}
 
-	-- Exceeded maximum data length serializing entity channel for entity woodie[117470]......
-	-- could i possibly attach a secondary entity and listen to it?
-	
-	
 	self.menus = setmetatable({}, { __mode="kv" })
 
 	self.entity_count = 0
 	self.world_data = nil -- await
-	self.entity_data = setmetatable(createTable(800), { __mode="k" }) -- {[entity] = {data}}
+	self.entity_data = setmetatable({}, { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = setmetatable({}, { __mode="kv" })
 
-	
-	
 	self.hunt_target = nil
 	self.tracked_entities = {}
 	self.pipspook_toys = {}
@@ -278,45 +199,27 @@ local Insight = Class(function(self, inst)
 		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
 	end
 
-	if self.is_client then -- another check to make this is for us only
-		mprint("\tInsight replica update loop has begun")
-		self.indicators = Indicators(inst)
+	self.indicators = nil
 
-		-- self.inst:StartUpdatingComponent(self)
-		-- hud was sometimes missing in OnUpdate
-		self.inst:DoPeriodicTask(0.33, function(inst)
-			self:Update()
-			if self.performance_ratings then -- requires is_client, which is only true in DST
-				self.performance_ratings:Refresh()
-			end
-		end)
-	end
-
-	
-	-- Request Entity Information queuer
-	if self.is_client and IS_DST then
-		self.inst:DoPeriodicTask(0.1, function()
-			local idx = 1
-			local array = {}
-			for ent, params in pairs(self.entity_request_queue) do
-				array[idx] = ent
-				array[idx + 1] = EncodeRequestParams(params)
-				idx = idx + 2
-
-				self.entity_request_queue[ent] = nil
-
-				if idx >= 50 then -- max rpc arguments
-					break
-				end
-			end
-
-			if #array > 0 then
-				SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), unpack(array))
-			end
-
-		end)
+	if IS_DST then
+		if TheWorld.ismastersim then
+			self.classified = inst.insight_classified
+		elseif self.classified == nil and inst.insight_classified ~= nil then
+			self:AttachClassified(inst.insight_classified)
+		end
 	end
 end)
+
+function Insight:OnRemoveFromEntity()
+	if self.classified ~= nil then
+        if TheWorld.ismastersim then
+            self.classified = nil
+        else
+			self.classified:RemoveEventCallback("onremove", self.ondetachclassified)
+            self:DetachClassified()
+        end
+    end
+end
 
 --------------------------------------------------------------------------
 --[[ Netvar/classified related functions ]]
@@ -325,14 +228,29 @@ end)
 --- Attaches classified for networking
 -- @tparam EntityScript ent
 function Insight:AttachClassified(ent)
+	assert(TheWorld.ismastersim == false, "AttachClassified on server-side")
 	assert(self.classified == nil, "Attempt to attach classified with one existing already.")
+
+	-- Classified stuff
 	self.classified = ent
+	self.ondetachclassified = function() self:DetachClassified() end
+	self.classified:ListenForEvent("onremove", self.ondetachclassified)
+
+	-- Insight cool stuff
+	self.performance_ratings = PerformanceRatings()
+	self.entity_request_queue = {}
+	self:BeginUpdateLoop()
+	self:SetBattleSongActive(false)
 end
 
 --- Detaches classified
 function Insight:DetachClassified()
+	assert(TheWorld.ismastersim == false, "DetachClassified on server-side")
 	assert(self.classified, "Attempt to detach classified without existing one.")
+	error("Why is this happening?")
+
 	self.classified = nil
+	self.ondetachclassified = nil
 end
 
 --- Sets world data. 
@@ -426,7 +344,49 @@ end
 --------------------------------------------------------------------------
 --[[ Methods ]]
 --------------------------------------------------------------------------
+function Insight:BeginUpdateLoop()
+	if self.updating then
+		error("Attempt to begin update loop more than once.")
+		return
+	end
 
+	self.updating = true
+
+	mprint("\tInsight replica update loop has begun")
+	self.indicators = Indicators(inst)
+
+	-- self.inst:StartUpdatingComponent(self)
+	-- hud was sometimes missing in OnUpdate
+	self.inst:DoPeriodicTask(1, function(inst)
+		self:Update()
+		if self.performance_ratings then
+			self.performance_ratings:Refresh()
+		end
+	end)
+
+	if IsClient() then
+		-- Request Entity Information queuer
+		self.inst:DoPeriodicTask(0.1, function()
+			local idx = 1
+			local array = {}
+			for ent, params in pairs(self.entity_request_queue) do
+				array[idx] = ent
+				array[idx + 1] = EncodeRequestParams(params)
+				idx = idx + 2
+
+				self.entity_request_queue[ent] = nil
+
+				if idx >= 50 then -- max rpc arguments
+					break
+				end
+			end
+
+			if #array > 0 then
+				SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), unpack(array))
+			end
+		end)
+	end
+end
 
 
 
@@ -770,9 +730,9 @@ end
 function Insight:RequestInformation(entity, params)
 	params = params or { RAW=true }
 
-	if not self.is_client then
+	if not self.classified then
 		--dprint("insight for", self.inst, "tried to request information for", entity)
-		return false, "IS_CLIENT"
+		return false, "NO_CLASSIFIED"
 	end
 
 	if TRACK_INFORMATION_REQUESTS then
