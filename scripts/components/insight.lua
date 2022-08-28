@@ -99,6 +99,7 @@ end
 --------------------------------------------------------------------------\
 local Insight = Class(function(self, inst)
 	self.inst = inst
+	self.is_local_host = IS_CLIENT_HOST and inst == ThePlayer
 
 	self.queuer = Queuer(10) -- shouldn't encounter crashes with this
 	--[[
@@ -136,7 +137,11 @@ local Insight = Class(function(self, inst)
 end)
 
 function Insight:SetEntityData(entity, data)
-	self.queuer:Add(entity, data)
+	if false and self.is_local_host and ThePlayer == self.inst then
+		self.inst.replica.insight.entity_data[entity] = data
+	else
+		self.queuer:Add(entity, data)
+	end
 
 	--[==[
 	if self.queue_tracker[entity] then -- tracks index
@@ -148,9 +153,14 @@ function Insight:SetEntityData(entity, data)
 	--]==]
 end
 
-function Insight:SendWorldData(data)
-	local encoded = json.encode(data)
-	self.inst.replica.insight:SetWorldData(encoded)
+function Insight:SetWorldData(data)
+	mprint('hullo there', data)
+	self.world_data = data
+
+	if not self.is_local_host then -- optimization
+		local encoded = json.encode(data)
+		self.inst.replica.insight:SetWorldData(encoded)
+	end
 end
 
 --- Sends the client's naughtiness.

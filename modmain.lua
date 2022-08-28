@@ -343,6 +343,8 @@ function IsClientHost()
 	--return IsDST() and TheNet:IsDedicated() == false and TheWorld.ismastersim == true
 end
 
+IS_CLIENT_HOST = IsClientHost()
+
 --- Checks whether the mod is running on something that has full game control. Essentially anything in DS and worlds in DST where you are the host.
 -- @treturn boolean
 function IsExecutiveAuthority()
@@ -912,9 +914,6 @@ end
 
 --- Middleman between GetEntityInformation's server side and the client, really only important for DST
 function RequestEntityInformation(entity, player, params)
-	--dprint("requestentityinformation", entity, player)
-	--if true then return nil end
-
 	if type(params) ~= "table" then
 		error("RequestEntityInformation expected 'params' as a table")
 		return
@@ -963,37 +962,38 @@ function RequestEntityInformation(entity, player, params)
 		insight = nil
 	end
 
-	local id = params.GUID
-
 	-- GUIDs vary between server and client
 	if TheWorld.ismastersim then
 		--dprint(player, "is requesting info for", entity)
 		
 		local data = GetEntityInformation(entity, player, params)
 		
-		if not id then
-			error("missing id")
-			if IsClientHost() then
-				-- understandable
-				id = entity.GUID
+		if not params.GUID then
+			-- By this point, the GUID should have been included in the params if it was from a standard client. That's because it gets added in by the replica.
+			-- However, because the client host is a thing, they skip the part where they get redirected through the replica since they're the mastersim.
+			-- That's the only reason why we should ever end up here with no GUID here.
+
+			if IS_CLIENT_HOST and ThePlayer == player then
+				-- So this is a fair case. We can just insert the GUID and move along here.
+				params.GUID = entity.GUID
 			else
-				-- we shouldn't be here
-				mprint("&&&&&&&&&&&&&& guid missing in server RQST")
-				error('^')
-				id = entity.GUID
+				-- However, we should NOT be here. 
+				error("Missing entity GUID")
 			end
 		end
 		
-		data.GUID = id
+		-- Insert the GUID into the response data so the client can match up the GUID with the entity.
+		data.GUID = params.GUID
 		
 		if TRACK_INFORMATION_REQUESTS then
 			dprint("Information set for", entity)
 		end
 
+		
 		player.components.insight:SetEntityData(entity, data)
 	else
 		-- We're on a plain client, and that means we're actually requesting information.
-		-- That request has to go through the replica for tracking purposees.
+		-- That request has to go through the replica for tracking purposes.
 		player.replica.insight:RequestInformation(entity, params)
 	end
 
@@ -1020,7 +1020,6 @@ function GetWorldInformation(player) -- refactor?
 	if not context then
 		return
 	end
-	--assert(context, "how is context missing in GetWorldInformation for " .. player.name)
 
 	if is_dst and not context.config["display_world_events"] then
 		return {
@@ -1779,7 +1778,7 @@ if IsDST() then
 		--print(string.format("World Info [JSON (#%d)]: %s", #a, a))
 		--print(string.format("World Info [DataDumper (#%d)]: %s", #b, b)) 
 		
-		player.components.insight:SendWorldData(info)
+		player.components.insight:SetWorldData(info)
 	end)
 
 	AddModRPCHandler(modname, "RequestEntityInformation", function(player, ...)
@@ -2514,11 +2513,12 @@ AddPlayerPostInit(function(player)
 
 	if TheWorld.ismastersim then
 		mprint("listening for player validation", player)
-		player:ListenForEvent("setowner", function(...) 
+		player:ListenForEvent("setowner", function(...)
+			player.insight_classified = SpawnPrefab("insight_classified")
+			player.insight_classified.entity:SetParent(player.entity)
+
 			player:AddComponent("insight")
 			mprint("Added Insight component for", player)
-			local classified = SpawnPrefab("insight_classified")
-			classified.entity:SetParent(player.entity)
 		end)
 	end
 end)

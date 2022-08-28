@@ -188,6 +188,7 @@ local Insight = Class(function(self, inst)
 	self.world_data = nil -- await
 	self.entity_data = setmetatable({}, { __mode="k" }) -- {[entity] = {data}}
 	self.entity_debounces = setmetatable({}, { __mode="kv" })
+	self.entity_request_queue = {}
 
 	self.hunt_target = nil
 	self.tracked_entities = {}
@@ -200,11 +201,16 @@ local Insight = Class(function(self, inst)
 
 	if IS_DS or IS_CLIENT_HOST then
 		self:SetupIndicators()
+		self:BeginUpdateLoop()
 	end
 
 	if IS_DST then
 		if TheWorld.ismastersim then
 			self.classified = inst.insight_classified
+
+			if IS_CLIENT_HOST then
+				self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
+			end
 		elseif self.classified == nil and inst.insight_classified ~= nil then
 			self:AttachClassified(inst.insight_classified)
 		end
@@ -215,7 +221,7 @@ function Insight:OnRemoveFromEntity()
 	if self.classified ~= nil then
         if TheWorld.ismastersim then
             self.classified = nil
-			
+
 			if IS_CLIENT_HOST then
 				self:KillIndicators()
 			end
@@ -242,12 +248,9 @@ function Insight:AttachClassified(ent)
 	self.classified:ListenForEvent("onremove", self.ondetachclassified)
 
 	-- Insight cool stuff
+	self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
 	self.performance_ratings = PerformanceRatings()
-	self.entity_request_queue = {}
 	self:SetupIndicators()
-	
-	self:ListenForEvent("insight_entity_information", GotEntityInformation)
-
 	self:BeginUpdateLoop()
 	self:SetBattleSongActive(false)
 end
@@ -261,6 +264,7 @@ function Insight:DetachClassified()
 	self.classified = nil
 	self.ondetachclassified = nil
 	
+	self.inst:RemoveEventCallback("insight_entity_information", GotEntityInformation)
 	self:KillIndicators()
 	self:StopUpdateLoop()
 end
@@ -360,7 +364,7 @@ end
 --- Initializes indicators.
 function Insight:SetupIndicators()
 	assert(self.indicators == nil, "Attempt to setup indicators more than once")
-	self.indicators = Indicators(inst)
+	self.indicators = Indicators(self.inst)
 end
 
 function Insight:KillIndicators()
@@ -743,10 +747,17 @@ end
 function Insight:GetWorldInformation()
 	if IS_DST then
 		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetWorldInformation"))
+
+		if self.inst.components.insight ~= nil then
+			return self.inst.components.insight.world_data
+		elseif self.classified ~= nil then
+			return self.world_data
+		end
 	else
 		--mprint("DS Get World Information")
 		local data = GetWorldInformation(self.inst)
 		self.world_data = data
+		return self.world_data
 	end
 end
 
@@ -761,7 +772,8 @@ function Insight:RequestInformation(entity, params)
 	params = params or { RAW=true }
 
 	if not self.classified then
-		--dprint("insight for", self.inst, "tried to request information for", entity)
+		mprint("Missing classified")
+		print(debugstack())
 		return false, "NO_CLASSIFIED"
 	end
 
@@ -872,7 +884,7 @@ function Insight:EntityActive(ent)
 
 	self.entity_data[ent] = {
 		GUID = nil,
-		info = "",
+		information = nil,
 		special_data = {},
 	}
 
@@ -937,10 +949,9 @@ function Insight:Update()
 	end
 	
 	-- TheWorld and related analyzation
-	self:GetWorldInformation()
+	local world_data = self:GetWorldInformation()
 	self:RequestInformation(self.inst, {RAW=true, debounce=1})
 
-	local world_data = self.world_data
 	local player_data = self:GetInformation(self.inst)
 
 	for i,v in pairs(self.menus) do
