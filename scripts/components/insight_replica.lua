@@ -357,6 +357,13 @@ function Insight:OnHuntTargetDirty(target)
 	})
 end
 
+--- Called when we receive new naughtiness data.
+-- @tparam table data
+function Insight:OnNaughtinessDirty(data)
+	-- { actions = actions, threshold = threshold }
+	self.inst:PushEvent("naughtydelta", data) -- This is an event that gets listened to by Combined Status
+end
+
 --------------------------------------------------------------------------
 --[[ Methods ]]
 --------------------------------------------------------------------------

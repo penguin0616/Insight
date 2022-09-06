@@ -137,7 +137,7 @@ local Insight = Class(function(self, inst)
 end)
 
 function Insight:SetEntityData(entity, data)
-	if false and self.is_local_host and ThePlayer == self.inst then
+	if self.is_local_host then
 		self.inst.replica.insight.entity_data[entity] = data
 	else
 		self.queuer:Add(entity, data)
@@ -152,12 +152,11 @@ function Insight:SetEntityData(entity, data)
 	end
 	--]==]
 end
-
+-- optimize stuffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 function Insight:SetWorldData(data)
-	mprint('hullo there', data)
-	self.world_data = data
-
-	if not self.is_local_host then -- optimization
+	if self.is_local_host then
+		self.world_data = data
+	else
 		local encoded = json.encode(data)
 		self.inst.replica.insight:SetWorldData(encoded)
 	end
@@ -173,7 +172,11 @@ function Insight:SendNaughtiness()
 		return
 	end
 
-	self.inst.replica.insight:SetNaughtiness(tbl.actions .. "|" .. tbl.threshold)
+	if self.is_local_host then
+		self.inst.replica.insight:OnNaughtinessDirty(tbl)
+	else
+		self.inst.replica.insight:SetNaughtiness(tbl.actions .. "|" .. tbl.threshold)
+	end
 end
 
 --- Tells the client to remove an entity from its information cache.

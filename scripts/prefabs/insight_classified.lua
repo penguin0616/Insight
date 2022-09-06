@@ -42,7 +42,7 @@ local function OnNaughtinessDirty(inst)
 		return error("Actions or threshold is missing?")
 	end
 
-	inst:PushEvent("naughtydelta", { actions = actions, threshold = threshold }) -- This is an event that gets listened to by Combined Status
+	inst.replica.insight:OnNaughtinessDirty({ actions = actions, threshold = threshold })
 end
 
 local function OnInvalidateDirty(inst)
