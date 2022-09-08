@@ -324,17 +324,23 @@ function IsDS()
 	return TheSim:GetGameID() == "DS"
 end
 
+IS_DS = IsDS()
+
 --- Checks whether we are in DST.
 -- @treturn boolean
 function IsDST()
 	return TheSim:GetGameID() == "DST"
 end
 
+IS_DST = IsDST()
+
 --- Checks whether the mod is running on a client
 -- @treturn boolean
 function IsClient()
 	return IsDST() and TheNet:GetIsClient()
 end
+
+IS_CLIENT = IsClient()
 
 --- Checks whether the mod is running on a client that is also the host.
 -- @treturn boolean
@@ -350,6 +356,8 @@ IS_CLIENT_HOST = IsClientHost()
 function IsExecutiveAuthority()
 	return TheSim:GetGameID() == "DS" or TheNet:GetIsMasterSimulation() == true
 end
+
+IS_EXECUTIVE_AUTHORITY = IsExecutiveAuthority()
 
 --- Checks whether the mod is running in The Forge.
 -- @treturn boolean
@@ -371,15 +379,14 @@ function IsPrefab(arg)
 	return type(arg) == 'table' and arg.GUID and arg.prefab and true
 end
 
---- Return player's Insight component.
+--- Return player's Insight component or replica, depending on what side we're running on.
 -- @tparam Player player
 -- @treturn ?Insight|nil
 function GetInsight(player)
-	assert(player, "[Insight]: GetInsight called without player")
-	if IsDST() then
-		return player.replica.insight
-	else
+	if IS_EXECUTIVE_AUTHORITY then
 		return player.components.insight
+	else
+		return player.replica.insight
 	end
 end
 
@@ -587,12 +594,23 @@ function mprint(...)
 	return print(prefix .. "[" .. ModInfoname(modname) .. "]:", msg)
 end
 
+function mprintf(...)
+	return mprint(string.format(...))
+end
+
 function dprint(...)
 	if not DEBUG_ENABLED then
 		return
 	end
 	mprint(...)
 end
+
+function dprintf(...)
+	if not DEBUG_ENABLED then
+		return
+	end
+	return dprint(string.format(...))
+end 
 
 function cprint(...)
 	if not TheNet:GetClientTableForUser(MyKleiID) then
@@ -941,7 +959,7 @@ function RequestEntityInformation(entity, player, params)
 	end
 
 	--dprint('REI insight', player)
-	local insight = player.components.insight
+	local insight = GetInsight(player)
 
 	if not insight then
 		mprint(player.name, "is missing insight component.")

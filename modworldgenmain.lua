@@ -240,7 +240,12 @@ else
 	shardGameIndex:Load()
 	if shardGameIndex:IsValid() then
 		mprint("Checking shardindex.")
-		CheckShardIndex(shardGameIndex)
+		dumptable(shardGameIndex.enabled_mods)
+		if false or shardGameIndex.enabled_mods[modname] then
+			CheckShardIndex(shardGameIndex)
+		else
+			mprint("\tInsight hasn't been enabled on this save?")
+		end
 	else
 		mprint("ShardIndex is invalid?")
 	end

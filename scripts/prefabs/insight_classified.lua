@@ -29,11 +29,13 @@ local function OnWorldDataDirty(inst)
 	local str = inst.net_world_data:value()
 	local data = json.decode(str)
 
-	inst.replica.insight.world_data = data
+	inst._parent.replica.insight.world_data = data
 end
 
 local function OnNaughtinessDirty(inst)
 	local str = inst.net_naughtiness:value()
+	--dprintf("%s:insight_classified -> OnNaughtinessDirty", str)
+
 	if str == "" then return end
 	local actions, threshold = str:match("(%d+)|(%d+)")
 
@@ -42,19 +44,21 @@ local function OnNaughtinessDirty(inst)
 		return error("Actions or threshold is missing?")
 	end
 
-	inst.replica.insight:OnNaughtinessDirty({ actions = actions, threshold = threshold })
+	actions, threshold = tonumber(actions), tonumber(threshold)
+
+	inst._parent.replica.insight:OnNaughtinessDirty({ actions = actions, threshold = threshold })
 end
 
 local function OnInvalidateDirty(inst)
 	local ent = inst.net_invalidate:value()
 	if ent then
-		inst.replica.insight:OnInvalidateCachedEntity(ent)
+		inst._parent.replica.insight:OnInvalidateCachedEntity(ent)
 	end
 end
 
 local function OnHuntTargetDirty(inst)
 	local target = inst.net_hunt_target:value()
-	inst.replica.insight:OnHuntTargetDirty(target)
+	inst._parent.replica.insight:OnHuntTargetDirty(target)
 end
 
 local function OnMoonCycleDirty(inst)

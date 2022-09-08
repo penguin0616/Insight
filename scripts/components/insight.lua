@@ -155,7 +155,7 @@ end
 -- optimize stuffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 function Insight:SetWorldData(data)
 	if self.is_local_host then
-		self.world_data = data
+		self.inst.replica.insight.world_data = data
 	else
 		local encoded = json.encode(data)
 		self.inst.replica.insight:SetWorldData(encoded)
@@ -182,11 +182,19 @@ end
 --- Tells the client to remove an entity from its information cache.
 -- @tparam EntityScript entity
 function Insight:InvalidateCachedEntity(entity)
-	self.inst.replica.insight:InvalidateCachedEntity(entity)
+	if self.is_local_host then
+		self.inst.replica.insight:OnInvalidateCachedEntity(entity)
+	else
+		self.inst.replica.insight:InvalidateCachedEntity(entity)
+	end
 end
 
 function Insight:SetHuntTarget(target)
-	self.inst.replica.insight:SetHuntTarget(target)
+	if self.is_local_host then
+		self.inst.replica.insight:OnHuntTargetDirty(target)
+	else
+		self.inst.replica.insight:SetHuntTarget(target)
+	end
 end
 
 function Insight:SetBattleSongActive(bool)

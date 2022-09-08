@@ -259,14 +259,20 @@ end
 function Insight:DetachClassified()
 	assert(TheWorld.ismastersim == false, "DetachClassified on server-side")
 	assert(self.classified, "Attempt to detach classified without existing one.")
-	error("Why is this happening?")
 
+	-- Classified stuff
+	self.classified:RemoveEventCallback("onremove", self.ondetachclassified)
 	self.classified = nil
 	self.ondetachclassified = nil
 	
+	-- Insight cool stuff
 	self.inst:RemoveEventCallback("insight_entity_information", GotEntityInformation)
-	self:KillIndicators()
 	self:StopUpdateLoop()
+	self:KillIndicators()
+	self:SetBattleSongActive(false)
+
+	-- Misc
+	self.entity_data = nil
 end
 
 --- Sets world data. 
@@ -755,11 +761,7 @@ function Insight:GetWorldInformation()
 	if IS_DST then
 		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetWorldInformation"))
 
-		if self.inst.components.insight ~= nil then
-			return self.inst.components.insight.world_data
-		elseif self.classified ~= nil then
-			return self.world_data
-		end
+		return self.world_data
 	else
 		--mprint("DS Get World Information")
 		local data = GetWorldInformation(self.inst)
