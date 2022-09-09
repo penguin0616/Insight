@@ -1655,8 +1655,8 @@ local chinese = {
 				HOVER = "显示默认百分比",
 			},
 			["mixed"] = {
-				DESCRIPTION = "Mixed",
-				HOVER = "Will provide use default percentages on refuelables, numbers for everything else."
+				DESCRIPTION = "兼用",
+				HOVER = "可恢复耐久的物品显示默认百分比, 其他显示具体次数"
 			},
 		},
 	},
@@ -2155,16 +2155,16 @@ local chinese = {
 	--[[ Information Control ]]
 	--------------------------------------------------------------------------
 	display_cawnival = {
-		LABEL = "Cawnival Information",
-		HOVER = "Whether Midsummer Cawnvival information is shown.",
+		LABEL = "鸦年华信息",
+		HOVER = "是否显示盛夏鸦年华信息",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Cawnival information is not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示鸦年华信息",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Cawnival information is shown.",
+				DESCRIPTION = "是",
+				HOVER = "显示鸦年华信息",
 			},
 		},
 	},
@@ -2211,30 +2211,30 @@ local chinese = {
 		},
 	},
 	display_worldmigrator = {
-		LABEL = "Portal information",
-		HOVER = "Whether portal (sinkhole) information is shown.",
+		LABEL = "传送信息",
+		HOVER = "是否显示传送信息 (洞穴)",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Portal information is not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示传送信息",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Portal information is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示传送信息"
 			},
 		},
 	},
 	display_unwrappable = {
-		LABEL = "Bundle information",
-		HOVER = "Whether bundle information is shown.",
+		LABEL = "打包信息",
+		HOVER = "是否显示打包信息",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Bundle information is not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示打包信息",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Bundle information is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示打包信息"
 			},
 		},
 	},
@@ -2243,12 +2243,12 @@ local chinese = {
 		HOVER = "是否显示垂钓信息",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Fishing information is not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示垂钓信息",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Fishing information is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示垂钓信息"
 			},
 		},
 	},
@@ -2349,20 +2349,20 @@ local chinese = {
 		}
 	},
 	soil_nutrients_needs_hat = {
-		LABEL = "Display soil nutrients",
-		HOVER = "When to display soil/plant nutrients.",
+		LABEL = "土壤养分显示",
+		HOVER = "何时显示土壤/植物养分",
 		OPTIONS = {
 			["off"] = {
-				DESCRIPTION = "Premier Gardeneer Hat",
-				HOVER = "Soil nutrients are only shown with the hat.",
+				DESCRIPTION = "高级耕作先驱帽",
+				HOVER = "只有佩戴此帽时才显示土壤养分",
 			},
 			["hatonly"] = {
-				DESCRIPTION = "Premier Gardeneer Hat",
-				HOVER = "Soil nutrients are only shown with the hat.",
+				DESCRIPTION = "高级耕作先驱帽",
+				HOVER = "只有佩戴此帽时才显示土壤养分",
 			},
 			["always"] = {
-				DESCRIPTION = "Always",
-				HOVER = "Soil nutrients are always shown.",
+				DESCRIPTION = "总是",
+				HOVER = "总是显示土壤养分",
 			},
 		}
 	},
@@ -2385,16 +2385,16 @@ local chinese = {
 		}
 	},
 	display_fertilizer = {
-		LABEL = "Fertilizer",
-		HOVER = "Determines whether fertilizer nutrients are shown.",
+		LABEL = "肥料",
+		HOVER = "决定是否显示肥料养分值",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "fertilizer nutrients are not shown.",
+				DESCRIPTION = "否",
+				HOVER = "不显示肥料养分值",
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "fertilizer nutrients are shown.",
+				DESCRIPTION = "是",
+				HOVER = "显示肥料养分值",
 			},
 		}
 	},
@@ -2491,16 +2491,16 @@ local chinese = {
 		},
 	},
 	display_sanity = {
-		LABEL = "Sanity",
-		HOVER = "Whether sanity information is shown.",
+		LABEL = "理智",
+		HOVER = "是否显示理智信息",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "Disabled",
-				HOVER = "Will not display sanity information."
+				DESCRIPTION = "否",
+				HOVER = "不显示理智信息"
 			},
 			["true"] = {
-				DESCRIPTION = "Enabled",
-				HOVER = "Will display sanity information."
+				DESCRIPTION = "是",
+				HOVER = "显示理智信息"
 			},
 		},
 	},
@@ -2551,30 +2551,30 @@ local chinese = {
 		},
 	},
 	display_pickable = {
-		LABEL = "Pickable Information",
-		HOVER = "Whether pickable information should be shown (ex: Berry Bushes)",
+		LABEL = "可采集信息",
+		HOVER = "是否显示可采集信息 (如: 浆果丛)",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Pickable information will not be displayed."
+				DESCRIPTION = "否",
+				HOVER = "不显示可采集信息"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Pickable information will be displayed."
+				DESCRIPTION = "是",
+				HOVER = "显示可采集信息"
 			},
 		},
 	},
 	display_harvestable = {
-		LABEL = "Harvestable Information",
-		HOVER = "Whether harvestable information should be shown (ex: Bee Boxes)",
+		LABEL = "可收获信息",
+		HOVER = "是否显示可收获信息 (如: 蜂箱)",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Harvestable information will not be displayed."
+				DESCRIPTION = "否",
+				HOVER = "不显示可收获信息"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Harvestable information will be displayed."
+				DESCRIPTION = "是",
+				HOVER = "显示可收获信息"
 			},
 		},
 	},
@@ -2584,11 +2584,11 @@ local chinese = {
 		OPTIONS = {
 			["false"] = {
 				DESCRIPTION = "否",
-				HOVER = "不显示跟随者的信息"
+				HOVER = "不显示工具的耐久度"
 			},
 			["true"] = {
 				DESCRIPTION = "是",
-				HOVER = "显示跟随者的信息"
+				HOVER = "显示工具的耐久度"
 			},
 		},
 	},
@@ -2741,30 +2741,30 @@ local chinese = {
 		},
 	},
 	display_shelter_info = {
-		LABEL = "Shelter Information",
-		HOVER = "Whether to display shelter information.",
+		LABEL = "遮蔽处信息",
+		HOVER = "是否显示遮蔽处信息",
 		OPTIONS = {
 			["false"] = {
-				DESCRIPTION = "No",
-				HOVER = "Shelter information is not shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示遮蔽处信息"
 			},
 			["true"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Shelter information is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示遮蔽处信息"
 			},
 		}
 	},
 	unique_info = {
-		LABEL = "Unique Information",
-		HOVER = "Whether to display unique information for certain entities.",
+		LABEL = "特定信息",
+		HOVER = "是否显示特定实体的特定信息",
 		OPTIONS = {
 			["0"] = {
-				DESCRIPTION = "No",
-				HOVER = "No unique information is shown."
+				DESCRIPTION = "否",
+				HOVER = "不显示特定信息"
 			},
 			["1"] = {
-				DESCRIPTION = "Yes",
-				HOVER = "Unique information is shown."
+				DESCRIPTION = "是",
+				HOVER = "显示特定信息"
 			},
 		}
 	},
