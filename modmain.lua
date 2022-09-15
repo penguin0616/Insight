@@ -324,17 +324,23 @@ function IsDS()
 	return TheSim:GetGameID() == "DS"
 end
 
+IS_DS = IsDS()
+
 --- Checks whether we are in DST.
 -- @treturn boolean
 function IsDST()
 	return TheSim:GetGameID() == "DST"
 end
 
+IS_DST = IsDST()
+
 --- Checks whether the mod is running on a client
 -- @treturn boolean
 function IsClient()
 	return IsDST() and TheNet:GetIsClient()
 end
+
+IS_CLIENT = IsClient()
 
 --- Checks whether the mod is running on a client that is also the host.
 -- @treturn boolean
@@ -343,11 +349,15 @@ function IsClientHost()
 	--return IsDST() and TheNet:IsDedicated() == false and TheWorld.ismastersim == true
 end
 
+IS_CLIENT_HOST = IsClientHost()
+
 --- Checks whether the mod is running on something that has full game control. Essentially anything in DS and worlds in DST where you are the host.
 -- @treturn boolean
 function IsExecutiveAuthority()
 	return TheSim:GetGameID() == "DS" or TheNet:GetIsMasterSimulation() == true
 end
+
+IS_EXECUTIVE_AUTHORITY = IsExecutiveAuthority()
 
 --- Checks whether the mod is running in The Forge.
 -- @treturn boolean
@@ -369,15 +379,14 @@ function IsPrefab(arg)
 	return type(arg) == 'table' and arg.GUID and arg.prefab and true
 end
 
---- Return player's Insight component.
+--- Return player's Insight component or replica, depending on what side we're running on.
 -- @tparam Player player
 -- @treturn ?Insight|nil
 function GetInsight(player)
-	assert(player, "[Insight]: GetInsight called without player")
-	if IsDST() then
-		return player.replica.insight
-	else
+	if IS_EXECUTIVE_AUTHORITY then
 		return player.components.insight
+	else
+		return player.replica.insight
 	end
 end
 
@@ -585,12 +594,23 @@ function mprint(...)
 	return print(prefix .. "[" .. ModInfoname(modname) .. "]:", msg)
 end
 
+function mprintf(...)
+	return mprint(string.format(...))
+end
+
 function dprint(...)
 	if not DEBUG_ENABLED then
 		return
 	end
 	mprint(...)
 end
+
+function dprintf(...)
+	if not DEBUG_ENABLED then
+		return
+	end
+	return dprint(string.format(...))
+end 
 
 function cprint(...)
 	if not TheNet:GetClientTableForUser(MyKleiID) then
@@ -614,12 +634,12 @@ function cprint(...)
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
-local function DoNetworkMoonCycle(inst)
-	local moon_cycle = GetMoonCycle(inst)
+local function DoNetworkMoonCycle()
+	local moon_cycle = GetMoonCycle()
 	if not moon_cycle then return end
 
 	for _, player in pairs(AllPlayers) do
-		local ist = GetInsight(player)
+		local ist = player.components.insight
 		if ist then
 			ist:SendMoonCycle(moon_cycle)
 		end
@@ -912,10 +932,10 @@ end
 
 --- Middleman between GetEntityInformation's server side and the client, really only important for DST
 function RequestEntityInformation(entity, player, params)
-	--dprint("requestentityinformation", entity, player)
-	--if true then return nil end
-
-	assert(type(params) == "table", "RequestEntityInformation expected 'params' as a table")
+	if type(params) ~= "table" then
+		error("RequestEntityInformation expected 'params' as a table")
+		return
+	end
 
 	if TRACK_INFORMATION_REQUESTS then
 		dprint("SERVER got:", entity, player, params)
@@ -956,12 +976,9 @@ function RequestEntityInformation(entity, player, params)
 		insight:OnEntityGotInformation(entity)
 
 		return info
+	else
+		insight = nil
 	end
-
-
-
-
-	local id = params.GUID
 
 	-- GUIDs vary between server and client
 	if TheWorld.ismastersim then
@@ -969,38 +986,43 @@ function RequestEntityInformation(entity, player, params)
 		
 		local data = GetEntityInformation(entity, player, params)
 		
-		
-		if not id then
-			if IsClientHost() then
-				-- understandable
-				id = entity.GUID
+		if not params.GUID then
+			-- By this point, the GUID should have been included in the params if it was from a standard client. That's because it gets added in by the replica.
+			-- However, because the client host is a thing, they skip the part where they get redirected through the replica since they're the mastersim.
+			-- That's the only reason why we should ever end up here with no GUID here.
+
+			if IS_CLIENT_HOST and ThePlayer == player then
+				-- So this is a fair case. We can just insert the GUID and move along here.
+				params.GUID = entity.GUID
 			else
-				-- we shouldn't be here
-				mprint("&&&&&&&&&&&&&& guid missing in server RQST")
-				id = entity.GUID
+				-- However, we should NOT be here. 
+				error("Missing entity GUID")
 			end
 		end
 		
-
-		data.GUID = id
+		-- Insert the GUID into the response data so the client can match up the GUID with the entity.
+		data.GUID = params.GUID
 		
 		if TRACK_INFORMATION_REQUESTS then
 			dprint("Information set for", entity)
 		end
 
-		insight:SetEntityData(entity, data)
+		
+		player.components.insight:SetEntityData(entity, data)
 	else
-		--dprint'passing to replica'
-		-- client is asking for information
-		insight:RequestInformation(entity, params) -- clients have to go through this at some point, unless client is host and its a forest-only world
+		-- We're on a plain client, and that means we're actually requesting information.
+		-- That request has to go through the replica for tracking purposes.
+		player.replica.insight:RequestInformation(entity, params)
 	end
 
-	if TRACK_INFORMATION_REQUESTS then
-		--dprint("Information returning for", entity)
-	end
-	
+	--[[
 	if insight.entity_data[entity] then
 		return insight.entity_data[entity]
+	end
+	--]]
+
+	if player.replica.insight.entity_data[entity] then
+		return player.replica.insight.entity_data[entity]
 	end
 
 	return ok or nil
@@ -1016,7 +1038,6 @@ function GetWorldInformation(player) -- refactor?
 	if not context then
 		return
 	end
-	--assert(context, "how is context missing in GetWorldInformation for " .. player.name)
 
 	if is_dst and not context.config["display_world_events"] then
 		return {
@@ -1267,12 +1288,12 @@ function GetNaughtiness(inst, context)
 	end
 end
 
-function GetMoonCycle(world)
-	if not (world.net and world.net.components.clock) then
+function GetMoonCycle()
+	if not (TheWorld.net and TheWorld.net.components.clock) then
 		return
 	end
 
-	local data = world.net.components.clock:OnSave()
+	local data = TheWorld.net.components.clock:OnSave()
 	local moon_cycle = type(data) == "table" and data.mooomphasecycle
 
 	if not type(moon_cycle) == "number" then
@@ -1562,6 +1583,7 @@ end
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
 if IsDST() then
 	table.insert(PrefabFiles, "insight_ghost_klaus_sack")
+	table.insert(PrefabFiles, "insight_classified")
 end
 
 setmetatable(Insight.descriptors, {
@@ -1716,18 +1738,12 @@ if true then
 end
 
 local function OnItemChange(inst)
-	if AllPlayers then
-		for i,v in pairs(AllPlayers) do
-			local insight = GetInsight(v)
-			if insight then
-				insight:InvalidateCacheFor(inst)
-			end
-		end
-	else
-		local player = GetPlayer()
-		local insight = player and GetInsight(player)
+	local players = AllPlayers or {GetPlayer()}
+
+	for i,v in pairs(players) do
+		local insight = v.components.insight
 		if insight then
-			insight:InvalidateCacheFor(inst)
+			insight:InvalidateCachedEntity(inst)
 		end
 	end
 end
@@ -1775,15 +1791,12 @@ if IsDST() then
 	
 	rpcNetwork.AddModRPCHandler(modname, "GetWorldInformation", function(player)
 		local info = GetWorldInformation(player)
-
-		local insight = GetInsight(player)
-		if not insight then return end
 		--local a = json.encode(info)
 		--local b = DataDumper(info, nil, true)
 		--print(string.format("World Info [JSON (#%d)]: %s", #a, a))
 		--print(string.format("World Info [DataDumper (#%d)]: %s", #b, b)) 
 		
-		insight.net_world_data:set(json.encode(info))
+		player.components.insight:SetWorldData(info)
 	end)
 
 	AddModRPCHandler(modname, "RequestEntityInformation", function(player, ...)
@@ -2398,9 +2411,9 @@ if IsDST() then
 						Insight.kramped.players[player].threshold = 0
 					end
 
-					if GetInsight(player) then
+					if player.components.insight then
 						--dprint'attempt to send naughtiness'
-						GetInsight(player):SendNaughtiness()
+						player.components.insight:SendNaughtiness()
 						--dprint'attempt finished'
 					else
 						mprint("Unable to send initial naughtiness to:", player)
@@ -2414,8 +2427,8 @@ if IsDST() then
 							--mprint("ON NAUGHTY ACTION AFTER", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
 							--mprint(playerdata.actions, playerdata.threshold)
 							-- while i could just pass in the playerdata........ i dont feel like it
-							if GetInsight(playerdata.player) then
-								GetInsight(playerdata.player):SendNaughtiness()
+							if playerdata.player.components.insight then
+								playerdata.player.components.insight:SendNaughtiness()
 							end
 						end)
 					end
@@ -2472,7 +2485,7 @@ if IsDST() then
 
 			local shard_players = {}
 			for _, player in pairs(AllPlayers) do
-				local ist = GetInsight(player)
+				local ist = player.components.insight
 				if ist then
 					ist:SendNaughtiness() -- for timetodecay
 				end
@@ -2518,7 +2531,10 @@ AddPlayerPostInit(function(player)
 
 	if TheWorld.ismastersim then
 		mprint("listening for player validation", player)
-		player:ListenForEvent("setowner", function(...) 
+		player:ListenForEvent("setowner", function(...)
+			player.insight_classified = SpawnPrefab("insight_classified")
+			player.insight_classified.entity:SetParent(player.entity)
+
 			player:AddComponent("insight")
 			mprint("Added Insight component for", player)
 		end)
@@ -2732,13 +2748,13 @@ AddSimPostInit(function()
 			end
 
 			if target.prefab == "claywarg" or target.prefab == "warg" or target.prefab == "spat" then
-				dprint("skipped sending on a hunt for special hunt target:", target.prefab)
+				mprint("skipped sending on a hunt for special hunt target:", target.prefab)
 				return
 			end
 
 			--mprint"-----------------"
 
-			GetInsight(activeplayer):HuntFor(target)
+			activeplayer.components.insight:SetHuntTarget(target)
 		end
 	end
 	

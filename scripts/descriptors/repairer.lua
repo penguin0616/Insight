@@ -42,7 +42,11 @@ local function Describe(self, context)
 	-- repairable only allows you to repair one aspect thanks to elseif's. order: health, workable, perishable
 	-- that being said, it looks like some materials are versatile repairers (such as moonrockcrater, moonrocknugget, thulecute (and pieces))
 	if (self.healthrepairvalue and self.healthrepairvalue ~= 0) or (self.healthrepairpercent and self.healthrepairpercent ~= 0) then
-		stuff[#stuff+1] = string.format(context.lstr.repairer.health2, Round(self.healthrepairvalue or 0, 0), Round((self.healthrepairpercent or 0) * 100, 0) or 0)
+		stuff[#stuff+1] = string.format(
+			context.lstr.repairer.health2, 
+			Round(self.healthrepairvalue or 0, 0), 
+			Round((self.healthrepairpercent or 0) * 100, 0) or 0
+		)
 	end
 	
 	if (self.workrepairvalue and self.workrepairvalue ~= 0) then

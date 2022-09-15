@@ -20,14 +20,197 @@ directory. If not, please refer to
 
 setfenv(1, _G.Insight.env)
 
-local Insight
-
 if IsDS() then
-	Insight = import("components/insight_replica")
-else
-	Insight = Class(function(self, inst)
-		self.inst = inst
-	end)
+	return import("components/insight_replica")
 end
+
+--------------------------------------------------------------------------
+--[[ Queuer ]]
+--------------------------------------------------------------------------
+local Queuer = Class(function(self, queues)
+	self.last_added_queue = 1
+	self.queue_count = queues
+
+	assert(self.queue_count >= self.last_added_queue)
+
+	self.queues = {}
+
+
+	self.entity_to_queue = {} -- {{queue_id=queue_id, queue_position=queue_position}}
+
+	for i = 1, self.queue_count do
+		-- lua_getn has logarithmic cost (in 5.2 anyway)
+		self.queues[i] = {
+			length = 0,
+			items = {}
+		}
+	end
+end)
+
+function Queuer:Add(entity, data)
+	--mprint('add', entity, data)
+	local place = self.entity_to_queue[entity]
+	if place then
+		--mprint('tweaking', entity)
+		-- existing in a queue
+		self.queues[place.queue_id].items[place.queue_position] = data
+		return
+	end
+
+	self.last_added_queue = self.last_added_queue + 1
+	if self.last_added_queue > self.queue_count then
+		self.last_added_queue = 1
+	end
+
+	local selected = self.queues[self.last_added_queue]
+	selected.length = selected.length + 1
+	selected.items[selected.length] = data
+
+	self.entity_to_queue[entity] = { queue_id = self.last_added_queue, queue_position = selected.length }
+
+	--mprint(string.format("Queue %s Length: %s", self.last_added_queue, selected.length))
+
+	-- could just keep track of last queue added and pick next queue?
+	--[[
+	local min, q = math.huge, nil
+	for i = 1, self.queue_count do
+		local v = self.queue_count[i]
+
+		local len = #v
+		if len < min then
+			min = len, q = v
+		end 
+	end
+	--]]
+end
+
+function Queuer:Flush()
+	self.entity_to_queue = {}
+	for i = 1, self.queue_count do
+		self.queues[i] = {
+			length = 0,
+			items = {}
+		}
+	end
+end
+
+--------------------------------------------------------------------------
+--[[ Insight ]]
+--------------------------------------------------------------------------\
+local Insight = Class(function(self, inst)
+	self.inst = inst
+	self.is_local_host = IS_CLIENT_HOST and inst == ThePlayer
+
+	self.queuer = Queuer(10) -- shouldn't encounter crashes with this
+	--[[
+		with the above listed setup, 
+			5 queues: had text lengths of roughly 14000-18000
+			6 queues: had text lengths of roughly 10000-15000
+		
+		ideally want to keep it around 10000 i think, so 7 probably works.
+		
+		RPC was cutting off around 40k iirc
+
+		when setting info_preload to 0, (nothing), massive strings
+	]]
+
+	--[==========[ Entity information sender ]==========]
+	self.inst:DoPeriodicTask(0.1, function() -- 0.07 normally
+		for i = 1, self.queuer.queue_count do
+			local queue = self.queuer.queues[i]
+			if queue.length > 0 then
+				rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "EntityInformation"), self.inst.userid, compress(queue.items))
+			end
+		end
+		self.queuer:Flush()
+	end)
+
+
+	--[==========[ Battlesongs ]==========]
+	self.inst:ListenForEvent("inspirationsongchanged", function(player, data)
+		self:SetBattleSongActive(player.components.singinginspiration:IsSinging())
+	end)
+	self:SetBattleSongActive(false)
+
+	--[==========[ Moon Cycle ]==========]
+	self:SendMoonCycle(GetMoonCycle())
+end)
+
+function Insight:SetEntityData(entity, data)
+	if self.is_local_host then
+		self.inst.replica.insight.entity_data[entity] = data
+	else
+		self.queuer:Add(entity, data)
+	end
+
+	--[==[
+	if self.queue_tracker[entity] then -- tracks index
+		self.queue[self.queue_tracker[entity]] = data -- replace old index
+	else
+		self.queue[#self.queue+1] = data
+		self.queue_tracker[entity] = #self.queue
+	end
+	--]==]
+end
+-- optimize stuffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+function Insight:SetWorldData(data)
+	if self.is_local_host then
+		self.inst.replica.insight.world_data = data
+	else
+		local encoded = json.encode(data)
+		self.inst.replica.insight:SetWorldData(encoded)
+	end
+end
+
+--- Sends the client's naughtiness.
+function Insight:SendNaughtiness()
+	-- GetNaughtiness normally requires a context for the second arg, but as of right now it doesn't seem like the context gets checked for anything at the moment.
+	local tbl = GetNaughtiness(self.inst, nil)
+
+	if type(tbl) ~= "table" or type(tbl.actions) ~= "number" or type(tbl.threshold) ~= "number" then
+		mprint("GetNaughtiness failed:", tbl)
+		return
+	end
+
+	if self.is_local_host then
+		self.inst.replica.insight:OnNaughtinessDirty(tbl)
+	else
+		self.inst.replica.insight:SetNaughtiness(tbl.actions .. "|" .. tbl.threshold)
+	end
+end
+
+--- Tells the client to remove an entity from its information cache.
+-- @tparam EntityScript entity
+function Insight:InvalidateCachedEntity(entity)
+	if self.is_local_host then
+		self.inst.replica.insight:OnInvalidateCachedEntity(entity)
+	else
+		self.inst.replica.insight:InvalidateCachedEntity(entity)
+	end
+end
+
+function Insight:SetHuntTarget(target)
+	if self.is_local_host then
+		self.inst.replica.insight:OnHuntTargetDirty(target)
+	else
+		self.inst.replica.insight:SetHuntTarget(target)
+	end
+end
+
+function Insight:SetBattleSongActive(bool)
+	self.inst.replica.insight:SetBattleSongActive(bool)
+end
+
+function Insight:SendMoonCycle(int)
+	if not int then
+		dprint("Missing int for SendMoonCycle?")
+		return
+	end
+
+	self.inst.replica.insight:SetMoonCycle(int)
+end
+
+
+
 
 return Insight

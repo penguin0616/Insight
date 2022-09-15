@@ -350,7 +350,7 @@ local function AttachWigfridSongRangeIndicator(player)
 	player.battlesong_detach_range:SetVisible(false)
 
 	player:ListenForEvent("insight_battlesong_active_dirty", function(inst)
-		local visible = GetInsight(inst).net_battlesong_active:value()
+		local visible = inst.replica.insight.net_battlesong_active:value()
 			
 		local config = GetModConfigData("battlesong_range", true)
 		if config == "attach" then

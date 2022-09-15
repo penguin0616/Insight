@@ -33,7 +33,11 @@ local function GetPlayerNaughtiness(player)
 		end
 	end
 
-	assert(TheWorld.ismastersim, "[Insight]: GetPlayerNaughtiness called on client")
+	if not TheWorld.ismastersim then
+		error("[Insight]: GetPlayerNaughtiness called on client")
+		return
+	end
+
 	local data = Insight.kramped.players[player]
 
 	if not data or not data.threshold or data.threshold < 0 then 
