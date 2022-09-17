@@ -241,6 +241,7 @@ end
 function Insight:AttachClassified(ent)
 	assert(TheWorld.ismastersim == false, "AttachClassified on server-side")
 	assert(self.classified == nil, "Attempt to attach classified with one existing already.")
+	mprint("Attached classified", ent, "to", self.inst)
 
 	-- Classified stuff
 	self.classified = ent
@@ -259,6 +260,7 @@ end
 function Insight:DetachClassified()
 	assert(TheWorld.ismastersim == false, "DetachClassified on server-side")
 	assert(self.classified, "Attempt to detach classified without existing one.")
+	mprint("Detached classified", ent, "from", self.inst)
 
 	-- Classified stuff
 	self.classified:RemoveEventCallback("onremove", self.ondetachclassified)
@@ -325,6 +327,19 @@ function Insight:SetBattleSongActive(bool)
 	self.net_battlesong_active:set(bool)
 end
 
+--- Sets the sanity rate.
+-- @tparam float rate
+function Insight:SetSanityRate(rate)
+	if not IS_DST then
+		error("Insight_Replica::SetSanityRate only works in DST.")
+		return
+	end
+
+	if self.classified ~= nil then
+		self.classified.net_sanity_rate:set(rate)
+	end
+end
+
 --- Sets moon cycle on netvar.
 -- @tparam integer int The current position in the moon cycle.
 function Insight:SetMoonCycle(int)
@@ -337,6 +352,12 @@ end
 --------------------------------------------------------------------------
 --[[ Classified Handlers ]]
 --------------------------------------------------------------------------
+--- Called when we receive new naughtiness data.
+-- @tparam table data
+function Insight:OnNaughtinessDirty(data)
+	-- { actions = actions, threshold = threshold }
+	self.inst:PushEvent("naughtydelta", data) -- This is an event that gets listened to by Combined Status
+end
 
 ---
 -- @tparam EntityScript entity
@@ -363,13 +384,16 @@ function Insight:OnHuntTargetDirty(target)
 	})
 end
 
---- Called when we receive new naughtiness data.
--- @tparam table data
-function Insight:OnNaughtinessDirty(data)
-	-- { actions = actions, threshold = threshold }
-	self.inst:PushEvent("naughtydelta", data) -- This is an event that gets listened to by Combined Status
-end
+--- Called when there's a new sanity rate.
+-- @tparam float rate
+function Insight:OnSanityRateDirty(rate)
+	self.current_sanity_rate = rate
 
+	local sanity_badge = table.getfield(self.inst, "HUD.controls.status.brain")
+	if sanity_badge and sanity_badge.insight_rate then
+		sanity_badge.insight_rate:SetString(string.format("%+.1f/min", rate * 60))
+	end
+end
 --------------------------------------------------------------------------
 --[[ Methods ]]
 --------------------------------------------------------------------------
@@ -782,7 +806,7 @@ function Insight:RequestInformation(entity, params)
 
 	if not self.classified then
 		mprint("Missing classified")
-		print(debugstack())
+		--print(debugstack())
 		return false, "NO_CLASSIFIED"
 	end
 
@@ -948,6 +972,10 @@ function Insight:MaintainMenu(insight_menu)
 end
 
 function Insight:Update()
+	if not self.updating then
+		return
+	end
+	
 	local HUD = self.inst.HUD
 
 	if not HUD then

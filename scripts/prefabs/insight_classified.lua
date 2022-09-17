@@ -61,6 +61,11 @@ local function OnHuntTargetDirty(inst)
 	inst._parent.replica.insight:OnHuntTargetDirty(target)
 end
 
+local function OnSanityRateDirty(inst)
+	local rate = inst.net_sanity_rate:value()
+	inst._parent.replica.insight:OnSanityRateDirty(rate)
+end
+
 local function OnMoonCycleDirty(inst)
 	local moon_cycle = inst.net_moon_cycle:value()
 	TheWorld:PushEvent("moon_cycle_dirty", { moon_cycle = moon_cycle }) -- This is an event that gets listened to by Combined Status
@@ -73,7 +78,6 @@ local function OnRemoveEntity(inst)
 	if inst._parent ~= nil then
 		inst._parent.insight_classified = nil
 	end
-	error("Why did Insight classified get removed?")
 end
 
 local function OnEntityReplicated(inst)
@@ -102,7 +106,9 @@ local function RegisterNetListeners(inst)
 	inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty)
 
 	-- bool
-	--inst:ListenForEvent("insight_battlesong_active_dirty", OnBattleSongActiveDirty)
+
+	-- float
+	inst:ListenForEvent("insight_sanity_rate_dirty", OnSanityRateDirty)
 	
 	-- smallbyte
 	inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty)
@@ -129,8 +135,10 @@ local function fn()
 	inst.net_hunt_target = net_entity(inst.GUID, "insight_hunt_target", "insight_hunt_target_dirty")
 
 	-- net_bool
-	
 
+	-- net_float
+	inst.net_sanity_rate = net_float(inst.GUID, "insight_sanity_rate", "insight_sanity_rate_dirty")
+	
 	-- net_smallbyte
 	inst.net_moon_cycle = net_smallbyte(inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- "insight_net_moon_cycle" 3674213233
 

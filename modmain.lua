@@ -598,6 +598,23 @@ function mprintf(...)
 	return mprint(string.format(...))
 end
 
+function errorf(level, error_pattern, ...)
+	local t = type(level)
+
+	if t == "string" then
+		-- the level is actually the error pattern
+		return error(string.format(level, error_pattern, ...))
+	elseif t == "number" then
+		-- standard
+		return error(string.format(error_pattern, ...), level)
+	else
+		error("errorf bad args")
+	end
+end
+
+	
+
+
 function dprint(...)
 	if not DEBUG_ENABLED then
 		return
@@ -1783,6 +1800,23 @@ if IsDST() then
 	-- replicable
 	AddReplicableComponent("insight")
 
+	if TheNet:GetIsMasterSimulation() then
+		local sanity = util.LoadComponent("sanity")
+		local props = util.classTweaker.SetupClassForProps(sanity)
+		
+		-- Thankfully, the props system will trigger __newindex even if there isn't an actual change.
+		local oldOnRateScale = props.ratescale
+		props.ratescale = function(cmp, new, old)
+			if cmp.inst.replica.insight then
+				cmp.inst.replica.insight:SetSanityRate(cmp.rate)
+			end
+
+			if oldOnRateScale then
+				return oldOnRateScale(cmp, new, old)
+			end
+		end
+	end
+
 	--======================= RPCs ============================================================================================
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
 		data = json.decode(data)
@@ -2106,7 +2140,7 @@ if IsDST() then
 	end)
 	
 	AddPrefabPostInit("terrarium", function(inst)
-		if not TheWorld.ismastersim then return end
+		if not TheNet:GetIsServer() then return end
 		TheWorld.shard.components.shard_insight:SetTerrarium(inst)
 	end)
 

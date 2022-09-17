@@ -27,7 +27,15 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local STRINGS = STRINGS
 
-local module = {}
+local module = {
+	temperature_units = {
+		game = function(temp) 
+			return math.floor(val+0.5) .. "\176"
+		end,
+		celsius = function(val) return math.floor(val/2 + 0.5) .. "\176C" end,
+		fahrenheit = function(val) return math.floor(0.9*(val) + 32.5).."\176F" end,
+	}
+}
 local Reader = import("reader")
 
 
@@ -577,24 +585,38 @@ function module.getupvalue(func, name)
 end
 --]]
 function module.getupvalue(func, ...)
+	if func == nil then
+		return error("util.getupvalue got nil for func")
+	end
+
+	-- last function we got upvalues from
 	local last = func
+	-- last argument we processed
 	local end_pos = nil
+	-- all arguments to process
 	local args = {...}
+	-- number of arguments to process
 	local argn = select("#", ...)
 
 	for n = 1, argn do
 		local i = 1
-		while last ~= nil do
+
+		while true do
 			local name, value = debug.getupvalue(last, i)
+
 			if not name then
-				last = nil
+				-- we've checked every upvalue present but didn't find the current one in the chain
+				-- this indicates to the caller that we had a failure
 				end_pos = args[n]
 				break
 			end
+
 			if name == args[n] then 
+				-- we've found the upvalue we were looking for
 				last = value					
 				break
 			end
+
 			i = i + 1
 		end
 	end
@@ -658,6 +680,10 @@ end
 -- @param replacement
 -- @return
 function module.replaceupvalue(func, name, replacement)
+	if type(name) ~= "string" then
+		error("argument #2 expected string, got " .. type(name))
+	end
+
 	local i = 1
 	while true do
 		local n, v = debug.getupvalue(func, i)
@@ -668,6 +694,7 @@ function module.replaceupvalue(func, name, replacement)
 		end
 		i = i + 1
 	end
+	error(string.format("Unable to find upvalue '%s' for replacing.", name))
 end
 
 if not table.invert then
@@ -682,6 +709,31 @@ if not table.invert then
 end
 
 module.LoadComponent = assert(module.getupvalue(EntityScript.AddComponent, "LoadComponent"), "Failed to retrieve EntityScript -> LoadComponent")
+
+-- class tweaking should be done before class gets instantiated
+-- tweaks do not retroactively apply to previous instances
+module.classTweaker = {
+	__index = module.getupvalue(Class, "__index"),
+	__newindex = module.getupvalue(Class, "__newindex"),
+}
+
+module.classTweaker.GetClassProps = function(class)
+	-- could be nil in a good way (class isn't setup for them) or a bad way (unable to find props upvalue)
+	return util.getupvalue(getmetatable(class).__call, "props")
+end
+
+module.classTweaker.SetupClassForProps = function(class)
+	if class.__newindex == nil then
+		local props = {}
+		util.replaceupvalue(getmetatable(class).__call, "props", props)
+		class.__index = module.classTweaker.__index
+		class.__newindex = module.classTweaker.__newindex
+		return props
+	else
+		dprint("Class is already setup for props.")
+		return module.classTweaker.GetClassProps(class)
+	end
+end
 
 -- end
 return module

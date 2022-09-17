@@ -276,20 +276,15 @@ function GetMouseTargetItem()
 		-- only way for this to happen is if they mouse over the player while an item is in the same spot, or if we are riding something
 
 		-- if someone else is riding something, will select player over mount
+		-- todo: turns out it sets secondarystring, so it doesn't trigger an update to get the new mouse target for Insight
 		--[[
-		local mount
-		if localPlayer.replica and localPlayer.replica.rider then
-			mount = localPlayer.replica.rider:GetMount()
-		elseif localPlayer.components.rider then
-			mount = localPlayer.components.rider:GetMount()
-		end
-
-		mprint('mount', mount)
-
+		local mount = (IS_DS and localPlayer.components.rider:GetMount()) or localPlayer.replica.rider:GetMount()
+		mprint("\tmount", mount)
 		if mount then
 			return mount
 		end
 		--]]
+		
 		return nil
 	end
 
