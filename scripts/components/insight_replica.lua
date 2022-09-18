@@ -327,6 +327,19 @@ function Insight:SetBattleSongActive(bool)
 	self.net_battlesong_active:set(bool)
 end
 
+--- Sets hunger rate.
+-- @tparam float rate
+function Insight:SetHungerRate(rate)
+	if not IS_DST then
+		error("Insight_Replica::SetHungerRate only works in DST.")
+		return
+	end
+
+	if self.classified ~= nil then
+		self.classified.net_hunger_rate:set(rate)
+	end
+end
+
 --- Sets the sanity rate.
 -- @tparam float rate
 function Insight:SetSanityRate(rate)
@@ -337,6 +350,19 @@ function Insight:SetSanityRate(rate)
 
 	if self.classified ~= nil then
 		self.classified.net_sanity_rate:set(rate)
+	end
+end
+
+--- Sets the moisture rate.
+-- @tparam float rate
+function Insight:SetMoistureRate(rate)
+	if not IS_DST then
+		error("Insight_Replica::SetMoistureRate only works in DST.")
+		return
+	end
+
+	if self.classified ~= nil then
+		self.classified.net_moisture_rate:set(rate)
 	end
 end
 
@@ -384,6 +410,17 @@ function Insight:OnHuntTargetDirty(target)
 	})
 end
 
+--- Called when there's a new hunger rate.
+-- @tparam float rate
+function Insight:OnHungerRateDirty(rate)
+	self.current_hunger_rate = rate
+
+	local hunger_badge = table.getfield(self.inst, "HUD.controls.status.stomach")
+	if hunger_badge and hunger_badge.insight_rate then
+		hunger_badge.insight_rate:SetString(string.format("%+.1f/min", rate * 60))
+	end
+end
+
 --- Called when there's a new sanity rate.
 -- @tparam float rate
 function Insight:OnSanityRateDirty(rate)
@@ -392,6 +429,30 @@ function Insight:OnSanityRateDirty(rate)
 	local sanity_badge = table.getfield(self.inst, "HUD.controls.status.brain")
 	if sanity_badge and sanity_badge.insight_rate then
 		sanity_badge.insight_rate:SetString(string.format("%+.1f/min", rate * 60))
+	end
+end
+
+--[[
+--- Called when there's a new health rate.
+-- @tparam float rate
+function Insight:OnHealthRateDirty(rate)
+	self.current_health_rate = rate
+
+	local health_badge = table.getfield(self.inst, "HUD.controls.status.heart")
+	if health_badge and health_badge.insight_rate then
+		health_badge.insight_rate:SetString(string.format("%+.1f/min", rate * 60))
+	end
+end
+--]]
+
+--- Called when there's a new moisture rate.
+-- @tparam float rate
+function Insight:OnMoistureRateDirty(rate)
+	self.current_moisture_rate = rate
+
+	local moisture_badge = table.getfield(self.inst, "HUD.controls.status.moisturemeter")
+	if moisture_badge and moisture_badge.insight_rate then
+		moisture_badge.insight_rate:SetString(string.format("%+.1f/min", rate * 60))
 	end
 end
 --------------------------------------------------------------------------

@@ -27,6 +27,7 @@ setfenv(1, _G.Insight.env)
 --------------------------------------------------------------------------
 local function OnWorldDataDirty(inst)
 	local str = inst.net_world_data:value()
+	if str == "" then return end 
 	local data = json.decode(str)
 
 	inst._parent.replica.insight.world_data = data
@@ -61,9 +62,19 @@ local function OnHuntTargetDirty(inst)
 	inst._parent.replica.insight:OnHuntTargetDirty(target)
 end
 
+local function OnHungerRateDirty(inst)
+	local rate = inst.net_hunger_rate:value()
+	inst._parent.replica.insight:OnHungerRateDirty(rate)
+end
+
 local function OnSanityRateDirty(inst)
 	local rate = inst.net_sanity_rate:value()
 	inst._parent.replica.insight:OnSanityRateDirty(rate)
+end
+
+local function OnMoistureRateDirty(inst)
+	local rate = inst.net_moisture_rate:value()
+	inst._parent.replica.insight:OnMoistureRateDirty(rate)
 end
 
 local function OnMoonCycleDirty(inst)
@@ -98,20 +109,22 @@ end
 
 local function RegisterNetListeners(inst)
 	-- string
-	inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty)
-	inst:ListenForEvent("insight_naughtiness_dirty", OnNaughtinessDirty)
+	inst:ListenForEvent("insight_world_data_dirty", OnWorldDataDirty) OnWorldDataDirty(inst)
+	inst:ListenForEvent("insight_naughtiness_dirty", OnNaughtinessDirty) OnNaughtinessDirty(inst)
 
 	-- entity
-	inst:ListenForEvent("insight_invalidate_dirty", OnInvalidateDirty)
-	inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty)
+	inst:ListenForEvent("insight_invalidate_dirty", OnInvalidateDirty) OnInvalidateDirty(inst)
+	inst:ListenForEvent("insight_hunt_target_dirty", OnHuntTargetDirty) OnHuntTargetDirty(inst)
 
 	-- bool
 
 	-- float
-	inst:ListenForEvent("insight_sanity_rate_dirty", OnSanityRateDirty)
+	inst:ListenForEvent("insight_hunger_rate_dirty", OnHungerRateDirty) OnHungerRateDirty(inst)
+	inst:ListenForEvent("insight_sanity_rate_dirty", OnSanityRateDirty) OnSanityRateDirty(inst)
+	inst:ListenForEvent("insight_moisture_rate_dirty", OnMoistureRateDirty) OnMoistureRateDirty(inst)
 	
 	-- smallbyte
-	inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty)
+	inst:ListenForEvent("insight_moon_cycle_dirty", OnMoonCycleDirty) OnMoonCycleDirty(inst)
 end
 
 --------------------------------------------------------------------------
@@ -137,7 +150,9 @@ local function fn()
 	-- net_bool
 
 	-- net_float
+	inst.net_hunger_rate = net_float(inst.GUID, "insight_hunger_rate", "insight_hunger_rate_dirty")
 	inst.net_sanity_rate = net_float(inst.GUID, "insight_sanity_rate", "insight_sanity_rate_dirty")
+	inst.net_moisture_rate = net_float(inst.GUID, "insight_moisture_rate", "insight_moisture_rate_dirty")
 	
 	-- net_smallbyte
 	inst.net_moon_cycle = net_smallbyte(inst.GUID, "insight_moon_cycle", "insight_moon_cycle_dirty") -- "insight_net_moon_cycle" 3674213233

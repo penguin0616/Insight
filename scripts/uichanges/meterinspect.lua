@@ -41,9 +41,12 @@ local function InspectListener(digital, analog)
 	end
 end
 
+local function OnStatBadgePostConstruct(self)
+	if not self.num then
+		-- Just in case...
+		return
+	end
 
-
-local function OnSanityBadgePostConstruct(self)
 	self.insight_rate = self:AddChild(Text(BODYTEXTFONT, 33))
     self.insight_rate:SetHAlign(ANCHOR_MIDDLE)
     self.insight_rate:SetPosition(3, 0, 0)
@@ -75,8 +78,6 @@ local function OnSanityBadgePostConstruct(self)
 			return oldOnLoseFocus(self, ...)
 		end
 	end
-
-
 end
 
 module.Initialize = function()
@@ -87,7 +88,10 @@ module.Initialize = function()
 
 	module.initialized = true
 	
-	AddClassPostConstruct("widgets/sanitybadge", OnSanityBadgePostConstruct)
+	--AddClassPostConstruct("widgets/hungerbadge", OnStatBadgePostConstruct)
+	AddClassPostConstruct("widgets/sanitybadge", OnStatBadgePostConstruct)
+	--AddClassPostConstruct("widgets/healthbadge", OnStatBadgePostConstruct) -- No actual "rate" stuff here.
+	AddClassPostConstruct("widgets/moisturemeter", OnStatBadgePostConstruct)
 
 	TheInput:AddControlHandler(CONTROL_FORCE_INSPECT, InspectListener)
 end

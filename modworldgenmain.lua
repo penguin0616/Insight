@@ -236,6 +236,9 @@ if ShardSaveGameIndex then
 	CheckShardSaveGameIndex()
 else
 	mprint("Looks like we're in the actual launch process.")
+	if not ShardIndex then
+		return mprint("\t!!!!!!!!!!!!!!!! SHARDINDEX IS MISSING GLOBALLY")
+	end
 	shardGameIndex = ShardIndex()
 	shardGameIndex:Load()
 	if shardGameIndex:IsValid() then

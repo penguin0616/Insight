@@ -201,6 +201,20 @@ function Insight:SetBattleSongActive(bool)
 	self.inst.replica.insight:SetBattleSongActive(bool)
 end
 
+function Insight:SendStatRates()
+	if self.inst.components.hunger then
+		self.inst.replica.insight:SetHungerRate(self.inst.components.hunger.hungerrate)
+	end
+
+	if self.inst.components.sanity then
+		self.inst.replica.insight:SetSanityRate(self.inst.components.sanity.rate)
+	end
+
+	if self.inst.components.moisture then
+		self.inst.replica.insight:SetMoistureRate(self.inst.components.moisture.rate)
+	end
+end
+
 function Insight:SendMoonCycle(int)
 	if not int then
 		dprint("Missing int for SendMoonCycle?")

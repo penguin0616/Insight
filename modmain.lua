@@ -1801,18 +1801,57 @@ if IsDST() then
 	AddReplicableComponent("insight")
 
 	if TheNet:GetIsMasterSimulation() then
-		local sanity = util.LoadComponent("sanity")
-		local props = util.classTweaker.SetupClassForProps(sanity)
-		
-		-- Thankfully, the props system will trigger __newindex even if there isn't an actual change.
-		local oldOnRateScale = props.ratescale
-		props.ratescale = function(cmp, new, old)
-			if cmp.inst.replica.insight then
-				cmp.inst.replica.insight:SetSanityRate(cmp.rate)
-			end
+		do -- Hunger
+			local hunger = util.LoadComponent("hunger")
+			local props = util.classTweaker.SetupClassForProps(hunger)
+			
+			-- Thankfully, the props system will trigger __newindex even if there isn't an actual change.
+			-- Problem here is the burnrate & modifiers thing. I don't want to bother with it at the moment.
+			--[[
+			local oldOnHungerRate = props.hungerrate
+			props.hungerrate = function(cmp, new, old)
+				if cmp.inst.replica.insight then
+					cmp.inst.replica.insight:SetHungerRate(new)
+				end
 
-			if oldOnRateScale then
-				return oldOnRateScale(cmp, new, old)
+				if oldOnHungerRate then
+					return oldOnHungerRate(cmp, new, old)
+				end
+			end
+			--]]
+		end
+
+		do -- Sanity
+			local sanity = util.LoadComponent("sanity")
+			local props = util.classTweaker.SetupClassForProps(sanity)
+			
+			-- Thankfully, the props system will trigger __newindex even if there isn't an actual change.
+			local oldOnRateScale = props.ratescale
+			props.ratescale = function(cmp, new, old)
+				if cmp.inst.replica.insight then
+					cmp.inst.replica.insight:SetSanityRate(cmp.rate)
+				end
+
+				if oldOnRateScale then
+					return oldOnRateScale(cmp, new, old)
+				end
+			end
+		end
+
+		do -- Moisture
+			local moisture = util.LoadComponent("moisture")
+			local props = util.classTweaker.SetupClassForProps(moisture)
+			
+			-- Thankfully, the props system will trigger __newindex even if there isn't an actual change.
+			local oldOnRateScale = props.ratescale
+			props.ratescale = function(cmp, new, old)
+				if cmp.inst.replica.insight then
+					cmp.inst.replica.insight:SetMoistureRate(cmp.rate)
+				end
+
+				if oldOnRateScale then
+					return oldOnRateScale(cmp, new, old)
+				end
 			end
 		end
 	end
@@ -2571,6 +2610,7 @@ AddPlayerPostInit(function(player)
 
 			player:AddComponent("insight")
 			mprint("Added Insight component for", player)
+			player.components.insight:SendStatRates()
 		end)
 	end
 end)
