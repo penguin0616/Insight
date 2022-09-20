@@ -117,7 +117,7 @@ return {
 	},
 
 	-- beard.lua
-	beard = "你的" .. "胡须" .. "将于%s 天后长好", -- 胡须 used to be STRINGS.UI.COLLECTIONSCREEN.BEARD
+	beard = "你的" .. "胡须" .. "将于 %s 天后长好", -- 胡须 used to be STRINGS.UI.COLLECTIONSCREEN.BEARD
 
 	-- beargerspawner.lua
 	beargerspawner = {
@@ -322,14 +322,14 @@ return {
 	},
 
 	-- edible.lua
-	food_unit = "<color=%s>%s</color> 个单位的<color=%s>%s</color>",
+	food_unit = "<color=%s>%s</color> 单位<color=%s>%s</color>",
 	edible_interface = "<color=HUNGER>饥饿</color>: <color=HUNGER>%s</color> / <color=SANITY>理智</color>: <color=SANITY>%s</color> / <color=HEALTH>生命</color>: <color=HEALTH>%s</color>",
 	edible_wiki = "<color=HEALTH>生命</color>: <color=HEALTH>%s</color> / <color=HUNGER>饥饿</color>: <color=HUNGER>%s</color> / <color=SANITY>理智</color>: <color=SANITY>%s</color>",
 	edible_foodtype = {
 		meat = "肉度",
 		monster = "怪物度",
 		fish = "鱼度",
-		veggie = "菜度",
+		veggie = "蔬菜度",
 		fruit = "水果度",
 		egg = "蛋度",
 		sweetener = "甜味剂",
@@ -353,7 +353,7 @@ return {
 		antihistamine = "花粉症延时: %s 秒",
 	},
 	foodmemory = "最近食用: %s / %s, 将忘记于%s后",
-	wereeater = "已食用<color=MONSTER>怪物肉</color>: %s / %s, 将消逝于%s后",
+	wereeater = "已食用<color=MONSTER>怪物肉</color>: %s / %s, 将忘记于%s后",
 
 	-- equippable.lua
 	-- use 'dapperness' from 'dapperness'
@@ -507,8 +507,8 @@ return {
 
 	-- ghostlyelixir.lua
 	ghostlyelixir = {
-		ghostlyelixir_slowregen = "回复<color=HEALTH>%s 生命</color>在 %s 内 (<color=HEALTH>+%s</color> / <color=HEALTH>%s 秒</color>)",
-		ghostlyelixir_fastregen = "回复<color=HEALTH>%s 生命</color>在 %s 内 (<color=HEALTH>+%s</color> / <color=HEALTH>%s 秒</color>)",
+		ghostlyelixir_slowregen = "回复 <color=HEALTH>%s 生命</color>在 %s 内 (<color=HEALTH>+%s</color> / <color=HEALTH>%s 秒</color>)",
+		ghostlyelixir_fastregen = "回复 <color=HEALTH>%s 生命</color>在 %s 内 (<color=HEALTH>+%s</color> / <color=HEALTH>%s 秒</color>)",
 		ghostlyelixir_attack = "最大化<color=HEALTH>伤害</color>持续%s",
 		ghostlyelixir_speed = "增加<color=DAIRY>移速</color><color=DAIRY>%s%%</color>持续 %s",
 		ghostlyelixir_shield = "增加护盾持续时间到1秒持续%s",
@@ -565,14 +565,14 @@ return {
 
 	-- hideandseekgame.lua
 	hideandseekgame = {
-		hiding_range = "躲藏范围: %s to %s",
+		hiding_range = "躲藏范围: %s 到 %s",
 		needed_hiding_spots = "需要的躲藏地点: %s",
 	},
 
 	-- hounded.lua
 	hounded = {
-		time_until_hounds = "<prefab=hound>攻击将于%s后",
-		time_until_worms = "<prefab=worm>攻击将于%s后",
+		time_until_hounds = "<prefab=hound>会在%s后攻击",
+		time_until_worms = "<prefab=worm>会在%s后攻击",
 	},
 
 	-- hunger.lua
@@ -644,7 +644,7 @@ return {
 	malbatrossspawner = {
 		malbatross_spawnsin = "%s",
 		malbatross_waiting = "等待某人前往鱼群",
-		time_to_respawn = "<prefab=malbatross>将重生于%s后",
+		time_to_respawn = "<prefab=malbatross>会重生于%s后",
 	},
 
 	-- mast.lua
@@ -682,8 +682,8 @@ return {
 
 	-- mood.lua
 	mood = {
-		exit = "发情结束于%s 天后",
-		enter = "开始发情于%s 天后",
+		exit = "发情结束于 %s 天后",
+		enter = "开始发情于 %s 天后",
 	},
 
 	-- moonstormmanager.lua
@@ -732,7 +732,7 @@ return {
 	petrify = "%s后石化",
 
 	-- pickable.lua
-	regrowth = "<color=NATURE>重新生长</color>于<color=NATURE>%s</color>后", -- has grammar problem, left because too annoying
+	regrowth = "<color=NATURE>%s</color>后<color=NATURE>重新生长</color>",
 	regrowth_paused = "生长暂停",
 	pickable_cycles = "剩余收获次数: %s / %s",
 
@@ -773,7 +773,7 @@ return {
 
 	-- rechargeable.lua
 	rechargeable = {
-		charged_in = "充能于%s后",
+		charged_in = "%s后充能",
 		charge = "充能: %s / %s"
 	},
 
@@ -862,7 +862,7 @@ return {
 			battlesong_instant_taunt = "嘲讽所有战歌范围内的敌人",
 			battlesong_instant_panic = "使周围的敌人陷入恐慌 %s 秒",
 		},
-		cost = "消耗%s灵感值来使用",
+		cost = "消耗 %s 灵感值来使用",
 	},
 
 	-- sinkholespawner.lua
@@ -898,8 +898,8 @@ return {
 		product = "<color=HUNGER><prefab=%s></color>(<color=HUNGER>%s</color>)",
 		cooktime_remaining = "<color=HUNGER><prefab=%s></color>(<color=HUNGER>%s</color>)将在 %s 秒后完成",
 		cooker = "由<color=%s>%s</color>烹饪",
-		cooktime_modifier_slower = "烹调食物 <color=#DED15E>%s%%</color> 减慢",
-		cooktime_modifier_faster = "烹调食物 <color=NATURE>%s%%</color> 加快",
+		cooktime_modifier_slower = "烹调食物减慢 <color=#DED15E>%s%%</color>",
+		cooktime_modifier_faster = "烹调食物加快 <color=NATURE>%s%%</color>",
 	},
 
 	-- stickable.lua
@@ -910,7 +910,7 @@ return {
 
 	-- terrarium.lua [Prefab]
 	terrarium = {
-		day_recovery = "每个非战斗天恢复<color=HEALTH>%s</color>血量",
+		day_recovery = "每个非战斗天恢复 <color=HEALTH>%s</color> 血量",
 		eot_health = "<prefab=eyeofterror>在回归时的<color=HEALTH>血量</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 		retinazor_health = "<prefab=TWINOFTERROR1> <color=HEALTH>血量</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 		spazmatism_health = "<prefab=TWINOFTERROR2> <color=HEALTH>血量</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
@@ -930,7 +930,7 @@ return {
 
 	-- toadstoolspawner.lua
 	toadstoolspawner = {
-		time_to_respawn = "<prefab=toadstool>将重生于%s后",
+		time_to_respawn = "<prefab=toadstool>会重生于%s后",
 	},
 
 	-- tool.lua
@@ -947,24 +947,24 @@ return {
 
 	-- upgradeable.lua
 	upgradeable_stage = "阶段: %s / %s: ",
-	upgradeable_complete = "升级 %s%% 完成",
+	upgradeable_complete = "升级完成 %s%%",
 	upgradeable_incomplete = "不可升级",
 
 	-- upgrademodule.lua
 	upgrademodule = {
 		module_describers = {
-			maxhealth = "增加<color=HEALTH>最大生命值</color><color=HEALTH>%d</color>",
-			maxsanity = "增加<color=SANITY>最大理智值</color> by <color=SANITY>%d</color>",
-			movespeed = "增加<color=DAIRY>移速</color>%s",
-			heat = "提高<color=#cc0000>最低体温</color><color=#cc0000>%d</color>",
-			heat_drying = "增加<color=#cc000>干燥速率</color><color=#cc0000>%.1f</color>",
-			cold = "降低<color=#00C6FF>最高体温</color> by <color=#00C6FF>%d</color>",
-			taser = "给攻击者造成<color=WET>%d</color>%s(冷却时间: %.1f)",
-			light = "提供<color=LIGHT>照明半径</color><color=LIGHT>%.1f</color> (额外的只加<color=LIGHT>%.1f</color>)",
-			maxhunger = "增加<color=HUNGER>最大饥饿值</color><color=HUNGER>%d</color>",
-			music = "提供<color=SANITY>理智光环</color><color=SANITY>%+.1f/min</color>在<color=SANITY>%.1f</color>个地皮范围内",
-			music_tend = "照料植物在<color=NATURE>%.1f</color>个地皮范围内",
-			bee = "回复<color=HEALTH>%d生命值/%ds</color> (<color=HEALTH>%d/day</color>)",
+			maxhealth = "增加<color=HEALTH>最大生命值</color> <color=HEALTH>%d</color>",
+			maxsanity = "增加<color=SANITY>最大理智值</color> <color=SANITY>%d</color>",
+			movespeed = "增加<color=DAIRY>移速</color> %s",
+			heat = "提高<color=#cc0000>最低体温</color> <color=#cc0000>%d</color>",
+			heat_drying = "增加<color=#cc000>干燥速率</color> <color=#cc0000>%.1f</color>",
+			cold = "降低<color=#00C6FF>最高体温</color> <color=#00C6FF>%d</color>",
+			taser = "给攻击者造成 <color=WET>%d</color>%s (冷却时间: %.1f)",
+			light = "提供<color=LIGHT>照明半径</color> <color=LIGHT>%.1f</color> (额外的只加 <color=LIGHT>%.1f</color>)",
+			maxhunger = "增加<color=HUNGER>最大饥饿值</color> <color=HUNGER>%d</color>",
+			music = "提供<color=SANITY>理智光环</color> <color=SANITY>%+.1f/分</color> 在 <color=SANITY>%.1f</color> 个地皮范围内",
+			music_tend = "照料植物在 <color=NATURE>%.1f</color> 个地皮范围内",
+			bee = "回复 <color=HEALTH>%d 生命/%d 秒</color> (<color=HEALTH>%d/天</color>)",
 		},
 	},
 
@@ -1000,10 +1000,10 @@ return {
 	},
 
 	-- werebeast.lua
-	werebeast = "木头值: %s / %s",
+	werebeast = "变身值: %s / %s",
 
 	-- wereness.lua
-	wereness_remaining = "木头值: %s / %s",
+	wereness_remaining = "变身值: %s / %s",
 
 	-- winch.lua
 	winch = {
