@@ -19,12 +19,11 @@ directory. If not, please refer to
 ]]
 
 -- lureplant.lua [Prefab]
-local is_dst = IsDST()
 local inventory_cache = setmetatable({}, {__mode="kv"})
 local listeners_hooked = setmetatable({}, {__mode="kv"})
 
 local function IsWinter()
-	if is_dst then
+	if IS_DST then
 		return TheWorld.state.iswinter
 	else
 		return GetSeasonManager():IsWinter()

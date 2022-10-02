@@ -20,7 +20,6 @@ directory. If not, please refer to
 -- Additional Note: Sections marked as me or klei continue until the next comment indicates or the function ends
 
 -- Me
-local Is_DST = IsDST()
 local Remap = Remap
 local Entity_IsValid = Entity.IsValid
 

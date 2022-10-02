@@ -19,8 +19,6 @@ directory. If not, please refer to
 ]]
 
 -- rainometer.lua [Prefab]
-local is_dst = IsDST()
-
 local function Describe(inst, context)
 	local description = nil
 
@@ -28,7 +26,7 @@ local function Describe(inst, context)
 	local precipitation_rate = nil
 	local frog_rain_chance = nil
 
-	if is_dst then
+	if IS_DST then
 		wetness = string.format(context.lstr.global_wetness, Round(TheWorld.state.wetness, 1))
 		
 		if TheWorld.state.precipitationrate > 0 then

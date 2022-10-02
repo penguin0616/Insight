@@ -80,8 +80,6 @@ local colors = setmetatable({ -- paint.net eyedropper on the medallions
 	end
 })
 
-local is_dst = IsDST()
-
 local function Describe(self, context)
 	local description = nil
 	local control = context.config["nightmareclock_display"] 
@@ -91,7 +89,7 @@ local function Describe(self, context)
 	if control == 1 then
 		if context.player.components.inventory:Has("nightmare_timepiece", 1) then
 			hasMedallion = true
-		elseif is_dst and context.player.components.inventory:GetOverflowContainer() and context.player.components.inventory:GetOverflowContainer():Has("nightmare_timepiece", 1) then
+		elseif IS_DST and context.player.components.inventory:GetOverflowContainer() and context.player.components.inventory:GetOverflowContainer():Has("nightmare_timepiece", 1) then
 			hasMedallion = true
 		end
 	end
@@ -117,7 +115,7 @@ local function Describe(self, context)
 		-- it has been locked with an ancient key
 		remaining_time = context.lstr.nightmareclock.phase_locked
 	else
-		if is_dst then
+		if IS_DST then
 			remaining_time = context.time:SimpleProcess(save_data.remainingtimeinphase)
 		else
 			remaining_time = context.time:SimpleProcess(self:GetTimeLeftInEra())

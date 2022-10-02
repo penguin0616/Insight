@@ -19,8 +19,6 @@ directory. If not, please refer to
 ]]
 
 -- hounded.lua [Worldly]
-local Is_DST = IsDST()
-
 local icons = {
 	forest = {
 		atlas = "images/Hound.xml",
@@ -42,7 +40,7 @@ local function Describe(self, context)
 
 	local time_to_attack = nil
 	
-	if Is_DST then
+	if IS_DST then
 		time_to_attack = self:GetTimeToAttack()
 		world_prefab = TheWorld.worldprefab
 	else
@@ -72,7 +70,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 	end
 
 	local description = nil
-	local world_prefab = (Is_DST and TheWorld.worldprefab) or GetWorld().prefab
+	local world_prefab = (IS_DST and TheWorld.worldprefab) or GetWorld().prefab
 	local attack_type = (world_prefab == "forest" and context.lstr.hounded.time_until_hounds) or 
 		(world_prefab == "cave" and context.lstr.hounded.time_until_worms) or 
 		nil

@@ -28,8 +28,6 @@ local Indicators = import("indicators")
 local cooking = require("cooking")
 
 local Entity_HasTag = Entity.HasTag
-local IS_DST = IsDST()
-local IS_DS = IsDS()
 local IS_CLIENT_HOST = IsClientHost()
 
 --[[

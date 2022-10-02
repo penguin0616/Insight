@@ -31,7 +31,6 @@ local highlightColorKey = "_insight_highlight"
 local fuel_highlighting = nil
 local highlighting_enabled = nil
 local activated = false
-local Is_DST = IsDST()
 local world_type = GetWorldType()
 local is_client_host = IsClientHost()
 
@@ -351,7 +350,7 @@ end
 
 local function Comparator(held, inst)
 	if not localPlayer then return end
-	local insight = (Is_DST and localPlayer.replica.insight) or localPlayer.components.insight
+	local insight = (IS_DST and localPlayer.replica.insight) or localPlayer.components.insight
 	if not insight then return end
 	-- returned color applies to inst
 
@@ -421,7 +420,7 @@ local function Comparator(held, inst)
 end
 
 local function GetContainerRelevance(ctr)
-	local insight = (Is_DST and localPlayer.replica.insight) or localPlayer.components.insight
+	local insight = (IS_DST and localPlayer.replica.insight) or localPlayer.components.insight
 	if not insight then return end
 	--mprint(ctr, ctr.classified, ctr.inst, activeItem, activeItem and ctr:Has(activeItem.prefab, 1))
 
@@ -475,7 +474,7 @@ local function EvaluateRelevance(inst, isApplication)
 		return
 	end
 
-	local container = prefab and ((Is_DST and inst.replica.container) or inst.components.container)
+	local container = prefab and ((IS_DST and inst.replica.container) or inst.components.container)
 
 	if prefab and container then
 		local relevance = GetContainerRelevance(container)

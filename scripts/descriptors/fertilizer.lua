@@ -19,7 +19,6 @@ directory. If not, please refer to
 ]]
 
 -- fertilizer.lua
-local Is_DS = IsDS()
 local farmingHelper = import("helpers/farming")
 
 local function Describe(self, context)
@@ -41,7 +40,7 @@ local function Describe(self, context)
 	local compost_value_string
 	local health_value_string
 
-	if Is_DS or farmingHelper.WorldHasOldGrowers() then
+	if IS_DS or farmingHelper.WorldHasOldGrowers() then
 		growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
 	end
 
@@ -55,7 +54,7 @@ local function Describe(self, context)
 		end
 	end
 
-	if not Is_DS and context.player:HasTag("self_fertilizable") then
+	if not IS_DS and context.player:HasTag("self_fertilizable") then
 		local formula, compost, manure = self.nutrients[TUNING.FORMULA_NUTRIENTS_INDEX], self.nutrients[TUNING.COMPOST_NUTRIENTS_INDEX], self.nutrients[TUNING.MANURE_NUTRIENTS_INDEX]
 
 		if formula > 0 then

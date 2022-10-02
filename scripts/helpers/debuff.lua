@@ -28,8 +28,8 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 local TUNING = TUNING
 local cooking = require("cooking")
 local preparedfoods = require("preparedfoods")
-local preparedfoods_warly = IsDST() and require("preparedfoods_warly") or {}
-local spicedfoods = IsDST() and require("spicedfoods") or {}
+local preparedfoods_warly = IS_DST and require("preparedfoods_warly") or {}
+local spicedfoods = IS_DST and require("spicedfoods") or {}
 local world_type = GetWorldType()
 local debuff_effects = {}
 

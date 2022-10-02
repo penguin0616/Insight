@@ -47,8 +47,6 @@ local action_icons = {
 	fish = "fishingrod",
 }
 
-local Is_DST = IsDST()
-
 local function SortActions(a, b)
 	return a[1].id:lower() < b[1].id:lower()
 end
@@ -57,7 +55,7 @@ local function Describe(self, context)
 	local description = nil
 
 	-- https://dontstarve.fandom.com/wiki/Pick/Axe
-	local tbl = (Is_DST and self.actions) or (not Is_DST and self.action)
+	local tbl = (IS_DST and self.actions) or (not IS_DST and self.action)
 	if not tbl then
 		return
 	end

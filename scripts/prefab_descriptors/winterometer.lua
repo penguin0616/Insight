@@ -19,12 +19,10 @@ directory. If not, please refer to
 ]]
 
 -- winterometer.lua [Prefab]
-local is_dst = IsDST()
-
 local function Describe(inst, context)
 	local description = nil
 
-	local temperature = (is_dst and TheWorld.state.temperature) or (not is_dst and GetSeasonManager():GetCurrentTemperature())
+	local temperature = (IS_DST and TheWorld.state.temperature) or (not IS_DST and GetSeasonManager():GetCurrentTemperature())
 	-- SHOWWORLDTEMP
 	if not context.external_config["combined_status"]["SHOWWORLDTEMP"] then
 		description = string.format(context.lstr.world_temperature, Round(temperature, 0))

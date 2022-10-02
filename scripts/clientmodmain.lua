@@ -46,10 +46,7 @@ local onLocalPlayerRemove = setmetatable({}, { __newindex = function(self, index
 	rawset(self, index, value) 
 end; })
 local delayed_actives = {}
-local Is_DS = IsDS()
-local Is_DST = IsDST()
-local Is_Client_Host = IsClientHost()
-insight_subscribed = Is_DS or KnownModIndex.savedata.known_mods["workshop-2189004162"].enabled ~= nil
+insight_subscribed = IS_DS or KnownModIndex.savedata.known_mods["workshop-2189004162"].enabled ~= nil
 -- game has to be exited and reopened for the savedata to update i guess
 -- the difference between unsubbed and subbed is that subbed has "enabled" and "temp_disabled" fields
 -- if subscribed and the world is just forest, nonhosts have enabled=false but temp_enabled = true
@@ -99,7 +96,7 @@ local function GenerateExternalConfiguration()
 		}
 	}
 
-	local winner = IsDST() and important_dst or important_ds
+	local winner = IS_DST and important_dst or important_ds
 	for modname, data in pairs(winner) do
 		if not external_config[data.name] then
 			external_config[data.name] = {}
@@ -299,14 +296,14 @@ end
 
 
 local function CanBlink(player)
-	local inventory = (Is_DST and player.replica and player.replica.inventory) or (Is_DS and player.components.inventory) or error("CanBlink called on entity missing inventory")
+	local inventory = (IS_DST and player.replica and player.replica.inventory) or (IS_DS and player.components.inventory) or error("CanBlink called on entity missing inventory")
 
 	local holding = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	local cursor = inventory:GetActiveItem()
 
-	if holding and (holding.components.blinkstaff or (Is_DST and holding:HasActionComponent("blinkstaff"))) then
+	if holding and (holding.components.blinkstaff or (IS_DST and holding:HasActionComponent("blinkstaff"))) then
 		return true
-	elseif cursor and (cursor.components.blinkstaff or (Is_DST and cursor:HasActionComponent("blinkstaff"))) then
+	elseif cursor and (cursor.components.blinkstaff or (IS_DST and cursor:HasActionComponent("blinkstaff"))) then
 		return true
 	end
 
@@ -972,7 +969,7 @@ AddPrefabPostInitAny(entityManager.Manage)
 
 local function OnEntityManagerEventDST(self, event, inst)
 	if event == "sleep" then
-		if (Is_Client_Host and localPlayer) then 
+		if (IS_CLIENT_HOST and localPlayer) then 
 			inst:DoTaskInTime(0, highlighting.SetEntitySleep)
 
 			if localPlayer.replica.insight and localPlayer.replica.insight.EntityInactive then
@@ -1005,11 +1002,11 @@ end
 entityManager:AddListener("insight", function(self, event, inst)
 	if event == "sleep" then
 		-- highlighting
-		if Is_DS or (not Is_DS and localPlayer) then 
+		if IS_DS or (not IS_DS and localPlayer) then 
 			highlighting.SetEntitySleep(inst)
 		end
 
-		if not Is_DS then
+		if not IS_DS then
 			-- networking
 			if localPlayer and GetInsight(localPlayer) then
 				GetInsight(localPlayer):EntityInactive(inst)
@@ -1019,14 +1016,14 @@ entityManager:AddListener("insight", function(self, event, inst)
 		end
 	elseif event == "awake" then
 		-- highlighting
-		if Is_DS or (not Is_DS and localPlayer) then 
+		if IS_DS or (not IS_DS and localPlayer) then 
 			inst:DoTaskInTime(0, function()
 				-- give entities time to get their replicas
 				highlighting.SetEntityAwake(inst)
 			end)
 		end
 
-		if not Is_DS then
+		if not IS_DS then
 			-- networking
 			if localPlayer and GetInsight(localPlayer) then
 				GetInsight(localPlayer):EntityActive(inst)
@@ -1043,11 +1040,11 @@ end)
 entityManager:AddListener("insight", function(self, event, inst)
 	if event == "sleep" then
 		-- highlighting
-		if Is_DS or (not Is_DS and localPlayer) then 
+		if IS_DS or (not IS_DS and localPlayer) then 
 			highlighting.SetEntitySleep(inst)
 		end
 
-		if not Is_DS then
+		if not IS_DS then
 			-- networking
 			if localPlayer and localPlayer.components.insight then
 				--localPlayer.components.insight:EntityInactive(inst)
@@ -1057,12 +1054,12 @@ entityManager:AddListener("insight", function(self, event, inst)
 		end
 	elseif event == "awake" then
 		-- highlighting
-		if Is_DS then 
+		if IS_DS then 
 			-- give entities time to get their replicas
 			inst:DoTaskInTime(0, highlighting.SetEntityAwake)
 		end
 
-		if not Is_DS then
+		if not IS_DS then
 			-- networking
 			if localPlayer and localPlayer.replica.insight then
 				localPlayer.replica.insight:EntityActive(inst)

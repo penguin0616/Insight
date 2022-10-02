@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- wx78.lua [Prefab]
-local wx78_refresh = IsDST() and CurrentRelease.GreaterOrEqualTo("R21_REFRESH_WX78")
+local wx78_refresh = IS_DST and CurrentRelease.GreaterOrEqualTo("R21_REFRESH_WX78")
 local CHARGEREGEN_TIMERNAME = "chargeregenupdate"
 
 local function Describe(inst, context)

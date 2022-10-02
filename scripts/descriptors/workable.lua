@@ -57,8 +57,6 @@ local function GetDeciduousSpawnChance(days_survived)
 	return chance
 end
 
-local is_dst = IsDST()
-
 local function Describe(self, context)
 	local inst = self.inst
 
@@ -67,7 +65,7 @@ local function Describe(self, context)
 	local player_chance, npc_chance
 
 	local player_days, npc_days
-	if is_dst then
+	if IS_DST then
 		npc_days = TheWorld.state.cycles
 		player_days = context.player.components.age ~= nil and context.player.components.age:GetAgeInDays() or npc_days -- crab king attacks and players are the only things with age
 	else
@@ -79,7 +77,7 @@ local function Describe(self, context)
 		if inst.components.growable ~= nil and inst.components.growable.stage == 3 then 
 			player_chance, npc_chance = 0, 0
 
-			if is_dst and player_days >= TUNING.DECID_MONSTER_MIN_DAY then
+			if IS_DST and player_days >= TUNING.DECID_MONSTER_MIN_DAY then
 				player_chance = GetDeciduousSpawnChance_DST(player_days)
 
 				if context.player:HasTag("beaver") then
@@ -90,13 +88,13 @@ local function Describe(self, context)
 			end
 
 			if npc_days >= TUNING.DECID_MONSTER_MIN_DAY then
-				npc_chance = is_dst and GetDeciduousSpawnChance_DST(npc_days) or GetDeciduousSpawnChance(npc_chance)
+				npc_chance = IS_DST and GetDeciduousSpawnChance_DST(npc_days) or GetDeciduousSpawnChance(npc_chance)
 			end
 		end 
 	elseif inst.prefab == "evergreen" or inst.prefab == "evergreen_sparse" then
 		player_chance, npc_chance = 0, 0
 
-		if is_dst and player_days >= TUNING.LEIF_MIN_DAY then
+		if IS_DST and player_days >= TUNING.LEIF_MIN_DAY then
 			player_chance = TUNING.LEIF_PERCENT_CHANCE
 
 			if context.player:HasTag("beaver") then
@@ -116,7 +114,7 @@ local function Describe(self, context)
 		return
 	end
 
-	if is_dst then
+	if IS_DST then
 		alt_description = string.format(context.lstr.workable.treeguard_chance_dst, Round(player_chance * 100, 2), Round(npc_chance * 100, 2))
 	else
 		alt_description = string.format(context.lstr.workable.treeguard_chance, Round(npc_chance * 100, 2))

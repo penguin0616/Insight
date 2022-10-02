@@ -365,6 +365,8 @@ function IsForge()
 	return IsDST() and TheNet:GetDefaultGameMode() == "lavaarena"
 end
 
+IS_FORGE = IsForge()
+
 --- Checks if argument is a widget.
 -- @param arg
 -- @treturn boolean
@@ -838,7 +840,7 @@ local function GetEntityInformation(entity, player, params)
 	end
 
 	player_context.FROM_INSPECTION = params.FROM_INSPECTION or false
-	params.is_forge = IsForge() -- why call this multiple times later?
+	params.is_forge = IS_FORGE
 	player_context.params = params
 
 	local chunks = {}
@@ -1047,16 +1049,13 @@ end
 
 function GetWorldInformation(player) -- refactor?
 	--if true then return {} end
-
-	local is_dst = IsDST()
-
 	local world = TheWorld or GetWorld() -- implict game check
 	local context = GetPlayerContext(player)
 	if not context then
 		return
 	end
 
-	if is_dst and not context.config["display_world_events"] then
+	if IS_DST and not context.config["display_world_events"] then
 		return {
 			GUID = world.GUID,
 			information = nil,
@@ -1110,7 +1109,7 @@ function GetWorldInformation(player) -- refactor?
 		end
 	end
 
-	if is_dst then
+	if IS_DST then
 		local helper = world.shard.components.shard_insight
 
 		-- antlion
@@ -2150,6 +2149,14 @@ if IsDST() then
 		entity_tracker:TrackPrefab("rainometer")
 	end
 
+	AddComponentPostInit("clock", function(self)
+		if not (TheWorld and TheWorld.ismastersim) then
+			return
+		end
+
+		import("helpers/clock"):Initialize(self)
+	end)
+
 	AddComponentPostInit("grower", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end
 		import("helpers/farming").RegisterOldGrower(self)
@@ -2720,7 +2727,7 @@ AddSimPostInit(function()
 		end
 
 		if not hunter then 
-			local worldprefab = (is_dst and world.worldprefab) or world.prefab
+			local worldprefab = (IS_DST and world.worldprefab) or world.prefab
 			if worldprefab == "cave" then
 				mprint("Caves does not have a hunter component.")
 			else

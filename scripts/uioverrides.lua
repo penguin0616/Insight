@@ -30,14 +30,12 @@ local CraftSlot = require("widgets/craftslot")
 local IngredientUI = require("widgets/ingredientui")
 local InsightButton = import("widgets/insightbutton")
 local RichText = import("widgets/RichText")
-local Is_DS = IsDS()
-local Is_DST = IsDST()
 
-local CraftingMenuWidget = Is_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget");
-local CraftingMenuHUD = Is_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud");
+local CraftingMenuWidget = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget")) or nil
+local CraftingMenuHUD = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud")) or nil
 
 local SHIF_TASK = nil
-local SHIF_DELAY = IsDST() and 0 or 0.09
+local SHIF_DELAY = IS_DST and 0 or 0.09
 local function SetHighlightIngredientFocus(arg)
 	--mprint("SetHighlightIngredientFocus", arg)
 	if SHIF_TASK then
@@ -115,7 +113,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	end
 	mb:ResetPosition()
 	mb:SetDraggable(true)
-	mb.allowcontroller = IsDS() -- false
+	mb.allowcontroller = IS_DS -- false
 	mb:SetOnDragFinish(function(oldpos, newpos)
 		TheSim:SetPersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
 			dprint("InsightButton -> DragFinish -> Save -> Callback:", ...)
@@ -632,8 +630,6 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	local TheInputProxy_GetLocalizedControl = TheInputProxy.GetLocalizedControl
 	local TheInput_IsControlPressed = TheInput.IsControlPressed
 
-	local Is_DS = IsDS()
-	local Is_DST = IsDST()
 	local CONTROL_FORCE_INSPECT = CONTROL_FORCE_INSPECT
 	local CONTROL_FORCE_TRADE = CONTROL_FORCE_TRADE
 
@@ -666,7 +662,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 	end
 
 	function hoverer.secondarytext.Hide(self)
-		if Is_DS then
+		if IS_DS then
 			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETUP", 40)
 			util.replaceupvalue(debug_getinfo(2).func, "YOFFSETDOWN", 30)
 		end
@@ -686,7 +682,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 
 	-- TheInput:GetScreenPosition()
 
-	if Is_DST then
+	if IS_DST then
 		function hoverer:UpdatePosition(x, y)
 			local YOFFSETUP = -80
 			local YOFFSETDOWN = -50
@@ -878,7 +874,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		local p1 = hoverer:GetPosition()
 		--mprint(p1.x, dataWidth, screenWidth)
 
-		if Is_DST then
+		if IS_DST then
 			local tp_bonus = (r == 2 and 0) or 1
 			textPadding = string.rep("\n ", x + r + tp_bonus)
 			
@@ -1150,7 +1146,7 @@ TheInput:AddControlHandler(IsDST() and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEB
 		
 	local screen_name = TheFrontEnd:GetActiveScreen().name
 
-	if screen_name == "PlayerStatusScreen" or (Is_DS and screen_name == "PauseScreen") then
+	if screen_name == "PlayerStatusScreen" or (IS_DS and screen_name == "PauseScreen") then
 		TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
 		local sc = InsightMenuScreen()
 		TheFrontEnd:PushScreen(sc)

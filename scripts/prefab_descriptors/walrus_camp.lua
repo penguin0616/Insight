@@ -19,14 +19,12 @@ directory. If not, please refer to
 ]]
 
 -- walrus_camp.lua [Prefab]
-local is_dst = IsDST()
-
 local function Describe(inst, context)
 	local description = nil
 
 	local strs = {}
 
-	if is_dst and TUNING.WALRUS_REGEN_ENABLED then
+	if IS_DST and TUNING.WALRUS_REGEN_ENABLED then
 		local self = inst.components.worldsettingstimer
 		for name in pairs(self.timers) do
 			local paused = self:IsPaused(name)
@@ -39,7 +37,7 @@ local function Describe(inst, context)
 			end
 		end
 		
-	elseif not is_dst and inst.data.regentime then
+	elseif not IS_DST and inst.data.regentime then
 		for prefab, targettime in pairs(inst.data.regentime) do
 			local respawn_in = targettime - GetTime()
 			if respawn_in >= 0 then

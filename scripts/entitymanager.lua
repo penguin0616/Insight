@@ -27,9 +27,6 @@ local Entity_HasTag = Entity.HasTag
 
 local PREFABS_TO_IGNORE = {}
 
-local is_dst = IsDST()
-local is_ds = IsDS()
-local is_client_host = IsClientHost()
 local manager = nil
 
 --------------------------------------------------------------------------
@@ -111,7 +108,7 @@ function EntityManager.Manage(inst)
 	inst:ListenForEvent("entitywake", SetEntityAwake)
 	inst:ListenForEvent("onremove", SetEntitySleep)
 
-	if not is_client_host or (is_client_host and inst.entity:IsAwake()) then
+	if not IS_CLIENT_HOST or (IS_CLIENT_HOST and inst.entity:IsAwake()) then
 		SetEntityAwake(inst)
 	end
 end

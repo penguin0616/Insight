@@ -17,8 +17,8 @@ LICENSE in the form of a LICENSE file in the root of the source
 directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
+
 -- aporkalypse.lua
-local Is_DS = IsDS()
 local function Describe(self, context)
 	if not IS_DS then
 		return -- some mod created this component in DST, probably the SW port

@@ -45,8 +45,9 @@ directory. If not, please refer to
 
 -- volcanomanager.lua [Worldly]
 local world_type = GetWorldType()
+local clock = import("helpers/clock")
 local function Describe(self, context)
-	if world_type < 2 then
+	if not (world_type == -1 or world_type >= 3) then
 		return
 	end 
 	
@@ -57,13 +58,13 @@ local function Describe(self, context)
 		return
 	end
 
-	local time_left_in_segment = GetClock().timeLeftInEra % 30 -- timeLeftInEra = time left during a phase.
-	--mprint("volcano", self:GetNumSegmentsUntilEruption(), time_left_in_segment, GetWorldType())
+	--local time_left_in_segment = GetClock().timeLeftInEra % 30 -- timeLeftInEra = time left during a phase.
+	local time_left_in_segment = clock:GetTimeLeftInSegment()
+	if not time_left_in_segment then
+		return
+	end
 
 	local seconds = (self:GetNumSegmentsUntilEruption() - 1) * TUNING.SEG_TIME + time_left_in_segment
-
-	--mprint("eruption in:", seconds)
-
 	description = context.time:SimpleProcess(seconds)
 
 	return {

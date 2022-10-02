@@ -32,7 +32,7 @@ local imageLib = import("widgets/image_lib")
 local Reader, Chunk = import("reader")
 
 local CalculateSize = CalculateSize
-local Is_DST = IsDST()
+local IS_DST = IS_DST
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]

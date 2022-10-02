@@ -22,12 +22,12 @@ local Widget = require "widgets/widget"
 local Screen = require "widgets/screen"
 local InsightMenu = import("widgets/insightmenu")
 
-local CONTROL_TYPE = (IsDST() and "MOVE") or "INVENTORY" -- MOVE is the left joystick, INVENTORY is the right one
+local CONTROL_TYPE = (IS_DST and "MOVE") or "INVENTORY" -- MOVE is the left joystick, INVENTORY is the right one
 local MOVE_UP = getfenv(1)[string.format("CONTROL_%s_UP", CONTROL_TYPE)]
 local MOVE_DOWN = getfenv(1)[string.format("CONTROL_%s_DOWN", CONTROL_TYPE)]
 local MOVE_LEFT = getfenv(1)[string.format("CONTROL_%s_LEFT", CONTROL_TYPE)]
 local MOVE_RIGHT = getfenv(1)[string.format("CONTROL_%s_RIGHT", CONTROL_TYPE)]
-local OPEN_MENU = IsDST() and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU
+local OPEN_MENU = IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU
 
 local InsightMenuScreen = Class(Screen, function(self)
 	Screen._ctor(self, "InsightMenuScreen")
