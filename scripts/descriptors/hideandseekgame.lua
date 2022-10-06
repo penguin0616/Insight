@@ -32,8 +32,16 @@ local function Describe(self, context)
 	description = CombineLines(hiding_range, needed_spots)
 
 	return {
+		name="hideandseekgame",
 		priority = 1,
 		description = description
+	}, {
+		name = "insight_ranged",
+		priority = 0,
+		description = nil,
+		range = self.hiding_range,
+		color = "#ffffff",
+		attach_player = false
 	}
 end
 
