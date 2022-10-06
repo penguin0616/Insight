@@ -85,7 +85,11 @@ local function GetData(inst)
 		return
 	end
 
-	local season_table = shape_rarity[inst.carnival_season]
+	-- #carnivaldecor_figure_kit == 24
+	-- #carnivaldecor_figure_kit_season2 == 32
+	local season = inst.carnival_season or tonumber(inst.prefab:sub(-1)) or 1 -- -1 on the assumption we never hit 10 years of cawnival
+
+	local season_table = shape_rarity[season]
 	if not season_table then
 		return
 	end

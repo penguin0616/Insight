@@ -413,7 +413,7 @@ function RichText:NewLine(pieces)
 			else
 				lp = lp + prev:GetRegionSize() / 2
 
-				if Is_DST then
+				if IS_DST then
 					lp = lp - 2
 					padding = padding + 2
 				end
@@ -427,7 +427,7 @@ function RichText:NewLine(pieces)
 			else
 				lp = lp + obj:GetRegionSize() / 2
 
-				if not Is_DST and prev.name ~= "Image" then
+				if not IS_DST and prev.name ~= "Image" then
 					lp = lp - 3.9
 					padding = padding + 3.9
 				end
@@ -437,7 +437,7 @@ function RichText:NewLine(pieces)
 				--lp = lp - 1.6
 				--padding = padding + 1.6
 
-				if Is_DST then
+				if IS_DST then
 					-- commented when was fiddling with icon mode
 					--lp = lp - 1.6 -- space width at end
 					--padding = padding + 1.6
