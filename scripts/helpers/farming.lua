@@ -32,8 +32,8 @@ local SOIL_MIN_TEMP_DRY_RATE = TUNING.SOIL_MIN_TEMP_DRY_RATE
 local SOIL_MAX_TEMP_DRY_RATE = TUNING.SOIL_MAX_TEMP_DRY_RATE
 local MAX_SOIL_MOISTURE = TUNING.SOIL_MAX_MOISTURE_VALUE
 
-local FERTILIZER_DEFS = (IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS) or {}
-local PLANT_DEFS = (IsDST() and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/farm_plant_defs").PLANT_DEFS) or {}
+local FERTILIZER_DEFS = (IS_DST and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS) or {}
+local PLANT_DEFS = (IS_DST and CurrentRelease.GreaterOrEqualTo("R14_FARMING_REAPWHATYOUSOW") and require("prefabs/farm_plant_defs").PLANT_DEFS) or {}
 
 local farming_manager = nil
 local initialized = false

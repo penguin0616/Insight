@@ -296,7 +296,7 @@ local function Describe(self, context)
 	end
 
 	--[[
-	if IsDST() and inst.components.inventoryitem then
+	if IS_DST and inst.components.inventoryitem then
 		if context.player.components.itemaffinity then
 			for i,v in pairs(context.player.components.itemaffinity.affinities) do
 				if v.prefab and context.player.components.inventory:Has(v.prefab, 1) or v.tag and self.inst.components.inventory:HasItemWithTag(v.tag, 1) then

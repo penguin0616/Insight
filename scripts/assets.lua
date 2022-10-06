@@ -35,7 +35,7 @@ local known_atlases = {
 	"images/hud.xml", -- DS/DST
 }
 
-if IsDS() then -- prevent TheSim:AtlasContains throwing a warning instead of an error from the engine
+if IS_DS then -- prevent TheSim:AtlasContains throwing a warning instead of an error from the engine
 	table.insert(known_atlases, "images/inventoryimages_2.xml") -- DS
 else
 	table.insert(known_atlases, "images/inventoryimages1.xml") -- DST

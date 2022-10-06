@@ -23,7 +23,7 @@ directory. If not, please refer to
 -- its just logic right?
 local function ShouldShowPlayerNaughtiness(context)
 	--[[
-	if IsDST() then
+	if IS_DST then
 		return context.config["naughtiness_verbosity"] == 2
 	end
 	--]]

@@ -27,7 +27,7 @@ local function Describe(self, context)
 		local remaining_time
 		local should_spawn
 
-		if IsDS() then
+		if IS_DS then
 			local clock = GetClock()
 			remaining_time = self.nexttime - clock:GetTotalTime()
 			-- will only spawn before the first half of daylight, and not while player is indoors

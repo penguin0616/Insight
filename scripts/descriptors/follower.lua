@@ -24,7 +24,7 @@ local function Describe(self, context)
 	local description = nil
 	local remaining_time, leader_name = nil, nil
 
-	local isAbigail = inst:HasTag("abigail") and IsDST()
+	local isAbigail = inst:HasTag("abigail") and IS_DST
 
 	if inst:HasTag("ghostkid") then
 		-- handled by questowner

@@ -30,7 +30,7 @@ local function GetData(self)
 	local lunacy = false
 	local max_sanity = 0
 
-	if IsDST() then
+	if IS_DST then
 		if self:IsLunacyMode() then
 			lunacy = true
 		end
@@ -58,7 +58,7 @@ local function Describe(self, context)
 	local max_sanity = nil
 	local lunacy = false
 	
-	if IsDST() then
+	if IS_DST then
 		if self:IsLunacyMode() then
 			sanity_type = context.lstr.sanity.current_enlightenment
 			lunacy = true

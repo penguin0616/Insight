@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- This file is responsible for Year of the Beefalo stuff.
-if not IsDST() then
+if not IS_DST then
 	return {}
 end
 

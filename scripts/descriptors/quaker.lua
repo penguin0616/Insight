@@ -31,7 +31,7 @@ local QUAKESTATE = nil --[[
 local function Describe(self, context)
 	local description = nil
 
-	if IsDST() and not QUAKESTATE then
+	if IS_DST and not QUAKESTATE then
 		--dprint("loading QUAKESTATE")
 		QUAKESTATE = util.getupvalue(self.OnLoad, "QUAKESTATE")
 		assert(QUAKESTATE, "[Insight]: Failed to load quaker.lua's QUAKESTATE")
@@ -40,12 +40,12 @@ local function Describe(self, context)
 	local save_data = self:OnSave()
 	local next_quake = nil
 
-	if IsDST() and save_data.state == QUAKESTATE.WAITING then
+	if IS_DST and save_data.state == QUAKESTATE.WAITING then
 		--dprint("quake state valid")
 		--print(save_data.time)
 		--description = string.format(context.lstr.next_quake, context.time:SimpleProcess(save_data.time))
 		next_quake = save_data.time
-	elseif IsDS() and save_data and save_data.nextquake then
+	elseif IS_DS and save_data and save_data.nextquake then
 		next_quake = save_data.nextquake
 	end
 

@@ -65,7 +65,7 @@ local function DST_GetGrowthRate(crop)
 end
 
 local function GetGrowthRate(crop)
-	if IsDS() then
+	if IS_DS then
 		return DS_GetGrowthRate(crop)
 	else
 		return DST_GetGrowthRate(crop)

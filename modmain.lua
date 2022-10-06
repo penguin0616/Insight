@@ -342,7 +342,7 @@ IS_DST = IsDST()
 --- Checks whether the mod is running on a client
 -- @treturn boolean
 function IsClient()
-	return IsDST() and TheNet:GetIsClient()
+	return IS_DST and TheNet:GetIsClient()
 end
 
 IS_CLIENT = IsClient()
@@ -350,8 +350,8 @@ IS_CLIENT = IsClient()
 --- Checks whether the mod is running on a client that is also the host.
 -- @treturn boolean
 function IsClientHost()
-	return IsDST() and TheNet:IsDedicated() == false and TheNet:GetIsMasterSimulation() == true
-	--return IsDST() and TheNet:IsDedicated() == false and TheWorld.ismastersim == true
+	return IS_DST and TheNet:IsDedicated() == false and TheNet:GetIsMasterSimulation() == true
+	--return IS_DST and TheNet:IsDedicated() == false and TheWorld.ismastersim == true
 end
 
 IS_CLIENT_HOST = IsClientHost()
@@ -367,7 +367,7 @@ IS_EXECUTIVE_AUTHORITY = IsExecutiveAuthority()
 --- Checks whether the mod is running in The Forge.
 -- @treturn boolean
 function IsForge()
-	return IsDST() and TheNet:GetDefaultGameMode() == "lavaarena"
+	return IS_DST and TheNet:GetDefaultGameMode() == "lavaarena"
 end
 
 IS_FORGE = IsForge()
@@ -403,7 +403,7 @@ end
 function GetPlayerContext(player)
 	assert(IsPrefab(player), "[Insight]: GetPlayerContext called on non-player")
 	local context
-	if IsDST() and TheWorld.ismastersim then
+	if IS_DST and TheWorld.ismastersim then
 		-- i know we'll have it
 		context = player_contexts[player]
 	else
@@ -471,7 +471,7 @@ end
 -- @string componentname
 -- @treturn ?string|nil nil if it is native, string is mod's fancy name
 local function GetComponentOrigin(componentname)
-	if IsDS() then
+	if IS_DS then
 		return false
 	end
 
@@ -529,7 +529,7 @@ end
 -- @string prefabname
 -- @treturn ?string|nil nil if it is native, string is mod's fancy name
 function GetPrefabOrigin(prefabname)
-	if IsDS() then
+	if IS_DS then
 		return false
 	end
 
@@ -558,7 +558,7 @@ end
 -- @tparam Prefab item
 -- @treturn ?Prefab|nil The player/creature that is holding the item.
 function GetItemPossessor(item)
-	assert(IsDS() or (IsDST() and TheWorld.ismastersim), "GetItemPosessor not called from master")
+	assert(IS_DS or (IS_DST and TheWorld.ismastersim), "GetItemPosessor not called from master")
 	return item and item.components and item.components.inventoryitem and item.components.inventoryitem:GetGrandOwner()
 end
 
@@ -973,7 +973,7 @@ function RequestEntityInformation(entity, player, params)
 
 	-- DST
 	if not IsPrefab(entity) then
-		if IsDST() then
+		if IS_DST then
 			mprint(string.format("%s requested information for %s, mastersim: %s", player.name, tostring(entity), tostring(TheWorld.ismastersim)))
 		else
 			mprint(string.format("[Request failure] Requested information for %s", tostring(entity)))
@@ -990,7 +990,7 @@ function RequestEntityInformation(entity, player, params)
 		return { GUID = params.GUID or 0, info = "missing insight component", special_data = {} }
 	end
 	
-	if IsDS() then
+	if IS_DS then
 		-- DS
 		--if not entity:HasTag"player" then dprint("DS - passing in got entity info", entity) end
 		local info = GetEntityInformation(entity, player, params)
@@ -1597,7 +1597,7 @@ end
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
 -- Check settings
-if IsDST() then -- server + dedi check
+if IS_DST then -- server + dedi check
 	if TheNet:IsDedicated() then
 		--RepairInsightConfig(false)
 	elseif IsClientHost() then
@@ -1611,7 +1611,7 @@ if IsDST() then -- server + dedi check
 end
 
 PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
-if IsDST() then
+if IS_DST then
 	table.insert(PrefabFiles, "insight_ghost_klaus_sack")
 	table.insert(PrefabFiles, "insight_classified")
 end
@@ -1662,7 +1662,7 @@ end)
 --]]
 
 AddComponentPostInit("combat", function(self)
-	if IsDS() or (TheWorld.ismastersim) then
+	if IS_DS or (TheWorld.ismastersim) then
 		combatHelper.HookCombat(self)
 	else
 		dprint("oh no")
@@ -1685,7 +1685,7 @@ end)
 
 --[[
 AddPrefabPostInit("bat", function(inst)
-	if not (IsDST() and TheWorld.ismastersim) then return end
+	if not (IS_DST and TheWorld.ismastersim) then return end
 	if not DEBUG_ENABLED then return end
 	inst:Remove() -- these things annoy me to no end while im testing
 end)
@@ -1790,7 +1790,7 @@ AddComponentPostInit("container", function(self)
 	self.inst:ListenForEvent("onclose", OnItemChange)
 end)
 
-if IsDST() then 
+if IS_DST then 
 	--[[
 	local sim_paused = false
 
@@ -2610,7 +2610,7 @@ end
 
 do
 	local console_commands = import("insight_consolecommands")
-	local selected = console_commands[(IsDST() and 1 or 2)]
+	local selected = console_commands[(IS_DST and 1 or 2)]
 
 	for name, fn in pairs(selected) do
 		if rawget(_G, name) == nil then
@@ -2621,7 +2621,7 @@ end
 
 
 AddPlayerPostInit(function(player) 
-	if IsDS() then
+	if IS_DS then
 		player:AddComponent("insight")
 		mprint("Added Insight component for", player)
 		return
@@ -2718,7 +2718,7 @@ AddPrefabPostInit("archive_orchestrina_main", function(inst)
 end)
 
 AddPrefabPostInit("heatrock", function(inst)
-	if IsDST() then return end
+	if IS_DST then return end
 	--local cache = 0 -- stop network spam
 	inst:ListenForEvent("temperaturedelta", function()
 		if GetModConfigData("itemtile_display", true) == "numbers" then
@@ -2756,7 +2756,7 @@ AddSimPostInit(function()
 		mprint("Hunter has been hooked")
 
 		local _activehunts = {}
-		if IsDST() then		
+		if IS_DST then		
 			_activehunts = util.recursive_getupvalue(hunter.OnDirtInvestigated, "_activehunts")
 			assert(_activehunts, "[Insight]: Failed to load '_activehunts' from 'Hunter' component.") -- https://steamcommunity.com/sharedfiles/filedetails/?id=1991746508 overrided OnDirtInvestigated
 			Insight.active_hunts = _activehunts
@@ -2764,7 +2764,7 @@ AddSimPostInit(function()
 
 		local oldOnDirtInvestigated = hunter.OnDirtInvestigated
 
-		if IsDST() then
+		if IS_DST then
 			local SpawnHuntedBeast = util.recursive_getupvalue(oldOnDirtInvestigated, "SpawnHuntedBeast") -- https://steamcommunity.com/sharedfiles/filedetails/?id=1991746508 messed with OnDirtInvestigated, October 20th 2020 (i just noticed the comment above, ironic)
 			local oldEnv = getfenv(SpawnHuntedBeast)
 			local SpawnPrefab = SpawnPrefab
@@ -2775,7 +2775,7 @@ AddSimPostInit(function()
 		function hunter:OnDirtInvestigated(pt, doer)
 			local hunt = nil
 
-			if IsDST() then
+			if IS_DST then
 				-- find the hunt this pile belongs to
 				for i,v in ipairs(_activehunts) do
 					if v.lastdirt ~= nil and v.lastdirt:GetPosition() == pt then
@@ -2798,7 +2798,7 @@ AddSimPostInit(function()
 
 			local activeplayer = doer --hunt.activeplayer
 
-			if IsDS() then
+			if IS_DS then
 				hunt = self -- has everything we need.. so......
 				activeplayer = GetPlayer()
 			end
@@ -2806,12 +2806,12 @@ AddSimPostInit(function()
 			--mprint(hunt.trackspawned, hunt.numtrackstospawn)
 			if hunt.trackspawned < hunt.numtrackstospawn then
 				--mprint('dirt?')
-				if IsDS() then
+				if IS_DS then
 					Insight.active_hunts = {self}
 				end
 			elseif hunt.trackspawned == hunt.numtrackstospawn then
 				--mprint('animal?')
-				if IsDS() then
+				if IS_DS then
 					Insight.active_hunts = {}
 				end
 			else
@@ -2860,7 +2860,7 @@ AddSimPostInit(function()
 	Hunter()
 end)
 
-if IsDST() then -- not in UI overrides because server needs access too
+if IS_DST then -- not in UI overrides because server needs access too
 	local CrashReportStatus = import("widgets/crashreportstatus")
 
 	-- extremely important: has to be opt IN, so this is off by default. warnings and information are displayed in the option to enable it.
@@ -3116,7 +3116,7 @@ if IsDST() then -- not in UI overrides because server needs access too
 	end)
 end
 
-if false and IsDST() then
+if false and IS_DST then
 	local select = select
 	--local toarray = toarray
 	local tostring = tostring
@@ -3174,8 +3174,8 @@ end
 -- import assets
 import("assets")
 
-if IsDS() or IsClient() or IsClientHost() then
-	if IsDS() then
+if IS_DS or IsClient() or IsClientHost() then
+	if IS_DS then
 		-- oh god. why must I suffer.
 		-- alright, so the gist of this stuff is that I want to avoid tainting KnownModIndex as much as I can
 		local safeModIndex = loadfile("modindex") -- mostly safe anyway; getting a "pure" duplicate of modindex in case others have overriden significantly

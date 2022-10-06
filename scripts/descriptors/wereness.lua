@@ -28,7 +28,7 @@ local function GetData(self)
 end
 
 local function Describe(self, context)
-	if IsDS() then
+	if IS_DS then
 		return
 	end
 

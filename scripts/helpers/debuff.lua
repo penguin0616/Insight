@@ -232,7 +232,7 @@ local this = {
 	GetItemEffects = GetItemEffects,
 }
 
-if not IsDST() then
+if not IS_DST then
 	return this
 end
 

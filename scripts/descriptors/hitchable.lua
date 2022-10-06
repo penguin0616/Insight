@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- hitchable.lua
-if true or not IsDST() then
+if true or not IS_DST then
 	return { Describe = function() end }
 end
 

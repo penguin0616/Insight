@@ -187,9 +187,9 @@ local function DST_Perish(self, bundle)
 end
 
 local function GetPerishModifier(...)
-	if IsDST() then
+	if IS_DST then
 		return DST_Perish(...)
-	elseif IsDS() then
+	elseif IS_DS then
 		return Perish(...)
 	end
 	

@@ -21,7 +21,7 @@ directory. If not, please refer to
 -- man the text widget is so screwed up
 
 local function Text_SetSize(self, sz)
-	if IsDST() then
+	if IS_DST then
 		return self.SetSize(self, sz)
 	end
 
@@ -33,7 +33,7 @@ local function Text_SetSize(self, sz)
 end
 
 local function Text_GetSize(self)
-	if IsDST() then
+	if IS_DST then
 		return self.GetSize(self)
 	end
 

@@ -46,7 +46,7 @@ local function Describe(self, context)
 	end
 
 	-- fuel penalty
-	if world_type == -1 then -- IsDST()
+	if world_type == -1 then -- IS_DST
 		local wetness_mult = inst:GetIsWet() and TUNING.WET_FUEL_PENALTY or 1
 		--local mastery_mult = context.player.components.fuelmaster and context.player.components.fuelmaster:GetBonusMult(item, self.inst) or 1
 		

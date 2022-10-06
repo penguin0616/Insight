@@ -23,7 +23,7 @@ local function Describe(self, context)
 	local description = nil
 
 	if self.lastbrushcycle then
-		local today = (IsDST() and TheWorld.state.cycles) or GetClock().numcycles
+		local today = (IS_DST and TheWorld.state.cycles) or GetClock().numcycles
 		description = string.format(context.lstr.brushable.last_brushed, today - self.lastbrushcycle)
 	end
 

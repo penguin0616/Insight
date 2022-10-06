@@ -5,7 +5,7 @@ This file is not a part of Insight.
 
 setfenv(1, _G.Insight.env)
 
-if IsDST() then
+if IS_DST then
 	return require("components/deployhelper")
 end
 

@@ -352,7 +352,7 @@ return {
 		stress_points = "Puntos de estrés: %s",
 		display = "Estresores: %s",
 		stress_tier = "Nivel de estrés: %s",
-		tiers = (IsDST() and {
+		tiers = (IS_DST and {
 			[FARM_PLANT_STRESS.NONE] = "Ninguno",
 			[FARM_PLANT_STRESS.LOW] = "Bajo",
 			[FARM_PLANT_STRESS.MODERATE] = "Moderado",
@@ -755,7 +755,7 @@ return {
 		work2 = "<color=#DED15E>%s<sub>estructura</sub></color>",
 		perish = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
 		perish2 = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
-		materials = (IsDST() and {
+		materials = (IS_DST and {
 			[MATERIALS.WOOD] =  "Madera",
 			[MATERIALS.STONE] =  "Piedra",
 			[MATERIALS.HAY] =  "Heno",

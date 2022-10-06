@@ -346,7 +346,7 @@ local function combat_fn()
 	inst.GetIncludePhysicsRadius = GetIncludePhysicsRadius
 	inst.SetIncludePhysicsRadius = SetIncludePhysicsRadius
 
-	if IsDST() then
+	if IS_DST then
 		inst.entity:AddNetwork() -- only net vars made after network work properly
 
 		inst.net_state = net_tinybyte(inst.GUID, "insight_indicator_state", "insight_indicator_state_dirty") -- 0-7

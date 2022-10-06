@@ -50,7 +50,7 @@ local containers = setmetatable({}, {__mode = "k"})
 local listeners_hooked = setmetatable({}, {__mode = "kv"})
 
 local function GetContainerItems(self)
-	if IsDST() then
+	if IS_DST then
 		-- November 11, 2020; workshop-1467214795 messes with container somehow, don't care to investigate atm
 		if self.GetAllItems == nil then
 			--cprint("GetAllItems is nil?")

@@ -183,7 +183,7 @@ local oldItemTile_SetPercent = ItemTile.SetPercent
 local ITEMTILE_DISPLAY = "percentages"; 
 AddLocalPlayerPostInit(function(_, context) 
 	ITEMTILE_DISPLAY = context.config["itemtile_display"]
-	if IsDS() then 
+	if IS_DS then 
 		-- thought only refresh was needed, but creating a Hamlet as Willow leads to a crash because components.inventory.itemslots has the lighter,
 		-- but controls.inv.inv is missing the slots so...  
 		localPlayer.HUD.controls.inv:Rebuild()
@@ -265,7 +265,7 @@ function ItemTile:SetPercent(percent, ...)
 			value = tostring(value)
 			self.percent:SetString(value)
 
-			if IsDS() then -- this flips over and goes tiny in DST
+			if IS_DS then -- this flips over and goes tiny in DST
 				if #value > 4 then
 					-- today i learned Text:SetSize() does nothing, because they messed up while coding the text widget and made :GetSize() into :SetSize() overriding the working one.
 					-- real nice. 
@@ -524,7 +524,7 @@ end
 --======================================== Crock Pot =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-if IsDST() then
+if IS_DST then
 	local CookbookPageCrockPot = require("widgets/redux/cookbookpage_crockpot")
 
 	local oldPopulateRecipeDetailPanel = CookbookPageCrockPot.PopulateRecipeDetailPanel
@@ -899,10 +899,10 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 		-- explains why the text overlap from boats happened
 		--mprint('t2:', text)
 		--[[
-		local YOFFSETDOWN = (IsDS() and 30) or -50
+		local YOFFSETDOWN = (IS_DS and 30) or -50
 		local w, h = hoverer.insightText:GetRegionSize()
 
-		local line_buffer = (IsDS() and 4) or 7
+		local line_buffer = (IS_DS and 4) or 7
 		
 		
 		local r = h - (30 * line_buffer)
@@ -910,7 +910,7 @@ AddClassPostConstruct("widgets/hoverer", function(hoverer)
 			r = 0
 		end
 
-		if IsDST() then
+		if IS_DST then
 			r = h
 		end
 
@@ -1135,7 +1135,7 @@ end)
 --==========================================================================================================================
 
 local InsightMenuScreen = import("screens/insightmenuscreen")
-TheInput:AddControlHandler(IsDST() and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU, function(down) -- CONTROL_FOCUS_UP
+TheInput:AddControlHandler(IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU, function(down) -- CONTROL_FOCUS_UP
 	if down then
 		return
 	end
@@ -1157,7 +1157,7 @@ TheInput:AddControlHandler(IsDST() and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEB
 	end
 end)
 
-if IsDS() then
+if IS_DS then
 	AddClassPostConstruct("screens/pausescreen", function(pauseScreen)
 		local oldGetHelpText = pauseScreen.GetHelpText
 		pauseScreen.GetHelpText = function(self)
@@ -1171,7 +1171,7 @@ if IsDS() then
 	end)
 end
 
-if IsDST() then
+if IS_DST then
 	AddClassPostConstruct("screens/playerstatusscreen", function(playerStatusScreen)
 		local oldGetHelpText = playerStatusScreen.GetHelpText
 		playerStatusScreen.GetHelpText = function(self)

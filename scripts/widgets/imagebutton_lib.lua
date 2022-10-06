@@ -79,7 +79,7 @@ lib.ForceImageSize = ImageButton_ForceImageSize
 lib.UseFocusOverlay = ImageButton_UseFocusOverlay
 
 lib.OverrideFocuses = function(self)
-    if IsDST() then
+    if IS_DST then
         return
     end
 	self.OnGainFocus = ImageButton_OnGainFocus

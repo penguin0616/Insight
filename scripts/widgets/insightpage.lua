@@ -92,7 +92,7 @@ end
 
 local ScrollList = Class(Widget, function(self)
 	Widget._ctor(self, "yep")
-	assert(IsDS(), "should not exist in DST")
+	assert(IS_DS, "should not exist in DST")
 
 	local scrollbutton_width, scrollbutton_height = 20, 20
 	
@@ -281,7 +281,7 @@ local InsightPage = Class(Widget, function(self, name)
 	self.main:SetSize(400, 290)
 	self.main:SetPosition(5, -25)
 
-	if IsDST() then
+	if IS_DST then
 		self.list = self.main:AddChild(MakeGrid())
 	else
 		self.list = self.main:AddChild(ScrollList())

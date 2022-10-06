@@ -23,7 +23,7 @@ local yotb_helper = import("helpers/yotb")
 
 -- known categories as of February 9, 2021
 --local CATEGORIES = { "WAR", "DOLL", "FESTIVE", "NATURE", "ROBOT", "ICE", "FORMAL", "VICTORIAN", "BEAST" }
-if not IsDST() then
+if not IS_DST then
 	return { Describe = function() end }
 end
 

@@ -23,7 +23,7 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 --[[ Private Variables ]]
 --------------------------------------------------------------------------
-if not IsDST() then
+if not IS_DST then
 	return {}
 end
 

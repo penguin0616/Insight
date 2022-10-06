@@ -143,7 +143,7 @@ local function GenerateConfiguration()
 
 	local local_config = {}
 
-	if IsDS() then
+	if IS_DS then
 		mprint("DS config generation")
 		for i,v in pairs(config_data) do
 			if not util.table_find(v.tags, "ignore") then 
@@ -405,7 +405,7 @@ local function placer_postinit_fn(inst, radius)
 	inst.placer_range:AddTag("placer")
 	inst.placer_range:SetVisible(true)
 
-	if IsDST() or GetWorldType() == 3 then
+	if IS_DST or GetWorldType() == 3 then
 		inst.components.placer:LinkEntity(inst.placer_range) -- i don't remember why i need to do this
 	end
 end
@@ -459,7 +459,7 @@ local function LoadLocalPlayer(player)
 		end
 		mprint("Initializers complete" ..  ((SIM_DEV and "...") or "!"))
 
-		if IsDST() then 
+		if IS_DST then 
 			rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ClientInitialized"))
 		end
 
@@ -687,7 +687,7 @@ end)
 --]]
 
 AddPrefabPostInit("cave_entrance_open", function(inst)
-	if IsDS() then return end -- does this even exist in DS
+	if IS_DS then return end -- does this even exist in DS
 	local cfg = GetModConfigData("sinkhole_marks", true)
 	if cfg == 0 then return end
 
@@ -717,7 +717,7 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 end)
 
 AddPrefabPostInit("cave_exit", function(inst)
-	if IsDS() then return end
+	if IS_DS then return end
 	local cfg = GetModConfigData("sinkhole_marks", true)
 	if cfg == 0 then return end
 
@@ -763,7 +763,7 @@ end)
 
 AddPrefabPostInit("firesuppressor", function(inst) 
 	-- tuning says default range is 15
-	if IsDST() then return end
+	if IS_DST then return end
 	inst.snowball_range = SpawnPrefab("insight_range_indicator")
 	inst.snowball_range:Attach(inst)
 	inst.snowball_range:SetRadius(TUNING.FIRE_DETECTOR_RANGE / WALL_STUDS_PER_TILE)
@@ -775,7 +775,7 @@ AddPrefabPostInit("firesuppressor", function(inst)
 end)
 
 AddPrefabPostInit("sprinkler", function(inst) 
-	if IsDST() then return end
+	if IS_DST then return end
 	inst.range_indicator = SpawnPrefab("insight_range_indicator")
 	inst.range_indicator:Attach(inst)
 	inst.range_indicator:SetRadius(8 / WALL_STUDS_PER_TILE)
@@ -788,7 +788,7 @@ end)
 
 AddPrefabPostInit("basefan", function(inst) 
 	-- tuning says default range is 15
-	if IsDST() then return end
+	if IS_DST then return end
 	inst.range_indicator = SpawnPrefab("insight_range_indicator")
 	inst.range_indicator:Attach(inst)
 	inst.range_indicator:SetRadius(30 / WALL_STUDS_PER_TILE)
@@ -864,7 +864,7 @@ AddPrefabPostInit("wortox_soul_spawn", function(inst) -- the dropped one
 end)
 
 AddPlayerPostInit(function(player)
-	if IsDS() then
+	if IS_DS then
 		LoadLocalPlayer(player)
 
 		AddLocalPlayerPostInit(function(insight, context)
@@ -939,7 +939,7 @@ AddPlayerPostInit(function(player)
 	end)
 end)
 
-if IsDS() then
+if IS_DS then
 	require("components/dst_deployhelper")
 	AddComponentPostInit("placer", function(self)
 		local oldOnUpdate = self.OnUpdate
@@ -992,7 +992,7 @@ local function OnEntityManagerEventDS(self, event, inst)
 end
 
 
-if IsDST() then
+if IS_DST then
 	entityManager:AddListener("insight", OnEntityManagerEventDST)
 else
 	entityManager:AddListener("insight", OnEntityManagerEventDS)
@@ -1080,7 +1080,7 @@ AddLocalPlayerPostInit(function(insight_replica, context)
 end, true)
 --AddLocalPlayerPostRemove(combatHelper.Deactivate, true)
 
-if IsDST() then
+if IS_DST then
 	--[[
 	local oldLearnPlantStage = ThePlantRegistry.LearnPlantStage
 	ThePlantRegistry.LearnPlantStage = function(...)
@@ -1091,7 +1091,7 @@ if IsDST() then
 end
 
 -- until i can think of a better place for this
-if IsDST() then
+if IS_DST then
 	AddLocalPlayerPostInit(function(insight_replica, context)
 		if not localPlayer.HUD._StatusAnnouncer or not localPlayer.HUD._StatusAnnouncer.RegisterInterceptor then
 			return

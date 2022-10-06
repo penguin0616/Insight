@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- kramped.lua [Worldly]
 local function GetPlayerNaughtiness(player)
-	if IsDS() then
+	if IS_DS then
 		-- <3
 		local kramped = player.components.kramped
 		if kramped then
@@ -76,7 +76,7 @@ end
 -- @tparam Entity inst The living creature.
 -- @treturn number
 local function GetCreatureNaughtiness(inst)
-	if IsDST() then
+	if IS_DST then
 		return DST_GetCreatureNaughtiness(inst)
 	end
 

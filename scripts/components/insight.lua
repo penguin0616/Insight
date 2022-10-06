@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 setfenv(1, _G.Insight.env)
 
-if IsDS() then
+if IS_DS then
 	return import("components/insight_replica")
 end
 

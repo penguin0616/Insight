@@ -51,7 +51,7 @@ local Tab = Class(Widget, function(self, data)
 		end
 	end
 
-	if IsDST() then
+	if IS_DST then
 		self.background.scale_on_focus = false
 		self.background:UseFocusOverlay("listitem_thick_hover.tex")
 	else
@@ -83,7 +83,7 @@ function Tab:SetCurrent(bool)
 		self.background:SetTextures("images/dst/frontend_redux.xml", "listitem_thick_normal.tex")
 	end
 
-	if IsDST() then
+	if IS_DST then
 		self.background:ForceImageSize(self.width - 4, self.height - 4)
 	else
 		widgetLib.imagebutton.ForceImageSize(self.background, self.width - 4, self.height - 4)

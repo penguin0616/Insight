@@ -380,7 +380,7 @@ return {
 		stress_points = "压力值: %s",
 		display = "压力来源: %s",
 		stress_tier = "压力级别: %s",
-		tiers = (IsDST() and {
+		tiers = (IS_DST and {
 			[FARM_PLANT_STRESS.NONE] = "无",
 			[FARM_PLANT_STRESS.LOW] = "低",
 			[FARM_PLANT_STRESS.MODERATE] = "中",
@@ -783,7 +783,7 @@ return {
 		work2 = "<color=#DED15E>%s<sub>做工</sub></color>",
 		perish = "<color=MONSTER>提鲜</color>: <color=MONSTER>%s%%</color>",
 		perish2 = "<color=MONSTER>提鲜</color>: <color=MONSTER>%s%%</color>",
-		materials = (IsDST() and {
+		materials = (IS_DST and {
 			[MATERIALS.WOOD] = "木头",
 			[MATERIALS.STONE] = "石头",
 			[MATERIALS.HAY] = "干草",

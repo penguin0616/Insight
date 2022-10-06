@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- appraisable.lua
-if not IsDST() then
+if not IS_DST then
 	return { Describe = function() end }
 end
 

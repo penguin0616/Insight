@@ -22,7 +22,7 @@ directory. If not, please refer to
 local FIRE_TAGS = { "fire" }
 local function sanityfn(inst, target) -- inst is player
 	local delta = 0
-	if IsDST() and inst.components.temperature:IsFreezing() then
+	if IS_DST and inst.components.temperature:IsFreezing() then
 		delta = -TUNING.SANITYAURA_LARGE
 	end
 
@@ -34,7 +34,7 @@ local function sanityfn(inst, target) -- inst is player
 		local isBurning = false
 
 		if v.components.burnable then
-			if IsDST() then
+			if IS_DST then
 				isBurning = v.components.burnable:IsBurning()
 			else
 				isBurning = v.components.burnable.burning
@@ -47,7 +47,7 @@ local function sanityfn(inst, target) -- inst is player
 			sz = sz * math.min(max_rad, rad) / max_rad
 			local distsq = inst:GetDistanceSqToInst(v)
 
-			if IsDST() then
+			if IS_DST then
 				-- shift the value so that a distance of 3 is the minimum
 				distsq = distsq - 9
 			end
