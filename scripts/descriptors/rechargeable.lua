@@ -36,10 +36,12 @@ local function Describe(self, context)
 	percent = not isbadnumber(percent) and percent or 0
 
 	local remaining = self:GetTimeToCharge()
-	description = string.format(context.lstr.rechargeable.charged_in, 
-		ApplyColour(context.time:SimpleProcess(remaining), ST:Lerp(EN, percent))
-	)
-	alt_description = string.format(context.lstr.rechargeable.charge, Round(self.current, 0), Round(self.total, 0)) .. ", " .. description
+	if remaining / remaining == remaining then -- widgets/itemtile.lua:411
+		description = string.format(context.lstr.rechargeable.charged_in, 
+			ApplyColour(context.time:SimpleProcess(remaining), ST:Lerp(EN, percent))
+		)
+		alt_description = string.format(context.lstr.rechargeable.charge, Round(self.current, 0), Round(self.total, 0)) .. ", " .. description
+	end
 
 	if not (remaining > 0) then
 		description = nil
