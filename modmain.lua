@@ -77,7 +77,12 @@ local Insight = {
 	},
 	active_hunts = {},
 	descriptors = {}, -- 130 descriptors as of April 17, 2021
-	prefab_descriptors = {}, 
+	prefab_descriptors = {},  
+
+	post_inits = {
+		describe = {},
+		prefab_describe = {}
+	},
 	
 	COLORS = {
 		-- stats
@@ -1577,6 +1582,15 @@ function RepairInsightConfig(client)
 	end
 end
 
+--- Called whenever a descriptor describes something.
+function AddDescriptorPostDescribe(modname, descriptor, callback)
+	Insight.post_inits.describe[descriptor] = Insight.post_inits.describe[descriptor] or {}
+	
+	local posts = Insight.post_inits.describe[descriptor]
+
+	table.insert(posts, callback)
+end
+
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
@@ -1653,6 +1667,10 @@ AddComponentPostInit("combat", function(self)
 	else
 		dprint("oh no")
 	end
+end)
+
+AddComponentPostInit("clock", function(self)
+	import("helpers/clock"):Initialize(self)
 end)
 
 --[[

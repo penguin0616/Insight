@@ -20,8 +20,8 @@ directory. If not, please refer to
 
 -- clock.lua
 local module = {
-	initialized = true
-	netvars = {},
+	initialized = true,
+	netvars = {}
 }
 
 module.GetMoonPhaseCycle = function(self)
