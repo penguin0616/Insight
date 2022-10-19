@@ -2952,7 +2952,8 @@ if IS_DST then -- not in UI overrides because server needs access too
 			using_controller = TheInput:ControllerAttached(),
 			input_devices = TheInput:GetInputDevices(),
 		}
-
+		
+		report.steam_branch = TheSim:GetSteamBetaBranchName() -- "Default" "updatebeta"
 		report.bit_version = (is64bit and "64") or (is32bit and "32") or "?"
 		report.game_version = APP_VERSION
 		report.mods = GetMods() -- in case of compatability issues

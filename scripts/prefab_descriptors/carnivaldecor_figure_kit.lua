@@ -99,7 +99,8 @@ local function GetData(inst)
 	return {
 		rarity = rarity,
 		rarity_color = rarity_colors[rarity],
-		decor = rarity_decor_vale_map[rarity]
+		decor = rarity_decor_vale_map[rarity],
+		season = season
 	}
 end
 
@@ -122,7 +123,7 @@ local function Describe(inst, context)
 		local rarity = string.format(context.lstr.carnivaldecor_figure_kit.rarity,
 			ApplyColour(context.lstr.carnivaldecor_figure_kit.rarity_types[data.rarity], data.rarity_color)
 		)
-		local season = string.format(context.lstr.carnivaldecor_figure_kit.season, inst.carnival_season)
+		local season = string.format(context.lstr.carnivaldecor_figure_kit.season, data.season)
 		local decor = string.format(context.lstr.carnivaldecor.value, data.decor)
 		description = CombineLines(shape, rarity, season, decor)
 	end
