@@ -17,8 +17,8 @@ LICENSE in the form of a LICENSE file in the root of the source
 directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
--- batted.lua
 
+-- batted.lua
 local function Describe(self, context)
 	local description
 

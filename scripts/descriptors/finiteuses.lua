@@ -142,7 +142,7 @@ local function Describe(self, context)
 	end
 
 	return {
-		priority = 1,
+		priority = 10,
 		description = description,
 		alt_description = alt_description,
 		uses = math.ceil(uses)

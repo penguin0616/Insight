@@ -22,42 +22,6 @@ directory. If not, please refer to
 -- only using this for stuff i want information on but doesn't have any distinguishable components
 
 local CUSTOM_RANGES = {
-	book_tentacles = {
-		range = 8,
-		color = "#3B2249"
-	},
-	book_birds = {
-		range = 10,
-		color = Insight.COLORS.EGG
-	},
-	book_brimstone = {
-		range = 15,
-		color = "#DED15E"
-	},
-	book_sleep = {
-		range = 30,
-		color = "#525EAC",
-	},
-	book_gardening = { -- old one
-		range = 30,
-		color = Insight.COLORS.NATURE
-	},
-
-	book_meteor = {
-		range = TUNING.VOLCANOBOOK_FIRERAIN_RADIUS, -- im hoping that when book_meteor exists, this exists. == 5 in SW anyway.
-		color = Insight.COLORS.VEGGIE
-	},
-
-	book_horticulture = { -- new one
-		range = 30,
-		color = Insight.COLORS.NATURE
-	},
-	book_silviculture = {
-		range = 30,
-		color = Insight.COLORS.INEDIBLE
-	},
-
-
 	horn = {
 		range = TUNING.HORN_RANGE,
 		color = Insight.COLORS.EGG
