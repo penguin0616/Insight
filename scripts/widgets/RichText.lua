@@ -74,7 +74,7 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 	local obj = nil
 	local is_object = chunk:IsObject()
 
-	if is_object and chunk.object.class ~= "prefab" and chunk.object.class ~= "string" then
+	if is_object and chunk.object.class ~= "prefab" and chunk.object.class ~= "string" and chunk.object.class ~= "temperature" then
 		-- object
 		if chunk.object.class == "icon" then
 			local tex, atlas = _LookupIcon(chunk.object.value)
@@ -119,6 +119,13 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 				if typ ~= "string" then
 					text = "[string \"" .. chunk.object.value .. "\" -> " .. typ .. "]"
 				end 
+			elseif chunk.object.class == "temperature" then
+				if localPlayer then
+					local temp_style = localPlayer._insight_context.config["temperature_units"]
+					text = FormatTemperature(chunk.object.value, temp_style)
+				else
+					text = chunk.object.value
+				end
 			end
 		else
 			text = chunk.text

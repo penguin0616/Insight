@@ -28,18 +28,27 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 local STRINGS = STRINGS
 
 local module = {
-	temperature_units = {
-		game = function(temp) 
-			return math.floor(val+0.5) .. "\176"
-		end,
-		celsius = function(val) return math.floor(val/2 + 0.5) .. "\176C" end,
-		fahrenheit = function(val) return math.floor(0.9*(val) + 32.5).."\176F" end,
+	temperature = {
+		conversion_fns = {
+			game = function(temp)
+				return temp
+			end,
+			celsius = function(temp)
+				return temp/2
+			end,
+			fahrenheit = function(temp)
+				return 1.8 * (temp/2) + 32
+			end,
+		}
 	}
 }
+
+module.temperature.DEGREE_CHARACTER = utf8char(0xb0)
+module.temperature.GAME_FORMAT = "%.1f" .. module.temperature.DEGREE_CHARACTER
+module.temperature.CELSIUS_FORMAT = module.temperature.GAME_FORMAT .. "C"
+module.temperature.FAHRENHEIT_FORMAT = module.temperature.GAME_FORMAT .. "F"
+
 local Reader = import("reader")
-
-
-
 local Text = require("widgets/text") --FIXED_TEXT
 local known_bundles = setmetatable({}, {__mode = "k"})
 
@@ -349,6 +358,24 @@ function Round(num, places)
 	return tonumber(string.format("%." .. places .. "f", num)) or 0
 end
 
+function FormatTemperature(num, mode)
+	if mode == "game" then
+		return string.format(module.temperature.GAME_FORMAT, num)
+	elseif mode == "celsius" then
+		return string.format(
+			module.temperature.CELSIUS_FORMAT, 
+			module.temperature.conversion_fns.celsius(tonumber(num))
+		)
+	elseif mode == "fahrenheit" then
+		return string.format(
+			module.temperature.FAHRENHEIT_FORMAT, 
+			module.temperature.conversion_fns.fahrenheit(tonumber(num))
+		)
+	else
+		return error("bad temperature mode")
+	end
+end
+
 --- Calculates Region Size of a Text Widget
 -- @tparam string str The text you want to measure.
 -- @tparam Font font
@@ -388,26 +415,8 @@ end
 -- @tparam ?number|nil max (optional) The minimum value.
 -- @treturn number
 function module.math_clamp(num, min, max)
-	local typ1, typ2, typ3 = type(num), type(min), type(max)
-
-	assert(typ1, "bad argument #1 to math_clamp (number expected, got " .. typ1 .. ")")
-	assert(min or max, "A minimum or maximum has to be provided for math_clamp.")
-
-	if min then
-		assert(typ2, "bad argument #2 to math_clamp (number expected, got " .. typ2 .. ")")
-		if num < min then
-			num = min
-		end
-	end
-
-	if max then
-		assert(typ3, "bad argument #3 to math_clamp (number expected, got " .. typ3 .. ")")
-		if num > max then
-			num = max
-		end
-	end
-	
-	return num
+	-- previous code was a disgrace
+	return (num < min and min) or (num > max and max) or num
 end
 
 --- Returns the first result of the table that agrees with param 'fn'

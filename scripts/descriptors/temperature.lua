@@ -64,13 +64,16 @@ local function GetTemperatureThresholds(temp, ambient)
 end
 
 local function Describe(self, context)
+	if self.inst.prefab == "heatrock" then
+		return
+	end
+
 	local description, alt_description
 
 	local temp = self:GetCurrent()
-	local temperatureValue = Round(temp, 1)
+	description = string.format(context.lstr.temperature, temp)
 
-	description = string.format(context.lstr.temperature, temperatureValue)
-
+	--[[
 	if world_type == -1 and self.inst:HasTag("heatrock") and self.inst.prefab ~= "heatrock" then
 		local min, max, level = GetTemperatureThresholds(temp, TheWorld.state.temperature)
 		min = min or self.mintemp
@@ -93,6 +96,7 @@ local function Describe(self, context)
 			ApplyColour(Round(max, 1), target_color) -- 4
 		))
 	end
+	--]]
 
 	return {
 		priority = 0,
@@ -104,4 +108,6 @@ end
 
 
 
-return {}
+return {
+	Describe = Describe
+}

@@ -112,6 +112,29 @@ return {
 	-- boathealth.lua
 	-- use 'health' from 'health'
 
+	-- book.lua
+	book = {
+		wickerbottom = {
+			tentacles = "Summons <color=%s>%d tentacles</color>",
+			birds = "Summons up to <color=%s>%d birds</color>",
+			brimstone = "Summons <color=%s>%d lightning strikes</color>",
+			horticulture = "Grows up to <color=%s>%d plants</color>",
+			horticulture_upgraded = "Grows and tends up to <color=%s>%d plants</color>",
+			--silviculture = "Grows basic resource plants.",
+			--fish = "",
+			--fire = ""
+			web = "Summons a <color=%s>spider web</color> that lasts for <color=%s>%s</color>",
+			--temperature = ""
+			light = "Summons a <color=LIGHT>light</color> for <color=LIGHT>%s</color>",
+			-- light_upgraded is just light
+			rain = "Toggles <color=WET>rain</color> and <color=WET>waters nearby plants</color>",
+			bees = "Summons <color=%s>%d bees</color> up to <color=%s>%d</color>",
+			research_station = "Prototype charges: %s",
+			_research_station_charge = "<color=#aaaaee>%s</color> (%d)",
+			meteor = "Summons <color=%s>%d meteors</color>",
+		},
+	},
+
 	-- breeder.lua
 	breeder_tropical_fish = "<color=#64B08C>Peixe Tropical</color>",
 	--breeder_fish2 = "Tropical Wanda", --in code but unused
@@ -530,6 +553,9 @@ return {
 	absorption = " : Absorvendo %s%% do dano.",
 	naughtiness = "Travessura: %s",
 	player_naughtiness = "Sua travessura: %s / %s",
+	
+	-- heatrock.lua
+	heatrock_temperature = "Temperatura: %s < %s < %s",
 
 	-- herdmember.lua
 	herd_size = "Tamanho do rebanho: %s / %s",

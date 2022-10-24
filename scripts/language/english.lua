@@ -552,6 +552,9 @@ return {
 	naughtiness = "Naughtiness: %s",
 	player_naughtiness = "Your naughtiness: %s / %s",
 
+	-- heatrock.lua [Prefab]
+	heatrock_temperature = "Temperature: %s < %s < %s",
+
 	-- herdmember.lua
 	herd_size = "Herd size: %s / %s",
 
@@ -902,7 +905,7 @@ return {
 	stickable = "<color=FISH>Mussels</color>: %s",
 
 	-- temperature.lua
-	temperature = "Temperature: %s",
+	temperature = "Temperature: <temperature=%s>",
 
 	-- terrarium.lua [Prefab]
 	terrarium = {

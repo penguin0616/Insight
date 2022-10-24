@@ -441,6 +441,8 @@ local function LoadLocalPlayer(player)
 
 	if IsPlayerClientLoaded(player) then
 		localPlayer = player
+		localPlayer._insight_context = GetPlayerContext(localPlayer)
+
 		player:ListenForEvent("onremove", LocalPlayerRemoved)
 		--mprint("LOCALPLAYER FOUND")
 
@@ -449,7 +451,7 @@ local function LoadLocalPlayer(player)
 			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady - x))
 
 			local todo = onLocalPlayerReady[x + 1]
-			todo.fn(GetInsight(localPlayer), GetPlayerContext(localPlayer))
+			todo.fn(GetInsight(localPlayer), localPlayer._insight_context)
 			
 			if todo.persists then
 				x = x + 1

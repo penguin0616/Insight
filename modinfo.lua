@@ -262,6 +262,24 @@ local english = {
 			},
 		},
 	},
+	temperature_units = {
+		LABEL = "Temperature units",
+		HOVER = "How to display temperature",
+		OPTIONS = {
+			["game"] = {
+				DESCRIPTION = "Game",
+				HOVER = "Freeze: 0, Overheat: 70"
+			},
+			["celsius"] = {
+				DESCRIPTION = "Celsius",
+				HOVER = "Freeze: 0, Overheat: 35"
+			},
+			["fahrenheit"] = {
+				DESCRIPTION = "Fahrenheit",
+				HOVER = "Freeze: 32, Overheat: 158"
+			},
+		},
+	},
 	highlighting = {
 		LABEL = "Highlighting",
 		HOVER = "Whether item highlighting is enabled. (\"Finder\")",
@@ -1705,6 +1723,24 @@ local chinese = {
 			["both_short"] = {
 				DESCRIPTION = "兼用两种模式（精简）",
 				HOVER = "简化版的双模式显示"
+			},
+		},
+	},
+	temperature_units = {
+		LABEL = "Temperature units",
+		HOVER = "How to display temperature",
+		OPTIONS = {
+			["game"] = {
+				DESCRIPTION = "Game",
+				HOVER = "Freeze: 0, Overheat: 70"
+			},
+			["celsius"] = {
+				DESCRIPTION = "Celsius",
+				HOVER = "Freeze: 0, Overheat: 35"
+			},
+			["fahrenheit"] = {
+				DESCRIPTION = "Fahrenheit",
+				HOVER = "Freeze: 32, Overheat: 158"
 			},
 		},
 	},
@@ -3182,6 +3218,24 @@ local portuguese = {
 			},
 		},
 	},
+	temperature_units = {
+		LABEL = "Temperature units",
+		HOVER = "How to display temperature",
+		OPTIONS = {
+			["game"] = {
+				DESCRIPTION = "Game",
+				HOVER = "Freeze: 0, Overheat: 70"
+			},
+			["celsius"] = {
+				DESCRIPTION = "Celsius",
+				HOVER = "Freeze: 0, Overheat: 35"
+			},
+			["fahrenheit"] = {
+				DESCRIPTION = "Fahrenheit",
+				HOVER = "Freeze: 32, Overheat: 158"
+			},
+		},
+	},
 	highlighting = {
 		LABEL = "Destacar item",
 		HOVER = "Se o destaque do item está ativado. (\"Finder\")",
@@ -4654,6 +4708,24 @@ local spanish = {
 			},
 		},
 	},
+	temperature_units = {
+		LABEL = "Temperature units",
+		HOVER = "How to display temperature",
+		OPTIONS = {
+			["game"] = {
+				DESCRIPTION = "Game",
+				HOVER = "Freeze: 0, Overheat: 70"
+			},
+			["celsius"] = {
+				DESCRIPTION = "Celsius",
+				HOVER = "Freeze: 0, Overheat: 35"
+			},
+			["fahrenheit"] = {
+				DESCRIPTION = "Fahrenheit",
+				HOVER = "Freeze: 32, Overheat: 158"
+			},
+		},
+	},
 	highlighting = {
 		LABEL = "Resaltado",
 		HOVER = "Configura si se activa el resaltado de objetos. (\"Buscador\")",
@@ -6109,6 +6181,17 @@ configuration_options = {
 			--{data = "none"},
 		}, 
 		default = "gametime",
+		client = true,
+		tags = {},
+	},
+	{
+		name = "temperature_units",
+		options = {
+			{data = "game"},
+			{data = "celsius"},
+			{data = "fahrenheit"},
+		}, 
+		default = "game",
 		client = true,
 		tags = {},
 	},

@@ -70,9 +70,7 @@ local function Describe(inst, context)
 	local description, alt_description
 
 	local temp = temperatureComponent:GetCurrent()
-	local temperatureValue = Round(temp, 1)
-
-	description = string.format(context.lstr.temperature, temperatureValue)
+	description = string.format(context.lstr.temperature, temp)
 
 	if world_type == -1 then
 		local min, max, level = GetTemperatureThresholds(temp, TheWorld.state.temperature)
@@ -83,18 +81,18 @@ local function Describe(inst, context)
 
 		local target_color = colors[level + 1]
 
-		alt_description = string.format(context.lstr.temperature, string.format("%s < %s < %s",
-			ApplyColour(Round(min, 1), colors[level]), -- 1
+		alt_description = string.format(context.lstr.heatrock_temperature, 
+			ApplyColour("<temperature="..min..">", colors[level]), -- 1
 			--ApplyColour(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(target_color, percent)),
 			ApplyColour(
-				"<sub>" .. level .. " </sub>" .. temperatureValue .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>",
+				"<sub>" .. level .. " </sub>" .. "<temperature="..temp..">" .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>",
 				(
 				colors[level]:Lerp(target_color, percent)
 				) or
 				"#ffffff"
 			),
-			ApplyColour(Round(max, 1), target_color)-- 4
-		))
+			ApplyColour("<temperature="..max..">", target_color)-- 4
+		)
 	end
 
 	return {
