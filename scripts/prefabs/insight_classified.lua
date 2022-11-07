@@ -98,7 +98,7 @@ local function OnEntityReplicated(inst)
 		mprint("Unable to initialize classified data for insight_classified, no parent")
 
 	elseif inst._parent.replica.insight == nil then
-		mprint("Unable to initialize classified data for insight_classified, no Insight")
+		mprint("Unable to initialize classified data for insight_classified, no Insight") -- This seems to happen on rare occasion with a c_reset.....
 
 	else
 		inst._parent.insight_classified = inst

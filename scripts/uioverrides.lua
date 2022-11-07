@@ -25,7 +25,6 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Basic ===========================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-local ItemTile = require("widgets/itemtile")
 local CraftSlot = require("widgets/craftslot")
 local IngredientUI = require("widgets/ingredientui")
 local InsightButton = import("widgets/insightbutton")
@@ -172,126 +171,10 @@ AddClassPostConstruct("widgets/text", function(text)
 	text.InsightSetSize = widgetLib.text.SetSize
 end)
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== Item Tile =======================================================================
---==========================================================================================================================
---==========================================================================================================================
--- Handler for ItemTile:SetPercent()
--- created for issue #5
-local oldItemTile_SetPercent = ItemTile.SetPercent
-local ITEMTILE_DISPLAY = "percentages"; 
-AddLocalPlayerPostInit(function(_, context) 
-	ITEMTILE_DISPLAY = context.config["itemtile_display"]
-	if IS_DS then 
-		-- thought only refresh was needed, but creating a Hamlet as Willow leads to a crash because components.inventory.itemslots has the lighter,
-		-- but controls.inv.inv is missing the slots so...  
-		localPlayer.HUD.controls.inv:Rebuild()
-		localPlayer.HUD.controls.inv:Refresh()
-	end
-end);
-
-function ItemTile:SetPercent(percent, ...)
-	--dprint("setpercent", ITEMTILE_DISPLAY, percent, ...)
-	if not localPlayer then
-		return oldItemTile_SetPercent(self, percent, ...)
-	end
-	
-	--dprint('yep', GetModConfigData("itemtile_display", true))
-	--dprint('yep', self.item, self, ...) 
-
-	local cfg = ITEMTILE_DISPLAY
-	
-	if (cfg == "percentages") or IsForge() then
-		return oldItemTile_SetPercent(self, percent, ...)
-	end
-
-	--dprint('hello')
-	
-	if not self.percent then
-		-- have klei take care of setting up the percent first.
-		oldItemTile_SetPercent(self, percent, ...)
-		if not self.percent then
-			--dprint("Unable to :SetPercent()")
-		end
-
-	end
-
-	if cfg == "none" then
-		if self.item and self.percent then
-			self.percent:SetString(nil)
-		end
-
-		return
-	end
-
-	if self.item:HasTag("hide_percentage") then
-		return
-	end
-
-	if self.item and self.percent then
-		--dprint('oh')
-		local value
-		
-		local itemInfo = RequestEntityInformation(self.item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
-
-		if itemInfo then
-			if itemInfo.special_data.temperature then -- thermal stone, coming in STRONG
-				value = itemInfo.special_data.temperature.temperatureValue
-
-			elseif itemInfo.special_data.armor_durability then
-				value = itemInfo.special_data.armor_durability.durabilityValue
-
-			elseif itemInfo.special_data.fueled then
-				if cfg == "numbers" then
-					value = itemInfo.special_data.fueled.remaining_time
-				else
-					local val_to_show = percent*100
-					if val_to_show > 0 and val_to_show < 1 then
-						val_to_show = 1
-					end
-					value = string.format("%2.0f%%", val_to_show)
-				end
-			elseif itemInfo.special_data.finiteuses then
-				value = itemInfo.special_data.finiteuses.uses
-
-			end
-		end
-
-		--dprint("hey", value)
-
-		if value then
-			--dprint('right', value)
-			value = tostring(value)
-			self.percent:SetString(value)
-
-			if IS_DS then -- this flips over and goes tiny in DST
-				if #value > 4 then
-					-- today i learned Text:SetSize() does nothing, because they messed up while coding the text widget and made :GetSize() into :SetSize() overriding the working one.
-					-- real nice. 
-					--self.percent.inst.TextWidget:SetSize((LOC and LOC.GetTextScale() or 1) * (42 - (#value - 4) * 2))
-					self.percent:InsightSetSize(42 - (#value - 4) * 3)
-				else
-					--self.percent:SetSize(42) -- default
-					self.percent:InsightSetSize(42) -- default
-				end
-			else
-				if #value > 4 then
-					self.percent:SetSize(42 - (#value - 4) * 2)
-				else
-					self.percent:SetSize(42) -- default
-				end
-			end
-
-			-- don't want to trigger it again
-			return
-		end
-	end
-	
-
-	return oldItemTile_SetPercent(self, percent, ...)
-end
-
+--========================================================================================================================--
+--= Item Tile ============================================================================================================--
+--========================================================================================================================--
+import("uichanges/itemtile").Initialize()
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -417,12 +300,6 @@ if CraftingMenuWidget and CraftingMenuHUD then
 		return oldClose(self, ...)
 	end
 end
-
-
-
-
-
-
 
 --==========================================================================================================================
 --==========================================================================================================================

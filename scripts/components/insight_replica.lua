@@ -203,6 +203,7 @@ local Insight = Class(function(self, inst)
 	end
 
 	if IS_DST then
+		mprint("Insight Replica added")
 		if TheWorld.ismastersim then
 			self.classified = inst.insight_classified
 
@@ -216,6 +217,7 @@ local Insight = Class(function(self, inst)
 end)
 
 function Insight:OnRemoveFromEntity()
+	mprint("Insight Replica removed")
 	if self.classified ~= nil then
         if TheWorld.ismastersim then
             self.classified = nil
