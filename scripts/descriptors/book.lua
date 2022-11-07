@@ -148,7 +148,7 @@ WICKER_BOOK_INFO.book_web.DescribeBook = function(data, context)
 	return {
 		name = "book_web",
 		priority = WICKER_BOOK_INFO_PRIORITY,
-		description = string.format(context.lstr.book.wickerbottom.web, data.color, data.color, context.time:SimpleProcess(data.duration))
+		description = string.format(context.lstr.book.wickerbottom.web, data.color, data.color, context.time:SimpleProcess(data.duration, "realtime_short"))
 	}
 end
 WICKER_BOOK_INFO.book_light.DescribeBook = function(data, context)
