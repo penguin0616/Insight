@@ -92,6 +92,45 @@ local function GetRecipeURL(recipe)
 end
 
 --================================================================================================================================================================--
+--= Crock Pot's Cookbook =========================================================================================================================================--
+--================================================================================================================================================================--
+function CookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
+	-- there's self.details_root, and this details_root, so its technically self.details_root.details_root even though that doesnt actually work
+	local details_root = module.oldCookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
+
+	local context = localPlayer and GetPlayerContext(localPlayer)
+	if not context or not context.config["display_crafting_lookup_button"] then
+		--dprint("rejected, 1", self.recipe and self.recipe.product)
+		return details_root
+	end
+
+	local header
+	for i,v in pairs(details_root:GetChildren()) do
+		if v.name == "Text" and v:GetString() == data.name then
+			header = v
+			break
+		end
+	end
+
+	if not header then return details_root end
+
+	self.lookup = header:AddChild(InsightButton())
+	widgetLib.imagebutton.ForceImageSize(self.lookup.button, header:InsightGetSize(), header:InsightGetSize())
+	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:InsightGetSize() / 2, 0)
+	self.lookup.button.scale_on_focus = false
+	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
+	self.lookup.button:SetTooltip("Click to lookup item") -- wont work in cookbook, overlay reasons i think
+
+	self.lookup:SetOnClick(function()
+		-- the wiki url automatically resolves spaces to underscores.
+		local title = header:GetString()
+		VisitURL("https://dontstarve.fandom.com/wiki/" .. title) 
+	end)
+
+	return details_root
+end
+
+--================================================================================================================================================================--
 --= Old Crafting Menu ============================================================================================================================================--
 --================================================================================================================================================================--
 --- The replacement for the default RecipePopup.Refresh()
@@ -237,6 +276,35 @@ module.HookNewCraftingMenu = function()
 
 	module.oldCraftingMenuDetails_PopulateRecipeDetailPanel = CraftingMenuDetails.PopulateRecipeDetailPanel
 	CraftingMenuDetails.PopulateRecipeDetailPanel = CraftingMenuDetails_PopulateRecipeDetailPanel
+end
+
+module.Initialize = function()
+	if module.initialized then
+		errorf("Cannot initialize %s more than once.", debug.getinfo(1, "S"):match("([%w_]+)%.lua$"))
+		return
+	end
+
+	module.initialized = true
+
+	-- Crafting Menu
+	if module.IsUsingNewCraftingMenu() then
+		module.HookNewCraftingMenu()
+	elseif module.IsUsingOldCraftingMenu() then
+		module.HookOldCraftingMenu()
+	else
+		if DEBUG_ENABLED then
+			error("Unable to detect crafting menu!")
+		else
+			mprint("Unable to detect crafting menu!")
+		end
+	end
+
+	-- Cookbook
+	if IS_DST then
+		local CookbookPageCrockPot = require("widgets/redux/cookbookpage_crockpot")
+		module.oldCookbookPageCrockPot_PopulateRecipeDetailPanel = CookbookPageCrockPot.PopulateRecipeDetailPanel
+		CookbookPageCrockPot.PopulateRecipeDetailPanel = CookbookPageCrockPot_PopulateRecipeDetailPanel
+	end
 end
 
 
