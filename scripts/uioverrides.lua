@@ -512,6 +512,63 @@ end)
 --======================================== FollowText ======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local function countnewlines(x)
+	local str = tostring(x)
+	local count = 0
+	str:gsub("\n", function() count=count+1 end)
+	return count
+end
+
+AddClassPostConstruct("widgets/controls", function(controls)
+	-- This is whatever is currently "selected", text is always the available actions.
+	-- Starts with a newline (I assume for the entity name)
+	-- See attack hit for notes on attack action.
+	local old1 = controls.playeractionhint.SetTarget
+	controls.playeractionhint.SetTarget = function(self, ...)
+		--mprint("playeractionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
+		return old1(self, ...)
+	end
+
+	-- This is whatever is currently "selected"
+	-- Text is always starts with the entity name
+	-- Text doesn't start with a newline, has 1 newline for every line in old1
+	--[==[Ex:
+		if playeractionhint is 
+[[
+(Y) Inspect
+(A) Pickup]]
+		then this text is
+[[Twigs
+ 
+ 
+]] (aka "Twigs\n \n ")
+	]==]
+	local old2 = controls.playeractionhint_itemhighlight.SetTarget
+	controls.playeractionhint_itemhighlight.SetTarget = function(self, ...)
+		--mprint("playeractionhint_itemhighlight SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
+		return old2(self, ...)
+	end
+
+	-- This is a secondary selector that shows the attack action on a nearby mob that isn't the primary focus
+	-- If a target with this attackhint becomes the primary focus, it can no longer be the target here.
+	-- Text doesn't start with a newline, nor any ending newlines
+	-- Text is initially empty until assigned to the "(X) Attack" action
+	local old3 = controls.attackhint.SetTarget
+	controls.attackhint.SetTarget = function(self, ...)
+		--mprint("attackhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
+		return old3(self, ...)
+	end
+
+	-- This is for turf related stuff and placing structures
+	-- Text doesn't start with a newline or end with one
+	-- Can either be "Dig" or "Place Ground" newline (and space?) "Cancel"
+	-- The text is attached to the player for pitchforking and placing structures, and is attached to the tile grid when placing turf
+	local old4 = controls.groundactionhint.SetTarget
+	controls.groundactionhint.SetTarget = function(self, ...)
+		--mprint("groundactionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
+		return old4(self, ...)
+	end
+end)
 --[[
 local follows = {} -- i = followtext
 --local targets = {} 

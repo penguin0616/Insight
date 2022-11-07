@@ -42,7 +42,7 @@ local InsightMenuScreen = Class(Screen, function(self)
 	self.menu:SetPosition(0, 0)
 	self.menu:Show()
 
-	GetInsight(localPlayer):MaintainMenu(self.menu)
+	localPlayer.replica.insight:MaintainMenu(self.menu)
 end)
 
 function InsightMenuScreen:GetHelpText()

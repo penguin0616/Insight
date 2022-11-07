@@ -27,6 +27,18 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 
 local control_cache = {}
 
+local KNOWN_CONTROLS = {
+	LEFT_ANALOG_CLICK = (IS_DST and CONTROL_MENU_MISC_3) or nil, -- 70 | nil
+	RIGHT_ANALOG_CLICK = (IS_DST and CONTROL_MENU_MISC_4) or CONTROL_OPEN_DEBUG_MENU, -- 71 | 62
+}
+setmetatable(KNOWN_CONTROLS, {
+	__index = function(self, index)
+		errorf("Attempt to retrieve KNOWN_CONTROL '%s', which does not exist right now.", index)
+	end
+})
+
+-- print(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_DEBUG_MENU))
+
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
@@ -44,5 +56,5 @@ local function OnControl() end
 --TheInput:AddControlHandler(OnControl)
 
 return {
-
+	KNOWN_CONTROLS = KNOWN_CONTROLS
 }
