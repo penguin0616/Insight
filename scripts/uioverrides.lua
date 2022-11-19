@@ -520,6 +520,14 @@ local function countnewlines(x)
 	return count
 end
 
+STRINGS.NAMES.BEEFALO = "B33\nFA\nLO"
+
+Text = require"widgets/text"
+_G.txt = function(str)
+	return Text(UIFONT, 30, str)
+end
+
+
 AddClassPostConstruct("widgets/controls", function(controls)
 	-- This is whatever is currently "selected", text is always the available actions.
 	-- Starts with a newline (I assume for the entity name)
@@ -569,17 +577,19 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		--mprint("groundactionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
 		return old4(self, ...)
 	end
+
+	STRINGS.NAMES.TWIGS = "B33f\nalo"
 	
 	local FollowText = require"widgets/followtext"
 	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, 28))
 	controls.primaryInsightText:SetHUD(controls.owner.HUD.inst)
-    controls.primaryInsightText:SetOffset(Vector3(-400, 100, 0))
+    controls.primaryInsightText:SetOffset(Vector3(400, 100, 0))
     controls.primaryInsightText:Hide()
 
 
 	controls.primaryInsightText2 = controls:AddChild(FollowText(TALKINGFONT, 28))
 	controls.primaryInsightText2:SetHUD(controls.owner.HUD.inst)
-    controls.primaryInsightText2:SetOffset(Vector3(400, 100, 0))
+    controls.primaryInsightText2:SetOffset(Vector3(800, 100, 0))
     controls.primaryInsightText2:Hide()
 	-- controls.primaryInsightText:SetSize(28)
 
@@ -609,9 +619,9 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			-- self.playeractionhint_itemhighlight.text:GetString() .. followerWidget.text:GetString()
 
 			local offsetx, offsety = followerWidget:GetScreenOffset()
-        	self.primaryInsightText:SetScreenOffset(offsetx, offsety)
+        	--self.primaryInsightText:SetScreenOffset(offsetx, offsety)
         	self.primaryInsightText:SetTarget(followerWidget.target)
-			self.primaryInsightText2:SetScreenOffset(offsetx, offsety)
+			--self.primaryInsightText2:SetScreenOffset(offsetx, offsety)
         	self.primaryInsightText2:SetTarget(followerWidget.target)
 
 			local newlines_of_space_needed = countnewlines(followerWidget.text:GetString())
@@ -622,8 +632,8 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			--mprint(newlines_of_space_needed2, "|"..self.playeractionhint_itemhighlight.text:GetString().."|")
 
 
-			self.primaryInsightText.text:SetString("X"..followerWidget.text:GetString())
-			self.primaryInsightText2.text:SetString("X"..followerWidget.text:GetString())
+			self.primaryInsightText.text:SetString("RichText"..followerWidget.text:GetString())
+			self.primaryInsightText2.text:SetString("NormText"..followerWidget.text:GetString())
 			
 		else
 			if self.primaryInsightText.shown then

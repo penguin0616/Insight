@@ -237,6 +237,10 @@ function RichText:GetString()
 end
 
 function RichText:SetString(str, forced)
+	if not self.DEBUG_TESTING2 then
+		return
+	end
+
 	if not forced and self.raw_text == str then
 		-- why change?
 		return
@@ -265,6 +269,8 @@ function RichText:SetString(str, forced)
 		self._height = 0
 		return
 	end
+
+	mprint("[RichText] Got new setstring: |"..str.."|")
 
 	self._width = nil
 	self._height = nil
@@ -330,6 +336,12 @@ function RichText:SetString(str, forced)
 		i = i + 1
 	end
 
+	--[[
+	local count = 0
+	str:gsub("\n", function() count=count+1 end)
+
+	print(#lines, count)
+	--]]
 	for i = 1, #lines do
 		-- Only render lines that aren't empty. Added because there's sometimes a newline left over at the end with no text after. 
 		if lines[i] and #lines[i] > 0 then
@@ -369,6 +381,7 @@ end
 -- ok time for the good stuf
 function RichText:NewLine(pieces)
 	local container = self:AddChild(Widget("container" .. #self.lines + 1))
+	--local containerbg = container:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
 	self.lines[#self.lines+1] = container
 
 	-- create text objects
@@ -502,10 +515,17 @@ function RichText:NewLine(pieces)
 		10. never been good at uis.
 	]]
 
+
+	local y_scale = self:GetScale().y
+	print("scales:", self:GetScale(), self:GetLooseScale())
+	print(-self.font_size, #self.lines-1, -self.font_size * (#self.lines - 1))
+
+	local new_y_pos = -self.font_size * (#self.lines - 1) -- -1 makes sense to me, but -2 fixes the extra newline..?
+
 	container:SetPosition(
 		--cc:GetPosition().x / 2, 
 		width, 
-		-self.font_size * (#self.lines - 1)
+		new_y_pos
 	)
 	
 	local wax = 0

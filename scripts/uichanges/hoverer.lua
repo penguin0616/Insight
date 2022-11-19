@@ -55,6 +55,7 @@ local function OnHovererPostInit(hoverer)
 
 	--local altOnlyIsVerbose
 	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, TEXT_SIZE))
+	hoverer.insightText.DEBUG_TESTING = true
 
 	-- so, there's an issue where once you examine something, YOFFSETUP and YOFFSETDOWN are changed to compensate for that secondary text, but are never changed back
 	-- so whereas normally hover text is unable to follow below a certain height because of math.min, the new YOFFSETUP means it is free to roam wherever vertically
