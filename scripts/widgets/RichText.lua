@@ -246,6 +246,7 @@ function RichText:SetString(str, forced)
 		return
 	end
 	
+	self.line_count = 0 -- This is how many lines we should end up with.
 	self.raw_text = str
 	self:KillAllChildren()
 	self.lines = {}
@@ -269,8 +270,6 @@ function RichText:SetString(str, forced)
 		self._height = 0
 		return
 	end
-
-	mprint("[RichText] Got new setstring: |"..str.."|")
 
 	self._width = nil
 	self._height = nil
@@ -343,7 +342,6 @@ function RichText:SetString(str, forced)
 	print(#lines, count)
 	--]]
 
-	self.line_count = 0 -- This is how many lines we should end up with.
 	for i = 1, #lines do
 		-- See below comment for logic.
 		if lines[i] and #lines[i] > 0 then
@@ -523,12 +521,6 @@ function RichText:NewLine(pieces)
 		9. it. is. done. I have spent over 8 hours on this spacing.
 		10. never been good at uis.
 	]]
-
-
-	local y_scale = self:GetScale().y
-	print("scales:", self:GetScale(), self:GetLooseScale())
-	print(-self.font_size, #self.lines-1, -self.font_size * (#self.lines - 1))
-
 
 	local base_y_pos = -self.font_size * (#self.lines - 1) -- -1 makes sense to me, but -2 fixes the extra newline..?
 	local new_y_pos = base_y_pos + (self.font_size/2 * (self.line_count-1))  

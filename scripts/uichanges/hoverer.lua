@@ -83,15 +83,6 @@ local function OnHovererPostInit(hoverer)
 			oldHide2(self)
 		end
 	end
-
-	-- count lines
-	local function cl(txt)
-		local i = 1
-		txt:gsub("\n", function() i = i + 1 end) -- i should probably bring this up to scratch with the other one, but i do not have the mental fortitude to handle it.
-		-- oh, how i hate working with UIs.
-		return i
-	end
-
 	-- TheInput:GetScreenPosition()
 
 	if IS_DST then
@@ -135,7 +126,7 @@ local function OnHovererPostInit(hoverer)
 			local x_min = w + XOFFSET
 			local x_max = scr_w - w - XOFFSET
 
-			local r = cl(self.text:GetString())
+			local r = select(2, self.text:GetString():gsub("\n", "\n"))
 			local y_min = h + YOFFSETDOWN * scale.y + (30*.75)
 			-- y_max = scr_h - h - YOFFSETUP * scale.y
 			local y_max = scr_h - h*2 - YOFFSETUP * scale.y -- h*2 means harder for insight to go off bounds
@@ -265,42 +256,30 @@ local function OnHovererPostInit(hoverer)
 		hoverer.insightText:SetString(itemDescription)
 		
 		-- size info
-		local dataWidth, dataHeight = hoverer.insightText:GetRegionSize()
-		--local headerWidth, headerHeight = CalculateSize(text) --self:GetRegionSize()
-		--local headerY = (hoverer.owner.HUD.controls:GetTooltipPos() or hoverer.default_text_pos).y
+		local description_lines = hoverer.insightText.line_count or 0
+		local hovertext_lines = select(2, text:gsub("\n", "\n"))
+		local total_lines = description_lines + hovertext_lines - 1
 
-		-- misc
-		--local positionPadding = (cl(text) - 1) * 7.5
-
-		local x = math_ceil(dataHeight / hoverer.insightText.font_size)
-		local r = cl(text) - 1
-
-		local textPadding 
-		
-
-		--local textPadding = string.rep("\n ", math.ceil(dataHeight / 30) + 0)
-
-		--mprint(CalculateSize(text), headerWidth, headerHeight, math.ceil(headerHeight / 30))
-		--mprint(math.ceil(headerHeight / 30) - math.ceil(dataHeight / 30))
-
-		local p1 = hoverer:GetPosition()
-		--mprint(p1.x, dataWidth, screenWidth)
+		local textPadding
 
 		if IS_DST then
-			local tp_bonus = (r == 2 and 0) or 1
-			textPadding = string.rep("\n ", x + r + tp_bonus)
-			
-			hoverer.insightText:SetPosition(0, 7.5 + tp_bonus * 15 + dataHeight/2)
+			textPadding = string.rep("\n ", total_lines)
+			hoverer.insightText:SetPosition(0, hoverer.insightText.font_size / 4)
 		else
-			textPadding = string.rep("\n ", x)
-			r = r - 1
-			if r < 0 then
+			textPadding = string.rep("\n ", total_lines)
+			hoverer.insightText:SetPosition(0, hoverer.insightText.font_size / 4)
+
+			-- This probably will need revision
+			--[[
+			textPadding = string.rep("\n ", hoverer.insightText.line_count)
+			hovertext_lines = hovertext_lines - 1
+			if hovertext_lines < 0 then
 				--r = 0 -- i commented this and that made the stars align
 			end
 
-			hoverer.insightText:SetPosition(0, -7.5 + (-15 * r) + dataHeight / 2)
+			hoverer.insightText:SetPosition(0, -7.5 + (-15 * hovertext_lines) + dataHeight / 2) -- dataHeight used to be the height of the insight text
+			--]]
 		end
-
 		
 		return oldSetString(self, text .. textPadding)
 	end
@@ -309,36 +288,34 @@ local function OnHovererPostInit(hoverer)
 		-- stuff like boats, where the action is far below
 		-- or any ground entity really
 		-- explains why the text overlap from boats happened
-		--mprint('t2:', text)
-		--[[
-		local YOFFSETDOWN = (IS_DS and 30) or -50
-		local w, h = hoverer.insightText:GetRegionSize()
 
-		local line_buffer = (IS_DS and 4) or 7
-		
-		
-		local r = h - (30 * line_buffer)
-		if r < 0 then
-			r = 0
-		end
-
-		if IS_DST then
-			r = h
-		end
-
-		self:SetPosition(0, 0)
-		--]]
+		-- a good test case is holding an axe and hovering a beefalo
 
 		-- default y is -30
-		-- size info
-		local dataPosition = hoverer.insightText:GetPosition()
-		local dataWidth, dataHeight = hoverer.insightText:GetRegionSize()
+
+		--[[
+			hovering a beefalo holding an axe, insight text states:
+			health
+			damage
+			hunger
+			hunger decay
+			tendency
+			naughtiness
+			mood
+			brushed
+
+			-- 8 lines, and on default offset of -30, this text is positioned betweenish lines 5 and 6.
+			
+		]]
+
+		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.font_size
+		offset = offset + hoverer.insightText.font_size / 4
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
 		if hoverer.insightText.raw_text == nil then
-			self:SetPosition(0, -30)
+			self:SetPosition(0, -30) -- Default position
 		else
-			self:SetPosition(0, dataPosition.y - dataHeight)
+			self:SetPosition(0, -offset)
 		end
 
 		return oldSetString(self, text)
