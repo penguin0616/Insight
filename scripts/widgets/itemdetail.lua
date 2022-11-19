@@ -80,7 +80,7 @@ local ItemDetail = Class(Widget, function(self, info)
 	--self.text = self.text_holder:AddChild(Text(UIFONT, 30, nil))
 	--self.text:SetHAlign(ANCHOR_RIGHT)
 	self.text = self.text_holder:AddChild(RichText())
-	self.text.DEBUG_TESTING2 = true
+	self.text.DEBUG_TESTING = true
 	self.text:SetSize(22)
 	--self.text:SetRegionSize(self.text_holder:GetSize())
 	--self.text:SetPosition(icon_holder_width/2, 0)

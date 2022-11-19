@@ -237,7 +237,7 @@ function RichText:GetString()
 end
 
 function RichText:SetString(str, forced)
-	if not self.DEBUG_TESTING2 then
+	if not self.DEBUG_TESTING then
 		return
 	end
 
@@ -342,6 +342,15 @@ function RichText:SetString(str, forced)
 
 	print(#lines, count)
 	--]]
+
+	self.line_count = 0 -- This is how many lines we should end up with.
+	for i = 1, #lines do
+		-- See below comment for logic.
+		if lines[i] and #lines[i] > 0 then
+			self.line_count = self.line_count + 1
+		end
+	end
+
 	for i = 1, #lines do
 		-- Only render lines that aren't empty. Added because there's sometimes a newline left over at the end with no text after. 
 		if lines[i] and #lines[i] > 0 then
@@ -520,7 +529,9 @@ function RichText:NewLine(pieces)
 	print("scales:", self:GetScale(), self:GetLooseScale())
 	print(-self.font_size, #self.lines-1, -self.font_size * (#self.lines - 1))
 
-	local new_y_pos = -self.font_size * (#self.lines - 1) -- -1 makes sense to me, but -2 fixes the extra newline..?
+
+	local base_y_pos = -self.font_size * (#self.lines - 1) -- -1 makes sense to me, but -2 fixes the extra newline..?
+	local new_y_pos = base_y_pos + (self.font_size/2 * (self.line_count-1))  
 
 	container:SetPosition(
 		--cc:GetPosition().x / 2, 
