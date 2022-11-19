@@ -37,7 +37,7 @@ local function GetChargeString(plain)
 	local info = localPlayer.replica.insight:GetInformation(localPlayer)
 
 	-- nil == unregistered, false == full charge, number == time till next charge
-	if not info or info.special_data.wx78.time_to_gain_charge == nil or info.special_data.wx78.charge_level == nil or info.special_data.wx78.max_charge == nil then
+	if not info or info.special_data.wx78 == nil or info.special_data.wx78.time_to_gain_charge == nil or info.special_data.wx78.charge_level == nil or info.special_data.wx78.max_charge == nil then
 		return
 	end
 
