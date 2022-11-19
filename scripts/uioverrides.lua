@@ -29,6 +29,7 @@ local CraftSlot = require("widgets/craftslot")
 local IngredientUI = require("widgets/ingredientui")
 local InsightButton = import("widgets/insightbutton")
 local RichText = import("widgets/RichText")
+local RichFollowText = import("widgets/richfollowtext")
 
 local CraftingMenuWidget = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget")) or nil
 local CraftingMenuHUD = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud")) or nil
@@ -568,7 +569,71 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		--mprint("groundactionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
 		return old4(self, ...)
 	end
+	
+	local FollowText = require"widgets/followtext"
+	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, 28))
+	controls.primaryInsightText:SetHUD(controls.owner.HUD.inst)
+    controls.primaryInsightText:SetOffset(Vector3(-400, 100, 0))
+    controls.primaryInsightText:Hide()
+
+
+	controls.primaryInsightText2 = controls:AddChild(FollowText(TALKINGFONT, 28))
+	controls.primaryInsightText2:SetHUD(controls.owner.HUD.inst)
+    controls.primaryInsightText2:SetOffset(Vector3(400, 100, 0))
+    controls.primaryInsightText2:Hide()
+	-- controls.primaryInsightText:SetSize(28)
+
+	local oldHighlightActionItem = controls.HighlightActionItem
+	controls.HighlightActionItem = function(self, ...)
+		oldHighlightActionItem(self, ...)
+		local itemIndex, itemInActions = ...
+		
+		if itemIndex then
+			if not self.primaryInsightText.shown then
+				self.primaryInsightText:Show()
+				self.primaryInsightText2:Show()
+			end
+
+
+			-- Has the information about the item
+			local followerWidget 
+			if itemInActions then
+				followerWidget = self.playeractionhint
+			else
+				followerWidget = self.groundactionhint
+			end
+
+			-- The itemhighlight has the item name
+			
+			-- This wouldn't make sense, since they both have the newlines they need to combine nicely.
+			-- self.playeractionhint_itemhighlight.text:GetString() .. followerWidget.text:GetString()
+
+			local offsetx, offsety = followerWidget:GetScreenOffset()
+        	self.primaryInsightText:SetScreenOffset(offsetx, offsety)
+        	self.primaryInsightText:SetTarget(followerWidget.target)
+			self.primaryInsightText2:SetScreenOffset(offsetx, offsety)
+        	self.primaryInsightText2:SetTarget(followerWidget.target)
+
+			local newlines_of_space_needed = countnewlines(followerWidget.text:GetString())
+			--local newlines_of_space_needed2 = countnewlines(self.playeractionhint_itemhighlight.text:GetString())
+			--self.primaryInsightText.text:SetString(string.rep("\n", newlines_of_space_needed) .. "horsey")
+
+			--mprint(newlines_of_space_needed, "|"..followerWidget.text:GetString().."|")
+			--mprint(newlines_of_space_needed2, "|"..self.playeractionhint_itemhighlight.text:GetString().."|")
+
+
+			self.primaryInsightText.text:SetString("X"..followerWidget.text:GetString())
+			self.primaryInsightText2.text:SetString("X"..followerWidget.text:GetString())
+			
+		else
+			if self.primaryInsightText.shown then
+				self.primaryInsightText:Hide()
+				self.primaryInsightText2:Hide()
+			end
+		end
+	end
 end)
+
 --[[
 local follows = {} -- i = followtext
 --local targets = {} 
