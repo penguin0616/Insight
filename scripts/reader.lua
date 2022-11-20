@@ -246,6 +246,7 @@ function Reader.Stringify(chunks, tagless)
 		if chunk:IsObject() then
 			rebuilt = rebuilt .. string.format("<%s=%s>", chunk.class, chunk.value)
 		else
+			--local str = "<!"..chunk.text.."!>"
 			local str = chunk.text
 
 			for x = 1, #chunk.tags do
@@ -262,6 +263,7 @@ function Reader.Stringify(chunks, tagless)
 	return rebuilt
 end
 
+Reader._Chunk = Chunk
 -- i could optimize the strings by ignoring spaces between tags and just associate them to previous tags
 --local str = "<color=#E4FF01> #E4FF01 </color><color=#01E4FF> #01E4FF </color><color=#FF01E4> #FF01E4 </color"
 --local str = "<color=#E4FF01> #E4FF01 </color> <color=#E4FF01> FAT </color>"

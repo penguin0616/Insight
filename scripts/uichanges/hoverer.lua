@@ -308,7 +308,7 @@ local function OnHovererPostInit(hoverer)
 			
 		]]
 
-		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.font_size
+		local offset = ((hoverer.insightText.line_count or 0) / 2) * hoverer.insightText.font_size
 		offset = offset + hoverer.insightText.font_size / 4
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext

@@ -897,30 +897,22 @@ local function GetEntityInformation(entity, player, params)
 
 	--fprint(entity, "has some info")
 
-	for i = 1, #chunks do
+	local num_chunks = #chunks
+
+	for i = 1, num_chunks do
 	--for i,v in pairs(chunks) do
 		local v = chunks[i]
 		if assembled.special_data[v.name] == nil then
 			assembled.special_data[v.name] = GetSpecialData(v)
 		end
 
-		-- collect the description if one was provided
+		-- Collect the description if one was provided.
 		if v.description then -- type(v.description) == "string"
-			--v.description = ResolveColors(v.description) -- resolve any color tags that reference the Insight table's colors
-
 			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
 
-			--[[
-			if v.alt_description then
-				assembled.alt_information = assembled.alt_information .. ResolveColors(v.alt_description)
-			else
-				assembled.alt_information = assembled.alt_information .. v.description
-			end
-			--]]
-
-			if i < #chunks then
+			if i < num_chunks then
+				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.information = assembled.information .. "\n"
-				--assembled.alt_information = assembled.alt_information .. "\n"
 			end
 
 			if params.RAW == true then
@@ -928,21 +920,25 @@ local function GetEntityInformation(entity, player, params)
 			end
 		end
 
-
+		-- Collect the alternate description if one was provided.
 		if v.alt_description then -- type(v.alt_description) == "string"
 			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.alt_description
-			if i < #chunks then
+			if i < num_chunks then
+				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
 
 		elseif v.alt_description == nil and v.description ~= nil then
 			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
-			if i < #chunks then
+			if i < num_chunks then
+				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
 		end
 	end
 
+	-- Stripping out the ending newline here would be a bit odd since it's not guaranteed the newline is actually a mistake.
+	-- I guess I'll let RichText handle it, since it strips out trailing newlines (see reasoning over there).
 	if assembled.information == "" then
 		assembled.information = nil
 	end

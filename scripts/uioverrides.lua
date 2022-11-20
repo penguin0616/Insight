@@ -513,13 +513,6 @@ end)
 --======================================== FollowText ======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-local function countnewlines(x)
-	local str = tostring(x)
-	local count = 0
-	str:gsub("\n", function() count=count+1 end)
-	return count
-end
-
 STRINGS.NAMES.BEEFALO = "B33\nFA\nLO"
 
 Text = require"widgets/text"
@@ -583,13 +576,13 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	local FollowText = require"widgets/followtext"
 	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, 28))
 	controls.primaryInsightText:SetHUD(controls.owner.HUD.inst)
-    controls.primaryInsightText:SetOffset(Vector3(400, 100, 0))
+    controls.primaryInsightText:SetOffset(Vector3(300, 100, 0))
     controls.primaryInsightText:Hide()
 
 
 	controls.primaryInsightText2 = controls:AddChild(FollowText(TALKINGFONT, 28))
 	controls.primaryInsightText2:SetHUD(controls.owner.HUD.inst)
-    controls.primaryInsightText2:SetOffset(Vector3(800, 100, 0))
+    controls.primaryInsightText2:SetOffset(Vector3(600, 100, 0))
     controls.primaryInsightText2:Hide()
 	-- controls.primaryInsightText:SetSize(28)
 
@@ -600,6 +593,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		
 		if itemIndex then
 			if not self.primaryInsightText.shown then
+				print("Showing InsightText")
 				self.primaryInsightText:Show()
 				self.primaryInsightText2:Show()
 			end
@@ -624,19 +618,26 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			--self.primaryInsightText2:SetScreenOffset(offsetx, offsety)
         	self.primaryInsightText2:SetTarget(followerWidget.target)
 
-			local newlines_of_space_needed = countnewlines(followerWidget.text:GetString())
+			--local newlines_of_space_needed = countnewlines(followerWidget.text:GetString())
 			--local newlines_of_space_needed2 = countnewlines(self.playeractionhint_itemhighlight.text:GetString())
 			--self.primaryInsightText.text:SetString(string.rep("\n", newlines_of_space_needed) .. "horsey")
 
-			--mprint(newlines_of_space_needed, "|"..followerWidget.text:GetString().."|")
-			--mprint(newlines_of_space_needed2, "|"..self.playeractionhint_itemhighlight.text:GetString().."|")
+			
 
+			-- local itemInfo = RequestEntityInformation(target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
+			local something = "hello\nworld\n:)"
+			local line_count = select(2, followerWidget.text:GetString():gsub("\n", "\n"))
+			--"\n" -- Neither of the entries get pushed down
 
-			self.primaryInsightText.text:SetString("RichText"..followerWidget.text:GetString())
-			self.primaryInsightText2.text:SetString("NormText"..followerWidget.text:GetString())
+			mprint(line_count, "|"..followerWidget.text:GetString().."|")
+
+			self.primaryInsightText.text:SetString(string.rep("\n", line_count) .. something)
+			self.primaryInsightText2.text:SetString(string.rep("\n", line_count) .. something .. " MOCKERY")
+			--self.primaryInsightText2.text:SetString("NormText"..followerWidget.text:GetString())
 			
 		else
 			if self.primaryInsightText.shown then
+				print("Hiding InsightText")
 				self.primaryInsightText:Hide()
 				self.primaryInsightText2:Hide()
 			end

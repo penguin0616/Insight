@@ -33,11 +33,36 @@ local Reader, Chunk = import("reader")
 
 local CalculateSize = CalculateSize
 local IS_DST = IS_DST
+local _LookupIcon, LookupString, InterpretReaderChunk
+
+local TEXT_BASED_OBJECTS = {
+	["prefab"] = function(chunk)
+		local prefab = chunk.object.value
+		return GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
+	end,
+	["string"] = function(chunk)
+		local text = LookupString(chunk.object.value)
+		local typ = type(text)
+		if typ ~= "string" then
+			text = "[string \"" .. chunk.object.value .. "\" -> " .. typ .. "]"
+		end 
+
+		return text
+	end,
+	["temperature"] = function(chunk)
+		if localPlayer then
+			local temp_style = localPlayer._insight_context.config["temperature_units"]
+			return FormatTemperature(chunk.object.value, temp_style)
+		else
+			return chunk.object.value
+		end
+	end,
+}
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
-local function _LookupIcon(icon) -- took me a minute but i remember that this is here for the prefabhasicon call 
+function _LookupIcon(icon) -- took me a minute but i remember that this is here for the prefabhasicon call 
 	if true then
 		PrefabHasIcon(icon)
 	end
@@ -45,7 +70,7 @@ local function _LookupIcon(icon) -- took me a minute but i remember that this is
 	return LookupIcon(icon)
 end
 
-local function LookupString(str)
+function LookupString(str)
 	local fields = string.split(str, ".")
 	local current = STRINGS
 	for i,v in ipairs(fields) do
@@ -58,7 +83,7 @@ local function LookupString(str)
 	return current
 end
 
-local function InterpretReaderChunk(chunk, richtext) -- text, color
+function InterpretReaderChunk(chunk, richtext) -- text, color
 	local color = chunk:GetTag("color") or richtext.default_colour
 
 	if TEXT_COLORING_ENABLED == nil then
@@ -74,7 +99,7 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 	local obj = nil
 	local is_object = chunk:IsObject()
 
-	if is_object and chunk.object.class ~= "prefab" and chunk.object.class ~= "string" and chunk.object.class ~= "temperature" then
+	if is_object and TEXT_BASED_OBJECTS[chunk.object.class] == nil then
 		-- object
 		if chunk.object.class == "icon" then
 			local tex, atlas = _LookupIcon(chunk.object.value)
@@ -109,23 +134,11 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 
 		local text = nil
 		if is_object then
-			if chunk.object.class == "prefab" then
-				-- prefab class
-				local prefab = chunk.object.value
-				text = GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
-			elseif chunk.object.class == "string" then
-				text = LookupString(chunk.object.value)
-				local typ = type(text)
-				if typ ~= "string" then
-					text = "[string \"" .. chunk.object.value .. "\" -> " .. typ .. "]"
-				end 
-			elseif chunk.object.class == "temperature" then
-				if localPlayer then
-					local temp_style = localPlayer._insight_context.config["temperature_units"]
-					text = FormatTemperature(chunk.object.value, temp_style)
-				else
-					text = chunk.object.value
-				end
+			if TEXT_BASED_OBJECTS[chunk.object.class] then
+				errorf("Processing text based chunk '%s' should have been done already.", chunk.object.class)
+			else
+				-- Uh...
+				error("Huh?")
 			end
 		else
 			text = chunk.text
@@ -148,6 +161,12 @@ local function InterpretReaderChunk(chunk, richtext) -- text, color
 	end
 
 	return obj
+end
+
+local function LineIndex(self, index) 
+	local x = {} 
+	rawset(self, index, x) 
+	return x 
 end
 
 --------------------------------------------------------------------------
@@ -274,86 +293,86 @@ function RichText:SetString(str, forced)
 	self._width = nil
 	self._height = nil
 
-	local lines = {}
-
-	str = ResolveColors(str)
-
+	str = ResolveColors(str) -- Resolve any color tags that reference the Insight table's colors.
 	local chunks = Reader:new(str):Read()
+
+	local lines = setmetatable({}, { __index=LineIndex })
 	local i = 1;
 	local lineCount = 1
-	--print(str)
-	while chunks[i] do
-		-- create line if missing
-		lines[lineCount] = lines[lineCount] or {}
-		local line = lines[lineCount]
 
-		-- figure out chunk data
+	--print("str:")
+	--print("|"..str.."|")
+
+	-- Text object logic:
+	--   If multiple proceeding newlines (nothing else on the line), only the first doesn't get preserved (80% sure)
+	--   Trailing newlines don't get preserved.
+
+	while chunks[i] do
+		local line = lines[lineCount]
+		local llen = #line
 		local chunk = chunks[i]
+
 		local is_object = chunk:IsObject()
 
-		--local r = (is_object and GetPrefabNameOrElse(chunk.object.value, "[prefab \"%s\"]")) or chunk.text
-		--print(i, (is_object and GetPrefabNameOrElse(chunk.object.value, "[prefab \"%s\"]")) or chunk.text, type(r)=="string" and #r or nil)
-
-		if (is_object and chunk.object.class == "prefab") or (not is_object) then
-			-- text based chunk
-			local text = (is_object and GetPrefabNameOrElse(chunk.object.value, "[prefab \"%s\"]")) or chunk.text
-
-			-- It seems the first line has some logic different to the rest of the processed text, but the comments in the for loop still hold.
-			for a, x, b in string.gmatch(text, "(\n*)([^\n]*)(\n*)") do
-				--print("\t", x, ("(%s, %s, %s)"):format(#a, #x, #b))
-
-				-- I'm not 100% sure why I needed a AND b, but I guess "a" works for situations where there is a previous separator to be parsed.
-				-- Without it, information separated in multiple descriptors largely doesn't work properly. So,
-				-- This is responsible for separating descriptor returns with newlines.
-				for j = 1, #a do -- so we don't skip any empty lines if we have a \n\n (untested)
-					lineCount = lineCount + j
-					lines[lineCount] = lines[lineCount] or {}
-					line = lines[lineCount]
-				end
-				
-				-- This check and the * specifier in the not-newline match is dealing with chunks where it's just an empty newline character.
-				if #x > 0 then
-					-- Redo the chunk
-					line[#line+1] = Chunk:new{
-						text = x,
+		if (is_object and TEXT_BASED_OBJECTS[chunk.object.class]) or not is_object then
+			-- Process Text-Based-Objects (TBOs) and normal text chunks
+			-- TBOs will be transformed into text chunks here
+			local text = is_object == false and chunk.text 
+			if is_object then
+				-- Rebuild the chunk. This is a destructive transformation, the original chunk will not be preserved.
+				text = TEXT_BASED_OBJECTS[chunk.object.class](chunk)
+				local new_chunk = Chunk:new{
+					text = text,
+					tags = chunk.tags
+				}
+				chunks[i] = new_chunk
+				chunk = new_chunk
+			end
+			
+			-- Now we need to deal with cases where our chunks have newlines in them.
+			-- When we hit a newline, we need to break off the current one and continue onto a new one.
+			-- The issue is, we need to maintain the tag state when we do so.
+			for segment, newlines in string.gmatch(text, "([^\n]*)(\n*)") do
+				if #segment > 0 then
+					-- We've got text, add it to the line.
+					llen = llen + 1
+					line[llen] = Chunk:new{
+						text = segment,
 						tags = chunk.tags
 					}
 				end
-
-				-- This is responsible for allowing descriptors that have descriptions with multiple lines to be separated.
-				for j = 1, #b do -- so we don't skip any empty lines if we have a \n\n (untested)
-					lineCount = lineCount + j
-					lines[lineCount] = lines[lineCount] or {}
-					line = lines[lineCount]
+				-- For every newline, we need to increase the lineCount.
+				for i = 1, #newlines do
+					lineCount = lineCount + 1; line = lines[lineCount]; llen = #line;
 				end
 			end
 		else
-			-- miscellaneous chunk, add it to the line
-			line[#line+1] = chunk
+			-- Everything else is a normal object (ie an icon)
+			llen = llen + 1
+			line[llen] = chunk
 		end
 
 		i = i + 1
 	end
 
-	--[[
-	local count = 0
-	str:gsub("\n", function() count=count+1 end)
-
-	print(#lines, count)
-	--]]
-
-	for i = 1, #lines do
-		-- See below comment for logic.
-		if lines[i] and #lines[i] > 0 then
-			self.line_count = self.line_count + 1
+	
+	--print("LOOP BEGIN", #lines)
+	for i = #lines, 1, -1 do
+		if #lines[i] == 0 then
+			lines[i] = nil
+			--print(i, "Removed a trailing newline.")
+		else
+			--print("------", i, #lines[i])
+			break
 		end
 	end
+	--print("LOOP END")
+	
+	
+	self.line_count = #lines
 
 	for i = 1, #lines do
-		-- Only render lines that aren't empty. Added because there's sometimes a newline left over at the end with no text after. 
-		if lines[i] and #lines[i] > 0 then
-			self:NewLine(lines[i])
-		end
+		self:NewLine(lines[i])
 	end
 end
 
