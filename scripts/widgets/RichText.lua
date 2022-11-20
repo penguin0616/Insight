@@ -256,10 +256,6 @@ function RichText:GetString()
 end
 
 function RichText:SetString(str, forced)
-	if not self.DEBUG_TESTING then
-		return
-	end
-
 	if not forced and self.raw_text == str then
 		-- why change?
 		return
@@ -293,6 +289,7 @@ function RichText:SetString(str, forced)
 	self._width = nil
 	self._height = nil
 
+	str = self.TrimNewlines(str)
 	str = ResolveColors(str) -- Resolve any color tags that reference the Insight table's colors.
 	local chunks = Reader:new(str):Read()
 
@@ -300,14 +297,10 @@ function RichText:SetString(str, forced)
 	local i = 1;
 	local lineCount = 1
 
-	--print("str:")
-	--print("|"..str.."|")
-
 	-- Text object logic (from observing a standard Text in an ItemDetail):
 	--   With preceeding newlines, only the first doesn't get preserved.
 	--		(80% sure with ItemDetail observation alone, 99% sure with the proof in the HighlightActionItem override for controllers.
 	--   Trailing newlines don't get preserved.
-	-- Maybe I should use TrimNewlines here.
 
 	while chunks[i] do
 		local line = lines[lineCount]
@@ -357,6 +350,7 @@ function RichText:SetString(str, forced)
 		i = i + 1
 	end
 	
+	--[[
 	-- Remove trailing newlines.
 	--print("LOOP BEGIN", #lines)
 	for i = #lines, 1, -1 do
@@ -375,9 +369,8 @@ function RichText:SetString(str, forced)
 		--print("Removed a preceeding newline.")
 		table.remove(lines, 1)
 	end
+	--]]
 
-	
-	
 	self.line_count = #lines
 
 	for i = 1, #lines do
@@ -385,7 +378,7 @@ function RichText:SetString(str, forced)
 	end
 end
 
---- The goal of this is to transform text to how it would eventually end up if sent through SetString
+--- The goal of this is to transform text into how it would eventually end up if set in a Text object.
 function RichText.TrimNewlines(str)
 	if str:sub(1, 1) == "\n" then
 		str = str:sub(2)

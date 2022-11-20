@@ -516,10 +516,6 @@ end)
 --==========================================================================================================================
 --STRINGS.NAMES.BEEFALO = "B33\nFA\nLO"
 
-
-local Reader = import("reader")
-local Chunk = Reader._Chunk
-
 local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
 local RichText = import("widgets/RichText")
 
@@ -584,12 +580,12 @@ AddClassPostConstruct("widgets/controls", function(controls)
     controls.primaryInsightText:SetOffset(Vector3(0, 100, 0))
     controls.primaryInsightText:Hide()
 
-
+	--[[
 	controls.primaryInsightText2 = controls:AddChild(FollowText(TALKINGFONT, 28))
 	controls.primaryInsightText2:SetHUD(controls.owner.HUD.inst)
     controls.primaryInsightText2:SetOffset(Vector3(1600, 100, 0))
     controls.primaryInsightText2:Hide()
-	-- controls.primaryInsightText:SetSize(28)
+	--]]
 
 	local oldHighlightActionItem = controls.HighlightActionItem
 	controls.HighlightActionItem = function(self, ...)
@@ -600,11 +596,14 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			if not self.primaryInsightText.shown then
 				--print("Showing InsightText")
 				self.primaryInsightText:Show()
-				self.primaryInsightText2:Show()
+				if self.primaryInsightText2 then
+					self.primaryInsightText2:Show()
+				end
 			end
 
 
-			-- Has the information about the item
+			-- The itemhighlight has the entity name.
+			-- This has the information about the item.
 			local followerWidget 
 			if itemInActions then
 				followerWidget = self.playeractionhint
@@ -612,20 +611,10 @@ AddClassPostConstruct("widgets/controls", function(controls)
 				followerWidget = self.groundactionhint
 			end
 
-			-- The itemhighlight has the entity name
 			
-			-- This wouldn't make sense, since they both have the newlines they need to combine nicely.
-			-- self.playeractionhint_itemhighlight.text:GetString() .. followerWidget.text:GetString()
-
 			local offsetx, offsety = followerWidget:GetScreenOffset()
-        	--self.primaryInsightText:SetScreenOffset(offsetx, offsety)
         	self.primaryInsightText:SetTarget(followerWidget.target)
-			--self.primaryInsightText2:SetScreenOffset(offsetx, offsety)
-        	self.primaryInsightText2:SetTarget(followerWidget.target)
-
-			--local newlines_of_space_needed = countnewlines(followerWidget.text:GetString())
-			--local newlines_of_space_needed2 = countnewlines(self.playeractionhint_itemhighlight.text:GetString())
-			--self.primaryInsightText.text:SetString(string.rep("\n", newlines_of_space_needed) .. "horsey")
+        	if self.primaryInsightText2 then self.primaryInsightText2:SetTarget(followerWidget.target) end
 
 			-- Show prefab if enabled
 			if DEBUG_SHOW_PREFAB then
@@ -642,16 +631,13 @@ AddClassPostConstruct("widgets/controls", function(controls)
 				self.playeractionhint_itemhighlight.text:SetString(text)
 			end
 
-			local something = "hello\nworld"
 			local followtext_lines = select(2, followerWidget.text:GetString():gsub("\n", "\n"))
-			--mprint(line_count, "|"..followerWidget.text:GetString().."|")
 
 			-- Reduced version of the logic from hoverer.
 			local entityInformation = RequestEntityInformation(followerWidget.target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 			local itemDescription = nil
 			if entityInformation and entityInformation.information then
 				itemDescription = RichText.TrimNewlines(entityInformation.information)
-				something = Reader.Stringify(Reader:new(itemDescription):Read(), true):sub(1, -2)
 			end
 
 			if itemDescription then
@@ -664,8 +650,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 				insight_lines = insight_lines + 1
 
 
-				local total_lines = (followtext_lines) + (insight_lines + 1) 
-				--local total_lines = description_lines + hovertext_lines - 1
+				local total_lines = (followtext_lines) + (insight_lines) 
 				self.primaryInsightText.text:SetString(string.rep("\n", total_lines) .. itemDescription)
 				--self.primaryInsightText2.text:SetString(string.rep("\n", followtext_lines*2 + insight_lines) .. something .. ": A BLASPHEMOUS MOCKERY")
 				
@@ -674,13 +659,17 @@ AddClassPostConstruct("widgets/controls", function(controls)
 				self.primaryInsightText.text:SetString("\n\nRichText"..followerWidget.text:GetString())
 				self.primaryInsightText2.text:SetString("\n\nNormText"..followerWidget.text:GetString())	
 				]]
+			else
+				self.primaryInsightText.text:SetString(nil)
 			end
 			
 		else
 			if self.primaryInsightText.shown then
 				--print("Hiding InsightText")
 				self.primaryInsightText:Hide()
-				self.primaryInsightText2:Hide()
+				if self.primaryInsightText2 then
+					self.primaryInsightText2:Hide()
+				end
 			end
 		end
 	end
