@@ -255,9 +255,9 @@ local function OnHovererPostInit(hoverer)
 		hoverer.insightText:SetString(itemDescription) -- Trimming newlines handled here
 		
 		-- size info
-		local description_lines = hoverer.insightText.line_count or 0
 		local hovertext_lines = select(2, text:gsub("\n", "\n"))
-		local total_lines = description_lines + hovertext_lines - 1
+		local description_lines = hoverer.insightText.line_count or 0
+		local total_lines = hovertext_lines + description_lines - 1
 
 		local textPadding
 

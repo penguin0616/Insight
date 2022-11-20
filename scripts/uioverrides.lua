@@ -447,17 +447,6 @@ import("uichanges/hoverer").Initialize()
 --==========================================================================================================================
 
 AddClassPostConstruct("widgets/inventorybar", function(inventoryBar)
-	local function cl(txt)
-		local i = 1
-		--txt:gsub("\n[%w%c%p%s]", function(x) i = i + 1 return x end)
-		txt:gsub("\n", function(x) i = i + 1 return x end)
-
-		if txt:sub(-1) == "\n" then
-			i=i-1
-		end
-		return i
-	end
-
 	inventoryBar.insightText = inventoryBar.actionstring:AddChild(RichText())
 	inventoryBar.insightText:SetSize(25)
 
@@ -480,32 +469,41 @@ AddClassPostConstruct("widgets/inventorybar", function(inventoryBar)
 	--]]
 
 	local oldActionStringBody_SetString = inventoryBar.actionstringbody.SetString
-	inventoryBar.actionstringbody.SetString = function(self, str)
+	inventoryBar.actionstringbody.SetString = function(self, text)
 		if not localPlayer then
 			return
 		end
 		
+		-- Get Current Item
 		local inv_item, active_item = GetControllerSelectedInventoryItem(inventoryBar)
 		local selected = inv_item or active_item
 
-		local lineHeight = 25
-
-		local itemInfo = RequestEntityInformation(inv_item or active_item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
-
-		if itemInfo then
-			itemInfo = itemInfo.information
+		-- Fetch information
+		local entityInformation = RequestEntityInformation(inv_item or active_item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
+		local itemDescription = nil
+		if entityInformation and entityInformation.information then
+			itemDescription = entityInformation.information
 		end
 
-		local lines = itemInfo and cl(itemInfo) or 0
-		local base = lineHeight / 2
+		inventoryBar.insightText:SetString(itemDescription)
 
-		local lineCountOffset = 1
+		--local hovertext_lines = select(2, text:gsub("\n", "\n")) + 1 -- This is short by 1.
+		local description_lines = inventoryBar.insightText.line_count or 0
+		local textPadding = ""
 
-		inventoryBar.insightText:SetString(itemInfo)
-		inventoryBar.insightText:SetPosition(0, base + (lines-lineCountOffset) * lineHeight ) 
+		if itemDescription then
+			textPadding = string.rep("\n ", description_lines)
+		end
+		
+		-- This compensates for how vertical align is centered.
+		local vertical_align_compensation = (description_lines - 1) * (inventoryBar.insightText.font_size / 2)
+		
+		-- 5 pixels for padding against the UI frame.
+		inventoryBar.insightText:SetPosition(0, vertical_align_compensation + 5 + inventoryBar.insightText.font_size / 4)
 
 		-- the " " forces it to constantly refresh, widgets/inventorybar:879
-		oldActionStringBody_SetString(self, str .. " " .. string.rep("\n ", lines))
+		oldActionStringBody_SetString(self, text .. " " .. textPadding)
+		--oldActionStringBody_SetString(self, text .. " " .. string.rep("\n ", lines))
 	end
 end)
 
