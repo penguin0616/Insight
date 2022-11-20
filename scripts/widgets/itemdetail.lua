@@ -23,6 +23,7 @@ directory. If not, please refer to
 local Widget = require("widgets/widget")
 local Image = require("widgets/image")
 local RichText = import("widgets/RichText")
+local Text = require("widgets/text")
 local resolvefilepath = resolvefilepath
 
 local function DEBUG() 
@@ -77,9 +78,9 @@ local ItemDetail = Class(Widget, function(self, info)
 	self.text_holder:SetPosition(icon_holder_width/2 - 10, 0) -- subtract 10 to keep icon_holder and text still bordering eachother
 	self.text_holder:Hide()
 	
-	self.text = self.text_holder:AddChild(Text(UIFONT, 30, nil))
+	--self.text = self.text_holder:AddChild(Text(UIFONT, 30, nil))
 	--self.text:SetHAlign(ANCHOR_RIGHT)
-	--self.text = self.text_holder:AddChild(RichText())
+	self.text = self.text_holder:AddChild(RichText())
 	self.text:SetSize(22)
 	--self.text:SetRegionSize(self.text_holder:GetSize())
 	--self.text:SetPosition(icon_holder_width/2, 0)

@@ -30,6 +30,7 @@ local IngredientUI = require("widgets/ingredientui")
 local InsightButton = import("widgets/insightbutton")
 local RichText = import("widgets/RichText")
 local RichFollowText = import("widgets/richfollowtext")
+local Text = require"widgets/text"
 
 local CraftingMenuWidget = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget")) or nil
 local CraftingMenuHUD = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud")) or nil
@@ -513,13 +514,18 @@ end)
 --======================================== FollowText ======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-STRINGS.NAMES.BEEFALO = "B33\nFA\nLO"
+--STRINGS.NAMES.BEEFALO = "B33\nFA\nLO"
 
-Text = require"widgets/text"
-_G.txt = function(str)
-	return Text(UIFONT, 30, str)
-end
 
+local Reader = import("reader")
+local Chunk = Reader._Chunk
+
+local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
+local RichText = import("widgets/RichText")
+
+AddLocalPlayerPostInit(function(_, context) 
+	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
+end)
 
 AddClassPostConstruct("widgets/controls", function(controls)
 	-- This is whatever is currently "selected", text is always the available actions.
@@ -532,7 +538,8 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	end
 
 	-- This is whatever is currently "selected"
-	-- Text is always starts with the entity name
+	-- Text is always starts with the entity name. If the enemy name has multiple lines, only the first line is here. 
+	-- 		The other lines become part of playeractionhint.
 	-- Text doesn't start with a newline, has 1 newline for every line in old1
 	--[==[Ex:
 		if playeractionhint is 
@@ -570,19 +577,17 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		--mprint("groundactionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
 		return old4(self, ...)
 	end
-
-	STRINGS.NAMES.TWIGS = "B33f\nalo"
 	
 	local FollowText = require"widgets/followtext"
 	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, 28))
 	controls.primaryInsightText:SetHUD(controls.owner.HUD.inst)
-    controls.primaryInsightText:SetOffset(Vector3(300, 100, 0))
+    controls.primaryInsightText:SetOffset(Vector3(0, 100, 0))
     controls.primaryInsightText:Hide()
 
 
 	controls.primaryInsightText2 = controls:AddChild(FollowText(TALKINGFONT, 28))
 	controls.primaryInsightText2:SetHUD(controls.owner.HUD.inst)
-    controls.primaryInsightText2:SetOffset(Vector3(600, 100, 0))
+    controls.primaryInsightText2:SetOffset(Vector3(1600, 100, 0))
     controls.primaryInsightText2:Hide()
 	-- controls.primaryInsightText:SetSize(28)
 
@@ -593,7 +598,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		
 		if itemIndex then
 			if not self.primaryInsightText.shown then
-				print("Showing InsightText")
+				--print("Showing InsightText")
 				self.primaryInsightText:Show()
 				self.primaryInsightText2:Show()
 			end
@@ -607,7 +612,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 				followerWidget = self.groundactionhint
 			end
 
-			-- The itemhighlight has the item name
+			-- The itemhighlight has the entity name
 			
 			-- This wouldn't make sense, since they both have the newlines they need to combine nicely.
 			-- self.playeractionhint_itemhighlight.text:GetString() .. followerWidget.text:GetString()
@@ -622,22 +627,58 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			--local newlines_of_space_needed2 = countnewlines(self.playeractionhint_itemhighlight.text:GetString())
 			--self.primaryInsightText.text:SetString(string.rep("\n", newlines_of_space_needed) .. "horsey")
 
-			
+			-- Show prefab if enabled
+			if DEBUG_SHOW_PREFAB then
+				local text = self.playeractionhint_itemhighlight.text:GetString()
 
-			-- local itemInfo = RequestEntityInformation(target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
-			local something = "hello\nworld\n:)"
-			local line_count = select(2, followerWidget.text:GetString():gsub("\n", "\n"))
-			--"\n" -- Neither of the entries get pushed down
+				local pos = string.find(text, "\n")
+				local prefab = " [" .. followerWidget.target.prefab .. "]"
+				if pos then
+					text = string.sub(text, 1, pos - 1) .. prefab .. string.sub(text, pos)
+				else
+					text = text .. prefab
+				end
 
-			mprint(line_count, "|"..followerWidget.text:GetString().."|")
+				self.playeractionhint_itemhighlight.text:SetString(text)
+			end
 
-			self.primaryInsightText.text:SetString(string.rep("\n", line_count) .. something)
-			self.primaryInsightText2.text:SetString(string.rep("\n", line_count) .. something .. " MOCKERY")
-			--self.primaryInsightText2.text:SetString("NormText"..followerWidget.text:GetString())
+			local something = "hello\nworld"
+			local followtext_lines = select(2, followerWidget.text:GetString():gsub("\n", "\n"))
+			--mprint(line_count, "|"..followerWidget.text:GetString().."|")
+
+			-- Reduced version of the logic from hoverer.
+			local entityInformation = RequestEntityInformation(followerWidget.target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
+			local itemDescription = nil
+			if entityInformation and entityInformation.information then
+				itemDescription = RichText.TrimNewlines(entityInformation.information)
+				something = Reader.Stringify(Reader:new(itemDescription):Read(), true):sub(1, -2)
+			end
+
+			if itemDescription then
+				local insight_lines = select(2, itemDescription:gsub("\n", "\n")) + 1 -- Since I'm counting newlines, insight_lines is always 1 short. 
+				-- However, trailing newlines have about half their actual height here (probably due to the middle vertical align). That means I need to add 1 more (aka double it) for Insight. 
+				insight_lines = insight_lines + 1
+				-- That leaves me with an overlap similar to the hoverer before the :SetPosition().
+				-- One difference though: I correct the hoverer with a :SetPosition().
+				-- The overlap here is half a newline's worth. Which means instead of adjusting the offset, I'll just add another to the line count.
+				insight_lines = insight_lines + 1
+
+
+				local total_lines = (followtext_lines) + (insight_lines + 1) 
+				--local total_lines = description_lines + hovertext_lines - 1
+				self.primaryInsightText.text:SetString(string.rep("\n", total_lines) .. itemDescription)
+				--self.primaryInsightText2.text:SetString(string.rep("\n", followtext_lines*2 + insight_lines) .. something .. ": A BLASPHEMOUS MOCKERY")
+				
+				--[[
+				-- Testing with \n and \n\n confirms the preceeding newline stripping logic noted in RichText.
+				self.primaryInsightText.text:SetString("\n\nRichText"..followerWidget.text:GetString())
+				self.primaryInsightText2.text:SetString("\n\nNormText"..followerWidget.text:GetString())	
+				]]
+			end
 			
 		else
 			if self.primaryInsightText.shown then
-				print("Hiding InsightText")
+				--print("Hiding InsightText")
 				self.primaryInsightText:Hide()
 				self.primaryInsightText2:Hide()
 			end

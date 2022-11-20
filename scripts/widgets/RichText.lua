@@ -303,9 +303,11 @@ function RichText:SetString(str, forced)
 	--print("str:")
 	--print("|"..str.."|")
 
-	-- Text object logic:
-	--   If multiple proceeding newlines (nothing else on the line), only the first doesn't get preserved (80% sure)
+	-- Text object logic (from observing a standard Text in an ItemDetail):
+	--   With preceeding newlines, only the first doesn't get preserved.
+	--		(80% sure with ItemDetail observation alone, 99% sure with the proof in the HighlightActionItem override for controllers.
 	--   Trailing newlines don't get preserved.
+	-- Maybe I should use TrimNewlines here.
 
 	while chunks[i] do
 		local line = lines[lineCount]
@@ -354,8 +356,8 @@ function RichText:SetString(str, forced)
 
 		i = i + 1
 	end
-
 	
+	-- Remove trailing newlines.
 	--print("LOOP BEGIN", #lines)
 	for i = #lines, 1, -1 do
 		if #lines[i] == 0 then
@@ -368,12 +370,29 @@ function RichText:SetString(str, forced)
 	end
 	--print("LOOP END")
 	
+	-- Remove the first preceeding newline (done here to potentially make the operation faster)
+	if lines[1] and #lines[1] == 0 then
+		--print("Removed a preceeding newline.")
+		table.remove(lines, 1)
+	end
+
+	
 	
 	self.line_count = #lines
 
 	for i = 1, #lines do
 		self:NewLine(lines[i])
 	end
+end
+
+--- The goal of this is to transform text to how it would eventually end up if sent through SetString
+function RichText.TrimNewlines(str)
+	if str:sub(1, 1) == "\n" then
+		str = str:sub(2)
+	end
+
+	local s = str:find("\n*$")
+	return str:sub(1, s-1)
 end
 
 function RichText:GetRegionSize()
