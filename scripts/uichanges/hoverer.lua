@@ -85,55 +85,100 @@ local function OnHovererPostInit(hoverer)
 	-- TheInput:GetScreenPosition()
 
 	if IS_DST then
+		local YOFFSETUP = -80
+		local YOFFSETDOWN = -50
+		
+		local XOFFSET = 10
 		function hoverer:UpdatePosition(x, y)
-			local YOFFSETUP = -80
-			local YOFFSETDOWN = -50
-			local XOFFSET = 10
-
 			local scale = self:GetScale()
 			local scr_w, scr_h = TheSim:GetScreenSize()
 			local w = 0
 			local h = 0
 
+			local binx = 0
+
+			local still_primary_text = false
 			if self.text ~= nil and self.str ~= nil then
 				local w0, h0 = self.text:GetRegionSize()
+				--local str = 
+				--local num_trailing_newlines = select(2, :gsub("\n", "\n"))
+				--print("Text RegionSize:", h0)
+				--h0 = h0 - num_trailing_newlines * self.text:GetSize()
+				still_primary_text = true
+
 				w = math.max(w, w0)
 				h = math.max(h, h0)
+				binx = binx + h0
 			end
+
+			
 			if self.secondarytext ~= nil and self.secondarystr ~= nil then
 				local w1, h1 = self.secondarytext:GetRegionSize()
+				print("SecondaryText RegionSize:", h1)
+				if h1 > h then
+					still_primary_text = false
+				end
+
 				w = math.max(w, w1)
 				h = math.max(h, h1)
+				binx = binx + h1
 			end
+
+			
+			local iw, ih = 0, 0
+			local old_h = h
 			if self.insightText ~= nil and self.insightText:GetString() then
-				local w2, h2 = self.insightText:GetRegionSize()
-				w = math.max(w, w2)
-				h = math.max(h, h2)
+				iw, ih = self.insightText:GetRegionSize()
+				print("InsightText RegionSize:", ih)
+				--print("InsightRegionSize:", ih)
+
+				if still_primary_text then
+					-- Remove Insight's size from the height
+					h = h - ih
+					print("Text RegionSize CHANGED:", h)
+				end
+
+				w = math.max(w, iw)
+				h = math.max(h, ih)
+				binx = binx + ih
 			end
+
+
+			
 
 			w = w * scale.x * .5
 			h = h * scale.y * .5
 
-			--print(y, "LOWER:", h + YOFFSETDOWN * scale.y, "HIGHER:", scr_h - h - YOFFSETUP * scale.y)
-
-			-- low = bottom
-			-- high = top
-			--print("max:", scr_h - h*2 - YOFFSETUP * scale.y) -- scr_h - h - YOFFSETUP * scale.y
-			--print("current:", y)
-			--print'-----------------------------------------'
+			-- (self.insightText.line_count * self.insightText.font_size) --
+			--local r = select(2, self.text:GetString():gsub("\n", "\n")) + 1
+			--  + self.insightText.font_size * .75
 
 			local x_min = w + XOFFSET
 			local x_max = scr_w - w - XOFFSET
 
-			local r = select(2, self.text:GetString():gsub("\n", "\n"))
-			local y_min = h + YOFFSETDOWN * scale.y + (30*.75)
-			-- y_max = scr_h - h - YOFFSETUP * scale.y
-			local y_max = scr_h - h*2 - YOFFSETUP * scale.y -- h*2 means harder for insight to go off bounds
+			--local c = select(2, RichText.TrimNewlines(self.text:GetString()):gsub("\n", "\n"))
+
+			-- I just kept making educated guessing and and maxing with this alt_y_min worked.
+			-- Originally, there was a padding of 30*.75 here for some reason.
+			--local alt_y_min = (ih/2 + (old_h+30)/2) * scale.y * .5
+			-- Seems like the default y_min never gets used, but I don't care about that for now.
+
+			local alt_y_min = (ih)-- * scale.y * .5
+			
+			local left_min = h + (YOFFSETDOWN * scale.y)
+
+			local y_min = math.max(left_min, alt_y_min)
+			local y_max = scr_h - h - YOFFSETUP * scale.y
+
+			--print(left_min, "|", alt_y_min)
+
+			--  + (5 + self.insightText.font_size * 2.75)
 
 			self:SetPosition(
 				math_clamp(x, x_min, x_max),
 				math_clamp(y, y_min, y_max),
-				0)
+				0
+			)
 		end
 	end
 	
@@ -279,6 +324,9 @@ local function OnHovererPostInit(hoverer)
 			hoverer.insightText:SetPosition(0, -7.5 + (-15 * hovertext_lines) + dataHeight / 2) -- dataHeight used to be the height of the insight text
 			--]]
 		end
+
+		-- Forces a position update.
+		--self.str = text .. textPadding
 		
 		return oldSetString(self, text .. textPadding)
 	end

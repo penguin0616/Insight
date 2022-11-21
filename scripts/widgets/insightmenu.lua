@@ -99,7 +99,7 @@ local InsightMenu = Class(Widget,function(self)
 	--]]
 
 	self.bg = self:AddChild(Image("images/dst/scoreboard.xml", "scoreboard_frame.tex")) -- data/images
-	self.bg:SetSize(480, 460) -- 470, 380
+	self.bg:SetSize(520, 460) -- Original size before config: 480, 460
 
 	self.pages = {}
 	self.current_page = nil

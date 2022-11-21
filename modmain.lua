@@ -593,7 +593,7 @@ function mprint(...)
 
 	local prefix = ""
 
-	if false then
+	if true then
 		local d = debug.getinfo(2, "Sl")
 		prefix = string.format("%s:%s:", d.source or "?", d.currentline or 0)
 	end
