@@ -180,6 +180,7 @@ local RichText = Class(Widget, function(self, font, size, text, colour)
 	self.font = UIFONT
 	self.font_size = 30
 	self.raw_text = nil
+	self.line_count = 0
 	self.default_colour = "#ffffff"
 	self._colour = Color.fromHex(self.default_colour)
 

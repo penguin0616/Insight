@@ -95,8 +95,6 @@ local function OnHovererPostInit(hoverer)
 			local w = 0
 			local h = 0
 
-			local binx = 0
-
 			local still_primary_text = false
 			if self.text ~= nil and self.str ~= nil then
 				local w0, h0 = self.text:GetRegionSize()
@@ -107,73 +105,78 @@ local function OnHovererPostInit(hoverer)
 				still_primary_text = true
 
 				w = math.max(w, w0)
-				h = math.max(h, h0)
-				binx = binx + h0
+				--h = math.max(h, h0)
 			end
 
 			
 			if self.secondarytext ~= nil and self.secondarystr ~= nil then
 				local w1, h1 = self.secondarytext:GetRegionSize()
-				print("SecondaryText RegionSize:", h1)
+				--print("SecondaryText RegionSize:", h1)
 				if h1 > h then
 					still_primary_text = false
 				end
 
 				w = math.max(w, w1)
-				h = math.max(h, h1)
-				binx = binx + h1
+				--h = math.max(h, h1)
 			end
 
 			
 			local iw, ih = 0, 0
-			local old_h = h
 			if self.insightText ~= nil and self.insightText:GetString() then
 				iw, ih = self.insightText:GetRegionSize()
-				print("InsightText RegionSize:", ih)
+				--print("InsightText RegionSize:", ih)
 				--print("InsightRegionSize:", ih)
 
 				if still_primary_text then
-					-- Remove Insight's size from the height
-					h = h - ih
-					print("Text RegionSize CHANGED:", h)
+					-- The height of self.text is padded with the newlines compensating for the lines of InsightText.
+					-- Remove that false height.
+					--h = h - ih
+					--print("@@@@@@ Text RegionSize CHANGED:", h)
 				end
 
 				w = math.max(w, iw)
-				h = math.max(h, ih)
-				binx = binx + ih
+				--h = math.max(h, ih)
 			end
 
-
-			
-
 			w = w * scale.x * .5
-			h = h * scale.y * .5
-
-			-- (self.insightText.line_count * self.insightText.font_size) --
-			--local r = select(2, self.text:GetString():gsub("\n", "\n")) + 1
-			--  + self.insightText.font_size * .75
-
+			--h = h * scale.y * .5
+			--===== Calculating the X bounds ==================================================================
+			-- Default works here.
 			local x_min = w + XOFFSET
 			local x_max = scr_w - w - XOFFSET
 
-			--local c = select(2, RichText.TrimNewlines(self.text:GetString()):gsub("\n", "\n"))
+			--===== Calculating the Y bounds ==================================================================
 
-			-- I just kept making educated guessing and and maxing with this alt_y_min worked.
-			-- Originally, there was a padding of 30*.75 here for some reason.
-			--local alt_y_min = (ih/2 + (old_h+30)/2) * scale.y * .5
-			-- Seems like the default y_min never gets used, but I don't care about that for now.
+			-- The Y Minimum ======================================
+			-- This alone gives some padding. However, an observation:
+			local base_padding = ih * scale.y -- Do not use the length of the primary text since it will shift the text if pressing alt
+			--[[
+				[# of lines of insight text] line = [base_padding] (how the text appears aligned to me)
+				1 line = 60 (too short by 15 units)
+				2 line = 120 (perfect)
+				3 line = 180 (too big by 15 units)
+				4 line = 240 (too big by 30 units)
 
-			local alt_y_min = (ih)-- * scale.y * .5
-			
-			local left_min = h + (YOFFSETDOWN * scale.y)
+				Items tested with: Pitchfork (4 lines), Axe (3 lines), Cane (2 lines), Cut Grass (1 line)
+				Finiteuses had an extra line appended to it, Pitchfork had the component info warning for terraformer.
+				I thought maybe the 2 line equilibrium was due to the "<EntityDisplayName>\nInspect" but that doesn't seem to be it?
+			]]
 
-			local y_min = math.max(left_min, alt_y_min)
-			local y_max = scr_h - h - YOFFSETUP * scale.y
+			-- Based on the above observation, this formula made sense to use.
+			local corrective_padding = (self.insightText.line_count - 2) * -(self.insightText.font_size / 2)
+			-- However, alone it's not enough. It's still a little off. That's where we need the scaling.
+			local y_min = base_padding + (corrective_padding * scale.y)
 
-			--print(left_min, "|", alt_y_min)
+			-- The Y Maximum ======================================
+			-- If the minimum is enough to keep the text from the bottom, 
+			-- makes sense to me that it would work for the top.
+			local y_max = scr_h - (y_min)
+			-- And it mostly does! Just has roughly less than half of the normal text being clipped off.
+			-- To compensate...
+			y_max = y_max - (self.text.size / 2 * scale.y)
+			-- This seems to do it.
 
-			--  + (5 + self.insightText.font_size * 2.75)
-
+			-- Now both are aligned exactly!
 			self:SetPosition(
 				math_clamp(x, x_min, x_max),
 				math_clamp(y, y_min, y_max),
@@ -301,7 +304,7 @@ local function OnHovererPostInit(hoverer)
 		
 		-- size info
 		local hovertext_lines = select(2, text:gsub("\n", "\n"))
-		local description_lines = hoverer.insightText.line_count or 0
+		local description_lines = hoverer.insightText.line_count
 		local total_lines = hovertext_lines + description_lines - 1
 
 		local textPadding
@@ -328,6 +331,7 @@ local function OnHovererPostInit(hoverer)
 		-- Forces a position update.
 		--self.str = text .. textPadding
 		
+		self._itext = text
 		return oldSetString(self, text .. textPadding)
 	end
 
@@ -355,7 +359,7 @@ local function OnHovererPostInit(hoverer)
 			
 		]]
 
-		local offset = ((hoverer.insightText.line_count or 0) / 2) * hoverer.insightText.font_size
+		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.font_size
 		offset = offset + hoverer.insightText.font_size / 4
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
