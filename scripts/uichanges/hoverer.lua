@@ -95,14 +95,8 @@ local function OnHovererPostInit(hoverer)
 			local w = 0
 			local h = 0
 
-			local still_primary_text = false
 			if self.text ~= nil and self.str ~= nil then
 				local w0, h0 = self.text:GetRegionSize()
-				--local str = 
-				--local num_trailing_newlines = select(2, :gsub("\n", "\n"))
-				--print("Text RegionSize:", h0)
-				--h0 = h0 - num_trailing_newlines * self.text:GetSize()
-				still_primary_text = true
 
 				w = math.max(w, w0)
 				--h = math.max(h, h0)
@@ -111,11 +105,6 @@ local function OnHovererPostInit(hoverer)
 			
 			if self.secondarytext ~= nil and self.secondarystr ~= nil then
 				local w1, h1 = self.secondarytext:GetRegionSize()
-				--print("SecondaryText RegionSize:", h1)
-				if h1 > h then
-					still_primary_text = false
-				end
-
 				w = math.max(w, w1)
 				--h = math.max(h, h1)
 			end
@@ -124,15 +113,6 @@ local function OnHovererPostInit(hoverer)
 			local iw, ih = 0, 0
 			if self.insightText ~= nil and self.insightText:GetString() then
 				iw, ih = self.insightText:GetRegionSize()
-				--print("InsightText RegionSize:", ih)
-				--print("InsightRegionSize:", ih)
-
-				if still_primary_text then
-					-- The height of self.text is padded with the newlines compensating for the lines of InsightText.
-					-- Remove that false height.
-					--h = h - ih
-					--print("@@@@@@ Text RegionSize CHANGED:", h)
-				end
 
 				w = math.max(w, iw)
 				--h = math.max(h, ih)
@@ -177,6 +157,7 @@ local function OnHovererPostInit(hoverer)
 			-- This seems to do it.
 
 			-- Now both are aligned exactly!
+			-- Clamps could be changed to ternary for an incredibly slight performance gain.
 			self:SetPosition(
 				math_clamp(x, x_min, x_max),
 				math_clamp(y, y_min, y_max),
@@ -328,10 +309,13 @@ local function OnHovererPostInit(hoverer)
 			--]]
 		end
 
-		-- Forces a position update.
-		--self.str = text .. textPadding
-		
-		self._itext = text
+		-- Trigger a position update.
+		if (hoverer.old_insight_text ~= itemDescription) then
+			self.old_insight_text = itemDescription
+			local pos = TheInput:GetScreenPosition()
+        	hoverer:UpdatePosition(pos.x, pos.y)
+		end
+
 		return oldSetString(self, text .. textPadding)
 	end
 

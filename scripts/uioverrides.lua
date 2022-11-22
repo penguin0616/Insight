@@ -512,8 +512,6 @@ end)
 --======================================== FollowText ======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
---STRINGS.NAMES.BEEFALO = "B33\nFA\nLO"
-
 local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
 local RichText = import("widgets/RichText")
 
@@ -525,11 +523,13 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	-- This is whatever is currently "selected", text is always the available actions.
 	-- Starts with a newline (I assume for the entity name)
 	-- See attack hit for notes on attack action.
+	--[[
 	local old1 = controls.playeractionhint.SetTarget
 	controls.playeractionhint.SetTarget = function(self, ...)
 		--mprint("playeractionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
 		return old1(self, ...)
 	end
+	--]]
 
 	-- This is whatever is currently "selected"
 	-- Text is always starts with the entity name. If the enemy name has multiple lines, only the first line is here. 
@@ -546,31 +546,37 @@ AddClassPostConstruct("widgets/controls", function(controls)
  
 ]] (aka "Twigs\n \n ")
 	]==]
+	--[[
 	local old2 = controls.playeractionhint_itemhighlight.SetTarget
 	controls.playeractionhint_itemhighlight.SetTarget = function(self, ...)
 		--mprint("playeractionhint_itemhighlight SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
 		return old2(self, ...)
 	end
+	--]]
 
 	-- This is a secondary selector that shows the attack action on a nearby mob that isn't the primary focus
 	-- If a target with this attackhint becomes the primary focus, it can no longer be the target here.
 	-- Text doesn't start with a newline, nor any ending newlines
 	-- Text is initially empty until assigned to the "(X) Attack" action
+	--[[
 	local old3 = controls.attackhint.SetTarget
 	controls.attackhint.SetTarget = function(self, ...)
 		--mprint("attackhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
 		return old3(self, ...)
 	end
+	--]]
 
 	-- This is for turf related stuff and placing structures
 	-- Text doesn't start with a newline or end with one
 	-- Can either be "Dig" or "Place Ground" newline (and space?) "Cancel"
 	-- The text is attached to the player for pitchforking and placing structures, and is attached to the tile grid when placing turf
+	--[[
 	local old4 = controls.groundactionhint.SetTarget
 	controls.groundactionhint.SetTarget = function(self, ...)
 		--mprint("groundactionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
 		return old4(self, ...)
 	end
+	--]]
 	
 	local FollowText = require"widgets/followtext"
 	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, 28))
@@ -672,127 +678,6 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		end
 	end
 end)
-
---[[
-local follows = {} -- i = followtext
---local targets = {} 
-local targets_reverse = {} -- target = followtext
-
-local function clean(tbl)
-	local i = 1
-	while i <= #tbl do
-		if not tbl[i].inst:IsValid() then
-			table.remove(tbl, i)
-			i=i-1
-		end
-
-		i = i + 1
-	end
-end
-
-local function init()
-	local function cl(txt)
-		local i = 1
-		--txt:gsub("\n[%w%c%p%s]", function(x) i = i + 1 return x end)
-		txt:gsub("\n", function(x) i = i + 1 return x end)
-
-		if txt:sub(-1) == "\n" then
-			i=i-1
-		end
-
-		return i
-	end
-
-	TheGlobalInstance:DoPeriodicTask(0.20, function()
-		if not localPlayer then
-			return
-		end
-
-		if not TheInput:ControllerAttached() then
-			return
-		end
-
-		for target, widget in pairs(targets_reverse) do
-			if not target:IsValid() or not widget.inst:IsValid() then
-				targets_reverse[target] = nil
-			end
-		end
-
-		clean(follows)
-
-		local processed = {}
-		for target, followText in pairs(targets_reverse) do
-			if target ~= localPlayer then
-
-			processed[followText] = true
-
-			local itemInfo = RequestEntityInformation(target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
-
-			if itemInfo then
-				itemInfo = itemInfo.information
-			end
-			
-			local lineHeight = 28
-			local lines = cl(followText.text:GetString())
-
-			if lines > 2 then
-				lines = lines - 1
-			else
-				--lines = lines - 0.5 -- just this, but attack + only health (ancient furniture) = clipping
-				if itemInfo and cl(itemInfo) > 1 then
-					lines = lines - 0.5
-				end
-			end
-
-			--local lines = itemInfo and cl(itemInfo) or 0
-			--local base = lineHeight / 2
-
-			followText.insightText:SetString(itemInfo)
-
-			followText.insightText:SetPosition(0, -lines * lineHeight)
-
-			end
-		end
-
-		for i = 1, #follows do
-			local v = follows[i]
-			if not processed[v] then
-				v.insightText:SetString(nil)
-			end
-		end
-	end)
-end
-
-AddClassPostConstruct("widgets/followtext", function(followText)
-	follows[#follows+1] = followText
-	init();init=function() end;
-
-	-- generated and then updated as needed
-	followText.insightText = followText:AddChild(RichText())
-	followText.insightText:SetSize(28)
-
-	-- target
-	local oldSetTarget = followText.SetTarget
-	followText.SetTarget = function(self, target)
-		if self.target then
-			if self.target ~= target then
-				if targets_reverse[self.target] then
-					targets_reverse[self.target].insightText:SetString(nil)
-				end
-			end
-			targets_reverse[self.target] = nil
-		end
-
-		oldSetTarget(self, target)
-
-		if target then
-			targets_reverse[target] = self
-		end
-
-		--targets[self] = target
-	end
-end)
---]]
 
 --==========================================================================================================================
 --==========================================================================================================================
