@@ -87,7 +87,7 @@ local function GetItems(self, context)
 				item.fuel = res
 			end
 
-			if slot.data.armor then
+			if slot.data.armor and slot.data.armor.condition then
 				local d = Insight.descriptors.armor.FormatCondition or function() return {description = "FAILED TO LOAD CONDITION COMPONENT"} end
 
 				local res = d(slot.data.armor.condition, context)

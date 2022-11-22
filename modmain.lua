@@ -2957,7 +2957,7 @@ if IS_DST then -- not in UI overrides because server needs access too
 		report.log_type = from -- "client" or "server" 
 
 		report.server = GetDefaultServerData() -- better?
-		report.server.mastersim = TheWorld.ismastersim -- has authority
+		report.server.mastersim = TheNet:GetIsMasterSimulation() -- has authority
 		report.server.clients = TheNet:GetClientTable() -- how many people did we possibly just crash?
 		report.server.is_master_shard = TheShard:IsMaster() -- is this the master shard?
 		report.server.shard_id = TheShard:GetShardId() -- caves or not
