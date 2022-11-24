@@ -34,12 +34,16 @@ local import_cache = {}
 
 --local import_cache = package.loaded -- require's cache
 
+local function MakePathReal(path)
+	return MODROOT .. "scripts/" .. path .. ".lua"
+end
+
 --- Importer function.
 -- @string path Path to the lua file to load (do not append .lua)
 -- @treturn function
 local function import(path)
 	--path = "../mods/" .. modname .. "/" ..  path
-	path = MODROOT .. "scripts/" .. path .. ".lua"
+	path = MakePathReal(path)
 
 	-- as to behave like require
 	if (import_cache[path]) then
@@ -67,4 +71,24 @@ local function import(path)
 	end
 end
 
-return import
+local function clear_import(path)
+	real_path = MakePathReal(path)
+
+	if import_cache[real_path] then
+		import_cache[real_path] = nil
+	else
+		errorf("Attempt to clear not-loaded import: %q (%q)", path, real_path)
+	end
+end
+
+local proxy = newproxy(true)
+local mt = getmetatable(proxy)
+mt.__index = { 
+	clear = clear_import
+}
+
+mt.__call = function(self, ...)
+	return import(...)
+end
+
+return proxy

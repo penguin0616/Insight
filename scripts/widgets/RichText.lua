@@ -514,9 +514,9 @@ function RichText:NewLine(pieces)
 		-- subscript/superscript
 		if obj.name == "Text" then
 			if obj.modifiers.sub then -- subscript
-				y = y - (obj:InsightGetSize() * 1/3) -- 1/3 made sense, and it seems to match up perfectly with my test document. this was so.. nice? to add, after the hell this file has put me through.
+				y = y - (obj:GetSize() * 1/3) -- 1/3 made sense, and it seems to match up perfectly with my test document. this was so.. nice? to add, after the hell this file has put me through.
 			elseif obj.modifiers.sup then
-				y = y + (obj:InsightGetSize() * 1/3)
+				y = y + (obj:GetSize() * 1/3)
 			end
 		end
 		

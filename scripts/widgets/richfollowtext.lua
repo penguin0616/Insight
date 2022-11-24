@@ -1,4 +1,4 @@
--- This file "richfollowtext.lua" falls outside of Insight's license.
+-- This file largely does not fall under Insight's license. 
 setfenv(1, _G.Insight.env)
 
 local Widget = require "widgets/widget"

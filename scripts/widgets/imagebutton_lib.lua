@@ -64,7 +64,7 @@ local function ImageButton_UseFocusOverlay(self, focus_selected_texture)
 end
 
 local function ImageButton_ForceImageSize(self, x, y)
-    if self.ForceImageSize then
+    if IS_DST then
         return self.ForceImageSize(self, x, y)
     end
     
@@ -75,7 +75,7 @@ end
 
 local lib = {}
 
-lib.ForceImageSize = ImageButton_ForceImageSize
+--lib.ForceImageSize = ImageButton_ForceImageSize
 lib.UseFocusOverlay = ImageButton_UseFocusOverlay
 
 lib.OverrideFocuses = function(self)
@@ -86,7 +86,9 @@ lib.OverrideFocuses = function(self)
 	self.OnLoseFocus = ImageButton_OnLoseFocus
 end
 
-
+lib.ApplyDSGlobalPatch = function(self)
+	ImageButton.ForceImageSize = ImageButton_ForceImageSize
+end
 
 
 

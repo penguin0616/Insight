@@ -43,7 +43,35 @@ local module = {
 	}
 }
 
-module.temperature.DEGREE_CHARACTER = utf8char(0xb0)
+--[[
+if IS_DS and not UICOLOURS then
+	UICOLORS = {
+		GOLD_CLICKABLE = RGB(215, 210, 157), -- interactive text & menu
+		GOLD_FOCUS = RGB(251, 193, 92), -- menu active item
+		GOLD_SELECTED = RGB(245, 243, 222), -- titles and non-interactive important text
+		GOLD_UNIMPORTANT = RGB(213, 213, 203), -- non-interactive non-important text
+		HIGHLIGHT_GOLD = RGB(243, 217, 161),
+		GOLD = GOLD,
+		BROWN_MEDIUM = RGB(107, 84, 58),
+		BROWN_DARK = RGB(80, 61, 39),
+		BLUE = RGB(80, 143, 244),
+		GREY = GREY,
+		BLACK = BLACK,
+		WHITE = WHITE,
+		BRONZE = RGB(180, 116, 36, 1),
+		EGGSHELL = RGB(252, 230, 201),
+		IVORY = RGB(236, 232, 223, 1),
+		IVORY_70 = RGB(165, 162, 156, 1),
+		PURPLE = RGB(152, 86, 232, 1),
+		RED = RGB(207, 61, 61, 1),
+		SLATE = RGB(155, 170, 177, 1),
+		SILVER = RGB(192, 192, 192, 1),
+	}
+end
+--]]
+
+
+module.temperature.DEGREE_CHARACTER = string.char(0xb0) --utf8char(0xb0) -- utf8char doesn't exist in DS.
 module.temperature.GAME_FORMAT = "%.1f" .. module.temperature.DEGREE_CHARACTER
 module.temperature.CELSIUS_FORMAT = module.temperature.GAME_FORMAT .. "C"
 module.temperature.FAHRENHEIT_FORMAT = module.temperature.GAME_FORMAT .. "F"
@@ -217,6 +245,14 @@ function GetPlayerColour(arg)
 	local default = PORTAL_TEXT_COLOUR or {243/255, 244/255, 243/255, 255/255}
 
 	return Color.new(unpack(default))
+end
+
+function DEBUG_IMAGE(bool) 
+	if bool then
+		return "images/White_Square.xml", "White_Square.tex"
+	end
+
+	return nil, nil
 end
 
 -- functions i took out of modmain for organization reasons
@@ -741,7 +777,39 @@ module.LoadComponent = assert(module.getupvalue(EntityScript.AddComponent, "Load
 module.classTweaker = {
 	__index = module.getupvalue(Class, "__index"),
 	__newindex = module.getupvalue(Class, "__newindex"),
+	tracked = {},
 }
+
+module.classTweaker.DestroyAllTrackedInstances = function()
+	if true then return end
+	for filename, insts in pairs(module.classTweaker.tracked) do
+		for j, inst in pairs(insts) do
+			inst:Kill()
+		end
+		module.classTweaker.tracked[filename] = {}
+	end
+end
+
+module.classTweaker.TrackClassInstances = function(class)
+	if true then return end
+	--[[
+		../mods/workshop-2189004162/scripts/screens/insightconfigurationscreen.lua	
+		 ..\mods\workshop-2189004162\scripts\screens\insightconfigurationscreen.lua	
+	]]
+	--local dataroot = "@"..CWD.."\\"
+	local dbg = debug.getinfo(class._ctor, "S")
+	
+	local filename = dbg.source:match("([%w_]+)%.lua$")
+	module.classTweaker.tracked[filename] = module.classTweaker.tracked[filename] or {}
+
+	local mt = getmetatable(class)
+	local old = mt.__call
+	mt.__call = function(...)
+		local res = old(...)
+		table.insert(module.classTweaker.tracked[filename], res)
+		return res
+	end
+end
 
 module.classTweaker.GetClassProps = function(class)
 	-- could be nil in a good way (class isn't setup for them) or a bad way (unable to find props upvalue)

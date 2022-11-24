@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- man the text widget is so screwed up
+local Text = require("widgets/text")
 
 local function Text_SetSize(self, sz)
 	if IS_DST then
@@ -42,7 +43,12 @@ end
 
 local lib = {}
 
-lib.SetSize = Text_SetSize
-lib.GetSize = Text_GetSize
+--lib.SetSize = Text_SetSize
+--lib.GetSize = Text_GetSize
+
+lib.ApplyDSGlobalPatch = function(self)
+	Text.SetSize = Text_SetSize
+	Text.GetSize = Text_GetSize
+end
 
 return lib

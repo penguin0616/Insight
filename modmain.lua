@@ -142,7 +142,9 @@ local Insight = {
 		RAW = 1,
 		FROM_INSPECTION = 2,
 		IGNORE_WORLDLY = 4,
-	}
+	},
+
+	HOT_RELOAD_FNS = {},
 }
 
 -- Provide to Global
@@ -1320,6 +1322,61 @@ function GetMoonCycle()
 	return moon_cycle
 end
 
+function INSIGHT_HOT_RELOAD()
+	if not DEBUG_ENABLED then
+		mprint("Unable to INSIGHT_HOT_RELOAD without DEBUG_ENABLED.")
+		return
+	end
+
+	util.classTweaker.DestroyAllTrackedInstances()
+
+	for name, data in pairs(Insight.HOT_RELOAD_FNS) do
+		dprint("RUNNING HOT RELOAD:", name)
+
+		local fresh = {}
+
+		for i,v in pairs(data.files_to_clear) do
+			dprint("\tClearing import", v)
+			import.clear(v)
+			dprint("\tLoaded import", v, "as", v:match("([%w_]+)$"))
+			fresh[v:match("([%w_]+)$")] = import(v)
+		end
+
+		data.callback(fresh)
+	end
+
+	TheNet:Announce("[Insight] Hot Reload Completed")
+end
+_G.INSIGHT_HOT_RELOAD = INSIGHT_HOT_RELOAD
+
+function REGISTER_HOT_RELOAD(files_to_clear, callback)
+	--assert(type(priority) == "number")
+
+	if not DEBUG_ENABLED then
+		mprint("Unable to REGISTER_HOT_RELOAD without DEBUG_ENABLED.")
+		return
+	end
+
+	files_to_clear = files_to_clear or {}
+
+	local dbg = debug.getinfo(2, "Sl")
+	local filename = dbg.source:match("([%w_]+)%.lua$")
+	if not filename then
+		return errorf("Unable to process REGISTER_HOT_LOAD: \"%s\":%s ", tostring(dbg.source), tostring(dbg.currentline))
+	end
+
+	Insight.HOT_RELOAD_FNS[filename] = {
+		--priority = priority,
+		files_to_clear = files_to_clear,
+		source = dbg.source,
+		callback = callback
+	}
+
+	dprint("REGISTERED HOT RELOAD:", dbg.source)
+end
+
+
+
 local function sprint(c)
 	local x = c
 	while #x > 0 do
@@ -1592,6 +1649,14 @@ end
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
+import("ds_patches/widget")
+
+for i,v in pairs(widgetLib) do
+	if v.ApplyDSGlobalPatch then
+		v:ApplyDSGlobalPatch()
+	end
+end
+
 -- Check settings
 if IS_DST then -- server + dedi check
 	if TheNet:IsDedicated() then
@@ -1787,29 +1852,6 @@ AddComponentPostInit("container", function(self)
 end)
 
 if IS_DST then 
-	--[[
-	local sim_paused = false
-
-	local oldOnSimPaused = OnSimPaused
-	function _G.OnSimPaused(...)
-		sim_paused = true
-		print("!!!!!!!! SIM PAUSED", ...)
-
-		TickRPCQueue()
-		rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "Stagger"), TheShard:GetShardId(), "test")
-
-		return oldOnSimPaused(...)
-	end
-
-	local oldOnSimUnpaused = OnSimUnpaused
-	function _G.OnSimUnpaused(...)
-		sim_paused = false
-		print("!!!!!!!! SIM UNPAUSED", ...)
-		return oldOnSimUnpaused(...)
-	end
-	--]]
-	 
-
 	-- replicable
 	AddReplicableComponent("insight")
 
@@ -2602,6 +2644,22 @@ if IS_DST then
 			--rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "ShardPlayers"), player.userid, compress(shard_players))
 		end)
 	end)
+else
+	AddPrefabPostInit("heatrock", function(inst)
+		--local cache = 0 -- stop network spam
+		inst:ListenForEvent("temperaturedelta", function()
+			if GetModConfigData("itemtile_display", true) == "numbers" then
+				--local temp = Round(inst.components.temperature:GetCurrent(), 1)
+
+				--if temp ~= cache then
+					--dprint('thermal push', temp, cache)
+					inst:PushEvent("percentusedchange", { percent = .123 })
+					--cache = temp
+
+				--end
+			end
+		end)
+	end)
 end
 
 do
@@ -2614,6 +2672,7 @@ do
 		end
 	end
 end
+
 
 
 AddPlayerPostInit(function(player) 
@@ -2712,24 +2771,6 @@ AddPrefabPostInit("archive_orchestrina_main", function(inst)
 		end
 	end)
 end)
-
-AddPrefabPostInit("heatrock", function(inst)
-	if IS_DST then return end
-	--local cache = 0 -- stop network spam
-	inst:ListenForEvent("temperaturedelta", function()
-		if GetModConfigData("itemtile_display", true) == "numbers" then
-			--local temp = Round(inst.components.temperature:GetCurrent(), 1)
-
-			--if temp ~= cache then
-				--dprint('thermal push', temp, cache)
-				inst:PushEvent("percentusedchange", { percent = .123 })
-				--cache = temp
-
-			--end
-		end
-	end)
-end)
-
 
 AddSimPostInit(function()
 	local world = TheWorld or GetWorld()
@@ -3209,6 +3250,7 @@ if IS_DS or IsClient() or IsClientHost() then
 	import("clientmodmain")
 end
 
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Repair ==========================================================================
@@ -3323,6 +3365,7 @@ if KnownModIndex:IsModEnabled("workshop-1378549454") then
 	error = real_error
 	mprint("Got real error from Gemcore")
 end
+
 
 
 
