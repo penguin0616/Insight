@@ -1096,13 +1096,12 @@ function GetWorldInformation(player) -- refactor?
 		data.special_data[i].worldly = true
 	end
 
-	--[[
+	
 	for i = 1, 7 do
 		local x = "test" .. i
 		data.special_data[x] = { worldly=true }
 		data.raw_information[x] = x
 	end
-	--]]
 	
 
 	if GetWorldType() >= 2 then

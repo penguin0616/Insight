@@ -26,13 +26,7 @@ local RichText = import("widgets/RichText")
 local Text = require("widgets/text")
 local resolvefilepath = resolvefilepath
 
-local function DEBUG() 
-	if false then
-		return "images/White_Square.xml", "White_Square.tex"
-	end
 
-	return nil, nil
-end
 
 local ItemDetail = Class(Widget, function(self, info)
 	-- Image(atlas, tex, default_tex)
@@ -46,7 +40,7 @@ local ItemDetail = Class(Widget, function(self, info)
 	self.component = nil
 
 	--[[
-	self.yep = self:AddChild(Image(DEBUG()))
+	self.yep = self:AddChild(Image(DEBUG_IMAGE()))
 	self.yep:SetTint(1, 1, 1, .5)
 	self.yep:SetSize(info.width, info.height)
 	--]]
@@ -87,7 +81,7 @@ local ItemDetail = Class(Widget, function(self, info)
 	--self.text:SetHAlign(ANCHOR_LEFT)
 
 	--[[
-	self.heckler = self:AddChild(Image(DEBUG()))
+	self.heckler = self:AddChild(Image(DEBUG_IMAGE()))
 	--self.heckler:SetTint(.5, 0, 0, .7)
 	self.heckler:SetSize(info.width - icon_holder_width - 20, icon_holder_height) -- padding of 20 for the scrollbar
 	self.heckler:SetPosition(icon_holder_width/2 - 10, 0) -- subtract 10 to keep icon_holder and text still bordering eachother

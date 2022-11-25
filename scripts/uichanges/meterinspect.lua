@@ -91,8 +91,10 @@ module.Initialize = function()
 	--AddClassPostConstruct("widgets/hungerbadge", OnStatBadgePostConstruct)
 	AddClassPostConstruct("widgets/sanitybadge", OnStatBadgePostConstruct)
 	--AddClassPostConstruct("widgets/healthbadge", OnStatBadgePostConstruct) -- No actual "rate" stuff here.
-	AddClassPostConstruct("widgets/moisturemeter", OnStatBadgePostConstruct)
-
+	if IS_DST then
+		AddClassPostConstruct("widgets/moisturemeter", OnStatBadgePostConstruct)
+	end
+	
 	TheInput:AddControlHandler(CONTROL_FORCE_INSPECT, InspectListener)
 end
 

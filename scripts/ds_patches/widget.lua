@@ -5,6 +5,8 @@ MAX_HUD_SCALE = 1.25
 
 -- fonts_default.lua in DS, fonts.lua in DST
 NEWFONT_OUTLINE = UIFONT
+HEADERFONT = UIFONT
+CHATFONT = UIFONT
 
 --[[
 	DS Fonts

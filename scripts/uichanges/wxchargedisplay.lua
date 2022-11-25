@@ -178,7 +178,7 @@ local function StatusAnnouncementWXInterceptor(oldString, data)
 end
 
 module.CanHookUpgradeModuleDisplay = function()
-	return UpgradeModulesDisplayExists and CurrentRelease.GreaterOrEqualTo("R21_REFRESH_WX78")
+	return IS_DST and UpgradeModulesDisplayExists and CurrentRelease.GreaterOrEqualTo("R21_REFRESH_WX78")
 end
 
 module.HookUpgradeModuleDisplay = function()

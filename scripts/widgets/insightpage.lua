@@ -114,13 +114,13 @@ local ScrollList = Class(Widget, function(self)
 
 	self.up_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_up.tex"))
 	widgetLib.imagebutton.OverrideFocuses(self.up_button)
-	widgetLib.imagebutton.ForceImageSize(self.up_button, scrollbutton_width, scrollbutton_height)
+	self.up_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.up_button:SetPosition(0, scroller_height/2 - scrollbutton_height/2)
 	self.up_button:SetOnClick(function() self:Scroll(-1) end)
 	
 	self.down_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_down.tex"))
 	widgetLib.imagebutton.OverrideFocuses(self.down_button)
-	widgetLib.imagebutton.ForceImageSize(self.down_button, scrollbutton_width, scrollbutton_height)
+	self.down_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.down_button:SetPosition(0, -scroller_height/2 + scrollbutton_height/2)
 	self.down_button:SetOnClick(function() self:Scroll(1) end)
 	
@@ -131,7 +131,7 @@ local ScrollList = Class(Widget, function(self)
 	
 	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_handle.tex"))
 	widgetLib.imagebutton.OverrideFocuses(self.position_marker)
-	widgetLib.imagebutton.ForceImageSize(self.position_marker, scrollbutton_width, scrollbutton_height)
+	self.position_marker:ForceImageSize(scrollbutton_width, scrollbutton_height)
 
 	local _, scroll_bar_line_height = self.scroll_bar_line:GetSize()
 	self.marker_bound = scroll_bar_line_height/2 - scrollbutton_height

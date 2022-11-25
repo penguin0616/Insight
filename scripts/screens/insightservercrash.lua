@@ -24,7 +24,7 @@ local Screen = require "widgets/screen"
 local CrashReportStatus = import("widgets/crashreportstatus")
 
 local InsightServerCrash = Class(Screen, function(self, data)
-	Screen._ctor(self, "InsightServerCrashed")
+	Screen._ctor(self, "InsightServerCrash")
 
 	self.root = self:AddChild(Widget("ROOT"))
     self.root:SetVAnchor(ANCHOR_TOP)

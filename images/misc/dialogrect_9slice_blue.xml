@@ -1,0 +1,16 @@
+<Atlas>
+    <Texture filename="dialogrect_9slice_blue.tex"/>
+    <Elements>
+        <Element name="bottom.tex" u1="0.0009765625" u2="0.93261719" v1="0.89453125" v2="0.99609375"/>
+        <Element name="bottomleft.tex" u1="0.23535156" u2="0.35058594" v1="0.25390625" v2="0.48828125"/>
+        <Element name="bottomright.tex" u1="0.35253906" u2="0.46777344" v1="0.25390625" v2="0.48828125"/>
+        <Element name="center.tex" u1="0.93457031" u2="0.94042969" v1="0.97265625" v2="0.99609375"/>
+        <Element name="crown_bottom_fg.tex" u1="0.28417969" u2="0.41308594" v1="0.56640625" v2="0.77734375"/>
+        <Element name="crown_top_fg.tex" u1="0.0009765625" u2="0.28222656" v1="0.49609375" v2="0.77734375"/>
+        <Element name="left.tex" u1="0.23535156" u2="0.33691406" v1="0.22265625" v2="0.24609375"/>
+        <Element name="right.tex" u1="0.33886719" u2="0.44042969" v1="0.22265625" v2="0.24609375"/>
+        <Element name="top.tex" u1="0.0009765625" u2="0.93261719" v1="0.78515625" v2="0.88671875"/>
+        <Element name="topleft.tex" u1="0.0009765625" u2="0.11621094" v1="0.19140625" v2="0.48828125"/>
+        <Element name="topright.tex" u1="0.11816406" u2="0.23339844" v1="0.19140625" v2="0.48828125"/>
+    </Elements>
+</Atlas>

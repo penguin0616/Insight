@@ -115,10 +115,10 @@ local function ItemTile_SetPercent(self, percent, ...)
 					-- today i learned Text:SetSize() does nothing, because they messed up while coding the text widget and made :GetSize() into :SetSize() overriding the working one.
 					-- real nice. 
 					--self.percent.inst.TextWidget:SetSize((LOC and LOC.GetTextScale() or 1) * (42 - (#value - 4) * 2))
-					self.percent:InsightSetSize(42 - (#value - 4) * 3)
+					self.percent:SetSize(42 - (#value - 4) * 3)
 				else
 					--self.percent:SetSize(42) -- default
-					self.percent:InsightSetSize(42) -- default
+					self.percent:SetSize(42) -- default
 				end
 			else
 				if #value > 4 then

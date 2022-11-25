@@ -168,10 +168,12 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	dprint("Insight Menu Button added")
 end)
 
+--[[
 AddClassPostConstruct("widgets/text", function(text)
 	text.InsightGetSize = widgetLib.text.GetSize
 	text.InsightSetSize = widgetLib.text.SetSize
 end)
+--]]
 
 --========================================================================================================================--
 --= Item Tile ============================================================================================================--

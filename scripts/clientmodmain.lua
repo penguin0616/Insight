@@ -451,7 +451,7 @@ local function LoadLocalPlayer(player)
 			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady - x))
 
 			local todo = onLocalPlayerReady[x + 1]
-			todo.fn(localPlayer.replica.insight, localPlayer._insight_context)
+			todo.fn(GetLocalInsight(localPlayer), localPlayer._insight_context)
 			
 			if todo.persists then
 				x = x + 1
