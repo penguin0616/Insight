@@ -19,7 +19,6 @@ directory. If not, please refer to
 ]]
 
 local Image = require("widgets/image")
-
 local lib = {}
 
 lib.Initialize = function()
@@ -30,7 +29,13 @@ lib.Initialize = function()
 	-- plus, it's really irritating i have to skip the syntatic sugar of : 
 
 	-- omg why didn't i think of this sooner
-	local DummyImage = loadfile("scripts/widgets/image.lua")()
+	local image_loader = loadfile("scripts/widgets/image.lua")
+	local env = setmetatable({}, {
+		__index = getfenv(0)
+	})
+	setfenv(image_loader, env)
+	
+	local DummyImage = image_loader()
 	lib.SetTexture = DummyImage.SetTexture
 	DummyImage = nil
 
