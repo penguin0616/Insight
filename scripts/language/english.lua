@@ -426,8 +426,8 @@ return {
 		SPY = "Investigate", -- hamlet
 		THROW = "Throw", -- sw -- Action string is "Throw At"
 		ROW_FAIL = "Row Fail",
-		ATTACK = STRINGS.ACTIONS.ATTACK.GENERIC,
-		POUR_WATER = STRINGS.ACTIONS.POUR_WATER.GENERIC,
+		ATTACK = "<string=ACTIONS.ATTACK.GENERIC>", --STRINGS.ACTIONS.ATTACK.GENERIC,
+		POUR_WATER = "<string=ACTIONS.POUR_WATER.GENERIC>", --STRINGS.ACTIONS.POUR_WATER.GENERIC,
 	},
 
 	-- fishable.lua
