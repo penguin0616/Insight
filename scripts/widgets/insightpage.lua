@@ -26,15 +26,6 @@ local ItemDetail = import("widgets/itemdetail")
 local item_width = 400
 local item_height = 80
 
-local function DEBUG()
-	if false then
-		return "images/White_Square.xml", "White_Square.tex"
-	end
-
-	return nil, nil
-end
-
-
 local function MakeGrid()
 	local TEMPLATES = require "widgets/redux/templates"
 
@@ -276,7 +267,7 @@ local InsightPage = Class(Widget, function(self, name)
 	self._name = name
 	self.items = {}
 
-	self.main = self:AddChild(Image(DEBUG()))
+	self.main = self:AddChild(Image(DEBUG_IMAGE()))
 	--self.main = self:AddChild(Image())
 	self.main:SetSize(400, 290)
 	self.main:SetPosition(5, -25)
