@@ -818,6 +818,7 @@ end
 
 module.classTweaker.SetupClassForProps = function(class)
 	if class.__newindex == nil then
+		-- TODO: This has issues with classes that inherit from another.
 		local props = {}
 		util.replaceupvalue(getmetatable(class).__call, "props", props)
 		class.__index = module.classTweaker.__index

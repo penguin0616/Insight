@@ -1,6 +1,26 @@
 local patcher_common = import("ds_patches/patcher_common")
 local Widget = require("widgets/widget")
 
+MAX_HUD_SCALE = 1.25
+
+-- fonts_default.lua in DS, fonts.lua in DST
+NEWFONT_OUTLINE = UIFONT
+
+--[[
+	DS Fonts
+DEFAULTFONT = "opensans"
+DIALOGFONT = "opensans"
+TITLEFONT = "bp100"
+UIFONT = "bp50"
+BUTTONFONT="buttonfont"
+NUMBERFONT = "stint-ucr"
+TALKINGFONT = "talkingfont"
+TALKINGFONT_WATHGRITHR = "talkingfont_wathgrithr"
+TALKINGFONT_WORMWOOD = "talkingfont_wormwood"
+SMALLNUMBERFONT = "stint-small"
+BODYTEXTFONT = "stint-ucr"
+]]
+
 local oldKillAllChildren = Widget.KillAllChildren
 Widget.KillAllChildren = function(self, ...)
 	oldKillAllChildren(self, ...)
@@ -27,7 +47,7 @@ function Widget:SetHoverText(text, params)
 			self.hovertext_root:Hide()
 
             if params.bg ~= false then
-                self.hovertext_bg = self.hovertext_root:AddChild(Image(params.bg_atlas or "images/frontend.xml", params.bg_texture or "scribble_black.tex"))
+                self.hovertext_bg = self.hovertext_root:AddChild(Image(params.bg_atlas or "images/dst/frontend.xml", params.bg_texture or "scribble_black.tex"))
                 self.hovertext_bg:SetTint(1,1,1,.8)
                 self.hovertext_bg:SetClickable(false)
             end

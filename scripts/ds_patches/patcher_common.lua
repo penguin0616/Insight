@@ -29,10 +29,10 @@ function PatchClass(edited_class, adjusted_methods)
 
 		local root = class_chain[#class_chain]
 		--local root_dbg = debug.getinfo(root._ctor, "S")
-		local class_dbg = debug.getinfo(class._ctor, "S")
+		--local class_dbg = debug.getinfo(class._ctor, "S")
 
 		--local adjusted_root = root_dbg.source:match("(scripts/.+[%w_]+.lua)$")
-		local adjusted_class = class_dbg.source --class_dbg.source:match("(scripts/.+[%w_]+.lua)$")
+		--local adjusted_class = class_dbg.source --class_dbg.source:match("(scripts/.+[%w_]+.lua)$")
 
 		if root == edited_class then
 			--print(string.format("Root Origin of '%s' is Widget!", adjusted_class or "nil"))
@@ -43,12 +43,14 @@ function PatchClass(edited_class, adjusted_methods)
 				-- First, let's go over existing members in the klass that we might have.
 				for key, value in pairs(klass) do
 					-- Check if this key is in our class.
-					if edited_class[key] and type(value) == "function" then
+					-- Check type of edited_class[key] for cases where __index becomes a table VS the original being a function.
+					-- Aka, SetupClassForProps.
+					if edited_class[key] and type(edited_class[key]) == "function" and (value) == "function" then
 						-- This key is in our edited class, and the value is a function.
 						-- Now we want to check if the edited class's method is different.
 						if edited_class[key] ~= value then
 							-- It is. We need to see where the difference is coming from.
-
+							--print(key, edited_class[key], value)
 							local edited_src = debug.getinfo(edited_class[key], "S").source
 							local value_src = debug.getinfo(value, "S").source
 

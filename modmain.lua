@@ -169,6 +169,10 @@ DEBUG_ENABLED = (
 
 ALLOW_SERVER_DEBUGGING = DEBUG_ENABLED -- todo make a more accessible for standard users with mod compatibility issues?
 
+if TheSim:GetGameID() == "DS" then
+	print = nolineprint
+end
+
 if false and DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 	Print(VERBOSITY.DEBUG, "hello world 1")
 	_G.VERBOSITY_LEVEL = VERBOSITY.DEBUG
@@ -399,6 +403,14 @@ function GetInsight(player)
 	end
 end
 
+function GetLocalInsight(player)
+	if IS_DS then
+		return player.components.insight
+	else
+		return player.replica.insight
+	end
+end
+
 --- Returns player's insight context.
 -- @tparam Player player
 -- @treturn ?table|nil
@@ -595,7 +607,7 @@ function mprint(...)
 
 	local prefix = ""
 
-	if true then
+	if false then
 		local d = debug.getinfo(2, "Sl")
 		prefix = string.format("%s:%s:", d.source or "?", d.currentline or 0)
 	end
@@ -1649,11 +1661,13 @@ end
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
-import("ds_patches/widget")
+if IS_DS then
+	import("ds_patches/widget")
 
-for i,v in pairs(widgetLib) do
-	if v.ApplyDSGlobalPatch then
-		v:ApplyDSGlobalPatch()
+	for i,v in pairs(widgetLib) do
+		if v.ApplyDSGlobalPatch then
+			v:ApplyDSGlobalPatch()
+		end
 	end
 end
 
