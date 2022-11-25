@@ -53,13 +53,32 @@ local BulkAssets = {
 	"Ancient_Herald", "Ancient_Hulk", "Ancient_Robot_Claw", "Ancient_Robot_Head", "Ancient_Robot_Leg", "Ancient_Robot_Ribs", "Antlion", "Antqueen", "Aporkalypse_Clock", "Arrow", "Arrow_Down", "Atrium_Gate", "Bearger", "Beequeen", "Blueprint", "Chester_Eyebone", "Claywarg", "Crabking", "Crocodog", "Crown", "Deerclops", "Depths_Worm", "Dirtpile", "Dragonfly", "Enlightenment_Meter", "Eyeofterror", "Frog", "Gingerbreadpig", "Gingerbreadwarg", "Health_Meter", "Hound", "Hunger_Meter", "Hutch_Fishbowl", "Klaus", "Klaus_Sack", "Knightboat", "Koalefant_Summer", "Koalefant_Winter", "Kraken", "Krampus", "ladybolt", "Leif", "Leif_Sparse", "Lightninggoat", "Lordfruitfly", "Magnifying_Glass", "Malbatross", "Mermking", "Minotaur", "Moose", "Nightmare_timepiece_dawn", "Oar", "Oar_Force", "Pigcrownhat", "Pocket_Scale", "Pugalisk", "Roc", "Sanity_Arrow", "Sanity_Meter", "Spat", "Spiderqueen", "Stalker", "Stalker_Atrium", "Stalker_Forest", "Stopwatch", "Terrarium", "Tigershark", "Toadstool", "Treeguard", "Twinofterror1", "Twinofterror2", "Twister", "Twister_Seal", "Vampirebat", "Volcano", "Volcano_Active", "Warg", "Weather_Settings_Icon", "Wetness_Meter", "Whale_Blue", "Whale_Bubbles", "Whale_White", "White_Rounded", "White_Square"
 }
 
+local SpecificAssets = {
+	"images/dst/avatars", "images/dst/button_icons", "images/dst/button_icons2", "images/dst/global_redux",
+	"images/misc/dialogrect_9slice_blue", "images/dst/frontend_redux", "images/dst/scoreboard",
+	"images/food_types/food_types", "images/minimap/sinkholes/sinkholes","images/minimap/Possible_Klaus_Sack",
+	"images/dst/frontend", 
+}
+
+Assets = {}
+
+--[[
+
 Assets = {
 	-- DST migration to DS
 	Asset("ATLAS", "images/dst/avatars.xml"),
 	Asset("IMAGE", "images/dst/avatars.tex"),
 
+	Asset("ATLAS", "images/dst/button_icons.xml"),
+	Asset("IMAGE", "images/dst/button_icons.tex"),
+	Asset("ATLAS", "images/dst/button_icons2.xml"),
+	Asset("IMAGE", "images/dst/button_icons2.tex"),
+
 	Asset("ATLAS", "images/dst/global_redux.xml"),
 	Asset("IMAGE", "images/dst/global_redux.tex"),
+
+	Asset("ATLAS", "images/misc/dialogrect_9slice_blue.xml"),
+	Asset("IMAGE", "images/misc/dialogrect_9slice_blue.tex"),
 
 	Asset("ATLAS", "images/dst/frontend_redux.xml"),
 	Asset("IMAGE", "images/dst/frontend_redux.tex"),
@@ -79,6 +98,7 @@ Assets = {
 
 	--Asset("MINIMAP_IMAGE", "images/Volcano.png")
 }
+--]]
 
 local MIGRATOR_COLORS = {
 	RED = Color.fromRGB(255, 0, 0),
@@ -122,6 +142,11 @@ CAVE_MIGRATOR_IMAGES = {
 --AddMinimapAtlas("images/Volcano.xml")
 AddMinimapAtlas("images/minimap/sinkholes/sinkholes.xml")
 AddMinimapAtlas("images/minimap/Possible_Klaus_Sack.xml")
+
+for i,v in pairs(SpecificAssets) do
+	table.insert(Assets, Asset("ATLAS", v .. ".xml"))
+	table.insert(Assets, Asset("IMAGE", v .. ".tex"))
+end
 
 for i,v in pairs(BulkAssets) do
 	table.insert(Assets, Asset("ATLAS", string.format("images/%s.xml", v)))
