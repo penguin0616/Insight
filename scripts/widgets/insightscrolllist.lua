@@ -28,9 +28,9 @@ local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_
 	self.list_root = self.root:AddChild(Image(DEBUG_IMAGE(true))); self.list_root:SetSize(self._width, self._height);
 	
 	self.scroll_per_click = 1
-	self.current_scroll_pos = 1 -- Represents the current row index. Could be 1, 1.5, 2, etc.
-	self.target_scroll_pos = 1
-	self.end_scroll_pos = 1
+	self.current_scroll_pos = 0 -- Represents the current row index. Could be 1, 1.5, 2, etc.
+	self.target_scroll_pos = 0
+	self.end_scroll_pos = 0
 	
 	self:BuildListItems()
 	self:BuildScrollBar()
@@ -146,18 +146,26 @@ function InsightScrollList:CanScroll()
 	return self.end_scroll_pos > self.visible_rows
 end
 
--- TODO: Make scroll position math
+function InsightScrollList:ConvertPositionToScrollScale(idx)
+	local pos_to_max_ratio = idx / (self.end_scroll_pos) -- Basically a (progress/completion).
+	local _, bar_height = self.scroll_bar_line:GetSize() -- Should I cache this?
+	-- Start at the top of the bar, and add part of the height back as a position based on the ratio.
+	-- That way, if the ratio was 1 (end of the scroller), it would be at the end.
+	local pos = (bar_height/2) - (bar_height * pos_to_max_ratio)
+
+	return pos
+end
 
 function InsightScrollList:GetMaxPages()
 	
 end
 
 function InsightScrollList:Scroll(amount)
-	self.target_scroll_pos = math.clamp(self.target_scroll_pos + amount, 1, self.end_scroll_pos)
+	self.target_scroll_pos = math.clamp(self.target_scroll_pos + amount, 0, self.end_scroll_pos)
 end
 
 function InsightScrollList:RefreshView()
-	local row_index = self.current_scroll_pos - 1
+	local row_index = self.current_scroll_pos
 
 	for i = 1, self.visible_rows do
 		self.item_update(self.context, self.item_widgets[i], self.items[row_index + i])
@@ -166,12 +174,7 @@ function InsightScrollList:RefreshView()
 	--print(self.num_items, self.end_scroll_pos, self:CanScroll())
 	if self:CanScroll() then
 		self.scroll_bar_container:Show()
-
-		local r = row_index / (self.end_scroll_pos - 1)
-		--print(row_index, self.end_scroll_pos-1, r, self.num_items)
-		local _, y = self.scroll_bar_line:GetSize()
-		local pos = (y/2) - (y * r)
-
+		local pos = self:ConvertPositionToScrollScale(row_index)
 		self.position_marker:SetPosition(0, pos)
 	else
 		self.scroll_bar_container:Hide()
@@ -198,8 +201,8 @@ function InsightScrollList:SetItemsData(items)
 	self.items = items or {}
 	self.num_items = #self.items
 
-	local max_scroll = self.num_items - self.visible_rows
-	self.end_scroll_pos = math.max(max_scroll, 1)
+	local max_scroll = self.num_items - self.visible_rows - 1
+	self.end_scroll_pos = math.max(max_scroll, 0)
 
 	self:OnUpdate()
 	self:RefreshView()
@@ -208,8 +211,8 @@ end
 function InsightScrollList:OnUpdate()
 	local last_pos = self.current_scroll_pos
 
-	if self.current_scroll_pos < 1 then
-		self.current_scroll_pos = 1
+	if self.current_scroll_pos < 0 then
+		self.current_scroll_pos = 0
 		self.target_scroll_pos = self.current_scroll_pos 
 	elseif self.current_scroll_pos > self.end_scroll_pos then
 		self.current_scroll_pos = self.end_scroll_pos

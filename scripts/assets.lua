@@ -57,7 +57,7 @@ local SpecificAssets = {
 	"images/dst/avatars", "images/dst/button_icons", "images/dst/button_icons2", "images/dst/global_redux",
 	"images/misc/dialogrect_9slice_blue", "images/dst/frontend_redux", "images/dst/scoreboard",
 	"images/food_types/food_types", "images/minimap/sinkholes/sinkholes","images/minimap/Possible_Klaus_Sack",
-	"images/dst/frontend", 
+	"images/dst/frontend", "images/misc/scrollbar_bar"
 }
 
 Assets = {}

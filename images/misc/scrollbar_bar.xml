@@ -1,0 +1,6 @@
+<Atlas>
+    <Texture filename="scrollbar_bar.tex"/>
+    <Elements>
+        <Element name="scrollbar_bar.tex" u1="0.0078125" u2="0.5078125" v1="0.4465332" v2="0.99975586"/>
+    </Elements>
+</Atlas>
