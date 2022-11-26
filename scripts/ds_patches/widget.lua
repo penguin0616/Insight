@@ -158,3 +158,5 @@ end
 
 
 patcher_common.PatchClass(Widget)
+
+return {}

@@ -1099,7 +1099,13 @@ function GetWorldInformation(player) -- refactor?
 	
 	for i = 1, 7 do
 		local x = "test" .. i
-		data.special_data[x] = { worldly=true }
+		data.special_data[x] = { 
+			worldly=true, 
+			icon = {
+				atlas = "images/Blueprint.xml",
+				tex = "Blueprint.tex",
+			},
+		}
 		data.raw_information[x] = x
 	end
 	
@@ -1660,9 +1666,11 @@ end
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
-if IS_DS then
-	import("ds_patches/widget")
+patchers = { _common=import("ds_patches/patcher_common") }
+patchers.widget = patchers._common.GetPatcher("widget")
+patchers.button = patchers._common.GetPatcher("button")
 
+if IS_DS then
 	for i,v in pairs(widgetLib) do
 		if v.ApplyDSGlobalPatch then
 			v:ApplyDSGlobalPatch()

@@ -18,7 +18,7 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-function PatchClass(edited_class, adjusted_methods)
+local function PatchClass(edited_class, adjusted_methods)
 	for class, inherited in pairs(ClassRegistry) do
 		local class_chain = {}
 		local current = class
@@ -122,4 +122,40 @@ function PatchClass(edited_class, adjusted_methods)
 	end
 end
 
-return { PatchClass = PatchClass }
+--- Returns a function that can be used to patch instances of classes based on the provided patches.
+local function CreateInstancePatcher(patches)
+	return function(class_inst)
+		local inherited = ClassRegistry[class_inst]
+		for i,v in pairs(patches) do
+			-- Check if the class instance is still using the function it inherited.
+			if class_inst[i] == inherited[i] then
+				-- It is! Let's patch it.
+				inherited[i] = v
+				class_inst[i] = v
+			else
+				mprint("============= INSTANCE PATCHER STACK =============")
+				mprint("What's being patched being patched:", i)
+				mprint("The Class Instance's version was defined at:", debug.getinfo(class_inst[i], "S").source)
+				mprint("The Inherited's version was defined at:", debug.getinfo(inherited[i], "S").source)
+				mprint("============= LIST OF PATCHES ====================")
+				dumptable(patches)
+				error("CreateInstancePatcher not setup to handle function overwrites.")
+			end
+		end
+	end
+end
+
+local function NOP() end
+local function ERR() error("Attempted to use a nonexistant Patch function.", 0) end
+local function GetPatcher(which)
+	if IS_DS then
+		local p = import("ds_patches/" .. which)
+		p.Patch = p.Patch or ERR
+		return p
+	end
+
+	return { Patch = NOP }
+end
+
+
+return { PatchClass = PatchClass, CreateInstancePatcher = CreateInstancePatcher }
