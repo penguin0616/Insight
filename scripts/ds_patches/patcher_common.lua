@@ -18,7 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local function PatchClass(edited_class, adjusted_methods)
+local PatchClass, CreateInstancePatcher, GetPatcher
+
+function PatchClass(edited_class, adjusted_methods)
 	for class, inherited in pairs(ClassRegistry) do
 		local class_chain = {}
 		local current = class
@@ -123,19 +125,29 @@ local function PatchClass(edited_class, adjusted_methods)
 end
 
 --- Returns a function that can be used to patch instances of classes based on the provided patches.
-local function CreateInstancePatcher(patches)
+function CreateInstancePatcher(patches)
 	return function(class_inst)
-		local inherited = ClassRegistry[class_inst]
+		local _base = patches._base
+		patches._base = nil
+
+		if _base and _base.Patch then
+			_base.Patch(class_inst)
+		end
+
+		local class = getmetatable(class_inst)
+		local inherited = ClassRegistry[class]
 		for i,v in pairs(patches) do
-			-- Check if the class instance is still using the function it inherited.
-			if class_inst[i] == inherited[i] then
+			-- Check if the class instance is still using the original function from the class. 
+			if (class_inst[i] == class[i]) then
 				-- It is! Let's patch it.
-				inherited[i] = v
 				class_inst[i] = v
+				class[i] = v
+
 			else
 				mprint("============= INSTANCE PATCHER STACK =============")
 				mprint("What's being patched being patched:", i)
 				mprint("The Class Instance's version was defined at:", debug.getinfo(class_inst[i], "S").source)
+				mprint("The Class' version was defined at:", debug.getinfo(class[i], "S").source)
 				mprint("The Inherited's version was defined at:", debug.getinfo(inherited[i], "S").source)
 				mprint("============= LIST OF PATCHES ====================")
 				dumptable(patches)
@@ -147,10 +159,10 @@ end
 
 local function NOP() end
 local function ERR() error("Attempted to use a nonexistant Patch function.", 0) end
-local function GetPatcher(which)
+function GetPatcher(which)
 	if IS_DS then
 		local p = import("ds_patches/" .. which)
-		p.Patch = p.Patch or ERR
+		--p.Patch = p.Patch or ERR
 		return p
 	end
 
@@ -158,4 +170,4 @@ local function GetPatcher(which)
 end
 
 
-return { PatchClass = PatchClass, CreateInstancePatcher = CreateInstancePatcher }
+return { PatchClass = PatchClass, CreateInstancePatcher = CreateInstancePatcher, GetPatcher = GetPatcher }

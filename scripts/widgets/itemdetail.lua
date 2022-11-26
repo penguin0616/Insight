@@ -26,7 +26,7 @@ local RichText = import("widgets/RichText")
 local Text = require("widgets/text")
 local resolvefilepath = resolvefilepath
 
-
+local text_holder_padding = 0 -- padding of 20 for the scrollbar
 
 local ItemDetail = Class(Widget, function(self, info)
 	-- Image(atlas, tex, default_tex)
@@ -68,8 +68,8 @@ local ItemDetail = Class(Widget, function(self, info)
 	--self.icon:SetSize(icon_holder_width, icon_holder_height) 
 
 	self.text_holder = self:AddChild(Image("images/dst/scoreboard.xml", "row.tex")) -- avatars.xml
-	self.text_holder:SetSize(info.width - icon_holder_width - 20, icon_holder_height) -- padding of 20 for the scrollbar
-	self.text_holder:SetPosition(icon_holder_width/2 - 10, 0) -- subtract 10 to keep icon_holder and text still bordering eachother
+	self.text_holder:SetSize(info.width - icon_holder_width - text_holder_padding, icon_holder_height)
+	self.text_holder:SetPosition(icon_holder_width/2 - text_holder_padding/2, 0) -- subtract 10 to keep icon_holder and text still bordering eachother
 	self.text_holder:Hide()
 	
 	--self.text = self.text_holder:AddChild(Text(UIFONT, 30, nil))

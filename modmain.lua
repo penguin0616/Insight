@@ -612,7 +612,7 @@ function mprint(...)
 		prefix = string.format("%s:%s:", d.source or "?", d.currentline or 0)
 	end
 
-	return print(prefix .. "[" .. ModInfoname(modname) .. "]:", msg)
+	return print(prefix .. "[" .. ModInfoname(modname) .. "]:\t" .. msg)
 end
 
 function mprintf(...)
@@ -1666,9 +1666,10 @@ end
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
-patchers = { _common=import("ds_patches/patcher_common") }
-patchers.widget = patchers._common.GetPatcher("widget")
-patchers.button = patchers._common.GetPatcher("button")
+patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"widget", "button", "imagebutton"} }
+for i,v in pairs(patcher._to_load) do
+	patcher[v] = patcher._common.GetPatcher(v)
+end
 
 if IS_DS then
 	for i,v in pairs(widgetLib) do

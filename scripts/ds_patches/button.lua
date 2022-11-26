@@ -52,6 +52,14 @@ function patches.OnControl(self, control, down)
 	end
 end
 
+function patches.OnUpdate(self, dt)
+	if self.down then
+		if self.whiledown then
+			self.whiledown()
+		end
+	end
+end
+
 local Patch = patcher_common.CreateInstancePatcher(patches)
 
 return {

@@ -1,3 +1,22 @@
+--[[
+Copyright (C) 2020, 2021 penguin0616
+
+This file is part of Insight.
+
+The source code of this program is shared under the RECEX
+SHARED SOURCE LICENSE (version 1.0).
+The source code is shared for referrence and academic purposes
+with the hope that people can read and learn from it. This is not
+Free and Open Source software, and code is not redistributable
+without permission of the author. Read the RECEX SHARED
+SOURCE LICENSE for details
+The source codes does not come with any warranty including
+the implied warranty of merchandise.
+You should have received a copy of the RECEX SHARED SOURCE
+LICENSE in the form of a LICENSE file in the root of the source
+directory. If not, please refer to
+<https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
+]]
 local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 local Text = require "widgets/text"
@@ -128,18 +147,65 @@ function InsightScrollList:BuildScrollBar()
 	self.scroll_bar_line:SetPosition(0, 0)
 	
 	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_handle.tex"))
-	widgetLib.imagebutton.OverrideFocuses(self.position_marker)
-	self.position_marker:ForceImageSize(scrollbutton_width, scrollbutton_height)
+	self.position_marker.scale_on_focus = false
+    self.position_marker.move_on_click = false
+	patcher.imagebutton.Patch(self.position_marker)
+	--widgetLib.imagebutton.OverrideFocuses(self.position_marker)
+	--self.position_marker:ForceImageSize(scrollbutton_width, scrollbutton_height)
+	self.position_marker:SetScale(0.3, 0.3, 1)
 
-	local _, scroll_bar_line_height = self.scroll_bar_line:GetSize()
-	self.marker_bound = scroll_bar_line_height/2 - scrollbutton_height
-	ImageButton._base.Disable(self.position_marker)
+	self.position_marker:SetOnDown(function()
+		print("ondown")
+		TheFrontEnd:LockFocus(true)
+		self.drag_state = {
+			original_scroll_pos = self.current_scroll_pos,
+			
+		}
+	end)
+	self.position_marker:SetWhileDown( function()
+		--print("whiledown")
+		self:DoDragScroll()
+	end)
 
-	self.scroll_bar_container:Hide()
+	--[[
+	self.position_marker.OnGainFocus = function()
+		print("ongainfocus")
+		--do nothing OnGainFocus
+	end
+	--]]
+	self.position_marker.OnLoseFocus = function()
+		print("onlosefocus")
+		--do nothing OnLoseFocus
+	end
+	
+	self.position_marker:SetOnClick(function()
+		print("onclick")
+		self.drag_state = nil -- Unused
+		self.saved_scroll_pos = nil
+		TheFrontEnd:LockFocus(false)
+		self:RefreshView() --refresh again after we've been moved back to the "up-click" position in Button:OnControl
+	end)
 end
 
-function InsightScrollList:RefreshScrollBar()
+function InsightScrollList:DoDragScroll()
+
+	--[[
+	local scale = self:GetScale()
+	local marker_pos = self.position_marker:GetWorldPosition()
+	-- Local Position is (0.00, 102.00, 0.00)
+	mprint(marker_pos, "|", TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y)
 	
+
+	local screen_width, screen_height = TheSim:GetScreenSize()
+
+	local a = screen_width / scale.x
+	local b = screen_height / scale.y
+
+	
+	-- (b - marker_pos.y ~=~ TheFrontEnd.lasty/scale.y)
+
+	mprint("\t", screen_width, screen_width, "|", a, b)
+	--]]
 end
 
 function InsightScrollList:CanScroll()
