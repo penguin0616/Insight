@@ -706,7 +706,7 @@ TheInput:AddControlHandler(IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBU
 	elseif screen_name == "InsightMenuScreen" then
 		TheFrontEnd:GetActiveScreen():Close()
 	else
-		dprint(screen_name)
+		dprint("uioverrides > AddControlHandler:", screen_name)
 	end
 end)
 

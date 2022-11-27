@@ -865,7 +865,7 @@ end
 function Insight:RequestInformation(entity, params)
 	params = params or { RAW=true }
 
-	if not self.classified then
+	if IS_DST and not self.classified then
 		mprint("Missing classified")
 		--print(debugstack())
 		return false, "NO_CLASSIFIED"

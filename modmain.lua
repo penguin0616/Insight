@@ -608,7 +608,13 @@ function mprint(...)
 	local prefix = ""
 
 	if false then
-		local d = debug.getinfo(2, "Sl")
+		local i = 2
+		local d = debug.getinfo(2, "Sln")
+		while d.name and d.name:sub(2, 6) == "print" do
+			i = i + 1
+			d = debug.getinfo(i, "Sln")
+		end
+
 		prefix = string.format("%s:%s:", d.source or "?", d.currentline or 0)
 	end
 
@@ -632,9 +638,6 @@ function errorf(level, error_pattern, ...)
 		error("errorf bad args")
 	end
 end
-
-	
-
 
 function dprint(...)
 	if not DEBUG_ENABLED then
