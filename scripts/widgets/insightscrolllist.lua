@@ -164,13 +164,13 @@ function InsightScrollList:BuildScrollBar()
 	self.scroll_bar_container:SetPosition(self._width/2 + scroller_width/2 + 5, 0)
 
 	self.up_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_up.tex"))
-	widgetLib.imagebutton.OverrideFocuses(self.up_button)
+	self.up_button:InsightOverrideFocuses()
 	self.up_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.up_button:SetPosition(0, scroller_height/2 - scrollbutton_height/2 + 8)
 	self.up_button:SetOnClick(function() self:ScrollUp() end)
 	
 	self.down_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_down.tex"))
-	widgetLib.imagebutton.OverrideFocuses(self.down_button)
+	self.down_button:InsightOverrideFocuses()
 	self.down_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.down_button:SetPosition(0, -scroller_height/2 + scrollbutton_height/2 - 8)
 	self.down_button:SetOnClick(function() self:ScrollDown() end)
@@ -187,7 +187,7 @@ function InsightScrollList:BuildScrollBar()
 	self.position_marker.scale_on_focus = false
     self.position_marker.move_on_click = false
 	patcher.imagebutton.Patch(self.position_marker)
-	--widgetLib.imagebutton.OverrideFocuses(self.position_marker)
+	--self.position_marker:InsightOverrideFocuses()
 	--self.position_marker:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.position_marker:SetScale(0.3, 0.3, 1)
 
@@ -429,7 +429,7 @@ function InsightScrollList:OnControl(control, down)
 		--]]
 	end
 
-	mprint("Failed ALL:", control, down, self.focus, self:CanScroll())
+	mprint("Failed ALL:", controlsHelper.Prettify(control), down, self.focus, self:CanScroll())
 end
 
 return InsightScrollList

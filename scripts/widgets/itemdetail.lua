@@ -147,7 +147,7 @@ function ItemDetail:SetIcon(atlas, tex)
 		end
 	elseif tex and atlas then
 		self.icon_holder:Show()
-		widgetLib.image.SetTexture(self.icon, atlas, tex)
+		self.icon:RealSetTexture(atlas, tex)
 		if self.icon_holder2 then
 			self.icon_holder2:Show()
 		end

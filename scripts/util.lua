@@ -753,6 +753,22 @@ if not table.invert then
 	end
 end
 
+if not shallowcopy then
+	-- http://lua-users.org/wiki/CopyTable
+	function shallowcopy(orig, dest)
+		local copy
+		if type(orig) == 'table' then
+			copy = dest or {}
+			for k, v in pairs(orig) do
+				copy[k] = v
+			end
+		else -- number, string, boolean, etc
+			copy = orig
+		end
+		return copy
+	end
+end
+
 --[[
 module.MOD_COMPONENT_ACTIONS = module.getupvalue(AddComponentAction, "MOD_COMPONENT_ACTIONS")
 module.MOD_ACTION_COMPONENT_NAMES = module.getupvalue(AddComponentAction, "MOD_ACTION_COMPONENT_NAMES")

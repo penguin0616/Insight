@@ -189,12 +189,6 @@ Color = import("helpers/color")
 rpcNetwork = import("rpcnetwork")
 combatHelper = import("helpers/combat")
 
-widgetLib = {
-	image = import("widgets/image_lib"),
-	imagebutton = import("widgets/imagebutton_lib"),
-	text = import("widgets/text_lib"),
-}
-
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
 SHOW_INFO_ORIGIN = false
 DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
@@ -1700,17 +1694,9 @@ end
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
-patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"widget", "button", "imagebutton"} }
+patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"widget", "button", "imagebutton", "text"} }
 for i,v in pairs(patcher._to_load) do
 	patcher[v] = patcher._common.GetPatcher(v)
-end
-
-if IS_DS then
-	for i,v in pairs(widgetLib) do
-		if v.ApplyDSGlobalPatch then
-			v:ApplyDSGlobalPatch()
-		end
-	end
 end
 
 -- Check settings

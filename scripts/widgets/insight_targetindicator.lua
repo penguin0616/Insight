@@ -98,21 +98,21 @@ local InsightTargetIndicator = Class(Widget, function(self, owner, target, data)
 	self:SetTarget(target)
 	self.colour = nil
 	self.headbg = self.icon:AddChild(Image()) -- bg
-	imageLib.SetTexture(self.headbg, DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
+	self.headbg:RealSetTexture(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
 	self.headbg:SetSize(95, 95) -- default is 95
 
 	self.head = self.icon:AddChild(Image()) -- icon
-	imageLib.SetTexture(self.head, self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
+	self.head:RealSetTexture(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
 	self.head:SetSize(64, 64)
 	
 	self.headframe = self.icon:AddChild(Image()) -- ring
-	imageLib.SetTexture(self.headframe, DEFAULT_ATLAS, "avatar_frame_white.tex")
+	self.headframe:RealSetTexture(DEFAULT_ATLAS, "avatar_frame_white.tex")
 	self.headframe:SetSize(95, 95) -- default is 95
 
 	--self.icon:SetScale(0.8)
 
 	self.arrow = self.root:AddChild(Image())
-	imageLib.SetTexture(self.arrow, "images/ui.xml", "scroll_arrow.tex")
+	self.arrow:RealSetTexture("images/ui.xml", "scroll_arrow.tex")
 	self.arrow:SetScale(.5)
 
 	--self.name = target:GetDisplayName() -- taken care of
@@ -201,8 +201,8 @@ function InsightTargetIndicator:OnUpdate()
 		self.isCharacterState1 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_1)
 		self.isCharacterState2 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_2)
 		self.isCharacterState3 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_3)
-		imageLib.SetTexture(self.headbg, DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
-		imageLib.SetTexture(self.head, self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
+		self.headbg:RealSetTexture(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
+		self.head:RealSetTexture(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
 	end
 
 	-- Me

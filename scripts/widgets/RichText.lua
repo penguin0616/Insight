@@ -110,7 +110,7 @@ function InterpretReaderChunk(chunk, richtext) -- text, color
 				tex, atlas = _LookupIcon("blank")
 			end
 			obj = Image()
-			imageLib.SetTexture(obj, atlas, tex)
+			obj:RealSetTexture(atlas, tex)
 			obj:SetSize(richtext.font_size - 2, richtext.font_size - 2) -- 30, 30 a bit too large
 			obj:SetTint(unpack(color))
 			--obj:SetTint(unpack(Color.fromHex("#")))

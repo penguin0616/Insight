@@ -70,6 +70,28 @@ local function GetControllerSelectedInventoryItem(inventoryBar)
 	return inv_item, active_item
 end
 
+-- Not really the spot for it, but I'm going to patch the Image class here with RealSetTexture since I'm nuking the old widget libraries. Old comments included!
+-- Image.SetTexture gets replaced, December 5, 2020: ([DST]HD Item Icon - Shang) https://steamcommunity.com/sharedfiles/filedetails/?id=2260439333
+-- then i realized other mods, such as the reskinners, do the same thing.
+-- oh boy.
+-- honestly, if i ever make another mod of this complexity, i'm going to have to package all of my patches and hacks to deal with other mods into a library of its own. how lovely.
+-- plus, it's really irritating i have to skip the syntatic sugar of : 
+--[[
+imageLib.SetTexture\(([^,]+),\s*([^)]+)\)
+$1:RealSetTexture($2)
+]]
+do
+	local Image = require("widgets/image")
+	local image_loader = loadfile("scripts/widgets/image.lua")
+	local env = setmetatable({}, {
+		__index = getfenv(0)
+	})
+	setfenv(image_loader, env)
+	local DummyImage = image_loader()
+	Image.RealSetTexture = DummyImage.SetTexture
+	DummyImage = nil
+end
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Post Constructs =================================================================
@@ -167,13 +189,6 @@ AddClassPostConstruct("widgets/controls", function(controls)
 
 	dprint("Insight Menu Button added")
 end)
-
---[[
-AddClassPostConstruct("widgets/text", function(text)
-	text.InsightGetSize = widgetLib.text.GetSize
-	text.InsightSetSize = widgetLib.text.SetSize
-end)
---]]
 
 --========================================================================================================================--
 --= Item Tile ============================================================================================================--

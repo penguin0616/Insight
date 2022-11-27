@@ -55,8 +55,8 @@ local Tab = Class(Widget, function(self, data)
 		self.background:UseFocusOverlay("listitem_thick_hover.tex")
 	else
 		-- for the hover effect
-		widgetLib.imagebutton.UseFocusOverlay(self.background, "listitem_thick_hover.tex")
-		widgetLib.imagebutton.OverrideFocuses(self.background)
+		self.background:UseFocusOverlay("listitem_thick_hover.tex")
+		self.background:InsightOverrideFocuses()
 	end
 
 	self.text = self:AddChild(Text(UIFONT, 30, data.name))
@@ -197,6 +197,11 @@ local InsightMenu = Class(Widget,function(self)
 		end
 	end)
 end)
+
+function InsightMenu:DelegateControl(control, down)
+	mprint("\tDelegating", control, down)
+	return self:GetCurrentPage():OnControl(control, down)
+end
 
 function InsightMenu:Kill(...)
 	self.exit_listener:Remove()

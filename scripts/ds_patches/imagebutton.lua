@@ -5,6 +5,10 @@ local patches = {
 	_base = patcher_common.GetPatcher("button")
 }
 
+--================================================================================================================================================================--
+--= Global Patches ===============================================================================================================================================--
+--================================================================================================================================================================--
+
 function patches:OnControl(control, down)
     if not self:IsEnabled() or not self.focus then return end
 
@@ -43,6 +47,7 @@ function patches:OnControl(control, down)
                     end
                 end
                 self.down = false
+				print(require("widgets/button").ResetPreClickPosition)
                 self:ResetPreClickPosition()
                 if self.onclick then
                     self.onclick()
@@ -54,9 +59,79 @@ function patches:OnControl(control, down)
     end
 end
 
+function patches.UseFocusOverlay(self, focus_selected_texture)
+    if not self.hover_overlay then
+        self.hover_overlay = self.image:AddChild(Image())
+    end
+    --imageLib.SetTexture(self.hover_overlay, self.atlas, focus_selected_texture)
+	self.hover_overlay:SetTexture(self.atlas, focus_selected_texture)
+    self.hover_overlay:Hide()
+    --self:_RefreshImageState()
+end
 
-local Patch = patcher_common.CreateInstancePatcher(patches)
+function patches.ForceImageSize(self, x, y)
+	self.size_x = x
+	self.size_y = y
+    self.image:ScaleToSize(self.size_x, self.size_y)
+end
+--================================================================================================================================================================--
+--= Instance Patches =============================================================================================================================================--
+--================================================================================================================================================================--
+
+--------------------------------------------------------------------------
+--[[ Focus Functions ]]
+--------------------------------------------------------------------------
+local function OnGainFocus(self)
+	ImageButton._base.OnGainFocus(self)
+
+	if self.hover_overlay then
+        self.hover_overlay:Show()
+	end
+
+	if self:IsEnabled() then
+        --imageLib.SetTexture(self.image, self.atlas, self.image_focus)
+		self.image:SetTexture(self.atlas, self.image_focus)
+
+        if self.size_x and self.size_y then 
+            self.image:ScaleToSize(self.size_x, self.size_y)
+        end
+    end
+end
+
+local function OnLoseFocus(self)
+	ImageButton._base.OnLoseFocus(self)
+
+	if self.hover_overlay then
+    	self.hover_overlay:Hide()
+	end
+
+	if self:IsEnabled() then
+        --imageLib.SetTexture(self.image, self.atlas, self.image_normal)
+		self.image:SetTexture(self.atlas, self.image_normal)
+
+        if self.size_x and self.size_y then 
+            self.image:ScaleToSize(self.size_x, self.size_y)
+        end
+    end
+end
+
+-- I want this available globally. I might change my mind down the road though.
+--[[
+widgetLib.imagebutton.OverrideFocuses\(([^)]+)\)
+$1:InsightOverrideFocuses()
+]]
+function patches.InsightOverrideFocuses(self)
+    if IS_DST then
+        return
+    end
+	self.OnGainFocus = OnGainFocus
+	self.OnLoseFocus = OnLoseFocus
+end
+
+patcher_common.debugging = true
+patcher_common.PatchClass(ImageButton, patches)
+patcher_common.debugging = false
 
 return {
-	Patch = Patch
+	--Patch = Patch
 }

@@ -1,6 +1,8 @@
 local patcher_common = import("ds_patches/patcher_common")
 local Widget = require("widgets/widget")
 
+local patches = {}
+
 MAX_HUD_SCALE = 1.25
 
 -- fonts_default.lua in DS, fonts.lua in DST
@@ -24,12 +26,12 @@ BODYTEXTFONT = "stint-ucr"
 ]]
 
 local oldKillAllChildren = Widget.KillAllChildren
-Widget.KillAllChildren = function(self, ...)
+function patches.KillAllChildren(self, ...)
 	oldKillAllChildren(self, ...)
 	self:ClearHoverText()
 end
 
-function Widget:SetHoverText(text, params)
+function patches.SetHoverText(self, text, params)
     if text and text ~= "" then
         if not self.hovertext then
             local ImageButton = require "widgets/imagebutton"
@@ -135,7 +137,7 @@ function Widget:SetHoverText(text, params)
     end
 end
 
-function Widget:ClearHoverText()
+function patches.ClearHoverText(self)
     if self.hovertext_root ~= nil then
         self.hovertext_root:Kill()
         self.hovertext_root = nil
@@ -157,6 +159,6 @@ function Widget:ClearHoverText()
 end
 
 
-patcher_common.PatchClass(Widget)
+patcher_common.PatchClass(Widget, patches)
 
 return {}
