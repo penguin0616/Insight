@@ -157,9 +157,11 @@ function InsightScrollList:BuildScrollBar()
 	self.position_marker:SetOnDown(function()
 		print("ondown")
 		TheFrontEnd:LockFocus(true)
+		local scale = self:GetScale()
 		self.drag_state = {
 			original_scroll_pos = self.current_scroll_pos,
-			
+			original_mouse_pos = Vector3(TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y, 0),
+			last_mouse_pos = Vector3(TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y, 0), --{TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y}
 		}
 	end)
 	self.position_marker:SetWhileDown( function()
@@ -188,24 +190,33 @@ function InsightScrollList:BuildScrollBar()
 end
 
 function InsightScrollList:DoDragScroll()
-
-	--[[
 	local scale = self:GetScale()
-	local marker_pos = self.position_marker:GetWorldPosition()
-	-- Local Position is (0.00, 102.00, 0.00)
-	mprint(marker_pos, "|", TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y)
-	
 
+	-- Screen size
 	local screen_width, screen_height = TheSim:GetScreenSize()
+	screen_width = screen_width / scale.x
+	screen_height = screen_height / scale.y
 
-	local a = screen_width / scale.x
-	local b = screen_height / scale.y
+	local _, bar_height = self.scroll_bar_line:GetSize()
 
+	-- Get the difference from the last position we have recorded.
+	local mouse_pos = Vector3(TheFrontEnd.lastx / scale.x, TheFrontEnd.lasty / scale.y)
+	local original_pos = self.drag_state.last_mouse_pos
+	local diff = mouse_pos.y - original_pos.y
 	
-	-- (b - marker_pos.y ~=~ TheFrontEnd.lasty/scale.y)
+	-- Diff / bar_height alone would be sufficient if we were working on a scale of 0-1.
+	-- However, we're working on a scale of 0 - end
+	-- So to go from 0-1 to 0-end, we need to multiply by the end_scroll_pos.
+	local scroll = (diff / bar_height) * self.end_scroll_pos
 
-	mprint("\t", screen_width, screen_width, "|", a, b)
-	--]]
+	self.current_scroll_pos = self.current_scroll_pos - scroll -- Short for (self.current_scroll_pos + -scroll)
+	self.target_scroll_pos = self.current_scroll_pos
+
+	self.drag_state.last_mouse_pos = mouse_pos
+
+	self:RefreshView()
+
+
 end
 
 function InsightScrollList:CanScroll()
