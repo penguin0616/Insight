@@ -145,6 +145,7 @@ function InsightScrollList:BuildScrollBar()
 	self.scroll_bar_line:SetSize(10, scroller_height - scrollbutton_height*2)
 	--self.scroll_bar_line:ScaleToSize(11*bar_width_scale_factor, line_height)
 	self.scroll_bar_line:SetPosition(0, 0)
+	self.scroll_bar_height = select(2, self.scroll_bar_line:GetSize())
 	
 	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_handle.tex"))
 	self.position_marker.scale_on_focus = false
@@ -155,17 +156,28 @@ function InsightScrollList:BuildScrollBar()
 	self.position_marker:SetScale(0.3, 0.3, 1)
 
 	self.position_marker:SetOnDown(function()
-		print("ondown")
 		TheFrontEnd:LockFocus(true)
 		local scale = self:GetScale()
+
+		-- We need to get the current position of the mouse on the screen, so we can establish the bounds for moving around.
+		local mouse_pos = Vector3(TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y, 0)
+		local scroll_pos = self.current_scroll_pos
+
+		-- This is how much space is left to scroll downwards.
+		local scrolling_space_left = self:GetScrollingSpaceLeft()
+		-- We'll use this to establish the bounds for our mouse scrolling.
+		local mouse_bound_top = mouse_pos.y + (self.scroll_bar_height - scrolling_space_left)
+		local mouse_bound_bottom = mouse_pos.y - scrolling_space_left
+
+		--mprint("Init state with:", scrolling_space_left, "|", mouse_bound_top, mouse_bound_bottom)
+
 		self.drag_state = {
-			original_scroll_pos = self.current_scroll_pos,
-			original_mouse_pos = Vector3(TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y, 0),
-			last_mouse_pos = Vector3(TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y, 0), --{TheFrontEnd.lastx/scale.x, TheFrontEnd.lasty/scale.y}
+			last_mouse_pos = mouse_pos,
+			mouse_bound_top = mouse_bound_top,
+			mouse_bound_bottom = mouse_bound_bottom,
 		}
 	end)
 	self.position_marker:SetWhileDown( function()
-		--print("whiledown")
 		self:DoDragScroll()
 	end)
 
@@ -176,12 +188,12 @@ function InsightScrollList:BuildScrollBar()
 	end
 	--]]
 	self.position_marker.OnLoseFocus = function()
-		print("onlosefocus")
+		--print("onlosefocus")
 		--do nothing OnLoseFocus
 	end
 	
 	self.position_marker:SetOnClick(function()
-		print("onclick")
+		--print("onclick")
 		self.drag_state = nil -- Unused
 		self.saved_scroll_pos = nil
 		TheFrontEnd:LockFocus(false)
@@ -189,43 +201,55 @@ function InsightScrollList:BuildScrollBar()
 	end)
 end
 
+--- Calculates the amount of space left to go downwards in pixel terms.
+function InsightScrollList:GetScrollingSpaceLeft()
+	-- scrolling_space_left
+	return self.scroll_bar_height - (self.current_scroll_pos / self.end_scroll_pos) * self.scroll_bar_height
+end
+
+-- Bar height is 204
 function InsightScrollList:DoDragScroll()
+	local state = self.drag_state
+	local bar_height = self.scroll_bar_height
 	local scale = self:GetScale()
-
-	-- Screen size
-	local screen_width, screen_height = TheSim:GetScreenSize()
-	screen_width = screen_width / scale.x
-	screen_height = screen_height / scale.y
-
-	local _, bar_height = self.scroll_bar_line:GetSize()
+	
+	local mouse_pos = Vector3(TheFrontEnd.lastx / scale.x, TheFrontEnd.lasty / scale.y)
+	local last_pos = state.last_mouse_pos
 
 	-- Get the difference from the last position we have recorded.
-	local mouse_pos = Vector3(TheFrontEnd.lastx / scale.x, TheFrontEnd.lasty / scale.y)
-	local original_pos = self.drag_state.last_mouse_pos
-	local diff = mouse_pos.y - original_pos.y
-	
+	local diff = mouse_pos.y - last_pos.y
+
+	-- Clamp the difference so that the mouse has to be in the same Y region as the scrollbar to move the marker.
+	if mouse_pos.y > state.mouse_bound_top then
+		local distance_left_up = bar_height - self:GetScrollingSpaceLeft()
+		--mprint("Too far up!", distance_left_up, diff, "|", mouse_pos.y - state.mouse_bound_top)
+		diff = distance_left_up -- For cases where we move the mouse faster to beyond the bounds and the marker can't keep up, just take us to the bound.
+	elseif mouse_pos.y < state.mouse_bound_bottom then
+		local distance_left_down = self:GetScrollingSpaceLeft()
+		--mprint("Too far down!", distance_left_down, diff, "|", state.mouse_bound_bottom - mouse_pos.y)
+		diff = -distance_left_down -- For cases where we move the mouse faster to beyond the bounds and the marker can't keep up, just take us to the bound.
+	end
+
 	-- Diff / bar_height alone would be sufficient if we were working on a scale of 0-1.
 	-- However, we're working on a scale of 0 - end
 	-- So to go from 0-1 to 0-end, we need to multiply by the end_scroll_pos.
 	local scroll = (diff / bar_height) * self.end_scroll_pos
 
-	self.current_scroll_pos = self.current_scroll_pos - scroll -- Short for (self.current_scroll_pos + -scroll)
+	self.current_scroll_pos = self.current_scroll_pos - scroll -- math.clamp(self.current_scroll_pos - scroll, 0, self.end_scroll_pos) -- Short for (self.current_scroll_pos + -scroll)
 	self.target_scroll_pos = self.current_scroll_pos
 
-	self.drag_state.last_mouse_pos = mouse_pos
+	state.last_mouse_pos = mouse_pos
 
 	self:RefreshView()
-
-
 end
 
 function InsightScrollList:CanScroll()
 	return self.end_scroll_pos > self.visible_rows
 end
 
-function InsightScrollList:ConvertPositionToScrollScale(idx)
-	local pos_to_max_ratio = idx / (self.end_scroll_pos) -- Basically a (progress/completion).
-	local _, bar_height = self.scroll_bar_line:GetSize() -- Should I cache this?
+function InsightScrollList:ConvertScrollPosToPixels(pos)
+	local pos_to_max_ratio = pos / (self.end_scroll_pos) -- Basically a (progress/completion).
+	local bar_height = self.scroll_bar_height -- Should I cache this?
 	-- Start at the top of the bar, and add part of the height back as a position based on the ratio.
 	-- That way, if the ratio was 1 (end of the scroller), it would be at the end.
 	local pos = (bar_height/2) - (bar_height * pos_to_max_ratio)
@@ -251,7 +275,7 @@ function InsightScrollList:RefreshView()
 	--print(self.num_items, self.end_scroll_pos, self:CanScroll())
 	if self:CanScroll() then
 		self.scroll_bar_container:Show()
-		local pos = self:ConvertPositionToScrollScale(row_index)
+		local pos = self:ConvertScrollPosToPixels(row_index)
 		self.position_marker:SetPosition(0, pos)
 	else
 		self.scroll_bar_container:Hide()
