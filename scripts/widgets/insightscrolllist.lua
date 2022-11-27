@@ -266,7 +266,8 @@ function InsightScrollList:Scroll(amount)
 end
 
 function InsightScrollList:RefreshView()
-	local row_index = self.current_scroll_pos
+	-- Clamp the scroll position to the closest "item row".
+	local row_index = ((self.current_scroll_pos % 1 < .5 and math.floor) or math.ceil)(self.current_scroll_pos)
 
 	for i = 1, self.visible_rows do
 		self.item_update(self.context, self.item_widgets[i], self.items[row_index + i])
