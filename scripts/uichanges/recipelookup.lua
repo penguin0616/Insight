@@ -115,8 +115,8 @@ function CookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
 	if not header then return details_root end
 
 	self.lookup = header:AddChild(InsightButton())
-	widgetLib.imagebutton.ForceImageSize(self.lookup.button, header:InsightGetSize(), header:InsightGetSize())
-	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:InsightGetSize() / 2, 0)
+	self.lookup.button:ForceImageSize(header:GetSize(), header:GetSize())
+	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:GetSize() / 2, 0)
 	self.lookup.button.scale_on_focus = false
 	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
 	self.lookup.button:SetTooltip("Click to lookup item") -- wont work in cookbook, overlay reasons i think
@@ -149,13 +149,13 @@ local function RecipePopup_Refresh(self)
 
 	if self.lookup and self.lookup.inst:IsValid() then
 		--dprint("Lookup already exists, adjusting.")
-		self.lookup:SetPosition(self.name:GetRegionSize() / 2 + self.name:InsightGetSize() / 2 - 8, 2)
+		self.lookup:SetPosition(self.name:GetRegionSize() / 2 + self.name:GetSize() / 2 - 8, 2)
 		local url, modded = GetRecipeURL(self.recipe)
 		if url then
 			if modded then
-				self.lookup.button.image:SetTint(unpack(mod))
+				self.lookup.button.image:SetTint(unpack(mod_tint))
 			else
-				self.lookup.button.image:SetTint(unpack(normal))
+				self.lookup.button.image:SetTint(unpack(normal_tint))
 			end
 		else
 			self.lookup:Kill()
@@ -179,8 +179,8 @@ local function RecipePopup_Refresh(self)
 	local header = self.name
 	self.lookup = header:AddChild(InsightButton())
 	self.lookup.button:SetTextures("images/Magnifying_Glass.xml", "Magnifying_Glass.tex")
-	widgetLib.imagebutton.ForceImageSize(self.lookup.button, header:InsightGetSize(), header:InsightGetSize())
-	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:InsightGetSize() / 2, 0)
+	self.lookup.button:ForceImageSize(header:GetSize(), header:GetSize())
+	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:GetSize() / 2, 0)
 	self.lookup.button.scale_on_focus = false
 	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
 	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
@@ -245,7 +245,7 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 
 	self.lookup = root_left:AddChild(InsightButton())
 	self.lookup.button:SetTextures("images/Magnifying_Glass.xml", "Magnifying_Glass.tex")
-	widgetLib.imagebutton.ForceImageSize(self.lookup.button, name_font_size, name_font_size)
+	self.lookup.button:ForceImageSize(name_font_size, name_font_size)
 	self.lookup:SetPosition(width / 2 + 0, y - name_font_size/2)
 	self.lookup.button.scale_on_focus = false
 	widgetLib.imagebutton.OverrideFocuses(self.lookup.button)
