@@ -23,18 +23,17 @@ local Text = require("widgets/text") --FIXED_TEXT
 local Image = require "widgets/image"
 local ImageButton = require "widgets/imagebutton"
 local InsightPage = import("widgets/insightpage")
+local InsightConfigurationScreen = import("screens/insightconfigurationscreen")
 
 local tabs = {"World", "Player"}
 
+util.classTweaker.TrackClassInstances(InsightConfigurationScreen)
+REGISTER_HOT_RELOAD({"screens/insightconfigurationscreen"}, function(imports)
+	InsightConfigurationScreen = imports.insightconfigurationscreen
+	util.classTweaker.TrackClassInstances(InsightConfigurationScreen)
+end)
+
 -- Functions
-local function DEBUG()
-	if false then
-		return "images/White_Square.xml", "White_Square.tex"
-	end
-
-	return nil, nil
-end
-
 local Tab = Class(Widget, function(self, data)
 	Widget._ctor(self, "Tab")
 	self.width = data.width
@@ -86,7 +85,7 @@ function Tab:SetCurrent(bool)
 	if IS_DST then
 		self.background:ForceImageSize(self.width - 4, self.height - 4)
 	else
-		widgetLib.imagebutton.ForceImageSize(self.background, self.width - 4, self.height - 4)
+		self.background:ForceImageSize(self.width - 4, self.height - 4)
 	end
 end
 
@@ -99,13 +98,13 @@ local InsightMenu = Class(Widget,function(self)
 	--]]
 
 	self.bg = self:AddChild(Image("images/dst/scoreboard.xml", "scoreboard_frame.tex")) -- data/images
-	self.bg:SetSize(520, 460) -- Original size before config: 480, 460
+	self.bg:SetSize(540, 460) -- Original size before config: 480, 460
 
 	self.pages = {}
 	self.current_page = nil
  
 
-	self.header = self:AddChild(Image(DEBUG()))
+	self.header = self:AddChild(Image(DEBUG_IMAGE()))
 	--self.header:SetTint(.5, 0, 0, .7)
 	self.header:SetSize(400, 60)
 	self.header:SetPosition(0, 460/2 - 75)
@@ -141,51 +140,44 @@ local InsightMenu = Class(Widget,function(self)
 		tab:SetOnClick(function()
 			self:SetPage(v)
 		end)
-	
-		
-		--[[
-		local tab = self.header:AddChild(Image(DEBUG()))
-		tab:SetTint(i == 3 and 0.5 or 0, i==1 and 0.5 or 0, i==2 and 0.5 or 0, 0.8)
-		tab:SetSize(dw / #tabs, height)
-
-		local tab_width, tab_height = tab:GetSize()
-
-		-- start at 0 i suppose
-		-- -dw/2 is "zero"
-		-- tab_width/2 is the offset from zero so you can start at zero, idk i know how it works in my head
-		-- (i-1) * tab_width is the tab's positioning
-		-- can't add+5 or -5 for padding, since one side will always be offset, probably some way to calculate but eeeeh
-
-		local pad = 5
-
-		local offset = -dw/2 + tab_width/2 + (i-1) * (tab_width + pad)
-
-		-- if #tabs odd, is fine
-		-- if #tabs even, idk
-
-
-		if math.floor(#tabs/2) == #tabs/2 then
-			print("even")
-			offset = offset - (pad / #tabs)
-		else
-			print("odd")
-		end
-
-		tab:SetPosition(offset, 0)
-
-		tab.bg = tab:AddChild(Image("images/frontend_redux.xml", "listitem_thick_normal.tex"))
-		tab.bg:SetSize(tab_width - 4, tab_height - 4)
-
-		tab.text = tab:AddChild(Text(UIFONT, 30, v))
-		--]]
 
 		page.tab = tab
+
+		table.insert(self.tabs, tab)
 	end
 
 	self:SetPage(tabs[1])
 
+	-- Logic derived from redux/templates -> IconButton and base classes
+	local prefix = "button_carny_square"
+
+	local cfg = self.header:AddChild(ImageButton("images/dst/global_redux.xml", prefix.."_normal.tex", prefix.."_hover.tex", prefix.."_disabled.tex", prefix.."_down.tex"))
+	cfg:ForceImageSize(60, 60)
+	cfg:SetTextSize(math.ceil(60*.45))
+	cfg.icon = cfg:AddChild(Image("images/dst/button_icons2.xml", "workshop_filter.tex"))
+	cfg.icon:ScaleToSize(cfg.text.size, cfg.text.size)
+	cfg.icon:SetPosition(1, 0)
+
+	cfg:SetHoverText("Mod Configuration", {
+		font = NEWFONT_OUTLINE,
+		offset_x = 2,
+		offset_y = 45,
+		colour = Color.new(1, 1, 1, 1),
+		bg = nil
+	})
+
+	local px, py = self.tabs[#self.tabs]:GetPosition():Get()
+	local sx, sy = self.tabs[#self.tabs]:GetSize()
+	cfg:SetPosition(px + sx/2 + cfg.size_x/2, 0)
+	cfg:SetOnClick(function()
+		print(InsightConfigurationScreen)
+		TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
+		local sc = InsightConfigurationScreen()
+		TheFrontEnd:PushScreen(sc)
+	end)
+
 	--[[
-	self.main = self:AddChild(Image(DEBUG()))
+	self.main = self:AddChild(Image(DEBUG_IMAGE()))
 	--self.main = self:AddChild(Image())
 	self.main:SetSize(400, 290)
 	self.main:SetPosition(5, -25)
@@ -194,7 +186,22 @@ local InsightMenu = Class(Widget,function(self)
 
 	self.items = {}
 	--]]
+
+	self.exit_listener = TheInput:AddControlHandler(CONTROL_PAUSE, function(digital, analog) 
+		-- Down is whether the key is down or not.
+		local scr = TheFrontEnd.screenstack[#TheFrontEnd.screenstack]
+		if scr.name == "HUD" then
+			if self.shown then
+				self:Hide()
+			end
+		end
+	end)
 end)
+
+function InsightMenu:Kill(...)
+	self.exit_listener:Remove()
+	return self._base.Kill(self, ...)
+end
 
 -- Class Functions
 function InsightMenu:GetCurrentPage()
@@ -334,21 +341,31 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		end
 	end
 end
---[[
+
 function InsightMenu:OnControl(control, down)
-	
-	print(control, down, "|||||||||||||||", CONTROL_SCROLLBACK, CONTROL_SCROLLFWD)
+	--print(control, down)
+	--[[
+	if not down and (control == CONTROL_PAUSE or (TheInput:ControllerAttached() and control == CONTROL_CANCEL)) then
+		-- Can also check for control == CONTROL_CANCEL, but I'm only checking for pause on keyboard so it'll prevent the pause menu from showing up.
+		if self.shown then
+			print("hiding")
+			self:Hide()
+			return true
+		end
+	end
+	--]]
+	--print(control, down, "|||||||||||||||", CONTROL_SCROLLBACK, CONTROL_SCROLLFWD)
 	--self:GetCurrentPage():OnControl(...)
-	print(debugstack())
+	--print(debugstack())
 	
 	-- back == up == 31
 	-- fwd == down == 32
 
 	--return old(self, ...)
 	
-	InsightMenu._base.OnControl(self, control, down)
+	return InsightMenu._base.OnControl(self, control, down)
 end
---]]
+
 
 --[[
 function InsightMenu:OnRawKey(...)

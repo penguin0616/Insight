@@ -110,6 +110,14 @@ local InsightPage = Class(Widget, function(self, name)
 	self:Hide()
 end)
 
+function InsightPage:ScrollDown(...)
+	return self.list:ScrollDown(...)
+end
+
+function InsightPage:ScrollUp(...)
+	return self.list:ScrollUp(...)
+end
+
 function InsightPage:GetName()
 	return self._name
 end

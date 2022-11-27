@@ -167,13 +167,13 @@ function InsightScrollList:BuildScrollBar()
 	widgetLib.imagebutton.OverrideFocuses(self.up_button)
 	self.up_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.up_button:SetPosition(0, scroller_height/2 - scrollbutton_height/2 + 8)
-	self.up_button:SetOnClick(function() self:Scroll(-self.scroll_per_click) end)
+	self.up_button:SetOnClick(function() self:ScrollUp() end)
 	
 	self.down_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_down.tex"))
 	widgetLib.imagebutton.OverrideFocuses(self.down_button)
 	self.down_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.down_button:SetPosition(0, -scroller_height/2 + scrollbutton_height/2 - 8)
-	self.down_button:SetOnClick(function() self:Scroll(self.scroll_per_click) end)
+	self.down_button:SetOnClick(function() self:ScrollDown() end)
 
 	--self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/dst/global_redux.xml", "scrollbar_bar.tex"))
 	self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/misc/scrollbar_bar.xml", "scrollbar_bar.tex"))
@@ -299,6 +299,16 @@ end
 
 function InsightScrollList:Scroll(amount)
 	self.target_scroll_pos = math.clamp(self.target_scroll_pos + amount, 0, self.end_scroll_pos)
+end
+
+--- Mostly for external cases where they shouldn't need to know how much to scroll by.
+function InsightScrollList:ScrollDown()
+	self:Scroll(self.scroll_per_click)
+end
+
+--- Mostly for external cases where they shouldn't need to know how much to scroll by.
+function InsightScrollList:ScrollUp()
+	self:Scroll(-self.scroll_per_click)
 end
 
 function InsightScrollList:RefreshView()
