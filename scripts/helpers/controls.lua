@@ -25,6 +25,8 @@ directory. If not, please refer to
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 
+local CONTROLS_REVERSE = {}
+
 local control_cache = {}
 
 local KNOWN_CONTROLS = {
@@ -49,12 +51,27 @@ end
 local function OnControl() end
 
 --------------------------------------------------------------------------
+--[[ Exported Functions ]]
+--------------------------------------------------------------------------
+local function Prettify(control)
+	return "[" .. (CONTROLS_REVERSE[control] or "<UNKNOWN>") .. " - " .. control .. "]"
+end
+--------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
+require("constants")
+for i,v in pairs(getfenv(0)) do
+	if i:sub(1, #("CONTROL_")) == "CONTROL_" and type(v) == "number" then
+		CONTROLS_REVERSE[v] = i
+	end
+end
 
 --TheInput:OnControlMapped(OnControlMapped)
 --TheInput:AddControlHandler(OnControl)
 
 return {
-	KNOWN_CONTROLS = KNOWN_CONTROLS
+	KNOWN_CONTROLS = KNOWN_CONTROLS,
+	CONTROLS_REVERSE = CONTROLS_REVERSE,
+
+	Prettify = Prettify
 }
