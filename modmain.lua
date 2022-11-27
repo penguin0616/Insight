@@ -688,6 +688,21 @@ local function InvalidDescriptorIndex(self, index) -- causes crash when checking
 	error(string.format("Descriptor '%s' does not have index '%s'", tostring(self.name), tostring(index)))
 end
 
+local function hex_dump(buf)
+	if type(buf) == "function" then
+		buf = string.dump(buf)
+	end
+
+    local s = ""
+    for i = 1, math.ceil(#buf/16) * 16 do
+        if (i-1) % 16 == 0 then s = s .. ("%08X "):format(i-1) end
+        s = s .. ( i > #buf and "   " or ("%02X "):format(buf:byte(i)) )
+        if i %  8 == 0 then s = s .. " " end
+        if i % 16 == 0 then s = s .. buf:sub(i-16+1, i):gsub("%c",".") .. "\n" end
+    end
+    return s
+end
+
 --- Returns a component descriptor. 
 -- @tparam string name Name of the component.
 -- @treturn ?table|false
@@ -710,7 +725,23 @@ local function GetComponentDescriptor(name)
 
 			return res
 		else
-			error(string.format("Attempt to return %s (type %s) in descriptor '%s'", type(res), tostring(res), name))
+			local source_read, err = pcall(function()
+				local f = io.open("../mods/" .. modname .. "/scripts/descriptors/" .. name .. ".lua")
+				local src = f:read("*a")
+
+				mprint("==================== FILE SOURCE ====================")
+				print("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
+
+				mprint("==================== HEX DUMP =======================")
+				local file_fn = import._init_cache["descriptors/" .. name]
+				assert(file_fn, "Missing file FN")
+				mprint("\n" .. hex_dump(file_fn))
+			end)
+			if not source_read then
+				mprint("Could not completely read descriptor file:", err)
+			end
+
+			error(string.format("Attempt to return \"%s\" (type %s) in descriptor '%s'", tostring(res), type(res), name))
 			--Insight.descriptors[name] = false
 			return false
 		end

@@ -31,6 +31,7 @@ local function pack(...) return { n=select("#", ...), ...} end
 local function vararg(packed) return unpack(packed, 1, packed.n) end
 
 local import_cache = {}
+local init_cache = {} -- This holds the functions that execute their files.
 
 --local import_cache = package.loaded -- require's cache
 
@@ -66,6 +67,7 @@ local function import(path)
 		--]]
 		setfenv(fn, _G.Insight.env)
 
+		init_cache[path] = fn
 		import_cache[path] = pack(fn())
 		return vararg(import_cache[path])
 	end
@@ -84,7 +86,8 @@ end
 local proxy = newproxy(true)
 local mt = getmetatable(proxy)
 mt.__index = { 
-	clear = clear_import
+	clear = clear_import,
+	_init_cache = init_cache
 }
 
 mt.__call = function(self, ...)
