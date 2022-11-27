@@ -22,6 +22,35 @@ local Image = require "widgets/image"
 local Text = require "widgets/text"
 local ImageButton = require "widgets/imagebutton"
 
+--[[
+-- This disables camera zooming.
+local function FindFirstAncestor(inst, name)
+	local this = inst
+	repeat
+		this = this:GetParent()
+	until this == nil or this.name == name
+	if this then
+		return this
+	end
+end
+
+if IS_DS then
+	local FollowCamera = require("cameras/followcamera")
+	local oldCanControl = FollowCamera.CanControl
+	FollowCamera.CanControl = function(self)
+		local ui = TheInput:GetHUDEntityUnderMouse()
+		if ui then
+			local list = FindFirstAncestor(ui.widget, "InsightScrollList")
+			if list then
+				return false
+			end
+		end
+
+		return oldCanControl(self)
+	end
+end
+--]]
+
 local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_update, item_width, item_height, visible_rows, row_padding)
 	Widget._ctor(self, "InsightScrollList")
 	assert(type(context) == "table", "InsightScrollList bad argument #1 (context): expected [function], got [" .. type(context) .. "]")
@@ -35,16 +64,23 @@ local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_
 	self.visible_rows = visible_rows
 	self.row_padding = row_padding or 0
 
+	self.control_up = CONTROL_SCROLLBACK
+	self.control_down = CONTROL_SCROLLFWD
+
 	self._width = item_width
 	--self._height = self.item_height * self.visible_rows
 	self._height = self.item_height * self.visible_rows + (self.row_padding * (self.visible_rows-1))
+
+	-- Ensures we're absorbing all control inputs within the widget region.
+	self.bg = self:AddChild(Image("images/ui.xml", "blank.tex"))
+    self.bg:ScaleToSize(self._width, self._height)
 
 	-- The Root Container for everything
 	self.root = self:AddChild(Widget("root"))
 
 	-- This will hold all of the items.
-	--self.list_root = self.root:AddChild(Widget("list_root"))
-	self.list_root = self.root:AddChild(Image(DEBUG_IMAGE(true))); self.list_root:SetSize(self._width, self._height);
+	self.list_root = self.root:AddChild(Widget("list_root"))
+	--self.list_root = self.root:AddChild(Image(DEBUG_IMAGE(true))); self.list_root:SetSize(self._width, self._height);
 	
 	self.scroll_per_click = 1
 	self.current_scroll_pos = 0 -- Represents the current row index. Could be 1, 1.5, 2, etc.
@@ -340,6 +376,50 @@ function InsightScrollList:OnUpdate()
 	if self.current_scroll_pos ~= last_pos then
 		self:RefreshView()
 	end
+end
+
+function InsightScrollList:OnControl(control, down)
+	if InsightScrollList._base.OnControl(self, control, down) then return true end
+	--[[
+	if TheCamera.gg == nil then
+		TheCamera.gg=true
+		TheCamera.ZoomIn = function(...)
+			print(debugstack())
+		end
+	end
+	--]]
+	
+	--[[
+	This was happening too.
+	CONTROL_ZOOM_IN = 9
+	CONTROL_ZOOM_OUT = 10	
+	]]
+
+	if self.focus and self:CanScroll() then
+		if down then -- down
+			if control == self.control_up then
+				--print("Scrolling up.")
+				self:Scroll(-self.scroll_per_click)
+				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover", nil, ClickMouseoverSoundReduction and ClickMouseoverSoundReduction() or nil)
+				return true
+			elseif control == self.control_down then
+				--print("Scrolling down.")
+				self:Scroll(self.scroll_per_click)
+				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover", nil, ClickMouseoverSoundReduction and ClickMouseoverSoundReduction() or nil)
+				return true
+			end 
+		end
+
+		--[[
+		-- Eat the control input here, so scrolling doesn't make us zoom in and out.
+		if (control == CONTROL_ZOOM_IN or control == CONTROL_ZOOM_OUT) or (control == CONTROL_MAP_ZOOM_IN or control == CONTROL_MAP_ZOOM_OUT) then
+			return true
+		end
+		--mprint("Within focus:", control, (control == CONTROL_ZOOM_IN or control == CONTROL_ZOOM_OUT) or (control == CONTROL_MAP_ZOOM_IN or control == CONTROL_MAP_ZOOM_OUT))
+		--]]
+	end
+
+	mprint("Failed ALL:", control, down, self.focus, self:CanScroll())
 end
 
 return InsightScrollList
