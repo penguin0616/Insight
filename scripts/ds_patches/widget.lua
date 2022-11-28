@@ -224,6 +224,7 @@ function patches.SetFocusFromChild(self, from_child)
         end
     end
 end
+--]=]
 
 patcher_common.PatchClass(Widget, patches)
 

@@ -64,8 +64,16 @@ local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_
 	self.visible_rows = visible_rows
 	self.row_padding = row_padding or 0
 
-	self.control_up = CONTROL_SCROLLBACK
-	self.control_down = CONTROL_SCROLLFWD
+	self.controls = {
+		normal = {
+			scroll_up = CONTROL_SCROLLBACK,
+			scroll_down = CONTROL_SCROLLFWD
+		},
+		controller = {
+			scroll_up = CONTROL_INVENTORY_UP,
+			scroll_down = CONTROL_INVENTORY_DOWN
+		}
+	}
 
 	self._width = item_width
 	--self._height = self.item_height * self.visible_rows
@@ -367,9 +375,58 @@ function InsightScrollList:SetItemsData(items)
 	self:RefreshView()
 end
 
-function InsightScrollList:OnUpdate()
-	local last_pos = self.current_scroll_pos
+local SCROLL_REPEAT_TIME = .05
+local MOUSE_SCROLL_REPEAT_TIME = 0
 
+function InsightScrollList:OnUpdate(dt)
+	-- Repeat scrolling for controllers
+	--[[
+	if TheInput:ControllerAttached() the
+		if self.last_scroll_time == nil then
+			if TheInput:IsControlPressed(self.controls.controller.scroll_up) or TheInput:IsControlPressed(self.controls.controller.scroll_down) then
+				self.last_scroll_time = -1
+			end
+		else
+			self.last_scroll_time = self.last_scroll_time + dt
+			if not (TheInput:IsControlPressed(self.controls.controller.scroll_up) or TheInput:IsControlPressed(self.controls.controller.scroll_down)) then
+				self.last_scroll_time = nil
+			end
+		end
+	end
+	--]]
+	if TheInput:ControllerAttached() and self.control_scroll_repeat_time == nil then
+		self.control_scroll_repeat_time = -1
+	end
+
+	-- Thanks Klei!
+	if self.control_scroll_repeat_time ~= nil then
+		local controls = TheInput:ControllerAttached() and self.controls.controller or self.controls.normal
+        --Scroll repeat
+        if not (TheInput:IsControlPressed(controls.scroll_up) or TheInput:IsControlPressed(controls.scroll_down)) then
+            self.control_scroll_repeat_time = -1
+        elseif self.control_scroll_repeat_time > dt then
+            self.control_scroll_repeat_time = self.control_scroll_repeat_time - dt
+        elseif TheInput:IsControlPressed(controls.scroll_up) then
+            local repeat_time = TheInput:GetControlIsMouseWheel(controls.scroll_up) and MOUSE_SCROLL_REPEAT_TIME or SCROLL_REPEAT_TIME
+            if self.control_scroll_repeat_time < 0 then
+                self.control_scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
+            else
+                self.control_scroll_repeat_time = repeat_time
+                self:OnControl(controls.scroll_up, true)
+            end
+        else
+            local repeat_time = TheInput:GetControlIsMouseWheel(controls.scroll_down) and MOUSE_SCROLL_REPEAT_TIME or SCROLL_REPEAT_TIME
+            if self.control_scroll_repeat_time < 0 then
+                self.control_scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
+            else
+                self.control_scroll_repeat_time = repeat_time
+                self:OnControl(controls.scroll_down, true)
+            end
+        end
+	end
+
+	-- Clamp the scroller position
+	local last_pos = self.current_scroll_pos
 	if self.current_scroll_pos < 0 then
 		self.current_scroll_pos = 0
 		self.target_scroll_pos = self.current_scroll_pos 
@@ -400,37 +457,28 @@ function InsightScrollList:OnUpdate()
 end
 
 function InsightScrollList:OnControl(control, down)
-	mprint("InsightScrollList", controlsHelper.Prettify(control), down, self.focus)
-	if InsightScrollList._base.OnControl(self, control, down) then return true end
-	mprint("\t:)")
-	--[[
-	if TheCamera.gg == nil then
-		TheCamera.gg=true
-		TheCamera.ZoomIn = function(...)
-			print(debugstack())
-		end
-	end
-	--]]
-	
+	--mprint("InsightScrollList", controlsHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
 	--[[
 	This was happening too.
 	CONTROL_ZOOM_IN = 9
 	CONTROL_ZOOM_OUT = 10	
 	]]
 
+	local controls = TheInput:ControllerAttached() and self.controls.controller or self.controls.normal
+
 	if self.focus and self:CanScroll() then
 		if down then -- down
-			if control == self.control_up then
+			if control == controls.scroll_up then
 				--print("Scrolling up.")
 				self:Scroll(-self.scroll_per_click)
 				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover", nil, ClickMouseoverSoundReduction and ClickMouseoverSoundReduction() or nil)
 				return true
-			elseif control == self.control_down then
+			elseif control == controls.scroll_down then
 				--print("Scrolling down.")
 				self:Scroll(self.scroll_per_click)
 				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover", nil, ClickMouseoverSoundReduction and ClickMouseoverSoundReduction() or nil)
 				return true
-			end 
+			end
 		end
 
 		--[[
@@ -442,7 +490,8 @@ function InsightScrollList:OnControl(control, down)
 		--]]
 	end
 
-	mprint("Failed ALL:", controlsHelper.Prettify(control), down, self.focus, self:CanScroll())
+	--mprint("Failed ALL:", controlsHelper.Prettify(control), down, self.focus, self:CanScroll())
+	return InsightScrollList._base.OnControl(self, control, down)
 end
 
 return InsightScrollList
