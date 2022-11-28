@@ -30,9 +30,11 @@ local MOVE_RIGHT = getfenv(1)[string.format("CONTROL_%s_RIGHT", CONTROL_TYPE)]
 local OPEN_MENU = IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU
 
 local InsightMenuScreen = Class(Screen, function(self)
+	mprint("Created InsightMenuScreen ============================================================================")
 	Screen._ctor(self, "InsightMenuScreen")
+	self.screen = true
 
-	self.root = self:AddChild(Widget("ROOT"))
+	self.root = self:AddChild(Widget("INSIGHTMENUSCREEN_ROOT"))
     self.root:SetVAnchor(ANCHOR_MIDDLE)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetPosition(0, 0, 0)
@@ -42,7 +44,10 @@ local InsightMenuScreen = Class(Screen, function(self)
 	self.menu:SetPosition(0, 0)
 	self.menu:Show()
 
-	localPlayer.replica.insight:MaintainMenu(self.menu)
+	--self.menu:SetFocus()
+
+	GetLocalInsight(localPlayer):MaintainMenu(self.menu)
+	self.default_focus = self.menu
 end)
 
 function InsightMenuScreen:GetHelpText()
@@ -56,21 +61,61 @@ function InsightMenuScreen:GetHelpText()
 	return table.concat(tips, "   ")
 end
 
+-- All is well:
+--[[
+[00:00:20]: [workshop-2081254154 (Insight)]:	Created InsightMenuScreen ============================================================================
+[00:00:20]: [workshop-2081254154 (Insight)]:	About to SetPage
+[00:00:20]: [workshop-2081254154 (Insight)]:	SetPage done
+[00:00:20]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	INSIGHTMENUSCREEN_ROOT	InsightMenu
+[00:00:20]: [workshop-2081254154 (Insight)]:		All Good here.	InsightMenuScreen
+[00:00:20]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	InsightMenuScreen	INSIGHTMENUSCREEN_ROOT
+[00:00:20]: [workshop-2081254154 (Insight)]:		All Good here.	screenroot
+[00:00:20]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	screenroot	InsightMenuScreen
+[00:00:21]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
+[00:00:21]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	self	true	| root	true	| menu	true
+[00:00:21]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	47	true	|	true
+[00:00:21]: [workshop-2081254154 (Insight)]:		running onto:	INSIGHTMENUSCREEN_ROOT
+[00:00:21]: [workshop-2081254154 (Insight)]:	oncontrol	INSIGHTMENUSCREEN_ROOT	47	true	|	true
+[00:00:21]: [workshop-2081254154 (Insight)]:		running onto:	InsightMenu
+[00:00:21]: [workshop-2081254154 (Insight)]:		InsightMenu OnControl	[CONTROL_INVENTORY_LEFT - 47]	true
+[00:00:21]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenu	47	true	|	true
+[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	Image - :
+[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	Image - ../mods/workshop-2081254154/images/dst/scoreboard.xml:scoreboard_frame.tex
+[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
+[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
+]]
+
 function InsightMenuScreen:OnControl(control, down)
-	print(control, down)
-	if down then
-		if control == MOVE_UP then
-			self.menu:GetCurrentPage().list:Scroll(-1) -- 1 entry
-		elseif control == MOVE_DOWN then
-			self.menu:GetCurrentPage().list:Scroll(1) -- 1 entry
-		elseif control == MOVE_LEFT then
+	-- Trigered from FrontEnd:OnControl
+	mprint(string.rep("-", 66))
+	mprint("InsightMenuScreen", controlsHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
+	if not down then
+		--[[
+		if control == MOVE_LEFT then
 			self.menu:NextPage(-1)
+			return true
 		elseif control == MOVE_RIGHT then
 			self.menu:NextPage(1)
-		elseif control == CONTROL_PAUSE or control == CONTROL_CANCEL then
+			return true
+		end
+		--]]
+		if control == CONTROL_PAUSE or control == CONTROL_CANCEL then
 			self:Close()
+			return true
 		end
 	end
+
+	--mprint("Delegating", controlsHelper.Prettify(control), down)
+	return self._base.OnControl(self, control, down)
+	--[[
+	if control == MOVE_UP then
+		--self.menu:GetCurrentPage():ScrollUp()
+		self.menu:DelegateControl(control, down)
+	elseif control == MOVE_DOWN then
+		--self.menu:GetCurrentPage():ScrollDown()
+		self.menu:DelegateControl(control, down)
+	end
+	--]]
 end
 
 function InsightMenuScreen:Close()

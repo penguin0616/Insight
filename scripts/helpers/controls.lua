@@ -65,6 +65,13 @@ for i,v in pairs(getfenv(0)) do
 		CONTROLS_REVERSE[v] = i
 	end
 end
+--[[
+-- Probably will need these, but whatever for now.
+CONTROLS_REVERSE[1] = MOVE_UP
+CONTROLS_REVERSE[2] = MOVE_DOWN
+CONTROLS_REVERSE[3] = MOVE_LEFT
+CONTROLS_REVERSE[4] = MOVE_RIGHT
+--]]
 
 --TheInput:OnControlMapped(OnControlMapped)
 --TheInput:AddControlHandler(OnControl)

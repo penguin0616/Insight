@@ -47,7 +47,6 @@ function patches.OnControl(self, control, down)
                     end
                 end
                 self.down = false
-				print(require("widgets/button").ResetPreClickPosition)
                 self:ResetPreClickPosition()
                 if self.onclick then
                     self.onclick()

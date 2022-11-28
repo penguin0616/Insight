@@ -159,16 +159,65 @@ function patches.ClearHoverText(self)
 end
 
 function patches.OnControl(self, control, down)
---    print("oncontrol", self, control, down, self.focus)
+	mprint("oncontrol", self, control, down, "|", self.focus)
 
-    if not self.focus then return false end
+    if not self.focus then 
+		mprint("\tI DON'T HAVE FOCUS")
+		return false
+	end
 
-    for k,v in pairs (self.children) do
-		--mprint("oncontrol iter", k, v)
-        if v.focus and v:OnControl(control, down) then return true end
+    for k,v in pairs(self.children) do
+		if v.focus then
+			mprint("\trunning onto:", v)
+			local x = v:OnControl(control, down)
+			if x then
+				return true
+			end
+		else
+			mprint("\tskipping:", v)
+		end
+		--[[
+		-- original
+        if v.focus and v:OnControl(control, down) then 
+			return true 
+		end
+		--]]
     end 
 
     return false
+end
+
+function patches.SetFocusFromChild(self, from_child)
+	--[[
+	if self.parent == nil and not self.is_screen then
+        print("Warning: Widget:SetFocusFromChild is happening on a widget outside of the screen/widget hierachy. This will cause focus moves to fail. Is ", self.name, "not a screen?")
+        print(debugstack())
+    end
+	--]]
+	
+	local yes = true or self.name and self.name:lower():find("insight")
+	if yes then
+		mprint("SetFocusFromChild", self, from_child)
+	end
+
+    for k,v in pairs(self.children) do
+        if v ~= from_child and v.focus then
+			mprint("\tRemoving focus from", v)
+            v:ClearFocus()
+        end
+    end
+
+    if not self.focus then
+		if yes then mprint("\tAll Good here.", self.parent) end
+        self.focus = true
+        if self.OnGainFocus then
+            self:OnGainFocus()
+        end
+
+        if self.parent then
+            self.parent:SetFocusFromChild(self)
+        end
+    end
 end
 
 patcher_common.PatchClass(Widget, patches)

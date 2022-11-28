@@ -110,6 +110,27 @@ local InsightPage = Class(Widget, function(self, name)
 	self:Hide()
 end)
 
+--[[
+function InsightPage:OnGainFocus()
+	mprint(self._name, "page gain focus")
+	self.list:SetFocus()
+	self._base.OnGainFocus(self)
+end
+
+function InsightPage:OnLoseFocus()
+	mprint(self._name, "page lose focus")
+	self.list:ClearFocus()
+	self._base.OnLoseFocus(self)
+end
+--]]
+
+--[[
+function InsightPage:OnControl(...)
+	mprint("InsightPage:", self.focus, "| list:", self.list.focus)
+	return false
+end
+--]]
+
 function InsightPage:ScrollDown(...)
 	return self.list:ScrollDown(...)
 end

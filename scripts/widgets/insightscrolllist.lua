@@ -186,8 +186,8 @@ function InsightScrollList:BuildScrollBar()
 	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_handle.tex"))
 	self.position_marker.scale_on_focus = false
     self.position_marker.move_on_click = false
-	patcher.imagebutton.Patch(self.position_marker)
-	--self.position_marker:InsightOverrideFocuses()
+	--patcher.imagebutton.Patch(self.position_marker)
+	self.position_marker:InsightOverrideFocuses()
 	--self.position_marker:ForceImageSize(scrollbutton_width, scrollbutton_height)
 	self.position_marker:SetScale(0.3, 0.3, 1)
 
@@ -389,7 +389,9 @@ function InsightScrollList:OnUpdate()
 end
 
 function InsightScrollList:OnControl(control, down)
+	mprint("InsightScrollList", controlsHelper.Prettify(control), down, self.focus)
 	if InsightScrollList._base.OnControl(self, control, down) then return true end
+	mprint("\t:)")
 	--[[
 	if TheCamera.gg == nil then
 		TheCamera.gg=true

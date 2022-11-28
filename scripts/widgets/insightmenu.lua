@@ -91,7 +91,7 @@ end
 
 -- Class InsightMenu
 local InsightMenu = Class(Widget,function(self)
-	Widget._ctor(self, "Menu")
+	Widget._ctor(self, "InsightMenu")
 	--[[
 	self.bg = self:AddChild(Image("images/options_bg.xml", "options_panel_bg_frame.tex")) -- data/images
 	self.bg:SetSize(460, 380)
@@ -146,7 +146,9 @@ local InsightMenu = Class(Widget,function(self)
 		table.insert(self.tabs, tab)
 	end
 
+	mprint("About to SetPage")
 	self:SetPage(tabs[1])
+	mprint("SetPage done")
 
 	-- Logic derived from redux/templates -> IconButton and base classes
 	local prefix = "button_carny_square"
@@ -198,10 +200,27 @@ local InsightMenu = Class(Widget,function(self)
 	end)
 end)
 
+function InsightMenu:OnControl(control, down)
+	mprint("\tInsightMenu OnControl", controlsHelper.Prettify(control), down)
+	
+	if control == CONTROL_PREVVALUE then -- MOVE_LEFT doesn't seem to work here, but worked in screen previously?
+		self:NextPage(-1)
+		return true
+	elseif control == CONTROL_NEXTVALUE then -- MOVE_RIGHT doesn't seem to work here , but worked in screen previously?
+		self:NextPage(1)
+		return true
+	end
+
+	return self._base.OnControl(self, control, down)
+	--return self:GetCurrentPage():OnControl(control, down)
+end
+
+--[[
 function InsightMenu:DelegateControl(control, down)
 	mprint("\tDelegating", control, down)
 	return self:GetCurrentPage():OnControl(control, down)
 end
+--]]
 
 function InsightMenu:Kill(...)
 	self.exit_listener:Remove()
@@ -241,11 +260,13 @@ function InsightMenu:SetPage(name)
 		--self.current_page.tab.bg:SetTexture("images/frontend_redux.xml", "listitem_thick_normal.tex")
 		self.current_page.tab:SetCurrent(false)
 		self.current_page:Hide()
+		--self.current_page:ClearFocus()
 	end
 
 	self.current_page = page
 	self.current_page.tab:SetCurrent(true)
 	self.current_page:Show()
+	--self.current_page:SetFocus()
 end
 
 function InsightMenu:ApplyInformation(world_data, player_data)
@@ -346,7 +367,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		end
 	end
 end
-
+--[==[
 function InsightMenu:OnControl(control, down)
 	--print(control, down)
 	--[[
@@ -370,7 +391,7 @@ function InsightMenu:OnControl(control, down)
 	
 	return InsightMenu._base.OnControl(self, control, down)
 end
-
+--]==]
 
 --[[
 function InsightMenu:OnRawKey(...)
