@@ -33,12 +33,18 @@ local function countnewlines(str)
 	return select(2, str:gsub("\n", "\n"))
 end
 
-local function Controls_OnUpdate(self, ...)
-	module.oldOnUpdate(self, ...)
-	local itemIndex = self.owner.components.playercontroller.controller_target and self.owner.components.playercontroller.controller_target:IsValid() --itemIndex is actually #cmds but I only use it for passing the if check.
-	local itemInActions = self.playeractionhint.shown
+local function UpdateFollowText(self, ...)
+	local itemIndex, itemInActions = ...
+	
+	-- DS has a similar but different set of checks.
+	if IS_DS then
+		local t1 = self.owner.components.playercontroller.controller_target and self.owner.components.playercontroller.controller_target:IsValid()
+		local t2 = self.playeractionhint.target or self.groundactionhint.target
+		itemIndex = t1 and t2 -- This should technically be #cmds but I'm only using it as a condition for truth.
+		itemInActions = self.playeractionhint.shown
+	end
 
-	if itemIndex and (self.playeractionhint.target or self.groundactionhint.target) then
+	if itemIndex then
 		if not self.primaryInsightText.shown then
 			--print("Showing InsightText")
 			self.primaryInsightText:Show()
@@ -46,6 +52,7 @@ local function Controls_OnUpdate(self, ...)
 				self.primaryInsightText2:Show()
 			end
 		end
+
 
 		-- The itemhighlight has the entity name.
 		-- This has the information about the item.
@@ -55,6 +62,8 @@ local function Controls_OnUpdate(self, ...)
 		else
 			followerWidget = self.groundactionhint
 		end
+
+		local widgetWithEntityName = (IS_DST and self.playeractionhint_itemhighlight) or self.playeractionhint
 		
 		local offsetx, offsety = followerWidget:GetScreenOffset()
 		self.primaryInsightText:SetTarget(followerWidget.target)
@@ -62,7 +71,7 @@ local function Controls_OnUpdate(self, ...)
 
 		-- Show prefab if enabled
 		if DEBUG_SHOW_PREFAB then
-			local text = self.playeractionhint.text:GetString()
+			local text = widgetWithEntityName.text:GetString()
 
 			local pos = string.find(text, "\n")
 			local prefab = " [" .. followerWidget.target.prefab .. "]"
@@ -72,7 +81,7 @@ local function Controls_OnUpdate(self, ...)
 				text = text .. prefab
 			end
 
-			self.playeractionhint.text:SetString(text)
+			widgetWithEntityName.text:SetString(text)
 		end
 
 		local followtext_lines = select(2, followerWidget.text:GetString():gsub("\n", "\n"))
@@ -118,52 +127,25 @@ local function Controls_OnUpdate(self, ...)
 	end
 end
 
-local function SetupForDS(controls)
-	-- In DS, this is both the entity name and actions.
-	--[[
-	local old1 = controls.playeractionhint.SetTarget
-	controls.playeractionhint.SetTarget = function(self, ...)
-		mprint("playeractionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
-		return old1(self, ...)
-	end
-	--]]
-	
-	--[[
-	local old3 = controls.attackhint.SetTarget
-	controls.attackhint.SetTarget = function(self, ...)
-		--mprint("attackhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
-		return old3(self, ...)
-	end
-	--]]
 
-	
-	--[[
-	local old4 = controls.groundactionhint.SetTarget
-	controls.groundactionhint.SetTarget = function(self, ...)
-		--mprint("groundactionhint SetTarget:", ..., " -------------> ", "|"..tostring(self.text:GetString()).."|::"..countnewlines(self.text:GetString()))
-		return old4(self, ...)
-	end
-	--]]
-	
-	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, 28))
-	controls.primaryInsightText:SetHUD(controls.owner.HUD.inst)
-    controls.primaryInsightText:SetOffset(Vector3(0, 100, 0))
-    controls.primaryInsightText:Hide()
-
-	module.oldOnUpdate = controls.OnUpdate
-	controls.OnUpdate = Controls_OnUpdate
+-- TODO: Can these 2 functions be simplified/incorporated to reduce function call overhead?
+local function Controls_OnUpdate(self, ...)
+	module.oldOnUpdate(self, ...)
+	return UpdateFollowText(self, nil, nil)
 end
 
+local function Controls_HighlightActionItem(self, ...)
+	module.oldHighlightActionItem(self, ...)
+	return UpdateFollowText(self, ...)
+end
 
 local function OnControlsPostInit(controls)
-	if IS_DS then
-		return SetupForDS(controls)
-	end
-	-- These comments & documentation are for DST.
+	-- !! These comments & documentation are largely for DST. They might apply to DS as well.
 
 	-- This is whatever is currently "selected", text is always the available actions.
 	-- Starts with a newline (I assume for the entity name)
 	-- See attack hit for notes on attack action.
+	-- ~In DS, this is both the entity name and actions.
 	--[[
 	local old1 = controls.playeractionhint.SetTarget
 	controls.playeractionhint.SetTarget = function(self, ...)
@@ -175,6 +157,7 @@ local function OnControlsPostInit(controls)
 	-- This is whatever is currently "selected"
 	-- Text is always starts with the entity name. If the enemy name has multiple lines, only the first line is here. 
 	-- 		The other lines become part of playeractionhint.
+	-- ~In DS, this is doesn't exist. The entity name is included in playeractionhint.
 	-- Text doesn't start with a newline, has 1 newline for every line in old1
 	--[==[Ex:
 		if playeractionhint is 
@@ -231,91 +214,12 @@ local function OnControlsPostInit(controls)
     controls.primaryInsightText2:Hide()
 	--]]
 
-	local oldHighlightActionItem = controls.HighlightActionItem
-	controls.HighlightActionItem = function(self, ...)
-		oldHighlightActionItem(self, ...)
-		local itemIndex, itemInActions = ...
-		
-		if itemIndex then
-			if not self.primaryInsightText.shown then
-				--print("Showing InsightText")
-				self.primaryInsightText:Show()
-				if self.primaryInsightText2 then
-					self.primaryInsightText2:Show()
-				end
-			end
-
-
-			-- The itemhighlight has the entity name.
-			-- This has the information about the item.
-			local followerWidget 
-			if itemInActions then
-				followerWidget = self.playeractionhint
-			else
-				followerWidget = self.groundactionhint
-			end
-
-			
-			local offsetx, offsety = followerWidget:GetScreenOffset()
-        	self.primaryInsightText:SetTarget(followerWidget.target)
-        	if self.primaryInsightText2 then self.primaryInsightText2:SetTarget(followerWidget.target) end
-
-			-- Show prefab if enabled
-			if DEBUG_SHOW_PREFAB then
-				local text = self.playeractionhint_itemhighlight.text:GetString()
-
-				local pos = string.find(text, "\n")
-				local prefab = " [" .. followerWidget.target.prefab .. "]"
-				if pos then
-					text = string.sub(text, 1, pos - 1) .. prefab .. string.sub(text, pos)
-				else
-					text = text .. prefab
-				end
-
-				self.playeractionhint_itemhighlight.text:SetString(text)
-			end
-
-			local followtext_lines = select(2, followerWidget.text:GetString():gsub("\n", "\n"))
-
-			-- Reduced version of the logic from hoverer.
-			local entityInformation = RequestEntityInformation(followerWidget.target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
-			local itemDescription = nil
-			if entityInformation and entityInformation.information then
-				itemDescription = RichText.TrimNewlines(entityInformation.information)
-			end
-
-			if itemDescription then
-				local insight_lines = select(2, itemDescription:gsub("\n", "\n")) + 1 -- Since I'm counting newlines, insight_lines is always 1 short. 
-				-- However, trailing newlines have about half their actual height here (probably due to the middle vertical align). That means I need to add 1 more (aka double it) for Insight. 
-				insight_lines = insight_lines + 1
-				-- That leaves me with an overlap similar to the hoverer before the :SetPosition().
-				-- One difference though: I correct the hoverer with a :SetPosition().
-				-- The overlap here is half a newline's worth. Which means instead of adjusting the offset, I'll just add another to the line count.
-				insight_lines = insight_lines + 1
-
-
-				local total_lines = (followtext_lines) + (insight_lines) 
-				self.primaryInsightText.text:SetString(string.rep("\n", total_lines) .. itemDescription)
-				--self.primaryInsightText2.text:SetString(string.rep("\n", followtext_lines*2 + insight_lines) .. something .. ": A BLASPHEMOUS MOCKERY")
-				
-				--[[
-				-- Testing with \n and \n\n confirms the preceeding newline stripping logic noted in RichText.
-				self.primaryInsightText.text:SetString("\n\nRichText"..followerWidget.text:GetString())
-				self.primaryInsightText2.text:SetString("\n\nNormText"..followerWidget.text:GetString())	
-				]]
-			else
-				self.primaryInsightText.text:SetString(nil)
-			end
-			
-		else
-			if self.primaryInsightText.shown then
-				--print("Hiding InsightText")
-				self.primaryInsightText:Hide()
-				if self.primaryInsightText2 then
-					self.primaryInsightText2:Hide()
-				end
-			end
-		end
+	if IS_DST then
+		module.oldHighlightActionItem = controls.HighlightActionItem
+		controls.HighlightActionItem = Controls_HighlightActionItem
+	else
+		module.oldOnUpdate = controls.OnUpdate
+		controls.OnUpdate = Controls_OnUpdate
 	end
 end
 
