@@ -211,7 +211,7 @@ function InsightMenu:Activate()
 end
 
 function InsightMenu:OnControl(control, down)
-	mprint("\tInsightMenu OnControl", controlsHelper.Prettify(control), down)
+	--mprint("\tInsightMenu OnControl", controlsHelper.Prettify(control), down)
 	
 	if down then
 		if control == self.controls.tab_left then
@@ -226,11 +226,10 @@ function InsightMenu:OnControl(control, down)
 	return self._base.OnControl(self, control, down)
 	--return self:GetCurrentPage():OnControl(control, down)
 end
-
 --[[
-function InsightMenu:DelegateControl(control, down)
-	mprint("\tDelegating", control, down)
-	return self:GetCurrentPage():OnControl(control, down)
+function InsightMenu:OnLoseFocus()
+	print(debugstack())
+	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 end
 --]]
 
@@ -273,7 +272,7 @@ function InsightMenu:SetPage(name)
 		--self.current_page.tab.bg:SetTexture("images/frontend_redux.xml", "listitem_thick_normal.tex")
 		self.current_page.tab:SetCurrent(false)
 		self.current_page:Hide()
-		self.current_page:ClearFocus()
+		--self.current_page:ClearFocus()
 	end
 
 	self.current_page = page

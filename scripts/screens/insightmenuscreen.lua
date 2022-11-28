@@ -58,66 +58,16 @@ function InsightMenuScreen:GetHelpText()
 	return table.concat(tips, "   ")
 end
 
--- All is well:
---[[
-[00:01:37]: [workshop-2081254154 (Insight)]:	Created InsightMenuScreen ============================================================================
-[00:01:37]: [workshop-2081254154 (Insight)]:	About to SetPage
-[00:01:37]: [workshop-2081254154 (Insight)]:	SetPage done
-[00:01:37]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	INSIGHTMENUSCREEN_ROOT	CHILD:	InsightMenu
-[00:01:37]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	InsightMenuScreen
-[00:01:37]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	InsightMenuScreen	CHILD:	INSIGHTMENUSCREEN_ROOT
-[00:01:37]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	screenroot
-[00:01:37]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	screenroot	CHILD:	InsightMenuScreen
-[00:01:37]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
-[00:01:37]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_NEXTVALUE - 34]	true	|	self	true	| root	true	| menu	true
-[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	34	true	|	true
-[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	INSIGHTMENUSCREEN_ROOT
-[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	INSIGHTMENUSCREEN_ROOT	34	true	|	true
-[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	InsightMenu
-[00:01:37]: [workshop-2081254154 (Insight)]:		InsightMenu OnControl	[CONTROL_NEXTVALUE - 34]	true
-[00:01:37]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
-[00:01:37]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_INVENTORY_RIGHT - 48]	true	|	self	true	| root	true	| menu	true
-[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	48	true	|	true
-[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	INSIGHTMENUSCREEN_ROOT
-[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	INSIGHTMENUSCREEN_ROOT	48	true	|	true
-[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	InsightMenu
-[00:01:37]: [workshop-2081254154 (Insight)]:		InsightMenu OnControl	[CONTROL_INVENTORY_RIGHT - 48]	true
-[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenu	48	true	|	true
-[00:01:37]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
-[00:01:37]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
-[00:01:37]: [workshop-20 81254154 (Insight)]:		skipping:	Image - :
-[00:01:37]: [workshop-2081254154 (Insight)]:		skipping:	Image - ../mods/workshop-2081254154/images/dst/scoreboard.xml:scoreboard_frame.tex
-]]
-
--- Me doing SetFocus for a page:
---[[
-[00:02:42]: [workshop-2081254154 (Insight)]:	Created InsightMenuScreen ============================================================================
-[00:02:42]: [workshop-2081254154 (Insight)]:	About to SetPage
-[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	InsightMenu	CHILD:	InsightPage
-[00:02:42]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	nil
-[00:02:42]: [workshop-2081254154 (Insight)]:	SetPage done
-[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	PauseScreen	CHILD:	Image - images/global.xml:square.tex
-[00:02:42]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	screenroot
-[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	screenroot	CHILD:	PauseScreen
-[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	screenroot	CHILD:	InsightMenuScreen
-[00:02:42]: [workshop-2081254154 (Insight)]:		Removing focus from	PauseScreen
-[00:02:43]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
-[00:02:43]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_NEXTVALUE - 34]	true	|	self	true	| root	false	| menu	true
-[00:02:43]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	34	true	|	true
-[00:02:43]: [workshop-2081254154 (Insight)]:		skipping:	INSIGHTMENUSCREEN_ROOT
-[00:02:43]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
-[00:02:43]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_INVENTORY_RIGHT - 48]	true	|	self	true	| root	false	| menu	true
-[00:02:43]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	48	true	|	true
-[00:02:43]: [workshop-2081254154 (Insight)]:		skipping:	INSIGHTMENUSCREEN_ROOT
-[00:02:43]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
-]]
-
--- Clicking might be breaking it.
-
 function InsightMenuScreen:OnControl(control, down)
 	-- Trigered from FrontEnd:OnControl
-	mprint(string.rep("-", 66))
+	--mprint(string.rep("-", 66))
 	mprint("InsightMenuScreen", controlsHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
+	if self.focus and not self.root.focus then
+		-- Mouse input broke focus or something. Just fix it.
+		TheFrontEnd.tracking_mouse = false
+		self.menu:NextPage(0)
+	end
+
 	if not down then
 		--[[
 		if control == MOVE_LEFT then

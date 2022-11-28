@@ -371,11 +371,11 @@ function InsightScrollList:SetItemsData(items)
 	local max_scroll = self.num_items - self.visible_rows - 1
 	self.end_scroll_pos = math.max(max_scroll, 0)
 
-	self:OnUpdate()
+	--self:OnUpdate()
 	self:RefreshView()
 end
 
-local SCROLL_REPEAT_TIME = .05
+local SCROLL_REPEAT_TIME = .2
 local MOUSE_SCROLL_REPEAT_TIME = 0
 
 function InsightScrollList:OnUpdate(dt)
@@ -399,7 +399,7 @@ function InsightScrollList:OnUpdate(dt)
 	end
 
 	-- Thanks Klei!
-	if self.control_scroll_repeat_time ~= nil then
+	if dt and self.control_scroll_repeat_time ~= nil then
 		local controls = TheInput:ControllerAttached() and self.controls.controller or self.controls.normal
         --Scroll repeat
         if not (TheInput:IsControlPressed(controls.scroll_up) or TheInput:IsControlPressed(controls.scroll_down)) then
