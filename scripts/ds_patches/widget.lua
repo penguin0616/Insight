@@ -158,7 +158,11 @@ function patches.ClearHoverText(self)
     end
 end
 
+--[=[
+local old = Widget.OnControl
+
 function patches.OnControl(self, control, down)
+	if down==false then return old(self, control, down) end
 	mprint("oncontrol", self, control, down, "|", self.focus)
 
     if not self.focus then 
@@ -186,6 +190,7 @@ function patches.OnControl(self, control, down)
 
     return false
 end
+
 
 function patches.SetFocusFromChild(self, from_child)
 	--[[

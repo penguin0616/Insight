@@ -44,10 +44,7 @@ local InsightMenuScreen = Class(Screen, function(self)
 	self.menu:SetPosition(0, 0)
 	self.menu:Activate()
 
-	--self.menu:SetFocus()
-
 	GetLocalInsight(localPlayer):MaintainMenu(self.menu)
-	self.default_focus = self.menu
 end)
 
 function InsightMenuScreen:GetHelpText()

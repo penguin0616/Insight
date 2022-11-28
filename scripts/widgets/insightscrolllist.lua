@@ -94,6 +94,17 @@ local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_
 	self:StartUpdating()
 end)
 
+--[[
+function InsightScrollList:OnGainFocus()
+	mprint("InsightScrollList ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ GOT FOCUS")
+end
+
+function InsightScrollList:OnLoseFocus()
+	print(debugstack())
+	mprint("InsightScrollList ---------------------------------------------------------------------------------------------------------------- LOST FOCUS")
+end
+--]]
+
 function InsightScrollList:BuildListItems()
 	self.list_root:KillAllChildren()
 	self.item_widgets = {}

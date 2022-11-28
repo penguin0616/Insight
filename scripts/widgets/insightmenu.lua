@@ -267,6 +267,7 @@ end
 function InsightMenu:SetPage(name)
 	local page = self:GetPage(name)
 	assert(page, "No page exists with that name.")
+	--mprint("Switching page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 	if self.current_page then
 		--self.current_page.tab.bg:SetTexture("images/frontend_redux.xml", "listitem_thick_normal.tex")
@@ -278,7 +279,10 @@ function InsightMenu:SetPage(name)
 	self.current_page = page
 	self.current_page.tab:SetCurrent(true)
 	self.current_page:Show()
+	--mprint("1", self.current_page.focus, self.current_page.list.focus)
 	self.current_page:SetFocus()
+	--mprint("2", self.current_page.focus, self.current_page.list.focus)
+	--mprint("End Switch ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 end
 
 function InsightMenu:ApplyInformation(world_data, player_data)
