@@ -158,6 +158,18 @@ function patches.ClearHoverText(self)
     end
 end
 
+function patches.OnControl(self, control, down)
+--    print("oncontrol", self, control, down, self.focus)
+
+    if not self.focus then return false end
+
+    for k,v in pairs (self.children) do
+		--mprint("oncontrol iter", k, v)
+        if v.focus and v:OnControl(control, down) then return true end
+    end 
+
+    return false
+end
 
 patcher_common.PatchClass(Widget, patches)
 

@@ -9,7 +9,7 @@ local patches = {
 --= Global Patches ===============================================================================================================================================--
 --================================================================================================================================================================--
 
-function patches:OnControl(control, down)
+function patches.OnControl(self, control, down)
     if not self:IsEnabled() or not self.focus then return end
 
 	--if self:IsSelected() and not self.AllowOnControlWhenSelected then return false end
@@ -128,9 +128,9 @@ function patches.InsightOverrideFocuses(self)
 	self.OnLoseFocus = OnLoseFocus
 end
 
-patcher_common.debugging = true
+--patcher_common.debugging = true
 patcher_common.PatchClass(ImageButton, patches)
-patcher_common.debugging = false
+--patcher_common.debugging = false
 
 return {
 	--Patch = Patch
