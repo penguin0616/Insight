@@ -55,8 +55,8 @@ function InsightMenuScreen:GetHelpText()
 
 	-- CONTROL_MENU_MISC_3
 	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), OPEN_MENU) .. " Go Back")
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_LEFT) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_RIGHT) .. " Switch Tabs")
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_UP) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), MOVE_DOWN) .. " Scroll")
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.tab_left) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.tab_right) .. " Switch Tabs")
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.scroll_up) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.scroll_down) .. " Scroll")
 
 	return table.concat(tips, "   ")
 end
@@ -84,6 +84,8 @@ end
 [00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
 [00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
 ]]
+
+-- Clicking might be breaking it.
 
 function InsightMenuScreen:OnControl(control, down)
 	-- Trigered from FrontEnd:OnControl

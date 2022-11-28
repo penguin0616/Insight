@@ -198,17 +198,26 @@ local InsightMenu = Class(Widget,function(self)
 			end
 		end
 	end)
+
+	self.controls = {
+		tab_left = CONTROL_PREVVALUE, -- MOVE_LEFT doesn't seem to work here, but worked in screen previously?
+		tab_right = CONTROL_NEXTVALUE,  -- MOVE_RIGHT ^,
+		scroll_up = CONTROL_INVENTORY_UP, -- MOVE_UP,
+		scroll_down = CONTROL_INVENTORY_DOWN, -- MOVE_DOWN
+	}
 end)
 
 function InsightMenu:OnControl(control, down)
 	mprint("\tInsightMenu OnControl", controlsHelper.Prettify(control), down)
 	
-	if control == CONTROL_PREVVALUE then -- MOVE_LEFT doesn't seem to work here, but worked in screen previously?
-		self:NextPage(-1)
-		return true
-	elseif control == CONTROL_NEXTVALUE then -- MOVE_RIGHT doesn't seem to work here , but worked in screen previously?
-		self:NextPage(1)
-		return true
+	if down then
+		if control == self.controls.tab_left then
+			self:NextPage(-1)
+			return true
+		elseif control == self.controls.tab_right then
+			self:NextPage(1)
+			return true
+		end
 	end
 
 	return self._base.OnControl(self, control, down)
