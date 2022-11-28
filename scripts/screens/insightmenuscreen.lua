@@ -42,7 +42,7 @@ local InsightMenuScreen = Class(Screen, function(self)
 
 	self.menu = self.root:AddChild(InsightMenu())
 	self.menu:SetPosition(0, 0)
-	self.menu:Show()
+	self.menu:Activate()
 
 	--self.menu:SetFocus()
 
@@ -63,26 +63,56 @@ end
 
 -- All is well:
 --[[
-[00:00:20]: [workshop-2081254154 (Insight)]:	Created InsightMenuScreen ============================================================================
-[00:00:20]: [workshop-2081254154 (Insight)]:	About to SetPage
-[00:00:20]: [workshop-2081254154 (Insight)]:	SetPage done
-[00:00:20]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	INSIGHTMENUSCREEN_ROOT	InsightMenu
-[00:00:20]: [workshop-2081254154 (Insight)]:		All Good here.	InsightMenuScreen
-[00:00:20]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	InsightMenuScreen	INSIGHTMENUSCREEN_ROOT
-[00:00:20]: [workshop-2081254154 (Insight)]:		All Good here.	screenroot
-[00:00:20]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	screenroot	InsightMenuScreen
-[00:00:21]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
-[00:00:21]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	self	true	| root	true	| menu	true
-[00:00:21]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	47	true	|	true
-[00:00:21]: [workshop-2081254154 (Insight)]:		running onto:	INSIGHTMENUSCREEN_ROOT
-[00:00:21]: [workshop-2081254154 (Insight)]:	oncontrol	INSIGHTMENUSCREEN_ROOT	47	true	|	true
-[00:00:21]: [workshop-2081254154 (Insight)]:		running onto:	InsightMenu
-[00:00:21]: [workshop-2081254154 (Insight)]:		InsightMenu OnControl	[CONTROL_INVENTORY_LEFT - 47]	true
-[00:00:21]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenu	47	true	|	true
-[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	Image - :
-[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	Image - ../mods/workshop-2081254154/images/dst/scoreboard.xml:scoreboard_frame.tex
-[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
-[00:00:21]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
+[00:01:37]: [workshop-2081254154 (Insight)]:	Created InsightMenuScreen ============================================================================
+[00:01:37]: [workshop-2081254154 (Insight)]:	About to SetPage
+[00:01:37]: [workshop-2081254154 (Insight)]:	SetPage done
+[00:01:37]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	INSIGHTMENUSCREEN_ROOT	CHILD:	InsightMenu
+[00:01:37]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	InsightMenuScreen
+[00:01:37]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	InsightMenuScreen	CHILD:	INSIGHTMENUSCREEN_ROOT
+[00:01:37]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	screenroot
+[00:01:37]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	screenroot	CHILD:	InsightMenuScreen
+[00:01:37]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
+[00:01:37]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_NEXTVALUE - 34]	true	|	self	true	| root	true	| menu	true
+[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	34	true	|	true
+[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	INSIGHTMENUSCREEN_ROOT
+[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	INSIGHTMENUSCREEN_ROOT	34	true	|	true
+[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	InsightMenu
+[00:01:37]: [workshop-2081254154 (Insight)]:		InsightMenu OnControl	[CONTROL_NEXTVALUE - 34]	true
+[00:01:37]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
+[00:01:37]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_INVENTORY_RIGHT - 48]	true	|	self	true	| root	true	| menu	true
+[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	48	true	|	true
+[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	INSIGHTMENUSCREEN_ROOT
+[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	INSIGHTMENUSCREEN_ROOT	48	true	|	true
+[00:01:37]: [workshop-2081254154 (Insight)]:		running onto:	InsightMenu
+[00:01:37]: [workshop-2081254154 (Insight)]:		InsightMenu OnControl	[CONTROL_INVENTORY_RIGHT - 48]	true
+[00:01:37]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenu	48	true	|	true
+[00:01:37]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
+[00:01:37]: [workshop-2081254154 (Insight)]:		skipping:	InsightPage
+[00:01:37]: [workshop-20 81254154 (Insight)]:		skipping:	Image - :
+[00:01:37]: [workshop-2081254154 (Insight)]:		skipping:	Image - ../mods/workshop-2081254154/images/dst/scoreboard.xml:scoreboard_frame.tex
+]]
+
+-- Me doing SetFocus for a page:
+--[[
+[00:02:42]: [workshop-2081254154 (Insight)]:	Created InsightMenuScreen ============================================================================
+[00:02:42]: [workshop-2081254154 (Insight)]:	About to SetPage
+[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	InsightMenu	CHILD:	InsightPage
+[00:02:42]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	nil
+[00:02:42]: [workshop-2081254154 (Insight)]:	SetPage done
+[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	PauseScreen	CHILD:	Image - images/global.xml:square.tex
+[00:02:42]: [workshop-2081254154 (Insight)]:		All Good here. PARENT:	screenroot
+[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	screenroot	CHILD:	PauseScreen
+[00:02:42]: [workshop-2081254154 (Insight)]:	SetFocusFromChild	SELF:	screenroot	CHILD:	InsightMenuScreen
+[00:02:42]: [workshop-2081254154 (Insight)]:		Removing focus from	PauseScreen
+[00:02:43]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
+[00:02:43]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_NEXTVALUE - 34]	true	|	self	true	| root	false	| menu	true
+[00:02:43]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	34	true	|	true
+[00:02:43]: [workshop-2081254154 (Insight)]:		skipping:	INSIGHTMENUSCREEN_ROOT
+[00:02:43]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
+[00:02:43]: [workshop-2081254154 (Insight)]:	InsightMenuScreen	[CONTROL_INVENTORY_RIGHT - 48]	true	|	self	true	| root	false	| menu	true
+[00:02:43]: [workshop-2081254154 (Insight)]:	oncontrol	InsightMenuScreen	48	true	|	true
+[00:02:43]: [workshop-2081254154 (Insight)]:		skipping:	INSIGHTMENUSCREEN_ROOT
+[00:02:43]: [workshop-2081254154 (Insight)]:	------------------------------------------------------------------
 ]]
 
 -- Clicking might be breaking it.

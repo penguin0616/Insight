@@ -197,7 +197,7 @@ function patches.SetFocusFromChild(self, from_child)
 	
 	local yes = true or self.name and self.name:lower():find("insight")
 	if yes then
-		mprint("SetFocusFromChild", self, from_child)
+		mprint("SetFocusFromChild", "SELF:", self, "CHILD:", from_child)
 	end
 
     for k,v in pairs(self.children) do
@@ -208,7 +208,7 @@ function patches.SetFocusFromChild(self, from_child)
     end
 
     if not self.focus then
-		if yes then mprint("\tAll Good here.", self.parent) end
+		if yes then mprint("\tAll Good here. PARENT:", self.parent) end
         self.focus = true
         if self.OnGainFocus then
             self:OnGainFocus()

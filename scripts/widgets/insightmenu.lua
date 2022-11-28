@@ -146,10 +146,6 @@ local InsightMenu = Class(Widget,function(self)
 		table.insert(self.tabs, tab)
 	end
 
-	mprint("About to SetPage")
-	self:SetPage(tabs[1])
-	mprint("SetPage done")
-
 	-- Logic derived from redux/templates -> IconButton and base classes
 	local prefix = "button_carny_square"
 
@@ -200,12 +196,19 @@ local InsightMenu = Class(Widget,function(self)
 	end)
 
 	self.controls = {
-		tab_left = CONTROL_PREVVALUE, -- MOVE_LEFT doesn't seem to work here, but worked in screen previously?
-		tab_right = CONTROL_NEXTVALUE,  -- MOVE_RIGHT ^,
-		scroll_up = CONTROL_INVENTORY_UP, -- MOVE_UP,
-		scroll_down = CONTROL_INVENTORY_DOWN, -- MOVE_DOWN
+		tab_left = CONTROL_PREVVALUE, -- MOVE_LEFT doesn't seem to trigger anymore, but worked in screen previously? What changed??
+		tab_right = CONTROL_NEXTVALUE,  -- MOVE_RIGHT ^
+		scroll_up = CONTROL_INVENTORY_UP, -- MOVE_UP ^
+		scroll_down = CONTROL_INVENTORY_DOWN, -- MOVE_DOWN ^
 	}
+
+	self:Hide() -- SetPage needs to be done in the Activate call so we know it has a parent for focus purposes.
 end)
+
+function InsightMenu:Activate()
+	self:SetPage(tabs[1])
+	self:Show()
+end
 
 function InsightMenu:OnControl(control, down)
 	mprint("\tInsightMenu OnControl", controlsHelper.Prettify(control), down)
@@ -269,13 +272,13 @@ function InsightMenu:SetPage(name)
 		--self.current_page.tab.bg:SetTexture("images/frontend_redux.xml", "listitem_thick_normal.tex")
 		self.current_page.tab:SetCurrent(false)
 		self.current_page:Hide()
-		--self.current_page:ClearFocus()
+		self.current_page:ClearFocus()
 	end
 
 	self.current_page = page
 	self.current_page.tab:SetCurrent(true)
 	self.current_page:Show()
-	--self.current_page:SetFocus()
+	self.current_page:SetFocus()
 end
 
 function InsightMenu:ApplyInformation(world_data, player_data)

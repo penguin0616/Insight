@@ -89,14 +89,14 @@ local InsightPage = Class(Widget, function(self, name)
 	self._name = name
 	self.items = {}
 
-	self.main = self:AddChild(Image(DEBUG_IMAGE()))
-	self.main:SetSize(400, 290)
-	self.main:SetPosition(5, -25)
+	--self.main = self:AddChild(Image(DEBUG_IMAGE()))
+	--self.main:SetSize(400, 290)
+	--self.main:SetPosition(5, -25)
 
 	if IS_DST then
-		self.list = self.main:AddChild(MakeGrid())
+		self.list = self:AddChild(MakeGrid())
 	else
-		self.list = self.main:AddChild(InsightScrollList(
+		self.list = self:AddChild(InsightScrollList(
 			{},
 			item_ctor_fn,
 			apply_fn,
@@ -107,29 +107,32 @@ local InsightPage = Class(Widget, function(self, name)
 		))
 	end
 
+	self.list:SetPosition(-5, -25)
+	self.focus_forward = self.list
 	self:Hide()
 end)
 
 --[[
 function InsightPage:OnGainFocus()
-	mprint(self._name, "page gain focus")
+	mprint(self._name, "page gain focus ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 	self.list:SetFocus()
-	self._base.OnGainFocus(self)
+	--self._base.OnGainFocus(self)
 end
 
 function InsightPage:OnLoseFocus()
-	mprint(self._name, "page lose focus")
+	mprint(self._name, "page lose focus ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 	self.list:ClearFocus()
-	self._base.OnLoseFocus(self)
+	--self._base.OnLoseFocus(self)
 end
 --]]
 
 --[[
 function InsightPage:OnControl(...)
-	mprint("InsightPage:", self.focus, "| list:", self.list.focus)
-	return false
+	mprint("InsightPage OnControl:", self.focus, "| list:", self.list.focus)
+	return self._base.OnControl(self, ...)
 end
 --]]
+
 
 function InsightPage:ScrollDown(...)
 	return self.list:ScrollDown(...)
