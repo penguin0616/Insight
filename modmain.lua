@@ -1694,7 +1694,7 @@ end
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 
-patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"widget", "button", "imagebutton", "text"} }
+patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"frontend", "widget", "button", "imagebutton", "text"} }
 for i,v in pairs(patcher._to_load) do
 	patcher[v] = patcher._common.GetPatcher(v)
 end

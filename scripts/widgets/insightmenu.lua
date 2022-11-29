@@ -195,13 +195,6 @@ local InsightMenu = Class(Widget,function(self)
 		end
 	end)
 
-	self.controls = {
-		tab_left = CONTROL_PREVVALUE, -- MOVE_LEFT doesn't seem to trigger anymore, but worked in screen previously? What changed??
-		tab_right = CONTROL_NEXTVALUE,  -- MOVE_RIGHT ^
-		scroll_up = CONTROL_INVENTORY_UP, -- MOVE_UP ^
-		scroll_down = CONTROL_INVENTORY_DOWN, -- MOVE_DOWN ^
-	}
-
 	self:Hide() -- SetPage needs to be done in the Activate call so we know it has a parent for focus purposes.
 end)
 
@@ -211,27 +204,31 @@ function InsightMenu:Activate()
 end
 
 function InsightMenu:OnControl(control, down)
-	--mprint("\tInsightMenu OnControl", controlsHelper.Prettify(control), down)
+	--mprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
 	
+	local scheme = controlHelper.GetCurrentScheme()
+
 	if down then
-		if control == self.controls.tab_left then
+		if scheme:IsAcceptedControl("previous_value", control) then
 			self:NextPage(-1)
 			return true
-		elseif control == self.controls.tab_right then
+		elseif scheme:IsAcceptedControl("next_value", control)then
 			self:NextPage(1)
 			return true
 		end
 	end
 
 	return self._base.OnControl(self, control, down)
-	--return self:GetCurrentPage():OnControl(control, down)
 end
---[[
-function InsightMenu:OnLoseFocus()
-	print(debugstack())
-	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+function InsightMenu:GetHelpText()
+	local controller_id = TheInput:GetControllerID()
+
+	local tips = {}
+	table.insert(tips, TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.previous_value[1]) .. "/" .. TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.next_value[1]) .. " " .. "Switch Tabs")
+
+	return table.concat(tips, "  ")
 end
---]]
 
 function InsightMenu:Kill(...)
 	self.exit_listener:Remove()

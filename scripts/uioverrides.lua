@@ -91,6 +91,23 @@ do
 	DummyImage = nil
 end
 
+-- Patching ImageButton class here as well.
+do
+	-- I want this available globally. I might change my mind down the road though.
+	--[[
+	widgetLib.imagebutton.OverrideFocuses\(([^)]+)\)
+	$1:InsightOverrideFocuses()
+	]]
+	local ImageButton = require("widgets/imagebutton")
+	function ImageButton.InsightOverrideFocuses(self)
+		if IS_DST then
+			return
+		end
+		self.OnGainFocus = OnGainFocus
+		self.OnLoseFocus = OnLoseFocus
+	end
+end
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Post Constructs =================================================================
@@ -538,7 +555,7 @@ import("uichanges/controls_followtext").Initialize()
 --==========================================================================================================================
 
 local InsightMenuScreen = import("screens/insightmenuscreen")
-TheInput:AddControlHandler(IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU, function(down) -- CONTROL_FOCUS_UP
+TheInput:AddControlHandler(IS_DST and CONTROL_OPEN_CRAFTING or controlHelper.controller_scheme.open_insight_menu[1], function(down) -- CONTROL_FOCUS_UP
 	if down then
 		return
 	end
@@ -553,8 +570,8 @@ TheInput:AddControlHandler(IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBU
 		TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
 		local sc = InsightMenuScreen()
 		TheFrontEnd:PushScreen(sc)
-	elseif screen_name == "InsightMenuScreen" then
-		TheFrontEnd:GetActiveScreen():Close()
+	--elseif screen_name == "InsightMenuScreen" then
+		--TheFrontEnd:GetActiveScreen():Close()
 	else
 		dprint("uioverrides > AddControlHandler:", screen_name)
 	end
@@ -566,7 +583,7 @@ if IS_DS then
 		pauseScreen.GetHelpText = function(self)
 			local str = ""
 			if TheInput:ControllerAttached() then
-				str = TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_DEBUG_MENU) .. " Insight Menu  " -- two spaces looks correct
+				str = TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlHelper.controller_scheme.open_insight_menu[1]) .. " Insight Menu  " -- two spaces looks correct
 			end
 
 			return str .. oldGetHelpText(self)

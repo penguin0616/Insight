@@ -27,7 +27,7 @@ local MOVE_UP = getfenv(1)[string.format("CONTROL_%s_UP", CONTROL_TYPE)]
 local MOVE_DOWN = getfenv(1)[string.format("CONTROL_%s_DOWN", CONTROL_TYPE)]
 local MOVE_LEFT = getfenv(1)[string.format("CONTROL_%s_LEFT", CONTROL_TYPE)]
 local MOVE_RIGHT = getfenv(1)[string.format("CONTROL_%s_RIGHT", CONTROL_TYPE)]
-local OPEN_MENU = IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU
+--local OPEN_MENU = IS_DST and CONTROL_OPEN_CRAFTING or CONTROL_OPEN_DEBUG_MENU
 
 local InsightMenuScreen = Class(Screen, function(self)
 	mprint("Created InsightMenuScreen ============================================================================")
@@ -47,23 +47,15 @@ local InsightMenuScreen = Class(Screen, function(self)
 	GetLocalInsight(localPlayer):MaintainMenu(self.menu)
 end)
 
-function InsightMenuScreen:GetHelpText()
-	local tips = {}
-
-	-- CONTROL_MENU_MISC_3
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), OPEN_MENU) .. " Go Back")
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.tab_left) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.tab_right) .. " Switch Tabs")
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.scroll_up) .. TheInput:GetLocalizedControl(TheInput:GetControllerID(), self.menu.controls.scroll_down) .. " Scroll")
-
-	return table.concat(tips, "   ")
-end
-
 function InsightMenuScreen:OnControl(control, down)
+	-- [MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN] doesn't seem to trigger anymore down the focus chain, but worked here in screen previously? What changed??
+
 	-- Trigered from FrontEnd:OnControl
 	--mprint(string.rep("-", 66))
-	mprint("InsightMenuScreen", controlsHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
+	mprint("InsightMenuScreen", controlHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
 	if self.focus and not self.root.focus then
 		-- Mouse input broke focus or something. Just fix it.
+		dprint("Fixing focus.")
 		TheFrontEnd.tracking_mouse = false
 		self.menu:NextPage(0)
 	end
@@ -78,13 +70,13 @@ function InsightMenuScreen:OnControl(control, down)
 			return true
 		end
 		--]]
-		if control == CONTROL_PAUSE or control == CONTROL_CANCEL then
+		if controlHelper.controller_scheme:IsAcceptedControl("exit", control) then
 			self:Close()
 			return true
 		end
 	end
 
-	--mprint("Delegating", controlsHelper.Prettify(control), down)
+	--mprint("Delegating", controlHelper.Prettify(control), down)
 	return self._base.OnControl(self, control, down)
 	--[[
 	if control == MOVE_UP then
@@ -99,6 +91,15 @@ end
 
 function InsightMenuScreen:Close()
 	TheFrontEnd:PopScreen(self) -- safety?
+end
+
+function InsightMenuScreen:GetHelpText()
+	local tips = {}
+
+	-- CONTROL_MENU_MISC_3
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlHelper.controller_scheme.exit[1]) .. " Go Back") -- OPEN_MENU
+
+	return table.concat(tips, "   ")
 end
 
 return InsightMenuScreen

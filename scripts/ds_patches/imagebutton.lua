@@ -114,19 +114,6 @@ local function OnLoseFocus(self)
     end
 end
 
--- I want this available globally. I might change my mind down the road though.
---[[
-widgetLib.imagebutton.OverrideFocuses\(([^)]+)\)
-$1:InsightOverrideFocuses()
-]]
-function patches.InsightOverrideFocuses(self)
-    if IS_DST then
-        return
-    end
-	self.OnGainFocus = OnGainFocus
-	self.OnLoseFocus = OnLoseFocus
-end
-
 --patcher_common.debugging = true
 patcher_common.PatchClass(ImageButton, patches)
 --patcher_common.debugging = false

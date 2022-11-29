@@ -158,6 +158,18 @@ function patches.ClearHoverText(self)
     end
 end
 
+function patches.GetFocusChild(self)
+    if self.focus then
+        for k,v in pairs(self.children) do
+            if v.focus then
+                return v
+            end
+        end
+    end
+    return nil
+end
+
+
 --[=[
 local old = Widget.OnControl
 

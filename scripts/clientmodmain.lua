@@ -31,7 +31,7 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Variables =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-controlsHelper = import("helpers/controls")
+controlHelper = import("helpers/control")
 localPlayer = nil
 currentlySelectedItem = nil
 shard_players = {}
