@@ -294,19 +294,15 @@ local function OnHovererPostInit(hoverer)
 			textPadding = string.rep("\n ", total_lines)
 			hoverer.insightText:SetPosition(0, hoverer.insightText.font_size / 4)
 		else
-			textPadding = string.rep("\n ", total_lines)
-			hoverer.insightText:SetPosition(0, hoverer.insightText.font_size / 4)
-
-			-- This probably will need revision
-			--[[
-			textPadding = string.rep("\n ", hoverer.insightText.line_count)
-			hovertext_lines = hovertext_lines - 1
-			if hovertext_lines < 0 then
-				--r = 0 -- i commented this and that made the stars align
+			-- No tooltip pos or FE
+			local font_offset = hoverer.insightText.font_size / 4
+			if hovertext_lines > 1 then
+				total_lines = total_lines - (hovertext_lines - 1)
+				font_offset = -font_offset
 			end
-
-			hoverer.insightText:SetPosition(0, -7.5 + (-15 * hovertext_lines) + dataHeight / 2) -- dataHeight used to be the height of the insight text
-			--]]
+			
+			textPadding = string.rep("\n ", total_lines)
+			hoverer.insightText:SetPosition(0, font_offset)
 		end
 
 		-- Trigger a position update.
@@ -348,7 +344,7 @@ local function OnHovererPostInit(hoverer)
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
 		if hoverer.insightText.raw_text == nil then
-			self:SetPosition(0, -30) -- Default position
+			self:SetPosition(0, -hoverer.insightText.font_size) -- Default position
 		else
 			self:SetPosition(0, -offset)
 		end
