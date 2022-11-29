@@ -42,7 +42,7 @@ local InsightMenuScreen = Class(Screen, function(self)
 
 	self.menu = self.root:AddChild(InsightMenu())
 	self.menu:SetPosition(0, 0)
-	self.menu:Activate()
+	self.menu:ActivateFromScreen()
 
 	GetLocalInsight(localPlayer):MaintainMenu(self.menu)
 end)

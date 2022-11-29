@@ -60,9 +60,9 @@ function patches.OnUpdate(self, dt)
 	end
 end
 
-patcher_common.PatchClass(Button, patches)
 --local Patch = patcher_common.CreateInstancePatcher(patches)
 
 return {
-	--Patch = Patch
+	patches = patches,
+	Init = function() patcher_common.PatchClass(Button, patches) end
 }

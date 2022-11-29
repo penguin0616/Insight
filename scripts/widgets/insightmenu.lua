@@ -185,53 +185,39 @@ local InsightMenu = Class(Widget,function(self)
 	self.items = {}
 	--]]
 
+	--[[
 	self.exit_listener = TheInput:AddControlHandler(CONTROL_PAUSE, function(digital, analog) 
 		-- Down is whether the key is down or not.
-		local scr = TheFrontEnd.screenstack[#TheFrontEnd.screenstack]
-		if scr.name == "HUD" then
-			if self.shown then
-				self:Hide()
+		if not digital then
+			local scr = TheFrontEnd.screenstack[#TheFrontEnd.screenstack]
+			if scr.name == "HUD" then
+				if self.shown then
+					self:Hide()
+				end
 			end
 		end
 	end)
+	--]]
 
+	self.from_screen = false
 	self:Hide() -- SetPage needs to be done in the Activate call so we know it has a parent for focus purposes.
 end)
 
 function InsightMenu:Activate()
 	self:SetPage(tabs[1])
+end
+
+function InsightMenu:ActivateFromScreen()
+	self.from_screen = true
+	self:SetPage(tabs[1])
 	self:Show()
 end
 
-function InsightMenu:OnControl(control, down)
-	--mprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
-	
-	local scheme = controlHelper.GetCurrentScheme()
-
-	if down then
-		if scheme:IsAcceptedControl("previous_value", control) then
-			self:NextPage(-1)
-			return true
-		elseif scheme:IsAcceptedControl("next_value", control)then
-			self:NextPage(1)
-			return true
-		end
+function InsightMenu:Kill(...)
+	if self.exit_listener then
+		self.exit_listener:Remove()
 	end
 
-	return self._base.OnControl(self, control, down)
-end
-
-function InsightMenu:GetHelpText()
-	local controller_id = TheInput:GetControllerID()
-
-	local tips = {}
-	table.insert(tips, TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.previous_value[1]) .. "/" .. TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.next_value[1]) .. " " .. "Switch Tabs")
-
-	return table.concat(tips, "  ")
-end
-
-function InsightMenu:Kill(...)
-	self.exit_listener:Remove()
 	return self._base.Kill(self, ...)
 end
 
@@ -276,10 +262,41 @@ function InsightMenu:SetPage(name)
 	self.current_page.tab:SetCurrent(true)
 	self.current_page:Show()
 	--mprint("1", self.current_page.focus, self.current_page.list.focus)
-	self.current_page:SetFocus()
+	if self.from_screen then 
+		self.current_page:SetFocus()
+	end
 	--mprint("2", self.current_page.focus, self.current_page.list.focus)
 	--mprint("End Switch ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 end
+
+function InsightMenu:OnControl(control, down)
+	mprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
+	
+	local scheme = controlHelper.GetCurrentScheme()
+
+	if down then
+		if scheme:IsAcceptedControl("previous_value", control) then
+			self:NextPage(-1)
+			return true
+		elseif scheme:IsAcceptedControl("next_value", control)then
+			self:NextPage(1)
+			return true
+		end
+	end
+
+	return self._base.OnControl(self, control, down)
+end
+
+function InsightMenu:GetHelpText()
+	local controller_id = TheInput:GetControllerID()
+
+	local tips = {}
+	table.insert(tips, TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.previous_value[1]) .. "/" .. TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.next_value[1]) .. " " .. "Switch Tabs")
+
+	return table.concat(tips, "  ")
+end
+
+
 
 function InsightMenu:ApplyInformation(world_data, player_data)
 	local world_page = self:GetPage("world")

@@ -205,29 +205,25 @@ local public = {
 
 -- I try to add controls in terms of best to least. The first control is the prioritized one for tips and stuff.
 if IS_DST then
-	--[[
-	lib.mk_scheme = lib.MakeScheme("mouse_keyboard", {
-		scroll_up = {CONTROL_SCROLLBACK},
-		scroll_down = {CONTROL_SCROLLFWD},
-	})
 
 	lib.controller_scheme = lib.MakeScheme("controller", {
-		exit = {CONTROL_OPEN_DEBUG_MENU, CONTROL_CANCEL},
-		open_insight_menu = {CONTROL_OPEN_DEBUG_MENU},
-		scroll_up = {CONTROL_PAGELEFT, CONTROL_INVENTORY_UP},
-		scroll_down = {CONTROL_PAGERIGHT, CONTROL_INVENTORY_DOWN},
-		previous_value = {CONTROL_PREVVALUE, CONTROL_FOCUS_LEFT},
-		next_value = {CONTROL_NEXTVALUE, CONTROL_FOCUS_RIGHT},
+		exit = {CONTROL_OPEN_CRAFTING, CONTROL_CANCEL},
+		open_insight_menu = {CONTROL_OPEN_CRAFTING},
 	})
-	--]]
 else
 	lib.mk_scheme = lib.MakeScheme("mouse_keyboard", {
-		scroll_up = {CONTROL_SCROLLBACK},
-		scroll_down = {CONTROL_SCROLLFWD},
+		exit = {CONTROL_PAUSE},
+		--open_insight_menu
+
+		scroll_up = {CONTROL_SCROLLBACK, CONTROL_FOCUS_UP},
+		scroll_down = {CONTROL_SCROLLFWD, CONTROL_FOCUS_DOWN},
+		previous_value = {CONTROL_FOCUS_LEFT}, -- CONTROL_MOVE_LEFT?
+		next_value = {CONTROL_FOCUS_RIGHT}, -- CONTROL_MOVE_RIGHT?
 	})
 	lib.controller_scheme = lib.MakeScheme("controller", {
 		exit = {CONTROL_OPEN_DEBUG_MENU, CONTROL_CANCEL}, -- CONTROL_PAUSE?
 		open_insight_menu = {CONTROL_OPEN_DEBUG_MENU},
+
 		scroll_up = {CONTROL_PAGELEFT, CONTROL_INVENTORY_UP}, -- CONTROL_MOVE_UP?
 		scroll_down = {CONTROL_PAGERIGHT, CONTROL_INVENTORY_DOWN}, -- CONTROL_MOVE_DOWN?
 		previous_value = {CONTROL_PREVVALUE, CONTROL_FOCUS_LEFT}, -- CONTROL_MOVE_LEFT?

@@ -238,6 +238,7 @@ function patches.SetFocusFromChild(self, from_child)
 end
 --]=]
 
-patcher_common.PatchClass(Widget, patches)
-
-return {}
+return {
+	patches = patches,
+	Init = function() patcher_common.PatchClass(Widget, patches) end,
+}

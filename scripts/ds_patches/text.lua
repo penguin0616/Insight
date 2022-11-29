@@ -38,6 +38,7 @@ function patches.GetSize(self)
     return self.size or self.inst.TextWidget:GetSize()
 end
 
-patcher_common.PatchClass(Text, patches)
-
-return {}
+return {
+	patches = patches,
+	Init = function() patcher_common.PatchClass(Text, patches) end,
+}

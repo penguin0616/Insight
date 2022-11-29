@@ -133,11 +133,6 @@ local Insight = {
 		MOB_SPAWN = "#ee6666",
 	},
 
-	CONTROLS = {
-		-- CONTROL_MENU_MISC_3 = L
-		TOGGLE_INSIGHT_MENU = CONTROL_OPEN_CRAFTING, -- L2
-	},
-
 	ENTITY_INFORMATION_FLAGS = {
 		RAW = 1,
 		FROM_INSPECTION = 2,
@@ -1697,6 +1692,9 @@ SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"frontend", "widget", "button", "imagebutton", "text"} }
 for i,v in pairs(patcher._to_load) do
 	patcher[v] = patcher._common.GetPatcher(v)
+	if patcher[v].Init then
+		patcher[v].Init()
+	end
 end
 
 -- Check settings

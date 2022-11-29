@@ -54,6 +54,7 @@ client_only_mod = false
 all_clients_require_mod = true
 forge_compatible = true
 server_filter_tags = {"insight_" .. version}
+forcemanifest = false
 
 --[[
 	removing label from options

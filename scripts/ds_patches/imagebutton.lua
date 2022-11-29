@@ -77,47 +77,8 @@ end
 --= Instance Patches =============================================================================================================================================--
 --================================================================================================================================================================--
 
---------------------------------------------------------------------------
---[[ Focus Functions ]]
---------------------------------------------------------------------------
-local function OnGainFocus(self)
-	ImageButton._base.OnGainFocus(self)
-
-	if self.hover_overlay then
-        self.hover_overlay:Show()
-	end
-
-	if self:IsEnabled() then
-        --imageLib.SetTexture(self.image, self.atlas, self.image_focus)
-		self.image:SetTexture(self.atlas, self.image_focus)
-
-        if self.size_x and self.size_y then 
-            self.image:ScaleToSize(self.size_x, self.size_y)
-        end
-    end
-end
-
-local function OnLoseFocus(self)
-	ImageButton._base.OnLoseFocus(self)
-
-	if self.hover_overlay then
-    	self.hover_overlay:Hide()
-	end
-
-	if self:IsEnabled() then
-        --imageLib.SetTexture(self.image, self.atlas, self.image_normal)
-		self.image:SetTexture(self.atlas, self.image_normal)
-
-        if self.size_x and self.size_y then 
-            self.image:ScaleToSize(self.size_x, self.size_y)
-        end
-    end
-end
-
---patcher_common.debugging = true
-patcher_common.PatchClass(ImageButton, patches)
---patcher_common.debugging = false
 
 return {
-	--Patch = Patch
+	patches = patches,
+	Init = function() patcher_common.PatchClass(ImageButton, patches) end,
 }

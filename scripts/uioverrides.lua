@@ -93,12 +93,49 @@ end
 
 -- Patching ImageButton class here as well.
 do
+	local ImageButton = require("widgets/imagebutton")
+	--------------------------------------------------------------------------
+	--[[ Focus Functions ]]
+	--------------------------------------------------------------------------
+	local function OnGainFocus(self)
+		ImageButton._base.OnGainFocus(self)
+
+		if self.hover_overlay then
+			self.hover_overlay:Show()
+		end
+
+		if self:IsEnabled() then
+			--imageLib.SetTexture(self.image, self.atlas, self.image_focus)
+			self.image:SetTexture(self.atlas, self.image_focus)
+
+			if self.size_x and self.size_y then 
+				self.image:ScaleToSize(self.size_x, self.size_y)
+			end
+		end
+	end
+
+	local function OnLoseFocus(self)
+		ImageButton._base.OnLoseFocus(self)
+
+		if self.hover_overlay then
+			self.hover_overlay:Hide()
+		end
+
+		if self:IsEnabled() then
+			--imageLib.SetTexture(self.image, self.atlas, self.image_normal)
+			self.image:SetTexture(self.atlas, self.image_normal)
+
+			if self.size_x and self.size_y then 
+				self.image:ScaleToSize(self.size_x, self.size_y)
+			end
+		end
+	end
+
 	-- I want this available globally. I might change my mind down the road though.
 	--[[
 	widgetLib.imagebutton.OverrideFocuses\(([^)]+)\)
 	$1:InsightOverrideFocuses()
 	]]
-	local ImageButton = require("widgets/imagebutton")
 	function ImageButton.InsightOverrideFocuses(self)
 		if IS_DST then
 			return
@@ -140,11 +177,10 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	local InsightButton = import("widgets/insightbutton")
 	local InsightMenu = import("widgets/insightmenu")
 
-	local menu = InsightMenu()
-	menu:SetPosition(0, -400)
-	menu:Hide()
-	
-	controls.insight_menu = controls.top_root:AddChild(menu)
+	controls.insight_menu = controls.top_root:AddChild(InsightMenu())
+	controls.insight_menu:SetPosition(0, -400)
+	controls.insight_menu:Hide()
+	controls.insight_menu:Activate()
 
 	local mb = InsightButton()
 	function mb:ResetPosition()
@@ -179,10 +215,10 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	controls.insight_menu_toggle = controls.bottomright_root:AddChild(mb)
 
 	mb:SetOnClick(function()
-		if menu.shown then
-			menu:Hide()
+		if controls.insight_menu.shown then
+			controls.insight_menu:Hide()
 		else
-			menu:Show()
+			controls.insight_menu:Show()
 		end
 	end)
 
@@ -192,7 +228,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			mb:Kill()
 			return
 		end
-		insight:MaintainMenu(menu)
+		insight:MaintainMenu(controls.insight_menu)
 	end)
 
 	--[[
@@ -555,7 +591,7 @@ import("uichanges/controls_followtext").Initialize()
 --==========================================================================================================================
 
 local InsightMenuScreen = import("screens/insightmenuscreen")
-TheInput:AddControlHandler(IS_DST and CONTROL_OPEN_CRAFTING or controlHelper.controller_scheme.open_insight_menu[1], function(down) -- CONTROL_FOCUS_UP
+TheInput:AddControlHandler(controlHelper.controller_scheme.open_insight_menu[1], function(down) -- CONTROL_FOCUS_UP
 	if down then
 		return
 	end

@@ -68,6 +68,7 @@ function patches.GetHelpText(self)
 	return table.concat(t, "  ")
 end
 
-patcher_common.PatchClass(FrontEnd, patches)
-
-return {}
+return {
+	patches = patches,
+	Init = function() patcher_common.PatchClass(FrontEnd, patches) end,
+}
