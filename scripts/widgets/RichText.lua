@@ -111,7 +111,7 @@ function InterpretReaderChunk(chunk, richtext) -- text, color
 			end
 			obj = Image()
 			obj:RealSetTexture(atlas, tex)
-			obj:SetSize(richtext.font_size - 2, richtext.font_size - 2) -- 30, 30 a bit too large
+			obj:SetSize(richtext.size - 2, richtext.size - 2) -- 30, 30 a bit too large
 			obj:SetTint(unpack(color))
 			--obj:SetTint(unpack(Color.fromHex("#")))
 		else
@@ -119,7 +119,7 @@ function InterpretReaderChunk(chunk, richtext) -- text, color
 		end
 	else
 		-- text
-		local size = richtext.font_size
+		local size = richtext.size
 		local modifiers = {}
 		if chunk:HasTag("sub") then -- this takes priority.
 			-- subscript
@@ -178,7 +178,7 @@ local RichText = Class(Widget, function(self, font, size, text, colour)
 	self.lines = {}
 
 	self.font = UIFONT
-	self.font_size = 30
+	self.size = 30
 	self.raw_text = nil
 	self.line_count = 0
 	self.default_colour = "#ffffff"
@@ -244,11 +244,11 @@ end
 function RichText:SetSize(num)
 	assert(type(num) == "number", "RichText:SetSize expected arg #1 to be number")
 	
-	if self.font_size == num then
+	if self.size == num then
 		return
 	end
 
-	self.font_size = num
+	self.size = num
 	self:SetString(self:GetString(), true)
 end
 
@@ -554,8 +554,8 @@ function RichText:NewLine(pieces)
 		10. never been good at uis.
 	]]
 
-	local base_y_pos = -self.font_size * (#self.lines - 1) -- -1 makes sense to me, but -2 fixes the extra newline..?
-	local new_y_pos = base_y_pos + (self.font_size/2 * (self.line_count-1))  
+	local base_y_pos = -self.size * (#self.lines - 1) -- -1 makes sense to me, but -2 fixes the extra newline..?
+	local new_y_pos = base_y_pos + (self.size/2 * (self.line_count-1))  
 
 	container:SetPosition(
 		--cc:GetPosition().x / 2, 
@@ -582,7 +582,7 @@ function RichText:NewLine(pieces)
 	-- size me up
 	--container:SetSize(width, 30)
 	container.width = wax --math.abs(width) * 2
-	container.height = self.font_size 
+	container.height = self.size 
 
 	return container
 end

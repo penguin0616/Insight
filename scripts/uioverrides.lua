@@ -565,10 +565,10 @@ AddClassPostConstruct("widgets/inventorybar", function(inventoryBar)
 		end
 		
 		-- This compensates for how vertical align is centered.
-		local vertical_align_compensation = (description_lines - 1) * (inventoryBar.insightText.font_size / 2)
+		local vertical_align_compensation = (description_lines - 1) * (inventoryBar.insightText.size / 2)
 		
 		-- 5 pixels for padding against the UI frame.
-		inventoryBar.insightText:SetPosition(0, vertical_align_compensation + 5 + inventoryBar.insightText.font_size / 4)
+		inventoryBar.insightText:SetPosition(0, vertical_align_compensation + 5 + inventoryBar.insightText.size / 4)
 
 		-- the " " forces it to constantly refresh, widgets/inventorybar:879
 		oldActionStringBody_SetString(self, text .. " " .. textPadding)

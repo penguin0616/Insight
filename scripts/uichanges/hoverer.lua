@@ -28,7 +28,20 @@ AddLocalPlayerPostInit(function(_, context)
 end)
 
 local HOVERER_TEXT_SIZE = 30
-local TEXT_SIZE = 30
+local INSIGHT_TEXT_SIZE = 22
+rawset(_G, "choice", 30)
+
+
+rawset(_G, "sz", function(x) INSIGHT_TEXT_SIZE = x end)
+rawset(_G, "sz2", function(x) HOVERER_TEXT_SIZE = x end)
+rawset(_G, "both", function(x) sz(x) sz2(x) end)
+rawset(_G, "hov", function(x) hoverer.default_text_pos.y = x end)
+
+STRINGS.NAMES.SPIDER = "SPI\nDER" 
+STRINGS.NAMES.CANE = "Cane" .. string.rep(string.format("\n%s: Equip", string.char(238, 132, 129)), 4)
+-- inspectable spider (needed a total of 6 lines to match beefalo) alt_description = "a\nb\nc\nd\ne\nf"
+-- finiteuses alt_description = table.concat(actions_verbose, ", ") .. string.rep("\n", 6) .. "morsey"
+
 local GetMouseTargetItem = GetMouseTargetItem
 local RequestEntityInformation = RequestEntityInformation
 local TheSim = TheSim
@@ -53,8 +66,12 @@ local function OnHovererPostInit(hoverer)
 	local oldHide = hoverer.text.Hide
 	local oldHide2 = hoverer.secondarytext.Hide
 
+	rawset(_G, "hoverer", hoverer)
+
 	--local altOnlyIsVerbose
-	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, TEXT_SIZE))
+	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, INSIGHT_TEXT_SIZE))
+	hoverer.text:SetSize(HOVERER_TEXT_SIZE)
+	hoverer.secondarytext:SetSize(HOVERER_TEXT_SIZE)
 
 	-- so, there's an issue where once you examine something, YOFFSETUP and YOFFSETDOWN are changed to compensate for that secondary text, but are never changed back
 	-- so whereas normally hover text is unable to follow below a certain height because of math.min, the new YOFFSETUP means it is free to roam wherever vertically
@@ -143,7 +160,7 @@ local function OnHovererPostInit(hoverer)
 			]]
 
 			-- Based on the above observation, this formula made sense to use.
-			local corrective_padding = (self.insightText.line_count - 2) * -(self.insightText.font_size / 2)
+			local corrective_padding = (self.insightText.line_count - 2) * -(self.text.size / 2)
 			-- However, alone it's not enough. It's still a little off. That's where we need the scaling.
 			local y_min = base_padding + (corrective_padding * scale.y)
 
@@ -167,6 +184,15 @@ local function OnHovererPostInit(hoverer)
 	end
 	
 	function hoverer.OnUpdate(self, ...)
+		if self.insightText.size ~= INSIGHT_TEXT_SIZE then
+			self.insightText:SetSize(INSIGHT_TEXT_SIZE)
+		end
+
+		if self.text.size ~= HOVERER_TEXT_SIZE then
+			self.text:SetSize(HOVERER_TEXT_SIZE)
+			self.secondarytext:SetSize(HOVERER_TEXT_SIZE)
+		end
+
 		if not self.text.shown then
 			self.insightText:SetString(nil) -- this ends up causing some delay for text positioning?
 		end
@@ -284,18 +310,72 @@ local function OnHovererPostInit(hoverer)
 		hoverer.insightText:SetString(itemDescription) -- Trimming newlines handled here
 		
 		-- size info
-		local hovertext_lines = select(2, text:gsub("\n", "\n"))
+		local font_size_diff = HOVERER_TEXT_SIZE - INSIGHT_TEXT_SIZE
+		local font_size_diff_ratio = INSIGHT_TEXT_SIZE / HOVERER_TEXT_SIZE 
+
+		local hovertext_lines = select(2, text:gsub("\n", "\n")) -- Line count is shortened by 1.
 		local description_lines = hoverer.insightText.line_count
 		local total_lines = hovertext_lines + description_lines - 1
+		local total_lines_scaled = math.ceil(total_lines * font_size_diff_ratio) -- Has to be ceil, so we at least have some room on a oneline description for something in the inventory.
+		
+		local diff = total_lines - total_lines_scaled
+
+		local adjusted_total = total_lines
+		--local adjusted_offset = 0
 
 		local textPadding
 
+		local min = (1 - hovertext_lines)
+		if diff > min then
+			adjusted_total = adjusted_total - (diff - math.abs(min))
+			--adjusted_offset = (total_lines - total_lines_scaled - 1) * hoverer.insightText.size
+		end
+
+		--mprint("totals:", total_lines, total_lines_scaled, "| diff & min:", diff, min, "| adjusted:", adjusted_total)
+		--mprint(total_lines - total_lines_scaled, "|", adjusted_offset)
+
+		--local top_pos = hoverer.default_text_pos.y-- - ((hovertext_lines+1) * self.size/2)
+		
 		if IS_DST then
+			-- <place> <Item> (<#top_hoverlines>/<#insight_lines> line) = <choice_with_size_factor> | <choice_with_just_default> 
+
+			-- Floor Nightmarefuel (1/1 line) = 11 | 30
+			-- Inv Nightmarefuel (2/1 line) = 0 | 30
+
+			-- Floor Poop = (1/2 line) = 11 | 26
+			-- Inv Poop = (2/2 line) = 0 | 26
+
+			-- Floor Tam = (1/3 line) = 3 | 22
+			-- Inv Tam = (2/3 line) = -8 or -11 | 22
+
+			-- Floor Magis = (1/4 line) = ? | 18
+			-- Inv Magis = (2/4 line) = ? | 18
+			
+			local top_pos = hoverer.default_text_pos.y
+			local pos = top_pos - self.size + (description_lines-1) * (font_size_diff/2)
+			--local pos = top_pos - rawget(_G, "choice")
+
+			mprint(pos)
+			if hovertext_lines > 0 then
+				--pos = hoverer.default_text_pos.y - hoverer.insightText.size
+			else
+				--pos = hoverer.default_text_pos.y
+			end
+
+			-- Pos can't be adjusted any further.
+			-- pos = pos + adjusted_offset
+
 			textPadding = string.rep("\n ", total_lines)
-			hoverer.insightText:SetPosition(0, hoverer.insightText.font_size / 4)
+			--mprint("\t", ((hovertext_lines-1) * font_size_diff))
+			-- Changing the text position of the vanilla object is bad, since it causes jittering.
+			-- Turns out the (30/4 == 7.5) was never exact. It's pretty damn close though. It's just barely short.
+			-- I'm thinking that might have something to do with RichText using the full font size for each line, instead of just the region height. Oh well!
+			-- About 40 minutes later: Nope. It's because of the default_text_pos (40). At both text sizes 30, 10 is what you need for perfect alignment. 7.5 was almost there, but not quite.
+			hoverer.insightText:SetPosition(0, pos)
+		
 		else
 			-- No tooltip pos or FE
-			local font_offset = hoverer.insightText.font_size / 4
+			local font_offset = hoverer.insightText.size / 4
 			if hovertext_lines > 1 then
 				total_lines = total_lines - (hovertext_lines - 1)
 				font_offset = -font_offset
@@ -312,7 +392,18 @@ local function OnHovererPostInit(hoverer)
         	hoverer:UpdatePosition(pos.x, pos.y)
 		end
 
-		return oldSetString(self, text .. textPadding)
+		oldSetString(self, text .. textPadding)
+
+		--[[
+		local a = self:GetPosition()
+		local b = hoverer.insightText:GetPosition()
+		print(a.y - b.y)
+		Testing with size 15:
+		This yielded 40. Setting the Y position to 40 oddly made any size work properly, except that the last line of the hover and 1-2 lines of insight merged.
+		This is apparently the default height of the text object.
+		--]]
+
+		--return oldSetString(self, text .. textPadding)
 	end
 
 	hoverer.secondarytext.SetString = function(self, text)
@@ -339,15 +430,27 @@ local function OnHovererPostInit(hoverer)
 			
 		]]
 
-		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.font_size
-		offset = offset + hoverer.insightText.font_size / 4
+		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.size
+		offset = offset + hoverer.insightText.size / 4 - (HOVERER_TEXT_SIZE - INSIGHT_TEXT_SIZE)
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
 		if hoverer.insightText.raw_text == nil then
-			self:SetPosition(0, -hoverer.insightText.font_size) -- Default position
+			self:SetPosition(0, -hoverer.text.size) -- Default position
 		else
 			self:SetPosition(0, -offset)
 		end
+
+		--[[
+		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.size
+		offset = offset + hoverer.insightText.size / 4
+
+		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
+		if hoverer.insightText.raw_text == nil then
+			self:SetPosition(0, -hoverer.insightText.size) -- Default position
+		else
+			self:SetPosition(0, -offset)
+		end
+		--]]
 
 		return oldSetString(self, text)
 	end

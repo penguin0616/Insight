@@ -725,7 +725,7 @@ local function GetComponentDescriptor(name)
 				print("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
 
 				mprint("==================== HEX DUMP =======================")
-				local file_fn = import._init_cache["descriptors/" .. name]
+				local file_fn = import._init_cache[import.ResolvePath("descriptors/" .. name)]
 				assert(file_fn, "Missing file FN")
 				mprint("\n" .. hex_dump(file_fn))
 			end)
@@ -936,6 +936,23 @@ local function GetEntityInformation(entity, player, params)
 
 	local num_chunks = #chunks
 
+	local aa = 1
+	local bb = 1
+
+	local GREEN = Color.fromHex("#00cc00")
+	local RED = Color.fromHex("#dd5555")
+	local clrs = {}
+	for rr = 1, 6 do
+		clrs[rr] = GREEN:Lerp(RED, (rr-1)/6)
+	end
+	clrs[#clrs+1] = RED
+
+	local function eq(num)
+		local act = entity.components.health and "Examine" or "Equip"
+		--return nil
+		return string.format(ApplyColour("%s: " .. act, clrs[num] or "#ffffff"), TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY))
+	end
+
 	for i = 1, num_chunks do
 	--for i,v in pairs(chunks) do
 		local v = chunks[i]
@@ -945,7 +962,7 @@ local function GetEntityInformation(entity, player, params)
 
 		-- Collect the description if one was provided.
 		if v.description then -- type(v.description) == "string"
-			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
+			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq(aa) or v.description)
 
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
@@ -955,22 +972,25 @@ local function GetEntityInformation(entity, player, params)
 			if params.RAW == true then
 				assembled.raw_information[v.name] = v.description
 			end
+			if aa then aa=aa+1 end
 		end
 
 		-- Collect the alternate description if one was provided.
 		if v.alt_description then -- type(v.alt_description) == "string"
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.alt_description
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq(bb) or v.alt_description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
-
+			if bb then bb=bb+1 end
 		elseif v.alt_description == nil and v.description ~= nil then
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description
+			-- We don't want to remove a normal description if an alt wasn't provided.
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq(bb) or v.description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
+			if bb then bb=bb+1 end
 		end
 	end
 

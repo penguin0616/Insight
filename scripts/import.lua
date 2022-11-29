@@ -35,7 +35,7 @@ local init_cache = {} -- This holds the functions that execute their files.
 
 --local import_cache = package.loaded -- require's cache
 
-local function MakePathReal(path)
+local function ResolvePath(path)
 	return MODROOT .. "scripts/" .. path .. ".lua"
 end
 
@@ -44,7 +44,7 @@ end
 -- @treturn function
 local function import(path)
 	--path = "../mods/" .. modname .. "/" ..  path
-	path = MakePathReal(path)
+	path = ResolvePath(path)
 
 	-- as to behave like require
 	if (import_cache[path]) then
@@ -74,7 +74,7 @@ local function import(path)
 end
 
 local function clear_import(path)
-	real_path = MakePathReal(path)
+	real_path = ResolvePath(path)
 
 	if import_cache[real_path] then
 		import_cache[real_path] = nil
@@ -87,7 +87,8 @@ local proxy = newproxy(true)
 local mt = getmetatable(proxy)
 mt.__index = { 
 	clear = clear_import,
-	_init_cache = init_cache
+	_init_cache = init_cache,
+	ResolvePath = ResolvePath,
 }
 
 mt.__call = function(self, ...)
