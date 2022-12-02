@@ -26,16 +26,22 @@ local patches = {
 }
 
 
-function patches.SetSize(self, sz)
-	if LOC then
-		sz = sz * LOC.GetTextScale()
-	end
-    self.inst.TextWidget:SetSize(sz)
-    self.size = sz
+local old_ctor = Text._ctor
+function patches._ctor(self, font, size, text)
+	old_ctor(self, font, size, text)
+	self:SetSize(size)
 end
 
+-- And with the ctor patch, this is mostly no longer needed too!
+-- But I'm keeping it here for cases where a Text got initialized before the patch.
+-- Unless I decide to add something that'll patch already-instantiated classes, but that seems like an even bigger bucket of worms.
+-- Overall, very nice :)
 function patches.GetSize(self)
-    return self.size or self.inst.TextWidget:GetSize()
+	if not self.size then
+		self.size = self.inst.TextWidget:GetSize()
+	end
+
+	return self.size
 end
 
 return {

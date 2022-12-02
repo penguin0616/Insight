@@ -27,7 +27,7 @@ AddLocalPlayerPostInit(function(_, context)
 	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
 end)
 
---
+--[[
 local HOVERER_TEXT_SIZE = 30
 local INSIGHT_TEXT_SIZE = 22
 rawset(_G, "choice", 0)
@@ -41,6 +41,8 @@ rawset(_G, "hov", function(x) hoverer.default_text_pos.y = x end)
 
 STRINGS.NAMES.SPIDER = "SPI\nDER" 
 STRINGS.NAMES.CANE = "Cane" .. string.rep(string.format("\n%s: Equip", string.char(238, 132, 129)), 4)
+--]]
+
 --
 -- inspectable spider (needed a total of 6 lines to match beefalo) 		alt_description = "a\nb\nc\nd\ne\nf"
 -- finiteuses		 alt_description = table.concat(actions_verbose, ", ") .. string.rep("\n", 6) .. "morsey"
@@ -70,12 +72,12 @@ local function OnHovererPostInit(hoverer)
 	local oldHide = hoverer.text.Hide
 	local oldHide2 = hoverer.secondarytext.Hide
 
-	rawset(_G, "hoverer", hoverer)
+	--rawset(_G, "hoverer", hoverer)
 
 	--local altOnlyIsVerbose
-	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, INSIGHT_TEXT_SIZE))
-	hoverer.text:SetSize(HOVERER_TEXT_SIZE)
-	hoverer.secondarytext:SetSize(HOVERER_TEXT_SIZE)
+	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, 30))
+	--hoverer.text:SetSize(HOVERER_TEXT_SIZE)
+	--hoverer.secondarytext:SetSize(HOVERER_TEXT_SIZE)
 
 	-- so, there's an issue where once you examine something, YOFFSETUP and YOFFSETDOWN are changed to compensate for that secondary text, but are never changed back
 	-- so whereas normally hover text is unable to follow below a certain height because of math.min, the new YOFFSETUP means it is free to roam wherever vertically
@@ -105,7 +107,7 @@ local function OnHovererPostInit(hoverer)
 	end
 	-- TheInput:GetScreenPosition()
 
-	if IS_DST then
+	if true then
 		local YOFFSETUP = -80
 		local YOFFSETDOWN = -50
 		
@@ -174,8 +176,8 @@ local function OnHovererPostInit(hoverer)
 			local y_max = scr_h - (y_min)
 			-- And it mostly does! Just has roughly less than half of the normal text being clipped off.
 			-- To compensate...
-			y_max = y_max - (self.text.size / 2 * scale.y)
-			-- This seems to do it.
+			y_max = y_max - y_min
+			-- This seems to mostly do it. I'm not fully sure what the last remaining tidbit of space is, but I don't care since it's relatively minor.
 
 			-- Now both are aligned exactly!
 			-- Clamps could be changed to ternary for an incredibly slight performance gain.
@@ -188,6 +190,7 @@ local function OnHovererPostInit(hoverer)
 	end
 	
 	function hoverer.OnUpdate(self, ...)
+		--[[
 		if self.insightText.size ~= INSIGHT_TEXT_SIZE then
 			self.insightText:SetSize(INSIGHT_TEXT_SIZE)
 		end
@@ -196,6 +199,7 @@ local function OnHovererPostInit(hoverer)
 			self.text:SetSize(HOVERER_TEXT_SIZE)
 			self.secondarytext:SetSize(HOVERER_TEXT_SIZE)
 		end
+		--]]
 
 		if not self.text.shown then
 			self.insightText:SetString(nil) -- this ends up causing some delay for text positioning?
@@ -339,6 +343,11 @@ local function OnHovererPostInit(hoverer)
 		--mprint(total_lines - total_lines_scaled, "|", adjusted_offset)
 
 		--local top_pos = hoverer.default_text_pos.y-- - ((hovertext_lines+1) * self.size/2)
+
+		local text_pos = self:GetPosition()
+		local top_pos = text_pos.y
+		local move_up = (description_lines-0) * (font_size_diff/2) -- Used to be -1, but there would be a tiny bit of space on sizes <30. -0 fixes that.
+		local pos = top_pos - self.size + move_up
 		
 		if IS_DST then
 			-- <place> <Item> (<#top_hoverlines>/<#insight_lines> line) = <choice_with_size_factor> | <choice_with_just_default> 
@@ -355,9 +364,6 @@ local function OnHovererPostInit(hoverer)
 			-- Floor Magis = (1/4 line) = ? | 18
 			-- Inv Magis = (2/4 line) = ? | 18
 			
-			local top_pos = hoverer.default_text_pos.y
-			local move_up = (description_lines-0) * (font_size_diff/2) -- Used to be -1, but there would be a tiny bit of space on sizes <30. -0 fixes that.
-			local pos = top_pos - self.size + move_up
 			--[[
 			local reduction = math.floor(move_up / self.size)
 			mprintf("Can remove '%s' newline(s) (move_up is [%s])", reduction, move_up)
@@ -379,15 +385,8 @@ local function OnHovererPostInit(hoverer)
 			hoverer.insightText:SetPosition(0, pos)
 		
 		else
-			-- No tooltip pos or FE
-			local font_offset = hoverer.insightText.size / 4
-			if hovertext_lines > 1 then
-				total_lines = total_lines - (hovertext_lines - 1)
-				font_offset = -font_offset
-			end
-			
 			textPadding = string.rep("\n ", total_lines)
-			hoverer.insightText:SetPosition(0, font_offset)
+			hoverer.insightText:SetPosition(0, pos)
 		end
 
 		-- Trigger a position update.

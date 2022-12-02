@@ -936,6 +936,7 @@ local function GetEntityInformation(entity, player, params)
 
 	local num_chunks = #chunks
 
+	--[[
 	local aa = 1
 	local bb = 1
 
@@ -949,9 +950,10 @@ local function GetEntityInformation(entity, player, params)
 
 	local function eq(num)
 		local act = entity.components.health and "Examine" or "Equip"
-		--return nil
-		return string.format(ApplyColour("%s: " .. act, clrs[num] or "#ffffff"), TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY))
+		return nil
+		--return string.format(ApplyColour("%s: " .. act, clrs[num] or "#ffffff"), TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY))
 	end
+	--]]
 
 	for i = 1, num_chunks do
 	--for i,v in pairs(chunks) do
@@ -962,7 +964,7 @@ local function GetEntityInformation(entity, player, params)
 
 		-- Collect the description if one was provided.
 		if v.description then -- type(v.description) == "string"
-			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq(aa) or v.description)
+			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq and eq(aa) or v.description)
 
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
@@ -977,7 +979,7 @@ local function GetEntityInformation(entity, player, params)
 
 		-- Collect the alternate description if one was provided.
 		if v.alt_description then -- type(v.alt_description) == "string"
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq(bb) or v.alt_description)
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq and eq(bb) or v.alt_description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
@@ -985,7 +987,7 @@ local function GetEntityInformation(entity, player, params)
 			if bb then bb=bb+1 end
 		elseif v.alt_description == nil and v.description ~= nil then
 			-- We don't want to remove a normal description if an alt wasn't provided.
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq(bb) or v.description)
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq and eq(bb) or v.description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
