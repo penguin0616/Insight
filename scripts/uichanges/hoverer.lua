@@ -27,6 +27,7 @@ AddLocalPlayerPostInit(function(_, context)
 	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
 end)
 
+--
 local HOVERER_TEXT_SIZE = 30
 local INSIGHT_TEXT_SIZE = 22
 rawset(_G, "choice", 0)
@@ -37,8 +38,10 @@ rawset(_G, "sz2", function(x) HOVERER_TEXT_SIZE = x end)
 rawset(_G, "both", function(x) sz(x) sz2(x) end)
 rawset(_G, "hov", function(x) hoverer.default_text_pos.y = x end)
 
+
 STRINGS.NAMES.SPIDER = "SPI\nDER" 
 STRINGS.NAMES.CANE = "Cane" .. string.rep(string.format("\n%s: Equip", string.char(238, 132, 129)), 4)
+--
 -- inspectable spider (needed a total of 6 lines to match beefalo) 		alt_description = "a\nb\nc\nd\ne\nf"
 -- finiteuses		 alt_description = table.concat(actions_verbose, ", ") .. string.rep("\n", 6) .. "morsey"
 -- 		later changed that to 		alt_description = table.concat(actions_verbose, ", ") .. "\n3\n4\n5\n6\n7"
@@ -311,8 +314,8 @@ local function OnHovererPostInit(hoverer)
 		hoverer.insightText:SetString(itemDescription) -- Trimming newlines handled here
 		
 		-- size info
-		local font_size_diff = HOVERER_TEXT_SIZE - INSIGHT_TEXT_SIZE
-		local font_size_diff_ratio = INSIGHT_TEXT_SIZE / HOVERER_TEXT_SIZE 
+		local font_size_diff = self.size - hoverer.insightText.size
+		local font_size_diff_ratio = hoverer.insightText.size / self.size 
 
 		local hovertext_lines = select(2, text:gsub("\n", "\n")) -- Line count is shortened by 1.
 		local description_lines = hoverer.insightText.line_count
@@ -353,7 +356,7 @@ local function OnHovererPostInit(hoverer)
 			-- Inv Magis = (2/4 line) = ? | 18
 			
 			local top_pos = hoverer.default_text_pos.y
-			local move_up = (description_lines-1) * (font_size_diff/2)
+			local move_up = (description_lines-0) * (font_size_diff/2) -- Used to be -1, but there would be a tiny bit of space on sizes <30. -0 fixes that.
 			local pos = top_pos - self.size + move_up
 			--[[
 			local reduction = math.floor(move_up / self.size)
@@ -404,9 +407,6 @@ local function OnHovererPostInit(hoverer)
 
 		-- a good test case is holding an axe and hovering a beefalo
 
-		-- default y is -30
-		-- setting y to 40 with **nothing** happening on .text puts the text side by side
-
 		--[[
 			hovering a beefalo holding an axe, insight text states:
 			health
@@ -419,47 +419,26 @@ local function OnHovererPostInit(hoverer)
 			brushed
 
 			-- 8 lines, and on default offset of -30, this text is positioned betweenish lines 5 and 6.
-			
 		]]
 
-		local font_size_diff = HOVERER_TEXT_SIZE - INSIGHT_TEXT_SIZE
+		local font_size_diff = hoverer.text.size - hoverer.insightText.size
 
+		-- Start from right below the .text
 		local top = (hoverer.insightText.line_count) * hoverer.text.size / 2
-		local padding_offset = (hoverer.insightText.line_count) * hoverer.insightText.size
+		-- Push down past the Insight text.
+		local insight_down = (hoverer.insightText.line_count) * hoverer.insightText.size
+		-- Additionally padding for prettiness.
+		local padding_offset = 10 -- font_size_diff
 
-		local offset = top - padding_offset - font_size_diff
-
-		-- This would start me from the top as if I had set the offset to 10 in vanilla.
-		--offset = (40 - 10) + select(2, text:gsub("\n", "\n")) * 15
+		local offset = top - insight_down - padding_offset
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
 		-- We don't want that gap with Insight info though, it's wasted space.
 		if hoverer.insightText.raw_text == nil then
 			self:SetPosition(0, -hoverer.text.size) -- Default position
 		else
-			--local top = (40 - 10) + select(2, text:gsub("\n", "\n")) * 15
-			--local offset_for_insight = (hoverer.insightText.line_count) * hoverer.insightText.size
-			--local offset = top - offset_for_insight
-
-			--local offset_for_insight = (hoverer.insightText.line_count) * hoverer.text.size / 2
-			--local padding_offset = 0
-			--local offset = offset_for_insight + padding_offset
-
-
 			self:SetPosition(0, offset)
 		end
-
-		--[[
-		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.size
-		offset = offset + hoverer.insightText.size / 4
-
-		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
-		if hoverer.insightText.raw_text == nil then
-			self:SetPosition(0, -hoverer.insightText.size) -- Default position
-		else
-			self:SetPosition(0, -offset)
-		end
-		--]]
 
 		return oldSetString(self, text)
 	end
