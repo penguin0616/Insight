@@ -29,7 +29,7 @@ end)
 
 local HOVERER_TEXT_SIZE = 30
 local INSIGHT_TEXT_SIZE = 22
-rawset(_G, "choice", 30)
+rawset(_G, "choice", 0)
 
 
 rawset(_G, "sz", function(x) INSIGHT_TEXT_SIZE = x end)
@@ -39,8 +39,9 @@ rawset(_G, "hov", function(x) hoverer.default_text_pos.y = x end)
 
 STRINGS.NAMES.SPIDER = "SPI\nDER" 
 STRINGS.NAMES.CANE = "Cane" .. string.rep(string.format("\n%s: Equip", string.char(238, 132, 129)), 4)
--- inspectable spider (needed a total of 6 lines to match beefalo) alt_description = "a\nb\nc\nd\ne\nf"
--- finiteuses alt_description = table.concat(actions_verbose, ", ") .. string.rep("\n", 6) .. "morsey"
+-- inspectable spider (needed a total of 6 lines to match beefalo) 		alt_description = "a\nb\nc\nd\ne\nf"
+-- finiteuses		 alt_description = table.concat(actions_verbose, ", ") .. string.rep("\n", 6) .. "morsey"
+-- 		later changed that to 		alt_description = table.concat(actions_verbose, ", ") .. "\n3\n4\n5\n6\n7"
 
 local GetMouseTargetItem = GetMouseTargetItem
 local RequestEntityInformation = RequestEntityInformation
@@ -352,18 +353,19 @@ local function OnHovererPostInit(hoverer)
 			-- Inv Magis = (2/4 line) = ? | 18
 			
 			local top_pos = hoverer.default_text_pos.y
-			local pos = top_pos - self.size + (description_lines-1) * (font_size_diff/2)
+			local move_up = (description_lines-1) * (font_size_diff/2)
+			local pos = top_pos - self.size + move_up
+			--[[
+			local reduction = math.floor(move_up / self.size)
+			mprintf("Can remove '%s' newline(s) (move_up is [%s])", reduction, move_up)
+			total_lines = total_lines - reduction
+			move_up = move_up - reduction * self.size
+
+			local pos = top_pos - self.size + move_up
+			pos = pos - choice
 			--local pos = top_pos - rawget(_G, "choice")
-
-			mprint(pos)
-			if hovertext_lines > 0 then
-				--pos = hoverer.default_text_pos.y - hoverer.insightText.size
-			else
-				--pos = hoverer.default_text_pos.y
-			end
-
-			-- Pos can't be adjusted any further.
-			-- pos = pos + adjusted_offset
+			mprintf("\tTop_pos: [%s], move_up: [%s], pos: [%s]", top_pos, move_up, pos)
+			--]]
 
 			textPadding = string.rep("\n ", total_lines)
 			--mprint("\t", ((hovertext_lines-1) * font_size_diff))
@@ -393,17 +395,6 @@ local function OnHovererPostInit(hoverer)
 		end
 
 		oldSetString(self, text .. textPadding)
-
-		--[[
-		local a = self:GetPosition()
-		local b = hoverer.insightText:GetPosition()
-		print(a.y - b.y)
-		Testing with size 15:
-		This yielded 40. Setting the Y position to 40 oddly made any size work properly, except that the last line of the hover and 1-2 lines of insight merged.
-		This is apparently the default height of the text object.
-		--]]
-
-		--return oldSetString(self, text .. textPadding)
 	end
 
 	hoverer.secondarytext.SetString = function(self, text)
@@ -414,6 +405,7 @@ local function OnHovererPostInit(hoverer)
 		-- a good test case is holding an axe and hovering a beefalo
 
 		-- default y is -30
+		-- setting y to 40 with **nothing** happening on .text puts the text side by side
 
 		--[[
 			hovering a beefalo holding an axe, insight text states:
@@ -430,14 +422,31 @@ local function OnHovererPostInit(hoverer)
 			
 		]]
 
-		local offset = (hoverer.insightText.line_count / 2) * hoverer.insightText.size
-		offset = offset + hoverer.insightText.size / 4 - (HOVERER_TEXT_SIZE - INSIGHT_TEXT_SIZE)
+		local font_size_diff = HOVERER_TEXT_SIZE - INSIGHT_TEXT_SIZE
+
+		local top = (hoverer.insightText.line_count) * hoverer.text.size / 2
+		local padding_offset = (hoverer.insightText.line_count) * hoverer.insightText.size
+
+		local offset = top - padding_offset - font_size_diff
+
+		-- This would start me from the top as if I had set the offset to 10 in vanilla.
+		--offset = (40 - 10) + select(2, text:gsub("\n", "\n")) * 15
 
 		-- there's a 1 line gap in vanilla (both) between the primarytext and secondarytext
+		-- We don't want that gap with Insight info though, it's wasted space.
 		if hoverer.insightText.raw_text == nil then
 			self:SetPosition(0, -hoverer.text.size) -- Default position
 		else
-			self:SetPosition(0, -offset)
+			--local top = (40 - 10) + select(2, text:gsub("\n", "\n")) * 15
+			--local offset_for_insight = (hoverer.insightText.line_count) * hoverer.insightText.size
+			--local offset = top - offset_for_insight
+
+			--local offset_for_insight = (hoverer.insightText.line_count) * hoverer.text.size / 2
+			--local padding_offset = 0
+			--local offset = offset_for_insight + padding_offset
+
+
+			self:SetPosition(0, offset)
 		end
 
 		--[[
