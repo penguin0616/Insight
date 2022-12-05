@@ -28,6 +28,7 @@ directory. If not, please refer to
 -- loadstring is present
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
+-- Major.Minor.Patch
 version = "3.4.5" -- dst is 3.4.3, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
@@ -54,7 +55,7 @@ client_only_mod = false
 all_clients_require_mod = true
 forge_compatible = true
 server_filter_tags = {"insight_" .. version}
-forcemanifest = false
+forcemanifest = false -- TODO: REMOVE THIS
 
 --[[
 	removing label from options

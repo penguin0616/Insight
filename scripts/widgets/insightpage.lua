@@ -26,22 +26,16 @@ local InsightScrollList = import("widgets/insightscrolllist")
 
 local item_width = 400
 local item_height = 64
+-- 16 is because item_height used to be 80 for padding reasons. 
+-- Moving it to 64 means we move it to between rows.
+local padding_between_rows = 10 + 16
+
 
 local function item_ctor_fn(context, index)
 	return ItemDetail({width = item_width, height = item_height})
 end
 
 local function apply_fn(context, widget, data, index)
-	--mprint('apply', widget, index, data and data.text)
-	--[[
-	if context then
-		table.foreach(context, print)
-	end
-	mprint'--'
-	if data then
-		table.foreach(data, print)
-	end
-	--]]
 	if data then
 		--mprint(index)
 		--table.foreach(data, print)
@@ -71,10 +65,10 @@ local function MakeGrid()
 		num_visible_rows = 3,
 		num_columns = 1,
 		widget_width = item_width,
-		widget_height = item_height,
-		scrollbar_offset = -10,
+		widget_height = item_height + padding_between_rows,
+		scrollbar_offset = 15, -- Took this number from the math in insightscrolllist.
 		scrollbar_height_offset = 0,
-		peek_percent = 0.29, -- too much peek just clones the last item
+		peek_percent = 0, -- too much peek just clones the last item
 		allow_bottom_empty_row = false,
 		apply_fn = apply_fn,
 		item_ctor_fn = item_ctor_fn,
@@ -103,7 +97,7 @@ local InsightPage = Class(Widget, function(self, name)
 			item_width,
 			item_height,
 			3,
-			10 + 16
+			padding_between_rows
 		))
 	end
 

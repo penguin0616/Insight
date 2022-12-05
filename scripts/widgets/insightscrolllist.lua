@@ -147,7 +147,7 @@ function InsightScrollList:BuildListItems()
 	-- 3, 1, 6, 2 is the display order
 
 	for i = 1, self.visible_rows do
-		local w = self.list_root:AddChild(self.item_ctor(self.context))
+		local w = self.list_root:AddChild(self.item_ctor(self.context, i))
 		local top_pos = est_height/2 - self.item_height/2
 		local pos = top_pos - (self.item_height * (i - 1))-- - (self.row_padding * (i-1))
 

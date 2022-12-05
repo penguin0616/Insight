@@ -67,6 +67,48 @@ function AddLocalPlayerPostRemove(fn, persists)
 	onLocalPlayerRemove[#onLocalPlayerRemove+1] = {fn = fn, persists = persists or false}
 end
 
+function LoadSecondaryConfiguration()
+	local known_mod = self.savedata.known_mods[modname]
+	if known_mod == nil then
+		print("Error: mod isn't known", modname )
+		return nil
+	end
+
+	secondary_config_options = {}
+
+	local path = KnownModIndex:GetModConfigurationPath(modname, true) .. "_SECONDARY"
+	--[[
+	TheSim:GetPersistentString(path,
+        function(load_success, str)
+        	if load_success == true then
+				local success, savedata = RunInSandboxSafe(str)
+				if success and string.len(str) > 0 then
+					-- Carry over saved data from old versions when possible
+					if self:HasModConfigurationOptions(modname) then
+						self:UpdateConfigurationOptions(known_mod.modinfo.configuration_options, savedata, client_config)
+					else
+						if known_mod.modinfo ~= nil then
+							known_mod.modinfo.configuration_options = savedata
+						else
+							print("Error: modinfo was not available for mod ", modname) --something went wrong, likely due to workshop update during FE loading, load modinfo now to try to recover
+							self:UpdateSingleModInfo(modname)
+							known_mod.modinfo.configuration_options = savedata
+						end
+					end
+					print ("loaded "..filename)
+				else
+					print ("Could not load "..filename)
+				end
+			else
+				print ("Could not load "..filename)
+			end
+
+			-- callback()
+        end
+	)
+	--]]
+end
+
 local function GetMorgueDeathsForWorld(name)
 	local deaths = {}
 
@@ -109,6 +151,11 @@ local function GenerateExternalConfiguration()
 	end
 
 	return external_config
+end
+
+local function GenerateSecondaryConfiguration()
+	local secondary_config = {}
+	
 end
 
 local function GenerateConfiguration()

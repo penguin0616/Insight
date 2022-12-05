@@ -205,6 +205,15 @@ local public = {
 
 -- I try to add controls in terms of best to least. The first control is the prioritized one for tips and stuff.
 if IS_DST then
+	lib.mk_scheme = lib.MakeScheme("mouse_keyboard", {
+		exit = {CONTROL_PAUSE},
+		--open_insight_menu
+
+		scroll_up = {CONTROL_SCROLLBACK, CONTROL_FOCUS_UP},
+		scroll_down = {CONTROL_SCROLLFWD, CONTROL_FOCUS_DOWN},
+		previous_value = {CONTROL_FOCUS_LEFT}, -- CONTROL_MOVE_LEFT?
+		next_value = {CONTROL_FOCUS_RIGHT}, -- CONTROL_MOVE_RIGHT?
+	})
 
 	lib.controller_scheme = lib.MakeScheme("controller", {
 		exit = {CONTROL_OPEN_CRAFTING, CONTROL_CANCEL},
