@@ -38,10 +38,10 @@ rawset(_G, "sz2", function(x) HOVERER_TEXT_SIZE = x end)
 rawset(_G, "both", function(x) sz(x) sz2(x) end)
 rawset(_G, "hov", function(x) hoverer.default_text_pos.y = x end)
 
-
-STRINGS.NAMES.SPIDER = "SPI\nDER" 
-STRINGS.NAMES.CANE = "Cane" .. string.rep(string.format("\n%s: Equip", string.char(238, 132, 129)), 4)
 --]]
+--STRINGS.NAMES.SPIDER = "SPI\nDER" 
+--STRINGS.NAMES.CANE = "Cane" .. string.rep(string.format("\n%s: Equip", string.char(238, 132, 129)), 4)
+
 
 --
 -- inspectable spider (needed a total of 6 lines to match beefalo) 		alt_description = "a\nb\nc\nd\ne\nf"
@@ -118,8 +118,11 @@ local function OnHovererPostInit(hoverer)
 			local w = 0
 			local h = 0
 
+			local primary_text_height = 0
 			if self.text ~= nil and self.str ~= nil then
 				local w0, h0 = self.text:GetRegionSize()
+
+				primary_text_height = h0
 
 				w = math.max(w, w0)
 				--h = math.max(h, h0)
@@ -148,11 +151,12 @@ local function OnHovererPostInit(hoverer)
 			local x_min = w + XOFFSET
 			local x_max = scr_w - w - XOFFSET
 
-			--===== Calculating the Y bounds ==================================================================
+			--===== Calculating the Y bounds ========================================================================================================================================================
 
-			-- The Y Minimum ======================================
+			-- The Y Minimum =============================================================================================================================================
 			-- This alone gives some padding. However, an observation:
 			local base_padding = ih * scale.y -- Do not use the length of the primary text since it will shift the text if pressing alt
+			--primary_text_height = (primary_text_height - (self.insightText.line_count - 1) * self.text.size) * scale.y -- Minus 1.. because... Yes.
 			--[[
 				[# of lines of insight text] line = [base_padding] (how the text appears aligned to me)
 				1 line = 60 (too short by 15 units)
@@ -170,16 +174,20 @@ local function OnHovererPostInit(hoverer)
 			-- However, alone it's not enough. It's still a little off. That's where we need the scaling.
 			local y_min = base_padding + (corrective_padding * scale.y)
 
-			-- The Y Maximum ======================================
-			-- If the minimum is enough to keep the text from the bottom, 
-			-- makes sense to me that it would work for the top.
-			local y_max = scr_h - (y_min)
-			-- And it mostly does! Just has roughly less than half of the normal text being clipped off.
-			-- To compensate...
-			y_max = y_max - y_min
-			-- This seems to mostly do it. I'm not fully sure what the last remaining tidbit of space is, but I don't care since it's relatively minor.
+			-- The Y Maximum =============================================================================================================================================
+			local font_size_diff = self.text.size - self.insightText.size
 
-			-- Now both are aligned exactly!
+			-- This is enough to work for most cases.
+			-- It's a little short when self.text.size < 30.
+			local down = primary_text_height/2 + self.text.size * 1.5
+			-- This is enough to fix it. Subtracting because it needs to be inverted.
+			if self.text.size < 30 then
+				down = down - (30 - self.text.size)
+			end
+
+			local y_max = scr_h - down * scale.y
+			-- I must be going crazy, this is being quite inconsistent.
+
 			-- Clamps could be changed to ternary for an incredibly slight performance gain.
 			self:SetPosition(
 				math_clamp(x, x_min, x_max),
