@@ -23,6 +23,7 @@ local Screen = require "widgets/screen"
 local Image = require("widgets/image")
 local ImageButton = require "widgets/imagebutton"
 local Text = require("widgets/text")
+local Spinner = require("widgets/spinner")
 local TEMPLATES = IS_DST and require("widgets/redux/templates") or setmetatable({}, { __index=function(self, index) error("Templates does not exist in DS.") end })
 local InsightScrollList = import("widgets/insightscrolllist")
 local ITEMPLATES = import("widgets/insight_templates")
@@ -88,18 +89,88 @@ local function ConfigOptionCtor(context, index)
 	root.label:SetTint(1, .6, .6, 1)
 	root.label:SetPosition(-OPTION_ENTRY_WIDTH/2 + labelw/2, 0)
 	--]]
-	
+
 	local spinnerw, spinnerh = OPTION_ENTRY_WIDTH * .4, OPTION_ENTRY_HEIGHT
+	--[[
 	root.spinner = root:AddChild(Image(DEBUG_IMAGE(true)))
 	root.spinner:ScaleToSize(spinnerw, spinnerh)
 	root.spinner:SetTint(.6, 1, .6, 1)
 	root.spinner:SetPosition(OPTION_ENTRY_WIDTH/2 - spinnerw/2, 0)
 	--]]
+	local atlas = "images/global_redux.xml"
+    local lean = true
+
+	root.spinner = root:AddChild(Spinner(
+		{}, spinnerw, spinnerh, {font=CHATFONT, size=25}, NIL_EDITABLE, atlas, NIL_TEXTURES, true
+	))
+	root.spinner:SetPosition(OPTION_ENTRY_WIDTH/2 - spinnerw/2, 0)
 
 	root.header_label = root:AddChild(Text(CHATFONT, 25))
 	root.header_label:SetRegionSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
+
+	root:SetOnGainFocus(function()
+		root.context.screen.options_scroll_list:OnWidgetFocus(root)
+		root:ApplyDescription()
+	end)
+
+	root.spinner:SetOnChangedFn(function(selected, old)
+		local option = root:GetSelectedOption()
+		mprint(option.description, "|", selected, old)
+		root:ApplyDescription()
+	end)
+
+
+	--[[ Widget Methods ]]
+	root.GetSelectedOption = function(self)
+		return self.data.options[self.spinner:GetSelectedIndex()]
+	end
+
+	-- Handles bulk updates.
+	root.SetData = function(self, data)
+		self.data = data
+
+		if not self.data then
+			self.spinner:Hide()
+			return
+		end
+
+		-- Sections logic
+		local is_section_header = data and #data.options == 1 and data.options[1].data == data.default and data.options[1].description == ""
+		self:SetIsSectionHeader(is_section_header)
+
+		if is_section_header then
+			return
+		end
+
+		-- Spinner Logic
+		local selected = 1
+		
+		local spinner_options = {}
+		for i,v in ipairs(self.data.options) do
+			-- If there's a saved value, check if this one is the saved one. Otherwise, check if it's the default.
+			if (self.data.saved ~= nil and v.data == self.data.saved) or (v.data == self.data.default) then
+				selected = i
+			end
+			table.insert(spinner_options, { text=v.description, data=v.data })
+		end
+		
+		self.spinner:SetOptions(spinner_options)
+		self.spinner:SetSelectedIndex(selected)
+		
+		-- This is triggering an OnChanged. I don't want to do that right now.
+		--[[
+		print'a'
+		if self.data.saved ~= nil then
+			self.spinner:SetSelected(self.data.saved)
+		else
+			self.spinner:SetSelected(self.data.default)
+		end
+		print'b'
+		--]]
+		self.spinner:Show()
+	end
 	
-	root.SetSectionHeader = function(self, bool)
+	root.SetIsSectionHeader = function(self, bool)
 		self.is_section_header = bool
 		if self.is_section_header then
 			self.label:Hide()
@@ -123,23 +194,15 @@ local function ConfigOptionCtor(context, index)
 		end
 	end
 
-	root.UpdateSelected = function(self)
-		
-	end
-
 	root.ApplyDescription = function(self)
 		if self.is_section_header then
 			return
 		end
 
+		local current_option = self:GetSelectedOption()
 		self.context.screen.config_hover:SetString(self.data.hover)
-		--self.context.screen.option_hover:SetString(self)
+		self.context.screen.option_hover:SetString(current_option.hover)
 	end
-
-	root:SetOnGainFocus(function()
-		root.context.screen.options_scroll_list:OnWidgetFocus(root)
-		root:ApplyDescription()
-	end)
 
 	--[[
 	local a = root:AddChild(Image(DEBUG_IMAGE(true)))
@@ -157,18 +220,15 @@ local function ConfigOptionCtor(context, index)
 end
 
 local function UpdateEntryWidget(context, widget, data, index)
-	-- Sections logic
-	local is_section_header = data and #data.options == 1 and data.options[1].data == data.default and data.options[1].description == ""
-	widget:SetSectionHeader(is_section_header)
-
-	widget.data = data
+	-- Doing this in priority of importance
+	--widget:SetIsSectionHeader(is_section_header)
+	widget:SetData(data)
 	widget.context = context
 
 	-- Apply data
 	if data then
-		dumptable(data)
 		widget:SetLabel(data.label)
-		widget:UpdateSelected(data.saved)
+		--widget:UpdateSelected(data.saved)
 	else
 		widget:SetLabel(nil)
 	end
@@ -232,7 +292,6 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	-- Main Window
 	self.main = self.root:AddChild(CreateMainWindow(self))
 	local mainw, mainh = self.main:GetSize()
-	mprint("main", mainw, "|", MAIN_WINDOW_WIDTH, "|", OPTION_ENTRY_WIDTH)
 	local headerw, headerh = mainw, 100
 
 	self.header = self.main:AddChild(Image(DEBUG_IMAGE(true)))
