@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- clock.lua
 local module = {
-	initialized = true,
+	initialized = false,
 	netvars = {}
 }
 
