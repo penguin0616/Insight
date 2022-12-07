@@ -310,11 +310,11 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 
 	self.config_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hover for the entire configuration entry
 	self.config_hover:SetPosition(0, self.header_label:GetPosition().y - self.header_label:GetSize()/2 - self.config_hover:GetSize()/2 - 10) -- 20 pixels of padding
-	self.config_hover:SetString("CONFIGURATION ENTRY HOVER")
+	--self.config_hover:SetString("CONFIGURATION ENTRY HOVER")
 	
 	self.option_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hove for the selected option in the config
 	self.option_hover:SetPosition(0, -headerh/2 + self.option_hover:GetSize()/2)
-	self.option_hover:SetString("OPTION HOVER")
+	--self.option_hover:SetString("OPTION HOVER")
 
 	self.divider = self.main:AddChild(Image("images/dst/global_redux.xml", "item_divider.tex"))
 	self.divider:SetSize(mainw + 20, 5)
@@ -392,6 +392,12 @@ function InsightConfigurationScreen:LoadModConfig(client)
 	end
 
 	return self.config_options
+end
+
+function InsightConfigurationScreen:LoadKeybinds()
+	if not insightSaveData:IsReady() then
+		mprint("Unable to load keybind information.")
+	end
 end
 
 --- Creates a "clean" mod config table for saving.

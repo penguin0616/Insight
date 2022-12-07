@@ -29,7 +29,16 @@ local SaveData = Class(function(self, path)
 
 	self.data = {}
 	self.dirty = false
+	self.ready = false
 end)
+
+function SaveData:IsReady()
+	return self.ready
+end
+
+function SaveData:IsDirty()
+	return self.dirty
+end
 
 function SaveData:SetValue(name, value)
 	self.data[name] = value
@@ -69,6 +78,7 @@ function SaveData:Load()
 				if success and string.len(str) > 0 then
 					mprint("[SaveData] Loaded " .. path)
 					self.data = savedata
+					self.ready = true
 				else
 					mprint("[SaveData] Could not load " .. path)
 				end
