@@ -51,7 +51,9 @@ local function CreateMainWindow(self)
 	--]]
 
 	if IS_DST then
-		local t = ITEMPLATES.RectangleWindow("images/misc/dialogrect_9slice_blue.xml", MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, nil, buttons) -- [gp: 619, 359]
+		-- "images/misc/dialogrect_9slice_blue.xml"
+		-- #2B4D76
+		local t = ITEMPLATES.RectangleWindow("images/dialogrect_9slice.xml", MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, nil, buttons) -- [gp: 619, 359]
 		--[[
 		for i,v in pairs(t.elements) do
 			v:SetTint(.6, .6, 1, 1)
@@ -78,7 +80,7 @@ local function ConfigOptionCtor(context, index)
 	local root = Widget("option" .. index)
 	root.bg = root:AddChild(ITEMPLATES.ListItemBackground(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT))
 
-	local labelw, labelh = OPTION_ENTRY_WIDTH * .6, OPTION_ENTRY_HEIGHT
+	local labelw, labelh = OPTION_ENTRY_WIDTH * .55, OPTION_ENTRY_HEIGHT
 	root.label = root:AddChild(Text(CHATFONT, 25))
 	root.label:SetRegionSize(labelw, labelh)
 	root.label:SetHAlign(ANCHOR_RIGHT)
@@ -90,7 +92,7 @@ local function ConfigOptionCtor(context, index)
 	root.label:SetPosition(-OPTION_ENTRY_WIDTH/2 + labelw/2, 0)
 	--]]
 
-	local spinnerw, spinnerh = OPTION_ENTRY_WIDTH * .4, OPTION_ENTRY_HEIGHT
+	local spinnerw, spinnerh = OPTION_ENTRY_WIDTH * .45, OPTION_ENTRY_HEIGHT
 	--[[
 	root.spinner = root:AddChild(Image(DEBUG_IMAGE(true)))
 	root.spinner:ScaleToSize(spinnerw, spinnerh)
@@ -104,6 +106,10 @@ local function ConfigOptionCtor(context, index)
 		{}, spinnerw, spinnerh, {font=CHATFONT, size=25}, NIL_EDITABLE, atlas, NIL_TEXTURES, true
 	))
 	root.spinner:SetPosition(OPTION_ENTRY_WIDTH/2 - spinnerw/2, 0)
+	root.spinner.text:SetString(" ") -- So SetHoverText will make the wrapper widget for Text.
+	--root.spinner.text:SetHoverText("nil")
+	--local arrow_size = root.spinner.leftimage:GetSize() * root.spinner.arrow_scale
+	--root.spinner.text.hover.image:ScaleToSize(spinnerw-arrow_size*2, spinnerh)
 
 	root.header_label = root:AddChild(Text(CHATFONT, 25))
 	root.header_label:SetRegionSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
@@ -117,6 +123,7 @@ local function ConfigOptionCtor(context, index)
 		local option = root:GetSelectedOption()
 		mprint(option.description, "|", selected, old)
 		root:ApplyDescription()
+		root:UpdateHoverText()
 	end)
 
 
@@ -156,18 +163,14 @@ local function ConfigOptionCtor(context, index)
 		
 		self.spinner:SetOptions(spinner_options)
 		self.spinner:SetSelectedIndex(selected)
-		
-		-- This is triggering an OnChanged. I don't want to do that right now.
-		--[[
-		print'a'
-		if self.data.saved ~= nil then
-			self.spinner:SetSelected(self.data.saved)
-		else
-			self.spinner:SetSelected(self.data.default)
-		end
-		print'b'
-		--]]
+		self:UpdateHoverText()
 		self.spinner:Show()
+	end
+
+	root.UpdateHoverText = function(self)
+		if true then return end
+		self.spinner.text.hover.image:ScaleToSize(self.spinner.text:GetRegionSize())
+		self.spinner.text:SetHoverText(self:GetSelectedOption().description)
 	end
 	
 	root.SetIsSectionHeader = function(self, bool)
@@ -187,10 +190,10 @@ local function ConfigOptionCtor(context, index)
 
 	root.SetLabel = function(self, text)
 		if self.is_section_header then
-			self.header_label:SetColour(Color.fromHex("#ee6666"))
+			--self.header_label:SetColour(Color.fromHex("#ee6666"))
 			self.header_label:SetString(text)
 		else
-			self.label:SetString((text and text .. ": ") or nil)
+			self.label:SetString((text and text .. ":") or nil)
 		end
 	end
 
@@ -278,7 +281,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
 	self.black.image:SetTint(0, 0, 0, .5) -- invisible, but clickable!
 	self.black:SetOnClick(function() 
-		--self:Close()
+		self:Close()
 	end)
 	--self.black:SetHelpTextMessage("") -- I don't know what this does.
 
@@ -294,8 +297,8 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	local mainw, mainh = self.main:GetSize()
 	local headerw, headerh = mainw, 100
 
-	self.header = self.main:AddChild(Image(DEBUG_IMAGE(true)))
-	self.header:SetTint(1, 1, 1, .1)
+	self.header = self.main:AddChild(Image(DEBUG_IMAGE(false)))
+	--self.header:SetTint(1, 1, 1, .1)
 	self.header:SetSize(headerw, headerh)
 	-- Y starts at the bottom here, so [+ is up], [- is down].
 	self.header:SetPosition(0, mainh/2 - headerh/2)
@@ -303,6 +306,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.header_label = self.header:AddChild(Text(HEADERFONT, 26))
 	self.header_label:SetString(KnownModIndex:GetModFancyName(modname) .. " " ..STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX)
 	self.header_label:SetPosition(0, headerh/2 - self.header_label:GetSize()/2 - 4) -- 4 pixels of padding from the top
+	self.header_label:SetColour(UICOLOURS.GOLD)
 
 	self.config_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hover for the entire configuration entry
 	self.config_hover:SetPosition(0, self.header_label:GetPosition().y - self.header_label:GetSize()/2 - self.config_hover:GetSize()/2 - 10) -- 20 pixels of padding
@@ -325,8 +329,8 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	local scroller_height = (OPTION_ENTRY_HEIGHT + OPTION_ENTRY_PADDING) * NUM_VISIBLE_ROWS
 
 	self.options_scroll_list = self.main:AddChild(CreateScroller(self))
-	self.options_scroll_list.bg:SetTexture(DEBUG_IMAGE(true))
-	self.options_scroll_list.bg:SetTint(1, 1, 1, .1)
+	--self.options_scroll_list.bg:SetTexture(DEBUG_IMAGE(true))
+	--self.options_scroll_list.bg:SetTint(1, 1, 1, .1)
 	self.options_scroll_list.bg:ScaleToSize(OPTION_ENTRY_WIDTH, scroller_height)
 	--self.options_scroll_list:SetPosition(0, -mainh/2 + scroller_height/2) -- Not perfect unless using 7 rows with total row height = 80.
 	self.options_scroll_list:SetPosition(0, self.divider:GetPosition().y - scroller_height/2 - (leftover_space - scroller_height) / 2) -- Not perfect unless using 7 rows with total row height = 80.

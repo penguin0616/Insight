@@ -43,9 +43,9 @@ local module = {
 	}
 }
 
---[[
+
 if IS_DS and not UICOLOURS then
-	UICOLORS = {
+	UICOLOURS = {
 		GOLD_CLICKABLE = RGB(215, 210, 157), -- interactive text & menu
 		GOLD_FOCUS = RGB(251, 193, 92), -- menu active item
 		GOLD_SELECTED = RGB(245, 243, 222), -- titles and non-interactive important text
@@ -68,7 +68,7 @@ if IS_DS and not UICOLOURS then
 		SILVER = RGB(192, 192, 192, 1),
 	}
 end
---]]
+
 
 
 module.temperature.DEGREE_CHARACTER = string.char(0xb0) --utf8char(0xb0) -- utf8char doesn't exist in DS.
