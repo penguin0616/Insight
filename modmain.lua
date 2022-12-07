@@ -3308,7 +3308,7 @@ if IS_DS or IsClient() or IsClientHost() then
 		end
 	end
 
-	entityManager = import("entitymanager")
+	entityManager = import("helpers/entitymanager")
 	import("clientmodmain")
 end
 
