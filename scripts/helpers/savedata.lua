@@ -100,7 +100,9 @@ function SaveData:Save(callback, force)
 		self.dirty = false
 	else
 		mprint("[SaveData] Save of " .. self.path .. " not needed, is clean.")
-		return callback(true)
+		if callback then
+			return callback(true)
+		end
 	end
 end
 

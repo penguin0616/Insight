@@ -524,9 +524,33 @@ end
 -- insightSaveData:Get("keybinds")
 
 keybinds = import("helpers/keybinds")()
-keybinds:Register("test", "h", function(down)
+--[[
+keybinds:BulkRegister(insightSaveData:Get("keybinds"), {
+	[{"test", "This is a test."}] = function(down)
+		mprint("wow keybind test!!", down)
+	end,
+	[{"test2", "This is a second test."}] = function(down)
+		mprint("even better test!!", down)
+	end
+})
+--]]
+
+--[[
+mprint("Loaded keybinds:")
+dumptable(insightSaveData:Get("keybinds"))
+--]]
+
+keybinds:Register("test", "This is a test.", nil, function(down)
+	mprint(TheFrontEnd:GetActiveScreen(), localPlayer.components.playercontroller:IsEnabled())
 	mprint("wow keybind test!!", down)
 end)
+
+keybinds.onkeybindchanged = function(name, new, old)
+	mprint("CHANGED", name, new, old)
+end
+
+keybinds:LoadSavedKeybindings(insightSaveData:Get("keybinds"))
+keybinds:SetReady()
 
 --==========================================================================================================================
 --==========================================================================================================================

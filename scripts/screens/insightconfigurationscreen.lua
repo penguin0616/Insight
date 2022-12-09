@@ -37,6 +37,16 @@ local OPTION_ENTRY_WIDTH = MAIN_WINDOW_WIDTH --200
 local OPTION_ENTRY_HEIGHT = 40
 local OPTION_ENTRY_PADDING = 0
 
+local function KeybindChar(k)
+	if k then
+		k = STRINGS.UI.CONTROLSSCREEN.INPUTS[TheInput:GetControllerID() + 1][k]
+	else
+		k = STRINGS.UI.CONTROLSSCREEN.INPUTS[9][2]
+	end
+
+	return k
+end
+
 --------------------------------------------------------------------------
 --[[ Main Window ]]
 --------------------------------------------------------------------------
@@ -80,6 +90,7 @@ local function ConfigOptionCtor(context, index)
 	local root = Widget("option" .. index)
 	root.bg = root:AddChild(ITEMPLATES.ListItemBackground(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT))
 
+	-- This is the label describing the option.
 	local labelw, labelh = OPTION_ENTRY_WIDTH * .55, OPTION_ENTRY_HEIGHT
 	root.label = root:AddChild(Text(CHATFONT, 25))
 	root.label:SetRegionSize(labelw, labelh)
@@ -92,34 +103,54 @@ local function ConfigOptionCtor(context, index)
 	root.label:SetPosition(-OPTION_ENTRY_WIDTH/2 + labelw/2, 0)
 	--]]
 
-	local spinnerw, spinnerh = OPTION_ENTRY_WIDTH * .45, OPTION_ENTRY_HEIGHT
-	--[[
-	root.spinner = root:AddChild(Image(DEBUG_IMAGE(true)))
-	root.spinner:ScaleToSize(spinnerw, spinnerh)
-	root.spinner:SetTint(.6, 1, .6, 1)
-	root.spinner:SetPosition(OPTION_ENTRY_WIDTH/2 - spinnerw/2, 0)
-	--]]
-	local atlas = "images/global_redux.xml"
-    local lean = true
+	-- This is the section label in case the thing is a section header.
+	root.section_label = root:AddChild(Text(CHATFONT, 25))
+	root.section_label:SetRegionSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
+	
 
-	root.spinner = root:AddChild(Spinner(
-		{}, spinnerw, spinnerh, {font=CHATFONT, size=25}, NIL_EDITABLE, atlas, NIL_TEXTURES, true
+
+	local option_width, option_height = OPTION_ENTRY_WIDTH * .45, OPTION_ENTRY_HEIGHT
+	local option_widgets = {}
+	root.option_widgets = option_widgets
+
+	-- The option widget for keybinds.
+	--[[
+	option_widgets.keybind = root:AddChild(Image(DEBUG_IMAGE(true)))
+	option_widgets.keybind:ScaleToSize(option_width, option_height)
+	option_widgets.keybind:SetTint(.6, 1, .6, 1)
+	option_widgets.keybind:SetPosition(OPTION_ENTRY_WIDTH/2 - option_width/2, 0)
+	--]]
+	--
+	option_widgets.keybind = root:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex", "spinner_focus.tex"))
+	option_widgets.keybind:ForceImageSize(option_width, option_height)
+	option_widgets.keybind:SetPosition(OPTION_ENTRY_WIDTH/2 - option_width/2, 0)
+	option_widgets.keybind:SetTextColour(UICOLOURS.WHITE) -- GOLD_CLICKABLE
+	option_widgets.keybind:SetTextFocusColour(UICOLOURS.WHITE) -- GOLD_FOCUS
+	option_widgets.keybind:SetFont(CHATFONT)
+	option_widgets.keybind:SetTextSize(25)
+	
+	-- The option widget for spinner stuff (vanilla)
+	option_widgets.spinner = root:AddChild(Spinner(
+		{}, option_width, option_height, {font=CHATFONT, size=25}, NIL_EDITABLE, "images/dst/global_redux.xml", NIL_TEXTURES, true
 	))
-	root.spinner:SetPosition(OPTION_ENTRY_WIDTH/2 - spinnerw/2, 0)
-	root.spinner.text:SetString(" ") -- So SetHoverText will make the wrapper widget for Text.
+	option_widgets.spinner:SetPosition(OPTION_ENTRY_WIDTH/2 - option_width/2, 0)
+	option_widgets.spinner.text:SetString(" ") -- So SetHoverText will make the wrapper widget for Text.
 	--root.spinner.text:SetHoverText("nil")
 	--local arrow_size = root.spinner.leftimage:GetSize() * root.spinner.arrow_scale
-	--root.spinner.text.hover.image:ScaleToSize(spinnerw-arrow_size*2, spinnerh)
+	--root.spinner.text.hover.image:ScaleToSize(option_width-arrow_size*2, option_height)
 
-	root.header_label = root:AddChild(Text(CHATFONT, 25))
-	root.header_label:SetRegionSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
+	-- Hide the widgets until we know which one we need.
+	for i,v in pairs(option_widgets) do
+		v:Hide()
+	end
+
 
 	root:SetOnGainFocus(function()
 		root.context.screen.options_scroll_list:OnWidgetFocus(root)
 		root:ApplyDescription()
 	end)
 
-	root.spinner:SetOnChangedFn(function(selected, old)
+	root.option_widgets.spinner:SetOnChangedFn(function(selected, old)
 		local option = root:GetSelectedOption()
 		mprint(option.description, "|", selected, old)
 		root:ApplyDescription()
@@ -128,83 +159,127 @@ local function ConfigOptionCtor(context, index)
 
 
 	--[[ Widget Methods ]]
+	--- Sets the option type.
+	root.SetOptionType = function(self, type)
+		self.current_option_type = type
+		for name, wdgt in pairs(self.option_widgets) do
+			if name == type then
+				wdgt:Show()
+			else
+				wdgt:Hide()
+			end
+		end
+	end
+
+	root.GetOptionType = function(self)
+		return self.current_option_type
+	end
+
 	root.GetSelectedOption = function(self)
-		return self.data.options[self.spinner:GetSelectedIndex()]
+		local option_type = self:GetOptionType()
+
+		if option_type == "spinner" then
+			return self.data.options[self.option_widgets.spinner:GetSelectedIndex()]
+		elseif option_type == "keybind" then
+			return self.data
+		else
+			errorf("Don't know how to get selected option for option type '%s'", option_type)
+		end
 	end
 
 	-- Handles bulk updates.
 	root.SetData = function(self, data)
 		self.data = data
+		data = nil -- Enforcing use of self.data
 
 		if not self.data then
-			self.spinner:Hide()
+			self:SetOptionType(nil)
 			return
 		end
 
 		-- Sections logic
-		local is_section_header = data and #data.options == 1 and data.options[1].data == data.default and data.options[1].description == ""
+		local is_section_header = self.data and #self.data.options == 1 and self.data.options[1].description == ""
 		self:SetIsSectionHeader(is_section_header)
 
 		if is_section_header then
+			self:SetOptionType(nil)
 			return
 		end
 
-		-- Spinner Logic
-		local selected = 1
-		
-		local spinner_options = {}
-		for i,v in ipairs(self.data.options) do
-			-- If there's a saved value, check if this one is the saved one. Otherwise, check if it's the default.
-			if (self.data.saved ~= nil and v.data == self.data.saved) or (v.data == self.data.default) then
-				selected = i
+		self:SetOptionType(self.data.option_type or "spinner")
+
+		if self:GetOptionType() == "keybind" then
+			local k = self.data.saved or self.data.default or nil
+			k = KeybindChar(k)
+
+			self.option_widgets.keybind:SetText(k)
+		elseif self:GetOptionType() == "spinner" then
+			-- Spinner Logic
+			local selected = 1
+			
+			local spinner_options = {}
+			for i,v in ipairs(self.data.options) do
+				-- If there's a saved value, check if this one is the saved one. Otherwise, check if it's the default.
+				if (self.data.saved ~= nil and v.data == self.data.saved) or (v.data == self.data.default) then
+					selected = i
+				end
+				table.insert(spinner_options, { text=v.description, data=v.data })
 			end
-			table.insert(spinner_options, { text=v.description, data=v.data })
+			
+			self.option_widgets.spinner:SetOptions(spinner_options)
+			self.option_widgets.spinner:SetSelectedIndex(selected)
+			self:UpdateHoverText()
+		else
+			errorf("Unrecognized option type '%s'", self:GetOptionType())
 		end
-		
-		self.spinner:SetOptions(spinner_options)
-		self.spinner:SetSelectedIndex(selected)
-		self:UpdateHoverText()
-		self.spinner:Show()
 	end
 
 	root.UpdateHoverText = function(self)
 		if true then return end
-		self.spinner.text.hover.image:ScaleToSize(self.spinner.text:GetRegionSize())
-		self.spinner.text:SetHoverText(self:GetSelectedOption().description)
+		self.option_widgets.spinner.text.hover.image:ScaleToSize(self.option_widgets.spinner.text:GetRegionSize())
+		self.option_widgets.spinner.text:SetHoverText(self:GetSelectedOption().description)
 	end
 	
 	root.SetIsSectionHeader = function(self, bool)
+		-- Hiding the option is handled elsewhere.
 		self.is_section_header = bool
 		if self.is_section_header then
 			self.label:Hide()
-			self.spinner:Hide()
-			self.header_label:Show()
+			self.section_label:Show()
 			self.bg:Hide()
 		else
 			self.label:Show()
-			self.spinner:Show()
-			self.header_label:Hide()
+			self.section_label:Hide()
 			self.bg:Show()
 		end
 	end
 
 	root.SetLabel = function(self, text)
 		if self.is_section_header then
-			--self.header_label:SetColour(Color.fromHex("#ee6666"))
-			self.header_label:SetString(text)
+			--self.section_label:SetColour(Color.fromHex("#ee6666"))
+			self.section_label:SetString(text)
 		else
 			self.label:SetString((text and text .. ":") or nil)
 		end
 	end
 
+	--- Updates the option info text in the menu header.
 	root.ApplyDescription = function(self)
 		if self.is_section_header then
 			return
 		end
 
 		local current_option = self:GetSelectedOption()
-		self.context.screen.config_hover:SetString(self.data.hover)
-		self.context.screen.option_hover:SetString(current_option.hover)
+
+		local config_description = self.data.hover
+		local option_description = current_option.hover
+
+		if self:GetOptionType() == "keybind" then
+			option_description = STRINGS.UI.OPTIONS.DEFAULT .. ": " .. KeybindChar(self.data.default)
+		end
+
+		self.context.screen.config_hover:SetString(config_description)
+		self.context.screen.option_hover:SetString(option_description)
 	end
 
 	--[[
@@ -292,6 +367,11 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.root:SetPosition(0, 0, 0)
 	self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
+	self.root:SetOnLoseFocus(function()
+		self.config_hover:SetString(nil)
+		self.option_hover:SetString(nil)
+	end)
+
 	-- Main Window
 	self.main = self.root:AddChild(CreateMainWindow(self))
 	local mainw, mainh = self.main:GetSize()
@@ -334,11 +414,14 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.options_scroll_list.bg:ScaleToSize(OPTION_ENTRY_WIDTH, scroller_height)
 	--self.options_scroll_list:SetPosition(0, -mainh/2 + scroller_height/2) -- Not perfect unless using 7 rows with total row height = 80.
 	self.options_scroll_list:SetPosition(0, self.divider:GetPosition().y - scroller_height/2 - (leftover_space - scroller_height) / 2) -- Not perfect unless using 7 rows with total row height = 80.
-
+	
 
 	-- Load mod options
+	self.config_options = {}
+	self:PopulateConfigKeybinds(self.config_options)
 	self:LoadModConfig(true)
 	self.options_scroll_list:SetItemsData(self.config_options)
+
 	--self.options_scroll_list:RefreshView()
 	--[[
 	self.options_scroll_list = self.main:AddChild(TEMPLATES.ScrollingGrid(
@@ -373,9 +456,6 @@ function InsightConfigurationScreen:LoadModConfig(client)
 	self.raw_config_options = KnownModIndex:LoadModConfigurationOptions(modname, self.client_config)
 	local mod_is_client_only = KnownModIndex:GetModInfo(modname) and KnownModIndex:GetModInfo(modname).client_only_mod
 
-	
-	self.config_options = {}
-
 	if self.raw_config_options and type(self.raw_config_options) == "table" then
 		for i,v in ipairs(self.raw_config_options) do
 			if (v.client and self.client_config) or not v.client then
@@ -390,13 +470,41 @@ function InsightConfigurationScreen:LoadModConfig(client)
 			--]]
 		end
 	end
-
-	return self.config_options
 end
 
-function InsightConfigurationScreen:LoadKeybinds()
+function InsightConfigurationScreen:PopulateConfigKeybinds(tbl)
 	if not insightSaveData:IsReady() then
 		mprint("Unable to load keybind information.")
+		return {}
+	end
+
+	local list = {}
+	for name, data in pairs(keybinds.keybinds) do
+		local key = keybinds:GetKey(name)
+		list[#list+1] = { 
+			name = name, 
+			label = name, 
+			hover = data.description, 
+			options = {}, 
+			saved = key, 
+			default = keybinds:GetDefaultKey(name), 
+			option_type = "keybind" 
+		}
+	end
+
+	table.sort(list, function(a, b) return a.label < b.label end)
+
+	table.insert(tbl, {
+		name = "KEYBINDS",
+		label = "Keybinds", 
+		options = {{description = "", data = 0}},
+		default = 0,
+		tags = {"ignore"},
+		option_type = "keybind",
+	})
+
+	for i = 1, #list do
+		table.insert(tbl, list[i])
 	end
 end
 

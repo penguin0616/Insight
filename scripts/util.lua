@@ -45,6 +45,14 @@ local module = {
 
 
 if IS_DS and not UICOLOURS then
+	GOLD = {202/255, 174/255, 118/255, 255/255}
+	GREY = {.57, .57, .57, 1}
+	BLACK = {.1, .1, .1, 1}
+	WHITE = {1, 1, 1, 1}
+	BROWN = {97/255, 73/255, 46/255, 255/255}
+	RED = {.7, .1, .1, 1}
+	DARKGREY = {.12, .12, .12, 1}
+
 	UICOLOURS = {
 		GOLD_CLICKABLE = RGB(215, 210, 157), -- interactive text & menu
 		GOLD_FOCUS = RGB(251, 193, 92), -- menu active item
