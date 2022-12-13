@@ -24,6 +24,7 @@ local Image = require("widgets/image")
 local ImageButton = require "widgets/imagebutton"
 local Text = require("widgets/text")
 local Spinner = require("widgets/spinner")
+local PopupDialogScreen = require("screens/dst/redux/popupdialog")
 local TEMPLATES = IS_DST and require("widgets/redux/templates") or setmetatable({}, { __index=function(self, index) error("Templates does not exist in DS.") end })
 local InsightScrollList = import("widgets/insightscrolllist")
 local ITEMPLATES = import("widgets/insight_templates")
@@ -52,13 +53,11 @@ end
 --------------------------------------------------------------------------
 local function CreateMainWindow(self)
 	-- These don't cick correctly.
-	--[[
 	local buttons = {
-		{ text = STRINGS.UI.MODSSCREEN.APPLY, cb = function() end },
-		{ text = STRINGS.UI.MODSSCREEN.RESETDEFAULT, cb = function() end },
+		{ text = STRINGS.UI.MODSSCREEN.APPLY, cb = function() self:ApplyChanges() end },
+		{ text = STRINGS.UI.MODSSCREEN.RESETDEFAULT, cb = function() self:ResetToDefaultValues() end },
 		{ text = STRINGS.UI.MODSSCREEN.BACK, cb = function() self:Close() end },
 	}
-	--]]
 
 	if IS_DST then
 		-- "images/misc/dialogrect_9slice_blue.xml"
@@ -128,6 +127,13 @@ local function ConfigOptionCtor(context, index)
 	option_widgets.keybind:SetTextFocusColour(UICOLOURS.WHITE) -- GOLD_FOCUS
 	option_widgets.keybind:SetFont(CHATFONT)
 	option_widgets.keybind:SetTextSize(25)
+	option_widgets.keybind:SetOnClick(function()
+		if not root.data then
+			return
+		end
+
+		context.screen:MapControl(root.data)
+	end)
 	
 	-- The option widget for spinner stuff (vanilla)
 	option_widgets.spinner = root:AddChild(Spinner(
@@ -150,9 +156,14 @@ local function ConfigOptionCtor(context, index)
 		root:ApplyDescription()
 	end)
 
+	-- wingo
 	root.option_widgets.spinner:SetOnChangedFn(function(selected, old)
-		local option = root:GetSelectedOption()
-		mprint(option.description, "|", selected, old)
+		--local option = root:GetSelectedOption()
+		--mprint(option.description, "|", selected, old)
+		--mprint(root.data.label, root.data.saved, "|", old, "->", selected)
+		context.screen:ChangeSetting(root.data, selected)
+		--mprint(root.data.label, "222222|", root.data.saved, "|", old, "->", selected)
+
 		root:ApplyDescription()
 		root:UpdateHoverText()
 	end)
@@ -160,8 +171,8 @@ local function ConfigOptionCtor(context, index)
 
 	--[[ Widget Methods ]]
 	--- Sets the option type.
-	root.SetOptionType = function(self, type)
-		self.current_option_type = type
+	root.SetConfigType = function(self, type)
+		self.current_config_type = type
 		for name, wdgt in pairs(self.option_widgets) do
 			if name == type then
 				wdgt:Show()
@@ -171,19 +182,19 @@ local function ConfigOptionCtor(context, index)
 		end
 	end
 
-	root.GetOptionType = function(self)
-		return self.current_option_type
+	root.GetConfigType = function(self)
+		return self.current_config_type
 	end
 
 	root.GetSelectedOption = function(self)
-		local option_type = self:GetOptionType()
+		local config_type = self:GetConfigType()
 
-		if option_type == "spinner" then
+		if config_type == "spinner" then
 			return self.data.options[self.option_widgets.spinner:GetSelectedIndex()]
-		elseif option_type == "keybind" then
-			return self.data
+		elseif config_type == "keybind" then
+			--return self.data
 		else
-			errorf("Don't know how to get selected option for option type '%s'", option_type)
+			errorf("Don't know how to get selected option for option type '%s'", config_type)
 		end
 	end
 
@@ -193,7 +204,7 @@ local function ConfigOptionCtor(context, index)
 		data = nil -- Enforcing use of self.data
 
 		if not self.data then
-			self:SetOptionType(nil)
+			self:SetConfigType(nil)
 			return
 		end
 
@@ -202,25 +213,24 @@ local function ConfigOptionCtor(context, index)
 		self:SetIsSectionHeader(is_section_header)
 
 		if is_section_header then
-			self:SetOptionType(nil)
+			self:SetConfigType(nil)
 			return
 		end
 
-		self:SetOptionType(self.data.option_type or "spinner")
+		self:SetConfigType(self.data.config_type or "spinner")
 
-		if self:GetOptionType() == "keybind" then
+		if self:GetConfigType() == "keybind" then
 			local k = self.data.saved or self.data.default or nil
 			k = KeybindChar(k)
-
 			self.option_widgets.keybind:SetText(k)
-		elseif self:GetOptionType() == "spinner" then
+		elseif self:GetConfigType() == "spinner" then
 			-- Spinner Logic
 			local selected = 1
 			
 			local spinner_options = {}
 			for i,v in ipairs(self.data.options) do
 				-- If there's a saved value, check if this one is the saved one. Otherwise, check if it's the default.
-				if (self.data.saved ~= nil and v.data == self.data.saved) or (v.data == self.data.default) then
+				if (self.data.saved ~= nil and v.data == self.data.saved) or (self.data.saved == nil and v.data == self.data.default) then
 					selected = i
 				end
 				table.insert(spinner_options, { text=v.description, data=v.data })
@@ -230,7 +240,7 @@ local function ConfigOptionCtor(context, index)
 			self.option_widgets.spinner:SetSelectedIndex(selected)
 			self:UpdateHoverText()
 		else
-			errorf("Unrecognized option type '%s'", self:GetOptionType())
+			errorf("Unrecognized option type '%s'", self:GetConfigType())
 		end
 	end
 
@@ -272,10 +282,12 @@ local function ConfigOptionCtor(context, index)
 		local current_option = self:GetSelectedOption()
 
 		local config_description = self.data.hover
-		local option_description = current_option.hover
+		local option_description = nil
 
-		if self:GetOptionType() == "keybind" then
+		if self:GetConfigType() == "keybind" then
 			option_description = STRINGS.UI.OPTIONS.DEFAULT .. ": " .. KeybindChar(self.data.default)
+		else
+			option_description = current_option.hover
 		end
 
 		self.context.screen.config_hover:SetString(config_description)
@@ -344,7 +356,9 @@ end
 local InsightConfigurationScreen = Class(Screen, function(self)
 	Screen._ctor(self, "InsightConfigurationScreen")
 
+	self.modname = modname
 	self.active = true
+	self.dirty_changes = {}
 	self.owner = ThePlayer
 
 	-- Background tint
@@ -384,7 +398,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.header:SetPosition(0, mainh/2 - headerh/2)
 
 	self.header_label = self.header:AddChild(Text(HEADERFONT, 26))
-	self.header_label:SetString(KnownModIndex:GetModFancyName(modname) .. " " ..STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX)
+	self:UpdateHeader()
 	self.header_label:SetPosition(0, headerh/2 - self.header_label:GetSize()/2 - 4) -- 4 pixels of padding from the top
 	self.header_label:SetColour(UICOLOURS.GOLD)
 
@@ -418,8 +432,9 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 
 	-- Load mod options
 	self.config_options = {}
-	self:PopulateConfigKeybinds(self.config_options)
-	self:LoadModConfig(true)
+	self.client_config = true
+	self:PopulateKeybinds(self.config_options)
+	self:LoadModConfig()
 	self.options_scroll_list:SetItemsData(self.config_options)
 
 	--self.options_scroll_list:RefreshView()
@@ -447,14 +462,22 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.scroll_list = self.main:AddChild(InsightPage("modconfig", true))
 	self.scroll_list:SetSize(mainw, mainh - headerh - select(2, self.divider:GetSize()) - 5)
 	--]]
+
+	self:SetDirty(false)
 end)
 
-function InsightConfigurationScreen:LoadModConfig(client)
-	assert(client ~= nil, "LoadModConfig requires client boolean")
+function InsightConfigurationScreen:UpdateHeader(ending)
+	self.header_label:SetString(
+		string.format("%s %s%s", KnownModIndex:GetModFancyName(self.modname), STRINGS.UI.MODSSCREEN.CONFIGSCREENTITLESUFFIX, ending or "")
+	)
+end
 
-	self.client_config = client
-	self.raw_config_options = KnownModIndex:LoadModConfigurationOptions(modname, self.client_config)
-	local mod_is_client_only = KnownModIndex:GetModInfo(modname) and KnownModIndex:GetModInfo(modname).client_only_mod
+function InsightConfigurationScreen:LoadModConfig() 
+	assert(self.client_config ~= nil, "LoadModConfig requires client boolean")
+	assert(self.client_config == true, "InsightConfigurationScreen only supports loading client config as true.")
+
+	self.raw_config_options = KnownModIndex:LoadModConfigurationOptions(self.modname, self.client_config)
+	local mod_is_client_only = KnownModIndex:GetModInfo(self.modname) and KnownModIndex:GetModInfo(self.modname).client_only_mod
 
 	if self.raw_config_options and type(self.raw_config_options) == "table" then
 		for i,v in ipairs(self.raw_config_options) do
@@ -472,23 +495,28 @@ function InsightConfigurationScreen:LoadModConfig(client)
 	end
 end
 
-function InsightConfigurationScreen:PopulateConfigKeybinds(tbl)
+function InsightConfigurationScreen:PopulateKeybinds(tbl)
 	if not insightSaveData:IsReady() then
 		mprint("Unable to load keybind information.")
 		return {}
 	end
 
+	if not self.client_config then
+		mprint("Non-client config can't load keybinds.")
+		return
+	end
+
 	local list = {}
-	for name, data in pairs(keybinds.keybinds) do
-		local key = keybinds:GetKey(name)
+	for name, data in pairs(insightKeybinds.keybinds) do
+		local key = insightKeybinds:GetKey(name)
 		list[#list+1] = { 
 			name = name, 
-			label = name, 
+			label = data.pretty_name,
 			hover = data.description, 
 			options = {}, 
 			saved = key, 
-			default = keybinds:GetDefaultKey(name), 
-			option_type = "keybind" 
+			default = insightKeybinds:GetDefaultKey(name), 
+			config_type = "keybind",
 		}
 	end
 
@@ -498,9 +526,10 @@ function InsightConfigurationScreen:PopulateConfigKeybinds(tbl)
 		name = "KEYBINDS",
 		label = "Keybinds", 
 		options = {{description = "", data = 0}},
+		saved = 0,
 		default = 0,
 		tags = {"ignore"},
-		option_type = "keybind",
+		config_type = "keybind",
 	})
 
 	for i = 1, #list do
@@ -508,18 +537,229 @@ function InsightConfigurationScreen:PopulateConfigKeybinds(tbl)
 	end
 end
 
---- Creates a "clean" mod config table for saving.
+--- Prompts user to change config.
+-- @tparam config Config_Entry
+function InsightConfigurationScreen:MapControl(config)
+	local default_text = string.format(STRINGS.UI.CONTROLSSCREEN.DEFAULT_CONTROL_TEXT, KeybindChar(config.default))
+	local body_text = STRINGS.UI.CONTROLSSCREEN.CONTROL_SELECT .. "\n\n" .. default_text
+
+	local popup = PopupDialogScreen(config.label, body_text, {
+		{ text=STRINGS.UI.CONTROLSSCREEN.CANCEL, cb=function() TheFrontEnd:PopScreen() end },
+		{ 
+			text=STRINGS.UI.CONTROLSSCREEN.UNBIND, 
+			cb=function() 
+				dprint("unbind")
+				self:ChangeSetting(config, nil)
+				self.options_scroll_list:RefreshView()
+				TheFrontEnd:PopScreen()
+			end
+		}
+	})
+
+	local function IsValidKey(key)
+		if KeybindChar(key) == nil then
+			error("pcall error")
+		end
+	end
+
+	-- Prevents Escape from Triggering Unbind
+	popup.oncontrol_fn = function() return true end
+
+	popup.OnRawKey = function(_, key, down)
+		-- Only check if the key has gone up
+		if down then return end
+		-- While I technically support anything in the inputs section, we'll pass on that for now.
+		local a, b = pcall(string.char, key)
+		local valid = pcall(IsValidKey, key)
+		dprint("popup OnRawKey", key, a, b, "| valid:", valid, valid and KeybindChar(key) or nil)
+
+		if valid then
+			dprint("\tVALID!")
+			self:ChangeSetting(config, key)
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			self.options_scroll_list:RefreshView()
+			TheFrontEnd:PopScreen()
+		end
+		
+		return true
+	end
+
+	TheFrontEnd:PushScreen(popup)
+end
+
+function InsightConfigurationScreen:IsDirty()
+	return self.dirty
+end
+
+function InsightConfigurationScreen:SetDirty(dirty)
+	if self.dirty ~= dirty then
+		self.dirty = dirty
+		self:OnDirtyChanged(dirty)
+	end
+end
+
+function InsightConfigurationScreen:OnDirtyChanged(dirty)
+	--mprint("OnDirtyChanged", dirty)
+	for widget in pairs(self.main.actions:GetChildren()) do
+		if widget.text and widget.text:GetString() == STRINGS.UI.MODSSCREEN.APPLY then
+			if dirty == true then widget:Enable() else widget:Disable() end
+			break
+		end
+	end
+end
+
+function InsightConfigurationScreen:ChangeSetting(data, new)
+	--mprintf("ChangeSetting (%s): %s -> %s | Default: %s", data.label, tostring(data.saved), tostring(new), tostring(data.default))
+	--dumptable(data)
+	if data.saved == new then
+		-- No point in updating data with the same thing.
+		return
+	end
+
+	--mprintf("ChangeSetting ~~~ (%s): %s -> %s | Default: %s", data.label, tostring(data.saved), tostring(new), tostring(data.default))
+
+	local old_saved = data.saved
+
+	-- Using data as a key so dirty changes always overwrite previous dirty changes.
+	-- Of course, that means we need to handle that case.
+	if self.dirty_changes[data] ~= nil then
+		-- Bring the oldest saved option forward.
+		old_saved = self.dirty_changes[data].old
+	end
+
+	if old_saved == new then
+		self.dirty_changes[data] = nil
+		data.saved = old_saved
+
+		self:SetDirty(next(self.dirty_changes) ~= nil)
+	else
+		self:SetDirty(true)
+		self.dirty_changes[data] = { old=old_saved, new=new }
+		data.saved = new
+	end
+end
+
+function InsightConfigurationScreen:DiscardChanges()
+	if not self:IsDirty() then
+		return
+	end
+
+	for data, change_info in pairs(self.dirty_changes) do
+		data.saved = change_info.old
+	end
+
+	self.dirty_changes = {}
+	self:SetDirty(false)
+end
+
+function InsightConfigurationScreen:ApplyChanges(callback)
+	if not self:IsDirty() then
+		if callback then
+			callback(true, true)
+		end
+		return 
+	end
+
+	local settings = self:CollectSettings()
+	
+	-- Do keybind settings
+	for i,v in pairs(settings.keybind) do
+		if v.tags == nil or not table.contains(v.tags, "ignore") then
+			insightSaveData:Get("keybinds")[v.name] = v.saved
+			insightKeybinds:ChangeKey(v.name, v.saved)
+		end
+	end
+	insightSaveData:Save()
+	settings.keybind = nil
+
+	-- Do vanilla settings
+	KnownModIndex:SaveConfigurationOptions(function()
+		self:SetDirty(false)
+		--[[
+		UpdateHeader(" (Saved!)")
+		if self._headertask then
+			self._headertask:Cancel()
+			self._headertask = nil
+		end
+		--]]
+	end, self.modname, settings.modconfig, self.client_config)
+	settings.modconfig = nil
+
+	if callback then
+		-- Settings, Keybinds
+		callback(true, true)
+	end
+	--[[
+		KnownModIndex:SaveConfigurationOptions(function()
+			self:MakeDirty(false)
+			TheFrontEnd:PopScreen()
+		end, self.modname, settings, self.client_config)
+	]]
+
+	-- Check if I missed anything.
+	if next(settings) ~= nil then
+		errorf("ApplyChanges doesn't know how to save unknown type '%s'", next(settings))
+	end
+end
+
 function InsightConfigurationScreen:CollectSettings()
-	
-end
+	local settings = {}
 
-function InsightConfigurationScreen:Apply()
-	
-end
+	for i,v in ipairs(self.config_options) do
+		local config_type = v.config_type or "modconfig"
+		if settings[config_type] == nil then
+			settings[config_type] = {}
+		end
 
+		table.insert(settings[config_type], v)
+	end
+
+	return settings
+end
 
 function InsightConfigurationScreen:ResetToDefaultValues()
+	local settings = self:CollectSettings()
 	
+	for type, configs in pairs(settings) do
+		for i,v in pairs(configs) do
+			if not table.contains(v.tags, "ignore") then
+				self:ChangeSetting(v, v.default)
+			end
+		end
+		self.options_scroll_list:RefreshView()
+	end
+end
+
+function InsightConfigurationScreen:Close(forced)
+	if self:IsDirty() then
+		if forced then
+			-- We should only update configs if we've received a definite confirmation.
+			self:DiscardChanges()
+			self:Close(true)
+			return
+		end
+
+		local popup = PopupDialogScreen(STRINGS.UI.MODSSCREEN.BACKTITLE, STRINGS.UI.MODSSCREEN.BACKBODY, {
+		  	{
+		  		text = STRINGS.UI.OPTIONS.YES,
+		  		cb = function()
+					self:DiscardChanges()
+					TheFrontEnd:PopScreen()
+					self:Close(true)
+				end
+			},
+			{
+				text = STRINGS.UI.OPTIONS.NO,
+				cb = function()
+					TheFrontEnd:PopScreen()
+				end
+			}
+		})
+
+		TheFrontEnd:PushScreen(popup)
+	else
+		TheFrontEnd:PopScreen(self)
+	end
 end
 
 function InsightConfigurationScreen:OnControl(control, down)
@@ -527,14 +767,11 @@ function InsightConfigurationScreen:OnControl(control, down)
 
 	local scheme = controlHelper.GetCurrentScheme()
 	if not down and scheme:IsAcceptedControl("exit", control) then
+		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
 		return self:Close()
 	end
 
 	return self._base.OnControl(self, control, down)
-end
-
-function InsightConfigurationScreen:Close()
-	TheFrontEnd:PopScreen(self)
 end
 
 return InsightConfigurationScreen

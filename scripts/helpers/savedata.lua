@@ -25,6 +25,7 @@ local SaveData = Class(function(self, path)
 	assert(type(path) == "string", "SaveData class expected base path for arg#1")
 	self.initialized = false
 	self.path = path
+	self.fast_save = true
 	self.compress = false
 
 	self.data = {}
@@ -40,9 +41,15 @@ function SaveData:IsDirty()
 	return self.dirty
 end
 
+function SaveData:SetDirty(dirty)
+	if self.dirty ~= dirty then
+		self.dirty = dirty
+	end
+end
+
 function SaveData:SetValue(name, value)
 	self.data[name] = value
-	self.dirty = true
+	self:SetDirty(true)
 end
 SaveData.Set = SaveData.SetValue
 
@@ -95,11 +102,11 @@ end
 
 function SaveData:Save(callback, force)
 	if self.dirty or force then
-		TheSim:SetPersistentString(self.path, DataDumper(self.data, nil, true), self.compress, callback)
+		TheSim:SetPersistentString(self.path, DataDumper(self.data, nil, self.fast_save), self.compress, callback)
 		mprint("[SaveData] Saved " .. self.path)
-		self.dirty = false
+		self:SetDirty(false)
 	else
-		mprint("[SaveData] Save of " .. self.path .. " not needed, is clean.")
+		mprint("[SaveData] NOT SAVING " .. self.path .. ", we're not dirty!")
 		if callback then
 			return callback(true)
 		end

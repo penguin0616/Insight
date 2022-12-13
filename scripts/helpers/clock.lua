@@ -34,7 +34,7 @@ end
 
 module.GetTimeLeftInSegment = function(self)
 	if IS_DST then
-		if self.netvars.remainingtimeinphase then
+		if module.netvars.remainingtimeinphase then
 			return self.netvars.remainingtimeinphase:value() % 30
 		end
 	else
@@ -42,17 +42,18 @@ module.GetTimeLeftInSegment = function(self)
 	end
 end
 
-module.Initialize = function(self, clock)
-	if self.initialized then
+module.Initialize = function(clock)
+	if module.initialized then
 		return
 	end
-	self.initialized = true
+	module.initialized = true
 
-	self.netvars.cycles = util.getupvalue(clock.OnSave, "_cycles")
-	self.netvars.phase = util.getupvalue(clock.OnSave, "_phase")
-	self.netvars.mooomphasecycle = util.getupvalue(clock.OnSave, "_mooomphasecycle")
-	self.netvars.totaltimeinphase = util.getupvalue(clock.OnSave, "_totaltimeinphase")
-	self.netvars.remainingtimeinphase = util.getupvalue(clock.OnSave, "_remainingtimeinphase")
+	mprint(clock)
+	module.netvars.cycles = util.getupvalue(clock.OnSave, "_cycles")
+	module.netvars.phase = util.getupvalue(clock.OnSave, "_phase")
+	module.netvars.mooomphasecycle = util.getupvalue(clock.OnSave, "_mooomphasecycle")
+	module.netvars.totaltimeinphase = util.getupvalue(clock.OnSave, "_totaltimeinphase")
+	module.netvars.remainingtimeinphase = util.getupvalue(clock.OnSave, "_remainingtimeinphase")
 end
 
 return module

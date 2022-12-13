@@ -58,6 +58,7 @@ insight_subscribed = IS_DS or KnownModIndex.savedata.known_mods["workshop-218900
 --==========================================================================================================================
 --==========================================================================================================================
 
+
 function AddLocalPlayerPostInit(fn, persists)
 	-- table.insert uses rawset internally
 	onLocalPlayerReady[#onLocalPlayerReady+1] = {fn = fn, persists = persists or false}
@@ -523,34 +524,23 @@ end
 -- I wonder if I should move keybinds to mod config instead of a persistentstring. 
 -- insightSaveData:Get("keybinds")
 
-keybinds = import("helpers/keybinds")()
---[[
-keybinds:BulkRegister(insightSaveData:Get("keybinds"), {
-	[{"test", "This is a test."}] = function(down)
-		mprint("wow keybind test!!", down)
-	end,
-	[{"test2", "This is a second test."}] = function(down)
-		mprint("even better test!!", down)
-	end
-})
---]]
+insightKeybinds = import("helpers/keybinds")()
 
---[[
 mprint("Loaded keybinds:")
 dumptable(insightSaveData:Get("keybinds"))
---]]
 
-keybinds:Register("test", "This is a test.", nil, function(down)
-	mprint(TheFrontEnd:GetActiveScreen(), localPlayer.components.playercontroller:IsEnabled())
-	mprint("wow keybind test!!", down)
+insightKeybinds:Register("test", "TestBind", "This is a test.", nil, function(down)
+	if TheFrontEnd:GetActiveScreen().name == "HUD" and localPlayer.components.playercontroller:IsEnabled() then
+		mprint(":)")
+	end
 end)
 
-keybinds.onkeybindchanged = function(name, new, old)
-	mprint("CHANGED", name, new, old)
+insightKeybinds.onkeybindchanged = function(name, new, old)
+	--mprint("BIGCHANGED::", name, "|", new, old, insightSaveData:Get("keybinds")[name])
+	insightSaveData:SetDirty(true)
 end
-
-keybinds:LoadSavedKeybindings(insightSaveData:Get("keybinds"))
-keybinds:SetReady()
+insightKeybinds:LoadSavedKeybindings(insightSaveData:Get("keybinds"))
+insightKeybinds:SetReady()
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -758,6 +748,8 @@ end)
 
 AddPrefabPostInit("cave_entrance_open", function(inst)
 	if IS_DS then return end -- does this even exist in DS
+	
+	-- This is a client postinit so we can use this config method.
 	local cfg = GetModConfigData("sinkhole_marks", true)
 	if cfg == 0 then return end
 
@@ -788,6 +780,7 @@ end)
 
 AddPrefabPostInit("cave_exit", function(inst)
 	if IS_DS then return end
+	-- This is a client postinit so we can use this config method.
 	local cfg = GetModConfigData("sinkhole_marks", true)
 	if cfg == 0 then return end
 

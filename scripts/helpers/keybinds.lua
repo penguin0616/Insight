@@ -70,11 +70,11 @@ function Keybinds:BulkRegister(keybind_list, register_list)
 end
 --]]
 
-function Keybinds:Register(name, description, key, fn)
+function Keybinds:Register(name, pretty_name, description, key, fn)
 	assert(self.keybinds[name] == nil, string.format("Cannot overwrite existing keybind '%s'", name))
 	key = GetKeyAsNum(key)
 
-	self.keybinds[name] = { description=description, default_key=key, fn=fn }
+	self.keybinds[name] = { pretty_name=pretty_name, description=description, default_key=key, fn=fn }
 	self:ChangeKey(name, key, fn)
 end
 
