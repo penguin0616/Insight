@@ -1793,7 +1793,9 @@ AddComponentPostInit("combat", function(self)
 end)
 
 AddComponentPostInit("clock", function(self)
-	import("helpers/clock"):Initialize(self)
+	if IS_DS or TheWorld.ismastersim then
+		import("helpers/clock").Initialize(self)
+	end
 end)
 
 --[[
@@ -2267,13 +2269,15 @@ if IS_DST then
 		entity_tracker:TrackPrefab("rainometer")
 	end
 
+	--[[
 	AddComponentPostInit("clock", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then
 			return
 		end
 
-		import("helpers/clock"):Initialize(self)
+		import("helpers/clock").Initialize(self)
 	end)
+	--]]
 
 	AddComponentPostInit("grower", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end
