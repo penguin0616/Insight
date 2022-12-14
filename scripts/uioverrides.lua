@@ -136,13 +136,17 @@ do
 	widgetLib.imagebutton.OverrideFocuses\(([^)]+)\)
 	$1:InsightOverrideFocuses()
 	]]
+	--[[
 	function ImageButton.InsightOverrideFocuses(self)
+		if true then return end
+
 		if IS_DST then
 			return
 		end
 		self.OnGainFocus = OnGainFocus
 		self.OnLoseFocus = OnLoseFocus
 	end
+	--]]
 end
 
 --==========================================================================================================================
@@ -177,10 +181,23 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	local InsightButton = import("widgets/insightbutton")
 	local InsightMenu = import("widgets/insightmenu")
 
+	-- TODO: REMOVE THIS
+	util.classTweaker.TrackClassInstances(InsightMenu)
+	REGISTER_HOT_RELOAD({"widgets/insightmenu"}, function(imports)
+		InsightMenu = imports.insightmenu
+		util.classTweaker.TrackClassInstances(InsightMenu)
+
+		controls.insight_menu:Kill()
+		controls.insight_menu = controls.top_root:AddChild(InsightMenu())
+		controls.insight_menu:SetPosition(0, -400)
+		controls.insight_menu:Hide()
+		controls.insight_menu:Activate()
+	end)
+
 	controls.insight_menu = controls.top_root:AddChild(InsightMenu())
 	controls.insight_menu:SetPosition(0, -400)
 	controls.insight_menu:Hide()
-	controls.insight_menu:Activate()
+	controls.inst:DoTaskInTime(0, function() controls.insight_menu:Activate() end)
 
 	local mb = InsightButton()
 	function mb:ResetPosition()
@@ -228,7 +245,9 @@ AddClassPostConstruct("widgets/controls", function(controls)
 			mb:Kill()
 			return
 		end
-		insight:MaintainMenu(controls.insight_menu)
+
+		-- localPlayer isn't ready yet upon widget ctor, so the widget won't handle this automatically.
+		insight:MaintainMenu(controls.insight_menu) 
 	end)
 
 	--[[

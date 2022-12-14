@@ -90,15 +90,27 @@ local InsightPage = Class(Widget, function(self, name)
 	if IS_DST then
 		self.list = self:AddChild(MakeGrid())
 	else
-		self.list = self:AddChild(InsightScrollList(
-			{},
-			item_ctor_fn,
-			apply_fn,
-			item_width,
-			item_height,
-			3,
-			padding_between_rows
-		))
+		--[[
+			num_visible_rows = 3,
+			num_columns = 1,
+			widget_width = item_width,
+			widget_height = item_height + padding_between_rows,
+			scrollbar_offset = 15, -- Took this number from the math in insightscrolllist.
+			scrollbar_height_offset = 0,
+			peek_percent = 0, -- too much peek just clones the last item
+			allow_bottom_empty_row = false,
+			apply_fn = apply_fn,
+			item_ctor_fn = item_ctor_fn,
+		]]
+		self.list = self:AddChild(InsightScrollList({
+			scroll_context = {},
+			item_ctor_fn = item_ctor_fn,
+			apply_fn = apply_fn,
+			widget_width = item_width,
+			widget_height = item_height,
+			num_visible_rows = 3,
+			row_padding = padding_between_rows
+		}))
 	end
 
 	self.list:SetPosition(-5, -25)
@@ -127,7 +139,7 @@ function InsightPage:OnControl(...)
 end
 --]]
 
-
+--[[
 function InsightPage:ScrollDown(...)
 	return self.list:ScrollDown(...)
 end
@@ -135,6 +147,7 @@ end
 function InsightPage:ScrollUp(...)
 	return self.list:ScrollUp(...)
 end
+--]]
 
 function InsightPage:GetName()
 	return self._name

@@ -24,7 +24,7 @@ local Image = require("widgets/image")
 local ImageButton = require "widgets/imagebutton"
 local Text = require("widgets/text")
 local Spinner = require("widgets/spinner")
-local PopupDialogScreen = require("screens/dst/redux/popupdialog")
+local PopupDialogScreen = IS_DST and require("screens/redux/popupdialog") or require("screens/popupdialog")
 local TEMPLATES = IS_DST and require("widgets/redux/templates") or setmetatable({}, { __index=function(self, index) error("Templates does not exist in DS.") end })
 local InsightScrollList = import("widgets/insightscrolllist")
 local ITEMPLATES = import("widgets/insight_templates")
@@ -42,7 +42,11 @@ local function KeybindChar(k)
 	if k then
 		k = STRINGS.UI.CONTROLSSCREEN.INPUTS[TheInput:GetControllerID() + 1][k]
 	else
-		k = STRINGS.UI.CONTROLSSCREEN.INPUTS[9][2]
+		if IS_DST then
+			k = STRINGS.UI.CONTROLSSCREEN.INPUTS[9][2]
+		else
+			k = STRINGS.UI.CONTROLSSCREEN.INPUTS[6][2]
+		end
 	end
 
 	return k
@@ -56,13 +60,13 @@ local function CreateMainWindow(self)
 	local buttons = {
 		{ text = STRINGS.UI.MODSSCREEN.APPLY, cb = function() self:ApplyChanges() end },
 		{ text = STRINGS.UI.MODSSCREEN.RESETDEFAULT, cb = function() self:ResetToDefaultValues() end },
-		{ text = STRINGS.UI.MODSSCREEN.BACK, cb = function() self:Close() end },
+		{ text = (IS_DST and STRINGS.UI.MODSSCREEN.BACK) or STRINGS.UI.MODSSCREEN.CANCEL, cb = function() self:Close() end },
 	}
 
-	if IS_DST then
+	if true or IS_DST then
 		-- "images/misc/dialogrect_9slice_blue.xml"
 		-- #2B4D76
-		local t = ITEMPLATES.RectangleWindow("images/dialogrect_9slice.xml", MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, nil, buttons) -- [gp: 619, 359]
+		local t = ITEMPLATES.RectangleWindow("images/dst/dialogrect_9slice.xml", MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT, nil, buttons) -- [gp: 619, 359]
 		--[[
 		for i,v in pairs(t.elements) do
 			v:SetTint(.6, .6, 1, 1)
@@ -137,7 +141,7 @@ local function ConfigOptionCtor(context, index)
 	
 	-- The option widget for spinner stuff (vanilla)
 	option_widgets.spinner = root:AddChild(Spinner(
-		{}, option_width, option_height, {font=CHATFONT, size=25}, NIL_EDITABLE, "images/dst/global_redux.xml", NIL_TEXTURES, true
+		{}, option_width, option_height, {font=CHATFONT, size=25}, NIL_EDITABLE, IS_DST and "images/global_redux.xml" or nil, NIL_TEXTURES, true
 	))
 	option_widgets.spinner:SetPosition(OPTION_ENTRY_WIDTH/2 - option_width/2, 0)
 	option_widgets.spinner.text:SetString(" ") -- So SetHoverText will make the wrapper widget for Text.
@@ -152,6 +156,10 @@ local function ConfigOptionCtor(context, index)
 
 
 	root:SetOnGainFocus(function()
+		if not root.data then
+			return
+		end
+		
 		root.context.screen.options_scroll_list:OnWidgetFocus(root)
 		root:ApplyDescription()
 	end)
@@ -173,9 +181,11 @@ local function ConfigOptionCtor(context, index)
 	--- Sets the option type.
 	root.SetConfigType = function(self, type)
 		self.current_config_type = type
+		self.focus_forward = nil
 		for name, wdgt in pairs(self.option_widgets) do
 			if name == type then
 				wdgt:Show()
+				self.focus_forward = wdgt -- The actual option thing should be focused
 			else
 				wdgt:Hide()
 			end
@@ -194,7 +204,7 @@ local function ConfigOptionCtor(context, index)
 		elseif config_type == "keybind" then
 			--return self.data
 		else
-			errorf("Don't know how to get selected option for option type '%s'", config_type)
+			errorf("Don't know how to get selected option for option type '%s'", tostring(config_type))
 		end
 	end
 
@@ -209,6 +219,11 @@ local function ConfigOptionCtor(context, index)
 		end
 
 		-- Sections logic
+		if self.data.options == nil and self.data["_"] then
+			-- This means it's likely an empty AddSectionTitle from modinfo in DS.
+			setmetatable(self.data, { __index=self.data["_"], __newindex=self.data["_"] })
+		end
+		
 		local is_section_header = self.data and #self.data.options == 1 and self.data.options[1].description == ""
 		self:SetIsSectionHeader(is_section_header)
 
@@ -276,6 +291,8 @@ local function ConfigOptionCtor(context, index)
 	--- Updates the option info text in the menu header.
 	root.ApplyDescription = function(self)
 		if self.is_section_header then
+			self.context.screen.config_hover:SetString(nil)
+			self.context.screen.option_hover:SetString(nil)
 			return
 		end
 
@@ -328,14 +345,14 @@ end
 local function CreateScroller(self)
 	if IS_DST then
 		return TEMPLATES.ScrollingGrid(
-			self.option_widgets,
+			{},
 			{
 				scroll_context = {
 					screen = self,
 					--config_hover = self.config_hover,
 					--option_hover = self.option_Hover,
 				},
-				widget_width  = OPTION_ENTRY_WIDTH,
+				widget_width = OPTION_ENTRY_WIDTH,
 				widget_height = OPTION_ENTRY_HEIGHT + OPTION_ENTRY_PADDING,
 				num_visible_rows = NUM_VISIBLE_ROWS,
 				num_columns = 1,
@@ -346,7 +363,22 @@ local function CreateScroller(self)
 			}
 		)
 	else
-		return 
+		return InsightScrollList(
+			{
+				scroll_context = {
+					screen = self,
+				},
+				widget_width = OPTION_ENTRY_WIDTH,
+				widget_height = OPTION_ENTRY_HEIGHT,
+				row_padding = OPTION_ENTRY_PADDING,
+				num_visible_rows = NUM_VISIBLE_ROWS,
+				--num_columns = 1,
+				item_ctor_fn = ConfigOptionCtor,
+				apply_fn = UpdateEntryWidget,
+				--scrollbar_offset = 20, -- 20
+				--scrollbar_height_offset = 0, -- -60
+			}
+		)
 	end
 end
 
@@ -359,7 +391,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.modname = modname
 	self.active = true
 	self.dirty_changes = {}
-	self.owner = ThePlayer
+	self.owner = localPlayer
 
 	-- Background tint
 	self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
@@ -414,8 +446,6 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.divider:SetSize(mainw + 20, 5)
 	self.divider:SetPosition(0, self.header:GetPosition().y - headerh/2 - 5)
 
-	self.option_widgets = {}
-
 	local leftover_space = mainh - select(2, self.header:GetSize()) - select(2, self.divider:GetSize())
 
 	-- context, create_widgets_fn, update_fn, scissor_x, scissor_y, scissor_width, scissor_height, scrollbar_offset, scrollbar_height_offset, scroll_per_click
@@ -428,7 +458,6 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.options_scroll_list.bg:ScaleToSize(OPTION_ENTRY_WIDTH, scroller_height)
 	--self.options_scroll_list:SetPosition(0, -mainh/2 + scroller_height/2) -- Not perfect unless using 7 rows with total row height = 80.
 	self.options_scroll_list:SetPosition(0, self.divider:GetPosition().y - scroller_height/2 - (leftover_space - scroller_height) / 2) -- Not perfect unless using 7 rows with total row height = 80.
-	
 
 	-- Load mod options
 	self.config_options = {}
@@ -436,6 +465,8 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self:PopulateKeybinds(self.config_options)
 	self:LoadModConfig()
 	self.options_scroll_list:SetItemsData(self.config_options)
+	-- 93
+	self.options_scroll_list.scroll_per_click = math.max(math.floor(NUM_VISIBLE_ROWS/4), 1)
 
 	--self.options_scroll_list:RefreshView()
 	--[[
@@ -464,6 +495,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	--]]
 
 	self:SetDirty(false)
+	self.default_focus = self.options_scroll_list
 end)
 
 function InsightConfigurationScreen:UpdateHeader(ending)
@@ -546,14 +578,23 @@ function InsightConfigurationScreen:MapControl(config)
 	local popup = PopupDialogScreen(config.label, body_text, {
 		{ text=STRINGS.UI.CONTROLSSCREEN.CANCEL, cb=function() TheFrontEnd:PopScreen() end },
 		{ 
-			text=STRINGS.UI.CONTROLSSCREEN.UNBIND, 
+			text=GetLocalInsight(self.owner).context.lstr.unbind, -- STRINGS.UI.CONTROLSSCREEN.UNBIND
 			cb=function() 
 				dprint("unbind")
 				self:ChangeSetting(config, nil)
 				self.options_scroll_list:RefreshView()
 				TheFrontEnd:PopScreen()
 			end
-		}
+		},
+		{ 
+			text=STRINGS.UI.MODSSCREEN.RESETDEFAULT, 
+			cb=function() 
+				dprint("reset")
+				self:ChangeSetting(config, config.default)
+				self.options_scroll_list:RefreshView()
+				TheFrontEnd:PopScreen()
+			end
+		},
 	})
 
 	local function IsValidKey(key)

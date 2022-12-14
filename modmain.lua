@@ -179,7 +179,6 @@ end
 string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end})
 import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
-util = import("util")
 Color = import("helpers/color")
 rpcNetwork = import("rpcnetwork")
 combatHelper = import("helpers/combat")
@@ -421,6 +420,13 @@ function GetPlayerContext(player)
 	--return context
 end
 
+local CONTEXT_META = {
+	__newindex = function()
+		error("context is readonly")
+	end;
+	__tostring = function(self) return string.format("Player Context (%s): %s", tostring(self.player), self._name or "ADDR") end,
+	__metatable = "[Insight] The metatable is locked"
+}
 --- Creates player's insight context.
 -- @tparam Player player Player to create context for.
 -- @tparam table config Insight configuration.
@@ -431,13 +437,7 @@ function CreatePlayerContext(player, config, external_config, etc)
 	assert(config, "[Insight]: Config is missing!")
 	assert(external_config, "[Insight]: External_config is missing!")
 
-	local mt = {
-		__newindex = function()
-			error("context is readonly")
-		end;
-		__tostring = function(self) return string.format("Player Context (%s): %s", tostring(self.player), self._name or "ADDR") end,
-		__metatable = "[Insight] The metatable is locked"
-	}
+	
 
 	local context = {
 		player = player,
@@ -462,12 +462,26 @@ function CreatePlayerContext(player, config, external_config, etc)
 		end
 	end
 
-	setmetatable(context.config, mt)
-	setmetatable(context.external_config, mt)
+	setmetatable(context.config, CONTEXT_META)
+	setmetatable(context.external_config, CONTEXT_META)
 	setmetatable(context, mt)
 
 
 	player_contexts[player] = context
+end
+
+function UpdatePlayerContext(player, data)
+	if not player_context[player] then
+		mprint("Can't update missing player context.")
+		return
+	end
+
+	for i,v in pairs(player_context[player]) do
+		player_context[i] = v
+		if type(v) == "table" and i:find("config") then
+			setmetatable(v, CONTEXT_META)
+		end
+	end
 end
 
 --- Returns the component's origin. 
@@ -1710,8 +1724,9 @@ end
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
+util = import("util")
 
-patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"frontend", "widget", "button", "imagebutton", "text"} }
+patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"frontend", "widget", "spinner", "button", "imagebutton", "text"} }
 for i,v in pairs(patcher._to_load) do
 	patcher[v] = patcher._common.GetPatcher(v)
 	if patcher[v].Init then
@@ -1978,7 +1993,13 @@ if IS_DST then
 	--======================= RPCs ============================================================================================
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
 		data = json.decode(data)
-		CreatePlayerContext(player, data.config, data.external_config, data.etc)
+		if player_contexts[player] then
+			UpdatePlayerContext(player, {
+				config = data.config
+			})
+		else
+			CreatePlayerContext(player, data.config, data.external_config, data.etc)
+		end
 	end)
 	
 	rpcNetwork.AddModRPCHandler(modname, "GetWorldInformation", function(player)

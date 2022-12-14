@@ -51,18 +51,19 @@ if IS_DS then
 end
 --]]
 
-local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_update, item_width, item_height, visible_rows, row_padding)
+local InsightScrollList = Class(Widget, function(self, data)
+	-- context, item_ctor, item_update_fn, item_width, item_height, visible_rows, row_padding
 	Widget._ctor(self, "InsightScrollList")
-	assert(type(context) == "table", "InsightScrollList bad argument #1 (context): expected [function], got [" .. type(context) .. "]")
+	--assert(type(context) == "table", "InsightScrollList bad argument #1 (context): expected [function], got [" .. type(context) .. "]")
 	--assert(type(context) == "table", "InsightScrollList bad argument #1 (context): expected [function], got [" .. type(context) .. "]")
 	
-	self.context = context
-	self.item_ctor = item_ctor
-	self.item_update = item_update
-	self.item_width = item_width
-	self.item_height = item_height
-	self.visible_rows = visible_rows
-	self.row_padding = row_padding or 0
+	self.context = assert(data.scroll_context, "Missing scroll_context")
+	self.item_ctor_fn = assert(data.item_ctor_fn, "Missing item_ctor_fn")
+	self.item_update_fn = assert(data.apply_fn, "Missing apply_fn")
+	self.item_width = assert(data.widget_width, "Missing widget_width")
+	self.item_height = assert(data.widget_height, "Missing widget_height")
+	self.num_visible_rows = assert(data.num_visible_rows, "Missing num_visible_rows")
+	self.row_padding = data.row_padding or 0
 	
 	self.controller_scheme = controlHelper.controller_scheme --controlHelper.GetScheme("controller")
 	
@@ -80,9 +81,9 @@ local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_
 	}
 	--]]
 
-	self._width = item_width
-	--self._height = self.item_height * self.visible_rows
-	self._height = self.item_height * self.visible_rows + (self.row_padding * (self.visible_rows-1))
+	self._width = self.item_width
+	--self._height = self.item_height * self.num_visible_rows
+	self._height = self.item_height * self.num_visible_rows + (self.row_padding * (self.num_visible_rows-1))
 
 	-- Ensures we're absorbing all control inputs within the widget region.
 	self.bg = self:AddChild(Image("images/ui.xml", "blank.tex"))
@@ -103,6 +104,8 @@ local InsightScrollList = Class(Widget, function(self, context, item_ctor, item_
 	self:BuildListItems()
 	self:BuildScrollBar()
 	self:SetItemsData(nil)
+
+	self.focus_forward = self.list_root
 
 	self:StartUpdating()
 end)
@@ -141,13 +144,13 @@ function InsightScrollList:BuildListItems()
 
 	table.insert(self.rows, widget)
 	]]
-	--local est_height = self.item_height * self.visible_rows + (self.row_padding * (self.visible_rows-1))
+	--local est_height = self.item_height * self.num_visible_rows + (self.row_padding * (self.num_visible_rows-1))
 	local est_height = self._height
 
 	-- 3, 1, 6, 2 is the display order
 
-	for i = 1, self.visible_rows do
-		local w = self.list_root:AddChild(self.item_ctor(self.context, i))
+	for i = 1, self.num_visible_rows do
+		local w = self.list_root:AddChild(self.item_ctor_fn(self.context, i))
 		local top_pos = est_height/2 - self.item_height/2
 		local pos = top_pos - (self.item_height * (i - 1))-- - (self.row_padding * (i-1))
 
@@ -178,41 +181,49 @@ function InsightScrollList:BuildScrollBar()
 		self.scroll_bar_container:Kill()
 	end
 
-	local scrollbutton_width = 20
-	local scrollbutton_height = 20
 	
-	local scroller_width = scrollbutton_width
+	local target_width = 20
+	local target_height = target_width
+	
+	local scroller_width = target_width
 	local scroller_height = self._height
 
 	self.scroll_bar_container = self:AddChild(Widget("scroll-bar-container"))
 	self.scroll_bar_container:SetPosition(self._width/2 + scroller_width/2 + 5, 0)
 
 	self.up_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_up.tex"))
-	self.up_button:InsightOverrideFocuses()
-	self.up_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
-	self.up_button:SetPosition(0, scroller_height/2 - scrollbutton_height/2 + 8)
+	local button_width, button_height = self.up_button:GetSize() -- Actual size of the tex
+	--self.up_button:InsightOverrideFocuses()
+	--self.up_button.scale_on_focus = false
+	self.up_button:SetNormalScale(target_width / button_width, target_height / button_height)
+	self.up_button:SetFocusScale(target_width / button_width + 0.05, target_height / button_height + 0.05)
+	--self.up_button:ForceImageSize(target_width, target_height)
+	self.up_button:SetPosition(0, scroller_height/2 - target_height/2 + 8)
 	self.up_button:SetOnClick(function() self:ScrollUp() end)
 	
 	self.down_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_down.tex"))
-	self.down_button:InsightOverrideFocuses()
-	self.down_button:ForceImageSize(scrollbutton_width, scrollbutton_height)
-	self.down_button:SetPosition(0, -scroller_height/2 + scrollbutton_height/2 - 8)
+	--self.down_button:InsightOverrideFocuses()
+	self.down_button:SetNormalScale(target_width / button_width, target_height / button_height)
+	self.down_button:SetFocusScale(target_width / button_width + 0.05, target_height / button_height + 0.05)
+	--self.down_button:ForceImageSize(target_width, target_height)
+	self.down_button:SetPosition(0, -scroller_height/2 + target_height/2 - 8)
 	self.down_button:SetOnClick(function() self:ScrollDown() end)
 
 	--self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/dst/global_redux.xml", "scrollbar_bar.tex"))
 	self.scroll_bar_line = self.scroll_bar_container:AddChild(Image("images/misc/scrollbar_bar.xml", "scrollbar_bar.tex"))
 	--self.scroll_bar_line = self.scroll_bar_container:AddChild(Image(DEBUG_IMAGE(true)); self.scroll_bar_line:SetTint(.6, .3, .3, 1)
-	self.scroll_bar_line:SetSize(10, scroller_height - scrollbutton_height*2)
-	--self.scroll_bar_line:ScaleToSize(11*bar_width_scale_factor, line_height)
+	self.scroll_bar_line:SetSize(10, scroller_height - target_height*2)
+	--self.scroll_bar_line:ScaleToSize(11*target_width_scale_factor, line_height)
 	self.scroll_bar_line:SetPosition(0, 0)
 	self.scroll_bar_height = select(2, self.scroll_bar_line:GetSize())
 	
 	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_handle.tex"))
+	-- Trying to scale this like the buttons has some issue where it never reverts back to normal scale.
 	self.position_marker.scale_on_focus = false
 	self.position_marker.move_on_click = false
 	--patcher.imagebutton.Patch(self.position_marker)
-	self.position_marker:InsightOverrideFocuses()
-	--self.position_marker:ForceImageSize(scrollbutton_width, scrollbutton_height)
+	--self.position_marker:InsightOverrideFocuses()
+	--self.position_marker:ForceImageSize(target_width, target_height)
 	self.position_marker:SetScale(0.3, 0.3, 1)
 
 	self.position_marker:SetOnDown(function()
@@ -261,6 +272,10 @@ function InsightScrollList:BuildScrollBar()
 	end)
 end
 
+function InsightScrollList:OnWidgetFocus(...)
+
+end
+
 --- Calculates the amount of space left to go downwards in pixel terms.
 function InsightScrollList:GetScrollingSpaceLeft()
 	-- scrolling_space_left
@@ -304,7 +319,7 @@ function InsightScrollList:DoDragScroll()
 end
 
 function InsightScrollList:CanScroll()
-	return self.end_scroll_pos > self.visible_rows
+	return self.end_scroll_pos > self.num_visible_rows
 end
 
 function InsightScrollList:ConvertScrollPosToPixels(pos)
@@ -315,10 +330,6 @@ function InsightScrollList:ConvertScrollPosToPixels(pos)
 	local pos = (bar_height/2) - (bar_height * pos_to_max_ratio)
 
 	return pos
-end
-
-function InsightScrollList:GetMaxPages()
-	
 end
 
 function InsightScrollList:Scroll(amount)
@@ -339,8 +350,16 @@ function InsightScrollList:RefreshView()
 	-- Clamp the scroll position to the closest "item row".
 	local row_index = ((self.current_scroll_pos % 1 < .5 and math.floor) or math.ceil)(self.current_scroll_pos)
 
-	for i = 1, self.visible_rows do
-		self.item_update(self.context, self.item_widgets[i], self.items[row_index + i])
+	for i = 1, self.num_visible_rows do
+		self.item_update_fn(self.context, self.item_widgets[i], self.items[row_index + i])
+		--[[
+		if self.itemfocus and self.itemfocus == start_index + i then
+            --Check if we're on an active screen. Something could be on the stack in front of us and we don't want to steal focus back
+            if self:GetParentScreen() == TheFrontEnd:GetActiveScreen() then
+                self.widgets_to_update[i]:SetFocus()
+            end
+        end
+		--]]
 	end
 
 	--print(self.num_items, self.end_scroll_pos, self:CanScroll())
@@ -355,8 +374,8 @@ function InsightScrollList:RefreshView()
 	--[[
 	local row_index, offset = self:GetIndexOfFirstVisibleWidget()
 
-	for i = 1, self.visible_rows do
-		self.item_update(self.context, self.item_widgets[i], self.items[row_index + i - 1])
+	for i = 1, self.num_visible_rows do
+		self.item_update_fn(self.context, self.item_widgets[i], self.items[row_index + i - 1])
 	end
 
 	if self:CanScroll() then
@@ -373,7 +392,7 @@ function InsightScrollList:SetItemsData(items)
 	self.items = items or {}
 	self.num_items = #self.items
 
-	local max_scroll = self.num_items - self.visible_rows - 1
+	local max_scroll = self.num_items - self.num_visible_rows - 1
 	self.end_scroll_pos = math.max(max_scroll, 0)
 
 	self:OnUpdate()
@@ -455,7 +474,8 @@ function InsightScrollList:OnUpdate(dt)
 end
 
 function InsightScrollList:OnControl(control, down)
-	--mprint("InsightScrollList", controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
+	if InsightScrollList._base.OnControl(self, control, down) then return true end
+	mprint("InsightScrollList", controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
 	--[[
 	This was happening too.
 	CONTROL_ZOOM_IN = 9
@@ -464,7 +484,7 @@ function InsightScrollList:OnControl(control, down)
 
 	local controls = controlHelper.GetCurrentScheme()
 
-	if self:CanScroll() then
+	if (self.focus or FunctionOrValue(self.custom_focus_check)) and self:CanScroll() then
 		if down then -- down
 			if controls:IsAcceptedControl("scroll_up", control) then
 				--print("Scrolling up.")
@@ -481,7 +501,6 @@ function InsightScrollList:OnControl(control, down)
 	end
 
 	--mprint("Failed ALL:", controlHelper.Prettify(control), down, self.focus, self:CanScroll())
-	return InsightScrollList._base.OnControl(self, control, down)
 end
 
 function InsightScrollList:GetHelpText()

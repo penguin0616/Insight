@@ -45,6 +45,8 @@ return {
 		summer = "<color=#FFCF8C>Verano</color>",
 	},
 
+	unbind = "Unbind",
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- alterguardianhat.lua [Prefab]

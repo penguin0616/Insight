@@ -43,9 +43,20 @@ local InsightMenuScreen = Class(Screen, function(self)
 	self.menu = self.root:AddChild(InsightMenu())
 	self.menu:SetPosition(0, 0)
 	self.menu:ActivateFromScreen()
-
-	GetLocalInsight(localPlayer):MaintainMenu(self.menu)
 end)
+
+--[[
+function InsightMenuScreen:OnBecomeInactive()
+	mprint("waghhhhh", self.focus, self:GetDeepestFocus() == nil)
+	Screen.OnBecomeInactive(self)
+	mprint("---------------- gorsey", self:GetDeepestFocus())
+end
+
+function InsightMenuScreen:OnBecomeActive(...)
+	mprint("lastfocus", self.last_focus)
+	return Screen.OnBecomeActive(self, ...)
+end
+--]]
 
 function InsightMenuScreen:OnControl(control, down)
 	-- [MOVE_LEFT, MOVE_RIGHT, MOVE_UP, MOVE_DOWN] doesn't seem to trigger anymore down the focus chain, but worked here in screen previously? What changed??
@@ -53,7 +64,7 @@ function InsightMenuScreen:OnControl(control, down)
 	-- Trigered from FrontEnd:OnControl
 	--mprint(string.rep("-", 66))
 	mprint("InsightMenuScreen", controlHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
-	if self.focus and not self.root.focus then
+	if TheFrontEnd.tracking_mouse and self.focus and not self.root.focus then
 		-- Mouse input broke focus or something. Just fix it.
 		dprint("Fixing focus.")
 		TheFrontEnd.tracking_mouse = false

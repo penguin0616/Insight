@@ -118,7 +118,7 @@ function CookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
 	self.lookup.button:ForceImageSize(header:GetSize(), header:GetSize())
 	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:GetSize() / 2, 0)
 	self.lookup.button.scale_on_focus = false
-	self.lookup.button:InsightOverrideFocuses()
+	--self.lookup.button:InsightOverrideFocuses()
 	self.lookup.button:SetTooltip("Click to lookup item") -- wont work in cookbook, overlay reasons i think
 
 	self.lookup:SetOnClick(function()
@@ -182,7 +182,7 @@ local function RecipePopup_Refresh(self)
 	self.lookup.button:ForceImageSize(header:GetSize(), header:GetSize())
 	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:GetSize() / 2, 0)
 	self.lookup.button.scale_on_focus = false
-	self.lookup.button:InsightOverrideFocuses()
+	--self.lookup.button:InsightOverrideFocuses()
 	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
 
 	if modded then
@@ -248,7 +248,7 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 	self.lookup.button:ForceImageSize(name_font_size, name_font_size)
 	self.lookup:SetPosition(width / 2 + 0, y - name_font_size/2)
 	self.lookup.button.scale_on_focus = false
-	self.lookup.button:InsightOverrideFocuses()
+	--self.lookup.button:InsightOverrideFocuses()
 	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
 
 	if modded then

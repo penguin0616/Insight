@@ -27,7 +27,6 @@ local Image = require "widgets/image"
 local Widget = require "widgets/widget"
 local Text = require("widgets/text") --FIXED_TEXT
 local RichText = import("widgets/RichText")
-local imageLib = import("widgets/image_lib")
 
 local MIN_INDICATOR_RANGE = 20 --TUNING.MIN_INDICATOR_RANGE or 20 -- global positions messes with this
 local MAX_INDICATOR_RANGE = 50 --TUNING.MAX_INDICATOR_RANGE or 50 -- global positions messes with this

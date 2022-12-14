@@ -6098,7 +6098,16 @@ local function AddSectionTitle(title) -- 100% stole this idea from ReForged. Did
 			tags = {"ignore"},
 		}
 	else
-		return {tags = {"ignore"}}
+		return {
+			-- the _ is processed by the insightconfigurationscreen for DS sectionheaders.
+			_ = {
+				name = title:upper(),
+				label = title, 
+				options = {{description = "", data = 0}},
+				default = 0,
+			},
+			tags = {"ignore"}
+		}
 	end
 end
 

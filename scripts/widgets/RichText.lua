@@ -28,7 +28,6 @@ local TEXT_COLORING_ENABLED = nil
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
-local imageLib = import("widgets/image_lib")
 local Reader, Chunk = import("reader")
 
 local CalculateSize = CalculateSize

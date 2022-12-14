@@ -93,6 +93,9 @@ end
 
 local function Scheme_IsAcceptedControl(self, control_group_name, control)
 	local group = self.control_groups[control_group_name]
+	if not group then
+		return errorf("Unable to find control group '%s' in scheme '%s'", control_group_name, self.name)
+	end
 	return group:IsAcceptedControl(control)
 end
 
@@ -218,6 +221,11 @@ if IS_DST then
 	lib.controller_scheme = lib.MakeScheme("controller", {
 		exit = {CONTROL_OPEN_CRAFTING, CONTROL_CANCEL},
 		open_insight_menu = {CONTROL_OPEN_CRAFTING},
+
+		scroll_up = {CONTROL_PAGELEFT, CONTROL_INVENTORY_UP},
+		scroll_down = {CONTROL_PAGERIGHT, CONTROL_INVENTORY_DOWN},
+		previous_value = {CONTROL_PREVVALUE, CONTROL_FOCUS_LEFT},
+		next_value = {CONTROL_NEXTVALUE, CONTROL_FOCUS_RIGHT},
 	})
 else
 	lib.mk_scheme = lib.MakeScheme("mouse_keyboard", {

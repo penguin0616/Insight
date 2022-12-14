@@ -27,66 +27,27 @@ local InsightConfigurationScreen = import("screens/insightconfigurationscreen")
 
 local tabs = {"World", "Player"}
 
+--[[
 util.classTweaker.TrackClassInstances(InsightConfigurationScreen)
 REGISTER_HOT_RELOAD({"screens/insightconfigurationscreen"}, function(imports)
 	InsightConfigurationScreen = imports.insightconfigurationscreen
 	util.classTweaker.TrackClassInstances(InsightConfigurationScreen)
 end)
+--]]
 
--- Functions
-local Tab = Class(Widget, function(self, data)
-	Widget._ctor(self, "Tab")
-	self.width = data.width
-	self.height = data.height
-	self.selected = nil
-	self.onclick = nil
-
-	self.background = self:AddChild(ImageButton())
-	self:SetCurrent(false)
-
-	self.background.onclick = function(...)
-		if self.onclick then
-			self.onclick(...)
+local function GetButtonPrefix(size)
+	local prefix = "button_carny_long"
+	if size and #size == 2 then
+		local ratio = size[1] / size[2]
+		if ratio > 4 then
+			-- Longer texture will look better at this aspect ratio.
+			prefix = "button_carny_xlong"
+		elseif ratio < 1.1 then
+			-- The closest we have to a tall button.
+			prefix = "button_carny_square"
 		end
 	end
-
-	if IS_DST then
-		self.background.scale_on_focus = false
-		self.background:UseFocusOverlay("listitem_thick_hover.tex")
-	else
-		-- for the hover effect
-		self.background:UseFocusOverlay("listitem_thick_hover.tex")
-		self.background:InsightOverrideFocuses()
-	end
-
-	self.text = self:AddChild(Text(UIFONT, 30, data.name))
-end)
-
-function Tab:SetOnClick(fn)
-	self.onclick = fn
-end
-
-function Tab:GetSize()
-	return self.width, self.height
-end
-
-function Tab:SetCurrent(bool)
-	assert(type(bool) == "boolean", "expected boolean in tab:setcurrent")
-
-	self.selected = bool
-
-	-- made for Image, adapted for ImageButton
-	if self.selected then
-		self.background:SetTextures("images/dst/frontend_redux.xml", "listitem_thick_selected.tex")
-	else
-		self.background:SetTextures("images/dst/frontend_redux.xml", "listitem_thick_normal.tex")
-	end
-
-	if IS_DST then
-		self.background:ForceImageSize(self.width - 4, self.height - 4)
-	else
-		self.background:ForceImageSize(self.width - 4, self.height - 4)
-	end
+	return prefix
 end
 
 -- Class InsightMenu
@@ -97,66 +58,88 @@ local InsightMenu = Class(Widget,function(self)
 	self.bg:SetSize(460, 380)
 	--]]
 
+	self.pages = {}
+	self.current_page = nil
+	self.page_num = 0
+
 	self.bg = self:AddChild(Image("images/dst/scoreboard.xml", "scoreboard_frame.tex")) -- data/images
 	self.bg:SetSize(540, 460) -- Original size before config: 480, 460
 
-	self.pages = {}
-	self.current_page = nil
- 
+	self.main = self:AddChild(Image(DEBUG_IMAGE(false)))
+	--self.main:SetTint(1, 1, 1, .1)
+	self.main:SetSize(540-80, 460-100)
 
-	self.header = self:AddChild(Image(DEBUG_IMAGE()))
-	--self.header:SetTint(.5, 0, 0, .7)
-	self.header:SetSize(400, 60)
+	local mainw, mainh = self.main:GetSize()
+
+	self:SetPosition(0, 460/2 - 75)
+	
+	self.header = self.main:AddChild(Image(DEBUG_IMAGE(false)))
+	self.header:SetTint(1, 1, 1, .1)
+	self.header:SetSize(mainw, 60)
 	self.header:SetPosition(0, 460/2 - 75)
 
+	local headerw, headerh = self.header:GetSize()
+	local available_tab_space = headerw - 64
+
 	self.tabs = {}
-
 	for i,v in pairs(tabs) do
-		local page = self:AddChild(InsightPage(v))
-		table.insert(self.pages, page)
+		local tab_width = available_tab_space / (#tabs)
+		local tab_height = headerh
+		
+		local tab = self.header:AddChild(ImageButton("images/dst/frontend_redux.xml",
+			"listitem_thick_normal.tex", -- normal
+			nil, -- focus
+			nil,
+			nil,
+			"listitem_thick_selected.tex" -- selected
+		))
+		
+		--[[
+		local prefix = GetButtonPrefix({tab_width, tab_height})
+		local tab = self.header:AddChild(ImageButton("images/dst/global_redux.xml", prefix.."_normal.tex", prefix.."_hover.tex", prefix.."_disabled.tex", prefix.."_down.tex"))
+		--]]
+		-- Appearance stuff
+		tab.scale_on_focus = false -- Prevents the break-size-on-focus thing.
+		tab:UseFocusOverlay("listitem_thick_hover.tex")
+		tab:ForceImageSize(tab_width, tab_height)
+		tab:SetPosition(-headerw/2 + tab_width/2 + (tab_width * (i-1)), 0)
+		tab:SetTextColour(unpack(WHITE))
+		tab:SetTextFocusColour(unpack(WHITE))
+		tab:SetTextSelectedColour(unpack(WHITE))
+		tab:SetFont(UIFONT)
+		tab:SetTextSize(30)
+		tab:SetText(v)
 
-		local width, height = self.header:GetSize()
-		local dw = width - 20
-
-		local tab = self.header:AddChild(Tab({ width=dw/#tabs, height=height, name=v}))
-		local tab_width, tab_height = tab:GetSize()
-
-		-- start at 0 i suppose
-		-- -dw/2 is "zero"
-		-- tab_width/2 is the offset from zero so you can start at zero, idk i know how it works in my head
-		-- (i-1) * tab_width is the tab's positioning
-		-- can't add+5 or -5 for padding, since one side will always be offset, probably some way to calculate but eeeeh
-
-		local pad = 5
-		local offset = -dw/2 + tab_width/2 + (i-1) * (tab_width + pad)
-
-		if math.floor(#tabs/2) == #tabs/2 then -- solve problem with spacing here
-			offset = offset - (pad / #tabs)
-		end
-
-		tab:SetPosition(offset, 0)
+		-- Functional stuff
+		tab.menu = self
 		tab.page_number = i
-
 		tab:SetOnClick(function()
-			self:SetPage(v)
+			self:SetPage(tab.page_number)
 		end)
 
-		page.tab = tab
-
 		table.insert(self.tabs, tab)
+
+		-- Create the page
+		local page = self.main:AddChild(InsightPage(v))
+		page.list.custom_focus_check = function() -- TODO: Temporary Workaround
+			-- Make sure that the scroller can accept scroll actions even when focus is on our tab buttons.
+			return self.current_page == page
+		end
+		table.insert(self.pages, page)
 	end
 
+	
 	-- Logic derived from redux/templates -> IconButton and base classes
-	local prefix = "button_carny_square"
+	local button_size = headerw - available_tab_space
+	local prefix = GetButtonPrefix({button_size, button_size}) --"button_carny_square"
+	self.config_button = self.header:AddChild(ImageButton("images/dst/global_redux.xml", prefix.."_normal.tex", prefix.."_hover.tex", prefix.."_disabled.tex", prefix.."_down.tex"))
+	self.config_button:ForceImageSize(button_size, button_size)
+	self.config_button:SetTextSize(math.ceil(button_size*.45))
+	self.config_button.icon = self.config_button:AddChild(Image("images/dst/button_icons2.xml", "workshop_filter.tex"))
+	self.config_button.icon:ScaleToSize(self.config_button.text.size, self.config_button.text.size)
+	self.config_button.icon:SetPosition(1, 0)
 
-	local cfg = self.header:AddChild(ImageButton("images/dst/global_redux.xml", prefix.."_normal.tex", prefix.."_hover.tex", prefix.."_disabled.tex", prefix.."_down.tex"))
-	cfg:ForceImageSize(60, 60)
-	cfg:SetTextSize(math.ceil(60*.45))
-	cfg.icon = cfg:AddChild(Image("images/dst/button_icons2.xml", "workshop_filter.tex"))
-	cfg.icon:ScaleToSize(cfg.text.size, cfg.text.size)
-	cfg.icon:SetPosition(1, 0)
-
-	cfg:SetHoverText("Mod Configuration", {
+	self.config_button:SetHoverText(STRINGS.UI.MODSSCREEN.CONFIGUREMOD, {
 		font = NEWFONT_OUTLINE,
 		offset_x = 2,
 		offset_y = 45,
@@ -166,50 +149,66 @@ local InsightMenu = Class(Widget,function(self)
 
 	local px, py = self.tabs[#self.tabs]:GetPosition():Get()
 	local sx, sy = self.tabs[#self.tabs]:GetSize()
-	cfg:SetPosition(px + sx/2 + cfg.size_x/2, 0)
-	cfg:SetOnClick(function()
-		TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
+	self.config_button:SetPosition(px + sx/2 - self.config_button.size_x/2, 0) -- px + sx/2 + self.config_button.size_x/2
+	self.config_button:SetOnClick(function()
+		--self:SetPage(3)
+		--TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
 		local sc = InsightConfigurationScreen()
 		TheFrontEnd:PushScreen(sc)
 	end)
+	self.pages[3] = false
+	self.tabs[3] = self.config_button
 
-	--[[
-	self.main = self:AddChild(Image(DEBUG_IMAGE()))
-	--self.main = self:AddChild(Image())
-	self.main:SetSize(400, 290)
-	self.main:SetPosition(5, -25)
-
-	self.list = self.main:AddChild(MakeGrid())
-
-	self.items = {}
-	--]]
-
-	--[[
-	self.exit_listener = TheInput:AddControlHandler(CONTROL_PAUSE, function(digital, analog) 
-		-- Down is whether the key is down or not.
-		if not digital then
-			local scr = TheFrontEnd.screenstack[#TheFrontEnd.screenstack]
-			if scr.name == "HUD" then
-				if self.shown then
-					self:Hide()
-				end
-			end
+	for i,v in pairs(self.tabs) do
+		if self.tabs[i+1] then
+			v:SetFocusChangeDir(MOVE_RIGHT, self.tabs[i+1])
 		end
-	end)
-	--]]
+		if self.tabs[i-1] then
+			v:SetFocusChangeDir(MOVE_LEFT, self.tabs[i-1])
+		end
+	end
 
+	--[[
+	self.tabs[1]:SetFocusChangeDir(MOVE_RIGHT, self.tabs[2])
+	self.tabs[2]:SetFocusChangeDir(MOVE_RIGHT, self.config_button)
+	self.config_button:SetFocusChangeDir(MOVE_RIGHT, self.tabs[1])
+
+	self.tabs[1]:SetFocusChangeDir(MOVE_LEFT, self.config_button)
+	self.tabs[2]:SetFocusChangeDir(MOVE_LEFT, self.tabs[1])
+	self.config_button:SetFocusChangeDir(MOVE_LEFT, self.tabs[2])
+	--]]
+	
 	self.from_screen = false
 	self:Hide() -- SetPage needs to be done in the Activate call so we know it has a parent for focus purposes.
+
+	if localPlayer then
+		GetLocalInsight(localPlayer):MaintainMenu(self)
+	end
 end)
 
 function InsightMenu:Activate()
-	self:SetPage(tabs[1])
+	self:SetPage(1)
+	--self.tabs[1]:SetFocus()
 end
 
 function InsightMenu:ActivateFromScreen()
 	self.from_screen = true
-	self:SetPage(tabs[1])
+	--self.tabs[1]:SetFocus()
+	--self:SetPage(tabs[1])
+	self:SetPage(1)
 	self:Show()
+end
+
+function InsightMenu:Show()
+	self._base.Show(self)
+	if not self.focus then
+		self:NextPage(0)
+	end
+end
+
+function InsightMenu:Hide()
+	self._base.Hide(self)
+	self:ClearFocus()
 end
 
 function InsightMenu:Kill(...)
@@ -228,16 +227,11 @@ end
 function InsightMenu:NextPage(inc)
 	inc = inc or 1
 	
-	for i,v in pairs(self.pages) do
-		if v == self.current_page then
-			local next = math.clamp(i + inc, 1, #self.pages)
-			self:SetPage(tabs[next])
-			break
-		end
-	end
+	local next = math.clamp(self.page_num + inc, 1, #self.pages)
+	self:SetPage(next)
 end
 
-function InsightMenu:GetPage(name)
+function InsightMenu:GetPageByName(name)
 	for i,v in pairs(self.pages) do
 		if v:GetName():lower() == name:lower() then
 			return v
@@ -245,9 +239,43 @@ function InsightMenu:GetPage(name)
 	end
 end
 
-function InsightMenu:SetPage(name)
-	local page = self:GetPage(name)
-	assert(page, "No page exists with that name.")
+function InsightMenu:SetPage(num)
+	if self.tabs[self.page_num] then
+		self.tabs[self.page_num]:Unselect()
+	end
+
+	self.page_num = num
+	local page = self.pages[num]
+	self.tabs[self.page_num]:Select()
+	if self:IsVisible() then
+		self.tabs[self.page_num]:SetFocus()
+	end
+
+	-- Clean up old page
+	if type(self.current_page) == "table" then
+		--self.current_page:SetFocusChangeDir(MOVE_UP, nil)
+		self.current_page:Hide()
+	end
+	self.current_page = nil
+
+	-- Setup new page
+	self.current_page = page
+	if type(page) == "table" then
+		--self.current_page:SetFocusChangeDir(MOVE_UP, self.tabs[1])
+		self.current_page:Show()
+		if self.from_screen then 
+			--self.current_page:SetFocus()
+		end
+	elseif type(page) == "function" then
+		--page(self)
+	end
+	
+
+	for i,v in pairs(self.tabs) do
+		--v:SetFocusChangeDir(MOVE_DOWN, self.current_page)
+	end
+
+	--[[
 	--mprint("Switching page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 	if self.current_page then
@@ -266,13 +294,23 @@ function InsightMenu:SetPage(name)
 	end
 	--mprint("2", self.current_page.focus, self.current_page.list.focus)
 	--mprint("End Switch ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	--]]
 end
 
 function InsightMenu:OnControl(control, down)
 	mprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
+	--mprint("\t\t", self.tabs[1].focus, self.tabs[2].focus, self.config_button.focus, "|", self.current_page)
 	
 	local scheme = controlHelper.GetCurrentScheme()
 
+	if self.current_page then
+		local a = self.current_page.list:OnControl(control, down) -- TODO: Temporary Workaround
+		if a then
+			return a
+		end
+	end
+
+	--[[
 	if down then
 		if scheme:IsAcceptedControl("previous_value", control) then
 			self:NextPage(-1)
@@ -282,6 +320,7 @@ function InsightMenu:OnControl(control, down)
 			return true
 		end
 	end
+	--]]
 
 	return self._base.OnControl(self, control, down)
 end
@@ -295,11 +334,9 @@ function InsightMenu:GetHelpText()
 	return table.concat(tips, "  ")
 end
 
-
-
 function InsightMenu:ApplyInformation(world_data, player_data)
-	local world_page = self:GetPage("world")
-	local player_page = self:GetPage("player")
+	local world_page = self:GetPageByName("world")
+	local player_page = self:GetPageByName("player")
 
 	if world_page and world_data then
 		for component, desc in pairs(world_data.raw_information) do

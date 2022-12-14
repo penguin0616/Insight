@@ -312,6 +312,8 @@ local function ApplyClassPatches(class_to_patch, klass, patches)
 end
 
 function PatchClass(class_to_patch, patches)
+	assert(type(class_to_patch) == "table" and class_to_patch.is_a, "PatchClass 'class_to_patch' must be a Class (table).")
+	assert(type(patches) == "table", "PatchClass 'patches' must be a table.")
 	xprint("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@") --  .. "\nPatching Class: " .. strclass(class_to_patch)
 	xprint("Patching Class: " .. strclass(class_to_patch))
 	patches = shallowcopy(patches)
