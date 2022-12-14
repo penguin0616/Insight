@@ -91,7 +91,8 @@ local function OnRemoveEntity(inst)
 	end
 end
 
-local function OnEntityReplicated(inst)
+local function OnEntityReplicated(inst, retry)
+	retry = retry or 0
 	inst._parent = inst.entity:GetParent()
 
 	if inst._parent == nil then
@@ -99,7 +100,16 @@ local function OnEntityReplicated(inst)
 
 	elseif inst._parent.replica.insight == nil then
 		mprint("Unable to initialize classified data for insight_classified, no Insight") -- This seems to happen on rare occasion with a c_reset.....
-
+		-- And also when travelling between shards...
+		mprint("Retry attempt:", retry)
+		if retry > 3 then
+			mprint("Failed maximum number of retries.")
+			error("Insight unable to find replica!")
+		else
+			inst:DoTaskInTime(.1, function(inst)
+				return inst:OnEntityReplicated(retry + 1)
+			end)
+		end
 	else
 		inst._parent.insight_classified = inst
 		inst._parent.replica.insight:AttachClassified(inst)

@@ -45,15 +45,19 @@ local module = {
 
 
 if IS_DS and not UICOLOURS then
-	GOLD = {202/255, 174/255, 118/255, 255/255}
-	GREY = {.57, .57, .57, 1}
-	BLACK = {.1, .1, .1, 1}
-	WHITE = {1, 1, 1, 1}
-	BROWN = {97/255, 73/255, 46/255, 255/255}
-	RED = {.7, .1, .1, 1}
-	DARKGREY = {.12, .12, .12, 1}
+	_G.GOLD = {202/255, 174/255, 118/255, 255/255}
+	_G.GREY = {.57, .57, .57, 1}
+	_G.BLACK = {.1, .1, .1, 1}
+	_G.WHITE = {1, 1, 1, 1}
+	_G.BROWN = {97/255, 73/255, 46/255, 255/255}
+	_G.RED = {.7, .1, .1, 1}
+	_G.DARKGREY = {.12, .12, .12, 1}
 
-	UICOLOURS = {
+	function _G.RGB(r, g, b)
+		return { r / 255, g / 255, b / 255, 1 }
+	end
+
+	_G.UICOLOURS = {
 		GOLD_CLICKABLE = RGB(215, 210, 157), -- interactive text & menu
 		GOLD_FOCUS = RGB(251, 193, 92), -- menu active item
 		GOLD_SELECTED = RGB(245, 243, 222), -- titles and non-interactive important text
@@ -75,6 +79,29 @@ if IS_DS and not UICOLOURS then
 		SLATE = RGB(155, 170, 177, 1),
 		SILVER = RGB(192, 192, 192, 1),
 	}
+end
+
+if IS_DS then
+	function _G.ClickMouseoverSoundReduction() return nil end
+	
+	function _G.FunctionOrValue(func_or_val, ...)
+		if type(func_or_val) == "function" then
+			return func_or_val(...)
+		end
+		return func_or_val
+	end
+
+	-- RunInSandboxSafe uses an empty environement
+	-- By default this function does not assert
+	-- If you wish to run in a safe sandbox, with normal assertions:
+	-- RunInSandboxSafe( untrusted_code, debug.traceback )
+	function _G.RunInSandboxSafe(untrusted_code, error_handler)
+		if untrusted_code:byte(1) == 27 then return nil, "binary bytecode prohibited" end
+		local untrusted_function, message = loadstring(untrusted_code)
+		if not untrusted_function then return nil, message end
+		setfenv(untrusted_function, {} )
+		return xpcall(untrusted_function, error_handler or function() end)
+	end
 end
 
 
