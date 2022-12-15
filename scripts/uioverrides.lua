@@ -182,6 +182,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	local InsightMenu = import("widgets/insightmenu")
 
 	-- TODO: REMOVE THIS
+	--[[
 	util.classTweaker.TrackClassInstances(InsightMenu)
 	REGISTER_HOT_RELOAD({"widgets/insightmenu"}, function(imports)
 		InsightMenu = imports.insightmenu
@@ -193,6 +194,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		controls.insight_menu:Hide()
 		controls.insight_menu:Activate()
 	end)
+	--]]
 
 	controls.insight_menu = controls.top_root:AddChild(InsightMenu())
 	controls.insight_menu:SetPosition(0, -400)

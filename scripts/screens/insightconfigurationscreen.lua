@@ -107,10 +107,19 @@ local function ConfigOptionCtor(context, index)
 	--]]
 
 	-- This is the section label in case the thing is a section header.
-	root.section_label = root:AddChild(Text(CHATFONT, 25))
-	root.section_label:SetRegionSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
-	
-
+	--root.section_label = root:AddChild(Text(CHATFONT, 25))
+	--root.section_label:SetRegionSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
+	---- "images/dst/frontend_redux.xml", "serverlist_listitem_normal.tex", "serverlist_listitem_selected.tex"
+	root.section_label = root:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex")) 
+	root.section_label.control = nil -- Prevent clicking
+	root.section_label.scale_on_focus = false
+	root.section_label:ForceImageSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
+	root.section_label:SetTextColour(UICOLOURS.WHITE)
+	root.section_label:SetTextFocusColour(UICOLOURS.GOLD_FOCUS)
+	root.section_label:SetTextSelectedColour(root.section_label.textcolour)
+	root.section_label:SetTextDisabledColour(root.section_label.textcolour)
+	root.section_label:SetFont(CHATFONT)
+	root.section_label:SetTextSize(25)
 
 	local option_width, option_height = OPTION_ENTRY_WIDTH * .45, OPTION_ENTRY_HEIGHT
 	local option_widgets = {}
@@ -125,6 +134,7 @@ local function ConfigOptionCtor(context, index)
 	--]]
 	--
 	option_widgets.keybind = root:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex", "spinner_focus.tex"))
+	option_widgets.keybind.scale_on_focus = false
 	option_widgets.keybind:ForceImageSize(option_width, option_height)
 	option_widgets.keybind:SetPosition(OPTION_ENTRY_WIDTH/2 - option_width/2, 0)
 	option_widgets.keybind:SetTextColour(UICOLOURS.WHITE) -- GOLD_CLICKABLE
@@ -160,8 +170,22 @@ local function ConfigOptionCtor(context, index)
 			return
 		end
 		
+		if not root.is_section_header then
+			root.label:SetColour(UICOLOURS.GOLD_FOCUS)
+		end
+
 		root.context.screen.options_scroll_list:OnWidgetFocus(root)
 		root:ApplyDescription()
+	end)
+
+	root:SetOnLoseFocus(function()
+		if not root.data then
+			return
+		end
+		
+		if not root.is_section_header then
+			root.label:SetColour(UICOLOURS.WHITE)
+		end
 	end)
 
 	-- wingo
@@ -282,7 +306,13 @@ local function ConfigOptionCtor(context, index)
 	root.SetLabel = function(self, text)
 		if self.is_section_header then
 			--self.section_label:SetColour(Color.fromHex("#ee6666"))
-			self.section_label:SetString(text)
+			if self.section_label:is_a(Text) then
+				self.section_label:SetString(text)
+			elseif self.section_label:is_a(ImageButton) then
+				self.section_label:SetText(text)
+			else
+				error("Unable to update section_label")
+			end
 		else
 			self.label:SetString((text and text .. ":") or nil)
 		end

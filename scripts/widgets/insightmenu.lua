@@ -27,13 +27,13 @@ local InsightConfigurationScreen = import("screens/insightconfigurationscreen")
 
 local tabs = {"World", "Player"}
 
---[[
+--
 util.classTweaker.TrackClassInstances(InsightConfigurationScreen)
 REGISTER_HOT_RELOAD({"screens/insightconfigurationscreen"}, function(imports)
 	InsightConfigurationScreen = imports.insightconfigurationscreen
 	util.classTweaker.TrackClassInstances(InsightConfigurationScreen)
 end)
---]]
+--
 
 local function GetButtonPrefix(size)
 	local prefix = "button_carny_long"

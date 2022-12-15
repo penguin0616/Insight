@@ -11,6 +11,7 @@ function patches._ctor(self, ...)
 	self.fontdisabled = BUTTONFONT
 
 	--self.textcolour = {0,0,0,1} textcol
+	self.textcolour = self.textcol -- In case any DST specific code needs to access this
 	self.textfocuscolour = {0,0,0,1}
 	self.textdisabledcolour = {0,0,0,1}
     self.textselectedcolour = {0,0,0,1}
@@ -211,6 +212,7 @@ function patches:SetTextColour(r,g,b,a)
 	else
 		self.textcol = r
 	end
+	self.textcolour = self.textcol
 
 	if self:IsEnabled() and not self.focus and not self.selected then
 		self.text:SetColour(self.textcol)
