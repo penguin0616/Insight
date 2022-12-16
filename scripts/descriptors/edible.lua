@@ -177,9 +177,9 @@ local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatabl
 	if not stats or (type(stats) == 'table' and not stats.fixed) then
 		-- uncompromising mode sets absorptions to 0 on first eat event and stores the original as a variable in the player.
 		-- \init\init_food\init_foodregen.lua in local function oneat, August 17, 2021.
-		hunger = hunger * base_mult * (uncompromising and eating_entity.hungerabsorption or eater.hungerabsorption)
-		sanity = sanity * base_mult * (uncompromising and eating_entity.sanityabsorption or eater.sanityabsorption)
-		health = health * base_mult * (uncompromising and eating_entity.healthabsorption or eater.healthabsorption)
+		hunger = hunger * base_mult * (uncompromising and eating_entity.modded_hungerabsorption or eater.hungerabsorption)
+		sanity = sanity * base_mult * (uncompromising and eating_entity.modded_sanityabsorption or eater.sanityabsorption)
+		health = health * base_mult * (uncompromising and eating_entity.modded_healthabsorption or eater.healthabsorption)
 	end
 
 	-- new very helpful function by klei
