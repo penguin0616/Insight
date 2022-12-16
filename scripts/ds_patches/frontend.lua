@@ -1,7 +1,84 @@
 local patcher_common = import("ds_patches/patcher_common")
 local FrontEnd = FrontEnd
 
+local ConsoleScreen = require "screens/consolescreen"
+local DebugMenuScreen = require "screens/DebugMenuScreen"
+
 local patches = {}
+
+function patches:IsControlsDisabled()
+    return self:GetFadeLevel() > 0
+        or (self.fadedir == FADE_OUT and self.fade_delay_time == nil)
+        or global_error_widget ~= nil
+end
+
+-- This patch is just the DS code, except it has the control isprimary stuff that patched buttons use.
+function patches:OnControl(control, down, isrepeat)
+--	print ("FE:Oncontrol", control, down)
+	--handle focus moves
+
+	if not isrepeat and not down and self.ignoreups[control] then
+		self.ignoreups[control] = nil
+		return true
+	end
+
+	self.isprimary = control == CONTROL_PRIMARY
+	if self:IsControlsDisabled() then
+		self.isprimary = false
+		-- return?
+	end
+
+
+	if #self.screenstack > 0 then
+		local screen = self.screenstack[#self.screenstack]
+		if control == CONTROL_PRIMARY then control = CONTROL_ACCEPT end  --map this one for buttons
+		if screen:OnControl(control == CONTROL_PRIMARY and CONTROL_ACCEPT or control, down) then 
+			self.isprimary = false
+			return true 
+		end
+	end
+
+	if CONSOLE_ENABLED and not down and control == CONTROL_OPEN_DEBUG_CONSOLE then
+		self.isprimary = false
+		self:PushScreen(ConsoleScreen())
+		return true
+	end
+
+	if DEBUG_MENU_ENABLED then
+		if not down and control == CONTROL_OPEN_DEBUG_MENU then
+			self.isprimary = false
+			self:PushScreen(DebugMenuScreen())
+			return true
+		end
+	end
+
+	if SHOWLOG_ENABLED and not down and control == CONTROL_TOGGLE_LOG then
+		self.isprimary = false
+		if self.consoletext.shown then 
+			self:HideConsoleLog()
+		else
+			self:ShowConsoleLog()
+		end
+		return true
+	end
+
+	if DEBUGRENDER_ENABLED and not down and control == CONTROL_TOGGLE_DEBUGRENDER then
+		self.isprimary = false
+		if TheInput:IsKeyDown(KEY_CTRL) then
+			TheSim:SetDebugPhysicsRenderEnabled(not TheSim:GetDebugPhysicsRenderEnabled())
+		else
+			TheSim:SetDebugRenderEnabled(not TheSim:GetDebugRenderEnabled())
+		end
+		return true
+	end
+
+
+--[[
+		elseif control == CONTROL_CANCEL then
+			return screen:OnCancel(down)
+--]]
+	self.isprimary = false
+end
 
 function patches.GetIntermediateFocusWidgets(self)
 	if #self.screenstack > 0 then
@@ -23,7 +100,7 @@ function patches.GetHelpText(self)
 	local t = {}
 
 	local widget = self:GetFocusWidget()
-    local active_screen = self:GetActiveScreen()
+	local active_screen = self:GetActiveScreen()
 
 	if active_screen ~= widget and active_screen ~= nil then
 		local str = active_screen:GetHelpText()

@@ -1726,7 +1726,7 @@ end
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 util = import("util")
 
-patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"frontend", "widget", "spinner", "button", "imagebutton", "text"} }
+patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"frontend", "widget", "screen", "spinner", "button", "imagebutton", "text"} }
 for i,v in pairs(patcher._to_load) do
 	patcher[v] = patcher._common.GetPatcher(v)
 	if patcher[v].Init then

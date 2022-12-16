@@ -26,6 +26,21 @@ SMALLNUMBERFONT = "stint-small"
 BODYTEXTFONT = "stint-ucr"
 ]]
 
+function patches:GetParentScreen()
+    --check for a cached version
+    if self.parent_screen then
+        return self.parent_screen
+    end
+
+    local parent = self.parent
+    while( not parent.is_screen )
+    do
+        parent = parent:GetParent()
+    end
+    self.parent_screen = parent
+    return self.parent_screen
+end
+
 local oldKillAllChildren = Widget.KillAllChildren
 function patches.KillAllChildren(self, ...)
 	oldKillAllChildren(self, ...)
@@ -176,6 +191,23 @@ end
 
 function patches.SetOnLoseFocus(self, fn)
 	self.onlosefocusfn = fn
+end
+
+function patches:ClearFocus()
+    if self.focus then
+        self.focus = false
+        if self.OnLoseFocus then
+            self:OnLoseFocus()
+        end
+        if self.onlosefocusfn then
+            self.onlosefocusfn()
+        end
+        for k,v in pairs(self.children) do
+            if v.focus then
+                v:ClearFocus()
+            end
+        end
+    end
 end
 
 function patches:SetFocusFromChild(from_child)
