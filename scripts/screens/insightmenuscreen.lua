@@ -63,7 +63,7 @@ function InsightMenuScreen:OnControl(control, down)
 
 	-- Trigered from FrontEnd:OnControl
 	--mprint(string.rep("-", 66))
-	mprint("InsightMenuScreen", controlHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
+	dprint("InsightMenuScreen", controlHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
 	if TheFrontEnd.tracking_mouse and self.focus and not self.root.focus then
 		-- Mouse input broke focus or something. Just fix it.
 		dprint("Fixing focus.")

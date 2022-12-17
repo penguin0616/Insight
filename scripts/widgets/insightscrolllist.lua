@@ -17,6 +17,10 @@ LICENSE in the form of a LICENSE file in the root of the source
 directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
+
+-- This file's naming conventions try to stay somewhat close to DST's TrueScrollList
+-- so as to minimize any issues for code swapping between the two across DS/T.
+
 local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 local Text = require "widgets/text"
@@ -96,10 +100,23 @@ local InsightScrollList = Class(Widget, function(self, data)
 	self.list_root = self.root:AddChild(Widget("list_root"))
 	--self.list_root = self.root:AddChild(Image(DEBUG_IMAGE(true))); self.list_root:SetSize(self._width, self._height);
 	
+	-- Scrolling position stuff
 	self.scroll_per_click = 1
 	self.current_scroll_pos = 0 -- Represents the current row index. Could be 1, 1.5, 2, etc.
 	self.target_scroll_pos = 0
 	self.end_scroll_pos = 0
+
+
+	-- Tracking
+	self.focused_widget_index = 0 -- The focused widget in the actual visible list of rows; so this is always (1 < X <= visible rows)
+	self.displayed_start_index = 0 -- Topmost visible item index (1 <= x <= num_items)
+	self.focused_item_index = nil -- Item index temporarily set to focus an item
+
+	self.getnextitemindex = function(dir, focused_item_index)
+		-- Only 1 column per row, so.
+		return (dir == MOVE_UP and focused_item_index - 1) or
+			(dir == MOVE_DOWN and focused_item_index + 1) or nil
+	end
 	
 	self:BuildListItems()
 	self:BuildScrollBar()
@@ -272,8 +289,13 @@ function InsightScrollList:BuildScrollBar()
 	end)
 end
 
-function InsightScrollList:OnWidgetFocus(...)
-
+function InsightScrollList:OnWidgetFocus(focused_widget)
+	for i = 1, self.num_visible_rows do
+		if self.item_widgets[i] == focused_widget then
+			self.focused_widget_index = i
+			return
+		end
+	end
 end
 
 --- Calculates the amount of space left to go downwards in pixel terms.
@@ -346,20 +368,36 @@ function InsightScrollList:ScrollUp()
 	self:Scroll(-self.scroll_per_click)
 end
 
+--- Scroll to an item index, leaving it at the topmost position if possible.
+function InsightScrollList:ScrollToItemIndex(idx)
+	--mprintf("Current: %s | Idx: %s | Adjusted for row count: %s", self.current_scroll_pos, idx, idx - 1)
+	self.current_scroll_pos = math.clamp(idx - 1, 0, self.end_scroll_pos)
+	--mprint(self.current_scroll_pos, "\n--------------------------------------------------------------------------------")
+	self.target_scroll_pos = self.current_scroll_pos
+	
+	self:RefreshView()
+end
+
+--- Returns the topmost visible item index.
+function InsightScrollList:GetRowIndex(pos)
+	pos = pos or self.current_scroll_pos
+	return ((pos % 1 < .5 and math.floor) or math.ceil)(pos)
+end
+
 function InsightScrollList:RefreshView()
 	-- Clamp the scroll position to the closest "item row".
-	local row_index = ((self.current_scroll_pos % 1 < .5 and math.floor) or math.ceil)(self.current_scroll_pos)
+	local row_index = self:GetRowIndex()
+	self.displayed_start_index = row_index
+	--self.displayed_last_index = row_index + self.num_visible_rows
 
 	for i = 1, self.num_visible_rows do
 		self.item_update_fn(self.context, self.item_widgets[i], self.items[row_index + i])
-		--[[
-		if self.itemfocus and self.itemfocus == start_index + i then
-            --Check if we're on an active screen. Something could be on the stack in front of us and we don't want to steal focus back
-            if self:GetParentScreen() == TheFrontEnd:GetActiveScreen() then
-                self.widgets_to_update[i]:SetFocus()
-            end
-        end
-		--]]
+		if self.focused_item_index and self.focused_item_index == self.displayed_start_index + i then 
+			if self:GetParentScreen() == TheFrontEnd:GetActiveScreen() then
+				--mprint("wagh", self.items[self.focused_item_index].label, self.item_widgets[i])
+				self.item_widgets[i]:SetFocus()
+			end
+		end
 	end
 
 	--print(self.num_items, self.end_scroll_pos, self:CanScroll())
@@ -370,36 +408,32 @@ function InsightScrollList:RefreshView()
 	else
 		self.scroll_bar_container:Hide()
 	end
-
-	--[[
-	local row_index, offset = self:GetIndexOfFirstVisibleWidget()
-
-	for i = 1, self.num_visible_rows do
-		self.item_update_fn(self.context, self.item_widgets[i], self.items[row_index + i - 1])
-	end
-
-	if self:CanScroll() then
-		self.scroll_bar_container:Show()
-	else
-		self.scroll_bar_container:Hide()
-	end
-
-	self.list_root:SetPosition(offset * self.item_height)
-	--]]
 end
 
 function InsightScrollList:SetItemsData(items)
 	self.items = items or {}
 	self.num_items = #self.items
 
-	local max_scroll = self.num_items - self.num_visible_rows - 1
+	local max_scroll = self.num_items - self.num_visible_rows
 	self.end_scroll_pos = math.max(max_scroll, 0)
+
+	-- This is the index of the currently focused item in our list
+
+	if self.focus then
+		if self.num_items > 0 and self.items[self:GetFocusedItemIndex()] == nil then
+			-- The new data doesn't have an item that can be focused at this index, so reset focus back to the topmost displayed widget. 
+			self.item_widgets[1]:SetFocus()
+		end
+	elseif self.num_items > 0 then
+		--self.focus_forward = self.item_widgets[math.clamp(self.focused_widget_index, 1, self.num_visible_rows)]
+	end
 
 	self:OnUpdate()
 	self:RefreshView()
 end
 
 local SCROLL_REPEAT_TIME = .2
+local PAGE_REPEAT_TIME = .3
 
 function InsightScrollList:OnUpdate(dt)
 	-- Repeat scrolling for controllers
@@ -462,7 +496,7 @@ function InsightScrollList:OnUpdate(dt)
 		delta = math.min(self.scroll_per_click, diff)
 	elseif diff < 0 then
 		-- We need to scroll up.
-		delta = -math.min(self.scroll_per_click, -diff)
+		delta = -math.min(self.scroll_per_click, math.abs(diff))
 	end
 
 	self.current_scroll_pos = self.current_scroll_pos + delta
@@ -470,7 +504,107 @@ function InsightScrollList:OnUpdate(dt)
 	-- Make sure that we've moved before refreshing the view.
 	if self.current_scroll_pos ~= last_pos then
 		self:RefreshView()
+	else
+		self.focused_item_index = nil
 	end
+end
+
+function InsightScrollList:GetFocusedItemIndex()
+	return self.displayed_start_index + self.focused_widget_index
+end
+
+function InsightScrollList:ForceItemFocus(itemindex)
+	local new_widget_index = itemindex - (self.displayed_start_index)
+	--mprint("ForceItemFocus", itemindex, "| current:", new_widget_index)
+
+	if self.item_widgets[new_widget_index] then
+		--mprint("\t", self.item_widgets[new_widget_index].data.label)
+		self.item_widgets[new_widget_index]:SetFocus()
+	else
+		self:SetFocus()
+	end
+
+	self.focused_item_index = itemindex
+end
+
+function InsightScrollList:GetNextWidget(dir)
+	local focused_item_index = self.focused_item_index or self:GetFocusedItemIndex()
+	local next_item_index = self.getnextitemindex(dir, focused_item_index) 
+	--mprint("-----------------------------------------------getnext current focused:", focused_item_index, "|", self:GetFocusedItemIndex())
+
+	local scrolled = false
+
+	if next_item_index and self.items[next_item_index] then
+		-- This is the max index that is displayed on the scroller right now.
+		local max_displayed_index = self.displayed_start_index + self.num_visible_rows
+		--[[
+		mprintf(
+			"\nnext: %s, next (item): %s, \ndisplayed_start: %s, displayed_start (item): %s,\ndisplayed_last: %s, displayed_last (item): %s\nmaximum: %s", 
+			next_item_index, 
+			tostring(self.items[next_item_index].label), 
+
+			self.displayed_start_index,
+			self.items[self.displayed_start_index] and self.items[self.displayed_start_index].label or nil, 
+			self.displayed_last_index, 
+			self.items[self.displayed_last_index] and self.items[self.displayed_last_index].label or nil,
+			max_displayed_index
+		)
+		--]]
+
+
+		if next_item_index <= self.displayed_start_index then
+			--dprint("@@@@@@ Gotta scroll back")
+			scrolled = true
+			self:Scroll(-1)
+		elseif next_item_index > max_displayed_index then
+			--dprint("@@@@@@ Gotta scroll forward")
+			scrolled = true
+			self:Scroll(1)
+		end
+			-- We have to scroll.
+			--local delta = (next_item_index > max_displayed_index and 1) or -1
+			--self.current_scroll_pos = self.current_scroll_pos + delta
+			--self.target_scroll_pos = self.current_scroll_pos
+		
+		if next_item_index and self.items[next_item_index] then
+			self:ForceItemFocus(next_item_index)
+			scrolled = true -- I don't get why this is done.
+		elseif scrolled then
+			self:ForceItemFocus(focused_item_index)
+		end
+		
+		return scrolled
+	else
+		
+	end
+
+	return scrolled
+end
+
+function InsightScrollList:OnFocusMove(dir, down)
+	--rawset(_G, "s", self)
+	-- down is always true
+	--mprint("OnFocusMove", dir, down)
+	
+	if dir == MOVE_UP or dir == MOVE_DOWN then
+		local had_to_scroll = self:GetNextWidget(dir)
+		if had_to_scroll then
+			return had_to_scroll
+		end
+	end
+
+	local prev_focus = self.item_widgets[self.focused_widget_index]
+    local did_parent_move = InsightScrollList._base.OnFocusMove(self, dir, down)
+    if prev_focus and did_parent_move then
+        local focused_item_index = self:GetFocusedItemIndex()
+        if not self.items[focused_item_index] then
+            -- New widget is empty, undo parent's move to focus valid widget.
+            prev_focus:SetFocus()
+            return false
+        end
+    end
+
+	return did_parent_move
 end
 
 function InsightScrollList:OnControl(control, down)
@@ -486,14 +620,25 @@ function InsightScrollList:OnControl(control, down)
 
 	if (self.focus or FunctionOrValue(self.custom_focus_check)) and self:CanScroll() then
 		if down then -- down
+			local accepted = false
+
 			if controls:IsAcceptedControl("scroll_up", control) then
 				--print("Scrolling up.")
 				self:Scroll(-self.scroll_per_click)
-				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover", nil, ClickMouseoverSoundReduction and ClickMouseoverSoundReduction() or nil)
-				return true
+				accepted = true
 			elseif controls:IsAcceptedControl("scroll_down", control) then
 				--print("Scrolling down.")
 				self:Scroll(self.scroll_per_click)
+				accepted = true
+			elseif controls:IsAcceptedControl("page_up", control) then
+				self:Scroll(-self.num_visible_rows)
+				accepted = true
+			elseif controls:IsAcceptedControl("page_down", control) then
+				self:Scroll(self.num_visible_rows)
+				accepted = true
+			end
+
+			if accepted then
 				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover", nil, ClickMouseoverSoundReduction and ClickMouseoverSoundReduction() or nil)
 				return true
 			end
