@@ -62,7 +62,7 @@ local function UpdatePlayerListing(self)
 	end
 
 	listing.insight_text:SetString((#asd > 0 and table.concat(asd, "\n")) or nil)
-	listing.insight_text:SetPosition(listing.name:GetRegionSize() + 10, 1 + (#asd-1) * font_size/2)
+	listing.insight_text:SetPosition(listing.name:GetRegionSize() + 10, 0)
 end
 
 local function SetupPlayerStatInfo(playerStatusScreen)
