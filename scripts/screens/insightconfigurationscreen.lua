@@ -91,6 +91,19 @@ local function ConfigOptionCtor(context, index)
 	--widget.bg = widget:AddChild(TEMPLATES.ListItemBackground(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT))
 
 	local root = Widget("option" .. index)
+	setmetatable(root, {
+		__index = getmetatable(root).__index,
+		__newindex = getmetatable(root).__newindex,
+		__call = getmetatable(root).__call,
+		__tostring = function(self)
+			return Widget.__tostring(self) .. " - " .. string.format("[%s] %s = %s", 
+				self.is_section_header and "S" or "C", 
+				self.is_section_header and self.section_label:GetText() or self.label:GetString(), 
+				self.is_section_header and "" or tostring(self.data.saved)
+			)
+		end,
+	})
+
 	root.bg = root:AddChild(ITEMPLATES.ListItemBackground(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT))
 
 	-- This is the label describing the option.
@@ -111,13 +124,14 @@ local function ConfigOptionCtor(context, index)
 	--root.section_label:SetRegionSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
 	---- "images/dst/frontend_redux.xml", "serverlist_listitem_normal.tex", "serverlist_listitem_selected.tex"
 	root.section_label = root:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex")) 
-	root.section_label.control = nil -- Prevent clicking
+	root.section_label.control = nil
+	root.section_label.GetHelpText = function() return end
 	root.section_label.scale_on_focus = false
 	root.section_label:ForceImageSize(OPTION_ENTRY_WIDTH, OPTION_ENTRY_HEIGHT)
 	root.section_label:SetTextColour(UICOLOURS.WHITE)
 	root.section_label:SetTextFocusColour(UICOLOURS.GOLD_FOCUS)
-	root.section_label:SetTextSelectedColour(root.section_label.textcolour)
-	root.section_label:SetTextDisabledColour(root.section_label.textcolour)
+	--root.section_label:SetTextSelectedColour(root.section_label.textcolour)
+	--root.section_label:SetTextDisabledColour(root.section_label.textcolour)
 	root.section_label:SetFont(CHATFONT)
 	root.section_label:SetTextSize(25)
 
@@ -170,6 +184,7 @@ local function ConfigOptionCtor(context, index)
 			return
 		end
 		
+		--mprint('gain', root.data.label)
 		if not root.is_section_header then
 			root.label:SetColour(UICOLOURS.GOLD_FOCUS)
 		end
@@ -183,6 +198,7 @@ local function ConfigOptionCtor(context, index)
 			return
 		end
 		
+		--mprint('lose', root.data.label)
 		if not root.is_section_header then
 			root.label:SetColour(UICOLOURS.WHITE)
 		end
@@ -252,7 +268,6 @@ local function ConfigOptionCtor(context, index)
 		self:SetIsSectionHeader(is_section_header)
 
 		if is_section_header then
-			self:SetConfigType(nil)
 			return
 		end
 
@@ -290,9 +305,10 @@ local function ConfigOptionCtor(context, index)
 	end
 	
 	root.SetIsSectionHeader = function(self, bool)
-		-- Hiding the option is handled elsewhere.
 		self.is_section_header = bool
 		if self.is_section_header then
+			self:SetConfigType(nil)
+			self.focus_forward = self.section_label
 			self.label:Hide()
 			self.section_label:Show()
 			self.bg:Hide()
@@ -425,6 +441,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 
 	-- Background tint
 	self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
+	self.black:SetControl(CONTROL_PRIMARY) -- Control is unchanging, but makes the clicker mouseonly.
 	self.black.image:SetVRegPoint(ANCHOR_MIDDLE)
 	self.black.image:SetHRegPoint(ANCHOR_MIDDLE)
 	self.black.image:SetVAnchor(ANCHOR_MIDDLE)

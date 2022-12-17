@@ -624,8 +624,14 @@ function mprint(...)
 	return print(prefix .. "[" .. ModInfoname(modname) .. "]:\t" .. msg)
 end
 
-function mprintf(...)
-	return mprint(string.format(...))
+function mprintf(strf, ...)
+	local n = select("#", ...)
+	local args = {...}
+	for i = 1, n do
+		args[i] = tostring(args[i])
+	end
+
+	return mprint(string.format(strf, unpack(args, 1, n)))
 end
 
 function errorf(level, error_pattern, ...)
@@ -649,11 +655,18 @@ function dprint(...)
 	mprint(...)
 end
 
-function dprintf(...)
+function dprintf(strf, ...)
 	if not DEBUG_ENABLED then
 		return
 	end
-	return dprint(string.format(...))
+	
+	local n = select("#", ...)
+	local args = {...}
+	for i = 1, n do
+		args[i] = tostring(args[i])
+	end
+
+	return dprint(string.format(strf, unpack(args, 1, n)))
 end 
 
 function cprint(...)
@@ -1726,7 +1739,7 @@ end
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 util = import("util")
 
-patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"frontend", "widget", "screen", "spinner", "button", "imagebutton", "text"} }
+patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"input", "frontend", "widget", "screen", "spinner", "button", "imagebutton", "text"} }
 for i,v in pairs(patcher._to_load) do
 	patcher[v] = patcher._common.GetPatcher(v)
 	if patcher[v].Init then

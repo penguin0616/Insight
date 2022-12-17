@@ -6,6 +6,22 @@ local DebugMenuScreen = require "screens/DebugMenuScreen"
 
 local patches = {}
 
+function patches:DoHoverFocusUpdate(manual_update)
+    if self.tracking_mouse and not self.focus_locked then
+		if manual_update then
+			--something has been manually moved, so we want to update the entities under the mouse and re-evaluate the hover/focus state
+			TheInput:UpdateEntitiesUnderMouse()
+		end
+	    local entitiesundermouse = TheInput:GetAllEntitiesUnderMouse()
+        local hover_inst = entitiesundermouse[1]
+        if hover_inst and hover_inst.widget then
+            hover_inst.widget:SetFocus()
+        elseif #self.screenstack > 0 then
+            self.screenstack[#self.screenstack]:SetFocus()
+        end
+    end
+end
+
 function patches:IsControlsDisabled()
     return self:GetFadeLevel() > 0
         or (self.fadedir == FADE_OUT and self.fade_delay_time == nil)
