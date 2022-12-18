@@ -181,6 +181,17 @@ local InsightMenu = Class(Widget,function(self)
 	self.from_screen = false
 	self:Hide() -- SetPage needs to be done in the Activate call so we know it has a parent for focus purposes.
 
+	self.exit_listener = TheInput:AddControlHandler(CONTROL_CANCEL, function(digital, analog)
+		if self.from_screen then
+			return
+		end
+
+		-- digital is down boolean, analog is down but as a number 
+		if not digital then
+			self:Hide()
+		end
+	end)
+
 	if localPlayer then
 		GetLocalInsight(localPlayer):MaintainMenu(self)
 	end
