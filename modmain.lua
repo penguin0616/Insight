@@ -3330,6 +3330,10 @@ if IS_DS or IsClient() or IsClientHost() then
 				--env.folder_name = false -- folder_name is normally nil in DS, and a string in DST. false helps in me in DS by making sure my changes are active, and if its ever nil, modinfo has been tampered with in DST (probably).
 				env.folder_name = nil
 				env.locale = LOC.GetLocaleCode() -- make people happy
+				env.ChooseTranslationTable = function(tbl)
+					local locale = LOC.GetLocaleCode()
+					return tbl[locale] or tbl[1]
+				end
 				return oldRunInEnvironment(arg, env)
 			end
 		}, {
