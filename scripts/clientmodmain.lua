@@ -526,12 +526,20 @@ end
 
 insightKeybinds = import("helpers/keybinds")()
 
-mprint("Loaded keybinds:")
-dumptable(insightSaveData:Get("keybinds"))
+if DEBUG_ENABLED then
+	insightKeybinds:Register("test", "TestBind", "This is a test.", nil, function(down)
+		if TheFrontEnd:GetActiveScreen().name == "HUD" and localPlayer.components.playercontroller:IsEnabled() then
+			mprint(":)")
+		end
+	end)
+end
 
-insightKeybinds:Register("test", "TestBind", "This is a test.", nil, function(down)
-	if TheFrontEnd:GetActiveScreen().name == "HUD" and localPlayer.components.playercontroller:IsEnabled() then
-		mprint(":)")
+insightKeybinds:Register("togglemenu", language.en.keybinds.togglemenu.name, language.en.keybinds.togglemenu.description, nil, function(down)
+	if not down and TheFrontEnd:GetActiveScreen().name == "HUD" and localPlayer.components.playercontroller:IsEnabled() then
+		local insight_menu_toggle = table.getfield(localPlayer, "HUD.controls.insight_menu_toggle")
+		if insight_menu_toggle and insight_menu_toggle.onclick then
+			insight_menu_toggle.onclick()
+		end
 	end
 end)
 
@@ -541,6 +549,16 @@ insightKeybinds.onkeybindchanged = function(name, new, old)
 end
 insightKeybinds:LoadSavedKeybindings(insightSaveData:Get("keybinds"))
 insightKeybinds:SetReady()
+
+AddLocalPlayerPostInit(function(insight, context)
+	for name, data in pairs(insightKeybinds:GetKeybinds()) do
+		local trans = rawget(context.lstr.keybinds, name)
+		if trans then
+			data.pretty_name = trans.name or data.pretty_name
+			data.description = trans.description or data.description
+		end
+	end
+end, true)
 
 --==========================================================================================================================
 --==========================================================================================================================

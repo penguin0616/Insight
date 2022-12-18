@@ -21,10 +21,15 @@ directory. If not, please refer to
 local languages = {
 	icons = "icons",
 	en = "english",
-	zh = "chinese", ch = "chinese",
-	es = "spanish", mex = "spanish",
+	zh = "chinese", --ch = "chinese",
+	es = "spanish", --mex = "spanish",
 	br = "portuguese"
 }
+
+local languageTables = {}
+for code, lang in pairs(languages) do
+	languageTables[code] = import("language/" .. lang)
+end
 
 local __newindex = function(self) error(tostring(self) .. " is readonly") end
 local __metatable = "[Insight] The metatable is locked."
@@ -113,7 +118,17 @@ local function main(config, locale)
 	return primaryLanguage
 end
 
-return main
+local proxy = newproxy(true)
+local mt = getmetatable(proxy)
+
+mt.__index = languageTables
+
+mt.__call = function(self, ...)
+	return main(...)
+end
+
+return proxy
+
 --[[
 local strs = (false and import("language/chinese")) or eng
 

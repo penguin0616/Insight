@@ -4669,7 +4669,7 @@ description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s",
 --]]
 description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
 	--locale or "?", tostring(folder_name), tostring(IsDST),
-	(locale and ChooseTranslationTable) or T(STRINGS["ds_not_enabled"]), 
+	(locale) or T(STRINGS["ds_not_enabled"]), 
 	T(STRINGS["mod_explanation"]), 
 	T(STRINGS["config_disclaimer"]), 
 

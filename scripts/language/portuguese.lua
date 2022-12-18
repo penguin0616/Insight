@@ -45,7 +45,14 @@ return {
 		summer = "<color=#FFCF8C>Verão</color>",
 	},
 
+	-- Keybinds
 	unbind = "Unbind",
+	keybinds = {
+		togglemenu = {
+			name = "Open Insight Menu",
+			description = "Opens/Closes the Insight menu"
+		},
+	},
 
 	-------------------------------------------------------------------------------------------------------------------------
 	

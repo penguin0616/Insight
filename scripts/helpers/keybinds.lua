@@ -56,6 +56,10 @@ function Keybinds:GetDefaultKey(name)
 	end
 end
 
+function Keybinds:GetKeybinds()
+	return self.keybinds
+end
+
 function Keybinds:LoadSavedKeybindings(saved)
 	for name in pairs(self.keybinds) do
 		self:ChangeKey(name, saved[name])

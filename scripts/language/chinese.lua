@@ -74,7 +74,14 @@ return {
 		summer = "夏天",
 	},
 
+	-- Keybinds
 	unbind = "Unbind",
+	keybinds = {
+		togglemenu = {
+			name = "Open Insight Menu",
+			description = "Opens/Closes the Insight menu"
+		},
+	},
 
 	-------------------------------------------------------------------------------------------------------------------------
 
