@@ -120,7 +120,10 @@ local function GetFoodEffects(self)
 	end
 
 	if self.temperaturebump and self.temperaturebump ~= 0 then
-		assert(bonuses.instant_temperature == nil, "[Insight]: attempt to overwrite existing autocooldelta")
+		if bonuses.instant_temperature ~= nil then
+			error("[Insight]: attempt to overwrite existing autocooldelta")
+		end
+		
 		bonuses.instant_temperature = {
 			delta = self.temperaturebump,
 			duration = false

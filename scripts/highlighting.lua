@@ -467,7 +467,9 @@ local function EvaluateRelevance(inst, isApplication)
 		return
 	end
 
-	assert(isApplication ~= nil, "[Insight Error]: isApplication nil")
+	if isApplication == nil then
+		error("[Insight Error]: isApplication nil")
+	end
 
 	local prefab, widget = IsPrefab(inst), IsWidget(inst)
 	if not prefab and not widget and not type(inst) == 'string' then

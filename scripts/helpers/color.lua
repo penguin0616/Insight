@@ -81,9 +81,10 @@ function Color.ToHex(self)
 	-- https://github.com/Perkovec/colorise-lua
 	local hexadecimal = '#'
 
-	local r = assert(self.r or self[1], "missing r in arg #1")
-	local g = assert(self.g or self[2], "missing g in arg #1")
-	local b = assert(self.b or self[3], "missing b in arg #1")
+	
+	local r = self.r or self[1] or error("missing r in arg #1")
+	local g = self.g or self[2] or error("missing g in arg #1")
+	local b = self.b or self[3] or error("missing b in arg #1")
 
 	local rgb = {math_floor(r * 255), math_floor(g * 255), math_floor(b * 255)}
 
@@ -132,15 +133,31 @@ function Color.fromRGBA(r, g, b, a)
 
 	local rs, gs, bs, as = isint(r), isint(g), isint(b), isint(a)
 	
-	assert(rs, "bad argument #1 to Color (red must be an integer)")
-	assert(gs, "bad argument #2 to Color (green must be an integer)")
-	assert(bs, "bad argument #3 to Color (blue must be an integer)")
-	assert(as, "bad argument #4 to Color (alpha must be an integer)")
+	if not rs then 
+		error("bad argument #1 to Color (red must be an integer)")
+	end
+	if not gs then 
+		error("bad argument #2 to Color (green must be an integer)")
+	end
+	if not bs then 
+		error("bad argument #3 to Color (blue must be an integer)")
+	end
+	if not as then 
+		error("bad argument #4 to Color (alpha must be an integer)")
+	end
 
-	assert(r <= 255 and r >= 0, "bad argument #1 to Color (red must be between 0 and 255)")
-	assert(g <= 255 and g >= 0, "bad argument #2 to Color (green must be between 0 and 255)")
-	assert(b <= 255 and b >= 0, "bad argument #3 to Color (blue must be between 0 and 255)")
-	assert(a <= 255 and r >= 0, "bad argument #4 to Color (alpha must be between 0 and 255)")
+	if not (r <= 255 and r >= 0) then
+		error("bad argument #1 to Color (red must be between 0 and 255)")
+	end
+	if not (g <= 255 and g >= 0) then
+		error("bad argument #2 to Color (green must be between 0 and 255)")
+	end
+	if not (b <= 255 and b >= 0) then
+		error("bad argument #3 to Color (blue must be between 0 and 255)")
+	end
+	if not (a <= 255 and r >= 0) then
+		error("bad argument #4 to Color (alpha must be between 0 and 255)")
+	end
 
 	r = r / 255
 	g = g / 255
@@ -232,15 +249,31 @@ function Color.new(r, g, b, a)
 
 	local rt, gt, bt, at = type(r), type(g), type(b), type(a)
 	
-	assert(rt, "bad argument #1 to Color (red must be a number)")
-	assert(gt, "bad argument #2 to Color (green must be a number)")
-	assert(bt, "bad argument #3 to Color (blue must be a number)")
-	assert(at, "bad argument #4 to Color (alpha must be a number)")
+	if not rt then
+		error("bad argument #1 to Color (red must be a number)")
+	end
+	if not gt then
+		error("bad argument #2 to Color (green must be a number)")
+	end
+	if not bt then
+		error("bad argument #3 to Color (blue must be a number)")
+	end
+	if not at then
+		error("bad argument #4 to Color (alpha must be a number)")
+	end
 
-	assert(r <= 1 and r >= 0, "bad argument #1 to Color (red must be between 0 and 1)")
-	assert(g <= 1 and g >= 0, "bad argument #2 to Color (green must be between 0 and 1)")
-	assert(b <= 1 and b >= 0, "bad argument #3 to Color (blue must be between 0 and 1)")
-	assert(a <= 1 and r >= 0, "bad argument #4 to Color (alpha must be between 0 and 1)")
+	if not (r <= 1 and r >= 0) then
+		error("bad argument #1 to Color (red must be between 0 and 1)")
+	end
+	if not (g <= 1 and g >= 0) then
+		error("bad argument #2 to Color (green must be between 0 and 1)")
+	end
+	if not (b <= 1 and b >= 0) then
+		error("bad argument #3 to Color (blue must be between 0 and 1)")
+	end
+	if not (a <= 1 and r >= 0) then
+		error("bad argument #4 to Color (alpha must be between 0 and 1)")
+	end
 
 	-- numerical
 	self[1] = r

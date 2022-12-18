@@ -586,7 +586,7 @@ function InsightConfigurationScreen:PopulateKeybinds(tbl)
 	end
 
 	local list = {}
-	for name, data in pairs(insightKeybinds.keybinds) do
+	for name, data in pairs(insightKeybinds:GetKeybinds()) do
 		local key = insightKeybinds:GetKey(name)
 		list[#list+1] = { 
 			name = name, 

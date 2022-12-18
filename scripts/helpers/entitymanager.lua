@@ -124,7 +124,9 @@ function EntityManager:IsEntityActive(entity)
 end
 
 function EntityManager:AddListener(key, func)
-	assert(self.listeners[key]==nil, "Unable to overwrite previous listener")
+	if self.listeners[key] ~= nil then
+		error("Unable to overwrite previous listener")
+	end
 
 	self.listeners[key] = func
 end

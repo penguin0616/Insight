@@ -28,7 +28,10 @@ local function GetPlayerNaughtiness(player)
 				kramped:OnNaughtyAction(0)
 			end
 
-			assert(kramped.actions and kramped.threshold, "[Insight]: Kramped stats missing after initialization?")
+			if not (kramped.actions and kramped.threshold) then
+				error("[Insight]: Kramped stats missing after initialization?")
+			end
+
 			return { actions=kramped.actions, threshold=kramped.threshold }
 		end
 	end
@@ -51,7 +54,9 @@ end
 -- @tparam Entity inst The living creature.
 -- @treturn number
 local function DST_GetCreatureNaughtiness(inst)
-	assert(TheWorld.ismastersim, "[Insight]: DST_GetCreatureNaughtiness called on client")
+	if not TheWorld.ismastersim then
+		error("[Insight]: DST_GetCreatureNaughtiness called on client")
+	end
 
 	if inst.components.werebeast ~= nil and inst.components.werebeast:IsInWereState() then
 		-- you can kill werebeasts all you want with no moral sin

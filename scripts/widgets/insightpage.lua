@@ -166,9 +166,16 @@ function InsightPage:GetItem(key)
 end
 
 function InsightPage:AddItem(key, data)
-	assert(type(key) == "string", "key expected to be a string")
-	assert(type(data) == "table", "data expected to be a table")
-	assert(self:GetItem(key) == nil, "key is a duplicate")
+	if type(key) ~= "string" then
+		error("key expected to be a string")
+	end
+	if type(data) ~= "table" then
+		error("data expected to be a table")
+	end
+	
+	if self:GetItem(key) ~= nil then
+		error("key is a duplicate")
+	end
 
 	data.key = key
 
@@ -178,7 +185,9 @@ end
 
 function InsightPage:EditItem(key, data)
 	local key = key
-	assert(key, "key expected string, data expected table")
+	if type(key) ~= "string" or type(data) ~= "table" then
+		error("InsightPage::EditItem | key expected string, data expected table")
+	end
 
 	for _, item in pairs(self.items) do
 		if item.key == key then

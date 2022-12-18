@@ -84,8 +84,11 @@ end
 --[[ Time Methods ]]
 --------------------------------------------------------------------------
 function Time:new(data)
-	assert(type(data) == "table", string.format("bad argument #1 to 'new' (table expected, got %s)", type(data)))
-	assert(type(data.context) == "table", string.format("bad argument #1 to 'new' (expected table for arg.context, got %s)", type(data.context)))
+	if type(data) ~= "table" then
+		error(string.format("bad argument #1 to 'new' (table expected, got %s)", type(data)))
+	elseif type(data.context) ~= "table" then
+		error(string.format("bad argument #1 to 'new' (expected table for arg.context, got %s)", type(data.context)))
+	end
 
 	setmetatable(data, self)
 
@@ -211,9 +214,13 @@ end
 --[[ WorkableTime Methods ]]
 --------------------------------------------------------------------------
 function WorkableTime:new(data)
-	assert(type(data) == "table", string.format("bad argument #1 to 'new' (table expected, got %s)", type(data)))
-	assert(type(data.context) == "table", string.format("bad argument #1 to 'new' (expected table for arg.context, got %s)", type(data.context)))
-	assert(type(data.base_seconds) == "number", string.format("bad argument #1 to 'new' (expected number for arg.base_seconds, got %s)", type(data.base_seconds)))
+	if type(data) ~= "table" then
+		error(string.format("bad argument #1 to 'new' (table expected, got %s)", type(data)))
+	elseif type(data.context) ~= "table" then
+		error(string.format("bad argument #1 to 'new' (expected table for arg.context, got %s)", type(data.context)))
+	elseif type(data.base_seconds) ~= "number" then
+		error(string.format("bad argument #1 to 'new' (expected number for arg.base_seconds, got %s)", type(data.base_seconds)))
+	end
 
 	setmetatable(data, self)
 

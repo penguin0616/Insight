@@ -497,7 +497,9 @@ end
 function module.table_find(tbl, fn)
 	local typ = type(fn)
 
-	assert(typ, "bad argument #2 to table_find (function expected, got " .. typ .. ")")
+	if typ ~= "function" and typ ~= "string" then
+		error("bad argument #2 to table_find (string/function expected, got " .. typ .. ")")
+	end
 	
 	for i,v in pairs(tbl) do
 		if v == fn or (typ == 'function' and fn(v)) then

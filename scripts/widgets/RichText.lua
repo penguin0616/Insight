@@ -208,7 +208,9 @@ function RichText:SetColour(clr, ...) -- Text::SetColour
 	local old = self.default_colour
 
 	if type(clr) == "string" then
-		assert(Color.IsValidHex(clr), "RichText:SetColour with invalid hex")
+		if not Color.IsValidHex(clr) then
+			error("RichText:SetColour with invalid hex")
+		end
 
 		self._colour = Color.fromHex(clr)
 		self.default_colour = clr
@@ -241,7 +243,9 @@ function RichText:SetFont(font)
 end
 
 function RichText:SetSize(num)
-	assert(type(num) == "number", "RichText:SetSize expected arg #1 to be number")
+	if type(num) ~= "number" then
+		error("RichText:SetSize expected arg #1 to be number")
+	end
 	
 	if self.size == num then
 		return

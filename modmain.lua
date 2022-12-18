@@ -403,7 +403,10 @@ end
 -- @tparam Player player
 -- @treturn ?table|nil
 function GetPlayerContext(player)
-	assert(IsPrefab(player), "[Insight]: GetPlayerContext called on non-player")
+	if not IsPrefab(player) then
+		error("[Insight]: GetPlayerContext called on non-player")
+	end
+
 	local context
 	if IS_DST and TheWorld.ismastersim then
 		-- i know we'll have it
@@ -575,7 +578,10 @@ end
 -- @tparam Prefab item
 -- @treturn ?Prefab|nil The player/creature that is holding the item.
 function GetItemPossessor(item)
-	assert(IS_DS or (IS_DST and TheWorld.ismastersim), "GetItemPosessor not called from master")
+	if not (IS_DS or (IS_DST and TheWorld.ismastersim)) then
+		error("GetItemPosessor not called from master")
+	end
+	
 	return item and item.components and item.components.inventoryitem and item.components.inventoryitem:GetGrandOwner()
 end
 
@@ -839,7 +845,9 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 	--for i = 1, #datas do -- doesn't account for nils
 		--local d = datas[i]
 		if d and ((not params.IGNORE_WORLDLY) or (params.IGNORE_WORLDLY == true and not d.worldly)) then
-			assert(type(d.priority)=="number", "Invalid priority for:" .. name)
+			if type(d.priority) ~= "number" then
+				error("Invalid priority for:" .. name)
+			end
 
 			if d.name ~= nil and type(d.name) ~= "string" then
 				error(string.format("Invalid name '%s' (%s) for component descriptor '%s'.", d.name, type(d.name), name))

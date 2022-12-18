@@ -26,14 +26,21 @@ local world_type = GetWorldType()
 local function Perish(self, bundle)
 	local inst
 	if bundle then
-		assert(self == nil, "[Insight]: Perish called with both 'self' and 'bundle'.")
+		if self ~= nil then
+			error("[Insight]: Perish called with both 'self' and 'bundle'.")
+		end
 		inst = bundle
 	else
-		assert(self ~= nil, "[Insight]: Perish called without 'self'.")
+		if self == nil then
+			error("[Insight]: Perish called without 'self'.")
+		end
+
 		inst = self.inst
 	end
 	
-	assert(inst, "[Insight]: Perish called without inst")
+	if not inst then
+		error("[Insight]: Perish called without inst")
+	end
 
 	local modifier = 1
 	local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner or nil
@@ -117,14 +124,21 @@ end
 local function DST_Perish(self, bundle)
 	local inst
 	if bundle then
-		assert(self == nil, "[Insight]: DST_Perish called with both 'self' and 'bundle'.")
+		if self ~= nil then
+			error("[Insight]: DST_Perish called with both 'self' and 'bundle'.")
+		end
 		inst = bundle
 	else
-		assert(self ~= nil, "[Insight]: DST_Perish called without 'self'.")
+		if self == nil then
+			error("[Insight]: DST_Perish called without 'self'.")
+		end
+
 		inst = self.inst
 	end
-
-	assert(inst, "[Insight]: DST_Perish called without inst")
+	
+	if not inst then
+		error("[Insight]: DST_Perish called without inst")
+	end
 
 	local modifier = 1
 	local owner = inst.components.inventoryitem and inst.components.inventoryitem.owner or nil
