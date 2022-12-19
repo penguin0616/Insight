@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- sinkholespawner.lua
-local ANTLION_RAGE_TIMER = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(_G.Prefabs.antlion.fn, "ANTLION_RAGE_TIMER"), "Unable to find \"ANTLION_RAGE_TIMER\"") --"rage"
+local ANTLION_RAGE_TIMER = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.recursive_getupvalue(_G.Prefabs.antlion.fn, "ANTLION_RAGE_TIMER"), "Unable to find \"ANTLION_RAGE_TIMER\"") --"rage"
 
 local function GetAntlionData(inst)
 	return {

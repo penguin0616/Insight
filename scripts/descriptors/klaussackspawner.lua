@@ -32,14 +32,14 @@ end
 local function GetKlausSackData(self)
 	local despawn_day = nil
 	local time_to_spawn = nil
-	local sack = util.getupvalue(self.GetDebugString, "_sack")
+	local sack = util.recursive_getupvalue(self.GetDebugString, "_sack")
 	local save_data = self:OnSave()
 	if sack and sack:IsValid() and sack.despawnday and sack_can_despawn(sack) then
 		despawn_day = sack.despawnday
 	else
 		if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 			if KLAUSSACK_TIMERNAME == nil then
-				KLAUSSACK_TIMERNAME = assert(util.getupvalue(TheWorld.components.klaussackspawner.GetDebugString, "KLAUSSACK_TIMERNAME"), "Unable to find \"KLAUSSACK_TIMERNAME\"") --"klaussack_spawntimer"
+				KLAUSSACK_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components.klaussackspawner.GetDebugString, "KLAUSSACK_TIMERNAME"), "Unable to find \"KLAUSSACK_TIMERNAME\"") --"klaussack_spawntimer"
 			end
 
 			time_to_spawn = TheWorld.components.worldsettingstimer:GetTimeLeft(KLAUSSACK_TIMERNAME)

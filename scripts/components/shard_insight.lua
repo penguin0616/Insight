@@ -69,7 +69,7 @@ local notables = {
 	crabking_spawner = nil,
 	terrarium = nil
 }
-local DRAGONFLY_SPAWNTIMER = R15_QOL_WORLDSETTINGS and assert(util.getupvalue(_G.Prefabs.dragonfly_spawner.fn, "DRAGONFLY_SPAWNTIMER"), "Unable to find \"DRAGONFLY_SPAWNTIMER\"") --"regen_dragonfly"
+local DRAGONFLY_SPAWNTIMER = R15_QOL_WORLDSETTINGS and assert(util.recursive_getupvalue(_G.Prefabs.dragonfly_spawner.fn, "DRAGONFLY_SPAWNTIMER"), "Unable to find \"DRAGONFLY_SPAWNTIMER\"") --"regen_dragonfly"
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]

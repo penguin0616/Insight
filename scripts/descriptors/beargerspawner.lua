@@ -29,7 +29,7 @@ local function GetBeargerData(self)
 
 	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 		if BEARGER_TIMERNAME == nil then
-			BEARGER_TIMERNAME = assert(util.getupvalue(TheWorld.components.beargerspawner.GetDebugString, "BEARGER_TIMERNAME"), "Unable to find \"BEARGER_TIMERNAME\"") --"bearger_timetospawn"
+			BEARGER_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components.beargerspawner.GetDebugString, "BEARGER_TIMERNAME"), "Unable to find \"BEARGER_TIMERNAME\"") --"bearger_timetospawn"
 		end
 
 		time_to_attack = TheWorld.components.worldsettingstimer:GetTimeLeft(BEARGER_TIMERNAME)

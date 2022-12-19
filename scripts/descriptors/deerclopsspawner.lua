@@ -32,8 +32,8 @@ local function GetDeerclopsData(self)
 	local time_to_attack
 	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 		if DEERCLOPS_TIMERNAME == nil then
-			--DEERCLOPS_TIMERNAME = assert(util.getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME"), "Unable to find \"DEERCLOPS_TIMERNAME\"") --"deerclops_timetoattack"
-			DEERCLOPS_TIMERNAME = util.getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME") or false
+			--DEERCLOPS_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME"), "Unable to find \"DEERCLOPS_TIMERNAME\"") --"deerclops_timetoattack"
+			DEERCLOPS_TIMERNAME = util.recursive_getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME") or false
 		end
 		time_to_attack = TheWorld.components.worldsettingstimer:GetTimeLeft(DEERCLOPS_TIMERNAME)
 	else

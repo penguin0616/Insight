@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- farming_manager.lua [Worldly]
-local LORDFRUITFLY_TIMERNAME = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.getupvalue(TheWorld.components.farming_manager.GetDebugString, "LORDFRUITFLY_TIMERNAME"), "Unable to find \"LORDFRUITFLY_TIMERNAME\"") --"bearger_timetospawn"
+local LORDFRUITFLY_TIMERNAME = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.recursive_getupvalue(TheWorld.components.farming_manager.GetDebugString, "LORDFRUITFLY_TIMERNAME"), "Unable to find \"LORDFRUITFLY_TIMERNAME\"") --"bearger_timetospawn"
 
 local function GetLordFruitFlyData(self)
 	local lordfruitfly_spawntime

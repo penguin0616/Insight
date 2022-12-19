@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- crabkingspawner.lua [Worldly]
-local CRABKING_SPAWNTIMER = assert(util.getupvalue(_G.Prefabs.crabking_spawner.fn, "CRABKING_SPAWNTIMER"), "Unable to find \"CRABKING_SPAWNTIMER\"") --"regen_crabking"
+local CRABKING_SPAWNTIMER = assert(util.recursive_getupvalue(_G.Prefabs.crabking_spawner.fn, "CRABKING_SPAWNTIMER"), "Unable to find \"CRABKING_SPAWNTIMER\"") --"regen_crabking"
 
 
 local function GetCrabKingData(inst)

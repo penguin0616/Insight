@@ -24,7 +24,7 @@ local MALBATROSS_TIMERNAME
 local function GetMalbatrossData(self)
 	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 		if MALBATROSS_TIMERNAME == nil then
-			MALBATROSS_TIMERNAME = assert(util.getupvalue(TheWorld.components.malbatrossspawner.GetDebugString, "MALBATROSS_TIMERNAME"), "Unable to find \"MALBATROSS_TIMERNAME\"") --"malbatross_timetospawn"
+			MALBATROSS_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components.malbatrossspawner.GetDebugString, "MALBATROSS_TIMERNAME"), "Unable to find \"MALBATROSS_TIMERNAME\"") --"malbatross_timetospawn"
 		end
 		
 		return {
