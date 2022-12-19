@@ -427,7 +427,7 @@ local CONTEXT_META = {
 	__newindex = function()
 		error("context is readonly")
 	end;
-	__tostring = function(self) return string.format("Player Context (%s): %s", tostring(self.player), self._name or "ADDR") end,
+	--__tostring = function(self) return string.format("Player Context (%s): %s", tostring(self.player), self._name or "ADDR") end,
 	__metatable = "[Insight] The metatable is locked"
 }
 --- Creates player's insight context.
@@ -474,17 +474,19 @@ function CreatePlayerContext(player, config, external_config, etc)
 end
 
 function UpdatePlayerContext(player, data)
-	if not player_context[player] then
+	if not player_contexts[player] then
 		mprint("Can't update missing player context.")
 		return
 	end
 
-	for i,v in pairs(player_context[player]) do
-		player_context[i] = v
+	for i,v in pairs(data) do
 		if type(v) == "table" and i:find("config") then
 			setmetatable(v, CONTEXT_META)
 		end
+		player_contexts[player][i] = v
 	end
+
+	player_contexts[player].usingIcons = player_contexts[player].config["info_style"] == "icon"
 end
 
 --- Returns the component's origin. 
@@ -645,10 +647,10 @@ function errorf(level, error_pattern, ...)
 
 	if t == "string" then
 		-- the level is actually the error pattern
-		return error(string.format(level, error_pattern, ...))
+		return error(string.format(level, error_pattern, ...), 2)
 	elseif t == "number" then
 		-- standard
-		return error(string.format(error_pattern, ...), level)
+		return error(string.format(error_pattern, ...), (level and level+1) or 2)
 	else
 		error("errorf bad args")
 	end
@@ -2017,7 +2019,7 @@ if IS_DST then
 		data = json.decode(data)
 		if player_contexts[player] then
 			UpdatePlayerContext(player, {
-				config = data.config
+				config = data.config,
 			})
 		else
 			CreatePlayerContext(player, data.config, data.external_config, data.etc)
@@ -2224,7 +2226,7 @@ if IS_DST then
 	rpcNetwork.AddClientModRPCHandler(modname, "EntityInformation", function(data)
 		if not localPlayer then
 			-- this check is in place to avoid additional function overhead so we only do it when needed
-			AddLocalPlayerPostInit(function() localPlayer:PushEvent("insight_entity_information", { data=data }) end) 
+			OnLocalPlayerPostInit:AddWeakListener(function() localPlayer:PushEvent("insight_entity_information", { data=data }) end) 
 			return
 		end
 
@@ -2233,7 +2235,7 @@ if IS_DST then
 	end)
 
 	rpcNetwork.AddClientModRPCHandler(modname, "PipspookQuest", function(data)
-		AddLocalPlayerPostInit(function(insight)
+		OnLocalPlayerPostInit:AddWeakListener(function(insight)
 			insight:HandlePipspookQuest(decompress(data))
 		end)
 	end)

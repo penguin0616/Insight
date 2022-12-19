@@ -18,13 +18,24 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local module = {}
-
-local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
 local RichText = import("widgets/RichText")
 
-AddLocalPlayerPostInit(function(_, context) 
+local module = {}
+
+
+local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
+local INSIGHT_TEXT_SIZE = GetModConfigData("font_size", true)
+local informationOnAltOnly = GetModConfigData("alt_only_information", true)
+local canShowItemRange = GetModConfigData("hover_range_indicator", true)
+local canShowExtendedInfoIndicator = GetModConfigData("extended_info_indicator", true)
+
+OnContextUpdate:AddListener("hoverer_cfg", function(context) 
+	--mprint("contextupdate in hoverer", context.config["font_size"])
 	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
+	INSIGHT_TEXT_SIZE = context.config["font_size"]
+	informationOnAltOnly = context.config["informationOnAltOnly"]
+	canShowItemRange = context.config["canShowItemRange"]
+	canShowExtendedInfoIndicator = context.config["canShowExtendedInfoIndicator"]
 end)
 
 --[[
@@ -61,10 +72,6 @@ local TheInputProxy_GetLocalizedControl = TheInputProxy.GetLocalizedControl
 local TheInput_IsControlPressed = TheInput.IsControlPressed
 local CONTROL_FORCE_INSPECT = CONTROL_FORCE_INSPECT
 local CONTROL_FORCE_TRADE = CONTROL_FORCE_TRADE
-
-local informationOnAltOnly
-local canShowItemRange
-local canShowExtendedInfoIndicator
 
 local function OnHovererPostInit(hoverer)
 	local oldSetString = hoverer.text.SetString
@@ -198,11 +205,11 @@ local function OnHovererPostInit(hoverer)
 	end
 	
 	function hoverer.OnUpdate(self, ...)
-		--[[
 		if self.insightText.size ~= INSIGHT_TEXT_SIZE then
 			self.insightText:SetSize(INSIGHT_TEXT_SIZE)
 		end
 
+		--[[
 		if self.text.size ~= HOVERER_TEXT_SIZE then
 			self.text:SetSize(HOVERER_TEXT_SIZE)
 			self.secondarytext:SetSize(HOVERER_TEXT_SIZE)
@@ -220,24 +227,6 @@ local function OnHovererPostInit(hoverer)
 		if not localPlayer then
 			return oldSetString(self, text)
 		end
-
-		if informationOnAltOnly == nil then
-			informationOnAltOnly = GetModConfigData("alt_only_information", true)
-		end
-
-		if canShowItemRange == nil then
-			canShowItemRange = GetModConfigData("hover_range_indicator", true)
-		end
-
-		if canShowExtendedInfoIndicator == nil then
-			canShowExtendedInfoIndicator = GetModConfigData("extended_info_indicator", true)
-		end
-
-		--[[
-		if altOnlyIsVerbose == nil then
-			altOnlyIsVerbose = GetModConfigData("alt_only_is_verbose", true)
-		end
-		--]]
 
 		--YOFFSETUP = util.getupvalue(debug.getinfo(2).func, "YOFFSETUP")
 		--YOFFSETDOWN = util.getupvalue(debug.getinfo(2).func, "YOFFDOWN")

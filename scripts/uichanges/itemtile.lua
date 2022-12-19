@@ -26,7 +26,7 @@ local module = {}
 local ItemTile = require("widgets/itemtile")
 
 local ITEMTILE_DISPLAY = "percentages"; 
-AddLocalPlayerPostInit(function(_, context) 
+OnContextUpdate:AddListener(function(context) 
 	ITEMTILE_DISPLAY = context.config["itemtile_display"]
 	if IS_DS then 
 		-- thought only refresh was needed, but creating a Hamlet as Willow leads to a crash because components.inventory.itemslots has the lighter,

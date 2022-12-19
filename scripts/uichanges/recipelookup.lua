@@ -21,6 +21,7 @@ directory. If not, please refer to
 -- This is the recipe lookup button related stuff.
 local module = {}
 
+local ImageButton = require("widgets/imagebutton")
 local InsightButton = import("widgets/insightbutton")
 local RecipePopupExists, RecipePopup = pcall(function() return require("widgets/recipepopup") end) -- Old recipe popup
 local CraftingMenuDetailsExists, CraftingMenuDetails = pcall(function() return require("widgets/redux/craftingmenu_details") end)
@@ -114,12 +115,11 @@ function CookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
 
 	if not header then return details_root end
 
-	self.lookup = header:AddChild(InsightButton())
-	self.lookup.button:ForceImageSize(header:GetSize(), header:GetSize())
+	self.lookup = header:AddChild(ImageButton("images/Magnifying_Glass.xml", "Magnifying_Glass.tex"))
+	self.lookup:ForceImageSize(header:GetSize(), header:GetSize())
 	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:GetSize() / 2, 0)
-	self.lookup.button.scale_on_focus = false
-	--self.lookup.button:InsightOverrideFocuses()
-	self.lookup.button:SetTooltip("Click to lookup item") -- wont work in cookbook, overlay reasons i think
+	self.lookup.scale_on_focus = false
+	self.lookup:SetTooltip("Click to lookup item (will open browser/steam overlay).") -- wont work in cookbook, overlay reasons i think
 
 	self.lookup:SetOnClick(function()
 		-- the wiki url automatically resolves spaces to underscores.
@@ -153,9 +153,9 @@ local function RecipePopup_Refresh(self)
 		local url, modded = GetRecipeURL(self.recipe)
 		if url then
 			if modded then
-				self.lookup.button.image:SetTint(unpack(mod_tint))
+				self.lookup.image:SetTint(unpack(mod_tint))
 			else
-				self.lookup.button.image:SetTint(unpack(normal_tint))
+				self.lookup.image:SetTint(unpack(normal_tint))
 			end
 		else
 			self.lookup:Kill()
@@ -177,18 +177,16 @@ local function RecipePopup_Refresh(self)
 	end
 
 	local header = self.name
-	self.lookup = header:AddChild(InsightButton())
-	self.lookup.button:SetTextures("images/Magnifying_Glass.xml", "Magnifying_Glass.tex")
-	self.lookup.button:ForceImageSize(header:GetSize(), header:GetSize())
+	self.lookup = header:AddChild(ImageButton("images/Magnifying_Glass.xml", "Magnifying_Glass.tex"))
+	self.lookup:ForceImageSize(header:GetSize(), header:GetSize())
 	self.lookup:SetPosition(header:GetRegionSize() / 2 + header:GetSize() / 2, 0)
-	self.lookup.button.scale_on_focus = false
-	--self.lookup.button:InsightOverrideFocuses()
-	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
+	self.lookup.scale_on_focus = false
+	self.lookup:SetTooltip("Click to lookup item (will open browser/steam overlay).")
 
 	if modded then
-		self.lookup.button.image:SetTint(unpack(mod_tint))
+		self.lookup.image:SetTint(unpack(mod_tint))
 	else
-		self.lookup.button.image:SetTint(unpack(normal_tint))
+		self.lookup.image:SetTint(unpack(normal_tint))
 	end
 
 	self.lookup:SetOnClick(function()
@@ -243,18 +241,16 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 	local name_font_size = 30
 	local y = top
 
-	self.lookup = root_left:AddChild(InsightButton())
-	self.lookup.button:SetTextures("images/Magnifying_Glass.xml", "Magnifying_Glass.tex")
-	self.lookup.button:ForceImageSize(name_font_size, name_font_size)
+	self.lookup = root_left:AddChild(ImageButton("images/Magnifying_Glass.xml", "Magnifying_Glass.tex"))
+	self.lookup:ForceImageSize(name_font_size, name_font_size)
 	self.lookup:SetPosition(width / 2 + 0, y - name_font_size/2)
-	self.lookup.button.scale_on_focus = false
-	--self.lookup.button:InsightOverrideFocuses()
-	self.lookup.button:SetTooltip("Click to lookup item (will open browser/steam overlay).")
+	self.lookup.scale_on_focus = false
+	self.lookup:SetTooltip("Click to lookup item (will open browser/steam overlay).")
 
 	if modded then
-		self.lookup.button.image:SetTint(unpack(mod_tint))
+		self.lookup.image:SetTint(unpack(mod_tint))
 	else
-		self.lookup.button.image:SetTint(unpack(normal_tint))
+		self.lookup.image:SetTint(unpack(normal_tint))
 	end
 
 	self.lookup:SetOnClick(function()

@@ -177,6 +177,73 @@ AddClassPostConstruct("widgets/mapwidget", function(mapWidget)
 end)
 --]]
 
+local function MakeInsightMenuButton(controls)
+	-- Construct
+	local mb = InsightButton()
+	mb.allowcontroller = IS_DS
+	mb.can_be_shown = true
+
+	-- Functions
+	function mb:ResetPosition()
+		self:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
+	end
+
+	mb:SetOnDragFinish(function(oldpos, newpos)
+		TheSim:SetPersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
+			dprint("InsightButton -> DragFinish -> Save -> Callback:", ...)
+		end) -- i wonder if this will cause lag. ¯\_(ツ)_/¯
+	end)
+
+	mb:SetOnClick(function()
+		if not controls.insight_menu then
+			return
+		end
+
+		if controls.insight_menu.shown then
+			controls.insight_menu:Hide()
+		else
+			controls.insight_menu:Show()
+		end
+	end)
+
+	-- Init
+	mb.inst:DoPeriodicTask(0.5, function()
+		if mb.allowcontroller then
+			return
+		end
+
+		if not mb.can_be_shown or TheInput:ControllerAttached() then
+			mb:Hide()
+		elseif mb.can_be_shown then
+			mb:Show()
+		end
+	end)
+
+	mb:ResetPosition()
+	mb:SetDraggable(true)
+	mb:SetTooltip("Insight")
+
+	TheSim:GetPersistentString("insightmenubutton", function(load_success, str)
+		if not load_success then
+			mprint("Failed to load old menu button position:", str)
+			return
+		end
+
+		local safe, pos = pcall(function() return json.decode(str).position end)
+		if not safe then
+			mprint("Invalid JSON persistentstring in 'insightmenubutton'")
+			mprint(str)
+			return
+		end
+		
+		dprint("Loaded old position:", pos.x, pos.y, pos.z)
+		mb:SetPosition(pos.x, pos.y, pos.z)
+	end)
+
+	return mb
+end
+
+
 AddClassPostConstruct("widgets/controls", function(controls)
 	local InsightButton = import("widgets/insightbutton")
 	local InsightMenu = import("widgets/insightmenu")
@@ -201,55 +268,18 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	controls.insight_menu:Hide()
 	controls.inst:DoTaskInTime(0, function() controls.insight_menu:Activate() end)
 
-	local mb = InsightButton()
-	function mb:ResetPosition()
-		self:SetPosition(-60 -64 -30, 40, 0) -- -60, 70, 0 is map button
-	end
-	mb:ResetPosition()
-	mb:SetDraggable(true)
-	mb.allowcontroller = IS_DS -- false
-	mb:SetOnDragFinish(function(oldpos, newpos)
-		TheSim:SetPersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
-			dprint("InsightButton -> DragFinish -> Save -> Callback:", ...)
-		end) -- i wonder if this will cause lag. ¯\_(ツ)_/¯
-	end)
-
-	TheSim:GetPersistentString("insightmenubutton", function(load_success, str)
-		if not load_success then
-			mprint("Failed to load old menu button position:", str)
-			return
-		end
-
-		local safe, pos = pcall(function() return json.decode(str).position end)
-		if not safe then
-			mprint("Invalid JSON persistentstring in 'insightmenubutton'")
-			mprint(str)
-			return
-		end
-		
-		dprint("Loaded old position:", pos.x, pos.y, pos.z)
-		mb:SetPosition(pos.x, pos.y, pos.z)
-	end)
-
-	controls.insight_menu_toggle = controls.bottomright_root:AddChild(mb)
-
-	mb:SetOnClick(function()
-		if controls.insight_menu.shown then
-			controls.insight_menu:Hide()
+	OnContextUpdate:AddListener(function(context)
+		if context.config["display_insight_menu_button"] then
+			controls.insight_menu_toggle = controls.insight_menu_toggle or controls.bottomright_root:AddChild(MakeInsightMenuButton(controls))
 		else
-			controls.insight_menu:Show()
-		end
-	end)
-
-	AddLocalPlayerPostInit(function(insight, context)
-		if not context.config["display_insight_menu_button"] then
-			dprint("Display Insight Menu Button is disabled.")
-			mb:Kill()
-			return
+			if controls.insight_menu_toggle then
+				controls.insight_menu_toggle:Kill()
+				controls.insight_menu_toggle = nil
+			end
 		end
 
 		-- localPlayer isn't ready yet upon widget ctor, so the widget won't handle this automatically.
-		insight:MaintainMenu(controls.insight_menu) 
+		GetLocalInsight(controls.owner):MaintainMenu(controls.insight_menu) 
 	end)
 
 	--[[
@@ -302,7 +332,7 @@ end
 --]==]
 
 function OnCellRootClick(self, widget)
-	dprint("oncellrootclick")
+	--dprint("oncellrootclick")
 	if not localPlayer then return end;
 	-- yikes.
 	--local is_current = widget.data == localPlayer.HUD.controls.craftingmenu.craftingmenu.details_root.data

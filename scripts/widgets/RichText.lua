@@ -24,7 +24,6 @@ directory. If not, please refer to
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 
-local TEXT_COLORING_ENABLED = nil
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
@@ -33,6 +32,14 @@ local Reader, Chunk = import("reader")
 local CalculateSize = CalculateSize
 local IS_DST = IS_DST
 local _LookupIcon, LookupString, InterpretReaderChunk
+
+local TEMPERATURE_UNIT = "game"
+local TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
+
+OnContextUpdate:AddListener("richtext", function(context)
+	TEMPERATURE_UNIT = context.config["temperature_units"]
+	TEXT_COLORING_ENABLED = context.config["text_coloring"]
+end)
 
 local TEXT_BASED_OBJECTS = {
 	["prefab"] = function(chunk)
@@ -50,7 +57,7 @@ local TEXT_BASED_OBJECTS = {
 	end,
 	["temperature"] = function(chunk)
 		if localPlayer then
-			local temp_style = localPlayer._insight_context.config["temperature_units"]
+			local temp_style = TEMPERATURE_UNIT
 			return FormatTemperature(chunk.object.value, temp_style)
 		else
 			return chunk.object.value
@@ -84,10 +91,6 @@ end
 
 function InterpretReaderChunk(chunk, richtext) -- text, color
 	local color = chunk:GetTag("color") or richtext.default_colour
-
-	if TEXT_COLORING_ENABLED == nil then
-		TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
-	end
 	
 	if not TEXT_COLORING_ENABLED then
 		color = "#FFFFFF"

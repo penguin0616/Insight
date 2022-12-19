@@ -78,6 +78,35 @@ forcemanifest = false -- TODO: REMOVE THIS
 
 ]]
 
+--==========================================================================================
+--[[ Some Functions ]]
+--==========================================================================================
+local string_format = name.format
+local string_match = name.match
+local string_gmatch = name.gmatch
+local string_sub = name.sub
+
+local function IsString(arg)
+	return arg.sub == string_sub
+end
+
+local function tostring(arg)
+	if arg == true then
+		return "true"
+	elseif arg == false then
+		return "false"
+	elseif arg == nil then
+		return "nil"
+	end
+
+	return arg .. ""
+end
+
+--==========================================================================================
+--[[ Config Primers ]]
+--==========================================================================================
+local FONTSIZE_MIN = 15
+local FONTSIZE_MAX = 30
 
 
 
@@ -370,6 +399,27 @@ local STRINGS = {
 				},
 			},
 		},
+	},
+	font_size = {
+		label = {
+			"Font Size",
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"The font size of Insight's hover text.",
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = (function()
+			local t = {}
+			for i = FONTSIZE_MIN, FONTSIZE_MAX do
+				t[i] = { description={tostring(i)} } -- This doesn't need localization.
+			end
+			return t
+		end)(),
 	},
 	alt_only_information = {
 		label = {
@@ -4623,27 +4673,6 @@ local STRINGS = {
 --=================================================== DO NOT TRANSLATE PAST THIS LINE =========================================================================================================================================================
 --=============================================================================================================================================================================================================================================
 
-local string_format = name.format
-local string_match = name.match
-local string_gmatch = name.gmatch
-local string_sub = name.sub
-
-local function IsString(arg)
-	return arg.sub == string_sub
-end
-
-local function tostring(arg)
-	if arg == true then
-		return "true"
-	elseif arg == false then
-		return "false"
-	elseif arg == nil then
-		return "nil"
-	end
-
-	return arg .. ""
-end
-
 local function T(tbl, key)
 	if locale and ChooseTranslationTable then
 		return ChooseTranslationTable(tbl, key)
@@ -4737,6 +4766,19 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "font_size",
+		options = (function()
+			local t = {}
+			for i = FONTSIZE_MIN, FONTSIZE_MAX do
+				t[#t+1] = {data = i}
+			end
+			return t
+		end)(),
+		default = 30,
 		client = true,
 		tags = {},
 	},
@@ -5654,10 +5696,12 @@ for i = 1, #configuration_options do
 		for j = 1, #entry.options do
 			local option = entry.options[j]
 			--option.description = T(string_format("%s.OPTIONS.%s.DESCRIPTION", entry.name, tostring(option.data)))
-			option.description = T(STRINGS[entry.name].options[option.data].description)
+			local dsc = STRINGS[entry.name].options[option.data].description
+			option.description = dsc and T(dsc) or nil
 			
 			--option.hover = T(string_format("%s.OPTIONS.%s.HOVER", entry.name, tostring(option.data)))
-			option.hover = T(STRINGS[entry.name].options[option.data].hover)
+			local hvr = STRINGS[entry.name].options[option.data].hover
+			option.hover = hvr and T(hvr) or nil
 		end
 	end
 end

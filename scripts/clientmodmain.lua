@@ -37,40 +37,30 @@ localPlayer = nil
 currentlySelectedItem = nil
 shard_players = {}
 highlighting = import("highlighting")
-local onLocalPlayerReady = setmetatable({}, { __newindex = function(self, index, value) 
-	assert(type(value.fn)=="function", "onLocalPlayerReady invalid value"); 
-	if localPlayer then value.fn(GetInsight(localPlayer), GetPlayerContext(localPlayer)) end;
-	if value.persists or not localPlayer then rawset(self, index, value) end; 
-end; })
-local onLocalPlayerRemove = setmetatable({}, { __newindex = function(self, index, value) 
-	assert(type(value.fn)=="function", "onLocalPlayerRemove invalid value"); 
-	rawset(self, index, value) 
-end; })
+
 local delayed_actives = {}
 insight_subscribed = IS_DS or KnownModIndex.savedata.known_mods["workshop-2189004162"].enabled ~= nil
 -- game has to be exited and reopened for the savedata to update i guess
 -- the difference between unsubbed and subbed is that subbed has "enabled" and "temp_disabled" fields
 -- if subscribed and the world is just forest, nonhosts have enabled=false but temp_enabled = true
 
+
+-- Client Event Core
+ClientCoreEventer = import("helpers/eventer")()
+OnLocalPlayerPostInit = ClientCoreEventer:CreateEvent("OnLocalPlayerPostInit")
+OnLocalPlayerPostInit.onlisteneradded = function(listener)
+	if localPlayer then
+		listener:Run(GetInsight(localPlayer), GetPlayerContext(localPlayer))
+	end
+end
+OnLocalPlayerRemove = ClientCoreEventer:CreateEvent("OnLocalPlayerRemove")
+OnContextUpdate = ClientCoreEventer:CreateEvent("OnContextUpdate")
+
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Functions =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-
-
-function AddLocalPlayerPostInit(fn, persists)
-	-- table.insert uses rawset internally
-	onLocalPlayerReady[#onLocalPlayerReady+1] = {fn = fn, persists = persists or false}
-end
-
-function AddLocalPlayerPostRemove(fn, persists)
-	-- table.insert uses rawset internally
-	onLocalPlayerRemove[#onLocalPlayerRemove+1] = {fn = fn, persists = persists or false}
-end
-
-
-
 local function GetMorgueDeathsForWorld(name)
 	local deaths = {}
 
@@ -162,7 +152,7 @@ local function GenerateConfiguration()
 		if not util.table_find(v.tags, "ignore") then
 			local server_choice = GetModConfigData(v.name, false)
 			local client_choice = GetModConfigData(v.name, true)
-			
+
 			local winner = server_choice
 			
 			if client_choice == "undefined" then
@@ -193,7 +183,7 @@ local function GenerateConfiguration()
 			v.selected = client_choice
 		end
 	end
-	
+
 	return local_config
 end
 
@@ -361,6 +351,10 @@ local function AttachWigfridSongRangeIndicator(player)
 end
 
 local function AttachBlinkRangeIndicator(player)
+	if player.blink_indicator and player.blink_indicator:IsValid() then
+		return
+	end
+
 	player.blink_indicator = SpawnPrefab("insight_range_indicator")
 	player.blink_indicator:Attach(player)
 	player.blink_indicator:SetRadius(ACTIONS.BLINK.distance / WALL_STUDS_PER_TILE)
@@ -417,9 +411,10 @@ end
 local function LocalPlayerRemoved()
 	localPlayer = nil
 	dprint("LOCALPLAYER REMOVED")
-
+	--[[
 	local x = 0
-	mprint(x, #onLocalPlayerRemove)
+	--mprint(x, #onLocalPlayerRemove)
+	
 	while #onLocalPlayerRemove > x do
 		mprint(string.format("Processing deconstructors with [%s] remaining.", #onLocalPlayerRemove))
 
@@ -433,6 +428,9 @@ local function LocalPlayerRemoved()
 			table.remove(onLocalPlayerRemove, x + 1)
 		end
 	end
+	--]]
+
+	OnLocalPlayerRemove:Push()
 end
 
 local function LoadLocalPlayer(player)
@@ -445,12 +443,15 @@ local function LoadLocalPlayer(player)
 
 	if IsPlayerClientLoaded(player) then
 		localPlayer = player
-		localPlayer._insight_context = GetPlayerContext(localPlayer)
+		local context = GetPlayerContext(player)
+		local replica = GetLocalInsight(localPlayer)
+		replica.context = context
 
 		player:ListenForEvent("onremove", LocalPlayerRemoved)
 		--mprint("LOCALPLAYER FOUND")
 
 		local x = 0
+		--[[
 		while #onLocalPlayerReady > x do
 			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady - x))
 
@@ -463,6 +464,9 @@ local function LoadLocalPlayer(player)
 				table.remove(onLocalPlayerReady, x + 1)
 			end
 		end
+		--]]
+		OnLocalPlayerPostInit:Push(replica, context)
+		OnContextUpdate:Push(context)
 		mprint("Initializers complete" ..  ((SIM_DEV and "...") or "!"))
 
 		if IS_DST then 
@@ -490,9 +494,41 @@ end
 
 --==========================================================================================================================
 --==========================================================================================================================
---======================================== Saved Data ======================================================================
+--======================================== Initialization ==================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+ClientCoreEventer:ListenForEvent("configuration_update", function()
+	local config = GenerateConfiguration()
+
+	if IsClient() then
+		UpdatePlayerContext(localPlayer, {
+			config = config
+		})
+	end
+
+	SendConfigurationToServer()
+
+	OnContextUpdate:Push(GetPlayerContext(localPlayer))
+end)
+
+OnLocalPlayerPostInit:AddListener("highlighting_activate", highlighting.Activate)
+OnLocalPlayerRemove:AddListener("highlighting_deactivate", highlighting.Deactivate)
+
+OnLocalPlayerPostInit:AddListener(combatHelper.Activate)
+
+OnContextUpdate:AddListener("blinkrange_attacher", function(context)
+	if context.config["blink_range"] then
+		AttachBlinkRangeIndicator(localPlayer)
+	else
+		if localPlayer.blink_indicator then
+			localPlayer.blink_indicator:Remove()
+			localPlayer.blink_indicator = nil
+		end
+	end
+end)
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Saved Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- Load Save Data
 insightSaveData:Load()
 
@@ -517,10 +553,9 @@ else
 	insightSaveData:Save()
 end
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== Keybinds ========================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Keybinds ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- I wonder if I should move keybinds to mod config instead of a persistentstring. 
 -- insightSaveData:Get("keybinds")
 
@@ -550,7 +585,7 @@ end
 insightKeybinds:LoadSavedKeybindings(insightSaveData:Get("keybinds"))
 insightKeybinds:SetReady()
 
-AddLocalPlayerPostInit(function(insight, context)
+OnLocalPlayerPostInit:AddListener("translate_keybinds", function(insight, context)
 	for name, data in pairs(insightKeybinds:GetKeybinds()) do
 		local trans = rawget(context.lstr.keybinds, name)
 		if trans then
@@ -558,28 +593,24 @@ AddLocalPlayerPostInit(function(insight, context)
 			data.description = trans.description or data.description
 		end
 	end
-end, true)
+end)
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== UI Overrides ====================================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UI Overrides ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 import("uioverrides")
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== PostInits =======================================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PostInits ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 do
 
 	local function AddBossIndicator(inst)
 		if not inst:IsValid() then return end
 		
-		AddLocalPlayerPostInit(function(insight, context)
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 			if not context.config["boss_indicator"] then
 				return
 			end
@@ -592,7 +623,7 @@ do
 	local function AddMiniBossIndicator(inst)
 		if not inst:IsValid() then return end
 		
-		AddLocalPlayerPostInit(function(insight, context)
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 			if not context.config["boss_indicator"] then -- maybe add a config for mini bosses?
 				return
 			end
@@ -605,7 +636,7 @@ do
 	local function AddNotableIndicator(inst)
 		if not inst:IsValid() then return end
 
-		AddLocalPlayerPostInit(function(insight, context)
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 			if not context.config["notable_indicator"] then
 				return
 			end
@@ -619,7 +650,7 @@ do
 	local function AddBottleIndicator(inst)
 		if not inst:IsValid() then return end
 
-		AddLocalPlayerPostInit(function(insight, context)
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 			if not context.config["bottle_indicator"] then
 				return
 			end
@@ -674,12 +705,12 @@ do
 	end
 
 	AddPrefabPostInit("messagebottle", AddBottleIndicator)
-
 end
+
 
 AddPrefabPostInitAny(function(inst)
 	if inst.prefab:sub(1, 9) == "lost_toy_" then
-		AddLocalPlayerPostInit(function(insight)
+		OnLocalPlayerPostInit:AddWeakListener(function(insight)
 			if not localPlayer:HasTag("ghostlyfriend") then
 				return
 			end
@@ -731,7 +762,7 @@ end)
 
 AddPrefabPostInit("insight_combat_range_indicator", import("helpers/combat").HookClientIndicator)
 AddPrefabPostInit("insight_ghost_klaus_sack", function(inst)
-	AddLocalPlayerPostInit(function(insight, context)
+	OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 		if not context.config["klaus_sack_markers"] then
 			inst.AnimState:OverrideMultColour(0, 0, 0, 0)
 		end
@@ -890,8 +921,6 @@ AddPrefabPostInit("eyeturret", function(inst)
 end)
 --]]
 
-
-
 AddPrefabPostInit("eyeturret_item_placer", function(inst)
 	placer_postinit_fn(inst, TUNING.EYETURRET_RANGE / WALL_STUDS_PER_TILE)
 end)
@@ -948,11 +977,13 @@ AddPlayerPostInit(function(player)
 	if IS_DS then
 		LoadLocalPlayer(player)
 
-		AddLocalPlayerPostInit(function(insight, context)
+		--[[
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 			if context.config["blink_range"] then
 				AttachBlinkRangeIndicator(player)
 			end
 		end)
+		--]]
 
 		player:ListenForEvent("newactiveitem", function(...)
 			highlighting.SetActiveItem(...)
@@ -989,10 +1020,12 @@ AddPlayerPostInit(function(player)
 
 		LoadLocalPlayer(player)
 
-		AddLocalPlayerPostInit(function(insight, context)
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
+			--[[
 			if context.config["blink_range"] then
 				AttachBlinkRangeIndicator(localPlayer)
 			end
+			--]]
 
 			for ent in pairs(delayed_actives) do
 				insight:EntityActive(ent)  -- apparently can be nil, though very rare.
@@ -1020,6 +1053,10 @@ AddPlayerPostInit(function(player)
 	end)
 end)
 
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ DeployHelper ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 if IS_DS then
 	require("components/dst_deployhelper")
 	AddComponentPostInit("placer", function(self)
@@ -1032,8 +1069,8 @@ if IS_DS then
 		end
 	end)
 
+	--[[
 	local sizetbl = setmetatable({}, {__mode = "k"}) -- k, v, kv
-
 	local oldSetSize = TextWidget.SetSize
 	TextWidget.SetSize = function(self, sz)
 		sizetbl[self] = sz
@@ -1043,9 +1080,12 @@ if IS_DS then
 	TextWidget.GetSize = function(self, sz)
 		return sizetbl[self]
 	end
+	--]]
 end
 
--- Misc
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ EntityManager ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 AddPrefabPostInitAny(entityManager.Manage)
 
 local function OnEntityManagerEventDST(self, event, inst)
@@ -1071,7 +1111,6 @@ end
 local function OnEntityManagerEventDS(self, event, inst)
 
 end
-
 
 if IS_DST then
 	entityManager:AddListener("insight", OnEntityManagerEventDST)
@@ -1152,13 +1191,11 @@ entityManager:AddListener("insight", function(self, event, inst)
 end)
 --]]
 
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Status Announcements ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-AddLocalPlayerPostInit(highlighting.Activate, true)
-AddLocalPlayerPostRemove(highlighting.Deactivate, true)
-AddLocalPlayerPostInit(combatHelper.Activate, true)
-AddLocalPlayerPostInit(function(insight_replica, context) 
-	insight_replica.context = context
-end, true)
+
 --AddLocalPlayerPostRemove(combatHelper.Deactivate, true)
 
 if IS_DST then
@@ -1173,11 +1210,12 @@ end
 
 -- until i can think of a better place for this
 if IS_DST then
-	AddLocalPlayerPostInit(function(insight_replica, context)
+	OnLocalPlayerPostInit:AddListener("statusannouncer_registerinterceptor", function(insight_replica, context)
 		if not localPlayer.HUD._StatusAnnouncer or not localPlayer.HUD._StatusAnnouncer.RegisterInterceptor then
 			return
 		end
 
+		-- Registering the interceptor under modname clears previous instances of it.
 		localPlayer.HUD._StatusAnnouncer:RegisterInterceptor(modname, "ITEM", function(announcement_string, data)
 			--[[
 				local data = {
@@ -1211,5 +1249,5 @@ if IS_DST then
 				end
 			end
 		end)
-	end, true)
+	end)
 end

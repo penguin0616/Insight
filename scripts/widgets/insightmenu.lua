@@ -309,8 +309,8 @@ function InsightMenu:SetPage(num)
 end
 
 function InsightMenu:OnControl(control, down)
-	mprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
-	--mprint("\t\t", self.tabs[1].focus, self.tabs[2].focus, self.config_button.focus, "|", self.current_page)
+	dprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
+	--dprint("\t\t", self.tabs[1].focus, self.tabs[2].focus, self.config_button.focus, "|", self.current_page)
 	
 	local scheme = controlHelper.GetCurrentScheme()
 

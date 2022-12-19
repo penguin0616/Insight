@@ -773,6 +773,8 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 	end, self.modname, settings.modconfig, self.client_config)
 	settings.modconfig = nil
 
+	ClientCoreEventer:PushEvent("configuration_update")
+
 	if callback then
 		-- Settings, Keybinds
 		callback(true, true)

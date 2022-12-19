@@ -25,7 +25,7 @@ local FollowText = require("widgets/followtext")
 local RichText = import("widgets/RichText")
 local RichFollowText = import("widgets/richfollowtext")
 
-AddLocalPlayerPostInit(function(_, context) 
+OnContextUpdate:AddListener("followtext_showprefab", function(context) 
 	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
 end)
 

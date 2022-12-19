@@ -185,13 +185,13 @@ module.HookUpgradeModuleDisplay = function()
 	assert(module.CanHookUpgradeModuleDisplay(), "Attempting to hook when it shouldn't be possible.")
 	AddClassPostConstruct("widgets/upgrademodulesdisplay", UpgradeModuleDisplayPost)
 	
-	AddLocalPlayerPostInit(function()
+	OnLocalPlayerPostInit:AddListener("register_wx78_interceptor", function()
 		-- Only want to work with the original.
 		if localPlayer.HUD._StatusAnnouncer and localPlayer.HUD._StatusAnnouncer.RegisterInterceptor then
 			statusAnnouncementsPresent = true
 			localPlayer.HUD._StatusAnnouncer:RegisterInterceptor(modname, "WX78CIRCUITS", StatusAnnouncementWXInterceptor)
 		end
-	end, true)
+	end)
 end
 
 
