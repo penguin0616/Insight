@@ -58,6 +58,11 @@ local function OnInventoryBarPostInit(inventoryBar)
 		if self.insightText.size ~= infotext_common.configs.inventorybar_insight_font_size then
 			self.insightText:SetSize(infotext_common.configs.inventorybar_insight_font_size)
 		end
+
+		if self.actionstringbody:GetSize() ~= infotext_common.configs.inventorybar_insight_font_size then
+			-- Whatever! I'll adjust both because it just makes sense to do so.
+			self.actionstringbody:SetSize(infotext_common.configs.inventorybar_insight_font_size)
+		end
 	end
 
 	local oldActionStringBody_SetString = inventoryBar.actionstringbody.SetString
@@ -80,9 +85,14 @@ local function OnInventoryBarPostInit(inventoryBar)
 		inventoryBar.insightText:SetString(itemDescription)
 
 		--local hovertext_lines = select(2, text:gsub("\n", "\n")) + 1 -- This is short by 1.
+
+		--local size_ratio = inventoryBar.insightText:GetSize() / self:GetSize()
+
 		local description_lines = inventoryBar.insightText.line_count or 0
 		local textPadding = ""
+		--local total_lines = math.ceil(description_lines * (size_ratio))
 
+		--mprintf("description lines: %s | adjusted total: %s", description_lines, total_lines)
 		if itemDescription then
 			textPadding = string.rep("\n ", description_lines)
 		end

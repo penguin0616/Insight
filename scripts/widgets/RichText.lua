@@ -245,6 +245,10 @@ function RichText:SetFont(font)
 	self:SetString(self:GetString(), true)
 end
 
+function RichText:GetSize()
+	return self.size
+end
+
 function RichText:SetSize(num)
 	if type(num) ~= "number" then
 		error("RichText:SetSize expected arg #1 to be number")
