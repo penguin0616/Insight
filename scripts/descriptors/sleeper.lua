@@ -22,9 +22,12 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description = nil
 
-	local time = self.testtask and GetTaskRemaining(self.testtask)
-	if time and time > 0 and self.waketestfn and self.waketestfn(self.inst) then 
-		description = string.format(context.lstr.sleeper.wakeup_time, context.time:SimpleProcess(time))
+	
+	if self:IsAsleep() then
+		local time = self.testtask and GetTaskRemaining(self.testtask)
+		if time and time > 0 and self.waketestfn and self.waketestfn(self.inst) then 
+			description = string.format(context.lstr.sleeper.wakeup_time, context.time:SimpleProcess(time))
+		end
 	end
 
 	--[[
