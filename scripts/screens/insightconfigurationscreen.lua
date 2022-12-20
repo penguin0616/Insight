@@ -30,7 +30,7 @@ local InsightScrollList = import("widgets/insightscrolllist")
 local ITEMPLATES = import("widgets/insight_templates")
 local RichText = import("widgets/RichText")
 
-local MAIN_WINDOW_WIDTH = 480
+local MAIN_WINDOW_WIDTH = 580 -- 480
 local MAIN_WINDOW_HEIGHT = 460
 
 local NUM_VISIBLE_ROWS = 8
@@ -41,6 +41,9 @@ local OPTION_ENTRY_PADDING = 0
 local function KeybindChar(k)
 	if k then
 		k = STRINGS.UI.CONTROLSSCREEN.INPUTS[TheInput:GetControllerID() + 1][k]
+		if k == nil then
+			k = STRINGS.UI.CONTROLSSCREEN.INPUTS[TheInput:GetControllerID() + 1][0]
+		end
 	else
 		if IS_DST then
 			k = STRINGS.UI.CONTROLSSCREEN.INPUTS[9][2]
@@ -60,8 +63,12 @@ local function CreateMainWindow(self)
 	local buttons = {
 		{ text = STRINGS.UI.MODSSCREEN.APPLY, cb = function() self:ApplyChanges() end },
 		{ text = STRINGS.UI.MODSSCREEN.RESETDEFAULT, cb = function() self:ResetToDefaultValues() end },
-		{ text = (IS_DST and STRINGS.UI.MODSSCREEN.BACK) or STRINGS.UI.MODSSCREEN.CANCEL, cb = function() self:Close() end },
+		{ text = STRINGS.UI.HELP.BACK, cb = function() self:Close() end }, -- (IS_DST and STRINGS.UI.MODSSCREEN.BACK) or STRINGS.UI.MODSSCREEN.CANCEL
 	}
+
+	if TheInput:ControllerAttached() then
+		buttons = nil
+	end
 
 	if true or IS_DST then
 		-- "images/misc/dialogrect_9slice_blue.xml"
@@ -153,7 +160,9 @@ local function ConfigOptionCtor(context, index)
 	option_widgets.keybind:SetPosition(OPTION_ENTRY_WIDTH/2 - option_width/2, 0)
 	option_widgets.keybind:SetTextColour(UICOLOURS.WHITE) -- GOLD_CLICKABLE
 	option_widgets.keybind:SetTextFocusColour(UICOLOURS.WHITE) -- GOLD_FOCUS
+	option_widgets.keybind:SetTextDisabledColour(Color.fromHex(Insight.COLORS.MOB_SPAWN))
 	option_widgets.keybind:SetFont(CHATFONT)
+	option_widgets.keybind:SetDisabledFont(CHATFONT)
 	option_widgets.keybind:SetTextSize(25)
 	option_widgets.keybind:SetOnClick(function()
 		if not root.data then
@@ -277,6 +286,12 @@ local function ConfigOptionCtor(context, index)
 			local k = self.data.saved or self.data.default or nil
 			k = KeybindChar(k)
 			self.option_widgets.keybind:SetText(k)
+
+			if TheInput:ControllerAttached() then
+				self.option_widgets.keybind:Disable() -- Should this be a Select?
+			else
+				self.option_widgets.keybind:Enable()
+			end
 		elseif self:GetConfigType() == "spinner" then
 			-- Spinner Logic
 			local selected = 1
@@ -512,7 +527,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self:PopulateKeybinds(self.config_options)
 	self:LoadModConfig()
 	self.options_scroll_list:SetItemsData(self.config_options)
-	-- 93
+	-- 93 items
 	self.options_scroll_list.scroll_per_click = math.max(math.floor(NUM_VISIBLE_ROWS/4), 1)
 
 	--self.options_scroll_list:RefreshView()
@@ -603,7 +618,7 @@ function InsightConfigurationScreen:PopulateKeybinds(tbl)
 
 	table.insert(tbl, {
 		name = "KEYBINDS",
-		label = "Keybinds", 
+		label = GetPlayerContext(self.owner).lstr.keybinds.label, 
 		options = {{description = "", data = 0}},
 		saved = 0,
 		default = 0,
@@ -688,6 +703,11 @@ end
 
 function InsightConfigurationScreen:OnDirtyChanged(dirty)
 	--mprint("OnDirtyChanged", dirty)
+	-- Check to make sure we have the buttons (aka no controller when screen launched)
+	if not self.main.actions then
+		return
+	end
+
 	for widget in pairs(self.main.actions:GetChildren()) do
 		if widget.text and widget.text:GetString() == STRINGS.UI.MODSSCREEN.APPLY then
 			if dirty == true then widget:Enable() else widget:Disable() end
@@ -856,12 +876,34 @@ function InsightConfigurationScreen:OnControl(control, down)
 	--mprint("InsightConfigurationScreen", controlHelper.Prettify(control), down)
 
 	local scheme = controlHelper.GetCurrentScheme()
-	if not down and scheme:IsAcceptedControl("exit", control) then
-		TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
-		return self:Close()
+	if not down then
+		if scheme:IsAcceptedControl("exit", control) then
+			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
+			self:Close()
+			return true
+		elseif control == CONTROL_MAP then
+			self:ResetToDefaultValues()
+		elseif control == CONTROL_PAUSE then
+			self:ApplyChanges()
+		end
 	end
 
 	return self._base.OnControl(self, control, down)
 end
+
+function InsightConfigurationScreen:GetHelpText()
+	local t = {}
+	local controller_id = TheInput:GetControllerID()
+
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_CANCEL) .. " " .. STRINGS.UI.HELP.BACK)
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_MAP) .. " " .. STRINGS.UI.MODSSCREEN.RESETDEFAULT)
+	
+	if self:IsDirty() then
+		table.insert(t, TheInput:GetLocalizedControl(controller_id, CONTROL_PAUSE) .. " " .. STRINGS.UI.HELP.APPLY)
+	end
+
+	return table.concat(t, "  ")
+end
+
 
 return InsightConfigurationScreen

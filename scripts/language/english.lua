@@ -46,6 +46,7 @@ return {
 	-- Keybinds
 	unbind = "Unbind",
 	keybinds = {
+		label = "Keybinds (Keyboard Only)",
 		togglemenu = {
 			name = "Open Insight Menu",
 			description = "Opens/Closes the Insight menu"

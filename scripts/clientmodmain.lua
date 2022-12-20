@@ -572,7 +572,7 @@ end
 insightKeybinds:Register("togglemenu", language.en.keybinds.togglemenu.name, language.en.keybinds.togglemenu.description, nil, function(down)
 	if not down and TheFrontEnd:GetActiveScreen().name == "HUD" and localPlayer.components.playercontroller:IsEnabled() then
 		local insight_menu_toggle = table.getfield(localPlayer, "HUD.controls.insight_menu_toggle")
-		if insight_menu_toggle and insight_menu_toggle.onclick then
+		if insight_menu_toggle and insight_menu_toggle.shown and insight_menu_toggle.onclick then
 			insight_menu_toggle.onclick()
 		end
 	end
