@@ -2641,6 +2641,50 @@ local STRINGS = {
 			},
 		},
 	},
+	klaus_sack_info = {
+		label = {
+			"Loot Stash Info", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether the contents of the Loot Stash are visible.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = {
+					"No",
+					["zh"] = "否",
+					["br"] = "Não",
+					["es"] = "Desactivado",
+				},
+				hover = {
+					"Loot stash contents are NOT visible.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = {
+					"Yes",
+					["zh"] = "是",
+					["br"] = "Sim",
+					["es"] = "Activado",
+				},
+				hover = {
+					"Loot stash contents are visible.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	soil_moisture = {
 		label = {
 			"Soil Moisture", 
@@ -2802,57 +2846,57 @@ local STRINGS = {
 	soil_nutrients_needs_hat = {
 		label = {
 			"Display soil nutrients", 
-			["zh"] = "Display soil nutrients", 
-			["br"] = "Display soil nutrients", 
-			["es"] = "Display soil nutrients"
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		hover = {
 			"When to display soil/plant nutrients.", 
-			["zh"] = "When to display soil/plant nutrients.", 
-			["br"] = "When to display soil/plant nutrients.", 
-			["es"] = "When to display soil/plant nutrients."
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		options = {
 			["off"] = {
 				description = {
-					"Premier Gardeneer Hat",
-					["zh"] = "Premier Gardeneer Hat",
-					["br"] = "Premier Gardeneer Hat",
-					["es"] = "Premier Gardeneer Hat",
+					"Off",
+					["zh"] = "禁用",
+					["br"] = "Desligado",
+					["es"] = "Desactivado",
 				},
 				hover = {
 					"Soil nutrients are only shown with the hat.",
-					["zh"] = "Soil nutrients are only shown with the hat.",
-					["br"] = "Soil nutrients are only shown with the hat.",
-					["es"] = "Soil nutrients are only shown with the hat.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			["hatonly"] = {
 				description = {
 					"Premier Gardeneer Hat",
-					["zh"] = "Premier Gardeneer Hat",
-					["br"] = "Premier Gardeneer Hat",
-					["es"] = "Premier Gardeneer Hat",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 				hover = {
 					"Soil nutrients are only shown with the hat.",
-					["zh"] = "Soil nutrients are only shown with the hat.",
-					["br"] = "Soil nutrients are only shown with the hat.",
-					["es"] = "Soil nutrients are only shown with the hat.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			["always"] = {
 				description = {
 					"Always",
-					["zh"] = "Always",
-					["br"] = "Always",
-					["es"] = "Always",
+					["zh"] = "总是",
+					["br"] = "Sempre",
+					["es"] = "Siempre",
 				},
 				hover = {
 					"Soil nutrients are always shown.",
-					["zh"] = "Soil nutrients are always shown.",
-					["br"] = "Soil nutrients are always shown.",
-					["es"] = "Soil nutrients are always shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 		},
@@ -3078,15 +3122,15 @@ local STRINGS = {
 			[1] = {
 				description = {
 					"With Rainometer",
-					["zh"] = "With Rainometer",
-					["br"] = "With Rainometer",
-					["es"] = "With Rainometer",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 				hover = {
 					"Weather is shown if a Rainometer is in the world.",
-					["zh"] = "Weather is shown if a Rainometer is in the world.",
-					["br"] = "Weather is shown if a Rainometer is in the world.",
-					["es"] = "Weather is shown if a Rainometer is in the world.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			[2] = {
@@ -5266,6 +5310,15 @@ configuration_options = {
 		},
 		default = false,
 		tags = {"undefined"},
+	},
+	{
+		name = "klaus_sack_info",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "soil_moisture",

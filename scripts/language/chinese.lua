@@ -646,7 +646,7 @@ return {
 	},
 
 	-- klaussackloot.lua
-	klaussackloot = "重要战利品:",
+	klaussackloot = "<color=#8c8c8c>重要战利品</color>:",
 
 	-- klaussackspawner.lua
 	klaussackspawner = {

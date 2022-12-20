@@ -22,20 +22,23 @@ directory. If not, please refer to
 
 -- Just going to regurgitate klaussackloot data here.
 local function Describe(self, context)
-	local alt_description = {context.lstr.klaussackloot}
+	local alt_description = nil
 
-	local loot = Insight.descriptors.klaussackloot.SummarizeImportantLoot()
+	if context.config["klaus_sack_info"] then
+		alt_description = {context.lstr.klaussackloot}
+		local loot = Insight.descriptors.klaussackloot.SummarizeImportantLoot()
 
-	for name, amount in pairs(loot) do
-		local clr = "#FFFFFF"
-		if name=="krampus_sack" then
-			clr = Insight.COLORS.FRUIT
-		elseif name:sub(-10) == "_blueprint" then
-			clr = "#4A7ECE"--"#396DBD"
+		for name, amount in pairs(loot) do
+			local clr = "#FFFFFF"
+			if name=="krampus_sack" then
+				clr = Insight.COLORS.FRUIT
+			elseif name:sub(-10) == "_blueprint" then
+				clr = "#4A7ECE"--"#396DBD"
+			end
+			table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, amount))
 		end
-		table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, amount))
 	end
-
+	
 	alt_description = table.concat(alt_description, "\n")
 
 	return {

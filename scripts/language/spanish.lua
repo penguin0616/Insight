@@ -618,7 +618,7 @@ return {
 	},
 
 	-- klaussackloot.lua
-	klaussackloot = "Botín notable:",
+	klaussackloot = "<color=#8c8c8c>Botín notable</color>:",
 
 	-- klaussackspawner.lua
 	klaussackspawner = {
