@@ -35,6 +35,10 @@ local function countnewlines(str)
 	return select(2, str:gsub("\n", "\n"))
 end
 
+local function IsValidTarget(target)
+	return target ~= localPlayer
+end
+
 local function UpdateFollowText(self, ...)
 	local itemIndex, itemInActions = ...
 	
@@ -72,7 +76,7 @@ local function UpdateFollowText(self, ...)
 		if self.primaryInsightText2 then self.primaryInsightText2:SetTarget(followerWidget.target) end
 
 		-- Show prefab if enabled
-		if DEBUG_SHOW_PREFAB then
+		if DEBUG_SHOW_PREFAB and IsValidTarget(followerWidget.target) then
 			local text = widgetWithEntityName.text:GetString()
 
 			local pos = string.find(text, "\n")
@@ -89,7 +93,11 @@ local function UpdateFollowText(self, ...)
 		local followtext_lines = select(2, followerWidget.text:GetString():gsub("\n", "\n"))
 
 		-- Reduced version of the logic from hoverer.
-		local entityInformation = RequestEntityInformation(followerWidget.target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
+		local entityInformation
+		if IsValidTarget(followerWidget.target) then
+			entityInformation = RequestEntityInformation(followerWidget.target, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
+		end
+
 		local itemDescription = nil
 		if entityInformation and entityInformation.information then
 			itemDescription = RichText.TrimNewlines(entityInformation.information)
