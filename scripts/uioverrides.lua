@@ -55,20 +55,6 @@ local function SetHighlightIngredientFocus(arg)
 	end)
 end
 
-local function GetControllerSelectedInventoryItem(inventoryBar)
-	local inv_item = inventoryBar:GetCursorItem()
-	local active_item = inventoryBar.cursortile ~= nil and inventoryBar.cursortile.item or nil
-
-	if inv_item ~= nil and inv_item.components.inventoryitem == nil and (inv_item.replica == nil or inv_item.replica.inventoryitem == nil) then
-		inv_item = nil
-	end
-	if active_item ~= nil and active_item.components.inventoryitem == nil and (active_item.replica == nil or active_item.replica.inventoryitem == nil) then
-		active_item = nil
-	end
-
-	return inv_item, active_item
-end
-
 -- Not really the spot for it, but I'm going to patch the Image class here with RealSetTexture since I'm nuking the old widget libraries. Old comments included!
 -- Image.SetTexture gets replaced, December 5, 2020: ([DST]HD Item Icon - Shang) https://steamcommunity.com/sharedfiles/filedetails/?id=2260439333
 -- then i realized other mods, such as the reskinners, do the same thing.
@@ -560,86 +546,21 @@ end
 --==========================================================================================================================
 import("uichanges/hoverer").Initialize()
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== InventoryBar ====================================================================
---==========================================================================================================================
---==========================================================================================================================
-
-AddClassPostConstruct("widgets/inventorybar", function(inventoryBar)
-	inventoryBar.insightText = inventoryBar.actionstring:AddChild(RichText())
-	inventoryBar.insightText:SetSize(25)
-
-	local oldActionStringTitle_SetString = inventoryBar.actionstringtitle.SetString
-	inventoryBar.actionstringtitle.SetString = function(self, str)
-		local inv_item, active_item = GetControllerSelectedInventoryItem(inventoryBar)
-
-		if (inv_item or active_item) and GetModConfigData("DEBUG_SHOW_PREFAB", true) then
-			str = str .. string.format(" [%s]", (inv_item or active_item).prefab)
-        end
-		
-		oldActionStringTitle_SetString(self, str)
-	end
-
-	--[[
-	local oldOnUpdate = inventoryBar.OnUpdate
-	inventoryBar.OnUpdate = function(self, dt)
-		oldOnUpdate(self, dt)
-	end
-	--]]
-
-	local oldActionStringBody_SetString = inventoryBar.actionstringbody.SetString
-	inventoryBar.actionstringbody.SetString = function(self, text)
-		if not localPlayer then
-			return
-		end
-		
-		-- Get Current Item
-		local inv_item, active_item = GetControllerSelectedInventoryItem(inventoryBar)
-		local selected = inv_item or active_item
-
-		-- Fetch information
-		local entityInformation = RequestEntityInformation(inv_item or active_item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
-		local itemDescription = nil
-		if entityInformation and entityInformation.information then
-			itemDescription = entityInformation.information
-		end
-
-		inventoryBar.insightText:SetString(itemDescription)
-
-		--local hovertext_lines = select(2, text:gsub("\n", "\n")) + 1 -- This is short by 1.
-		local description_lines = inventoryBar.insightText.line_count or 0
-		local textPadding = ""
-
-		if itemDescription then
-			textPadding = string.rep("\n ", description_lines)
-		end
-		
-		-- This compensates for how vertical align is centered.
-		local vertical_align_compensation = (description_lines - 1) * (inventoryBar.insightText.size / 2)
-		
-		-- 5 pixels for padding against the UI frame.
-		inventoryBar.insightText:SetPosition(0, vertical_align_compensation + 5 + inventoryBar.insightText.size / 4)
-
-		-- the " " forces it to constantly refresh, widgets/inventorybar:879
-		oldActionStringBody_SetString(self, text .. " " .. textPadding)
-		--oldActionStringBody_SetString(self, text .. " " .. string.rep("\n ", lines))
-	end
-end)
-
---==========================================================================================================================
---==========================================================================================================================
---======================================== FollowText ======================================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ FollowText ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- This is for controller support.
 import("uichanges/controls_followtext").Initialize()
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== Controller Menu =================================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ InventoryBar ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-- Also for controller support.
+import("uichanges/inventorybar").Initialize()
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Controller Menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 local InsightMenuScreen = import("screens/insightmenuscreen")
 TheInput:AddControlHandler(controlHelper.controller_scheme.open_insight_menu[1], function(down) -- CONTROL_FOCUS_UP

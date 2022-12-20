@@ -19,32 +19,18 @@ directory. If not, please refer to
 ]]
 
 local RichText = import("widgets/RichText")
+local infotext_common = import("uichanges/infotext_common").Initialize()
 
 local module = {}
 
 
-local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
-local INSIGHT_TEXT_SIZE = GetModConfigData("font_size", true)
-local informationOnAltOnly = GetModConfigData("alt_only_information", true)
-local canShowItemRange = GetModConfigData("hover_range_indicator", true)
-local canShowExtendedInfoIndicator = GetModConfigData("extended_info_indicator", true)
-
-OnContextUpdate:AddListener("hoverer_cfg", function(context) 
-	--mprint("contextupdate in hoverer", context.config["font_size"])
-	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
-	INSIGHT_TEXT_SIZE = context.config["font_size"]
-	informationOnAltOnly = context.config["informationOnAltOnly"]
-	canShowItemRange = context.config["canShowItemRange"]
-	canShowExtendedInfoIndicator = context.config["canShowExtendedInfoIndicator"]
-end)
-
 --[[
 local HOVERER_TEXT_SIZE = 30
-local INSIGHT_TEXT_SIZE = 22
+local insight_text_size = 22
 rawset(_G, "choice", 0)
 
 
-rawset(_G, "sz", function(x) INSIGHT_TEXT_SIZE = x end)
+rawset(_G, "sz", function(x) insight_text_size = x end)
 rawset(_G, "sz2", function(x) HOVERER_TEXT_SIZE = x end)
 rawset(_G, "both", function(x) sz(x) sz2(x) end)
 rawset(_G, "hov", function(x) hoverer.default_text_pos.y = x end)
@@ -82,7 +68,7 @@ local function OnHovererPostInit(hoverer)
 	--rawset(_G, "hoverer", hoverer)
 
 	--local altOnlyIsVerbose
-	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, 30))
+	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, infotext_common.configs.hoverer_insight_font_size))
 	--hoverer.text:SetSize(HOVERER_TEXT_SIZE)
 	--hoverer.secondarytext:SetSize(HOVERER_TEXT_SIZE)
 
@@ -205,8 +191,8 @@ local function OnHovererPostInit(hoverer)
 	end
 	
 	function hoverer.OnUpdate(self, ...)
-		if self.insightText.size ~= INSIGHT_TEXT_SIZE then
-			self.insightText:SetSize(INSIGHT_TEXT_SIZE)
+		if self.insightText.size ~= infotext_common.configs.hoverer_insight_font_size then
+			self.insightText:SetSize(infotext_common.configs.hoverer_insight_font_size)
 		end
 
 		--[[

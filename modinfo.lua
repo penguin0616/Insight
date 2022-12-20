@@ -105,10 +105,29 @@ end
 --==========================================================================================
 --[[ Config Primers ]]
 --==========================================================================================
-local FONTSIZE_MIN = 15
-local FONTSIZE_MAX = 30
+local FONT_SIZE = {
+	INSIGHT = {
+		HOVERER = {20, 30},
+		INVENTORYBAR = {15, 25},
+		FOLLOWTEXT = {15, 28}
+	}
+}
 
+local function GenerateFontSizeTexts(which)
+	local t = {}
+	for i = which[1], which[2] do
+		t[i] = { description={tostring(i)} } -- This doesn't need localization.
+	end
+	return t
+end
 
+local function GenerateFontSizeOptions(which)
+	local t = {}
+	for i = which[1], which[2] do
+		t[#t+1] = { data=i }
+	end
+	return t
+end
 
 
 local STRINGS = {
@@ -400,26 +419,50 @@ local STRINGS = {
 			},
 		},
 	},
-	font_size = {
+	hoverer_insight_font_size = {
 		label = {
-			"Font Size",
+			"Mouse HoverText Size",
 			["zh"] = nil, 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
-			"The font size of Insight's hover text.",
+			"The font size of Insight's hover text when using a mouse.",
 			["zh"] = nil, 
 			["br"] = nil, 
 			["es"] = nil
 		},
-		options = (function()
-			local t = {}
-			for i = FONTSIZE_MIN, FONTSIZE_MAX do
-				t[i] = { description={tostring(i)} } -- This doesn't need localization.
-			end
-			return t
-		end)(),
+		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.HOVERER),
+	},
+	inventorybar_insight_font_size = {
+		label = {
+			"Controller Inv. Text Size",
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"The font size of Insight's inventory text when using a controller.",
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.INVENTORYBAR),
+	},
+	followtext_insight_font_size = {
+		label = {
+			"Controller HoverText Size",
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"The font size of Insight's object text when using a controller.",
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.FOLLOWTEXT),
 	},
 	alt_only_information = {
 		label = {
@@ -4770,15 +4813,23 @@ configuration_options = {
 		tags = {},
 	},
 	{
-		name = "font_size",
-		options = (function()
-			local t = {}
-			for i = FONTSIZE_MIN, FONTSIZE_MAX do
-				t[#t+1] = {data = i}
-			end
-			return t
-		end)(),
-		default = 30,
+		name = "hoverer_insight_font_size",
+		options = GenerateFontSizeOptions(FONT_SIZE.INSIGHT.HOVERER),
+		default = FONT_SIZE.INSIGHT.HOVERER[2],
+		client = true,
+		tags = {},
+	},
+	{
+		name = "inventorybar_insight_font_size",
+		options = GenerateFontSizeOptions(FONT_SIZE.INSIGHT.INVENTORYBAR),
+		default = FONT_SIZE.INSIGHT.INVENTORYBAR[2],
+		client = true,
+		tags = {},
+	},
+	{
+		name = "followtext_insight_font_size",
+		options = GenerateFontSizeOptions(FONT_SIZE.INSIGHT.FOLLOWTEXT),
+		default = FONT_SIZE.INSIGHT.FOLLOWTEXT[2],
 		client = true,
 		tags = {},
 	},

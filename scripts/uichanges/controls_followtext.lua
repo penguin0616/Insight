@@ -20,12 +20,14 @@ directory. If not, please refer to
 
 local module = {}
 
-local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
 local FollowText = require("widgets/followtext")
 local RichText = import("widgets/RichText")
 local RichFollowText = import("widgets/richfollowtext")
 
-OnContextUpdate:AddListener("followtext_showprefab", function(context) 
+local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
+
+
+OnContextUpdate:AddListener("followtext", function(context) 
 	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
 end)
 
