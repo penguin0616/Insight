@@ -108,8 +108,8 @@ end
 local FONT_SIZE = {
 	INSIGHT = {
 		HOVERER = {20, 30},
-		INVENTORYBAR = {15, 25},
-		FOLLOWTEXT = {15, 28}
+		INVENTORYBAR = {20, 25},
+		FOLLOWTEXT = {20, 28}
 	}
 }
 
@@ -421,7 +421,7 @@ local STRINGS = {
 	},
 	hoverer_insight_font_size = {
 		label = {
-			"Mouse HoverText Size",
+			"Mouse Hover Text Size",
 			["zh"] = nil, 
 			["br"] = nil, 
 			["es"] = nil
@@ -451,13 +451,13 @@ local STRINGS = {
 	},
 	followtext_insight_font_size = {
 		label = {
-			"Controller HoverText Size",
+			"Controller Follow Text Size",
 			["zh"] = nil, 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
-			"The font size of Insight's object text when using a controller.",
+			"The font size of Insight's Follow text when using a controller.",
 			["zh"] = nil, 
 			["br"] = nil, 
 			["es"] = nil

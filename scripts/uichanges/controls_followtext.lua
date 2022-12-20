@@ -23,13 +23,7 @@ local module = {}
 local FollowText = require("widgets/followtext")
 local RichText = import("widgets/RichText")
 local RichFollowText = import("widgets/richfollowtext")
-
-local DEBUG_SHOW_PREFAB = GetModConfigData("DEBUG_SHOW_PREFAB", true)
-
-
-OnContextUpdate:AddListener("followtext", function(context) 
-	DEBUG_SHOW_PREFAB = context.config["DEBUG_SHOW_PREFAB"] 
-end)
+local infotext_common = import("uichanges/infotext_common").Initialize()
 
 local function countnewlines(str)
 	return select(2, str:gsub("\n", "\n"))
@@ -40,6 +34,13 @@ local function IsValidTarget(target)
 end
 
 local function UpdateFollowText(self, ...)
+	if self.primaryInsightText.text.size ~= infotext_common.configs.followtext_insight_font_size then
+		self.primaryInsightText.text:SetSize(infotext_common.configs.followtext_insight_font_size)
+		if self.primaryInsightText2 then
+			self.primaryInsightText2.text:SetSize(self.primaryInsightText.text:GetSize())
+		end
+	end
+
 	local itemIndex, itemInActions = ...
 	
 	-- DS has a similar but different set of checks.
@@ -67,6 +68,11 @@ local function UpdateFollowText(self, ...)
 			followerWidget = self.playeractionhint
 		else
 			followerWidget = self.groundactionhint
+		end
+
+		-- Doing this just like inventorybar until I get feedback that suggests otherwise.
+		if followerWidget.text.size ~= infotext_common.configs.followtext_insight_font_size then
+			followerWidget.text:SetSize(infotext_common.configs.followtext_insight_font_size)
 		end
 
 		local widgetWithEntityName = (IS_DST and self.playeractionhint_itemhighlight) or self.playeractionhint
@@ -212,13 +218,13 @@ local function OnControlsPostInit(controls)
 	end
 	--]]
 	
-	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, 28))
+	controls.primaryInsightText = controls:AddChild(RichFollowText(TALKINGFONT, infotext_common.configs.followtext_insight_font_size))
 	controls.primaryInsightText:SetHUD(controls.owner.HUD.inst)
     controls.primaryInsightText:SetOffset(Vector3(0, 100, 0))
     controls.primaryInsightText:Hide()
 
 	--[[
-	controls.primaryInsightText2 = controls:AddChild(FollowText(TALKINGFONT, 28))
+	controls.primaryInsightText2 = controls:AddChild(FollowText(TALKINGFONT, infotext_common.configs.followtext_insight_font_size))
 	controls.primaryInsightText2:SetHUD(controls.owner.HUD.inst)
     controls.primaryInsightText2:SetOffset(Vector3(1600, 100, 0))
     controls.primaryInsightText2:Hide()
