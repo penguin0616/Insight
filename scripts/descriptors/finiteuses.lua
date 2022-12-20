@@ -119,6 +119,7 @@ local function Describe(self, context)
 			if action_id and amount ~= 0 then
 				local uses = math.ceil(self.current / amount)
 				local max_uses = math.ceil(self.total / amount)
+				--mprint(action_id, context.usingIcons, rawget(context.lstr.actions, action_id), context.lstr.actions[action_id] and PrefabHasIcon(context.lstr.actions[action_id]))
 				if context.usingIcons and rawget(context.lstr.actions, action_id) and PrefabHasIcon(context.lstr.actions[action_id]) then
 					actions[c] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
 					actions_verbose[c] = string.format(context.lstr.action_uses_verbose, context.lstr.actions[action_id], uses, max_uses)

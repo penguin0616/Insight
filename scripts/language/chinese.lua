@@ -906,6 +906,11 @@ return {
 	-- skinner_beefalo.lua
 	skinner_beefalo = "凶猛: %s, 喜庆: %s, 正式: %s",
 
+	-- sleeper.lua
+	sleeper = {
+		wakeup_time = "Will wake up in %s",
+	},
+
 	-- soul.lua
 	wortox_soul_heal = "<color=HEALTH>治疗</color> <color=HEALTH>%s</color> - <color=HEALTH>%s</color>。",
 	wortox_soul_heal_range = "<color=HEALTH>治疗</color> <color=#DED15E>%s 个格子</color> 内的玩家。",

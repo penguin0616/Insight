@@ -50,7 +50,7 @@ ClientCoreEventer = import("helpers/eventer")()
 OnLocalPlayerPostInit = ClientCoreEventer:CreateEvent("OnLocalPlayerPostInit")
 OnLocalPlayerPostInit.onlisteneradded = function(listener)
 	if localPlayer then
-		listener:Run(GetInsight(localPlayer), GetPlayerContext(localPlayer))
+		listener:Run(GetLocalInsight(localPlayer), GetPlayerContext(localPlayer))
 	end
 end
 OnLocalPlayerRemove = ClientCoreEventer:CreateEvent("OnLocalPlayerRemove")
@@ -444,8 +444,8 @@ local function LoadLocalPlayer(player)
 	if IsPlayerClientLoaded(player) then
 		localPlayer = player
 		local context = GetPlayerContext(player)
-		local replica = GetLocalInsight(localPlayer)
-		replica.context = context
+		local insight = GetLocalInsight(localPlayer)
+		insight.context = context
 
 		player:ListenForEvent("onremove", LocalPlayerRemoved)
 		--mprint("LOCALPLAYER FOUND")
@@ -465,7 +465,7 @@ local function LoadLocalPlayer(player)
 			end
 		end
 		--]]
-		OnLocalPlayerPostInit:Push(replica, context)
+		OnLocalPlayerPostInit:Push(insight, context)
 		OnContextUpdate:Push(context)
 		mprint("Initializers complete" ..  ((SIM_DEV and "...") or "!"))
 

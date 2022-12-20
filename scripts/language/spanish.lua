@@ -878,6 +878,11 @@ return {
 	-- skinner_beefalo.lua
 	skinner_beefalo = "Temible: %s, Festivo: %s, Formal: %s",
 
+	-- sleeper.lua
+	sleeper = {
+		wakeup_time = "Will wake up in %s",
+	},
+
 	-- soul.lua
 	wortox_soul_heal = "Restaura <color=HEALTH>%s</color> - <color=HEALTH>%s</color> de <color=HEALTH>salud</color>",
 	wortox_soul_heal_range = "<color=HEALTH>Cura</color> a aliados dentro de <color=#DED15E>%s balsosas</color>",
