@@ -474,19 +474,26 @@ function CreatePlayerContext(player, config, external_config, etc)
 end
 
 function UpdatePlayerContext(player, data)
-	if not player_contexts[player] then
+	local context = player_contexts[player]
+	if not context then
 		mprint("Can't update missing player context.")
 		return
 	end
 
+	local oldLang = context.config["language"]
 	for i,v in pairs(data) do
 		if type(v) == "table" and i:find("config") then
 			setmetatable(v, CONTEXT_META)
 		end
-		player_contexts[player][i] = v
+		context[i] = v
 	end
 
-	player_contexts[player].usingIcons = player_contexts[player].config["info_style"] == "icon"
+	local oldUsingIcons = context.usingIcons
+	context.usingIcons = context.config["info_style"] == "icon"
+
+	if oldLang ~= context.config["language"] or oldUsingIcons ~= context.usingIcons then
+		context.lstr = language(context.config, context.etc.locale)
+	end
 end
 
 --- Returns the component's origin. 

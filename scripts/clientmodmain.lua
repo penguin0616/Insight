@@ -500,9 +500,11 @@ end
 ClientCoreEventer:ListenForEvent("configuration_update", function()
 	local config = GenerateConfiguration()
 
+	DEBUG_ENABLED = config["DEBUG_ENABLED"]
+
 	if IsClient() then
 		UpdatePlayerContext(localPlayer, {
-			config = config
+			config = config,
 		})
 	end
 
@@ -587,7 +589,7 @@ insightKeybinds:SetReady()
 
 OnLocalPlayerPostInit:AddListener("translate_keybinds", function(insight, context)
 	for name, data in pairs(insightKeybinds:GetKeybinds()) do
-		local trans = rawget(context.lstr.keybinds, name)
+		local trans = context.lstr.keybinds[name]
 		if trans then
 			data.pretty_name = trans.name or data.pretty_name
 			data.description = trans.description or data.description

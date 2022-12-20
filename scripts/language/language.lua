@@ -18,6 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+--------------------------------------------------------------------------
+--[[ Private Variables ]]
+--------------------------------------------------------------------------
 local languages = {
 	icons = "icons",
 	en = "english",
@@ -26,25 +29,32 @@ local languages = {
 	br = "portuguese"
 }
 
-local languageTables = {}
-for code, lang in pairs(languages) do
-	languageTables[code] = import("language/" .. lang)
+local __metatable = "[Insight] The metatable is locked."
+--------------------------------------------------------------------------
+--[[ Functions ]]
+--------------------------------------------------------------------------
+local function LoadLanguage(lang)
+	return deepcopy(import("language/" .. lang)) -- Don't want to taint the import.
 end
 
-local __newindex = function(self) error(tostring(self) .. " is readonly") end
-local __metatable = "[Insight] The metatable is locked."
+local function __newindex(self) 
+	error(tostring(self) .. " is readonly") 
+end
 
---[[
-local function set(tbl, target)
-	setmetatable(tbl, {__index = target, __newindex=__newindex, __metatable=__metatable})
+local function LinkTables(tbl, fallback)
+	setmetatable(tbl, {
+		__index = fallback,
+		__newindex = __newindex,
+		__metatable = "Metatable locked",
+	})
 
-	for i,v in pairs(tbl) do
-		if type(v) == "tbl" then
-			set(v, rawget(tbl, i))
+	for key, value in pairs(tbl) do
+		if type(value) == "table" then
+			LinkTables(value, fallback[key])
 		end
 	end
 end
---]]
+
 
 local function main(config, locale)
 	local usingIcons = config["info_style"] == "icon"
@@ -52,102 +62,61 @@ local function main(config, locale)
 	local selected = nil
 	if config["language"] == "automatic" then
 		selected = locale
-		if languages[selected] == nil then
-			selected = "en"
-		end
 	else
 		selected = config["language"]
 	end
 
-	local secondaryLanguage = languages[selected] or error("[Insight]: Invalid language selected (report bug please): " .. tostring(config["language"]) .. "|" .. tostring(selected) .. "|" .. TheNet:GetLanguageCode()) 
-	local primaryLanguage = (usingIcons and "icons") or secondaryLanguage
-
-	local tertiaryLanguage = deepcopy(import("language/" .. languages.en))
-	secondaryLanguage = deepcopy(import("language/" .. secondaryLanguage))
-
-	if secondaryLanguage ~= tertiaryLanguage then
-		
-		for i,v in pairs(secondaryLanguage) do
-			if type(v) == "table" then
-				setmetatable(v, { __index = rawget(tertiaryLanguage, i), __newindex = __newindex, __metatable = __metatable })
-
-				for j, k in pairs(v) do
-					if type(k) == "table" then
-						setmetatable(k, { __index = rawget(rawget(tertiaryLanguage, i), j), __newindex = __newindex, __metatable = __metatable })
-					end
-				end
-
-			end
-		end
-		
-		setmetatable(secondaryLanguage, { __index = tertiaryLanguage, __newindex = __newindex, __metatable = __metatable }) -- just in case
+	-- Unknown languages become english
+	if languages[selected] == nil then
+		selected = "en"
 	end
 
-	primaryLanguage = deepcopy(import("language/" .. primaryLanguage))
-
-	if primaryLanguage ~= secondaryLanguage then
-		for i,v in pairs(primaryLanguage) do
-			if type(v) == "table" then
-				setmetatable(v, { __index = rawget(secondaryLanguage, i), __newindex = __newindex, __metatable = __metatable })
-
-				for j, k in pairs(v) do
-					if type(k) == "table" then
-						setmetatable(k, { __index = rawget(rawget(secondaryLanguage, i), j), __newindex = __newindex, __metatable = __metatable })
-					end
-				end
-
-			end
-		end
-
-		setmetatable(primaryLanguage, { __index = secondaryLanguage, __newindex = __newindex, __metatable = __metatable })
-	end
-
-	--[[
-	primaryLanguage.lang = primaryLanguage
-	secondaryLanguage.lang = tertiaryLanguage
-	--]]
+	local primary
+	local fallback = LoadLanguage(languages.en)
 
 	if usingIcons then
-		rawset(primaryLanguage, "lang", secondaryLanguage)
-		rawset(secondaryLanguage, "lang", tertiaryLanguage)
+		primary = LoadLanguage(languages.icons)
+		local secondary = LoadLanguage(languages[selected])
+
+		LinkTables(primary, secondary)
+		LinkTables(secondary, fallback)
+
+		rawset(primary, "lang", secondary)
+		rawset(secondary, "lang", fallback)
 	else
-		rawset(primaryLanguage, "lang", primaryLanguage)
-		rawset(secondaryLanguage, "lang", secondaryLanguage)
+		primary = LoadLanguage(languages[selected])
+		
+		LinkTables(primary, fallback)
+		rawset(primary, "lang", primary)
+		rawset(fallback, "lang", fallback)
 	end
 
-	return primaryLanguage
+	return primary
 end
 
-local proxy = newproxy(true)
-local mt = getmetatable(proxy)
+--------------------------------------------------------------------------
+--[[ Initialize ]]
+--------------------------------------------------------------------------
+-- These are languagetables meant to be accessible externally. They fallback to english.
+local languageTables = {}
+for code, lang in pairs(languages) do
+	languageTables[code] = LoadLanguage(lang)
+end
 
-mt.__index = languageTables
+for code, tbl in pairs(languageTables) do
+	if code ~= "en" then
+		LinkTables(tbl, languageTables.en)
+	end
+end
 
-mt.__call = function(self, ...)
+-- Thing to return
+local LanguageProxy = newproxy(true)
+local Language = getmetatable(LanguageProxy)
+
+Language.__index = languageTables
+
+Language.__call = function(self, ...)
 	return main(...)
 end
 
-return proxy
-
---[[
-local strs = (false and import("language/chinese")) or eng
-
-setmetatable(icons, {__index = strs})
-icons.lang = strs
-strs.lang = eng
-
-function sformat(...)
-	local res = string.format(...)
-	
-	res = res:sub(1,1):upper() .. res:sub(2)
-
-	return res
-end
-
-
-if usingIcons then
-	return icons
-else
-	return strs
-end
---]]
+return LanguageProxy
