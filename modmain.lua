@@ -341,6 +341,15 @@ end
 
 IS_CLIENT = IsClient()
 
+--- Checks whether the mod is running on a dedicated server
+-- This is basically (IsClient() or IsClientHost())
+-- @treturn boolean
+function IsDedicated()
+	return IS_DST and TheNet:IsDedicated()
+end
+
+IS_DEDICATED = IsDedicated()
+
 --- Checks whether the mod is running on a client that is also the host.
 -- @treturn boolean
 function IsClientHost()
@@ -2803,9 +2812,6 @@ AddPlayerPostInit(function(player)
 	if TheWorld.ismastersim then
 		mprint("listening for player validation", player)
 		player:ListenForEvent("setowner", function(...)
-			player.insight_classified = SpawnPrefab("insight_classified")
-			player.insight_classified.entity:SetParent(player.entity)
-
 			player:AddComponent("insight")
 			mprint("Added Insight component for", player)
 			player.components.insight:SendStatRates()

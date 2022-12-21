@@ -98,8 +98,13 @@ local function OnEntityReplicated(inst, retry)
 	if inst._parent == nil then
 		mprint("Unable to initialize classified data for insight_classified, no parent")
 
+	elseif inst._parent.replica.insight ~= nil then
+		inst._parent.replica.insight:AttachClassified(inst)
+	
+	--[==[
 	elseif inst._parent.replica.insight == nil then
 		mprint("Unable to initialize classified data for insight_classified, no Insight") -- This seems to happen on rare occasion with a c_reset.....
+		--[[
 		-- And also when travelling between shards...
 		mprint("Retry attempt:", retry)
 		if retry > 3 then
@@ -110,9 +115,10 @@ local function OnEntityReplicated(inst, retry)
 				return inst:OnEntityReplicated(retry + 1)
 			end)
 		end
+		--]]
+		--]==]
 	else
 		inst._parent.insight_classified = inst
-		inst._parent.replica.insight:AttachClassified(inst)
 		inst.OnRemoveEntity = OnRemoveEntity
 	end
 end

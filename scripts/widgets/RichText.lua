@@ -36,10 +36,12 @@ local _LookupIcon, LookupString, InterpretReaderChunk
 local TEMPERATURE_UNIT = "game"
 local TEXT_COLORING_ENABLED = GetModConfigData("text_coloring", true)
 
-OnContextUpdate:AddListener("richtext", function(context)
-	TEMPERATURE_UNIT = context.config["temperature_units"]
-	TEXT_COLORING_ENABLED = context.config["text_coloring"]
-end)
+if IS_DS or not IS_DEDICATED then
+	OnContextUpdate:AddListener("richtext", function(context)
+		TEMPERATURE_UNIT = context.config["temperature_units"]
+		TEXT_COLORING_ENABLED = context.config["text_coloring"]
+	end)
+end
 
 local TEXT_BASED_OBJECTS = {
 	["prefab"] = function(chunk)

@@ -203,15 +203,19 @@ local Insight = Class(function(self, inst)
 	end
 
 	if IS_DST then
-		mprint("Insight Replica added")
+		-- TODO: See if I can hit a classified missing with this
+		mprint("Insight Replica added for", self.inst)
 		if TheWorld.ismastersim then
-			self.classified = inst.insight_classified
+			self.classified = SpawnPrefab("insight_classified")
+			self.classified.entity:SetParent(inst.entity)
 
 			if IS_CLIENT_HOST then
 				self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
 			end
 		elseif self.classified == nil and inst.insight_classified ~= nil then
 			self:AttachClassified(inst.insight_classified)
+        	inst.insight_classified.OnRemoveEntity = nil
+        	inst.insight_classified = nil
 		end
 	end
 end)
@@ -239,9 +243,15 @@ end
 --- Attaches classified for networking
 -- @tparam EntityScript ent
 function Insight:AttachClassified(ent)
-	assert(TheWorld.ismastersim == false, "AttachClassified on server-side")
-	assert(self.classified == nil, "Attempt to attach classified with one existing already.")
-	mprint("Attached classified", ent, "to", self.inst)
+	if TheWorld.ismastersim then
+		error("AttachClassified on server-side")
+	end
+	
+	if self.classified ~= nil then
+		error("Attempt to attach classified with one existing already.")
+	end
+
+	mprint("Attach classified", ent, "to", self.inst)
 
 	-- Classified stuff
 	self.classified = ent
