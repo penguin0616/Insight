@@ -72,6 +72,10 @@ local WICKER_BOOK_INFO = {
 		color = "#bbbbbb",
 		duration = TUNING.BOOK_WEB_GROUND_DURATION,
 	},
+	book_temperature = {
+		range = TUNING.BOOK_TEMPERATURE_RADIUS,
+		color = Insight.COLORS.FROZEN,
+	},
 	book_light = {
 		color = "LIGHT",
 		duration = TUNING.TOTAL_DAY_TIME / 2,
@@ -151,6 +155,7 @@ WICKER_BOOK_INFO.book_web.DescribeBook = function(data, context)
 		description = string.format(context.lstr.book.wickerbottom.web, data.color, data.color, context.time:SimpleProcess(data.duration, "realtime_short"))
 	}
 end
+-- book_temperature
 WICKER_BOOK_INFO.book_light.DescribeBook = function(data, context)
 	return {
 		name = "book_light",

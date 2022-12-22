@@ -166,7 +166,7 @@ end)
 local function MakeInsightMenuButton(controls)
 	-- Construct
 	local mb = InsightButton()
-	mb.allowcontroller = IS_DS
+	mb.allowcontroller = false
 	mb.can_be_shown = true
 
 	-- Functions
