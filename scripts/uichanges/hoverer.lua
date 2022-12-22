@@ -80,7 +80,7 @@ local function OnHovererPostInit(hoverer)
 	function hoverer.text.Hide(self)
 		if self.shown then 
 			--GetMouseTargetItem() -- i could probably do this better, eh?
-			if canShowItemRange and currentlySelectedItem ~= nil then
+			if infotext_common.configs.hover_range_indicator and currentlySelectedItem ~= nil then
 				OnCurrentlySelectedItemChanged(currentlySelectedItem, nil)
 				currentlySelectedItem = nil
 			end
@@ -279,8 +279,8 @@ local function OnHovererPostInit(hoverer)
 
 			--itemInfo = (TheInput:IsKeyDown(KEY_LALT) and itemInfo.alt_information) or itemInfo.information or nil
 		end
-
-		if canShowItemRange then
+		
+		if infotext_common.configs.hover_range_indicator then
 			if item == nil or entityInformation == nil then
 				if currentlySelectedItem ~= nil then
 					OnCurrentlySelectedItemChanged(currentlySelectedItem, nil)
