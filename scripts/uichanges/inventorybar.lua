@@ -23,6 +23,20 @@ local module = {}
 local RichText = import("widgets/RichText")
 local infotext_common = import("uichanges/infotext_common").Initialize()
 
+local function countnewlines(str)
+	return select(2, str:gsub("\n", "\n"))
+end
+
+local function trim(str)
+	str = str:gsub("\n ", "\n")
+	if str:sub(1, 1) == "\n" then
+		str = str:sub(2)
+	end
+
+	local s = str:find("\n*$")
+	return str:sub(1, s-1)
+end
+
 local function GetControllerSelectedInventoryItem(inventoryBar)
 	local inv_item = inventoryBar:GetCursorItem()
 	local active_item = inventoryBar.cursortile ~= nil and inventoryBar.cursortile.item or nil
@@ -52,9 +66,15 @@ local function OnInventoryBarPostInit(inventoryBar)
 		oldActionStringTitle_SetString(self, str)
 	end
 
+	--[[
+	inventoryBar.actionstringtitle.SetPosition = function(self, x, y, z)
+
+	end
+	--]]
+
+	--[[
 	local oldOnUpdate = inventoryBar.OnUpdate
 	inventoryBar.OnUpdate = function(self, dt)
-		oldOnUpdate(self, dt)
 		if self.insightText.size ~= infotext_common.configs.inventorybar_insight_font_size then
 			self.insightText:SetSize(infotext_common.configs.inventorybar_insight_font_size)
 		end
@@ -63,7 +83,60 @@ local function OnInventoryBarPostInit(inventoryBar)
 			-- Whatever! I'll adjust both because it just makes sense to do so.
 			self.actionstringbody:SetSize(infotext_common.configs.inventorybar_insight_font_size)
 		end
+
+		-- I want the normal position logic to go through (OnUpdate -> UpdateCursor -> UpdateCursorText)
+		-- before I make adjustments.
+		oldOnUpdate(self, dt)
+		local titlepos = self.actionstringtitle:GetPosition()
+		local bodypos = self.actionstringbody:GetPosition()
+		local bodyw, bodyh = self.actionstringbody:GetRegionSize()
+
+		local minimum_height = bodypos.y + bodyh/2 - self.actionstringbody.size/2 + self.actionstringtitle.size
+		mprint(titlepos.y, bodypos.y, minimum_height)
+		if titlepos.y < minimum_height then
+			self.actionstringtitle:SetPosition(titlepos.x, minimum_height)
+		end
 	end
+	--]]
+
+	local oldUpdateCursorText = inventoryBar.UpdateCursorText
+	inventoryBar.UpdateCursorText = function(self)
+		-- I want the normal position logic to go through (UpdateCursor -> UpdateCursorText)
+		-- before I make adjustments.
+		oldUpdateCursorText(self)
+		local titlepos = self.actionstringtitle:GetPosition()
+		local bodypos = self.actionstringbody:GetPosition()
+		local bodyw, bodyh = self.actionstringbody:GetRegionSize()
+
+		-- The bodypos needs to be adjusted first, because the title pos depends on it.
+
+		-- What's happening here is that for every line of Insight text beyond 1,
+		-- there seems to be an extra half line space between the body and Insight.
+		-- This only happens when the controller inventory is open.
+		if self.open and IS_DST then
+			bodypos.y = bodypos.y + self.actionstringbody.size/2 -- I don't know why it's exactly this short after trimming the newlines.
+			self.actionstringbody:SetPosition(bodypos)
+		end
+
+		--mprint("bodypos", bodypos)
+
+		-- Maybe I should put this in the open check.
+		local minimum_height = bodypos.y + bodyh/2 - self.actionstringbody.size/2 + self.actionstringtitle.size
+		--mprint(titlepos.y, bodypos.y, minimum_height)
+		if titlepos.y < minimum_height then
+			self.actionstringtitle:SetPosition(titlepos.x, minimum_height)
+		end
+	end
+
+	--[[
+	inventoryBar.actionstringbody.SetPosition = function(self, ...)
+		mprint("setpos", ...)
+		local a, b = inventoryBar.actionstringbody:GetRegionSize()
+		mprint("\t", a, b)
+		mprint(debugstack())
+		return inventoryBar.SetPosition(self, ...)
+	end
+	--]]
 
 	local oldActionStringBody_SetString = inventoryBar.actionstringbody.SetString
 	inventoryBar.actionstringbody.SetString = function(self, text)
@@ -86,13 +159,20 @@ local function OnInventoryBarPostInit(inventoryBar)
 
 		--local hovertext_lines = select(2, text:gsub("\n", "\n")) + 1 -- This is short by 1.
 
-		--local size_ratio = inventoryBar.insightText:GetSize() / self:GetSize()
+		local size_ratio = inventoryBar.insightText:GetSize() / self:GetSize()
 
 		local description_lines = inventoryBar.insightText.line_count or 0
 		local textPadding = ""
 		--local total_lines = math.ceil(description_lines * (size_ratio))
 
 		--mprintf("description lines: %s | adjusted total: %s", description_lines, total_lines)
+		--mprint("|" .. text .. "|", countnewlines(text), "|" .. trim(text) .. "|")
+
+		if inventoryBar.open then
+			text = trim(text) -- There's a whole bunch of extra newlines when the controllerinventory is open. Not sure why.
+		end
+
+		--mprint("|" .. text .. "|", countnewlines(text))
 		if itemDescription then
 			textPadding = string.rep("\n ", description_lines)
 		end
