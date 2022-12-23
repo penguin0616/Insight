@@ -130,7 +130,7 @@ local function GenerateFontSizeOptions(which)
 end
 
 
-local STRINGS = {
+STRINGS = {
 	--==========================================================================================
 	--[[ Misc Strings ]]
 	--==========================================================================================
@@ -142,15 +142,15 @@ local STRINGS = {
 	},
 	update_info = {
 		"Moon Quay update, Bug fixes. Check changelog for more details.",
-		["zh"] = "",
-		["br"] = "YotK. Bugfixes. Verifique o changelog para obter mais detalhes.",
-		["es"] = "Actualización general de la nueva interfaz de creación. Consulta el registro de cambios para más detalles.",
+		["zh"] = nil,
+		["br"] = nil,
+		["es"] = nil,
 	},
 	update_info_ds = {
 		"Bug fixes, check change notes.",
 		["zh"] = nil,
-		["br"] = "Bug fixes, verifique o change notes.",
-		["es"] = "Corrección de errores, consulte las notas de cambio.",
+		["br"] = nil,
+		["es"] = nil,
 	},
 	crashreporter_info = {
 		"Insight has a crash reporter you can enable in the client & server config",
@@ -567,13 +567,13 @@ local STRINGS = {
 			["mixed"] = {
 				description = {
 					"Mixed",
-					["zh"] = "Mixed",
+					["zh"] = "兼用",
 					["br"] = "Misto",
 					["es"] = "Mixto",
 				},
 				hover = {
 					"Will provide use default percentages on refuelables, numbers for everything else.",
-					["zh"] = "Will provide use default percentages on refuelables, numbers for everything else.",
+					["zh"] = "可恢复耐久的物品显示默认百分比, 其他显示具体次数",
 					["br"] = "Fornecerá porcentagens padrão de uso em reabastecimentos, números para todo o resto.",
 					["es"] = "Utiliza porcentajes por defecto en items recargables, números para todo lo demás.",
 				},
@@ -683,57 +683,57 @@ local STRINGS = {
 	temperature_units = {
 		label = {
 			"Temperature units", 
-			["zh"] = "Temperature units", 
-			["br"] = "Temperature units", 
-			["es"] = "Temperature units"
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		hover = {
 			"How to display temperature", 
-			["zh"] = "How to display temperature", 
-			["br"] = "How to display temperature", 
-			["es"] = "How to display temperature"
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		options = {
 			["game"] = {
 				description = {
 					"Game",
-					["zh"] = "Game",
-					["br"] = "Game",
-					["es"] = "Game",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 0, Overheat: 70",
-					["zh"] = "Freeze: 0, Overheat: 70",
-					["br"] = "Freeze: 0, Overheat: 70",
-					["es"] = "Freeze: 0, Overheat: 70",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			["celsius"] = {
 				description = {
 					"Celsius",
-					["zh"] = "Celsius",
-					["br"] = "Celsius",
-					["es"] = "Celsius",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 0, Overheat: 35",
-					["zh"] = "Freeze: 0, Overheat: 35",
-					["br"] = "Freeze: 0, Overheat: 35",
-					["es"] = "Freeze: 0, Overheat: 35",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			["fahrenheit"] = {
 				description = {
 					"Fahrenheit",
-					["zh"] = "Fahrenheit",
-					["br"] = "Fahrenheit",
-					["es"] = "Fahrenheit",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 32, Overheat: 158",
-					["zh"] = "Freeze: 32, Overheat: 158",
-					["br"] = "Freeze: 32, Overheat: 158",
-					["es"] = "Freeze: 32, Overheat: 158",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 		},
@@ -1144,7 +1144,7 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
@@ -1911,11 +1911,11 @@ local STRINGS = {
 					["br"] = "Curta",
 					["es"] = "Reducida",
 				},
-				hover = {
+				hover = { -- No Translation Needed   
 					"+X / -X / +X",
-					["zh"] = "+X / -X / +X",
-					["br"] = "+X / -X / +X",
-					["es"] = "+X / -X / +X",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			["long"] = {
@@ -2204,13 +2204,13 @@ local STRINGS = {
 	display_cawnival = {
 		label = {
 			"Cawnival Information", 
-			["zh"] = "Cawnival Information", 
+			["zh"] = "鸦年华信息", 
 			["br"] = "Informações do Carnaval", 
 			["es"] = "Información de Cawnvival"
 		},
 		hover = {
 			"Whether Midsummer Cawnvival information is shown.", 
-			["zh"] = "Whether Midsummer Cawnvival information is shown.", 
+			["zh"] = "是否显示盛夏鸦年华信息", 
 			["br"] = "Se as informações do Midsummer Cawnvival são mostradas.", 
 			["es"] = "Configura si se muestra la información de Midsummer Cawnvival."
 		},
@@ -2218,13 +2218,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Cawnival information is not shown.",
-					["zh"] = "Cawnival information is not shown.",
+					["zh"] = "不显示鸦年华信息",
 					["br"] = "Informações do Cawnival não são mostradas.",
 					["es"] = "No se muestra la información de cawnvival.",
 				},
@@ -2232,13 +2232,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Cawnival information is shown.",
-					["zh"] = "Cawnival information is shown.",
+					["zh"] = "显示鸦年华信息",
 					["br"] = "Informações do Cawnival são mostradas.",
 					["es"] = "Se muestra la información de cawnival.",
 				},
@@ -2380,13 +2380,13 @@ local STRINGS = {
 	display_worldmigrator = {
 		label = {
 			"Portal information", 
-			["zh"] = "Portal information", 
+			["zh"] = "传送信息", 
 			["br"] = "Informações do Portal", 
 			["es"] = "Información de portal"
 		},
 		hover = {
 			"Whether portal (sinkhole) information is shown.", 
-			["zh"] = "Whether portal (sinkhole) information is shown.", 
+			["zh"] = "是否显示传送信息 (洞穴)", 
 			["br"] = "Se as informações do portal (sinkhole) são mostradas.", 
 			["es"] = "Configura si se muestra la información del portal (sumidero)."
 		},
@@ -2394,13 +2394,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Portal information is not shown.",
-					["zh"] = "Portal information is not shown.",
+					["zh"] = "不显示传送信息",
 					["br"] = "As informações do portal não são mostradas.",
 					["es"] = "La información de portal no se muestra.",
 				},
@@ -2408,13 +2408,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Portal information is shown.",
-					["zh"] = "Portal information is shown.",
+					["zh"] = "显示传送信息",
 					["br"] = "As informações do portal são mostradas.",
 					["es"] = "Se muestra la información de portal.",
 				},
@@ -2424,13 +2424,13 @@ local STRINGS = {
 	display_unwrappable = {
 		label = {
 			"Bundle information", 
-			["zh"] = "Bundle information", 
+			["zh"] = "打包信息", 
 			["br"] = "Informações do Pacote", 
 			["es"] = "Información de paquete"
 		},
 		hover = {
 			"Whether bundle information is shown.", 
-			["zh"] = "Whether bundle information is shown.", 
+			["zh"] = "是否显示打包信息", 
 			["br"] = "Se as informações de pacotes, embrulhos ou presentes são mostradas.", 
 			["es"] = "Configura si se muestra la información de paquete."
 		},
@@ -2438,13 +2438,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Bundle information is not shown.",
-					["zh"] = "Bundle information is not shown.",
+					["zh"] = "不显示打包信息",
 					["br"] = "As informações do pacote não são mostradas.",
 					["es"] = "La información de paquete no se muestra.",
 				},
@@ -2452,13 +2452,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Bundle information is shown.",
-					["zh"] = "Bundle information is shown.",
+					["zh"] = "显示打包信息",
 					["br"] = "As informações do pacote são mostradas.",
 					["es"] = "Se muestra la información de paquete.",
 				},
@@ -2482,13 +2482,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Fishing information is not shown.",
-					["zh"] = "Fishing information is not shown.",
+					["zh"] = "不显示垂钓信息",
 					["br"] = "Informações de pesca não são mostradas.",
 					["es"] = "La información de pesca no se muestra.",
 				},
@@ -2496,13 +2496,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Fishing information is shown.",
-					["zh"] = "Fishing information is shown.",
+					["zh"] = "显示垂钓信息",
 					["br"] = "Informações de pesca são mostradas.",
 					["es"] = "Se muestra la información de pesca.",
 				},
@@ -2962,43 +2962,43 @@ local STRINGS = {
 	display_fertilizer = {
 		label = {
 			"Fertilizer", 
-			["zh"] = "Fertilizer", 
-			["br"] = "Fertilizer", 
-			["es"] = "Fertilizer"
+			["zh"] = "肥料", 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		hover = {
 			"Determines whether fertilizer nutrients are shown.", 
-			["zh"] = "Determines whether fertilizer nutrients are shown.", 
-			["br"] = "Determines whether fertilizer nutrients are shown.", 
-			["es"] = "Determines whether fertilizer nutrients are shown."
+			["zh"] = "决定是否显示肥料养分值", 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		options = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
-					["br"] = "No",
-					["es"] = "No",
+					["zh"] = "否",
+					["br"] = "Não",
+					["es"] = "Desactivado",
 				},
 				hover = {
-					"fertilizer nutrients are not shown.",
-					["zh"] = "fertilizer nutrients are not shown.",
-					["br"] = "fertilizer nutrients are not shown.",
-					["es"] = "fertilizer nutrients are not shown.",
+					"Fertilizer nutrients are not shown.",
+					["zh"] = "不显示肥料养分值",
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
-					["br"] = "Yes",
-					["es"] = "Yes",
+					["zh"] = "是",
+					["br"] = "Sim",
+					["es"] = "Activado",
 				},
 				hover = {
-					"fertilizer nutrients are shown.",
-					["zh"] = "fertilizer nutrients are shown.",
-					["br"] = "fertilizer nutrients are shown.",
-					["es"] = "fertilizer nutrients are shown.",
+					"Fertilizer nutrients are shown.",
+					["zh"] = "显示肥料养分值",
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 		},
@@ -3312,13 +3312,13 @@ local STRINGS = {
 	display_sanity = {
 		label = {
 			"Sanity", 
-			["zh"] = "Sanity", 
+			["zh"] = "理智", 
 			["br"] = "Sanidade", 
 			["es"] = "Cordura"
 		},
 		hover = {
 			"Whether sanity information is shown.", 
-			["zh"] = "Whether sanity information is shown.", 
+			["zh"] = "是否显示理智信息", 
 			["br"] = "Se as informações de sanidade são mostradas.", 
 			["es"] = "Configura se muestra la información de cordura."
 		},
@@ -3326,13 +3326,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"Disabled",
-					["zh"] = "Disabled",
+					["zh"] = "否",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Will not display sanity information.",
-					["zh"] = "Will not display sanity information.",
+					["zh"] = "不显示理智信息",
 					["br"] = "Não exibirá informações de sanidade.",
 					["es"] = "No se muestra información de cordura.",
 				},
@@ -3340,13 +3340,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Enabled",
-					["zh"] = "Enabled",
+					["zh"] = "是",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Will display sanity information.",
-					["zh"] = "Will display sanity information.",
+					["zh"] = "显示理智信息",
 					["br"] = "Exibirá informações de sanidade.",
 					["es"] = "Se muestra información de cordura.",
 				},
@@ -3400,43 +3400,43 @@ local STRINGS = {
 	display_sanity_interactions = {
 		label = {
 			"Sanity Interactions", 
-			["zh"] = "Sanity Interactions", 
-			["br"] = "Sanity Interactions", 
-			["es"] = "Sanity Interactions"
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		hover = {
 			"Whether interactions that affect sanity are shown.", 
-			["zh"] = "Whether interactions that affect sanity are shown.", 
-			["br"] = "Whether interactions that affect sanity are shown.", 
-			["es"] = "Whether interactions that affect sanity are shown."
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
 		},
 		options = {
 			[false] = {
 				description = {
 					"Disabled",
-					["zh"] = "Disabled",
-					["br"] = "Disabled",
-					["es"] = "Disabled",
+					["zh"] = "否",
+					["br"] = nil,
+					["es"] = nil,
 				},
 				hover = {
 					"Will not display sanity interactions.",
-					["zh"] = "Will not display sanity interactions.",
-					["br"] = "Will not display sanity interactions.",
-					["es"] = "Will not display sanity interactions.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 			[true] = {
 				description = {
 					"Enabled",
-					["zh"] = "Enabled",
-					["br"] = "Enabled",
-					["es"] = "Enabled",
+					["zh"] = "是",
+					["br"] = nil,
+					["es"] = nil,
 				},
 				hover = {
 					"Will display sanity interactions.",
-					["zh"] = "Will display sanity interactions.",
-					["br"] = "Will display sanity interactions.",
-					["es"] = "Will display sanity interactions.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 		},
@@ -3546,7 +3546,7 @@ local STRINGS = {
 	display_pickable = {
 		label = {
 			"Pickable Information", 
-			["zh"] = "Pickable Information", 
+			["zh"] = "可采集信息", 
 			["br"] = "Informações selecionáveis", 
 			["es"] = "Información de recolección"
 		},
@@ -3560,13 +3560,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Pickable information will not be displayed.",
-					["zh"] = "Pickable information will not be displayed.",
+					["zh"] = "不显示可采集信息",
 					["br"] = "Informações selecionáveis não serão exibidas.",
 					["es"] = "No se muestra la información de recolección.",
 				},
@@ -3574,13 +3574,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Pickable information will be displayed.",
-					["zh"] = "Pickable information will be displayed.",
+					["zh"] = "显示可采集信息",
 					["br"] = "Informações selecionáveis serão exibidas.",
 					["es"] = "Se muestra la información seleccionable.",
 				},
@@ -3590,7 +3590,7 @@ local STRINGS = {
 	display_harvestable = {
 		label = {
 			"Harvestable Information", 
-			["zh"] = "Harvestable Information", 
+			["zh"] = "可收获信息", 
 			["br"] = "Informações de colheitas", 
 			["es"] = "Información de cosecha"
 		},
@@ -3604,13 +3604,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Harvestable information will not be displayed.",
-					["zh"] = "Harvestable information will not be displayed.",
+					["zh"] = "不显示可收获信息",
 					["br"] = "Informações de colheitas não serão exibidas.",
 					["es"] = "No se muestra la información de cosecha.",
 				},
@@ -3618,13 +3618,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Harvestable information will be displayed.",
-					["zh"] = "Harvestable information will be displayed.",
+					["zh"] = "显示可收获信息",
 					["br"] = "Informações de colheitas serão exibidas.",
 					["es"] = "Se muestra la información de cosecha.",
 				},
@@ -3654,7 +3654,7 @@ local STRINGS = {
 				},
 				hover = {
 					"Tool durability will not be displayed.",
-					["zh"] = "不显示跟随者的信息",
+					["zh"] = "不显示工具的耐久度",
 					["br"] = "A durabilidade da ferramenta não será exibida.",
 					["es"] = "No se muestra la durabilidad de las herramientas.",
 				},
@@ -3668,7 +3668,7 @@ local STRINGS = {
 				},
 				hover = {
 					"Tool durability will be displayed.",
-					["zh"] = "显示跟随者的信息",
+					["zh"] = "显示工具的耐久度",
 					["br"] = "A durabilidade da ferramenta será exibida.",
 					["es"] = "Se muestra la durabilidad de las herramientas.",
 				},
@@ -4146,13 +4146,13 @@ local STRINGS = {
 	display_shelter_info = {
 		label = {
 			"Shelter Information", 
-			["zh"] = "Shelter Information", 
+			["zh"] = "遮蔽处信息", 
 			["br"] = "Informações do Abrigo", 
 			["es"] = "Información del refugio"
 		},
 		hover = {
 			"Whether to display shelter information.", 
-			["zh"] = "Whether to display shelter information.", 
+			["zh"] = "是否显示遮蔽处信息", 
 			["br"] = "Se exibe informações do abrigo.", 
 			["es"] = "Configura si se muestra información del refugio."
 		},
@@ -4160,13 +4160,13 @@ local STRINGS = {
 			[false] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"Shelter information is not shown.",
-					["zh"] = "Shelter information is not shown.",
+					["zh"] = "不显示遮蔽处信息",
 					["br"] = "As informações do abrigo não são mostradas.",
 					["es"] = "No se muestra información del refugio.",
 				},
@@ -4174,13 +4174,13 @@ local STRINGS = {
 			[true] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Shelter information is shown.",
-					["zh"] = "Shelter information is shown.",
+					["zh"] = "显示遮蔽处信息",
 					["br"] = "As informações do abrigo são mostradas.",
 					["es"] = "Se muestra información del refugio.",
 				},
@@ -4190,13 +4190,13 @@ local STRINGS = {
 	unique_info = {
 		label = {
 			"Unique Information", 
-			["zh"] = "Unique Information", 
+			["zh"] = "特定信息", 
 			["br"] = "Informações Únicas", 
 			["es"] = "Información única"
 		},
 		hover = {
 			"Whether to display unique information for certain entities.", 
-			["zh"] = "Whether to display unique information for certain entities.", 
+			["zh"] = "是否显示特定实体的特定信息", 
 			["br"] = "Se vai exibir informações exclusivas para determinadas entidades.", 
 			["es"] = "Configura si se muestra información única de ciertas entidades."
 		},
@@ -4204,13 +4204,13 @@ local STRINGS = {
 			[0] = {
 				description = {
 					"No",
-					["zh"] = "No",
+					["zh"] = "否",
 					["br"] = "Não",
 					["es"] = "Desactivado",
 				},
 				hover = {
 					"No unique information is shown.",
-					["zh"] = "No unique information is shown.",
+					["zh"] = "不显示特定信息",
 					["br"] = "Nenhuma informação exclusiva é mostrada",
 					["es"] = "No se muestra ninguna información única.",
 				},
@@ -4218,13 +4218,13 @@ local STRINGS = {
 			[1] = {
 				description = {
 					"Yes",
-					["zh"] = "Yes",
+					["zh"] = "是",
 					["br"] = "Sim",
 					["es"] = "Activado",
 				},
 				hover = {
 					"Unique information is shown.",
-					["zh"] = "Unique information is shown.",
+					["zh"] = "显示特定信息",
 					["br"] = "Informações exclusivas são mostradas.",
 					["es"] = "Se muestra información única.",
 				},
@@ -4466,7 +4466,7 @@ local STRINGS = {
 					["es"] = "La información está en vivo.",
 				},
 			},
-			["0_25"] = {
+			[0.25] = {
 				description = {
 					"0.25s",
 					["zh"] = "0.25秒",
@@ -4480,7 +4480,7 @@ local STRINGS = {
 					["es"] = "La información se actualiza cada 0,25 segundos.",
 				},
 			},
-			["0_5"] = {
+			[0.5] = {
 				description = {
 					"0.5s",
 					["zh"] = "0.5秒",
@@ -5685,8 +5685,8 @@ configuration_options = {
 			{data = true},
 			{data = 0},
 			--{data = 0.1},
-			{data = "0_25"},
-			{data = "0_5"},
+			{data = 0.25},
+			{data = 0.5},
 			{data = 1},
 			{data = 3},
 		},
