@@ -39,10 +39,12 @@ local function Describe(self, context)
 	local description = nil
 
 	local time_to_attack = nil
+	local warning = nil
 	
 	if IS_DST then
 		time_to_attack = self:GetTimeToAttack()
 		world_prefab = TheWorld.worldprefab
+		warning = self:GetWarning()
 	else
 		time_to_attack = self.timetoattack
 		world_prefab = GetWorld().prefab
@@ -59,6 +61,7 @@ local function Describe(self, context)
 		description = description,
 		icon = icons[world_prefab],
 		time_to_attack = time_to_attack,
+		warning = warning,
 		worldly = true
 	}
 end
@@ -90,7 +93,30 @@ local function StatusAnnoucementsDescribe(special_data, context)
 	}
 end
 
+local function DangerAnnouncementDescribe(special_data, context)
+	if not special_data.time_to_attack then
+		return
+	end
+
+	local time_string = context.time:SimpleProcess(special_data.time_to_attack, "realtime")
+	
+	local world_prefab = (IS_DST and TheWorld.worldprefab) or GetWorld().prefab
+	local attack_type = (world_prefab == "forest" and context.lstr.hounded.time_until_hounds) or 
+		(world_prefab == "cave" and context.lstr.hounded.time_until_worms) or 
+		nil
+
+	if not attack_type then
+		return
+	end
+	
+	return string.format(
+		attack_type, 
+		time_string
+	)
+end
+
 return {
 	Describe = Describe,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
+	DangerAnnouncementDescribe = DangerAnnouncementDescribe
 }

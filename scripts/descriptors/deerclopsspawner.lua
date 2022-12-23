@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- deerclopsspawner.lua [Worldly]
+local filename = debug.getinfo(1, "S").source:match("([%w_]+)%.lua$")
+
 local DEERCLOPS_TIMERNAME
 local function GetDeerclopsData(self)
 	if DEERCLOPS_TIMERNAME == false then
@@ -29,15 +31,17 @@ local function GetDeerclopsData(self)
 		return {}
 	end
 
+	local save_data = self:OnSave()
+
 	local time_to_attack
 	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 		if DEERCLOPS_TIMERNAME == nil then
-			--DEERCLOPS_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME"), "Unable to find \"DEERCLOPS_TIMERNAME\"") --"deerclops_timetoattack"
-			DEERCLOPS_TIMERNAME = util.recursive_getupvalue(TheWorld.components.deerclopsspawner.GetDebugString, "DEERCLOPS_TIMERNAME") or false
+			--DEERCLOPS_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components[filename].GetDebugString, "DEERCLOPS_TIMERNAME"), "Unable to find \"DEERCLOPS_TIMERNAME\"") --"deerclops_timetoattack"
+			DEERCLOPS_TIMERNAME = util.recursive_getupvalue(TheWorld.components[filename].GetDebugString, "DEERCLOPS_TIMERNAME") or false
 		end
 		time_to_attack = TheWorld.components.worldsettingstimer:GetTimeLeft(DEERCLOPS_TIMERNAME)
 	else
-		time_to_attack = self:OnSave().timetoattack
+		time_to_attack = save_data.timetoattack
 	end
 
 	local target = util.getupvalue(self.OnUpdate, "_targetplayer")
@@ -52,7 +56,8 @@ local function GetDeerclopsData(self)
 
 	return {
 		time_to_attack = time_to_attack,
-		target = target
+		target = target,
+		warning = save_data.warning,
 	}
 end
 
@@ -100,7 +105,8 @@ local function Describe(self, context)
 		},
 		worldly = true,
 		time_to_attack = data.time_to_attack,
-		target_userid = data.target and data.target.userid or nil
+		target_userid = data.target and data.target.userid or nil,
+		warning = data.warning,
 	}
 end
 
@@ -113,7 +119,6 @@ local function StatusAnnoucementsDescribe(special_data, context)
 	local target = special_data.target_userid and TheNet:GetClientTableForUser(special_data.target_userid)
 
 	if target then
-		-- Bearger is targetting someone
 		description = ProcessRichTextPlainly(string.format(
 			context.lstr.deerclopsspawner.announce_deerclops_target,
 			target.name,
@@ -127,14 +132,40 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		))
 	end
 
-	return {
+return {
 		description = description,
 		append = true
 	}
 end
 
+local function DangerAnnouncementDescribe(special_data, context)
+	-- Funny enough, very similar to logic for status announcements and normal descriptor.
+	-- Gets repetitive.
+	if not special_data.time_to_attack then
+		return
+	end
+
+	local description
+	local client_table = TheNet:GetClientTableForUser(special_data.target_userid)
+	local time_string = context.time:SimpleProcess(special_data.time_to_attack, "realtime")
+	
+	if not client_table then
+		description = string.format(context.lstr[filename].deerclops_attack, time_string)
+	else
+		description = string.format(
+			context.lstr[filename].announce_deerclops_target, 
+			client_table.name, 
+			client_table.prefab, 
+			time_string
+		)
+	end
+
+	return description, "boss"
+end
+
 return {
 	Describe = Describe,
 	GetDeerclopsData = GetDeerclopsData,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
+	DangerAnnouncementDescribe = DangerAnnouncementDescribe,
 }

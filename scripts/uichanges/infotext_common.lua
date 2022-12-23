@@ -30,7 +30,7 @@ local module = {
 
 module.Initialize = function()
 	if module.initialized then
-		--errorf("Cannot initialize %s more than once.", debug.getinfo(1, "S"):match("([%w_]+)%.lua$"))
+		--errorf("Cannot initialize %s more than once.", debug.getinfo(1, "S").source:match("([%w_]+)%.lua$"))
 		return module
 	end
 

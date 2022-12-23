@@ -19,22 +19,25 @@ directory. If not, please refer to
 ]]
 
 -- beargerspawner.lua [Worldly]
+local filename = debug.getinfo(1, "S").source:match("([%w_]+)%.lua$")
+
 local BEARGER_TIMERNAME
 local function GetBeargerData(self)
 	if not self.inst.updatecomponents[self] then
 		return {}
 	end
 
-	local time_to_attack
+	local save_data = self:OnSave()
 
+	local time_to_attack
 	if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
 		if BEARGER_TIMERNAME == nil then
-			BEARGER_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components.beargerspawner.GetDebugString, "BEARGER_TIMERNAME"), "Unable to find \"BEARGER_TIMERNAME\"") --"bearger_timetospawn"
+			BEARGER_TIMERNAME = assert(util.recursive_getupvalue(TheWorld.components[filename].GetDebugString, "BEARGER_TIMERNAME"), "Unable to find \"BEARGER_TIMERNAME\"") --"bearger_timetospawn"
 		end
 
 		time_to_attack = TheWorld.components.worldsettingstimer:GetTimeLeft(BEARGER_TIMERNAME)
 	else
-		time_to_attack = self:OnSave().timetospawn
+		time_to_attack = save_data.timetospawn
 	end
 	
 	if not (time_to_attack and time_to_attack > 0) then
@@ -53,7 +56,8 @@ local function GetBeargerData(self)
 
 	return {
 		time_to_attack = time_to_attack,
-		target = target
+		target = target,
+		warning = save_data.warning
 	}
 end
 
@@ -101,7 +105,8 @@ local function Describe(self, context)
 		},
 		worldly = true,
 		time_to_attack = data.time_to_attack,
-		target_userid = data.target and data.target.userid or nil
+		target_userid = data.target and data.target.userid or nil,
+		warning = data.warning,
 	}
 end
 
@@ -134,8 +139,36 @@ local function StatusAnnoucementsDescribe(special_data, context)
 	}
 end
 
+
+local function DangerAnnouncementDescribe(special_data, context)
+	-- Funny enough, very similar to logic for status announcements and normal descriptor.
+	-- Gets repetitive.
+	if not special_data.time_to_attack then
+		return
+	end
+
+	local description
+	local client_table = TheNet:GetClientTableForUser(special_data.target_userid)
+	local time_string = context.time:SimpleProcess(special_data.time_to_attack, "realtime")
+
+	if not client_table then
+		description = string.format(context.lstr[filename].bearger_attack, time_string)
+	else
+		description = string.format(
+			context.lstr[filename].announce_bearger_target, 
+			client_table.name, 
+			client_table.prefab, 
+			time_string
+		)
+	end
+
+	return description, "boss"
+end
+
+
 return {
 	Describe = Describe,
 	GetBeargerData = GetBeargerData,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
+	DangerAnnouncementDescribe = DangerAnnouncementDescribe,
 }

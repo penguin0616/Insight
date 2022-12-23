@@ -84,6 +84,12 @@ return {
 		},
 	},
 
+	-- Danger Announcements
+	danger_announcement = {
+		generic = "[Danger Announcement]: ",
+		boss = "[Boss Announcement]: ",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 
 	-- alterguardianhat.lua [Prefab]

@@ -736,14 +736,14 @@ local function hex_dump(buf)
 		buf = string.dump(buf)
 	end
 
-    local s = ""
-    for i = 1, math.ceil(#buf/16) * 16 do
-        if (i-1) % 16 == 0 then s = s .. ("%08X "):format(i-1) end
-        s = s .. ( i > #buf and "   " or ("%02X "):format(buf:byte(i)) )
-        if i %  8 == 0 then s = s .. " " end
-        if i % 16 == 0 then s = s .. buf:sub(i-16+1, i):gsub("%c",".") .. "\n" end
-    end
-    return s
+	local s = ""
+	for i = 1, math.ceil(#buf/16) * 16 do
+		if (i-1) % 16 == 0 then s = s .. ("%08X "):format(i-1) end
+		s = s .. ( i > #buf and "   " or ("%02X "):format(buf:byte(i)) )
+		if i %  8 == 0 then s = s .. " " end
+		if i % 16 == 0 then s = s .. buf:sub(i-16+1, i):gsub("%c",".") .. "\n" end
+	end
+	return s
 end
 
 --- Returns a component descriptor. 
@@ -1194,7 +1194,7 @@ function GetWorldInformation(player) -- refactor?
 		data.special_data[i].worldly = true
 	end
 
-	
+	--[[
 	for i = 1, 7 do
 		local x = "test" .. i
 		data.special_data[x] = { 
@@ -1206,6 +1206,7 @@ function GetWorldInformation(player) -- refactor?
 		}
 		data.raw_information[x] = x
 	end
+	--]]
 	
 
 	if GetWorldType() >= 2 then
@@ -1765,6 +1766,44 @@ end
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 util = import("util")
 language = import("language/language")
+if IS_DST then 
+	local image = { atlas="images/Insight_Announcement.xml", texture="Insight_Announcement.tex" }
+	ANNOUNCEMENT_ICONS.insight = image
+
+	-- I'm not sure what looks worse!
+	local templates = require("widgets/redux/templates")
+	local oldAnnouncementBadge = templates.AnnouncementBadge
+	templates.AnnouncementBadge = function()
+		local wdgt = oldAnnouncementBadge()
+		
+		local old = wdgt.SetAnnouncement
+		wdgt.SetAnnouncement = function(self, announcement)
+			if announcement == "insight" then
+				wdgt.bg:Hide()
+			end
+
+			return old(self, announcement)
+		end
+
+		return wdgt
+	end
+
+	-- This is a bit funky. I wonder if I should just hook templates instead.
+	--[[
+	ANNOUNCEMENT_ICONS.insight = setmetatable({}, {
+		__index = function(self, index)
+			if index == "atlas" then
+				local announcement = util.getlocal(2, "self")
+				if announcement and tostring(announcement) == "chat announcement badge" then
+					announcement.bg:Hide()
+				end
+			end
+
+			return image[index]
+		end
+	})
+	--]]
+end
 
 patcher = { _common=import("ds_patches/patcher_common"), _to_load = {"input", "frontend", "widget", "screen", "spinner", "button", "imagebutton", "text"} }
 for i,v in pairs(patcher._to_load) do

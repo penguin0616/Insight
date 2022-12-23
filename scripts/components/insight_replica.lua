@@ -189,7 +189,7 @@ local Insight = Class(function(self, inst)
 	self.entity_request_queue = {}
 
 	self.hunt_target = nil
-	self.tracked_entities = {}
+	self.danger_notification_data = {}
 	self.pipspook_toys = {}
 	self.pipspook_queue = setmetatable({}, { __mode="v" })
 	
@@ -214,8 +214,8 @@ local Insight = Class(function(self, inst)
 			end
 		elseif self.classified == nil and inst.insight_classified ~= nil then
 			self:AttachClassified(inst.insight_classified)
-        	inst.insight_classified.OnRemoveEntity = nil
-        	inst.insight_classified = nil
+			inst.insight_classified.OnRemoveEntity = nil
+			inst.insight_classified = nil
 		end
 	end
 end)
@@ -223,17 +223,17 @@ end)
 function Insight:OnRemoveFromEntity()
 	mprint("Insight Replica removed")
 	if self.classified ~= nil then
-        if TheWorld.ismastersim then
-            self.classified = nil
+		if TheWorld.ismastersim then
+			self.classified = nil
 
 			if IS_CLIENT_HOST then
 				self:KillIndicators()
 			end
-        else
+		else
 			self.classified:RemoveEventCallback("onremove", self.ondetachclassified)
-            self:DetachClassified()
-        end
-    end
+			self:DetachClassified()
+		end
+	end
 end
 
 --------------------------------------------------------------------------
@@ -493,7 +493,7 @@ function Insight:BeginUpdateLoop()
 
 	-- self.inst:StartUpdatingComponent(self)
 	-- hud was sometimes missing in OnUpdate
-	self.update_task = self.inst:DoPeriodicTask(1, function(inst)
+	self.update_task = self.inst:DoPeriodicTask(8/10, function(inst)
 		self:Update()
 		if self.performance_ratings then
 			self.performance_ratings:Refresh()
@@ -1068,8 +1068,31 @@ function Insight:Update()
 		end	
 	end
 
-	if IS_DST then
-		--rpcNetwork.SendModRPCToServer(GetModRPC(modname, "GetShardPlayers"))
+	if IS_DST and world_data then
+		for component, special_data in pairs(world_data.special_data) do
+			-- Check if this is a boss spawner.
+			if special_data and _G.Insight.descriptors[component] and _G.Insight.descriptors[component].DangerAnnouncementDescribe then
+				-- Register the component in the notification data table
+				local noti_data = self.danger_notification_data[component]
+				if not self.danger_notification_data[component] then
+					noti_data = {}
+					self.danger_notification_data[component] = noti_data
+				end
+
+				-- Check if warning is different than the saved warning (which may not exist, but counts as 'false')
+				if special_data.warning and noti_data.warning ~= special_data.warning then
+					-- We've newly entered the warning phase.
+					local str, typ = _G.Insight.descriptors[component].DangerAnnouncementDescribe(special_data, self.context)
+					if str then
+						local dangertype = typ and self.context.lstr.danger_announcement[typ] or self.context.lstr.danger_announcement.generic
+						str = dangertype .. ProcessRichTextPlainly(str)
+						local a = ChatHistory:AddToHistory(ChatTypes.Announcement, nil, nil, "InsightServer", str, WHITE, "insight", nil, true)
+					end
+				end
+
+				noti_data.warning = special_data.warning
+			end
+		end
 	end
 	
 	-- inventory

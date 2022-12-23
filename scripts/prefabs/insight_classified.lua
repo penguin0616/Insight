@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- Init
 setfenv(1, _G.Insight.env)
---local CLASSIFIED_NAME = "insight_classified" or debug.getinfo(1, "S"):match("([%w_]+)%.lua$")
+--local CLASSIFIED_NAME = "insight_classified" or debug.getinfo(1, "S").source:match("([%w_]+)%.lua$")
 
 --------------------------------------------------------------------------
 --[[ Stuff ]]
