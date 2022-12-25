@@ -57,30 +57,20 @@ forge_compatible = true
 server_filter_tags = {"insight_" .. version}
 forcemanifest = false -- TODO: REMOVE THIS
 
---[[
-	removing label from options
-	[\n\t]*label = [T]*"[\w\s]+",
-
-	removing hover from options
-	[\n\t]*hover = .+",
-
-	removing description from options
-	\{description = "[^"]+",\s+
-
-	removing hover from options
-	, \s*hover\s*=\s*"[^"]+"\},
-
-	for i,data in pairs(configuration_options) do
-		print(string.format("%s = \"%s\",", data.name, data.label))
-		local  "\\\"")
-		print(string.format("%s_ data.name, hover))
-	end
-
-]]
-
---==========================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
 --[[ Some Functions ]]
---==========================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
+local HasTag
+
+-- from stringutil.lua
+local function subfmt(s, tab)
+	return (s:gsub('(%b{})', function(w) return tab[w:sub(2, -2)] or w end))
+end
+
 local string_format = name.format
 local string_match = name.match
 local string_gmatch = name.gmatch
@@ -100,6 +90,104 @@ local function tostring(arg)
 	end
 
 	return arg .. ""
+end
+
+local function T(tbl, key)
+	if locale and ChooseTranslationTable then
+		return ChooseTranslationTable(tbl, key)
+	else
+		return tbl[1]
+	end
+	--return GetTranslation
+end
+
+local function AddConfigurationOptionStrings(entry)
+	--entry.label = T(entry.name .. ".LABEL")
+	entry.label = T(STRINGS[entry.name].label)
+	--entry.hover = T(entry.name .. ".HOVER")
+	entry.hover = T(STRINGS[entry.name].hover)
+
+	if HasTag(entry, "dynamic_option_strings") then
+		STRINGS[entry.name].options = STRINGS[entry.name].options(entry)
+	end
+
+	for j = 1, #entry.options do
+		local option = entry.options[j]
+		--option.description = T(string_format("%s.OPTIONS.%s.DESCRIPTION", entry.name, tostring(option.data)))
+		local dsc = STRINGS[entry.name].options[option.data].description
+		option.description = dsc and T(dsc) or nil
+		
+		--option.hover = T(string_format("%s.OPTIONS.%s.HOVER", entry.name, tostring(option.data)))
+		local hvr = STRINGS[entry.name].options[option.data].hover
+		option.hover = hvr and T(hvr) or nil
+	end
+end
+
+local function AddSectionTitle(title) -- 100% stole this idea from ReForged. Didn't know this was possible!
+	if IsDST then
+		return {
+			name = title:upper(), -- avoid conflicts
+			label = title, 
+			options = {{description = "", data = 0}},
+			default = 0,
+			tags = {"ignore"},
+		}
+	else
+		return {
+			-- the _ is processed by the insightconfigurationscreen for DS sectionheaders.
+			_ = {
+				name = title:upper(),
+				label = title, 
+				options = {{description = "", data = 0}},
+				default = 0,
+			},
+			tags = {"ignore"}
+		}
+	end
+end
+
+local function GetDefaultSetting(entry)
+	-- the "error messages" are to prevent hypothetical crashing on startup if I make grevious errors
+
+	if not entry then
+		local msg = "MAJOR ERROR. ENTRY IS NIL. PLEASE REPORT TO MOD CREATOR."
+		return { description = msg, data = false, hover = msg}
+	end
+
+	for i = 1, #entry.options do
+		if entry.options[i].data == entry.default then
+			return entry.options[i]
+		end
+	end
+
+	local msg = "[DEFAULT???]: \n" .. entry.name .. "|" .. tostring(entry.default)
+	return { description = msg, data = false, hover = msg}
+end
+
+local function GetConfigurationOptionByName(name)
+	for i = 1, #configuration_options do
+		local v = configuration_options[i]
+		if v.name == name then
+			return v
+		end
+	end
+end
+
+function HasTag(entry, tag) -- Localized above
+	if entry.tags then
+		for i = 1, #entry.tags do
+			if entry.tags[i] == tag then
+				return true
+			end
+		end
+	end
+end
+
+local function table_remove(tbl, index) -- it worked first try wow nice job me.
+	tbl[index] = nil
+	for i = index, #tbl do
+		tbl[i] = tbl[i + 1]
+	end
 end
 
 --==========================================================================================
@@ -129,6 +217,13 @@ local function GenerateFontSizeOptions(which)
 	return t
 end
 
+--====================================================================================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
+--[[ Strings ]] 
+--====================================================================================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
 
 STRINGS = {
 	--==========================================================================================
@@ -238,6 +333,34 @@ STRINGS = {
 		["zh"] = "调试",
 		["br"] = "Debugging",
 		["es"] = "Depuración",
+	},
+	--==========================================================================================
+	--[[ Complex Configuration Options ]]
+	--==========================================================================================
+	notable_indicator_prefabs = {
+		label = {
+			"Notable Indicator Prefabs", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		hover = {
+			"Enabled notable indicator prefabs.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		options = function(config)
+			local t = {} 
+			for i = 1, #config.options do
+				local v = config.options[i]
+				t[v.data] = {
+					description = {"<prefab=" .. v.data .. ">"},
+					hover = nil,
+				}
+			end
+			return t
+		end,
 	},
 	--==========================================================================================
 	--[[ Configuration Options ]]
@@ -4750,6 +4873,7 @@ STRINGS = {
 }
 
 
+
 --=============================================================================================================================================================================================================================================
 --=================================================== DO NOT TRANSLATE PAST THIS LINE =========================================================================================================================================================
 --=================================================== DO NOT TRANSLATE PAST THIS LINE =========================================================================================================================================================
@@ -4760,29 +4884,6 @@ STRINGS = {
 --=================================================== DO NOT TRANSLATE PAST THIS LINE =========================================================================================================================================================
 --=============================================================================================================================================================================================================================================
 
-local function T(tbl, key)
-	if locale and ChooseTranslationTable then
-		return ChooseTranslationTable(tbl, key)
-	else
-		return tbl[1]
-	end
-	--return GetTranslation
-end
---[[
-description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
-	--locale or "?", tostring(folder_name), tostring(IsDST),
-	locale or T"ds_not_enabled", 
-	T"mod_explanation", 
-	T"config_disclaimer", 
-
-	T"version", version, 
-	T"latest_update", (IsDST and T"update_info" or T"update_info_ds"), 
-
-	T"crashreporter_info",
-
-	(IsDST and T"config_paths" or "")
-)
---]]
 description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s", 
 	--locale or "?", tostring(folder_name), tostring(IsDST),
 	(locale) or T(STRINGS["ds_not_enabled"]), 
@@ -4797,29 +4898,6 @@ description = string_format("[%s] %s\n%s\n%s: %s\n%s: %s\n%s\n%s",
 	(IsDST and T(STRINGS["config_paths"]) or "")
 )
 
--- Functions
-local function AddSectionTitle(title) -- 100% stole this idea from ReForged. Didn't know this was possible!
-	if IsDST then
-		return {
-			name = title:upper(), -- avoid conflicts
-			label = title, 
-			options = {{description = "", data = 0}},
-			default = 0,
-			tags = {"ignore"},
-		}
-	else
-		return {
-			-- the _ is processed by the insightconfigurationscreen for DS sectionheaders.
-			_ = {
-				name = title:upper(),
-				label = title, 
-				options = {{description = "", data = 0}},
-				default = 0,
-			},
-			tags = {"ignore"}
-		}
-	end
-end
 
 configuration_options = {
 	AddSectionTitle(T(STRINGS["sectiontitle_formatting"])),
@@ -5744,69 +5822,52 @@ configuration_options = {
 	}
 }
 
-local function GetDefaultSetting(entry)
-	-- the "error messages" are to prevent hypothetical crashing on startup if I make grevious errors
+complex_configuration_options = {
+	AddSectionTitle("test"),
+	{
+		name = "notable_indicator_prefabs", -- name of option -- header for option in dst
+		options = {
+			{data = "chester_eyebone"},
+			{data = "hutch_fishbowl"},
+			{data = "atrium_key"},
+			{data = "klaus_sack"},
+			{data = "gingerbreadpig"},
+		}, 
+		default = {"chester_eyebone", "hutch_fishbowl", "atrium_key", "klaus_sack", "gingerbreadpig"},
+		config_type = "listbox",
+		client = true,
+		tags = {"dynamic_option_strings", "richtext"},
+	},
+}
 
-	if not entry then
-		local msg = "MAJOR ERROR. ENTRY IS NIL. PLEASE REPORT TO MOD CREATOR."
-		return { description = msg, data = false, hover = msg}
-	end
-
-	for i = 1, #entry.options do
-		if entry.options[i].data == entry.default then
-			return entry.options[i]
-		end
-	end
-
-	local msg = "[DEFAULT???]: \n" .. entry.name .. "|" .. tostring(entry.default)
-	return { description = msg, data = false, hover = msg}
+complex_configuration_options_map = {}
+for i = 1, #complex_configuration_options do
+	local v = complex_configuration_options[i]
+	complex_configuration_options_map[v.name] = v
 end
 
-local function GetOption(name)
-	for i = 1, #configuration_options do
-		local v = configuration_options[i]
-		if v.name == name then
-			return v
-		end
-	end
-end
 
-local function HasTag(entry, tag)
-	if entry.tags then
-		for i = 1, #entry.tags do
-			if entry.tags[i] == tag then
-				return true
-			end
-		end
-	end
-end
-
-local function table_remove(tbl, index) -- it worked first try wow nice job me.
-	tbl[index] = nil
-	for i = index, #tbl do
-		tbl[i] = tbl[i + 1]
-	end
-end
+--====================================================================================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
+--[[ Finalize Options ]] 
+--====================================================================================================================================================
+--====================================================================================================================================================
+--====================================================================================================================================================
 
 for i = 1, #configuration_options do
 	local entry = configuration_options[i]
 	
 	if not HasTag(entry, "ignore") then 
-		--entry.label = T(entry.name .. ".LABEL")
-		entry.label = T(STRINGS[entry.name].label)
-		--entry.hover = T(entry.name .. ".HOVER")
-		entry.hover = T(STRINGS[entry.name].hover)
+		AddConfigurationOptionStrings(entry)
+	end
+end
 
-		for j = 1, #entry.options do
-			local option = entry.options[j]
-			--option.description = T(string_format("%s.OPTIONS.%s.DESCRIPTION", entry.name, tostring(option.data)))
-			local dsc = STRINGS[entry.name].options[option.data].description
-			option.description = dsc and T(dsc) or nil
-			
-			--option.hover = T(string_format("%s.OPTIONS.%s.HOVER", entry.name, tostring(option.data)))
-			local hvr = STRINGS[entry.name].options[option.data].hover
-			option.hover = hvr and T(hvr) or nil
-		end
+for i = 1, #complex_configuration_options do
+	local entry = complex_configuration_options[i]
+	
+	if not HasTag(entry, "ignore") then 
+		AddConfigurationOptionStrings(entry)
 	end
 end
 
@@ -5828,8 +5889,6 @@ if IsDST then
 			entry.default = "undefined"
 			entry.options[#entry.options+1] = { description = T(STRINGS["undefined"]), data = "undefined", hover = T(STRINGS["undefined_description"]) .. default.description}
 		end
-
-		--v.options[#v.options+1] = { description = "Undefined" , data = "undefined", hover = "Default: " .. default.description }
 	end
 else
 	local i = 1

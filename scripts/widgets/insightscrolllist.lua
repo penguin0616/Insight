@@ -68,6 +68,11 @@ local InsightScrollList = Class(Widget, function(self, data)
 	self.item_height = assert(data.widget_height, "Missing widget_height")
 	self.num_visible_rows = assert(data.num_visible_rows, "Missing num_visible_rows")
 	self.row_padding = data.row_padding or 0
+	self.display_scroll_bar = true
+	self.scroller_data = data.scroller_data or {}
+	if data.display_scroll_bar ~= nil then
+		self.display_scroll_bar = data.display_scroll_bar
+	end
 	
 	self.controller_scheme = controlHelper.controller_scheme --controlHelper.GetScheme("controller")
 	
@@ -119,52 +124,25 @@ local InsightScrollList = Class(Widget, function(self, data)
 	end
 	
 	self:BuildListItems()
-	self:BuildScrollBar()
+	if self.display_scroll_bar then
+		self:BuildScrollBar()
+	end
 	self:SetItemsData(nil)
 
-	self.focus_forward = self.list_root
+	--self.focus_forward = self.list_root
 
 	self:StartUpdating()
 end)
-
---[[
-function InsightScrollList:OnGainFocus()
-	mprint("InsightScrollList ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ GOT FOCUS")
-end
-
-function InsightScrollList:OnLoseFocus()
-	print(debugstack())
-	mprint("InsightScrollList ---------------------------------------------------------------------------------------------------------------- LOST FOCUS")
-end
---]]
 
 function InsightScrollList:BuildListItems()
 	self.list_root:KillAllChildren()
 	self.item_widgets = {}
 
-	--[[
-	local _, y = self.container:GetSize()
-	local free_space = y - (self.display_rows * item_height)
-	assert(free_space >= 0, "[Insight]: free space is not 0?")
-
-	local widget = self.container:AddChild(ItemDetail({width = item_width, height = item_height}))
-
-	local offset = item_height-- + (free_space / self.display_rows)
-
-	local padding = free_space / self.display_rows
-
 	-- negative = down
 	-- positive =  up
-	local base_pos = y/2 - item_height/2 + padding/2
 
-	widget:SetPosition(0, base_pos + offset - ((padding + offset) * i-1))
-
-	table.insert(self.rows, widget)
-	]]
 	--local est_height = self.item_height * self.num_visible_rows + (self.row_padding * (self.num_visible_rows-1))
 	local est_height = self._height
-
-	-- 3, 1, 6, 2 is the display order
 
 	for i = 1, self.num_visible_rows do
 		local w = self.list_root:AddChild(self.item_ctor_fn(self.context, i))
@@ -185,9 +163,8 @@ function InsightScrollList:BuildListItems()
 
 		pos = pos - self.row_padding * (i - 1)
 
-
-		w:SetPosition(0, pos)
-		
+		local current_pos = w:GetPosition()
+		w:SetPosition(current_pos.x, pos)
 		
 		self.item_widgets[i] = w
 	end
@@ -196,17 +173,19 @@ end
 function InsightScrollList:BuildScrollBar()
 	if self.scroll_bar_container then
 		self.scroll_bar_container:Kill()
+		self.scroll_bar_container = nil
 	end
 
-	
-	local target_width = 20
+	local target_width = self.scroller_data.width or 20
 	local target_height = target_width
 	
-	local scroller_width = target_width
-	local scroller_height = self._height
+	--local scroller_width = target_width
+	local scroller_height = self.scroller_data.height or self._height
 
-	self.scroll_bar_container = self:AddChild(Widget("scroll-bar-container"))
-	self.scroll_bar_container:SetPosition(self._width/2 + scroller_width/2 + 5, 0)
+	local offset = self.scroller_data.position_offset or {target_width/2 + 5, 0}
+
+	self.scroll_bar_container = self:AddChild(Widget("scroll_bar_container"))
+	self.scroll_bar_container:SetPosition(self._width/2 + offset[1], offset[2])
 
 	self.up_button = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_arrow_up.tex"))
 	local button_width, button_height = self.up_button:GetSize() -- Actual size of the tex
@@ -234,14 +213,14 @@ function InsightScrollList:BuildScrollBar()
 	self.scroll_bar_line:SetPosition(0, 0)
 	self.scroll_bar_height = select(2, self.scroll_bar_line:GetSize())
 	
-	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_handle.tex"))
+	self.position_marker = self.scroll_bar_container:AddChild(ImageButton("images/dst/global_redux.xml", "scrollbar_handle.tex")) -- ~(60, 57)
 	-- Trying to scale this like the buttons has some issue where it never reverts back to normal scale.
 	self.position_marker.scale_on_focus = false
 	self.position_marker.move_on_click = false
 	--patcher.imagebutton.Patch(self.position_marker)
 	--self.position_marker:InsightOverrideFocuses()
 	--self.position_marker:ForceImageSize(target_width, target_height)
-	self.position_marker:SetScale(0.3, 0.3, 1)
+	self.position_marker:SetScale(target_width/60, target_width/57 , 1)
 
 	self.position_marker:SetOnDown(function()
 		TheFrontEnd:LockFocus(true)
@@ -341,7 +320,8 @@ function InsightScrollList:DoDragScroll()
 end
 
 function InsightScrollList:CanScroll()
-	return self.end_scroll_pos > self.num_visible_rows
+	--return self.end_scroll_pos > self.num_visible_rows
+	return self.end_scroll_pos > 0
 end
 
 function InsightScrollList:ConvertScrollPosToPixels(pos)
@@ -391,10 +371,9 @@ function InsightScrollList:RefreshView()
 	--self.displayed_last_index = row_index + self.num_visible_rows
 
 	for i = 1, self.num_visible_rows do
-		self.item_update_fn(self.context, self.item_widgets[i], self.items[row_index + i])
+		self.item_update_fn(self.context, self.item_widgets[i], self.items[row_index + i], row_index + i)
 		if self.focused_item_index and self.focused_item_index == self.displayed_start_index + i then 
 			if self:GetParentScreen() == TheFrontEnd:GetActiveScreen() then
-				--mprint("wagh", self.items[self.focused_item_index].label, self.item_widgets[i])
 				self.item_widgets[i]:SetFocus()
 			end
 		end
@@ -402,11 +381,15 @@ function InsightScrollList:RefreshView()
 
 	--print(self.num_items, self.end_scroll_pos, self:CanScroll())
 	if self:CanScroll() then
-		self.scroll_bar_container:Show()
-		local pos = self:ConvertScrollPosToPixels(row_index)
-		self.position_marker:SetPosition(0, pos)
+		if self.scroll_bar_container then
+			self.scroll_bar_container:Show()
+			local pos = self:ConvertScrollPosToPixels(row_index)
+			self.position_marker:SetPosition(0, pos)
+		end
 	else
-		self.scroll_bar_container:Hide()
+		if self.scroll_bar_container then
+			self.scroll_bar_container:Hide()
+		end
 	end
 end
 
@@ -509,6 +492,39 @@ function InsightScrollList:OnUpdate(dt)
 	end
 end
 
+function InsightScrollList:OnGainFocus()
+	-- I'm experimenting with trying to get focus to the first item to happen automatically in a safe way.
+	--mprint(self.name, "OnGainFocus ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	
+	--[[
+	mprint(debugstack())
+	self.focused_item_index = 1
+	if self.item_widgets[self.focused_item_index] then
+		self.focus_forward = self.item_widgets[self.focused_item_index]
+	end
+	--]]
+
+	self._base.OnGainFocus(self)
+end
+
+function InsightScrollList:OnLoseFocus()
+	--mprint(self.name, "OnLoseFocus ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	--mprint(debugstack())
+	return self._base.OnLoseFocus(self)
+end
+
+function InsightScrollList:ResetView(focused_item_index)
+	if self.item_widgets[self.focused_widget_index] then
+		self.item_widgets[self.focused_widget_index]:ClearFocus()
+	end
+
+	self.focused_widget_index = 0
+	self.current_scroll_pos = 0
+	self.target_scroll_pos = 0
+
+	self:RefreshView()
+end
+
 function InsightScrollList:GetFocusedItemIndex()
 	return self.displayed_start_index + self.focused_widget_index
 end
@@ -527,6 +543,7 @@ function InsightScrollList:ForceItemFocus(itemindex)
 	self.focused_item_index = itemindex
 end
 
+-- If you can't scroll past the first widget, make sure you're calling OnWidgetFocus.
 function InsightScrollList:GetNextWidget(dir)
 	local focused_item_index = self.focused_item_index or self:GetFocusedItemIndex()
 	local next_item_index = self.getnextitemindex(dir, focused_item_index) 
@@ -539,19 +556,11 @@ function InsightScrollList:GetNextWidget(dir)
 		local max_displayed_index = self.displayed_start_index + self.num_visible_rows
 		--[[
 		mprintf(
-			"\nnext: %s, next (item): %s, \ndisplayed_start: %s, displayed_start (item): %s,\ndisplayed_last: %s, displayed_last (item): %s\nmaximum: %s", 
-			next_item_index, 
-			tostring(self.items[next_item_index].label), 
-
-			self.displayed_start_index,
-			self.items[self.displayed_start_index] and self.items[self.displayed_start_index].label or nil, 
-			self.displayed_last_index, 
-			self.items[self.displayed_last_index] and self.items[self.displayed_last_index].label or nil,
-			max_displayed_index
+			"\nnext: %s, next (item): %s, \nself.focused_item_index: %s, GetFocusedItemIndex: %s", 
+			next_item_index, tostring(self.items[next_item_index]), 
+			self.focused_item_index, self:GetFocusedItemIndex()
 		)
-		--]]
-
-
+	--]]
 		if next_item_index <= self.displayed_start_index then
 			--dprint("@@@@@@ Gotta scroll back")
 			scrolled = true
@@ -561,6 +570,7 @@ function InsightScrollList:GetNextWidget(dir)
 			scrolled = true
 			self:Scroll(1)
 		end
+
 			-- We have to scroll.
 			--local delta = (next_item_index > max_displayed_index and 1) or -1
 			--self.current_scroll_pos = self.current_scroll_pos + delta
@@ -575,24 +585,26 @@ function InsightScrollList:GetNextWidget(dir)
 		
 		return scrolled
 	else
-		
+		--dprint("missing next!!")
 	end
 
 	return scrolled
 end
 
 function InsightScrollList:OnFocusMove(dir, down)
+	if InsightScrollList._base.OnFocusMove(self, dir, down) then return true end
 	--rawset(_G, "s", self)
 	-- down is always true
-	--mprint("OnFocusMove", dir, down)
+	--mprint(self.name .. " OnFocusMove", dir, down)
 	
 	if dir == MOVE_UP or dir == MOVE_DOWN then
 		local had_to_scroll = self:GetNextWidget(dir)
 		if had_to_scroll then
 			return had_to_scroll
 		end
-	end
+	end 
 
+	--[[
 	local prev_focus = self.item_widgets[self.focused_widget_index]
     local did_parent_move = InsightScrollList._base.OnFocusMove(self, dir, down)
     if prev_focus and did_parent_move then
@@ -605,11 +617,13 @@ function InsightScrollList:OnFocusMove(dir, down)
     end
 
 	return did_parent_move
+	--]]
 end
 
 function InsightScrollList:OnControl(control, down)
+	--mprint('yes')
 	if InsightScrollList._base.OnControl(self, control, down) then return true end
-	mprint("InsightScrollList", controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
+	--dprint(self.name, controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
 	--[[
 	This was happening too.
 	CONTROL_ZOOM_IN = 9
@@ -644,7 +658,6 @@ function InsightScrollList:OnControl(control, down)
 			end
 		end
 	end
-
 	--mprint("Failed ALL:", controlHelper.Prettify(control), down, self.focus, self:CanScroll())
 end
 

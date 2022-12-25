@@ -444,20 +444,21 @@ local CONTEXT_META = {
 -- @tparam table config Insight configuration.
 -- @tparam table external_config Configuration from client mods.
 -- @tparam table etc
-function CreatePlayerContext(player, config, external_config, etc)
+function CreatePlayerContext(player, configs, etc)
 	assert(player, "[Insight]: Player is missing!")
-	assert(config, "[Insight]: Config is missing!")
-	assert(external_config, "[Insight]: External_config is missing!")
-
+	assert(configs.vanilla, "[Insight]: Config is missing!")
+	assert(configs.external, "[Insight]: external config is missing!")
+	assert(configs.complex, "[Insight]: complex config is missing!")
 	
 
 	local context = {
 		player = player,
-		config = config,
-		external_config = external_config,
+		config = configs.vanilla,
+		external_config = configs.external,
+		complex_config = configs.complex,
 		time = nil,
-		usingIcons = config["info_style"] == "icon",
-		lstr = language(config, etc.locale),
+		usingIcons = configs.vanilla["info_style"] == "icon",
+		lstr = language(configs.vanilla, etc.locale),
 		is_server_owner = etc.is_server_owner,
 		etc = etc
 	}
@@ -476,6 +477,7 @@ function CreatePlayerContext(player, config, external_config, etc)
 
 	setmetatable(context.config, CONTEXT_META)
 	setmetatable(context.external_config, CONTEXT_META)
+	setmetatable(context.complex_config, CONTEXT_META)
 	setmetatable(context, mt)
 
 
@@ -490,10 +492,14 @@ function UpdatePlayerContext(player, data)
 	end
 
 	local oldLang = context.config["language"]
+	if data.configs then
+		context.config = setmetatable(data.configs.vanilla, CONTEXT_META)
+		context.external_config = setmetatable(data.configs.external, CONTEXT_META)
+		context.complex_config = setmetatable(data.configs.complex, CONTEXT_META)
+	end
+	data.configs = nil
+
 	for i,v in pairs(data) do
-		if type(v) == "table" and i:find("config") then
-			setmetatable(v, CONTEXT_META)
-		end
 		context[i] = v
 	end
 
@@ -1446,22 +1452,46 @@ function INSIGHT_HOT_RELOAD()
 
 	util.classTweaker.DestroyAllTrackedInstances()
 
+	-- This is still buggy, but oh well.
+
+	-- Collect all the files that need to be cleared across all hot reload functions
+	local all_files_to_clear = {}
 	for name, data in pairs(Insight.HOT_RELOAD_FNS) do
-		dprint("RUNNING HOT RELOAD:", name)
-
-		local fresh = {}
-
+		dprint("Getting hot reload data for:", name)
 		for i,v in pairs(data.files_to_clear) do
-			dprint("\tClearing import", v)
-			import.clear(v)
-			dprint("\tLoaded import", v, "as", v:match("([%w_]+)$"))
-			fresh[v:match("([%w_]+)$")] = import(v)
+			if not table.contains(all_files_to_clear, v) then
+				table.insert(all_files_to_clear, v)
+				mprint("\tGot file:", v)
+			else
+				mprint("\t(Duplicate file):", v)
+			end
 		end
-
-		data.callback(fresh)
 	end
 
-	TheNet:Announce("[Insight] Hot Reload Completed")
+	-- Clear them
+	for i,v in pairs(all_files_to_clear) do
+		dprint("Clearing import", v)
+		import.clear(v)
+	end
+
+	-- Load them back in
+	local fresh_imports = {}
+	for i,v in pairs(all_files_to_clear) do
+		dprint("\tLoaded import", v, "as", v:match("([%w_]+)$"))
+		fresh_imports[v:match("([%w_]+)$")] = import(v)
+	end
+
+	-- Notify the files
+	for name, data in pairs(Insight.HOT_RELOAD_FNS) do
+		dprint("Doing callback for:", name)
+		data.callback(fresh_imports)
+	end
+
+	if IS_DST then
+		TheNet:Announce("[Insight] Hot Reload Completed")
+	else
+		mprint("\n" .. string.rep("=", 50) .. "\n" .. "Hot Reload Completed" .. "\n" .. string.rep("=", 50))
+	end
 end
 _G.INSIGHT_HOT_RELOAD = INSIGHT_HOT_RELOAD
 
@@ -2074,10 +2104,10 @@ if IS_DST then
 		data = json.decode(data)
 		if player_contexts[player] then
 			UpdatePlayerContext(player, {
-				config = data.config,
+				configs = data.configs
 			})
 		else
-			CreatePlayerContext(player, data.config, data.external_config, data.etc)
+			CreatePlayerContext(player, data.configs, data.etc)
 		end
 	end)
 	

@@ -163,6 +163,32 @@ function ProcessRichTextPlainly(string)
 	return str
 end
 
+function GetReduxListItemPrefix(row_width, row_height)
+    local prefix = "listitem_thick" -- 320 / 90 = 3.6
+    local ratio = row_width / row_height
+    if ratio > 6 then
+        -- Longer texture will look better at this aspect ratio.
+        prefix = "serverlist_listitem" -- 1220.0 / 50 = 24.4
+    end
+    return prefix
+end
+
+function GetReduxButtonPrefix(size)
+	local prefix = "button_carny_long"
+	if size and #size == 2 then
+		local ratio = size[1] / size[2]
+		if ratio > 4 then
+			-- Longer texture will look better at this aspect ratio.
+			prefix = "button_carny_xlong"
+		elseif ratio < 1.1 then
+			-- The closest we have to a tall button.
+			prefix = "button_carny_square"
+		end
+	end
+	return prefix
+end
+
+
 --[==[
 function GetEntityDebugData(ent)
 	--[[
@@ -788,6 +814,25 @@ if not table.invert then
 		end
 		return invt
 	end
+end
+
+-- Sourced from https://web.archive.org/web/20131225070434/http://snippets.luacode.org/snippets/Deep_Comparison_of_Two_Values_3
+function deepcompare(t1, t2, ignore_mt)
+	local ty1 = type(t1)
+	local ty2 = type(t2)
+	if ty1 ~= ty2 then return false end
+	if ty1 ~= 'table' and ty2 ~= 'table' then return t1 == t2 end
+	local mt = getmetatable(t1)
+	if not ignore_mt and mt and mt.__eq then return t1 == t2 end
+	for k1,v1 in pairs(t1) do
+		local v2 = t2[k1]
+		if v2 == nil or not deepcompare(v1,v2) then return false end
+	end
+	for k2,v2 in pairs(t2) do
+		local v1 = t1[k2]
+		if v1 == nil or not deepcompare(v1,v2) then return false end
+	end
+	return true
 end
 
 if not shallowcopy then

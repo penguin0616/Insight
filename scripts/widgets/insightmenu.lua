@@ -35,20 +35,6 @@ REGISTER_HOT_RELOAD({"screens/insightconfigurationscreen"}, function(imports)
 end)
 --
 
-local function GetButtonPrefix(size)
-	local prefix = "button_carny_long"
-	if size and #size == 2 then
-		local ratio = size[1] / size[2]
-		if ratio > 4 then
-			-- Longer texture will look better at this aspect ratio.
-			prefix = "button_carny_xlong"
-		elseif ratio < 1.1 then
-			-- The closest we have to a tall button.
-			prefix = "button_carny_square"
-		end
-	end
-	return prefix
-end
 
 -- Class InsightMenu
 local InsightMenu = Class(Widget,function(self)
@@ -95,7 +81,7 @@ local InsightMenu = Class(Widget,function(self)
 		))
 		
 		--[[
-		local prefix = GetButtonPrefix({tab_width, tab_height})
+		local prefix = GetReduxButtonPrefix({tab_width, tab_height})
 		local tab = self.header:AddChild(ImageButton("images/dst/global_redux.xml", prefix.."_normal.tex", prefix.."_hover.tex", prefix.."_disabled.tex", prefix.."_down.tex"))
 		--]]
 		-- Appearance stuff
@@ -131,7 +117,7 @@ local InsightMenu = Class(Widget,function(self)
 	
 	-- Logic derived from redux/templates -> IconButton and base classes
 	local button_size = headerw - available_tab_space
-	local prefix = GetButtonPrefix({button_size, button_size}) --"button_carny_square"
+	local prefix = GetReduxButtonPrefix({button_size, button_size}) --"button_carny_square"
 	self.config_button = self.header:AddChild(ImageButton("images/dst/global_redux.xml", prefix.."_normal.tex", prefix.."_hover.tex", prefix.."_disabled.tex", prefix.."_down.tex"))
 	self.config_button:ForceImageSize(button_size, button_size)
 	self.config_button:SetTextSize(math.ceil(button_size*.45))
@@ -309,7 +295,7 @@ function InsightMenu:SetPage(num)
 end
 
 function InsightMenu:OnControl(control, down)
-	dprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
+	--dprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
 	--dprint("\t\t", self.tabs[1].focus, self.tabs[2].focus, self.config_button.focus, "|", self.current_page)
 	
 	local scheme = controlHelper.GetCurrentScheme()

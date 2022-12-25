@@ -47,8 +47,7 @@ module.Initialize = function(clock)
 		return
 	end
 	module.initialized = true
-
-	mprint(clock)
+	
 	module.netvars.cycles = util.getupvalue(clock.OnSave, "_cycles")
 	module.netvars.phase = util.getupvalue(clock.OnSave, "_phase")
 	module.netvars.mooomphasecycle = util.getupvalue(clock.OnSave, "_mooomphasecycle")

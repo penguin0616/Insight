@@ -105,6 +105,89 @@ local function GenerateExternalConfiguration()
 	return external_config
 end
 
+function LoadComplexConfiguration()
+	local info = {}
+
+	local saved_options = insightSaveData:Get("configuration_options") or {}
+
+	-- Validate the config to make sure the saved data is still valid.
+	for name, saved in pairs(saved_options) do
+		local config = modinfo.complex_configuration_options_map[name]
+		if config == nil then
+			-- This option doesn't exist anymore.
+			saved_options[name] = nil
+			mprintf("Deleting nonexistant saved option key: %q", name)
+			insightSaveData:SetDirty(true)
+		else
+			-- Validate the saved
+			if config.config_type == "listbox" then
+				for i = #saved, 1, -1 do
+					local v = saved[i]
+					if not util.table_find(config.options, function(x) return x.data == v end) then
+						table.remove(saved, i)
+						mprintf("Nonexistant entry %q in saved option %q, removing.", v, name)
+						insightSaveData:SetDirty(true)
+					end
+				end
+			else
+				errorf("Unable to validate unknown configuration type %q", opt.config_type)
+			end
+		end
+	end
+
+	insightSaveData:Save()
+
+	-- "Load" the config
+	local loaded_data = deepcopy(modinfo.complex_configuration_options)
+
+	for i, config in ipairs(loaded_data) do
+		info[i] = config
+		if saved_options[config.name] ~= nil then
+			info[i].saved = deepcopy(saved_options[config.name])
+		end
+	end
+
+	return info
+end
+
+local function GenerateComplexConfiguration()
+	local info = LoadComplexConfiguration()
+
+	local complex_config = {}
+
+	for i, config in ipairs(info) do
+		if config["_"] then
+			setmetatable(config, { __index=config["_"], __newindex=config["_"] })
+		end
+
+		complex_config[config.name] = config.default
+		if config.saved ~= nil then
+			complex_config[config.name] = config.saved
+		end
+
+		if config.config_type == "listbox" then
+			local converted = {}
+			for _, opt in pairs(config.options) do
+				converted[opt.data] = table.contains(complex_config[config.name], opt.data)
+			end
+			complex_config[config.name] = converted
+			
+
+			--[[
+			-- Works fine except when config sent to server on a client host, wipes the metatable since it gets sent with a JSON encode.
+			setmetatable(complex_config[config.name], {
+				__index = function(self, index)
+					return table.contains(self, index)
+				end,
+			})
+			--]]
+		end
+	end
+
+	return complex_config
+end
+
+
 local function GenerateConfiguration()
 	--[[
 	mprint("TheNet:GetIsClient() ==", TheNet:GetIsClient())
@@ -481,8 +564,11 @@ end
 
 function SendConfigurationToServer()
 	rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ProcessConfiguration"), json.encode({
-		config = GenerateConfiguration(),
-		external_config = GenerateExternalConfiguration(),
+		configs = {
+			vanilla = GenerateConfiguration(),
+			external = GenerateExternalConfiguration(),
+			complex = GenerateComplexConfiguration(),
+		},
 		etc = {
 			is_server_owner = TheNet:GetIsServerOwner(),
 			locale = LOC.GetLocaleCode(),
@@ -504,7 +590,11 @@ ClientCoreEventer:ListenForEvent("configuration_update", function()
 
 	if IsClient() then
 		UpdatePlayerContext(localPlayer, {
-			config = config,
+			configs = {
+				vanilla = config,
+				external = GenerateExternalConfiguration(),
+				complex = GenerateComplexConfiguration(),
+			}
 		})
 	end
 
@@ -544,6 +634,10 @@ if insightSaveData:Get("last_version") then
 		insightSaveData:Set("keybinds", {})
 	end
 
+	if insightSaveData:Get("configuration_options") == nil then
+		insightSaveData:Set("configuration_options", {})
+	end
+   
 	if insightSaveData:IsDirty() then
 		-- We've retrofitted *something*.
 		insightSaveData:Save()
@@ -552,6 +646,7 @@ else
 	-- Safe to assume this is the first instance of this file happening! 
 	insightSaveData:Set("last_version", modinfo.version)
 	insightSaveData:Set("keybinds", {})
+	insightSaveData:Set("configuration_options", {})
 	insightSaveData:Save()
 end
 
@@ -608,7 +703,7 @@ import("uioverrides")
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 do
-
+	-- TODO: Maybe I should loop over loaded ents to readd indicators AND add a context update listener to remove them
 	local function AddBossIndicator(inst)
 		if not inst:IsValid() then return end
 		
@@ -640,6 +735,10 @@ do
 
 		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 			if not context.config["notable_indicator"] then
+				return
+			end
+
+			if not context.complex_config["notable_indicator_prefabs"][inst.prefab] then
 				return
 			end
 
@@ -677,7 +776,7 @@ do
 	}
 
 	local notable = {
-		"hutch_fishbowl", "chester_eyebone", "atrium_key", "klaus_sack", "gingerbreadpig"
+		"chester_eyebone", "hutch_fishbowl", "atrium_key", "klaus_sack", "gingerbreadpig"
 	}
 
 	--[[
@@ -997,10 +1096,18 @@ AddPlayerPostInit(function(player)
 		end
 		delayed_actives = {}
 
-		CreatePlayerContext(player, GenerateConfiguration(), GenerateExternalConfiguration(), {
-			is_server_owner = true,
-			locale = LOC.GetLocaleCode(),
-		})
+		CreatePlayerContext(
+			player, 
+			{
+				vanilla = GenerateConfiguration(),
+				external = GenerateExternalConfiguration(),
+				complex = GenerateComplexConfiguration(),
+			},
+			{
+				is_server_owner = true,
+				locale = LOC.GetLocaleCode(),
+			}
+		)
 
 		return
 	end
@@ -1044,10 +1151,18 @@ AddPlayerPostInit(function(player)
 		end)
 
 		if IsClient() then -- create local copy for clients
-			CreatePlayerContext(player, GenerateConfiguration(), GenerateExternalConfiguration(), {
-				is_server_owner = TheNet:GetIsServerOwner(),
-				locale = LOC.GetLocaleCode(),
-			})
+			CreatePlayerContext(
+				player, 
+				{
+					vanilla = GenerateConfiguration(),
+					external = GenerateExternalConfiguration(),
+					complex = GenerateComplexConfiguration(),
+				},
+				{
+					is_server_owner = TheNet:GetIsServerOwner(),
+					locale = LOC.GetLocaleCode(),
+				}
+			)
 		end
 		
 		-- server shares this if client host

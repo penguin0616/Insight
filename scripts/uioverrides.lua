@@ -253,7 +253,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	controls.insight_menu:SetPosition(0, -400)
 	controls.insight_menu:Hide()
 	controls.inst:DoTaskInTime(0, function() controls.insight_menu:Activate() end)
-
+	
 	OnContextUpdate:AddListener(function(context)
 		if context.config["display_insight_menu_button"] then
 			controls.insight_menu_toggle = controls.insight_menu_toggle or controls.bottomright_root:AddChild(MakeInsightMenuButton(controls))

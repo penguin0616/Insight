@@ -1030,7 +1030,7 @@ function Insight:StartTrackingEntity(ent, data)
 		end
 	end
 
-	self.indicators:Add(ent, img_data)
+	return self.indicators:Add(ent, img_data)
 end
 
 function Insight:StopTrackingEntity(ent)

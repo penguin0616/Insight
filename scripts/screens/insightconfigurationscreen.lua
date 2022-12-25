@@ -29,6 +29,17 @@ local TEMPLATES = IS_DST and require("widgets/redux/templates") or setmetatable(
 local InsightScrollList = import("widgets/insightscrolllist")
 local ITEMPLATES = import("widgets/insight_templates")
 local RichText = import("widgets/RichText")
+local ListBox = import("widgets/listbox")
+
+--[[
+REGISTER_HOT_RELOAD({"widgets/listbox"}, function(imports) 
+	ListBox = imports.listbox
+end)
+
+REGISTER_HOT_RELOAD({"widgets/insightscrolllist"}, function(imports) 
+	InsightScrollList = imports.insightscrolllist
+end)
+--]]
 
 local MAIN_WINDOW_WIDTH = 580 -- 480
 local MAIN_WINDOW_HEIGHT = 460
@@ -146,6 +157,17 @@ local function ConfigOptionCtor(context, index)
 	local option_widgets = {}
 	root.option_widgets = option_widgets
 
+	-- The option widget for listboxes.
+	option_widgets.listbox = root:AddChild(ListBox({
+		width = option_width,
+		option_height = option_height, 
+		num_visible_rows = 4,
+		scroller = {
+			width = 15
+		}
+	}))
+	option_widgets.listbox:SetPosition(OPTION_ENTRY_WIDTH/2 - option_width/2, 0)
+
 	-- The option widget for keybinds.
 	--[[
 	option_widgets.keybind = root:AddChild(Image(DEBUG_IMAGE(true)))
@@ -187,13 +209,26 @@ local function ConfigOptionCtor(context, index)
 		v:Hide()
 	end
 
+	--[[
+	root.section_label.OnGainFocus = function(self)
+		self._base.OnGainFocus(self)
+	end
+
+	root.section_label.OnLoseFocus = function(self)
+		--mprint("SectionLabel::OnLoseFocus ---------------")
+		--mprint(debugstack())
+		self._base.OnLoseFocus(self)
+	end
+	--]]
 
 	root:SetOnGainFocus(function()
+		--mprint('gain0', root.focus)
 		if not root.data then
 			return
 		end
 		
 		--mprint('gain', root.data.label)
+		--print(debugstack())
 		if not root.is_section_header then
 			root.label:SetColour(UICOLOURS.GOLD_FOCUS)
 		end
@@ -213,7 +248,10 @@ local function ConfigOptionCtor(context, index)
 		end
 	end)
 
-	-- wingo
+	root.option_widgets.listbox:SetOnChangedFn(function(data, old)
+		context.screen:ChangeSetting(root.data, root.option_widgets.listbox:GetSelectedOptionsDataOnly())
+	end)
+
 	root.option_widgets.spinner:SetOnChangedFn(function(selected, old)
 		--local option = root:GetSelectedOption()
 		--mprint(option.description, "|", selected, old)
@@ -239,6 +277,12 @@ local function ConfigOptionCtor(context, index)
 				wdgt:Hide()
 			end
 		end
+		
+		if type == "listbox" then
+			self:MoveToFront()
+		else
+			self:MoveToBack()
+		end
 	end
 
 	root.GetConfigType = function(self)
@@ -251,6 +295,8 @@ local function ConfigOptionCtor(context, index)
 		if config_type == "spinner" then
 			return self.data.options[self.option_widgets.spinner:GetSelectedIndex()]
 		elseif config_type == "keybind" then
+			--return self.data
+		elseif config_type == "listbox" then
 			--return self.data
 		else
 			errorf("Don't know how to get selected option for option type '%s'", tostring(config_type))
@@ -282,7 +328,21 @@ local function ConfigOptionCtor(context, index)
 
 		self:SetConfigType(self.data.config_type or "spinner")
 
-		if self:GetConfigType() == "keybind" then
+		if self:GetConfigType() == "listbox" then
+			local using = self.data.saved or self.data.default
+
+			local listbox_options = {}
+			
+			for i,v in ipairs(self.data.options) do
+				local opt = {text=v.description, data=v.data, selected=table.contains(using, v.data)}
+				if table.contains(self.data.tags, "richtext") then
+					opt.text = ProcessRichTextPlainly(opt.text)
+				end
+				listbox_options[#listbox_options+1] = opt
+			end
+
+			self.option_widgets.listbox:SetData(listbox_options)
+		elseif self:GetConfigType() == "keybind" then
 			local k = self.data.saved or self.data.default or nil
 			k = KeybindChar(k)
 			self.option_widgets.keybind:SetText(k)
@@ -314,9 +374,8 @@ local function ConfigOptionCtor(context, index)
 	end
 
 	root.UpdateHoverText = function(self)
-		if true then return end
-		self.option_widgets.spinner.text.hover.image:ScaleToSize(self.option_widgets.spinner.text:GetRegionSize())
-		self.option_widgets.spinner.text:SetHoverText(self:GetSelectedOption().description)
+		--self.option_widgets.spinner.text.hover.image:ScaleToSize(self.option_widgets.spinner.text:GetRegionSize())
+		--self.option_widgets.spinner.text:SetHoverText(self:GetSelectedOption().description)
 	end
 	
 	root.SetIsSectionHeader = function(self, bool)
@@ -359,11 +418,27 @@ local function ConfigOptionCtor(context, index)
 
 		local current_option = self:GetSelectedOption()
 
-		local config_description = self.data.hover
-		local option_description = nil
+		local config_description = self.data.hover -- The description of the entire configuration (config.hover)
+		local option_description = nil -- The option hover (config.options[n].hover)
 
 		if self:GetConfigType() == "keybind" then
 			option_description = STRINGS.UI.OPTIONS.DEFAULT .. ": " .. KeybindChar(self.data.default)
+		elseif self:GetConfigType() == "listbox" then
+			local default_summary = {} -- table.concat(self.data.default, ", ")
+			local lookup = table.invert(self.data.default)
+
+			for i,v in ipairs(self.data.options) do
+				if lookup[v.data] then
+					default_summary[#default_summary+1] = v.description
+				end
+			end
+
+			default_summary = table.concat(default_summary, ", ")
+			if table.contains(self.data.tags, "richtext") then
+				default_summary = ProcessRichTextPlainly(default_summary)
+			end
+
+			option_description = STRINGS.UI.OPTIONS.DEFAULT .. ": " .. default_summary
 		else
 			option_description = current_option.hover
 		end
@@ -404,7 +479,11 @@ end
 
 
 local function CreateScroller(self)
-	if IS_DST then
+	--if IS_DST then
+	if false then
+		-- ScrollingGrid with its Scissor Shenanigans doesn't work well for widgets that would extend past the bounds
+		-- Ie ListBox. But even with cleared scissor, the focus doesn't work right.
+		-- So I guess I'll be using the InsightScrollList for both!
 		return TEMPLATES.ScrollingGrid(
 			{},
 			{
@@ -569,9 +648,18 @@ end
 function InsightConfigurationScreen:LoadModConfig() 
 	assert(self.client_config ~= nil, "LoadModConfig requires client boolean")
 	assert(self.client_config == true, "InsightConfigurationScreen only supports loading client config as true.")
+	local mod_is_client_only = KnownModIndex:GetModInfo(self.modname) and KnownModIndex:GetModInfo(self.modname).client_only_mod
+
+	self.raw_complex_options = LoadComplexConfiguration()
+	if self.raw_complex_options and type(self.raw_complex_options) == "table" then
+		for i,v in ipairs(self.raw_complex_options) do
+			if (v.client and self.client_config) or not v.client then
+				table.insert(self.config_options, v)
+			end
+		end
+	end
 
 	self.raw_config_options = KnownModIndex:LoadModConfigurationOptions(self.modname, self.client_config)
-	local mod_is_client_only = KnownModIndex:GetModInfo(self.modname) and KnownModIndex:GetModInfo(self.modname).client_only_mod
 
 	if self.raw_config_options and type(self.raw_config_options) == "table" then
 		for i,v in ipairs(self.raw_config_options) do
@@ -718,15 +806,19 @@ end
 
 function InsightConfigurationScreen:ChangeSetting(data, new)
 	--mprintf("ChangeSetting (%s): %s -> %s | Default: %s", data.label, tostring(data.saved), tostring(new), tostring(data.default))
-	--dumptable(data)
-	if data.saved == new then
-		-- No point in updating data with the same thing.
+
+	-- Check to make sure that data has actually changed.
+	-- No point in updating data with the same thing. 
+	if deepcompare(data.saved, new) then
 		return
 	end
 
 	--mprintf("ChangeSetting ~~~ (%s): %s -> %s | Default: %s", data.label, tostring(data.saved), tostring(new), tostring(data.default))
 
 	local old_saved = data.saved
+	if old_saved == nil then
+		old_saved = data.default
+	end
 
 	-- Using data as a key so dirty changes always overwrite previous dirty changes.
 	-- Of course, that means we need to handle that case.
@@ -735,7 +827,7 @@ function InsightConfigurationScreen:ChangeSetting(data, new)
 		old_saved = self.dirty_changes[data].old
 	end
 
-	if old_saved == new then
+	if deepcompare(old_saved, new) then
 		self.dirty_changes[data] = nil
 		data.saved = old_saved
 
@@ -773,6 +865,7 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 	-- Do keybind settings
 	for i,v in pairs(settings.keybind) do
 		if v.tags == nil or not table.contains(v.tags, "ignore") then
+			insightSaveData:SetDirty(true)
 			insightSaveData:Get("keybinds")[v.name] = v.saved
 			insightKeybinds:ChangeKey(v.name, v.saved)
 		end
@@ -780,9 +873,19 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 	insightSaveData:Save()
 	settings.keybind = nil
 
+	-- Do listbox settings
+	for i,v in pairs(settings.listbox) do
+		if v.tags == nil or not table.contains(v.tags, "ignore") then
+			mprint("saving", v.name, v.saved)
+			insightSaveData:SetDirty(true)
+			insightSaveData:Get("configuration_options")[v.name] = v.saved
+		end
+	end
+	insightSaveData:Save()
+	settings.listbox = nil
+
 	-- Do vanilla settings
 	KnownModIndex:SaveConfigurationOptions(function()
-		self:SetDirty(false)
 		--[[
 		UpdateHeader(" (Saved!)")
 		if self._headertask then
@@ -793,22 +896,19 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 	end, self.modname, settings.modconfig, self.client_config)
 	settings.modconfig = nil
 
+	-- Check if I missed anything.
+	if next(settings) ~= nil then
+		errorf("ApplyChanges doesn't know how to save unknown type '%s'", next(settings))
+	end
+
+	self.dirty_changes = {}
+	self:SetDirty(false)
+
 	ClientCoreEventer:PushEvent("configuration_update")
 
 	if callback then
 		-- Settings, Keybinds
 		callback(true, true)
-	end
-	--[[
-		KnownModIndex:SaveConfigurationOptions(function()
-			self:MakeDirty(false)
-			TheFrontEnd:PopScreen()
-		end, self.modname, settings, self.client_config)
-	]]
-
-	-- Check if I missed anything.
-	if next(settings) ~= nil then
-		errorf("ApplyChanges doesn't know how to save unknown type '%s'", next(settings))
 	end
 end
 
@@ -872,8 +972,30 @@ function InsightConfigurationScreen:Close(forced)
 	end
 end
 
+--[[
+function InsightConfigurationScreen:OnBecomeActive()
+	mprint("OnBecomeActive -> Tracking", TheFrontEnd.tracking_mouse)
+	return self._base.OnBecomeActive(self)
+end
+
+function InsightConfigurationScreen:SetDefaultFocus(...)
+	mprint("InsightConfigurationScreen -> SetDefaultFocus @@@@@@@@@@@@", ...)
+	--mprint("\t", self.focus, self.options_scroll_list.focus)
+
+	return self._base.SetDefaultFocus(self, ...)
+end
+
+function InsightConfigurationScreen:OnFocusMove(...)
+	mprint("InsightConfigurationScreen -> OnFocusMove -------------------------------------------------------", ...)
+	mprint("\t", self.focus, self.options_scroll_list.focus)
+
+	return self._base.OnFocusMove(self, ...)
+end
+--]]
+
 function InsightConfigurationScreen:OnControl(control, down)
 	--mprint("InsightConfigurationScreen", controlHelper.Prettify(control), down)
+	if self._base.OnControl(self, control, down) then return true end
 
 	local scheme = controlHelper.GetCurrentScheme()
 	if not down then
@@ -887,8 +1009,6 @@ function InsightConfigurationScreen:OnControl(control, down)
 			self:ApplyChanges()
 		end
 	end
-
-	return self._base.OnControl(self, control, down)
 end
 
 function InsightConfigurationScreen:GetHelpText()

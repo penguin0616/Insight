@@ -128,6 +128,7 @@ function Indicators:Add(target, data)
 	assert(self:Get(target) == nil, "Attempt to create multiple indicators for target")
     local ti = self.owner.HUD.under_root:AddChild(InsightTargetIndicator(self.owner, target, data)) -- self.owner.HUD.under_root
     table.insert(self.indicators, ti)
+	return ti
 end
 
 function Indicators:Remove(target)

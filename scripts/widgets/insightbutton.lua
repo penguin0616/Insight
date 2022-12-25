@@ -122,6 +122,17 @@ end
 function InsightButton:DoDrag()
 	local pos = self.drag_state.pos
 
+	-- lastx was nil? Which one? Frontend?
+	if not TheFrontEnd.lastx or not TheFrontEnd.lasty then
+		mprint("FRONTEND MISSING LASTS")
+		mprint(TheFrontEnd.lastx, TheFrontEnd.lasty)
+	end
+
+	if not self.drag_state.lastx or not self.drag_state.lasty then
+		mprint("STATE MISSING LASTS")
+		mprint(self.drag_state.lastx, self.drag_state.lasty)
+	end
+
 	local deltax = TheFrontEnd.lastx - self.drag_state.lastx
 	local deltay = TheFrontEnd.lasty - self.drag_state.lasty
 
