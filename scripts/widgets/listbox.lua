@@ -112,7 +112,9 @@ local function item_ctor_fn(context, index)
 		if self.data then
 			self:SetText(self.data.text)
 			self:SetEnabled(self.data.selected)
+			self:Show()
 		else
+			self:Hide()
 			self:SetText(nil)
 			self:SetEnabled(false)
 		end
@@ -221,7 +223,7 @@ local ListBox = Class(Widget, function(self, data)
 	--self.dropdown:SetPosition(0, -self.height/2 - self.option_height/2)
 	--self.dropdown:SetPosition(0, -self.height/2 - self.option_height/2)
 	self.dropdown:SetPosition(0, -self.height/2 - self.option_height/2)
-	self.dropdown.inst.UITransform:ClearScissor()
+	--if self.dropdown.inst.UITransform.ClearScissor then self.dropdown.inst.UITransform:ClearScissor() end
 	self.dropdown:Hide()
 
 	--[[
@@ -253,7 +255,8 @@ local ListBox = Class(Widget, function(self, data)
 		self:ToggleDropdown()
 	end)
 
-	self.inst.UITransform:ClearScissor()
+
+	if self.inst.UITransform.ClearScissor then self.inst.UITransform:ClearScissor() end
 
 	self.focus_forward = self.display_button
 end)
