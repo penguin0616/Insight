@@ -76,6 +76,16 @@ local string_match = name.match
 local string_gmatch = name.gmatch
 local string_sub = name.sub
 
+local function ipairs(tbl)
+	return function(tbl, index)
+		index = index + 1
+		local next = tbl[index]
+		if next then
+			return index, next
+		end
+	end, tbl, 0
+end
+
 local function IsString(arg)
 	return arg.sub == string_sub
 end
@@ -101,24 +111,26 @@ local function T(tbl, key)
 	--return GetTranslation
 end
 
-local function AddConfigurationOptionStrings(entry)
+function AddConfigurationOptionStrings(entry)
+	local name = entry.name
+
 	--entry.label = T(entry.name .. ".LABEL")
-	entry.label = T(STRINGS[entry.name].label)
+	entry.label = T(STRINGS[name].label)
 	--entry.hover = T(entry.name .. ".HOVER")
-	entry.hover = T(STRINGS[entry.name].hover)
+	entry.hover = T(STRINGS[name].hover)
 
 	if HasTag(entry, "dynamic_option_strings") then
-		STRINGS[entry.name].options = STRINGS[entry.name].options(entry)
+		STRINGS[name].options = STRINGS[name].options(entry)
 	end
 
 	for j = 1, #entry.options do
 		local option = entry.options[j]
 		--option.description = T(string_format("%s.OPTIONS.%s.DESCRIPTION", entry.name, tostring(option.data)))
-		local dsc = STRINGS[entry.name].options[option.data].description
+		local dsc = STRINGS[name].options[option.data].description
 		option.description = dsc and T(dsc) or nil
 		
 		--option.hover = T(string_format("%s.OPTIONS.%s.HOVER", entry.name, tostring(option.data)))
-		local hvr = STRINGS[entry.name].options[option.data].hover
+		local hvr = STRINGS[name].options[option.data].hover
 		option.hover = hvr and T(hvr) or nil
 	end
 end
@@ -183,6 +195,11 @@ function HasTag(entry, tag) -- Localized above
 	end
 end
 
+-- Only appends to end of table
+local function table_append(tbl, val)
+	tbl[#tbl+1] = val
+end
+
 local function table_remove(tbl, index) -- it worked first try wow nice job me.
 	tbl[index] = nil
 	for i = index, #tbl do
@@ -193,6 +210,7 @@ end
 --==========================================================================================
 --[[ Config Primers ]]
 --==========================================================================================
+--[[ Font Sizes ]]
 local FONT_SIZE = {
 	INSIGHT = {
 		HOVERER = {20, 30},
@@ -215,6 +233,86 @@ local function GenerateFontSizeOptions(which)
 		t[#t+1] = { data=i }
 	end
 	return t
+end
+
+--[[ Indicator stuff ]]
+local BOSSES = {"minotaur", "bearger", "deerclops", "dragonfly"}
+local BOSSES_DST = {"antlion", "beequeen", "crabking",  "klaus", "malbatross", "moose", "stalker_atrium", "toadstool", "eyeofterror", "twinofterror1", "twinofterror2"}
+local BOSSES_DS = {"ancient_herald", "ancient_hulk", "pugalisk", "twister", "twister_seal", "tigershark", "kraken", "antqueen"}
+local BOSSES_ALL = {}
+
+do
+	-- Go through every miniboss table and add the val to ALL
+	for i,v in ipairs(BOSSES) do
+		table_append(BOSSES_ALL, v)
+	end
+
+	for i,v in ipairs(BOSSES_DST) do
+		table_append(BOSSES_ALL, v)
+	end
+
+	for i,v in ipairs(BOSSES_DS) do
+		table_append(BOSSES_ALL, v)
+	end
+
+	-- Setup Minibosses to have only the vanilla prefabs for the current game.
+	local t = IsDST and BOSSES_DST or BOSSES_DS
+	for i,v in ipairs(t) do
+		table_append(BOSSES, v)
+	end
+end
+
+
+local MINIBOSSES = {"leif", "warg", "spat"} -- Common across both; used further ("leif_sparse" has handling elsewhere)
+local MINIBOSSES_DST = {"claywarg", "gingerbreadwarg", "spiderqueen", "lordfruitfly", "stalker"}
+local MINIBOSSES_DS = {"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head", "treeguard"}
+local MINIBOSSES_ALL = {}
+
+do
+	-- Go through every miniboss table and add the val to ALL
+	for i,v in ipairs(MINIBOSSES) do
+		table_append(MINIBOSSES_ALL, v)
+	end
+
+	for i,v in ipairs(MINIBOSSES_DST) do
+		table_append(MINIBOSSES_ALL, v)
+	end
+
+	for i,v in ipairs(MINIBOSSES_DS) do
+		table_append(MINIBOSSES_ALL, v)
+	end
+
+	-- Setup Minibosses to have only the vanilla prefabs for the current game.
+	local t = IsDST and MINIBOSSES_DST or MINIBOSSES_DS
+	for i,v in ipairs(t) do
+		table_append(MINIBOSSES, v)
+	end
+end
+
+local NOTABLE_INDICATORS = {"chester_eyebone", "hutch_fishbowl"}
+local NOTABLE_INDICATORS_DST = {"atrium_key", "klaus_sack", "gingerbreadpig"}
+local NOTABLE_INDICATORS_DS = {} -- TODO: The carrier things in SW and Hamlet
+local NOTABLE_INDICATORS_ALL = {}
+
+do
+	for i,v in ipairs(NOTABLE_INDICATORS) do
+		table_append(NOTABLE_INDICATORS_ALL, v)
+	end
+
+	for i,v in ipairs(NOTABLE_INDICATORS_DST) do
+		table_append(NOTABLE_INDICATORS_ALL, v)
+	end
+
+	for i,v in ipairs(NOTABLE_INDICATORS_DS) do
+		table_append(NOTABLE_INDICATORS_ALL, v)
+	end
+	
+	-- Yep
+	if IsDST then
+		for i,v in ipairs(NOTABLE_INDICATORS_DST) do
+			table_append(NOTABLE_INDICATORS, v)
+		end
+	end
 end
 
 --====================================================================================================================================================
@@ -334,9 +432,63 @@ STRINGS = {
 		["br"] = "Debugging",
 		["es"] = "Depuración",
 	},
+	sectiontitle_complexconfiguration = {
+		"Special Configuration",
+		["zh"] = nil,
+		["br"] = nil,
+		["es"] = nil
+	},
 	--==========================================================================================
 	--[[ Complex Configuration Options ]]
 	--==========================================================================================
+	boss_indicator_prefabs = {
+		label = {
+			"Boss Indicator Prefabs", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		hover = {
+			"Enabled boss indicator prefabs.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		options = function(config)
+			local t = {} 
+			for i,v in ipairs(config.options) do
+				t[v.data] = {
+					description = {"<prefab=" .. v.data .. ">"},
+					hover = nil,
+				}
+			end
+			return t
+		end,
+	},
+	miniboss_indicator_prefabs = {
+		label = {
+			"Miniboss Indicator Prefabs", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		hover = {
+			"Enabled miniboss indicator prefabs.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		options = function(config)
+			local t = {} 
+			for i,v in ipairs(config.options) do
+				t[v.data] = {
+					description = {"<prefab=" .. v.data .. ">"},
+					hover = nil,
+				}
+			end
+			return t
+		end,
+	},
 	notable_indicator_prefabs = {
 		label = {
 			"Notable Indicator Prefabs", 
@@ -352,8 +504,7 @@ STRINGS = {
 		},
 		options = function(config)
 			local t = {} 
-			for i = 1, #config.options do
-				local v = config.options[i]
+			for i,v in ipairs(config.options) do
 				t[v.data] = {
 					description = {"<prefab=" .. v.data .. ">"},
 					hover = nil,
@@ -1422,6 +1573,50 @@ STRINGS = {
 					["zh"] = "显示 Boss 指示器。",
 					["br"] = "Indicadores de chefões são mostrados.",
 					["es"] = "Se muestra los indicadores del jefes.",
+				},
+			},
+		},
+	},
+	miniboss_indicator = {
+		label = {
+			"Miniboss Indicators", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		hover = {
+			"Whether miniboss indicators are shown.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+		},
+		options = {
+			[false] = {
+				description = {
+					"No",
+					["zh"] = "否",
+					["br"] = "Não",
+					["es"] = "Desactivado",
+				},
+				hover = {
+					"Miniboss indicators not shown.",
+					["zh"] = nil, 
+					["br"] = nil, 
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = {
+					"Yes",
+					["zh"] = "是",
+					["br"] = "Sim",
+					["es"] = "Activado",
+				},
+				hover = {
+					"Miniboss indicators are shown.",
+					["zh"] = nil, 
+					["br"] = nil, 
+					["es"] = nil,
 				},
 			},
 		},
@@ -5111,6 +5306,16 @@ configuration_options = {
 		tags = {},
 	},
 	{
+		name = "miniboss_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
+	{
 		name = "notable_indicator",
 		options = {
 			{data = false},
@@ -5822,30 +6027,81 @@ configuration_options = {
 	}
 }
 
+
+-- Any functions within this table are processed by clientmodmain and use the environment there.
 complex_configuration_options = {
-	AddSectionTitle("test"),
+	AddSectionTitle(T(STRINGS["sectiontitle_complexconfiguration"])),
+	{
+		name = "boss_indicator_prefabs", -- name of option -- header for option in dst
+		options = (function()
+			local t = {}
+			-- I want to give the option for any bosses that exist as a prefab.
+			for i,v in ipairs(BOSSES_ALL) do
+				if _G.Prefabs[v] ~= nil then
+					t[#t+1] = { data=v }
+				end
+			end
+			return t
+		end),
+		default = (function()
+			local t = {}
+			for i,v in ipairs(BOSSES) do
+				t[#t+1] = v
+			end
+			return t
+		end),
+		config_type = "listbox",
+		client = true,
+		tags = {"dynamic_option_strings", "richtext"},
+	},
+	{
+		name = "miniboss_indicator_prefabs",
+		options = (function()
+			local t = {}
+			-- I want to give the option for any minibosses that exist as a prefab.
+			for i,v in ipairs(MINIBOSSES_ALL) do
+				if _G.Prefabs[v] ~= nil then
+					t[#t+1] = { data=v }
+				end
+			end
+			return t
+		end),
+		default = (function()
+			local t = {}
+			for i,v in ipairs(MINIBOSSES) do
+				t[#t+1] = v
+			end
+			return t
+		end),
+		config_type = "listbox",
+		client = true,
+		tags = {"dynamic_option_strings", "richtext"},
+	},
 	{
 		name = "notable_indicator_prefabs", -- name of option -- header for option in dst
-		options = {
-			{data = "chester_eyebone"},
-			{data = "hutch_fishbowl"},
-			{data = "atrium_key"},
-			{data = "klaus_sack"},
-			{data = "gingerbreadpig"},
-		}, 
-		default = {"chester_eyebone", "hutch_fishbowl", "atrium_key", "klaus_sack", "gingerbreadpig"},
+		options = (function()
+			local t = {}
+			-- I want to give the option for any notable indicator prefabs that exist as a prefab.
+			for i,v in ipairs(NOTABLE_INDICATORS_ALL) do
+				if _G.Prefabs[v] ~= nil then
+					t[#t+1] = { data=v }
+				end
+			end
+			return t
+		end),
+		default = (function()
+			local t = {}
+			-- The default should be whatever exists in vanilla for either game.
+			for i,v in ipairs(NOTABLE_INDICATORS) do
+				t[#t+1] = v
+			end
+			return t
+		end),
 		config_type = "listbox",
 		client = true,
 		tags = {"dynamic_option_strings", "richtext"},
 	},
 }
-
-complex_configuration_options_map = {}
-for i = 1, #complex_configuration_options do
-	local v = complex_configuration_options[i]
-	complex_configuration_options_map[v.name] = v
-end
-
 
 --====================================================================================================================================================
 --====================================================================================================================================================
@@ -5863,14 +6119,7 @@ for i = 1, #configuration_options do
 	end
 end
 
-for i = 1, #complex_configuration_options do
-	local entry = complex_configuration_options[i]
-	
-	if not HasTag(entry, "ignore") then 
-		AddConfigurationOptionStrings(entry)
-	end
-end
-
+-- Complex configuration option strings processed in clientmodmain
 
 if IsDST then 
 	for i = 1, #configuration_options do

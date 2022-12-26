@@ -129,7 +129,7 @@ local function item_ctor_fn(context, index)
 	-- 16
 	root.SetText = function(self, text)
 		--root.label:SetTruncatedString(text, nil, 16, true)
-		root.label.text:SetTruncatedString(text, nil, 16, true) -- Can use SetTruncatedString + SetRegionSize as long as I don't provide a maxwidth.
+		root.label.text:SetTruncatedString(text, nil, 32, true) -- Can use SetTruncatedString + SetRegionSize as long as I don't provide a maxwidth.
 	end
 
 	root:SetEnabled(false)

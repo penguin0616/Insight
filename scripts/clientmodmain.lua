@@ -105,7 +105,58 @@ local function GenerateExternalConfiguration()
 	return external_config
 end
 
+local function PrimeComplexConfiguration()
+	if modinfo._ready ~= nil then
+		return
+	end
+
+	local complex_config = modinfo.complex_configuration_options
+
+	local map = {}
+	modinfo.complex_configuration_options_map = map
+
+	local env = getfenv(1)
+
+	local function_env = setmetatable({}, {
+		__index = function(self, index)
+			-- Check to see if it's somethinng inside modinfo.
+			local ret = modinfo[index]
+			if ret ~= nil then
+				return ret
+			end
+			
+			-- It's not, so fall back to our environment here.
+			ret = env[index]
+			return ret
+		end
+	})
+
+	for i, config in ipairs(complex_config) do
+		if not table.contains(config.tags, "ignore") then
+			-- First thing to do: Go through the configs and process their options and default
+			if type(config.options) == "function" then
+				config.options = setfenv(config.options, function_env)()
+			end
+			if type(config.default) == "function" then
+				config.default = setfenv(config.default, function_env)()
+			end
+
+			-- Then do localization
+			modinfo.AddConfigurationOptionStrings(config)
+			
+			-- Map it for reversing
+			map[config.name] = config
+		end
+	end
+
+	modinfo._ready = true
+end
+
 function LoadComplexConfiguration()
+	if modinfo._ready == nil then
+		PrimeComplexConfiguration()
+	end
+
 	local info = {}
 
 	local saved_options = insightSaveData:Get("configuration_options") or {}
@@ -156,31 +207,29 @@ local function GenerateComplexConfiguration()
 	local complex_config = {}
 
 	for i, config in ipairs(info) do
-		if config["_"] then
-			setmetatable(config, { __index=config["_"], __newindex=config["_"] })
-		end
-
-		complex_config[config.name] = config.default
-		if config.saved ~= nil then
-			complex_config[config.name] = config.saved
-		end
-
-		if config.config_type == "listbox" then
-			local converted = {}
-			for _, opt in pairs(config.options) do
-				converted[opt.data] = table.contains(complex_config[config.name], opt.data)
+		if not util.table_find(config.tags, "ignore") then
+			complex_config[config.name] = config.default
+			if config.saved ~= nil then
+				complex_config[config.name] = config.saved
 			end
-			complex_config[config.name] = converted
-			
 
-			--[[
-			-- Works fine except when config sent to server on a client host, wipes the metatable since it gets sent with a JSON encode.
-			setmetatable(complex_config[config.name], {
-				__index = function(self, index)
-					return table.contains(self, index)
-				end,
-			})
-			--]]
+			if config.config_type == "listbox" then
+				local converted = {}
+				for _, opt in pairs(config.options) do
+					converted[opt.data] = table.contains(complex_config[config.name], opt.data)
+				end
+				complex_config[config.name] = converted
+				
+
+				--[[
+				-- Works fine except when config sent to server on a client host, wipes the metatable since it gets sent with a JSON encode.
+				setmetatable(complex_config[config.name], {
+					__index = function(self, index)
+						return table.contains(self, index)
+					end,
+				})
+				--]]
+			end
 		end
 	end
 
@@ -711,6 +760,10 @@ do
 			if not context.config["boss_indicator"] then
 				return
 			end
+			
+			if not context.complex_config["boss_indicator_prefabs"][inst.prefab] then
+				return
+			end
 
 			local clr = Insight.COLORS.HEALTH
 			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
@@ -721,7 +774,16 @@ do
 		if not inst:IsValid() then return end
 		
 		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
-			if not context.config["boss_indicator"] then -- maybe add a config for mini bosses?
+			if not context.config["miniboss_indicator"] then
+				return
+			end
+
+			local prefab = (inst.prefab == "leif_sparse" and "leif") or 
+				(inst.prefab == "stalker_forest" and "stalker") or
+				inst.prefab
+			
+			
+			if not context.complex_config["miniboss_indicator_prefabs"][prefab] then
 				return
 			end
 
@@ -737,11 +799,11 @@ do
 			if not context.config["notable_indicator"] then
 				return
 			end
-
+			
 			if not context.complex_config["notable_indicator_prefabs"][inst.prefab] then
 				return
 			end
-
+			
 			local clr = Insight.COLORS.SWEETENER
 			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
 		end)
@@ -763,20 +825,30 @@ do
 
 	-- https://dontstarve.fandom.com/wiki/Category%3ABoss_Monsters
 	local bosses = {
-		"minotaur", "ancient_herald", "antlion", "bearger", "beequeen", "crabking", "deerclops", "dragonfly", "ancient_hulk", "klaus",
-		"malbatross", "moose", "pugalisk", "kraken", "antqueen", "stalker_forest", "stalker", "stalker_atrium", "twister", "twister_seal", "tigershark", 
-		"toadstool", "eyeofterror", "twinofterror1", "twinofterror2"
-		-- "shadow_knight", "shadow_bishop", "shadow_rook"
+		"minotaur", "bearger", "deerclops", "dragonfly", -- Both
+
+		"antlion", "beequeen", "crabking",  "klaus", "malbatross", "moose", "stalker_atrium", "toadstool", "eyeofterror", "twinofterror1", "twinofterror2", -- DST
+
+		"ancient_herald", "ancient_hulk", "pugalisk", "twister", "twister_seal", "tigershark", "kraken", "antqueen", -- DS
+		 -- "shadow_knight", "shadow_bishop", "shadow_rook"
 	}
 
 	local mini_bosses = {
-		"warg", "claywarg", "gingerbreadwarg", "spat", "leif", "leif_sparse", "treeguard", "spiderqueen", "lordfruitfly",
+		"leif", "warg", "spat", -- Both
+		"leif_sparse",
 
-		"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head"
+		"claywarg", "gingerbreadwarg", "spat", "treeguard", "spiderqueen", "lordfruitfly", "stalker", -- DST
+		"stalker_forest", 
+
+		"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head" -- DS
 	}
 
 	local notable = {
-		"chester_eyebone", "hutch_fishbowl", "atrium_key", "klaus_sack", "gingerbreadpig"
+		"chester_eyebone", "hutch_fishbowl",  -- Both
+		
+		"atrium_key", "klaus_sack", "gingerbreadpig", -- DST
+
+		-- DS
 	}
 
 	--[[

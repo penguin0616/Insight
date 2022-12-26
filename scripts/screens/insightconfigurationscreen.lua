@@ -42,7 +42,9 @@ end)
 --]]
 
 local MAIN_WINDOW_WIDTH = 580 -- 480
-local MAIN_WINDOW_HEIGHT = 460
+local MAIN_WINDOW_HEIGHT = 480
+
+local HEADER_HEIGHT = 120
 
 local NUM_VISIBLE_ROWS = 8
 local OPTION_ENTRY_WIDTH = MAIN_WINDOW_WIDTH --200
@@ -235,6 +237,8 @@ local function ConfigOptionCtor(context, index)
 
 		root.context.screen.options_scroll_list:OnWidgetFocus(root)
 		root:ApplyDescription()
+
+		root:MoveToFront()
 	end)
 
 	root:SetOnLoseFocus(function()
@@ -278,11 +282,13 @@ local function ConfigOptionCtor(context, index)
 			end
 		end
 		
+		--[[
 		if type == "listbox" then
 			self:MoveToFront()
 		else
 			self:MoveToBack()
 		end
+		--]]
 	end
 
 	root.GetConfigType = function(self)
@@ -444,7 +450,13 @@ local function ConfigOptionCtor(context, index)
 		end
 
 		self.context.screen.config_hover:SetString(config_description)
-		self.context.screen.option_hover:SetString(option_description)
+		--self.context.screen.option_hover:SetString(option_description)
+		if option_description then
+			local w = self.context.screen.header:GetSize()
+			self.context.screen.option_hover:SetMultilineTruncatedString(option_description, 2, w, nil_max_chars, true)
+		else
+			self.context.screen.option_hover:SetString(nil)
+		end
 	end
 
 	--[[
@@ -562,7 +574,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	-- Main Window
 	self.main = self.root:AddChild(CreateMainWindow(self))
 	local mainw, mainh = self.main:GetSize()
-	local headerw, headerh = mainw, 100
+	local headerw, headerh = mainw, HEADER_HEIGHT
 
 	self.header = self.main:AddChild(Image(DEBUG_IMAGE(false)))
 	--self.header:SetTint(1, 1, 1, .1)
@@ -579,8 +591,8 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.config_hover:SetPosition(0, self.header_label:GetPosition().y - self.header_label:GetSize()/2 - self.config_hover:GetSize()/2 - 10) -- 20 pixels of padding
 	--self.config_hover:SetString("CONFIGURATION ENTRY HOVER")
 	
-	self.option_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hove for the selected option in the config
-	self.option_hover:SetPosition(0, -headerh/2 + self.option_hover:GetSize()/2)
+	self.option_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hover for the selected option in the config
+	self.option_hover:SetPosition(0, -headerh/2 + self.option_hover:GetSize()/2 + 10)
 	--self.option_hover:SetString("OPTION HOVER")
 
 	self.divider = self.main:AddChild(Image("images/dst/global_redux.xml", "item_divider.tex"))
@@ -876,7 +888,6 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 	-- Do listbox settings
 	for i,v in pairs(settings.listbox) do
 		if v.tags == nil or not table.contains(v.tags, "ignore") then
-			mprint("saving", v.name, v.saved)
 			insightSaveData:SetDirty(true)
 			insightSaveData:Get("configuration_options")[v.name] = v.saved
 		end

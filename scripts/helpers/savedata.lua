@@ -83,7 +83,7 @@ function SaveData:Load()
 			if load_success == true then
 				local success, savedata = RunInSandboxSafe(str)
 				if success and string.len(str) > 0 then
-					mprint("[SaveData] Loaded " .. path)
+					dprint("[SaveData] Loaded " .. path)
 					self.data = savedata
 					self.ready = true
 				else
@@ -106,7 +106,7 @@ function SaveData:Save(callback, force)
 		mprint("[SaveData] Saved " .. self.path)
 		self:SetDirty(false)
 	else
-		mprint("[SaveData] NOT SAVING " .. self.path .. ", we're not dirty!")
+		dprint("[SaveData] NOT SAVING " .. self.path .. ", we're not dirty!")
 		if callback then
 			return callback(true)
 		end

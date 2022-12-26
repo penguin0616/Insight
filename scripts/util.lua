@@ -362,6 +362,30 @@ function GetPrefabNameOrElse(prefab, other)
 		return STRINGS.NAMES[upper]
 	end
 
+	-- moose/goose logic?
+	if upper == "MOOSE" then
+		return STRINGS.NAMES.MOOSE1 .. "/" .. STRINGS.NAMES.MOOSE2
+	elseif upper == "MOOSEEGG" then
+		local t = GetTime()/10 % 1
+		if t < 0.5 then
+			return STRINGS.NAMES.MOOSEEGG1
+		else
+			return STRINGS.NAMES.MOOSEEGG2
+		end
+	elseif upper == "MOOSENEST" then
+		local t = GetTime()/10 % 1
+		if t < 0.5 then
+			return STRINGS.NAMES.MOOSENEST1
+		else
+			return STRINGS.NAMES.MOOSENEST2
+		end
+	end
+
+	-- specific override names?
+	if upper == "STALKER_FOREST" then
+		return STRINGS.NAMES.STALKER
+	end
+
 	-- antler?
 	if string.sub(upper, 1, 11) == "DEER_ANTLER" then
 		return STRINGS.NAMES.DEER_ANTLER
