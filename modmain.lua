@@ -163,6 +163,9 @@ DEBUG_ENABLED = (
 	or GetModConfigData("DEBUG_ENABLED", true) or false 
 
 ALLOW_SERVER_DEBUGGING = DEBUG_ENABLED -- todo make a more accessible for standard users with mod compatibility issues?
+if DEBUG_ENABLED then
+	_G.ENCODE_SAVES = false
+end
 
 if TheSim:GetGameID() == "DS" then
 	print = nolineprint

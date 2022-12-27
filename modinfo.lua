@@ -263,8 +263,8 @@ do
 end
 
 
-local MINIBOSSES = {"leif", "warg", "spat"} -- Common across both; used further ("leif_sparse" has handling elsewhere)
-local MINIBOSSES_DST = {"claywarg", "gingerbreadwarg", "spiderqueen", "lordfruitfly", "stalker"}
+local MINIBOSSES = {"leif", "warg", "spat", "spiderqueen"} -- Common across both; used further ("leif_sparse" has handling elsewhere)
+local MINIBOSSES_DST = {"claywarg", "gingerbreadwarg", "lordfruitfly", "stalker"}
 local MINIBOSSES_DS = {"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head", "treeguard"}
 local MINIBOSSES_ALL = {}
 

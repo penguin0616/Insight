@@ -236,7 +236,6 @@ local function GenerateComplexConfiguration()
 	return complex_config
 end
 
-
 local function GenerateConfiguration()
 	--[[
 	mprint("TheNet:GetIsClient() ==", TheNet:GetIsClient())
@@ -647,7 +646,9 @@ ClientCoreEventer:ListenForEvent("configuration_update", function()
 		})
 	end
 
-	SendConfigurationToServer()
+	if IS_DST then
+		SendConfigurationToServer()
+	end
 
 	OnContextUpdate:Push(GetPlayerContext(localPlayer))
 end)
@@ -834,10 +835,10 @@ do
 	}
 
 	local mini_bosses = {
-		"leif", "warg", "spat", -- Both
+		"leif", "warg", "spat", "spiderqueen", -- Both
 		"leif_sparse",
 
-		"claywarg", "gingerbreadwarg", "spat", "treeguard", "spiderqueen", "lordfruitfly", "stalker", -- DST
+		"claywarg", "gingerbreadwarg", "spat", "treeguard", "lordfruitfly", "stalker", -- DST
 		"stalker_forest", 
 
 		"ancient_robot_ribs", "ancient_robot_claw", "ancient_robot_leg", "ancient_robot_head" -- DS
@@ -975,7 +976,7 @@ AddPrefabPostInit("cave_entrance_open", function(inst)
 	local cfg = GetModConfigData("sinkhole_marks", true)
 	if cfg == 0 then return end
 
-	--AddLocalPlayerPostInit(function() GetInsight(localPlayer):RequestInformation(inst) end)
+	--OnLocalPlayerPostInit:AddWeakListener(function() GetInsight(localPlayer):RequestInformation(inst) end)
 	--dprint('postinit', inst)
 	ListenForEventOnce(inst, "insight_ready", function(inst)
 		dprint(inst, "- migrator has loaded")
@@ -1253,7 +1254,7 @@ if IS_DS then
 
 		function self.OnUpdate(...)
 			local x, y, z = self.inst.Transform:GetWorldPosition()
-    		TriggerDeployHelpers({ x=x, y=y, z=z }, 64, self.recipe, self.inst)
+			TriggerDeployHelpers({ x=x, y=y, z=z }, 64, self.recipe, self.inst)
 			oldOnUpdate(...)
 		end
 	end)
@@ -1440,3 +1441,27 @@ if IS_DST then
 		end)
 	end)
 end
+
+--[==[
+OnLocalPlayerPostInit:AddListener(function()
+	rawset(_G, "asd", true)
+	GetPlayer():DoPeriodicTask(0, function()
+		if asd then
+			local sel = TheInput:GetAllEntitiesUnderMouse()[1]
+			if sel then
+				sel = sel.widget
+			end
+
+			if wowza then
+				wowza:SetString("Selected Widget: " .. tostring(sel))
+			end
+			--[[
+			for i,v in pairs(TheInput:GetAllEntitiesUnderMouse()) do
+				mprint(i, v.widget)
+			end
+			mprint("-----------------------------")
+			--]]
+		end
+	end)
+end)
+--]==]
