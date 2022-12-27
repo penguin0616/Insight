@@ -90,13 +90,8 @@ local InsightScrollList = Class(Widget, function(self, data)
 	}
 	--]]
 
-	self._width = self.item_width
-	--self._height = self.item_height * self.num_visible_rows
-	self._height = self.item_height * self.num_visible_rows + (self.row_padding * (self.num_visible_rows-1))
-
-	-- Ensures we're absorbing all control inputs within the widget region.
-	self.bg = self:AddChild(Image("images/ui.xml", "blank.tex"))
-	self.bg:ScaleToSize(self._width, self._height)
+	self.bg = self:AddChild(Image("images/ui.xml", "blank.tex")) -- Ensures we're absorbing all control inputs within the widget region.
+	--self.bg = self:AddChild(Image(DEBUG_IMAGE(true)))
 
 	-- The Root Container for everything
 	self.root = self:AddChild(Widget("root"))
@@ -105,6 +100,8 @@ local InsightScrollList = Class(Widget, function(self, data)
 	self.list_root = self.root:AddChild(Widget("list_root"))
 	--self.list_root = self.root:AddChild(Image(DEBUG_IMAGE(true))); self.list_root:SetSize(self._width, self._height);
 	
+	self:RecalculateSize()
+
 	-- Scrolling position stuff
 	self.scroll_per_click = 1
 	self.current_scroll_pos = 0 -- Represents the current row index. Could be 1, 1.5, 2, etc.
@@ -123,10 +120,6 @@ local InsightScrollList = Class(Widget, function(self, data)
 			(dir == MOVE_DOWN and focused_item_index + 1) or nil
 	end
 	
-	self:BuildListItems()
-	if self.display_scroll_bar then
-		self:BuildScrollBar()
-	end
 	self:SetItemsData(nil)
 
 	--self.focus_forward = self.list_root
@@ -266,6 +259,30 @@ function InsightScrollList:BuildScrollBar()
 		TheFrontEnd:LockFocus(false)
 		self:RefreshView() --refresh again after we've been moved back to the "up-click" position in Button:OnControl
 	end)
+end
+
+function InsightScrollList:RecalculateSize()
+	self._width = self.item_width
+	--self._height = self.item_height * self.num_visible_rows
+	self._height = self.item_height * self.num_visible_rows + (self.row_padding * (self.num_visible_rows-1))
+
+	self.bg:ScaleToSize(self._width + 10, self._height + 10)
+	self:BuildListItems()
+	if self.display_scroll_bar then
+		self:BuildScrollBar()
+	end
+end
+
+function InsightScrollList:SetNumVisibleRows(num)
+	if num == self.num_visible_rows then
+		return
+	end
+
+	self.num_visible_rows = num
+	self:RecalculateSize()
+
+	self:SetItemsData(self.items)
+	self:ResetView()
 end
 
 function InsightScrollList:OnWidgetFocus(focused_widget)
@@ -495,6 +512,16 @@ end
 function InsightScrollList:OnGainFocus()
 	-- I'm experimenting with trying to get focus to the first item to happen automatically in a safe way.
 	--mprint(self.name, "OnGainFocus ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+	--[[
+	self.list_root:MoveToFront()
+	if self._bg then
+		self._bg:MoveToBack()
+	end
+	if self.bg then
+		self.bg:MoveToBack()
+	end
+	--]]
 	
 	--[[
 	mprint(debugstack())

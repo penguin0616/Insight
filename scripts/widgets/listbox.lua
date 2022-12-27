@@ -59,6 +59,9 @@ local function item_ctor_fn(context, index)
 
 	--root.checkbox = root:AddChild(ImageButton("images/button_icons2.xml", "disabled_filter.tex"))
 	root.checkbox = root:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex"))
+	--root.checkbox = root:AddChild(ImageButton(DEBUG_IMAGE(true)))
+	--root.checkbox:SetImageNormalColour(1, 1, 1, 1)
+	--root.checkbox:SetImageFocusColour(0.6, 0.6, 1, 1)
 	root.checkbox.scale_on_focus = false
 	root.checkbox.move_on_click = false
 	root.checkbox:ForceImageSize(root.height, root.height)
@@ -66,9 +69,11 @@ local function item_ctor_fn(context, index)
 	root.checkbox:SetOnClick(function()
 		root:Toggle()
 	end)
+	SetTostring(root.checkbox, function() return "listbox checkbox" end)
 
-	--root.label = root:AddChild(Text(UIFONT, 25))
 	root.label = root:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex"))
+	--root.label = root:AddChild(ImageButton(DEBUG_IMAGE(true)))
+	--root.label:SetImageNormalColour(1, 1, 0, 1)
 	root.label.scale_on_focus = false
 	root.label.move_on_click = false
 	root.label:ForceImageSize(root.width - root.checkbox.size_x, root.height)
@@ -83,6 +88,7 @@ local function item_ctor_fn(context, index)
 	root.label:SetOnClick(function()
 		root:Toggle()
 	end)
+	SetTostring(root.label, function() return "listbox label" end)
 
 
 	root:SetOnGainFocus(function()
@@ -130,6 +136,10 @@ local function item_ctor_fn(context, index)
 
 	-- 16
 	root.SetText = function(self, text)
+		if not root.label then
+			return
+		end
+
 		--root.label:SetTruncatedString(text, nil, 16, true)
 		root.label.text:SetTruncatedString(text, nil, 32, true) -- Can use SetTruncatedString + SetRegionSize as long as I don't provide a maxwidth.
 	end
@@ -166,6 +176,7 @@ local ListBox = Class(Widget, function(self, data)
 	self.option_width = assert(data.width, "Missing width") - self.scroller_width
 	self.option_height = assert(data.option_height, "Missing optionheight")
 	self.num_visible_rows = assert(data.num_visible_rows, "Missing num_visible_rows")
+	self.target_num_visible_rows = self.num_visible_rows
 	
 	self.width = data.width
 	self.height = self.option_height * self.num_visible_rows
@@ -217,8 +228,6 @@ local ListBox = Class(Widget, function(self, data)
 		}
 	))
 
-	local bgw, bgh = self.width - (32+33), self.height - (30+30)
-
 	self.dropdown.name = "ListBox:InsightScrollList"
 	--self.dropdown:SetPosition(0, -self.height/2 - self.option_height/2)
 	--self.dropdown:SetPosition(0, -self.height/2 - self.option_height/2)
@@ -232,11 +241,22 @@ local ListBox = Class(Widget, function(self, data)
 	--]]
 	-- atlas, top_left, top_center, top_right, mid_left, mid_center, mid_right, bottom_left, bottom_center, bottom_right
 	
-	self.dropdown.bg:Kill()
-	self.dropdown.bg = self.dropdown:AddChild(NineSlice("images/misc/listbox_bg/attempt2_thin_crop.xml", "TL.tex", "TM.tex", "TR.tex", "ML.tex", "MM.tex", "MR.tex", "BL.tex", "BM.tex", "BR.tex"))
-	self.dropdown.bg:SetSize(bgw, bgh) -- Nineslice SetSize doesn't account for the not-center pieces.
-	self.dropdown.bg:SetTint(0.8, 0.8, 0.8, 1) -- Color.fromHex("#E9CA79")
-	self.dropdown.bg:MoveToBack()
+	--self.dropdown.bg:Kill()
+	--self.dropdown.bg = nil
+
+	--self.dropdown.bg:SetTexture(DEBUG_IMAGE(true))
+	--self.dropdown.bg:SetTint(1, 0.6, 0.6, 1)
+	--self.dropdown:RecalculateSize()
+	--SetTostring(self.dropdown.bg, function() return "red box" end)
+	
+	self.dropdown._bg = self.dropdown:AddChild(NineSlice("images/misc/listbox_bg/attempt2_thin_crop.xml", "TL.tex", "TM.tex", "TR.tex", "ML.tex", "MM.tex", "MR.tex", "BL.tex", "BM.tex", "BR.tex"))
+	--self.dropdown._bg = self.dropdown:AddChild(Image(DEBUG_IMAGE(true)))
+	self:AutoSizeBackground()
+	--self.dropdown._bg:SetTint(0.8, 0.8, 0.8, 1)
+	--self.dropdown._bg:SetTint(unpack(Color.fromHex("#E9CA79")))
+	--self.dropdown._bg:SetTint(0, 1, 0, 1)
+	--SetTostring(self.dropdown._bg, function() return "green box" end)
+	self.dropdown._bg:MoveToBack()
 
 	--[[
 	for i,v in pairs(self.dropdown.bg:GetChildren()) do
@@ -260,6 +280,16 @@ local ListBox = Class(Widget, function(self, data)
 
 	self.focus_forward = self.display_button
 end)
+
+function ListBox:AutoSizeBackground()
+	if self.dropdown._bg then
+		local bgw, bgh = self.width, self.height
+		if self.dropdown._bg:is_a(NineSlice) then
+			bgw, bgh = self.width - (32+33), self.height - (30+30)
+		end
+		self.dropdown._bg:SetSize(bgw, bgh) -- Nineslice SetSize doesn't account for the not-center pieces.
+	end
+end
 
 function ListBox:ToggleDropdown()
 	if self.dropdown.shown then
@@ -360,9 +390,24 @@ function ListBox:UpdateDisplayButton()
 	self.display_button.text:SetTruncatedString(str, nil, 30, true)
 end
 
+function ListBox:SetNumVisibleRows(num)
+	local final_num = math.min(num, self.target_num_visible_rows)
+	--mprint("ListBox:SetNumVisibleRows", num, "->", final_num, "|", self.num_visible_rows)
+	if self.num_visible_rows == final_num then
+		return
+	end
+
+	self.num_visible_rows = final_num
+	self.height = self.option_height * self.num_visible_rows
+	self:AutoSizeBackground()
+	self.dropdown:SetPosition(0, -self.height/2 - self.option_height/2)
+	self.dropdown:SetNumVisibleRows(self.num_visible_rows)
+end
+
 function ListBox:SetData(data)
 	self.data = data
 	self.dropdown:SetItemsData(data)
+	self:SetNumVisibleRows(#self.data)
 	self:UpdateDisplayButton()
 end
 

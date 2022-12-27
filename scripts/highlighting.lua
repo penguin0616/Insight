@@ -147,7 +147,7 @@ local target = Color.new(1, 0, 0, 1)
 
 local stats = {}
 
-AddLocalPlayerPostInit(function()
+OnLocalPlayerPostInit:AddWeakListener(function()
 TheGlobalInstance:DoPeriodicTask(1 / 15, function()
 	for inst, changeable in pairs(managed) do
 		stats[inst] = stats[inst] or {0, false}

@@ -269,6 +269,28 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	end)
 
 	--[[
+	wowza = controls.top_root:AddChild(Text(UIFONT, 30, ""))
+	wowza:SetPosition(0, -350)
+
+	local ListBox = import("widgets/listbox")
+	local box = controls.top_root:AddChild(ListBox({
+		width = 300,
+		option_height = 40, 
+		num_visible_rows = 4,
+		scroller = {
+			width = 15
+		}
+	}))
+	local t = {}
+	for i = 1, 1 do
+		t[i] = {text="txt"..i, data="txt"..i, selected=true}
+	end
+	box:SetData(t)
+	box:SetPosition(0, -400)
+	rawset(_G, "box", box)
+	--]]
+
+	--[[
 	local Insight_Clock = import("widgets/insight_clock")
 
 	local c = Insight_Clock()

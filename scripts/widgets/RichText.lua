@@ -109,8 +109,6 @@ function InterpretReaderChunk(chunk, richtext) -- text, color
 			local tex, atlas = _LookupIcon(chunk.object.value)
 			if not atlas then
 				--error("[insight]: attempt to lookup invalid icon: " .. tostring(chunk.object.value))
-				--tex = "White_Square.tex"
-				--atlas = "images/White_Square.xml"
 				tex, atlas = _LookupIcon("blank")
 			end
 			obj = Image()
@@ -280,14 +278,14 @@ function RichText:SetString(str, forced)
 	self.lines = {}
 
 	--[[
-	local m = self:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
+	local m = self:AddChild(Image(DEBUG_IMAGE(true)))
 	local t = self:AddChild(Text(UIFONT, 30, "please work good"))
 	m:SetSize(t:GetRegionSize())
 	t:SetPosition(4, -1)
 	--]]
 
 	--[[
-	local m = self:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
+	local m = self:AddChild(Image(DEBUG_IMAGE(true)))
 	local t = self:AddChild(Text(UIFONT, 30, "饥饿速度降低: yep"))
 	m:SetSize(t:GetRegionSize())
 	t:SetPosition(4, -1)
@@ -432,7 +430,7 @@ end
 -- ok time for the good stuf
 function RichText:NewLine(pieces)
 	local container = self:AddChild(Widget("container" .. #self.lines + 1))
-	--local containerbg = container:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
+	--local containerbg = container:AddChild(Image(DEBUG_IMAGE(true)))
 	self.lines[#self.lines+1] = container
 
 	-- create text objects

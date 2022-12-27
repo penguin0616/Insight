@@ -132,6 +132,7 @@ local function ConfigOptionCtor(context, index)
 	root.label:SetRegionSize(labelw, labelh)
 	root.label:SetHAlign(ANCHOR_RIGHT)
 	root.label:SetPosition(-OPTION_ENTRY_WIDTH/2 + labelw/2, 0)
+	root.label:Hide()
 	--[[
 	root.label = root:AddChild(Image(DEBUG_IMAGE(true)))
 	root.label:ScaleToSize(labelw, labelh)
@@ -154,6 +155,7 @@ local function ConfigOptionCtor(context, index)
 	--root.section_label:SetTextDisabledColour(root.section_label.textcolour)
 	root.section_label:SetFont(CHATFONT)
 	root.section_label:SetTextSize(25)
+	root.section_label:Hide()
 
 	local option_width, option_height = OPTION_ENTRY_WIDTH * .45, OPTION_ENTRY_HEIGHT
 	local option_widgets = {}
@@ -230,7 +232,6 @@ local function ConfigOptionCtor(context, index)
 		end
 		
 		--mprint('gain', root.data.label)
-		--print(debugstack())
 		if not root.is_section_header then
 			root.label:SetColour(UICOLOURS.GOLD_FOCUS)
 		end
@@ -252,6 +253,7 @@ local function ConfigOptionCtor(context, index)
 		end
 	end)
 
+	----------------------------------------------------------------------------------------------
 	root.option_widgets.listbox:SetOnChangedFn(function(data, old)
 		context.screen:ChangeSetting(root.data, root.option_widgets.listbox:GetSelectedOptionsDataOnly())
 	end)
@@ -607,8 +609,8 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 
 	self.options_scroll_list = self.main:AddChild(CreateScroller(self))
 	--self.options_scroll_list.bg:SetTexture(DEBUG_IMAGE(true))
-	--self.options_scroll_list.bg:SetTint(1, 1, 1, .1)
-	self.options_scroll_list.bg:ScaleToSize(OPTION_ENTRY_WIDTH, scroller_height)
+	--self.options_scroll_list.bg:SetTint(.6, 1, .6, 1)
+	--if self.options_scroll_list:is_a(InsightScrollList) then self.options_scroll_list:RecalculateSize() else self.options_scroll_list.bg:ScaleToSize(OPTION_ENTRY_WIDTH, scroller_height) end 
 	--self.options_scroll_list:SetPosition(0, -mainh/2 + scroller_height/2) -- Not perfect unless using 7 rows with total row height = 80.
 	self.options_scroll_list:SetPosition(0, self.divider:GetPosition().y - scroller_height/2 - (leftover_space - scroller_height) / 2) -- Not perfect unless using 7 rows with total row height = 80.
 
@@ -896,6 +898,15 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 	settings.listbox = nil
 
 	-- Do vanilla settings
+
+	-- For DS, I have to reparse the data into a clean version since SaveConfigurationOptions is datadumping with slow mode.
+	-- Needs to be clean because I modify the data with setmetatable for section headers in DS.
+	local modconfigdata = settings.modconfig
+	if IS_DS then
+		local str = DataDumper(settings.modconfig, nil, true)
+		modconfigdata = loadstring(str)()
+	end
+
 	KnownModIndex:SaveConfigurationOptions(function()
 		--[[
 		UpdateHeader(" (Saved!)")
@@ -904,7 +915,7 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 			self._headertask = nil
 		end
 		--]]
-	end, self.modname, settings.modconfig, self.client_config)
+	end, self.modname, modconfigdata, self.client_config)
 	settings.modconfig = nil
 
 	-- Check if I missed anything.

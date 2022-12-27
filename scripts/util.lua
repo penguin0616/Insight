@@ -290,6 +290,20 @@ function ApplyColour(str, clr)
 	return string.format("<color=%s>%s</color>", clr, str)
 end
 
+function front(widget)
+	widget:MoveToFront()
+	for i,v in pairs(widget:GetChildren()) do
+		front(v)
+	end
+end
+
+function back(widget)
+	widget:MoveToBack()
+	for i,v in pairs(widget:GetChildren()) do
+		back(v)
+	end
+end
+
 function GetPlayerColour(arg)
 	if type(arg) == "string" then
 		local client_table = TheNet:GetClientTable()
@@ -306,6 +320,15 @@ function GetPlayerColour(arg)
 	local default = PORTAL_TEXT_COLOUR or {243/255, 244/255, 243/255, 255/255}
 
 	return Color.new(unpack(default))
+end
+
+function SetTostring(thing, fn)
+	setmetatable(thing, {
+		__index = getmetatable(thing).__index,
+		__newindex = getmetatable(thing).__newindex,
+		__call = getmetatable(thing).__call,
+		__tostring = fn
+	})
 end
 
 function DEBUG_IMAGE(bool) 
