@@ -695,8 +695,29 @@ if insightSaveData:Get("last_version") then
 else
 	-- Safe to assume this is the first instance of this file happening! 
 	insightSaveData:Set("last_version", modinfo.version)
+	
+	-- I'll keep this in for a while I think.
+	TheSim:GetPersistentString("insightmenubutton", function(load_success, str)
+		if not load_success then
+			-- One of these didn't exist, so it's fine.
+			return
+		end
+
+		local safe, pos = pcall(function() return json.decode(str).position end)
+		if not safe then
+			TheSim:ErasePersistentString("insightmenubutton")
+			return
+		end
+		
+		insightSaveData:Set("insightmenubutton_position", pos)
+		TheSim:ErasePersistentString("insightmenubutton")
+	end)
+
 	insightSaveData:Set("keybinds", {})
 	insightSaveData:Set("configuration_options", {})
+
+	
+
 	insightSaveData:Save()
 end
 

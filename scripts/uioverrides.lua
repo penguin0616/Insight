@@ -175,9 +175,14 @@ local function MakeInsightMenuButton(controls)
 	end
 
 	mb:SetOnDragFinish(function(oldpos, newpos)
-		TheSim:SetPersistentString("insightmenubutton", json.encode({ position=newpos }), false, function(...)
-			dprint("InsightButton -> DragFinish -> Save -> Callback:", ...)
-		end) -- i wonder if this will cause lag. ¯\_(ツ)_/¯
+		insightSaveData:Set("insightmenubutton_position", newpos)
+		insightSaveData:Save(function(success)
+			if success then
+				mprint("Successfully saved new menu button position.")
+			else
+				mprint("[ERROR] FAILED TO SAVE MENU BUTTON POSITION")
+			end
+		end)
 	end)
 
 	mb:SetOnClick(function()
@@ -208,23 +213,11 @@ local function MakeInsightMenuButton(controls)
 	mb:ResetPosition()
 	mb:SetDraggable(true)
 	mb:SetTooltip("Insight")
-
-	TheSim:GetPersistentString("insightmenubutton", function(load_success, str)
-		if not load_success then
-			mprint("Failed to load old menu button position:", str)
-			return
-		end
-
-		local safe, pos = pcall(function() return json.decode(str).position end)
-		if not safe then
-			mprint("Invalid JSON persistentstring in 'insightmenubutton'")
-			mprint(str)
-			return
-		end
-		
-		dprint("Loaded old position:", pos.x, pos.y, pos.z)
-		mb:SetPosition(pos.x, pos.y, pos.z)
-	end)
+	
+	local saved_pos = insightSaveData:Get("insightmenubutton_position")
+	if saved_pos ~= nil then
+		mb:SetPosition(saved_pos.x, saved_pos.y, saved_pos.z)
+	end
 
 	return mb
 end

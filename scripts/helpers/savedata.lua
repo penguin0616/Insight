@@ -102,7 +102,20 @@ end
 
 function SaveData:Save(callback, force)
 	if self.dirty or force then
-		TheSim:SetPersistentString(self.path, DataDumper(self.data, nil, self.fast_save), self.compress, callback)
+		local str = DataDumper(self.data, nil, self.fast_save)
+        
+		-- Make sure nothing funky is in here.
+		local patterns = {"=nan", "=-nan", "=inf", "=-inf", "=-1.#IND", "=1.#QNAN", "=1.#INF", "=-1.#INF"}
+		for i,v in pairs(patterns) do
+			local found = string.find(str, v, 1, true)
+			if found ~= nil then
+				local bad_data = string.sub(str, found - 100, found + 50)
+				mprint(bad_data)
+				error("Error saving InsightSaveData, corruption detected.")
+			end
+		end
+
+		TheSim:SetPersistentString(self.path, str, self.compress, callback)
 		mprint("[SaveData] Saved " .. self.path)
 		self:SetDirty(false)
 	else
