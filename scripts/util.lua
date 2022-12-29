@@ -236,6 +236,15 @@ function DoesEntityExistForClient(ent, client)
 	end
 end
 
+function IsDataValidForConfigOptions(options, data)
+	for i,v in pairs(options) do
+		if v.data == data then
+			return true
+		end
+	end
+	return false
+end
+
 function ListenForEventOnce(ent, event, eventfn, source)
 	local callback; callback = function(...)
 		eventfn(...)

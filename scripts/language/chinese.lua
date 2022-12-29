@@ -29,28 +29,6 @@ local catcoon = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
 local stale = AdjectiveToNoun(STRINGS.UI.HUD.STALE)
 --]]
 
--- in case string is missing
-local function proxy(real)
-	return setmetatable({_real = real}, {
-		__index = function(self, index)
-			print("proxy index", self, index, value)
-			local value = self._real[index]
-			if type(value) == "table" then
-				return proxy(value)
-			else
-				return value
-			end
-		end,
-		__tostring = function(self)
-			return "proxy of " .. tostring(self._real)
-		end,
-		__mode = "kv"
-	})
-end
-
---local _STRINGS = STRINGS
---local STRINGS = proxy(_STRINGS)
-
 return {
 	-- insightservercrash.lua
 	server_crash = "服务器崩溃",
@@ -88,6 +66,27 @@ return {
 	danger_announcement = {
 		generic = "[Danger Announcement]: ",
 		boss = "[Boss Announcement]: ",
+	},
+
+	presets = {
+		types = {
+			new_player = {
+				label = "New Player",
+				description = "Recommended for players new to the game."
+			},
+			simple = {
+				label = "Simple",
+				description = "A low amount of information, similar to Show Me.",
+			},
+			decent = {
+				label = "Decent",
+				description = "An average amount of information. Very similar to default settings.",
+			},
+			advanced = {
+				label = "Advanced",
+				description = "Good for people who like information.",
+			},
+		},
 	},
 
 	-------------------------------------------------------------------------------------------------------------------------

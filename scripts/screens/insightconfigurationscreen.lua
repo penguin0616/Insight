@@ -30,6 +30,7 @@ local InsightScrollList = import("widgets/insightscrolllist")
 local ITEMPLATES = import("widgets/insight_templates")
 local RichText = import("widgets/RichText")
 local ListBox = import("widgets/listbox")
+local InsightPresetScreen = import("screens/insightpresetscreen")
 
 --[[
 REGISTER_HOT_RELOAD({"widgets/listbox"}, function(imports) 
@@ -584,15 +585,51 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	-- Y starts at the bottom here, so [+ is up], [- is down].
 	self.header:SetPosition(0, mainh/2 - headerh/2)
 
+	-- Header label stating modname and configuration
 	self.header_label = self.header:AddChild(Text(HEADERFONT, 26))
 	self:UpdateHeader()
 	self.header_label:SetPosition(0, headerh/2 - self.header_label:GetSize()/2 - 4) -- 4 pixels of padding from the top
 	self.header_label:SetColour(UICOLOURS.GOLD)
+	
+	local presetw, preseth = 120, 40
+	local prefix = GetReduxButtonPrefix({presetw, preseth})
+	self.preset_button = self.header:AddChild(ImageButton("images/dst/global_redux.xml", prefix.."_normal.tex", prefix.."_hover.tex", prefix.."_disabled.tex", prefix.."_down.tex"))
+	self.preset_button.scale_on_focus = false
+	self.preset_button.move_on_click = false
+	self.preset_button:ForceImageSize(presetw, preseth)
+	self.preset_button:SetPosition(self.header_label:GetPosition() + Vector3(headerw/2 - 60))
+	self.preset_button:SetText("Presets")
+	self.preset_button:SetTextSize(25)
+	self.preset_button:SetFont(UIFONT)
+	self.preset_button:SetTextColour(UICOLOURS.WHITE) -- GOLD_CLICKABLE
+	self.preset_button:SetTextFocusColour(UICOLOURS.WHITE) -- GOLD_FOCUS
+	self.preset_button.text:SetPosition(0, -2)
+	--self.preset_button:SetImageNormalColour(1, 1, 1, .1)
+	--self.preset_button:SetImageFocusColour(.5, .5, 1, .5)
+	self.preset_button:SetOnClick(function()
+		local scr = InsightPresetScreen(GetPlayerContext(self.owner), self.modname)
+		scr:SetOnApplyFn(function()
+			self:Close(true)
+		end)
+		TheFrontEnd:PushScreen(scr)
+	end)
+	
+	
+	--[[
+	self.preset_button:SetHoverText("Presets")
+	
+	self.preset_button.icon = self.preset_button:AddChild(Image("images/loading_screen_icons.xml", "icon_tooltips.tex"))
+	self.preset_button.icon:ScaleToSize(self.preset_button.size_x, self.preset_button.size_y)
+	--]]
+	--self.preset_button.icon:SetPosition(1, 0)
 
+
+	-- Config Hover label
 	self.config_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hover for the entire configuration entry
 	self.config_hover:SetPosition(0, self.header_label:GetPosition().y - self.header_label:GetSize()/2 - self.config_hover:GetSize()/2 - 10) -- 20 pixels of padding
 	--self.config_hover:SetString("CONFIGURATION ENTRY HOVER")
 	
+	-- Option hover label
 	self.option_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hover for the selected option in the config
 	self.option_hover:SetPosition(0, -headerh/2 + self.option_hover:GetSize()/2 + 10)
 	--self.option_hover:SetString("OPTION HOVER")

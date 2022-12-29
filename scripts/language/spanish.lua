@@ -61,6 +61,27 @@ return {
 		boss = "[Boss Announcement]: ",
 	},
 
+	presets = {
+		types = {
+			new_player = {
+				label = "New Player",
+				description = "Recommended for players new to the game."
+			},
+			simple = {
+				label = "Simple",
+				description = "A low amount of information, similar to Show Me.",
+			},
+			decent = {
+				label = "Decent",
+				description = "An average amount of information. Very similar to default settings.",
+			},
+			advanced = {
+				label = "Advanced",
+				description = "Good for people who like information.",
+			},
+		},
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- alterguardianhat.lua [Prefab]
