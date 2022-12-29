@@ -225,7 +225,7 @@ local function OnHovererPostInit(hoverer)
 		local entityInformation = RequestEntityInformation(item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 		local itemDescription = nil
 
-		if item and DEBUG_SHOW_PREFAB then
+		if item and infotext_common.configs.DEBUG_SHOW_PREFAB then
 			local pos = string_find(text, "\n")
 			local prefab = " [" .. item.prefab .. "]"
 			if pos then

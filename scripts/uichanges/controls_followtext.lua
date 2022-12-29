@@ -82,7 +82,7 @@ local function UpdateFollowText(self, ...)
 		if self.primaryInsightText2 then self.primaryInsightText2:SetTarget(followerWidget.target) end
 
 		-- Show prefab if enabled
-		if DEBUG_SHOW_PREFAB and IsValidTarget(followerWidget.target) then
+		if infotext_common.configs.DEBUG_SHOW_PREFAB and IsValidTarget(followerWidget.target) then
 			local text = widgetWithEntityName.text:GetString()
 
 			local pos = string.find(text, "\n")

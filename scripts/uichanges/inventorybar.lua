@@ -59,7 +59,7 @@ local function OnInventoryBarPostInit(inventoryBar)
 	inventoryBar.actionstringtitle.SetString = function(self, str)
 		local inv_item, active_item = GetControllerSelectedInventoryItem(inventoryBar)
 
-		if (inv_item or active_item) and DEBUG_SHOW_PREFAB then
+		if (inv_item or active_item) and infotext_common.configs.DEBUG_SHOW_PREFAB then
 			str = str .. string.format(" [%s]", (inv_item or active_item).prefab)
         end
 		
