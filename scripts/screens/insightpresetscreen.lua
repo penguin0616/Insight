@@ -50,7 +50,9 @@ local InsightPresetScreen = Class(PopupDialogScreen, function(self, context, mod
 	self.context = content
 	self.modname = modname
 
-	for i, button in pairs(self.dialog.actions.items) do
+	local tbl = (IS_DST and self.dialog.actions.items) or (IS_DS and self.menu.items)
+
+	for i, button in pairs(tbl) do
 		local name = button:GetText()
 		local preset = CONFIG_PRESETS.PRESETS[name]
 

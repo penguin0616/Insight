@@ -258,7 +258,7 @@ local function GenerateConfiguration()
 
 	
 
-	mprint("CALLED FOR CONFIG GEN")
+	--mprint("CALLED FOR CONFIG GEN")
 	local config_data = deepcopy(KnownModIndex:LoadModConfigurationOptions(modname, true))
 
 	if not config_data then
@@ -632,11 +632,12 @@ end
 --==========================================================================================================================
 --==========================================================================================================================
 ClientCoreEventer:ListenForEvent("configuration_update", function()
+	--mprint("Got ConfigurationUpdate")
 	local config = GenerateConfiguration()
 
 	DEBUG_ENABLED = config["DEBUG_ENABLED"]
 
-	if IsClient() then
+	if IS_DS or IsClient() then
 		UpdatePlayerContext(localPlayer, {
 			configs = {
 				vanilla = config,

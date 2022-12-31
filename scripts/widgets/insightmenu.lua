@@ -173,7 +173,7 @@ local InsightMenu = Class(Widget,function(self)
 		end
 
 		-- digital is down boolean, analog is down but as a number 
-		if not digital then
+		if not digital and TheFrontEnd:GetActiveScreen().name == "HUD" then
 			self:Hide()
 		end
 	end)

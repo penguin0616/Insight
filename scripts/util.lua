@@ -43,7 +43,6 @@ local module = {
 	}
 }
 
-
 if IS_DS and not UICOLOURS then
 	_G.GOLD = {202/255, 174/255, 118/255, 255/255}
 	_G.GREY = {.57, .57, .57, 1}
@@ -101,6 +100,12 @@ if IS_DS then
 		if not untrusted_function then return nil, message end
 		setfenv(untrusted_function, {} )
 		return xpcall(untrusted_function, error_handler or function() end)
+	end
+
+	function _G.metapairs(t, ...)
+		local m = debug.getmetatable(t)
+		local p = m and m.__pairs or pairs
+		return p(t, ...)
 	end
 end
 
@@ -164,13 +169,13 @@ function ProcessRichTextPlainly(string)
 end
 
 function GetReduxListItemPrefix(row_width, row_height)
-    local prefix = "listitem_thick" -- 320 / 90 = 3.6
-    local ratio = row_width / row_height
-    if ratio > 6 then
-        -- Longer texture will look better at this aspect ratio.
-        prefix = "serverlist_listitem" -- 1220.0 / 50 = 24.4
-    end
-    return prefix
+	local prefix = "listitem_thick" -- 320 / 90 = 3.6
+	local ratio = row_width / row_height
+	if ratio > 6 then
+		-- Longer texture will look better at this aspect ratio.
+		prefix = "serverlist_listitem" -- 1220.0 / 50 = 24.4
+	end
+	return prefix
 end
 
 function GetReduxButtonPrefix(size)
@@ -461,9 +466,9 @@ table.insert(ornament, MakeOrnament("festivalevents5", "winter_ornamentgorge", n
 		-- yep its spiced
 		--[[
 			SPICE_GARLIC_FOOD = "Garlic {food}",
-        	SPICE_SUGAR_FOOD = "Sweet {food}",
-       		SPICE_CHILI_FOOD = "Spicy {food}",
-        	SPICE_SALT_FOOD = "Salty {food}",
+			SPICE_SUGAR_FOOD = "Sweet {food}",
+	   		SPICE_CHILI_FOOD = "Spicy {food}",
+			SPICE_SALT_FOOD = "Salty {food}",
 		--]]
 		local str = STRINGS.NAMES["SPICE_" .. spice .. "_FOOD"]
 		if str then
@@ -914,13 +919,13 @@ module.MOD_ACTION_COMPONENT_IDS = module.getupvalue(AddComponentAction, "MOD_ACT
 
 function HasVanillaActionComponent(inst, name)
 	local id = module.ACTION_COMPONENT_IDS[name]
-    if id ~= nil then
-        for i, v in ipairs(inst.actioncomponents) do
-            if v == id then
-                return true
-            end
-        end
-    end
+	if id ~= nil then
+		for i, v in ipairs(inst.actioncomponents) do
+			if v == id then
+				return true
+			end
+		end
+	end
 end
 --]]
 
