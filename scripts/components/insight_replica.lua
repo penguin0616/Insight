@@ -29,6 +29,7 @@ local cooking = require("cooking")
 
 local Entity_HasTag = Entity.HasTag
 local IS_CLIENT_HOST = IsClientHost()
+local IS_CLIENT = IsClient()
 
 --[[
 	c_chestring({'spear', 'thulecite', 'redgem', 'bluegem', 'yellowgem', 'orangegem', 'purplegem', 'rocks', 'flint'})
@@ -500,7 +501,7 @@ function Insight:BeginUpdateLoop()
 		end
 	end)
 
-	if IsClient() then
+	if IS_CLIENT then
 		-- Request Entity Information queuer
 		self.request_task = self.inst:DoPeriodicTask(0.1, function()
 			local idx = 1
@@ -904,7 +905,7 @@ function Insight:RequestInformation(entity, params)
 	local context = self.context
 	if not context then
 		-- cant do anything without context
-		--dprint('Insight:RequestEntityInformation missing context')
+		dprint('Insight:RequestEntityInformation missing context')
 		return false, "NO_CONTEXT"
 	end
 
@@ -958,7 +959,13 @@ function Insight:RequestInformation(entity, params)
 	end
 
 	--SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), entity, params)
-	self.entity_request_queue[entity] = params
+	if IS_CLIENT then
+		self.entity_request_queue[entity] = params
+	else
+		RequestEntityInformation(entity, self.inst, params)
+		return true, "ClientHost directly calling RequestEntityInformation"
+	end
+
 	return true
 end
 
@@ -1058,7 +1065,6 @@ function Insight:Update()
 	
 	-- TheWorld and related analyzation
 	local world_data = self:GetWorldInformation()
-	self:RequestInformation(self.inst, {RAW=true, debounce=1})
 
 	local player_data = self:GetInformation(self.inst)
 
