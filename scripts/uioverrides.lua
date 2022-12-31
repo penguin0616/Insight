@@ -578,7 +578,7 @@ import("uichanges/inventorybar").Initialize()
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 local InsightMenuScreen = import("screens/insightmenuscreen")
-TheInput:AddControlHandler(controlHelper.controller_scheme.open_insight_menu[1], function(down) -- CONTROL_FOCUS_UP
+TheInput:AddControlHandler(controlHelper.controller_scheme.open_insight_menu:GetPrimaryControl(), function(down) -- CONTROL_FOCUS_UP
 	if down then
 		return
 	end
@@ -606,7 +606,7 @@ if IS_DS then
 		pauseScreen.GetHelpText = function(self)
 			local str = ""
 			if TheInput:ControllerAttached() then
-				str = TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlHelper.controller_scheme.open_insight_menu[1]) .. " Insight Menu  " -- two spaces looks correct
+				str = TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlHelper.controller_scheme.open_insight_menu:GetPrimaryControl()) .. " Insight Menu  " -- two spaces looks correct
 			end
 
 			return str .. oldGetHelpText(self)

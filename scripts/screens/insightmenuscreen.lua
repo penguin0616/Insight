@@ -108,7 +108,7 @@ function InsightMenuScreen:GetHelpText()
 	local tips = {}
 
 	-- CONTROL_MENU_MISC_3
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlHelper.controller_scheme.exit[1]) .. " Go Back") -- OPEN_MENU
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlHelper.controller_scheme.exit:GetPrimaryControl()) .. " Go Back") -- OPEN_MENU
 
 	return table.concat(tips, "   ")
 end

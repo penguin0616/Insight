@@ -124,6 +124,36 @@ local InsightScrollList = Class(Widget, function(self, data)
 
 	--self.focus_forward = self.list_root
 
+	--[[
+	-- Works fine for loading in from a screen, but not gaining/losing focus.
+	self.focus_forward_fn = function()
+		-- Triggers every focus move.
+		print("!!!!!!!!!!!!!!!!!!!!!!!!!! self.focus", self.focus)
+
+		-- When a controller is active (aka tracking_mouse == false, the default focus of the parent screen gets set twice.)
+		-- Otherwise, the default focus gets set once.
+		-- That means I only want to return a widget to focus forward if it's the second call for controller.
+
+		-- self.focus is false in *both* call #1s.
+		-- It's true in the second call for controller.
+
+		if not TheFrontEnd.tracking_mouse and not self.focus then
+			self._focus_forward_primed = true
+			return
+		end
+
+		if TheFrontEnd.tracking_mouse then
+			self._focus_forward_primed = nil
+		elseif (not TheFrontEnd.tracking_mouse and self.focus and self._focus_forward_primed) then
+			self.focused_item_index = math.max(self.focused_widget_index, 1)
+			self._focus_forward_primed = nil
+			return self.item_widgets[self.focused_item_index]
+		end
+	end
+
+	self.focus_forward = self.focus_forward_fn
+	--]]
+
 	self:StartUpdating()
 end)
 
@@ -462,7 +492,7 @@ function InsightScrollList:OnUpdate(dt)
 				self.control_scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
 			else
 				self.control_scroll_repeat_time = repeat_time
-				self:OnControl(controls.scroll_up[1], true)
+				self:OnControl(controls.scroll_up:GetPrimaryControl(), true)
 			end
 
 		else
@@ -471,7 +501,7 @@ function InsightScrollList:OnUpdate(dt)
 				self.control_scroll_repeat_time = repeat_time > dt and repeat_time - dt or 0
 			else
 				self.control_scroll_repeat_time = repeat_time
-				self:OnControl(controls.scroll_down[1], true)
+				self:OnControl(controls.scroll_down:GetPrimaryControl(), true)
 			end
 		end
 	end
@@ -511,7 +541,7 @@ end
 
 function InsightScrollList:OnGainFocus()
 	-- I'm experimenting with trying to get focus to the first item to happen automatically in a safe way.
-	--mprint(self.name, "OnGainFocus ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	--mprint(self.name, "OnGainFocus ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", not TheFrontEnd.tracking_mouse)
 
 	--[[
 	self.list_root:MoveToFront()
@@ -690,7 +720,7 @@ function InsightScrollList:GetHelpText()
 
 	local tips = {}
 	if self:CanScroll() then
-		table.insert(tips, TheInput:GetLocalizedControl(controller_id, self.controller_scheme.scroll_up[1]) .. "/" .. TheInput:GetLocalizedControl(controller_id, self.controller_scheme.scroll_down[1]) .. " " .. "Scroll")
+		table.insert(tips, TheInput:GetLocalizedControl(controller_id, self.controller_scheme.scroll_up:GetPrimaryControl()) .. "/" .. TheInput:GetLocalizedControl(controller_id, self.controller_scheme.scroll_down:GetPrimaryControl()) .. " " .. "Scroll")
 	end
 
 	return table.concat(tips, "  ")

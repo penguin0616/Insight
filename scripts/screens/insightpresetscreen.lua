@@ -117,10 +117,9 @@ function InsightPresetScreen:Close()
 	TheFrontEnd:PopScreen(self)
 end
 
---[[
-function InsightConfigurationScreen:OnControl(control, down)
-	--mprint("InsightConfigurationScreen", controlHelper.Prettify(control), down)
-	if self._base.OnControl(self, control, down) then return true end
+function InsightPresetScreen:OnControl(control, down)
+	--mprint("InsightPresetScreen", controlHelper.Prettify(control), down)
+	-- PopupDialog is just a mess with it trying to infer button usage from input. Complete overwrite of base.
 
 	local scheme = controlHelper.GetCurrentScheme()
 	if not down then
@@ -131,6 +130,15 @@ function InsightConfigurationScreen:OnControl(control, down)
 		end
 	end
 end
---]]
+
+function InsightPresetScreen:GetHelpText()
+	-- Same issue as OnControl here.
+	local controller_id = TheInput:GetControllerID()
+	local t = {}
+
+    table.insert(t, TheInput:GetLocalizedControl(controller_id, controlHelper.GetCurrentScheme().exit:GetPrimaryControl()) .. " " .. STRINGS.UI.HELP.BACK)	
+
+	return table.concat(t, "  ")
+end
 
 return InsightPresetScreen

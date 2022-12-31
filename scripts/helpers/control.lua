@@ -86,6 +86,10 @@ end
 
 local function OnControl() end
 
+local function ControlGroup_GetPrimaryControl(self)
+	return self.controls[1]
+end
+
 local function ControlGroup_IsAcceptedControl(self, control)
 	for i = 1, #self.controls do
 		local v = self.controls[i]
@@ -151,6 +155,7 @@ function lib.MakeControlGroup(name, controls)
 
 	group.IsAcceptedControl = ControlGroup_IsAcceptedControl
 	group.IsAnyControlPressed = ControlGroup_IsAnyControlPressed
+	group.GetPrimaryControl = ControlGroup_GetPrimaryControl
 
 	setmetatable(group, {
 		__index = group.controls,

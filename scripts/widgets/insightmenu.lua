@@ -312,7 +312,7 @@ function InsightMenu:OnControl(control, down)
 		if scheme:IsAcceptedControl("previous_value", control) then
 			self:NextPage(-1)
 			return true
-		elseif scheme:IsAcceptedControl("next_value", control)then
+		elseif scheme:IsAcceptedControl("next_value", control) then
 			self:NextPage(1)
 			return true
 		end
@@ -326,7 +326,7 @@ function InsightMenu:GetHelpText()
 	local controller_id = TheInput:GetControllerID()
 
 	local tips = {}
-	table.insert(tips, TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.previous_value[1]) .. "/" .. TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.next_value[1]) .. " " .. "Switch Tabs")
+	table.insert(tips, TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.previous_value:GetPrimaryControl()) .. "/" .. TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.next_value:GetPrimaryControl()) .. " " .. "Switch Tabs")
 
 	return table.concat(tips, "  ")
 end
