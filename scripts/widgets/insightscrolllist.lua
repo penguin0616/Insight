@@ -576,7 +576,7 @@ function InsightScrollList:GetNextWidget(dir)
 	local next_item_index = self.getnextitemindex(dir, focused_item_index) 
 	--mprint("-----------------------------------------------getnext current focused:", focused_item_index, "|", self:GetFocusedItemIndex())
 
-	local scrolled = false
+	local something_moved = false -- This tells us whether we did something that "consumed" a focus move or not.
 
 	if next_item_index and self.items[next_item_index] then
 		-- This is the max index that is displayed on the scroller right now.
@@ -589,62 +589,59 @@ function InsightScrollList:GetNextWidget(dir)
 		)
 	--]]
 		if next_item_index <= self.displayed_start_index then
-			--dprint("@@@@@@ Gotta scroll back")
-			scrolled = true
+			something_moved = true
 			self:Scroll(-1)
 		elseif next_item_index > max_displayed_index then
-			--dprint("@@@@@@ Gotta scroll forward")
-			scrolled = true
+			something_moved = true
 			self:Scroll(1)
 		end
-
-			-- We have to scroll.
-			--local delta = (next_item_index > max_displayed_index and 1) or -1
-			--self.current_scroll_pos = self.current_scroll_pos + delta
-			--self.target_scroll_pos = self.current_scroll_pos
 		
 		if next_item_index and self.items[next_item_index] then
 			self:ForceItemFocus(next_item_index)
-			scrolled = true -- I don't get why this is done.
+			something_moved = true
 		elseif scrolled then
 			self:ForceItemFocus(focused_item_index)
 		end
 		
-		return scrolled
+		return something_moved
 	else
 		--dprint("missing next!!")
 	end
 
-	return scrolled
+	return something_moved
 end
 
 function InsightScrollList:OnFocusMove(dir, down)
-	if InsightScrollList._base.OnFocusMove(self, dir, down) then return true end
-	--rawset(_G, "s", self)
+	--mprint("------------------------------------------------------------------------------------")
 	-- down is always true
 	--mprint(self.name .. " OnFocusMove", dir, down)
 	
 	if dir == MOVE_UP or dir == MOVE_DOWN then
-		local had_to_scroll = self:GetNextWidget(dir)
-		if had_to_scroll then
-			return had_to_scroll
+		if self:GetNextWidget(dir) then
+			return true
 		end
 	end 
 
-	--[[
+	-- I'm not still not fully sure what this is for.
+
+	-- We didn't consume the focus move for anything in the scroller.
+	-- Let the normal OnFocusMove happen and see if that causes anything to move.
 	local prev_focus = self.item_widgets[self.focused_widget_index]
     local did_parent_move = InsightScrollList._base.OnFocusMove(self, dir, down)
+
     if prev_focus and did_parent_move then
+		-- It did, and we had a previous list item that was focused before the move.
         local focused_item_index = self:GetFocusedItemIndex()
+		--[[
         if not self.items[focused_item_index] then
             -- New widget is empty, undo parent's move to focus valid widget.
             prev_focus:SetFocus()
             return false
         end
+		--]]
     end
 
 	return did_parent_move
-	--]]
 end
 
 function InsightScrollList:OnControl(control, down)

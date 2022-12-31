@@ -688,6 +688,9 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 
 	self:SetDirty(false)
 	self.default_focus = self.options_scroll_list
+
+	self.options_scroll_list:SetFocusChangeDir(MOVE_UP, self.preset_button)
+	self.preset_button:SetFocusChangeDir(MOVE_DOWN, self.options_scroll_list)
 end)
 
 function InsightConfigurationScreen:UpdateHeader(ending)
