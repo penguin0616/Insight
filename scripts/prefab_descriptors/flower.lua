@@ -26,7 +26,7 @@ local function Describe(inst, context)
 		return
 	end
 
-	if context.player.components.sanity == nil or picker:HasTag("plantkin") then
+	if context.player.components.sanity == nil or context.player:HasTag("plantkin") then
 		return
 	end
 
