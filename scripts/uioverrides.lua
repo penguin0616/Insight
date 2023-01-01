@@ -257,7 +257,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	OnContextUpdate:AddListener(function(context)
 		if context.config["display_insight_menu_button"] then
 			controls.insight_menu_toggle = controls.insight_menu_toggle or controls.bottomright_root:AddChild(MakeInsightMenuButton(controls))
-			if false and not already_prompted and NEW_INSIGHT_VERSION then
+			if not already_prompted and NEW_INSIGHT_VERSION then
 				already_prompted = true
 				local exclamation = controls.insight_menu_toggle:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex"))
 				exclamation:Disable()
@@ -271,7 +271,7 @@ AddClassPostConstruct("widgets/controls", function(controls)
 				--exclamation:SetTextSelectedColour(exclamation.textcolour)
 				exclamation:SetTextDisabledColour(exclamation.textcolour)
 
-				local old = exclamation.onclick2
+				local old = controls.insight_menu_toggle.onclick2
 				controls.insight_menu_toggle:SetOnClick(function()
 					controls.insight_menu_toggle:SetOnClick(old)
 					exclamation:Kill()

@@ -632,10 +632,35 @@ function SendConfigurationToServer()
 end
 
 function NEW_VERSION_INFO_FN(button)
-	if FIRST_TIME_INSIGHT then
-		--local root = Widget("root")
-	else
+	local InsightPopupDialog = import("screens/insightpopupdialog")
+	local InsightConfigurationScreen = import("screens/insightconfigurationscreen")
+	local InsightPresetScreen = import("screens/insightpresetscreen")
 
+	if FIRST_TIME_INSIGHT then
+		local popup; popup = InsightPopupDialog(
+			"Welcome to Insight!", 
+[[This is probably your first time using Insight.
+I recommend checking out the configuration or using one of the presets!]],
+			{
+				{ text="No thanks", cb=function() 
+					popup:Close() 
+				end },
+				{ text="Configuration", cb=function() 
+					popup:Close() 
+					local scr = InsightConfigurationScreen() 
+					TheFrontEnd:PushScreen(scr)
+				end },
+				{ text="Presets", cb=function() 
+					popup:Close()
+					local scr = InsightPresetScreen(GetPlayerContext(localPlayer), modname)
+					TheFrontEnd:PushScreen(scr)
+				end },
+			}
+		)
+		popup.black:Kill()
+		TheFrontEnd:PushScreen(popup)
+	else
+		button.onclick()
 	end
 end
 
@@ -708,6 +733,8 @@ if insightSaveData:Get("last_version") then
 		-- We've retrofitted *something*.
 		insightSaveData:Save()
 	end
+
+	FIRST_TIME_INSIGHT = false
 else
 	NEW_INSIGHT_VERSION = true
 	FIRST_TIME_INSIGHT = true
@@ -740,7 +767,8 @@ else
 	insightSaveData:Save()
 end
 
-NEW_INSIGHT_VERSION = true
+--NEW_INSIGHT_VERSION = true
+--FIRST_TIME_INSIGHT = true
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Keybinds ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
