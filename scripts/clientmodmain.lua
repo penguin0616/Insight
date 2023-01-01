@@ -656,8 +656,8 @@ I recommend checking out the configuration or using one of the presets!]],
 					TheFrontEnd:PushScreen(scr)
 				end },
 			}
-		)
-		popup.black:Kill()
+		); -- Prevent ambiguous syntax
+		(popup.black.image or popup.black):SetTint(0, 0, 0, 0)
 		TheFrontEnd:PushScreen(popup)
 	else
 		button.onclick()
