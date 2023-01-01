@@ -567,6 +567,29 @@ function CombineLines(...)
 	return (lines and table.concat(lines, "\n")) or nil
 end
 
+-- This is originally from https://stackoverflow.com/a/53038524/887438
+-- I edited it to be able to pass in a value in place of a function
+-- For some reason, this runs better in a normal 5.1 than the hardcoded version in the pastebin test in the source link though. Weird.
+function ArrayPurge(t, fnKeep)
+	local is_fn = type(fnKeep) == "function"
+    local j, n = 1, #t;
+
+    for i=1,n do
+        if (is_fn and fnKeep(t, i, j)) or (not is_fn and t[i] == fnKeep) then
+            -- Move i's kept value to j's position, if it's not already there.
+            if (i ~= j) then
+                t[j] = t[i];
+                t[i] = nil;
+            end
+            j = j + 1; -- Increment position of where we'll place the next kept value.
+        else
+            t[i] = nil;
+        end
+    end
+
+    return t;
+end
+
 --- Clamps a math value.
 -- @number num (required) The number to clamp.
 -- @tparam ?number|nil min (optional) The minimum value.

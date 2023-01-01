@@ -211,6 +211,7 @@ local descriptors_ignore = {
 	
 	"lootdropper", "periodicspawner", "shearable", "mystery", "poisonable", "freezable",  -- may be interesting looking into
 	"thief", "characterspecific", "resurrector", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
+	"worldsettings", "piratespawner", "dockmanager", "undertile", -- may be interesting looking into
 
 	--notable
 	"bundlemaker", --used in bundling wrap before items
@@ -246,7 +247,7 @@ local descriptors_ignore = {
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
 	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
-	"cattoy", "updatelooper", "upgrademoduleremover", -- don't care
+	"cattoy", "updatelooper", "upgrademoduleremover", "hudindicatablemanager", "moonstormlightningmanager", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -1179,14 +1180,18 @@ function GetWorldInformation(player) -- refactor?
 
 	if IS_DST and not context.config["display_world_events"] then
 		return {
-			GUID = world.GUID,
+			--GUID = world.GUID,
 			information = nil,
 			special_data = {},
-			raw_information = {}
+			raw_information = {},
+			disabled = true
 		}
 	end
 
 	local data = GetEntityInformation(world, player, {RAW = true})
+	data.GUID = nil
+	data.information = nil
+	data.alt_information = nil
 	--[[
 		-- cant visualize this at the moment
 		{
@@ -1204,16 +1209,18 @@ function GetWorldInformation(player) -- refactor?
 	end
 
 	--[[
-	for i = 1, 7 do
-		local x = "test" .. i
-		data.special_data[x] = { 
-			worldly=true, 
-			icon = {
-				atlas = "images/Blueprint.xml",
-				tex = "Blueprint.tex",
-			},
-		}
-		data.raw_information[x] = x
+	if GetTime() % 5 < 3 then
+		for i = 1, 7 do
+			local x = "test" .. i
+			data.special_data[x] = { 
+				worldly=true, 
+				icon = {
+					atlas = "images/Blueprint.xml",
+					tex = "Blueprint.tex",
+				},
+			}
+			data.raw_information[x] = x
+		end
 	end
 	--]]
 	

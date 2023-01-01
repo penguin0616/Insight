@@ -59,6 +59,7 @@ return {
 		--boss = "[Boss Announcement]: ",
 	},
 	
+	-- Presets
 	presets = {
 		types = {
 			new_player = {
@@ -77,6 +78,14 @@ return {
 				--label = "Advanced",
 				--description = "Good for people who like information.",
 			},
+		},
+	},
+
+	-- Insight Menu
+	insightmenu = {
+		tabs = {
+			--world = "World",
+			--player = "Player",
 		},
 	},
 

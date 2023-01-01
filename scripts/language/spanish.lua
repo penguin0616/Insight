@@ -61,6 +61,7 @@ return {
 		boss = "[Boss Announcement]: ",
 	},
 
+	-- Presets
 	presets = {
 		types = {
 			new_player = {
@@ -82,6 +83,14 @@ return {
 		},
 	},
 
+	-- Insight Menu
+	insightmenu = {
+		tabs = {
+			--world = "World",
+			--player = "Player",
+		},
+	},
+	
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- alterguardianhat.lua [Prefab]

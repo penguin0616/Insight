@@ -25,7 +25,7 @@ local ImageButton = require "widgets/imagebutton"
 local InsightPage = import("widgets/insightpage")
 local InsightConfigurationScreen = import("screens/insightconfigurationscreen")
 
-local tabs = {"World", "Player"}
+local tabs = {"world", "player"}
 
 --
 util.classTweaker.TrackClassInstances(InsightConfigurationScreen)
@@ -43,6 +43,8 @@ local InsightMenu = Class(Widget,function(self)
 	self.bg = self:AddChild(Image("images/options_bg.xml", "options_panel_bg_frame.tex")) -- data/images
 	self.bg:SetSize(460, 380)
 	--]]
+
+	local strs = language.AssumeLanguageTable()
 
 	self.pages = {}
 	self.current_page = nil
@@ -94,7 +96,8 @@ local InsightMenu = Class(Widget,function(self)
 		tab:SetTextSelectedColour(unpack(WHITE))
 		tab:SetFont(UIFONT)
 		tab:SetTextSize(30)
-		tab:SetText(v)
+		tab:SetText(strs.insightmenu.tabs[v] or v)
+		tab.name = v
 
 		-- Functional stuff
 		tab.menu = self
@@ -145,14 +148,7 @@ local InsightMenu = Class(Widget,function(self)
 	self.pages[3] = false
 	self.tabs[3] = self.config_button
 
-	for i,v in pairs(self.tabs) do
-		if self.tabs[i+1] then
-			v:SetFocusChangeDir(MOVE_RIGHT, self.tabs[i+1])
-		end
-		if self.tabs[i-1] then
-			v:SetFocusChangeDir(MOVE_LEFT, self.tabs[i-1])
-		end
-	end
+	self:DoFocusHookups()
 
 	--[[
 	self.tabs[1]:SetFocusChangeDir(MOVE_RIGHT, self.tabs[2])
@@ -182,6 +178,25 @@ local InsightMenu = Class(Widget,function(self)
 		GetLocalInsight(localPlayer):MaintainMenu(self)
 	end
 end)
+
+function InsightMenu:DoFocusHookups()
+	local available = {}
+	for i,v in pairs(self.tabs) do
+		if v.enabled then
+			table.insert(available, v)
+		end
+		v:ClearFocusDirs()
+	end
+
+	for i,v in pairs(available) do
+		if available[i+1] then
+			v:SetFocusChangeDir(MOVE_RIGHT, available[i+1])
+		end
+		if available[i-1] then
+			v:SetFocusChangeDir(MOVE_LEFT, available[i-1])
+		end
+	end
+end
 
 function InsightMenu:Activate()
 	self:SetPage(1)
@@ -226,6 +241,14 @@ function InsightMenu:NextPage(inc)
 	
 	local next = math.clamp(self.page_num + inc, 1, #self.pages)
 	self:SetPage(next)
+end
+
+function InsightMenu:GetTabByName(name)
+	for i,v in pairs(self.tabs) do
+		if v.name:lower() == name:lower() then
+			return v
+		end
+	end
 end
 
 function InsightMenu:GetPageByName(name)
@@ -307,18 +330,9 @@ function InsightMenu:OnControl(control, down)
 		end
 	end
 
-	--[[
-	if down then
-		if scheme:IsAcceptedControl("previous_value", control) then
-			self:NextPage(-1)
-			return true
-		elseif scheme:IsAcceptedControl("next_value", control) then
-			self:NextPage(1)
-			return true
-		end
-	end
-	--]]
-
+	-- back == up == 31
+	-- fwd == down == 32
+	
 	return self._base.OnControl(self, control, down)
 end
 
@@ -332,35 +346,40 @@ function InsightMenu:GetHelpText()
 end
 
 function InsightMenu:ApplyInformation(world_data, player_data)
+	local world_tab = self:GetTabByName("world")
 	local world_page = self:GetPageByName("world")
 	local player_page = self:GetPageByName("player")
 
 	if world_page and world_data then
-		for component, desc in pairs(world_data.raw_information) do
-			if world_data.special_data[component].worldly == true then
-				--mprint(component, desc)
-				desc = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", world_data.special_data[component].from or "cmp", component) .. desc) or desc
-				if world_page:GetItem(component) == nil then
-					--mprint("adding insightmenu segment for:", component)
-					world_page:AddItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component })
-				else
-					world_page:EditItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component })
+		if world_data.disabled then
+			--[[
+			world_tab:Disable()
+			if self:GetCurrentPage() == world_page then
+				self:DoFocusHookups()
+			end	
+			--]]
+		else
+			--world_tab:Enable()
+			for component, desc in pairs(world_data.raw_information) do
+				if world_data.special_data[component].worldly == true then
+					--mprint(component, desc)
+					desc = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", world_data.special_data[component].from or "cmp", component) .. desc) or desc
+					if world_page:GetItem(component) == nil then
+						--mprint("adding insightmenu segment for:", component)
+						world_page:AddItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component })
+					else
+						world_page:EditItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component })
+					end
 				end
 			end
 		end
+
 		--mprint'--------------------------------------------'
-		local to_remove = {}
 
-		for _, item in pairs(world_page:GetItems()) do
-			if world_data.raw_information[item.key] == nil then
-				table.insert(to_remove, item.key)
-			end
-		end
-
-		while #to_remove > 0 do
-			world_page:RemoveItem(to_remove[1])
-			table.remove(to_remove, 1)
-		end
+		ArrayPurge(world_page:GetItems(), function(t, i, j)
+			local key = t[i].key
+			return world_data.raw_information[key] ~= nil
+		end)
 	end
 
 	-- player page
@@ -415,45 +434,12 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		end
 		--]]
 
-		local to_remove = {}
-
-		for _, item in pairs(player_page:GetItems()) do
-			if did[item.key] == nil then
-				table.insert(to_remove, item.key)
-			end
-		end
-
-		while #to_remove > 0 do
-			player_page:RemoveItem(to_remove[1])
-			table.remove(to_remove, 1)
-		end
+		ArrayPurge(player_page:GetItems(), function(t, i, j)
+			local key = t[i].key
+			return did[key] ~= nil
+		end)
 	end
 end
---[==[
-function InsightMenu:OnControl(control, down)
-	--print(control, down)
-	--[[
-	if not down and (control == CONTROL_PAUSE or (TheInput:ControllerAttached() and control == CONTROL_CANCEL)) then
-		-- Can also check for control == CONTROL_CANCEL, but I'm only checking for pause on keyboard so it'll prevent the pause menu from showing up.
-		if self.shown then
-			print("hiding")
-			self:Hide()
-			return true
-		end
-	end
-	--]]
-	--print(control, down, "|||||||||||||||", CONTROL_SCROLLBACK, CONTROL_SCROLLFWD)
-	--self:GetCurrentPage():OnControl(...)
-	--print(debugstack())
-	
-	-- back == up == 31
-	-- fwd == down == 32
-
-	--return old(self, ...)
-	
-	return InsightMenu._base.OnControl(self, control, down)
-end
---]==]
 
 --[[
 function InsightMenu:OnRawKey(...)

@@ -29,6 +29,8 @@ local languages = {
 	br = "portuguese"
 }
 
+local languageTables = {} -- Populated in initialize
+
 local __metatable = "[Insight] The metatable is locked."
 --------------------------------------------------------------------------
 --[[ Functions ]]
@@ -55,6 +57,9 @@ local function LinkTables(tbl, fallback)
 	end
 end
 
+local function AssumeLanguageTable()
+	return languageTables[LOC.GetLocaleCode()] or languageTables.en
+end
 
 local function main(config, locale)
 	local usingIcons = config["info_style"] == "icon"
@@ -98,7 +103,6 @@ end
 --[[ Initialize ]]
 --------------------------------------------------------------------------
 -- These are languagetables meant to be accessible externally. They fallback to english.
-local languageTables = {}
 for code, lang in pairs(languages) do
 	languageTables[code] = LoadLanguage(lang)
 end
@@ -110,7 +114,9 @@ for code, tbl in pairs(languageTables) do
 end
 
 -- Thing to return
-local LanguageProxy = newproxy(true)
+local LanguageProxy = setmetatable({
+	AssumeLanguageTable = AssumeLanguageTable
+}, {})
 local Language = getmetatable(LanguageProxy)
 
 Language.__index = languageTables
