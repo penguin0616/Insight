@@ -179,7 +179,7 @@ function InsightPage:AddItem(key, data)
 
 	data.key = key
 
-	table.insert(self.items, data)
+	self.items[#self.items+1] = data
 	self:Refresh()
 end
 
@@ -195,8 +195,8 @@ function InsightPage:EditItem(key, data)
 			item.icon = data.icon -- in case they are nil
 			for j,k in pairs(data) do
 				item[j] = k
-				self:Refresh()
 			end
+			self:Refresh()
 			return
 		end
 	end
