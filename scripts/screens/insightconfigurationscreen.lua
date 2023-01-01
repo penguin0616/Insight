@@ -691,6 +691,10 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 
 	self.options_scroll_list:SetFocusChangeDir(MOVE_UP, self.preset_button)
 	self.preset_button:SetFocusChangeDir(MOVE_DOWN, self.options_scroll_list)
+
+	self.force_exit_listener = ClientCoreEventer:ListenForEventOnce("force_insightui_exit", function()
+		self:Close(true)
+	end)
 end)
 
 function InsightConfigurationScreen:UpdateHeader(ending)
@@ -1030,6 +1034,10 @@ function InsightConfigurationScreen:Close(forced)
 
 		TheFrontEnd:PushScreen(popup)
 	else
+		if self.force_exit_listener then
+			self.force_exit_listener:Remove()
+		end
+
 		TheFrontEnd:PopScreen(self)
 	end
 end

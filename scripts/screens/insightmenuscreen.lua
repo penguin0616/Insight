@@ -43,6 +43,10 @@ local InsightMenuScreen = Class(Screen, function(self)
 	self.menu = self.root:AddChild(InsightMenu())
 	self.menu:SetPosition(0, 0)
 	self.menu:ActivateFromScreen()
+
+	self.force_exit_listener = ClientCoreEventer:ListenForEventOnce("force_insightui_exit", function()
+		self:Close()
+	end)
 end)
 
 --[[
@@ -72,15 +76,6 @@ function InsightMenuScreen:OnControl(control, down)
 	end
 
 	if not down then
-		--[[
-		if control == MOVE_LEFT then
-			self.menu:NextPage(-1)
-			return true
-		elseif control == MOVE_RIGHT then
-			self.menu:NextPage(1)
-			return true
-		end
-		--]]
 		if controlHelper.controller_scheme:IsAcceptedControl("exit", control) then
 			self:Close()
 			return true
@@ -89,18 +84,13 @@ function InsightMenuScreen:OnControl(control, down)
 
 	--mprint("Delegating", controlHelper.Prettify(control), down)
 	return self._base.OnControl(self, control, down)
-	--[[
-	if control == MOVE_UP then
-		--self.menu:GetCurrentPage():ScrollUp()
-		self.menu:DelegateControl(control, down)
-	elseif control == MOVE_DOWN then
-		--self.menu:GetCurrentPage():ScrollDown()
-		self.menu:DelegateControl(control, down)
-	end
-	--]]
 end
 
 function InsightMenuScreen:Close()
+	if self.force_exit_listener then
+		self.force_exit_listener:Remove()
+	end
+
 	TheFrontEnd:PopScreen(self) -- safety?
 end
 

@@ -27,6 +27,7 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --==========================================================================================================================
 local CraftSlot = require("widgets/craftslot")
 local IngredientUI = require("widgets/ingredientui")
+local ImageButton = require("widgets/imagebutton")
 local InsightButton = import("widgets/insightbutton")
 local RichText = import("widgets/RichText")
 local Text = require"widgets/text"
@@ -246,10 +247,37 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	controls.insight_menu:SetPosition(0, -400)
 	controls.insight_menu:Hide()
 	controls.inst:DoTaskInTime(0, function() controls.insight_menu:Activate() end)
+
+	controls.insight_menu.force_exit_listener = ClientCoreEventer:ListenForEvent("force_insightui_exit", function()
+		controls.insight_menu:Hide()
+	end)
 	
+	local already_prompted = false
+
 	OnContextUpdate:AddListener(function(context)
 		if context.config["display_insight_menu_button"] then
 			controls.insight_menu_toggle = controls.insight_menu_toggle or controls.bottomright_root:AddChild(MakeInsightMenuButton(controls))
+			if false and not already_prompted and NEW_INSIGHT_VERSION then
+				already_prompted = true
+				local exclamation = controls.insight_menu_toggle:AddChild(ImageButton("images/dst/global_redux.xml", "blank.tex"))
+				exclamation:Disable()
+				exclamation:SetText("!")
+				exclamation:SetTextSize(35)
+				exclamation:SetFont(UIFONT)
+				exclamation:SetDisabledFont(exclamation.font)
+				exclamation:SetPosition(0, 64/2 + 35/2)
+				exclamation:SetTextColour(UICOLOURS.RED)
+				exclamation:SetTextFocusColour(UICOLOURS.GOLD_FOCUS)
+				--exclamation:SetTextSelectedColour(exclamation.textcolour)
+				exclamation:SetTextDisabledColour(exclamation.textcolour)
+
+				local old = exclamation.onclick2
+				controls.insight_menu_toggle:SetOnClick(function()
+					controls.insight_menu_toggle:SetOnClick(old)
+					exclamation:Kill()
+					NEW_VERSION_INFO_FN(controls.insight_menu_toggle)
+				end)
+			end
 		else
 			if controls.insight_menu_toggle then
 				controls.insight_menu_toggle:Kill()
@@ -258,7 +286,10 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		end
 
 		-- localPlayer isn't ready yet upon widget ctor, so the widget won't handle this automatically.
-		GetLocalInsight(controls.owner):MaintainMenu(controls.insight_menu) 
+		local insight = GetLocalInsight(controls.owner)
+		if not table.contains(insight.menus, controls.insight_menu) then
+			insight:MaintainMenu(controls.insight_menu) 
+		end
 	end)
 
 	--[[

@@ -51,7 +51,6 @@ local InsightPresetScreen = Class(PopupDialogScreen, function(self, context, mod
 	self.modname = modname
 
 	local tbl = (IS_DST and self.dialog.actions.items) or (IS_DS and self.menu.items)
-
 	for i, button in pairs(tbl) do
 		local name = button:GetText()
 		local preset = CONFIG_PRESETS.PRESETS[name]
@@ -68,6 +67,10 @@ local InsightPresetScreen = Class(PopupDialogScreen, function(self, context, mod
 		button:SetHoverText(strings.description, {offset_y = 60})
 		button.text, button._text = button._text, nil
 	end
+
+	self.force_exit_listener = ClientCoreEventer:ListenForEventOnce("force_insightui_exit", function()
+		self:Close()
+	end)
 end)
 
 function InsightPresetScreen:SetOnApplyFn(fn)
@@ -114,6 +117,10 @@ function InsightPresetScreen:ApplyPreset(name)
 end
 
 function InsightPresetScreen:Close()
+	if self.force_exit_listener then
+		self.force_exit_listener:Remove()
+	end
+	
 	TheFrontEnd:PopScreen(self)
 end
 

@@ -50,7 +50,10 @@ function EventListener:Run(...)
 	self.fn(...)
 
 	if self.weak then
-		self:Remove()
+		-- Make sure we haven't been removed already by the fn.
+		if self.valid then
+			self:Remove()
+		end
 	end
 end
 
@@ -155,9 +158,17 @@ function Eventer:GetEvent(eventName)
 	end
 end
 
---- You can skip putting a name it'll be given a normal one.
-function Eventer:ListenForEvent(eventName, fn, weak)
-	return self:AddEventListener(nil, eventName, fn, weak)
+-- You can skip putting a name for both of these Listens, they'll be given a normal one.
+function Eventer:ListenForEvent(eventName, fn, oldweak)
+	if oldweak then
+		error("Use ListenForEventOnce", 2)
+	end
+	
+	return self:AddEventListener(nil, eventName, fn, false)
+end
+
+function Eventer:ListenForEventOnce(eventName, fn)
+	return self:AddEventListener(nil, eventName, fn, true)
 end
 
 function Eventer:AddEventListener(name, eventName, fn, weak)

@@ -598,6 +598,11 @@ local function LoadLocalPlayer(player)
 		--]]
 		OnLocalPlayerPostInit:Push(insight, context)
 		OnContextUpdate:Push(context)
+		-- attacked, healthdelta
+		player:ListenForEvent("attacked", function()
+			ClientCoreEventer:PushEvent("force_insightui_exit")
+		end)
+
 		mprint("Initializers complete" ..  ((SIM_DEV and "...") or "!"))
 
 		if IS_DST then 
@@ -624,6 +629,14 @@ function SendConfigurationToServer()
 			server_deaths = GetMorgueDeathsForWorld(TheNet:GetServerName()),
 		},
 	}))
+end
+
+function NEW_VERSION_INFO_FN(button)
+	if FIRST_TIME_INSIGHT then
+		--local root = Widget("root")
+	else
+
+	end
 end
 
 --==========================================================================================================================
@@ -678,7 +691,9 @@ insightSaveData:Load()
 -- Keep track of last played save version
 -- Also a good indicator that the file exists.
 if insightSaveData:Get("last_version") then
+	-- Technically both versions should go through TrimString(str):lower()
 	local is_newer = modinfo.version:match("%d+.%d+.%d+") > insightSaveData:Get("last_version")
+	NEW_INSIGHT_VERSION = is_newer
 
 	-- Retrofitting
 	if insightSaveData:Get("keybinds") == nil then
@@ -694,6 +709,9 @@ if insightSaveData:Get("last_version") then
 		insightSaveData:Save()
 	end
 else
+	NEW_INSIGHT_VERSION = true
+	FIRST_TIME_INSIGHT = true
+
 	-- Safe to assume this is the first instance of this file happening! 
 	insightSaveData:Set("last_version", modinfo.version)
 	
@@ -721,6 +739,8 @@ else
 
 	insightSaveData:Save()
 end
+
+NEW_INSIGHT_VERSION = true
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Keybinds ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
