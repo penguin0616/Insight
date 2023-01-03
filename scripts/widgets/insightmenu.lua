@@ -345,6 +345,11 @@ function InsightMenu:GetHelpText()
 	return table.concat(tips, "  ")
 end
 
+local function PurgeFn(t, i, j, corresponding_tbl_with_keys)
+	local key = t[i].key
+	return corresponding_tbl_with_keys[key] ~= nil
+end
+
 function InsightMenu:ApplyInformation(world_data, player_data)
 	local world_tab = self:GetTabByName("world")
 	local world_page = self:GetPageByName("world")
@@ -376,10 +381,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 
 		--mprint'--------------------------------------------'
 
-		ArrayPurge(world_page:GetItems(), function(t, i, j)
-			local key = t[i].key
-			return world_data.raw_information[key] ~= nil
-		end)
+		ArrayPurge(world_page:GetItems(), PurgeFn, world_data.raw_information)
 	end
 
 	-- player page
@@ -434,10 +436,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		end
 		--]]
 
-		ArrayPurge(player_page:GetItems(), function(t, i, j)
-			local key = t[i].key
-			return did[key] ~= nil
-		end)
+		ArrayPurge(player_page:GetItems(), PurgeFn, did)
 	end
 end
 
