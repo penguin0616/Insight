@@ -380,6 +380,10 @@ local function ConfigOptionCtor(context, index)
 		else
 			errorf("Unrecognized option type '%s'", self:GetConfigType())
 		end
+
+		if self.focus then
+			self:ApplyDescription()
+		end
 	end
 
 	root.UpdateHoverText = function(self)

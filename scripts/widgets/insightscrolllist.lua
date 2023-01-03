@@ -382,17 +382,19 @@ function InsightScrollList:ConvertScrollPosToPixels(pos)
 end
 
 function InsightScrollList:Scroll(amount)
+	local old = self.target_scroll_pos
 	self.target_scroll_pos = math.clamp(self.target_scroll_pos + amount, 0, self.end_scroll_pos)
+	return old ~= self.target_scroll_pos
 end
 
 --- Mostly for external cases where they shouldn't need to know how much to scroll by.
 function InsightScrollList:ScrollDown()
-	self:Scroll(self.scroll_per_click)
+	return self:Scroll(self.scroll_per_click)
 end
 
 --- Mostly for external cases where they shouldn't need to know how much to scroll by.
 function InsightScrollList:ScrollUp()
-	self:Scroll(-self.scroll_per_click)
+	return self:Scroll(-self.scroll_per_click)
 end
 
 --- Scroll to an item index, leaving it at the topmost position if possible.
@@ -645,6 +647,12 @@ function InsightScrollList:OnFocusMove(dir, down)
 	--mprint("------------------------------------------------------------------------------------")
 	-- down is always true
 	--mprint(self.name .. " OnFocusMove", dir, down)
+
+	-- We need to call part of base to make sure none of the child widgets need to move.
+	if not self.focus then return false end
+    for k,v in pairs (self.children) do
+        if v.focus and v:OnFocusMove(dir, down) then return true end
+    end
 	
 	if dir == MOVE_UP or dir == MOVE_DOWN then
 		if self:GetNextWidget(dir) then
@@ -677,7 +685,7 @@ end
 function InsightScrollList:OnControl(control, down)
 	--mprint('yes')
 	if InsightScrollList._base.OnControl(self, control, down) then return true end
-	--dprint(self.name, controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
+	dprint(self.name, controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
 	--[[
 	This was happening too.
 	CONTROL_ZOOM_IN = 9
@@ -690,23 +698,32 @@ function InsightScrollList:OnControl(control, down)
 		if down then -- down
 			local accepted = false
 
+			local moved = false
 			if controls:IsAcceptedControl("scroll_up", control) then
 				--print("Scrolling up.")
-				self:Scroll(-self.scroll_per_click)
+				local amt = -self.scroll_per_click
+				if TheInput:ControllerAttached() then amt = amt / 2 end
+				moved = self:Scroll(amt)
+
 				accepted = true
 			elseif controls:IsAcceptedControl("scroll_down", control) then
 				--print("Scrolling down.")
-				self:Scroll(self.scroll_per_click)
+				local amt = self.scroll_per_click
+				if TheInput:ControllerAttached() then amt = amt / 2 end
+				moved = self:Scroll(amt)
+
 				accepted = true
 			elseif controls:IsAcceptedControl("page_up", control) then
-				self:Scroll(-self.num_visible_rows)
+				moved = self:Scroll(-self.num_visible_rows)
+
 				accepted = true
 			elseif controls:IsAcceptedControl("page_down", control) then
-				self:Scroll(self.num_visible_rows)
+				moved = self:Scroll(self.num_visible_rows)
+
 				accepted = true
 			end
 
-			if accepted then
+			if moved then
 				TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_mouseover", nil, ClickMouseoverSoundReduction and ClickMouseoverSoundReduction() or nil)
 				return true
 			end

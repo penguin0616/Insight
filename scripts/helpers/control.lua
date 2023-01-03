@@ -262,8 +262,8 @@ if IS_DST then
 		exit = {CONTROL_OPEN_CRAFTING, CONTROL_CANCEL},
 		open_insight_menu = {CONTROL_OPEN_CRAFTING},
 
-		scroll_up = {CONTROL_INVENTORY_UP},
-		scroll_down = {CONTROL_INVENTORY_DOWN},
+		scroll_up = {CONTROL_SCROLLBACK},
+		scroll_down = {CONTROL_SCROLLFWD},
 		previous_value = {CONTROL_PREVVALUE, CONTROL_FOCUS_LEFT},
 		next_value = {CONTROL_NEXTVALUE, CONTROL_FOCUS_RIGHT},
 
