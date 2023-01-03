@@ -24,9 +24,15 @@ local configs_to_load = {
 }
 
 local module = {
-	configs = {},
+	configs = {
+		alt_visible_time = 7, --  Not a real config.
+	},
 	new_configs = ClientCoreEventer:CreateEvent("new_configs"),
 }
+
+module.ShouldShowInsightText = function(last_inspect_time)
+	return (not module.configs.alt_only_information) or (GetTime() - last_inspect_time < module.configs.alt_visible_time) -- GetStaticTime?
+end
 
 module.Initialize = function()
 	if module.initialized then

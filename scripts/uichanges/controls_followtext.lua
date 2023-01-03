@@ -18,7 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local module = {}
+local module = {
+	last_inspect_time = -5e5
+}
 
 local FollowText = require("widgets/followtext")
 local RichText = import("widgets/RichText")
@@ -31,6 +33,10 @@ end
 
 local function IsValidTarget(target)
 	return target ~= localPlayer
+end
+
+local function OnInspectPressed(down)
+	module.last_inspect_time = GetTime() -- Maybe GetStaticTime()
 end
 
 local function UpdateFollowText(self, ...)
@@ -51,12 +57,16 @@ local function UpdateFollowText(self, ...)
 		itemInActions = self.playeractionhint.shown
 	end
 
+	local should_be_shown = infotext_common.ShouldShowInsightText(module.last_inspect_time)
+
 	if itemIndex then
-		if not self.primaryInsightText.shown then
+		--if not self.primaryInsightText.shown then
+		if self.primaryInsightText.shown ~= module.should_be_shown then
+			local m = should_be_shown and "Show" or "Hide"
 			--print("Showing InsightText")
-			self.primaryInsightText:Show()
+			self.primaryInsightText[m](self.primaryInsightText)
 			if self.primaryInsightText2 then
-				self.primaryInsightText2:Show()
+				self.primaryInsightText2[m](self.primaryInsightText2)
 			end
 		end
 
@@ -247,6 +257,7 @@ module.Initialize = function()
 
 	module.initialized = true
 	AddClassPostConstruct("widgets/controls", OnControlsPostInit)
+	TheInput:AddControlHandler(CONTROL_INSPECT, OnInspectPressed)
 end
 
 return module

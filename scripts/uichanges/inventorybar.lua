@@ -18,7 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local module = {}
+local module = {
+	last_inspect_time = -5e5
+}
 
 local RichText = import("widgets/RichText")
 local infotext_common = import("uichanges/infotext_common").Initialize()
@@ -37,6 +39,10 @@ local function trim(str)
 	return str:sub(1, s-1)
 end
 
+local function OnInspectPressed(down)
+	module.last_inspect_time = GetTime() -- Maybe GetStaticTime()
+end
+
 local function GetControllerSelectedInventoryItem(inventoryBar)
 	local inv_item = inventoryBar:GetCursorItem()
 	local active_item = inventoryBar.cursortile ~= nil and inventoryBar.cursortile.item or nil
@@ -49,6 +55,15 @@ local function GetControllerSelectedInventoryItem(inventoryBar)
 	end
 
 	return inv_item, active_item
+end
+
+local function UpdateInsightTextVisibility(txt)
+	local should_be_shown = infotext_common.ShouldShowInsightText(module.last_inspect_time)
+	if txt.shown ~= should_be_shown then
+		local m = should_be_shown and "Show" or "Hide"
+		--print("Showing InsightText")
+		txt[m](txt)
+	end
 end
 
 local function OnInventoryBarPostInit(inventoryBar)
@@ -140,9 +155,14 @@ local function OnInventoryBarPostInit(inventoryBar)
 
 	local oldActionStringBody_SetString = inventoryBar.actionstringbody.SetString
 	inventoryBar.actionstringbody.SetString = function(self, text)
-		if not localPlayer then
-			return
+		if localPlayer then
+			UpdateInsightTextVisibility(inventoryBar.insightText)
 		end
+
+		if not localPlayer or not inventoryBar.insightText.shown then
+			return oldActionStringBody_SetString(self, text .. " ")
+		end
+
 		
 		-- Get Current Item
 		local inv_item, active_item = GetControllerSelectedInventoryItem(inventoryBar)
@@ -197,6 +217,7 @@ module.Initialize = function()
 
 	module.initialized = true
 	AddClassPostConstruct("widgets/inventorybar", OnInventoryBarPostInit)
+	TheInput:AddControlHandler(CONTROL_INVENTORY_EXAMINE, OnInspectPressed)
 end
 
 return module
