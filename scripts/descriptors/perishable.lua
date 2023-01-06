@@ -191,7 +191,7 @@ local function DST_Perish(self, bundle)
 	end
 
 	-- PERISHABLE only
-	if self and self.localPerishMultiplyer then -- for some reason, some modders like to remove the field for one reason or another
+	if self and self.localPerishMultiplyer and type(self.localPerishMultiplyer) == "number" then -- for some reason, some modders like to remove the field for one reason or another
 		modifier = modifier * self.localPerishMultiplyer
 	end
 
