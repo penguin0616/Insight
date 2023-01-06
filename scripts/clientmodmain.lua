@@ -36,7 +36,6 @@ controlHelper = import("helpers/control")
 localPlayer = nil
 currentlySelectedItem = nil
 shard_players = {}
-highlighting = import("highlighting")
 
 local delayed_actives = {}
 insight_subscribed = IS_DS or KnownModIndex.savedata.known_mods["workshop-2189004162"].enabled ~= nil
@@ -55,6 +54,8 @@ OnLocalPlayerPostInit.onlisteneradded = function(listener)
 end
 OnLocalPlayerRemove = ClientCoreEventer:CreateEvent("OnLocalPlayerRemove")
 OnContextUpdate = ClientCoreEventer:CreateEvent("OnContextUpdate")
+
+highlighting = import("highlighting")
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -486,44 +487,48 @@ local function AttachBlinkRangeIndicator(player)
 		return
 	end
 
-	player.blink_indicator = SpawnPrefab("insight_range_indicator")
-	player.blink_indicator:Attach(player)
-	player.blink_indicator:SetRadius(ACTIONS.BLINK.distance / WALL_STUDS_PER_TILE)
-	player.blink_indicator:SetColour(Color.fromHex(Insight.COLORS.VEGGIE))
-	player:DoTaskInTime(0, function() player.blink_indicator:SetVisible(CanBlink(player)) end)
+	local indicator = SpawnPrefab("insight_range_indicator")
+	local events = {}
+	indicator._events = events
+	player.blink_indicator = indicator
+
+	indicator:Attach(player)
+	indicator:SetRadius(ACTIONS.BLINK.distance / WALL_STUDS_PER_TILE)
+	indicator:SetColour(Color.fromHex(Insight.COLORS.VEGGIE))
+	player:DoTaskInTime(0, function() indicator:SetVisible(CanBlink(player)) end)
 
 	-- Inventory:Equip {item=item, eslot=eslot}, Inventory:Unequip {item=item, eslot=equipslot, (server only) slip=slip}
-	player:ListenForEvent("equip", function(inst, data)
+	events[#events+1] = player:ListenForEvent("equip", function(inst, data)
 		--mprint("equip")
 		if data.eslot == EQUIPSLOTS.HANDS then
-			player.blink_indicator:SetVisible(CanBlink(inst))
+			indicator:SetVisible(CanBlink(inst))
 		end
 	end)
 
-	player:ListenForEvent("unequip", function(inst, data)
+	events[#events+1] = player:ListenForEvent("unequip", function(inst, data)
 		--mprint("unequip")
 		if data.eslot == EQUIPSLOTS.HANDS then
-			player.blink_indicator:SetVisible(CanBlink(inst))
+			indicator:SetVisible(CanBlink(inst))
 		end
 	end)
 
-	player:ListenForEvent("itemget", function(inst, data)
+	events[#events+1] = player:ListenForEvent("itemget", function(inst, data)
 		--mprint("itemget")
 		if data.item.prefab == "wortox_soul" then
-			player.blink_indicator:SetVisible(CanBlink(inst))
+			indicator:SetVisible(CanBlink(inst))
 		end
 	end)
 
-	player:ListenForEvent("itemlose", function(inst, data)
+	events[#events+1] = player:ListenForEvent("itemlose", function(inst, data)
 		--mprint("itemlose")
 		-- {slot = slot}
-		player.blink_indicator:SetVisible(CanBlink(inst))
+		indicator:SetVisible(CanBlink(inst))
 	end)
 
-	player:ListenForEvent("newactiveitem", function(inst, data)
+	events[#events+1] = player:ListenForEvent("newactiveitem", function(inst, data)
 		--mprint("newactiveitem")
 		-- {item = item}
-		player.blink_indicator:SetVisible(CanBlink(inst))
+		indicator:SetVisible(CanBlink(inst))
 	end)
 end
 
@@ -703,6 +708,9 @@ OnContextUpdate:AddListener("blinkrange_attacher", function(context)
 	else
 		if localPlayer.blink_indicator then
 			localPlayer.blink_indicator:Remove()
+			for i,v in pairs(localPlayer.blink_indicator._events) do
+				v:Remove()
+			end
 			localPlayer.blink_indicator = nil
 		end
 	end
