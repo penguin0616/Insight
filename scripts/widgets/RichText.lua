@@ -420,11 +420,11 @@ function RichText:GetRegionSize()
 end
 
 function RichText:SetRegionSize()
-	error("RichText does not support SetRegionSize.")
+	error("RichText does not support SetRegionSize.", 2)
 end
 
 function RichText:ResetRegionSize()
-	error("RichText does not support ResetRegionSize.")
+	error("RichText does not support ResetRegionSize.", 2)
 end
 
 -- ok time for the good stuf
