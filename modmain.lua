@@ -2142,23 +2142,30 @@ if IS_DST then
 		--dprint(unpack(array))
 		--dprint("got:", num);
 
-		for idx = 1, num, 2 do
-			local entity, params = array[idx], array[idx + 1]
-			if not entity or not params then
-				mprint(idx, "/", num)
-				mprint(unpack(array))
-				mprint(entity)
-				mprint(params)
-				error("missing ent or metadata")
-			end
-			
-			params = DecodeRequestParams(params)
+		if type(array[1]) ~= "string" then
+			mprint("[RequestEntityInformation] Got invalid params from", player)
+			return
+		end
 
-			if false and TheGlobalInstance then
-				TheGlobalInstance:DoTaskInTime(0, function() RequestEntityInformation(entity, player, params) end)
-			else
-				RequestEntityInformation(entity, player, params)
+		local index = 2
+		for encoded in string.gmatch(array[1], "(%d+;%d+)|*") do
+			if index > 50 then
+				mprint("[RequestEntityinformation] We received longer than usual param data from", player)
+				break
 			end
+
+			local params = DecodeRequestParams(encoded)
+			local entity = array[index]
+
+			if entity and type(entity) == "table" then
+				if false and TheGlobalInstance then
+					TheGlobalInstance:DoTaskInTime(0, function() RequestEntityInformation(entity, player, params) end)
+				else
+					RequestEntityInformation(entity, player, params)
+				end
+			end
+
+			index = index + 1
 		end
 	end)
 

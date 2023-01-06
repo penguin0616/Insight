@@ -506,19 +506,37 @@ function Insight:BeginUpdateLoop()
 		self.request_task = self.inst:DoPeriodicTask(0.1, function()
 			local idx = 1
 			local array = {}
-			for ent, params in pairs(self.entity_request_queue) do
-				array[idx] = ent
-				array[idx + 1] = EncodeRequestParams(params)
-				idx = idx + 2
+			local params_array = {}
 
+			--dprint("queue size:", GetTableSize(self.entity_request_queue))
+
+			-- max rpc arguments is 50
+
+			-- So normally, I would put the params at the last available space.
+			-- However, I wouldn't be able to fully unpack the array.
+			-- So what I'm doing is starting the idx 1 higher than it should, and it'll get filled in later.
+			for ent, params in pairs(self.entity_request_queue) do
+				params_array[idx] = EncodeRequestParams(params) -- Use "real" idx
+				idx = idx + 1
+				array[idx] = ent -- Use "fake" idx
+				
 				self.entity_request_queue[ent] = nil
 
-				if idx >= 50 then -- max rpc arguments
+				if idx == 50 then
 					break
 				end
 			end
 
+			-- Without this, #array would return 0. Now, if the array has anything it, it'll return the "desired length" (number of elements + the nil)
+			-- If not, #array will still return 0.
+			array[1] = nil
+
 			if #array > 0 then
+				-- Normally, I would keep the params at the last but if I do then we can't fully unpack the array.
+				-- So everything has to get shifted up.
+				array[1] = table.concat(params_array, "|")
+				--mprint("\t\t", params_array[1], ":::::", params_array[2], ":::::", table.concat(params_array, "|"))
+				--mprint("\t\tunpack", unpack(array))
 				SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), unpack(array))
 			end
 		end)
