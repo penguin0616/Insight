@@ -685,7 +685,7 @@ end
 function InsightScrollList:OnControl(control, down)
 	--mprint('yes')
 	if InsightScrollList._base.OnControl(self, control, down) then return true end
-	dprint(self.name, controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
+	--dprint(self.name, controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
 	--[[
 	This was happening too.
 	CONTROL_ZOOM_IN = 9

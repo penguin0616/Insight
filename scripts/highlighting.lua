@@ -509,6 +509,7 @@ local function EvaluateRelevance(inst, isApplication)
 	--pop()
 end
 
+-- See crafting_sorting.lua for rough concept
 local function relevance_iterator_ctor(tbl)
 	local index = 0
 	return coroutine.wrap(function()

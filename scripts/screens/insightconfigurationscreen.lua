@@ -508,8 +508,6 @@ local function CreateScroller(self)
 			{
 				scroll_context = {
 					screen = self,
-					--config_hover = self.config_hover,
-					--option_hover = self.option_Hover,
 				},
 				widget_width = OPTION_ENTRY_WIDTH,
 				widget_height = OPTION_ENTRY_HEIGHT + OPTION_ENTRY_PADDING,
@@ -630,7 +628,12 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 
 	-- Config Hover label
 	self.config_hover = self.header:AddChild(Text(CHATFONT, 18)) -- The hover for the entire configuration entry
-	self.config_hover:SetPosition(0, self.header_label:GetPosition().y - self.header_label:GetSize()/2 - self.config_hover:GetSize()/2 - 10) -- 20 pixels of padding
+	local ch_height = self.config_hover:GetSize() * 2
+	self.config_hover:SetRegionSize(headerw, ch_height)
+	self.config_hover:SetVAlign(ANCHOR_TOP)
+	self.config_hover:EnableWordWrap(true)
+
+	self.config_hover:SetPosition(0, self.header_label:GetPosition().y - self.header_label:GetSize()/2 - ch_height/2 - 10) -- 20 pixels of padding
 	--self.config_hover:SetString("CONFIGURATION ENTRY HOVER")
 	
 	-- Option hover label

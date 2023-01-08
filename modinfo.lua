@@ -1064,7 +1064,7 @@ STRINGS = {
 			["es"] = nil,
 		},
 		hover = {
-			"Whether to use experimental highlighting. When enabled, highlighting is runs a lot faster.", 
+			"When enabled, highlighting will perform better in very dense areas at the cost of being potentially unstable. Please let me know if you get issues with this.", 
 			["zh"] = nil,
 			["br"] = nil,
 			["es"] = nil,
