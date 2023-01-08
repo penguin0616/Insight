@@ -482,7 +482,7 @@ function Insight:KillIndicators()
 	self.indicators = nil
 end
 
---- Starts the main information loop for DST.
+--- Starts the main information loop.
 function Insight:BeginUpdateLoop()
 	if self.updating then
 		error("Attempt to begin update loop more than once")
@@ -492,10 +492,12 @@ function Insight:BeginUpdateLoop()
 	self.updating = true
 	mprint("\tInsight replica update loop has begun")
 
+	self.inst:StartUpdatingComponent(self)
+
 	-- self.inst:StartUpdatingComponent(self)
 	-- hud was sometimes missing in OnUpdate
 	self.update_task = self.inst:DoPeriodicTask(8/10, function(inst)
-		self:Update()
+		self:HUDUpdate()
 		if self.performance_ratings then
 			self.performance_ratings:Refresh()
 		end
@@ -503,26 +505,41 @@ function Insight:BeginUpdateLoop()
 
 	if IS_CLIENT then
 		-- Request Entity Information queuer
-		self.request_task = self.inst:DoPeriodicTask(0.1, function()
+		-- 0.1 vs FRAMES (1/30) -- 0.03333
+		local num_server_mods = #ModManager:GetEnabledServerModNames()
+		local delay = FRAMES * 2 -- 0.1 == 1/10
+		self.request_task = self.inst:DoPeriodicTask(delay, function()
 			local idx = 1
 			local array = {}
 			local params_array = {}
 
-			--dprint("queue size:", GetTableSize(self.entity_request_queue))
+			--[[
+			local total_count = GetTableSize(self.entity_request_queue)
+			if total_count > 0 then
+				dprint("queue size:", total_count)
+			end
+			--]]
 
 			-- max rpc arguments is 50
 
 			-- So normally, I would put the params at the last available space.
 			-- However, I wouldn't be able to fully unpack the array.
-			-- So what I'm doing is starting the idx 1 higher than it should, and it'll get filled in later.
+			-- So what I'm doing is starting the idx 1 higher than it should, and [1] will get filled in later.
 			for ent, params in pairs(self.entity_request_queue) do
 				params_array[idx] = EncodeRequestParams(params) -- Use "real" idx
 				idx = idx + 1
 				array[idx] = ent -- Use "fake" idx
+
+				--[[
+				if not ent.entity:IsValid() then
+					mprint("wagh", ent)
+					mprint(self.entity_data[ent])
+				end
+				--]]
 				
 				self.entity_request_queue[ent] = nil
 
-				if idx == 50 then
+				if idx >= 50 then
 					break
 				end
 			end
@@ -537,13 +554,19 @@ function Insight:BeginUpdateLoop()
 				array[1] = table.concat(params_array, "|")
 				--mprint("\t\t", params_array[1], ":::::", params_array[2], ":::::", table.concat(params_array, "|"))
 				--mprint("\t\tunpack", unpack(array))
-				SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), unpack(array))
+				rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), unpack(array))
 			end
 		end)
 	end
 end
 
 function Insight:StopUpdateLoop()
+	if not self.updating then
+		return
+	end
+
+	self.inst:StopUpdatingComponent(self)
+
 	self.update_task:Cancel()
 	self.update_task = nil
 	self.request_task:Cancel()
@@ -764,6 +787,7 @@ function Insight:BundleHasPrefab(inst, prefab, isSearchingForFoodTag)
 end
 
 function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
+	--TheSim:ProfilerPush("ContainerHas")
 	-- container is a container inst
 	-- can't i just use the default container methods in DS?
 	local prefab = inst.prefab
@@ -777,7 +801,8 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 
 	local is_unwrappable = not isSearchingForFoodTag and IsBundleWrap(inst)
 
-	local container_info, bundle_info = self:GetInformation(container)
+	local container_info = self:GetInformation(container)
+	local bundle_info
 	--dprint("container:", container, container_info)
 
 	-- Load Container Info
@@ -786,6 +811,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 		self:RequestInformation(container, { debounce=1 }) -- issue with doing this in DS is that it all happens on the same runstack so it'll end up returning true then returning nil in the same original call
 		-- explains alot
 		--dprint(container, container:IsValid(), "missing container info")
+		--TheSim:ProfilerPop()
 		return nil -- 0
 	end
 
@@ -795,6 +821,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 		if not bundle_info then
 			self:RequestInformation(inst, { debounce=1 })
 			--dprint(inst, "missing bundle info")
+			--TheSim:ProfilerPop()
 			return nil
 		end
 	end
@@ -808,6 +835,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 	-- for is_unwrappable
 	local things = {}
 
+	--push("ContainerHas")
 	-- i check for is_unwrappable to provide the opportunity for non-bundles to terminate faster
 	local contents = container_info.special_data["container"].contents
 	for i = 1, #contents do -- explore the inside of the container
@@ -827,11 +855,13 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 						-- k.prefab == inventoryitem
 						-- prefab == food_tag
 						if cooking.ingredients and cooking.ingredients[k.prefab] and cooking.ingredients[k.prefab].tags and cooking.ingredients[k.prefab].tags[prefab] then
+							--pop()
 							return true
 						end
 					-- if the original thing we were searching for is an inventoryitem
 					--print(k.prefab .. (k.name or ""), prefab .. inst_name)
 					elseif not isSearchingForFoodTag and (k.prefab .. (k.name or "")) == (prefab .. inst_name) then -- compare to see if inventoryitem.prefab .. inventoryitem.name == search_for.prefab .. search_for.name
+						--pop()
 						return true
 					end
 				end
@@ -846,9 +876,11 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 					-- v.prefab == inventoryitem
 					-- prefab == food_tag
 					if cooking.ingredients and cooking.ingredients[v.prefab] and cooking.ingredients[v.prefab].tags and cooking.ingredients[v.prefab].tags[prefab] then
+						--pop()
 						return true
 					end
 				elseif not isSearchingForFoodTag and (v.prefab .. (v.name or "")) == (prefab .. inst_name) then
+					--pop()
 					return true
 				end
 			end
@@ -863,11 +895,13 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 		for i = 1, #bundle_contents do
 			local v = bundle_contents[i]
 			if v.prefab and things[v.prefab .. (v.name or "")] then
+				--pop()
 				return true
 			end
 		end
 	end
 	
+	--TheSim:ProfilerPop()
 	return false
 end
 
@@ -1000,6 +1034,7 @@ function Insight:EntityInactive(ent)
 	assert(IS_DST, "Insight:EntityInactive called outside DST")
 	
 	self.entity_data[ent] = nil
+	self.entity_request_queue[ent] = nil -- No need to botch an entire RPC send because there was invalid data in it.
 	--self.entity_count = self.entity_count - 1
 end
 
@@ -1064,18 +1099,24 @@ end
 
 function Insight:MaintainMenu(insight_menu)
 	table.insert(self.menus, insight_menu)
-	self:Update()
+	self:HUDUpdate()
 end
 
-function Insight:Update()
+function Insight:OnUpdate(dt)
+	if highlighting.activated and highlighting.OnUpdate then
+		highlighting.OnUpdate(dt)
+	end
+end
+
+function Insight:HUDUpdate()
 	if not self.updating then
 		return
 	end
-	
+
 	local HUD = self.inst.HUD
 
 	if not HUD then
-		mprint("Insight:Update missing HUD 8/22 - 8/26 - 9/7")
+		mprint("Insight:HUDUpdate missing HUD 8/22 - 8/26 - 9/7")
 		table.foreach(self.inst, mprint)
 		mprint("===============================================================================================================================================")
 		return

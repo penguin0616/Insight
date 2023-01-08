@@ -1056,6 +1056,50 @@ STRINGS = {
 			},
 		},
 	},
+	experimental_highlighting = {
+		label = {
+			"Experimental Highlighting", 
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+		},
+		hover = {
+			"Whether to use experimental highlighting. When enabled, highlighting is runs a lot faster.", 
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+		},
+		options = {
+			[false] = {
+				description = {
+					"No",
+					["zh"] = "否",
+					["br"] = "Não",
+					["es"] = "Desactivado",
+				},
+				hover = {
+					"Normal highlighting will be used.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = {
+					"Yes",
+					["zh"] = "是",
+					["br"] = "Sim",
+					["es"] = "Activado",
+				},
+				hover = {
+					"Experimental highlighting will be used.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	highlighting_color = {
 		label = {
 			"Highlighting Color", 
@@ -5212,6 +5256,16 @@ configuration_options = {
 	},
 	{
 		name = "highlighting",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "experimental_highlighting",
 		options = {
 			{data = false},
 			{data = true},

@@ -194,6 +194,21 @@ rpcNetwork.SendModRPCToServer = function(id_table, ...)
 
 		return
 	else
+		--[[
+		dprint(id_table.namespace, id_table.id, select("#", ...))
+		if id_table.id == 3 then
+			local x = ""
+			local yes = {}
+			for i = 2, select("#", ...) do
+				local v = select(i, ...)
+				yes[#yes+1] = v.prefab
+				if not v:IsValid() then
+					yes[#yes] = yes[#yes] .. "wagh"
+				end
+			end
+			print("-", table.concat(yes, ", "), "b")
+		end
+		--]]
 		SendModRPCToServer(id_table, ...)
 	end
 end

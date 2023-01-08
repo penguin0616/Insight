@@ -27,15 +27,23 @@ local IsPrefab, IsWidget, IsBundleWrap = IsPrefab, IsWidget, IsBundleWrap
 
 local cooking = require("cooking")
 
+
 local highlightColorKey = "_insight_highlight"
 local fuel_highlighting = nil
 local highlighting_enabled = nil
-local activated = false
+
 local world_type = GetWorldType()
 local is_client_host = IsClientHost()
 
 local texturePrefabCache = {}
 
+local highlighting = {
+	process_per_update = 300
+}
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Color Constants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 local COLOR_TYPES = {
 	FUEL = "FUEL",
 	MATCH = "MATCH",
@@ -101,20 +109,6 @@ local COLORS_MULT = {
 }
 --]]
 
-local add_colors_to_use = {
-	[COLOR_TYPES.FUEL] = COLORS_ADD.RED,
-	[COLOR_TYPES.MATCH] = COLORS_ADD.GREEN,
-	[COLOR_TYPES.UNKNOWN] = COLORS_ADD.GRAY, -- doesn't actually get used
-	[COLOR_TYPES.ERROR] = COLORS_ADD.BLACK, -- doesn't actually get used
-}
-
-local mult_colors_to_use = {
-	[COLOR_TYPES.FUEL] = COLORS_MULT.RED,
-	[COLOR_TYPES.MATCH] = COLORS_MULT.GREEN,
-	[COLOR_TYPES.UNKNOWN] = COLORS_MULT.GRAY,
-	[COLOR_TYPES.ERROR] = COLORS_MULT.BLACK,
-}
-
 --[[
 local COLORS_MULT = {
 	FUEL = {1, 0.4, 0.4, 1}, -- red (by itself, #ff6666, lighter version of MOB_COLOR)
@@ -133,64 +127,47 @@ local COLORS_ADD = {
 }
 --]]
 
+
+local add_colors_to_use = {
+	[COLOR_TYPES.FUEL] = COLORS_ADD.RED,
+	[COLOR_TYPES.MATCH] = COLORS_ADD.GREEN,
+	[COLOR_TYPES.UNKNOWN] = COLORS_ADD.GRAY, -- doesn't actually get used
+	[COLOR_TYPES.ERROR] = COLORS_ADD.BLACK, -- doesn't actually get used
+}
+
+local mult_colors_to_use = {
+	[COLOR_TYPES.FUEL] = COLORS_MULT.RED,
+	[COLOR_TYPES.MATCH] = COLORS_MULT.GREEN,
+	[COLOR_TYPES.UNKNOWN] = COLORS_MULT.GRAY,
+	[COLOR_TYPES.ERROR] = COLORS_MULT.BLACK,
+}
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+local function push(name)
+	return TheSim:ProfilerPush("Insight:"..name)
+end
+
+local function pop()
+	return TheSim:ProfilerPop()
+end
+
+local changed = {}
+
+local activated = false
 local activeIngredientFocus = nil
 local activeItem = nil
 local isSearchingForFoodTag = false
 
-local highlighting = {}
+local use_shallow_copy = false
 
-local managed = setmetatable({}, { __mode="k" })
-
---[[
-local base = Color.new(1, 1, 1, 1)
-local target = Color.new(1, 0, 0, 1)
-
-local stats = {}
-
-OnLocalPlayerPostInit:AddWeakListener(function()
-TheGlobalInstance:DoPeriodicTask(1 / 15, function()
-	for inst, changeable in pairs(managed) do
-		stats[inst] = stats[inst] or {0, false}
-
-		local info = GetInsight(localPlayer):GetInformation(inst)
-		if info and info.special_data.diseaseable then
-			local time_left = info.special_data.diseaseable.disease_in
-			mprint(info, time_left, changeable)
-			if time_left == -1 then
-				if changeable == true then
-					managed[inst] = false
-					RemoveHighlight(inst)
-				end
-			elseif time_left <= 9e9 or TUNING.TOTAL_DAY_TIME * 3 then
-				if changeable == false then
-					managed[inst] = true
-				end
-				
-				stats[inst][1] = stats[inst][1] + (stats[inst][2] and 1 or -1) * 0.05
-				if stats[inst][1] >= 1 then
-					stats[inst][1] = 1
-					stats[inst][2] = false
-				elseif stats[inst][1] <= 0 then
-					stats[inst][1] = 0
-					stats[inst][2] = true
-				end
-
-				local clr
-				if stats[inst][2] then
-					-- up
-					clr = base:Lerp(target, stats[inst][1])
-				else
-					-- down
-					clr = base:Lerp(target, stats[inst][1])
-				end
-
-				ApplyHighlight(inst, clr)
-			end
-		end
-	end
+OnContextUpdate:AddListener("highlighting", function(context)
+	-- Experimental being true would mean DON'T use shallow copy.
+	use_shallow_copy = not context.config["experimental_highlighting"]
+	highlighting.UpdateSettings(context)
 end)
-end)
---]]
+
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -247,9 +224,13 @@ local function RemoveHighlight(inst)
 				inst.AnimState:SetAddColour(previous[1], previous[2], previous[3], previous[4])
 			end
 		else
+			mprint("prefab:", type(inst), type(inst)=="table" and inst.GUID, type(inst)=="table" and inst.prefab)
+			mprint("widget:", inst, inst.inst, inst.inst and inst.inst.widget)
 			error('big problem highlight')
 		end
 		inst[highlightColorKey] = nil
+
+		changed[inst] = nil
 	end
 end
 
@@ -258,8 +239,10 @@ local function ApplyHighlight(inst, color_key)
 
 	if IsWidget(inst) then -- ItemTile
 		local color = mult_colors_to_use[color_key] or mult_colors_to_use.ERROR
-		inst[highlightColorKey] = "#compatability?"
+		inst[highlightColorKey] = "#compatability?" -- Tint is just set back to 1,1,1,1
 		inst.image:SetTint(color[1], color[2], color[3], color[4])
+
+		changed[inst] = true
 
 		ApplyHighlight(inst.item, color) -- show the love further down too because why not
 
@@ -283,6 +266,7 @@ local function ApplyHighlight(inst, color_key)
 				inst.AnimState:SetLightOverride(.4)
 				inst.AnimState:SetAddColour(color[1], color[2], color[3], color[4])
 			end
+			changed[inst] = true
 		end
 	end
 end
@@ -421,7 +405,9 @@ end
 
 local function GetContainerRelevance(ctr)
 	local insight = (IS_DST and localPlayer.replica.insight) or localPlayer.components.insight
-	if not insight then return end
+	if not insight then 
+		return 
+	end
 	--mprint(ctr, ctr.classified, ctr.inst, activeItem, activeItem and ctr:Has(activeItem.prefab, 1))
 
 	--[[
@@ -434,20 +420,23 @@ local function GetContainerRelevance(ctr)
 	--]]
 	
 	if activeIngredientFocus then
+		--push("GCR.activeIngredientFocus")
 		local res = insight:ContainerHas(ctr.inst, activeIngredientFocus, isSearchingForFoodTag)
-		
+		--pop()
+
 		if res == nil then
 			return 1 -- unknown
 		elseif res == true then
 			return 2 -- has
 		end
-
 		
 	elseif activeItem then
+		--push("GCR.activeItem")
 		--dprint(ctr.inst, "searching for:", activeItem)
 		local res = insight:ContainerHas(ctr.inst, activeItem, isSearchingForFoodTag)
 		--dprint("resx:", res)
-		
+		--pop()
+
 		if res == nil then
 			return 1 -- unknown
 		elseif res == true then
@@ -467,12 +456,20 @@ local function EvaluateRelevance(inst, isApplication)
 		return
 	end
 
+	--push("EvaluateRelevance")
 	if isApplication == nil then
 		error("[Insight Error]: isApplication nil")
 	end
 
 	local prefab, widget = IsPrefab(inst), IsWidget(inst)
-	if not prefab and not widget and not type(inst) == 'string' then
+	if not prefab and not widget then
+		--pop()
+		if type(inst) ~= 'string' then
+			mprint("prefab:", type(arg), type(arg)=="table" and arg.GUID, type(arg)=="table" and arg.prefab)
+			mprint("widget:", arg, arg.inst, arg.inst and arg.inst.widget)
+			error("how is this not a prefab or widget")
+		end
+
 		return
 	end
 
@@ -508,32 +505,40 @@ local function EvaluateRelevance(inst, isApplication)
 	else
 		RemoveHighlight(inst)
 	end
+
+	--pop()
+end
+
+local function relevance_iterator_ctor(tbl)
+	local index = 0
+	return coroutine.wrap(function()
+		for ent in pairs(tbl) do
+			index = index + 1
+			coroutine.yield(index, ent)
+		end
+		coroutine.yield(-1, index) -- Indicates that we are done.
+	end)
 end
 
 local function DoRelevanceChecks(force_apply)
+	if not highlighting_enabled then
+		return
+	end
+	--push("DoRelevanceChecks")
+
 	local a = os.clock()
 	--print('relevance_check_start')
+
+	if highlighting.relevance_state then
+		highlighting:ClearRelevanceState()
+	end
 
 	local apply = ((activeItem or activeIngredientFocus) and true) or false
 	if force_apply ~= nil then
 		apply = force_apply
 	end
 
-	if not highlighting_enabled then
-		return
-	end
-
-	for v in pairs(entityManager.active_entities) do -- ISSUE:PERFORMANCE
-		EvaluateRelevance(v, apply)
-	end
-
-	local b = os.clock()
-	
-
-	-- {index, ItemSlot}
-	-- ItemSlot.tile.item
-	-- ItemSlot always there
-	-- tile and tile.item exist at same time
+	-- There are significantly less item slots than ents, so I just process them here normally. 
 	local slots = GetItemSlots()
 	for i = 1, #slots do
 		local slot = slots[i]
@@ -542,25 +547,98 @@ local function DoRelevanceChecks(force_apply)
 		end
 	end
 
-	local c = os.clock()
+	-- On the other hand, there's a lot of ents so we'll set up a relevance state for iteration in OnUpdate.
+	if apply then
+		highlighting:SetupRelevanceState(entityManager.active_entities, apply)
+	else
+		-- This is faster to clean up highlighting, since we know what is highlighted.
+		highlighting:SetupRelevanceState(changed, apply)
+	end
+
+	--highlighting.OnUpdate(0)
 
 	--[[
-	dprint('active_entities:', b - a)
-	dprint('item slots:', c - b)
-	dprint('total:', c - a)
-	dprint'--------------------------------'
+	for v in pairs(entityManager.active_entities) do -- ISSUE:PERFORMANCE
+		EvaluateRelevance(v, apply)
+	end
 	--]]
+	--pop()
 end
 
-function highlighting.SetActiveItem(player, data)
-	if not activated then
+local function OnUpdate(dt)
+	local state = highlighting.relevance_state
+	if not state then return end
+
+	local iter = state.iterator
+
+	local max = highlighting.process_per_update
+
+	--print("OnUpdate", dt)
+	--push("RelevanceIter")
+	for i, ent in iter do
+		if i == -1 then
+			highlighting:ClearRelevanceState()
+			--print("\tDone iterating at", ent)
+			break
+		end
+
+		EvaluateRelevance(ent, state.selected)
+
+		if i % max == 0 then
+			--print("\tDeferring at", i)
+			break
+		end
+	end
+	--pop()
+end
+
+function highlighting:ClearRelevanceState()
+	self.relevance_state = nil
+end
+
+function highlighting:SetupRelevanceState(tbl, selected)
+	if self.relevance_state then
+		error("Cannot setup multiple relevance states")
+	end
+
+	if not highlighting.activated then
+		-- We need to do this *now* because OnUpdate will no longer trigger probably.
+		for v in pairs(tbl) do
+			EvaluateRelevance(v, apply)
+		end
 		return
 	end
 
+	--[[
+		dorelevance - 394us
+			setuprelevance - 344us
+				shallowcopy - 343us
+	]]
+	--push("SetupRelevanceState")
+	--push("ShallowCopy")
+	local frozen = (use_shallow_copy and shallowcopy(tbl)) or tbl
+	--pop()
+
+	self.relevance_state = {
+		frozen = frozen,
+		iterator = relevance_iterator_ctor(frozen),
+		selected = selected
+	}
+	--pop()
+end
+
+function highlighting.SetActiveItem(player, data)
+	
+	if not highlighting.activated then
+		return
+	end
+
+	--push("SetActiveItem")
 	isSearchingForFoodTag = false
 	activeItem = data.item
 
 	DoRelevanceChecks()
+	--pop()
 end
 
 -- this is buggy
@@ -569,7 +647,7 @@ function highlighting.find(prefab)
 end
 
 function highlighting.SetActiveIngredientUI(ui)
-	if not activated then
+	if not highlighting.activated then
 		return
 	end
 
@@ -600,7 +678,7 @@ function highlighting.SetActiveIngredientUI(ui)
 end
 
 function highlighting.SetEntitySleep(inst)
-	if not activated then
+	if not highlighting.activated then
 		return
 	end
 	
@@ -608,22 +686,26 @@ function highlighting.SetEntitySleep(inst)
 end
 
 function highlighting.SetEntityAwake(inst)
-	if not activated then
+	if not highlighting.activated then
 		return
 	end
 
-	if inst:HasTag("INLIMBO") then -- most likely an inventory item
+	--push("SetEntityAwake")
+	if inst.entity:HasTag("INLIMBO") then -- most likely an inventory item
 		--mprint("@ LIMBO", inst)
+		--push("GetItemSlots")
 		for _, slot in pairs(GetItemSlots()) do
 			if slot.tile and slot.tile.item == inst then
 				EvaluateRelevance(slot.tile, true)
 				break
 			end
 		end
+		--pop()
 	else
 		--mprint("set awake", inst)
 		EvaluateRelevance(inst, true)
 	end
+	--pop()
 end
 
 highlighting.SetMatchColor = function(key)
@@ -636,21 +718,34 @@ highlighting.SetFuelMatchColor = function(key)
 	mult_colors_to_use[COLOR_TYPES.FUEL] = COLORS_MULT[key]
 end
 
-highlighting.Activate = function(insight, context)
-	dprint("Highlighting activated")
+highlighting.UpdateSettings = function(context)
 	fuel_highlighting = context.config["fuel_highlighting"]
 	highlighting_enabled = context.config["highlighting"]
 
 	highlighting.SetMatchColor(context.config["highlighting_color"])
 	highlighting.SetFuelMatchColor(context.config["fuel_highlighting_color"])
+end
 
-	activated = true
+highlighting.Activate = function(insight, context)
+	if highlighting.activated then
+		return
+	end
+
+	dprint("Highlighting activated")
+	highlighting.UpdateSettings(context)
+	highlighting.activated = true
 end
 
 highlighting.Deactivate = function()
+	if not highlighting.activated then
+		return
+	end
+
 	dprint("Highlighting deactivated")
-	activated = false
+	highlighting.activated = false
 	DoRelevanceChecks(false)
 end
+
+highlighting.OnUpdate = OnUpdate
 
 return highlighting
