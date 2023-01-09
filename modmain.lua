@@ -2111,6 +2111,7 @@ if IS_DST then
 
 	--======================= RPCs ============================================================================================
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
+		mprint("ProcessConfiguration", player)
 		data = json.decode(data)
 		if player_contexts[player] then
 			UpdatePlayerContext(player, {

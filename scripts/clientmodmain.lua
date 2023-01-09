@@ -320,7 +320,7 @@ local function GenerateConfiguration()
 end
 
 local function IsPlayerClientLoaded(player)
-	return (player and player.HUD and GetInsight(player) and GetPlayerContext(player) and true) or false
+	return (player and player.HUD and GetLocalInsight(player) and GetPlayerContext(player) and true) or false
 end
 
 function OnCurrentlySelectedItemChanged(old, new, itemInfo)
@@ -601,6 +601,8 @@ local function LoadLocalPlayer(player)
 			end
 		end
 		--]]
+
+		--mprint("LoadLocalPlayer", localPlayer, insight, context.player)
 		OnLocalPlayerPostInit:Push(insight, context)
 		OnContextUpdate:Push(context)
 		-- attacked, healthdelta

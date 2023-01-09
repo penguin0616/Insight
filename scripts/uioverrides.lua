@@ -254,7 +254,11 @@ AddClassPostConstruct("widgets/controls", function(controls)
 	
 	local already_prompted = false
 
-	OnContextUpdate:AddListener(function(context)
+	if OnContextUpdate:HasListener("controlspost") then
+		OnContextUpdate:RemoveListener("controlspost")
+	end
+
+	OnContextUpdate:AddListener("controlspost", function(context)
 		if context.config["display_insight_menu_button"] then
 			controls.insight_menu_toggle = controls.insight_menu_toggle or controls.bottomright_root:AddChild(MakeInsightMenuButton(controls))
 			if not already_prompted and NEW_INSIGHT_VERSION then

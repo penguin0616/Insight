@@ -66,16 +66,7 @@ local Event = Class(function(self, name)
 	self.onlisteneradded = nil
 end)
 
-function Event:GetListener(name)
-	return self.listeners[name]
-end
-
 function Event:AddListener(name, fn, weak)
-	if self.listeners[name] then
-		error("Duplicate listener not allowed")
-	end
-
-
 	if type(name) ~= "string" then
 		if type(name) == "function" and fn == nil then
 			-- This was called with no name.
@@ -87,6 +78,10 @@ function Event:AddListener(name, fn, weak)
 			errorf("Adding an event listener requires a name, got '%s'", type(name))
 		end
 		--errorf("Adding an event listener requires a name, got '%s'", type(name))
+	end
+
+	if self.listeners[name] then
+		error("Duplicate listener not allowed")
 	end
 
 	if type(fn) ~= "function" then
@@ -120,10 +115,21 @@ function Event:AddWeakListener(name, fn)
 	return self:AddListener(name, fn, true)
 end
 
+
+function Event:GetListener(name)
+	return self.listeners[name]
+end
+
+function Event:HasListener(name)
+	return self.listeners[name] ~= nil
+end
+
 function Event:RemoveListener(listener)
-	if listener and self.listeners[listener.name] then
-		self.listeners[listener.name]:OnRemove()
-		self.listeners[listener.name] = nil
+	local name = type(listener) == "string" and listener or listener.name
+
+	if name and self.listeners[name] then
+		self.listeners[name]:OnRemove()
+		self.listeners[name] = nil
 	end
 end
 
