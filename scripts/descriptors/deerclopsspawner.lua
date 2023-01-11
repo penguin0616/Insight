@@ -132,7 +132,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 		))
 	end
 
-return {
+	return {
 		description = description,
 		append = true
 	}

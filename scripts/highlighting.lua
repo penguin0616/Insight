@@ -213,7 +213,7 @@ local function RemoveHighlight(inst)
 		elseif IsPrefab(inst) then
 			local previous = inst[highlightColorKey]
 			
-			if is_client_host or previous[5] == COLOR_TYPES.ERROR or previous[5] == COLOR_TYPES.UNKNOWN then
+			if previous[5] then
 				if inst.AnimState.OverrideMultColour then
 					inst.AnimState:OverrideMultColour(previous[1], previous[2], previous[3], previous[4])
 				else
@@ -224,22 +224,23 @@ local function RemoveHighlight(inst)
 				inst.AnimState:SetAddColour(previous[1], previous[2], previous[3], previous[4])
 			end
 		else
-			mprint("prefab:", type(inst), type(inst)=="table" and inst.GUID, type(inst)=="table" and inst.prefab)
-			mprint("widget:", inst, inst.inst, inst.inst and inst.inst.widget)
-			error('big problem highlight')
+			-- See comment about IsWidget in EvaluateRelevance.
+			--mprint("prefab:", type(inst), type(inst)=="table" and inst.GUID, type(inst)=="table" and inst.prefab)
+			--mprint("widget:", inst, inst.inst, inst.inst and inst.inst.widget)
+			--error('big problem highlight')
 		end
 		inst[highlightColorKey] = nil
-
 		changed[inst] = nil
 	end
 end
 
 local function ApplyHighlight(inst, color_key)
-	RemoveHighlight(inst) -- preemptive strike
+	-- No need to remove old highlight if we're applying a new one on top, just keep the cached highlight info for reverting.
+	--RemoveHighlight(inst) -- preemptive strike
 
 	if IsWidget(inst) then -- ItemTile
 		local color = mult_colors_to_use[color_key] or mult_colors_to_use.ERROR
-		inst[highlightColorKey] = "#compatability?" -- Tint is just set back to 1,1,1,1
+		inst[highlightColorKey] = inst[highlightColorKey] or highlightColorKey -- Tint is just set back to 1,1,1,1
 		inst.image:SetTint(color[1], color[2], color[3], color[4])
 
 		changed[inst] = true
@@ -255,19 +256,25 @@ local function ApplyHighlight(inst, color_key)
 			local color = color_table[color_key] or color_table.ERROR
 			
 			if use_mult then
-				inst[highlightColorKey] = {COLORS_MULT.NOTHING[1], COLORS_MULT.NOTHING[2], COLORS_MULT.NOTHING[3], COLORS_MULT.NOTHING[4], color_key}
+				inst[highlightColorKey] = inst[highlightColorKey] or {COLORS_MULT.NOTHING[1], COLORS_MULT.NOTHING[2], COLORS_MULT.NOTHING[3], COLORS_MULT.NOTHING[4]}
+				inst[highlightColorKey][5] = use_mult -- This is used for determining how to revert the highlighting.
+
 				if inst.AnimState.OverrideMultColour then
 					inst.AnimState:OverrideMultColour(color[1], color[2], color[3], color[4])
 				else
 					inst.AnimState:SetMultColour(color[1], color[2], color[3], color[4])
 				end
 			else
-				inst[highlightColorKey] = {inst.AnimState:GetAddColour()}
+				inst[highlightColorKey] = inst[highlightColorKey] or {inst.AnimState:GetAddColour()}
 				inst.AnimState:SetLightOverride(.4)
 				inst.AnimState:SetAddColour(color[1], color[2], color[3], color[4])
 			end
 			changed[inst] = true
 		end
+	else
+		-- Because we don't do RemoveHighlight anymore, we need to clear the cache here instead for invalid widgets.
+		inst[highlightColorKey] = nil
+		changed[inst] = nil
 	end
 end
 
@@ -465,9 +472,17 @@ local function EvaluateRelevance(inst, isApplication)
 	if not prefab and not widget then
 		--pop()
 		if type(inst) ~= 'string' then
-			mprint("prefab:", type(arg), type(arg)=="table" and arg.GUID, type(arg)=="table" and arg.prefab)
-			mprint("widget:", arg, arg.inst, arg.inst and arg.inst.widget)
+			-- IsWidget can fail for ItemTiles if the ItemTile is removed during a deferred update,
+			-- because Widget:Kill() removes inst.widget, which is checked for.
+
+			--[[
+			mprint(string.rep("-", 100))
+			mprint(inst, inst.inst:IsValid())
+			dumptable(inst)
+			mprint("prefab:", type(inst), type(inst)=="table" and inst.GUID, type(inst)=="table" and inst.prefab)
+			mprint("widget:", inst.inst, "|", inst.inst and inst.inst.widget, "|")
 			error("how is this not a prefab or widget")
+			--]]
 		end
 
 		return
@@ -557,12 +572,6 @@ local function DoRelevanceChecks(force_apply)
 	end
 
 	--highlighting.OnUpdate(0)
-
-	--[[
-	for v in pairs(entityManager.active_entities) do -- ISSUE:PERFORMANCE
-		EvaluateRelevance(v, apply)
-	end
-	--]]
 	--pop()
 end
 
@@ -603,7 +612,7 @@ function highlighting:SetupRelevanceState(tbl, selected)
 	end
 
 	if not highlighting.activated then
-		-- We need to do this *now* because OnUpdate will no longer trigger probably.
+		-- We need to do this *now* as it's probably a cleanup and OnUpdate will no longer trigger.
 		for v in pairs(tbl) do
 			EvaluateRelevance(v, apply)
 		end
@@ -658,7 +667,10 @@ function highlighting.SetActiveIngredientUI(ui)
 
 	isSearchingForFoodTag = false
 
-	if IsWidget(ui) then
+	if ui == nil then
+		activeIngredientFocus = nil
+		DoRelevanceChecks()
+	elseif IsWidget(ui) then
 		local prefab = ui.ing and ui.ing.texture and GetPrefabFromTexture(string.match(ui.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 		if prefab then
 			activeIngredientFocus = prefab
@@ -671,9 +683,6 @@ function highlighting.SetActiveIngredientUI(ui)
 			activeIngredientFocus = ui.ingredient_tag
 			isSearchingForFoodTag = true
 		end
-		DoRelevanceChecks()
-	elseif ui == nil then
-		activeIngredientFocus = nil
 		DoRelevanceChecks()
 	end
 end

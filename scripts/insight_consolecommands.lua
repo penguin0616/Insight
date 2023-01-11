@@ -1,4 +1,11 @@
 DST_CONSOLE_COMMANDS = {}
+DST_CONSOLE_COMMANDS.c_pwdgt = function()
+	TheGlobalInstance:DoTaskInTime(2, function()
+		local target = TheInput:GetHUDEntityUnderMouse()
+		mprint(target, target and target.widget or nil)
+	end)
+end
+
 DST_CONSOLE_COMMANDS.c_nohounds = function()
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	c_removeall "firehound"
