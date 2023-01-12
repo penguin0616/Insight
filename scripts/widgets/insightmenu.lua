@@ -380,14 +380,17 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		end
 
 		--mprint'--------------------------------------------'
+	end
 
-		ArrayPurge(world_page:GetItems(), PurgeFn, world_data.raw_information)
+	if world_page then
+		ArrayPurge(world_page:GetItems(), PurgeFn, (world_data and world_data.raw_information) or {})
+		world_page:Refresh()
 	end
 
 	-- player page
+	local did = {}
 	if player_page and player_data then
 		local info = player_data
-		local did = {}
 
 		if info.special_data.debuffable then
 			for i,v in pairs(info.special_data.debuffable.debuffs) do
@@ -435,8 +438,11 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 			end
 		end
 		--]]
+	end
 
+	if player_page then
 		ArrayPurge(player_page:GetItems(), PurgeFn, did)
+		player_page:Refresh()
 	end
 end
 
