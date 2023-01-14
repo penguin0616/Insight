@@ -78,69 +78,13 @@ do
 	DummyImage = nil
 end
 
--- Patching ImageButton class here as well.
-do
-	local ImageButton = require("widgets/imagebutton")
-	--------------------------------------------------------------------------
-	--[[ Focus Functions ]]
-	--------------------------------------------------------------------------
-	local function OnGainFocus(self)
-		ImageButton._base.OnGainFocus(self)
-
-		if self.hover_overlay then
-			self.hover_overlay:Show()
-		end
-
-		if self:IsEnabled() then
-			--imageLib.SetTexture(self.image, self.atlas, self.image_focus)
-			self.image:SetTexture(self.atlas, self.image_focus)
-
-			if self.size_x and self.size_y then 
-				self.image:ScaleToSize(self.size_x, self.size_y)
-			end
-		end
-	end
-
-	local function OnLoseFocus(self)
-		ImageButton._base.OnLoseFocus(self)
-
-		if self.hover_overlay then
-			self.hover_overlay:Hide()
-		end
-
-		if self:IsEnabled() then
-			--imageLib.SetTexture(self.image, self.atlas, self.image_normal)
-			self.image:SetTexture(self.atlas, self.image_normal)
-
-			if self.size_x and self.size_y then 
-				self.image:ScaleToSize(self.size_x, self.size_y)
-			end
-		end
-	end
-
-	-- I want this available globally. I might change my mind down the road though.
-	--[[
-	widgetLib.imagebutton.OverrideFocuses\(([^)]+)\)
-	$1:InsightOverrideFocuses()
-	]]
-	--[[
-	function ImageButton.InsightOverrideFocuses(self)
-		if true then return end
-
-		if IS_DST then
-			return
-		end
-		self.OnGainFocus = OnGainFocus
-		self.OnLoseFocus = OnLoseFocus
-	end
-	--]]
-end
-
 --==========================================================================================================================
 --==========================================================================================================================
 --======================================== Post Constructs =================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+import("uichanges/pausescreen").Initialize()
+
 --[[
 local yes = MiniMap
 AddClassPostConstruct("widgets/mapwidget", function(mapWidget)
@@ -187,15 +131,7 @@ local function MakeInsightMenuButton(controls)
 	end)
 
 	mb:SetOnClick(function()
-		if not controls.insight_menu then
-			return
-		end
-
-		if controls.insight_menu.shown then
-			controls.insight_menu:Hide()
-		else
-			controls.insight_menu:Show()
-		end
+		controls:ToggleInsightMenu()
 	end)
 
 	-- Init
@@ -242,6 +178,18 @@ AddClassPostConstruct("widgets/controls", function(controls)
 		controls.insight_menu:Activate()
 	end)
 	--]]
+
+	controls.ToggleInsightMenu = function(self)
+		if not self.insight_menu then
+			return
+		end
+
+		if self.insight_menu.shown then
+			self.insight_menu:Hide()
+		else
+			self.insight_menu:Show()
+		end
+	end
 
 	controls.insight_menu = controls.top_root:AddChild(InsightMenu())
 	controls.insight_menu:SetPosition(0, -400)
@@ -470,6 +418,7 @@ local oldIngredientUI_OnGainFocus = IngredientUI.OnGainFocus
 local oldIngredientUI_OnLoseFocus = IngredientUI.OnLoseFocus
 
 function IngredientUI:OnGainFocus(...)
+	--dprint("ingredientui OnGainFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(self)
 	SetHighlightIngredientFocus(self)
 	
@@ -480,6 +429,7 @@ function IngredientUI:OnGainFocus(...)
 end
 
 function IngredientUI:OnLoseFocus(...)
+	--dprint("ingredientui OnLoseFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(nil)
 	SetHighlightIngredientFocus(nil)
 

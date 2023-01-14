@@ -866,6 +866,25 @@ function module.getlocals(level)
 	end
 end
 
+function module.setlocal(level, name, replacement)
+	if type(name) ~= "string" then
+		error("argument #2 expected string, got " .. type(name))
+	end
+
+	local i = 1
+	while true do
+		local n, v = debug.getlocal(level + 1, i)
+		if not n then break end
+		if n == name then
+			debug.setlocal(level + 1, i, replacement)
+			return v
+		end
+		i = i + 1
+	end
+	
+	error(string.format("Unable to find local '%s' for replacing.", name))
+end
+
 --- Retrives and replaces the first upvalue that matches the arguments.
 -- @tparam function func
 -- @string name
