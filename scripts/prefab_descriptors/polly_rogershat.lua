@@ -41,7 +41,7 @@ local function Describe(inst, context)
 end
 
 local function StatusAnnoucementsDescribe(special_data, context, inst)
-	local respawn_time = GetInsight(context.player):GetInformation(inst).special_data.spawner.respawn_time
+	local respawn_time = GetLocalInsight(context.player):GetInformation(inst).special_data.spawner.respawn_time
 	if not respawn_time then
 		return
 	end

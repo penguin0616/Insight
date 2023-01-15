@@ -87,10 +87,14 @@ function SaveData:Load()
 					self.data = savedata
 					self.ready = true
 				else
+					--self.dirty = true
+					--self.ready = false
 					mprint("[SaveData] Could not load " .. path)
 				end
 				--parse = success
 			else
+				--self.dirty = true
+				--self.ready = false
 				mprint("[SaveData] Error loading load " .. path)
 			end
 			--load = load_success
@@ -102,6 +106,10 @@ end
 
 function SaveData:Save(callback, force)
 	if self.dirty or force then
+		if not self.ready then
+			self.ready = true
+		end
+
 		local str = DataDumper(self.data, nil, self.fast_save)
         
 		-- Make sure nothing funky is in here.
@@ -119,7 +127,7 @@ function SaveData:Save(callback, force)
 		mprint("[SaveData] Saved " .. self.path)
 		self:SetDirty(false)
 	else
-		dprint("[SaveData] NOT SAVING " .. self.path .. ", we're not dirty!")
+		mprint("[SaveData] NOT SAVING " .. self.path .. ", did you forget to mark as dirty?")
 		if callback then
 			return callback(true)
 		end
