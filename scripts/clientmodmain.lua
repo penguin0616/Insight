@@ -544,9 +544,12 @@ local function placer_postinit_fn(inst, radius)
 	end
 end
 
-local function LocalPlayerRemoved()
+local function LocalPlayerDeactivated()
+	local insight = GetLocalInsight(localPlayer)
+	insight.context = nil
+	insight:Shutdown()
+	dprint("LOCALPLAYER DEACTIVATED", localPlayer)
 	localPlayer = nil
-	dprint("LOCALPLAYER REMOVED")
 	--[[
 	local x = 0
 	--mprint(x, #onLocalPlayerRemove)
@@ -579,11 +582,16 @@ local function LoadLocalPlayer(player)
 
 	if IsPlayerClientLoaded(player) then
 		localPlayer = player
+		dprint("LOCALPLAYER ADDED", localPlayer)
 		local context = GetPlayerContext(player)
 		local insight = GetLocalInsight(localPlayer)
 		insight.context = context
 
-		player:ListenForEvent("onremove", LocalPlayerRemoved)
+		if IS_DST then
+			player:ListenForEvent("playerdeactivated", LocalPlayerDeactivated)
+		else
+			player:ListenForEvent("onremove", LocalPlayerDeactivated)
+		end
 		--mprint("LOCALPLAYER FOUND")
 
 		local x = 0
@@ -618,7 +626,7 @@ local function LoadLocalPlayer(player)
 
 
 	else
-		player:DoTaskInTime(1 / 30, LoadLocalPlayer)
+		player:DoTaskInTime(FRAMES, LoadLocalPlayer)
 	end
 end
 
@@ -1265,21 +1273,30 @@ AddPlayerPostInit(function(player)
 		return
 	end
 
-	player:DoTaskInTime(0, function()
-		AttachWigfridSongRangeIndicator(player)
+	-- When swapping to wonkey in a client hosted world, ThePlayer is messed up.
+	-- For the first print, it's the old character.
+	-- Second print: wonkey
+	-- Third print: old character
+	-- All in that order. Yikes.
 
+	--[[
+	mprint("new player", player, "|", ThePlayer)
+	player:ListenForEvent("setowner", function()
+		mprint("new player2", player, "|", ThePlayer)
+	end)
+
+	player:DoTaskInTime(0, function()
+		mprint("new player3", player, "|", ThePlayer)
+	end)
+	--]]
+
+	
+	AttachWigfridSongRangeIndicator(player)
+	player:ListenForEvent("playeractivated", function()
 		if player ~= ThePlayer then
 			return
 		end
-
-		--[[
-		local old = rawget(_G, "StackTrace")
-		local mprint = mprint
-		mprint("stacktrace:", old)
-		_G.StackTrace = function() end
-		_G._TRACEBACK = function() end
-		--]]
-
+		
 		LoadLocalPlayer(player)
 
 		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)

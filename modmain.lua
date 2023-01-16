@@ -2111,7 +2111,7 @@ if IS_DST then
 
 	--======================= RPCs ============================================================================================
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
-		mprint("ProcessConfiguration", player)
+		--mprint("ProcessConfiguration", player)
 		data = json.decode(data)
 		if player_contexts[player] then
 			UpdatePlayerContext(player, {
@@ -2233,6 +2233,7 @@ if IS_DST then
 
 
 	rpcNetwork.AddModRPCHandler(modname, "ClientInitialized", function(player)	
+		player.components.insight:SendNaughtiness()
 	end)
 
 	rpcNetwork.AddShardModRPCHandler(modname, "UpdateTimerNetworking", function(sending_shard_id, data)
@@ -2763,7 +2764,8 @@ if IS_DST then
 
 					if player.components.insight then
 						--dprint'attempt to send naughtiness'
-						player.components.insight:SendNaughtiness()
+						-- Client initialized sends it now. Why did I do that again?
+						--player.components.insight:SendNaughtiness()
 						--dprint'attempt finished'
 					else
 						mprint("Unable to send initial naughtiness to:", player)

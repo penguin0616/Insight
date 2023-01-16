@@ -167,6 +167,7 @@ function Insight:SendNaughtiness()
 	-- GetNaughtiness normally requires a context for the second arg, but as of right now it doesn't seem like the context gets checked for anything at the moment.
 	local tbl = GetNaughtiness(self.inst, nil)
 
+	-- This will fail intially in client hosted since it'll get called before the player shows up in kramped data.
 	if type(tbl) ~= "table" or type(tbl.actions) ~= "number" or type(tbl.threshold) ~= "number" then
 		mprint("GetNaughtiness failed:", tbl)
 		return

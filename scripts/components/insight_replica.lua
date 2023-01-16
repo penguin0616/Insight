@@ -198,7 +198,7 @@ local Insight = Class(function(self, inst)
 		self.net_battlesong_active = net_bool(self.inst.GUID, "insight_battlesong_active", "insight_battlesong_active_dirty") -- 4283835343
 	end
 
-	if IS_DS or IS_CLIENT_HOST then
+	if IS_DS or (IS_CLIENT_HOST and inst == ThePlayer) then
 		self:SetupIndicators()
 		self:BeginUpdateLoop()
 	end
@@ -271,13 +271,17 @@ end
 function Insight:DetachClassified()
 	assert(TheWorld.ismastersim == false, "DetachClassified on server-side")
 	assert(self.classified, "Attempt to detach classified without existing one.")
-	mprint("Detached classified", ent, "from", self.inst)
+	mprint("Detached classified", self.classified, "from", self.inst)
 
 	-- Classified stuff
 	self.classified:RemoveEventCallback("onremove", self.ondetachclassified)
 	self.classified = nil
 	self.ondetachclassified = nil
 	
+	self:Shutdown()
+end
+
+function Insight:Shutdown()
 	-- Insight cool stuff
 	self.inst:RemoveEventCallback("insight_entity_information", GotEntityInformation)
 	self:StopUpdateLoop()
@@ -477,9 +481,11 @@ function Insight:SetupIndicators()
 end
 
 function Insight:KillIndicators()
-	assert(self.indicators, "Attempt to kill nonexistant indicators")
-	self.indicators:Kill()
-	self.indicators = nil
+	--assert(self.indicators, "Attempt to kill nonexistant indicators")
+	if self.indicators then
+		self.indicators:Kill()
+		self.indicators = nil
+	end
 end
 
 --- Starts the main information loop.
@@ -569,8 +575,10 @@ function Insight:StopUpdateLoop()
 
 	self.update_task:Cancel()
 	self.update_task = nil
-	self.request_task:Cancel()
-	self.request_task = nil
+	if self.request_task then
+		self.request_task:Cancel()
+		self.request_task = nil
+	end
 	self.updating = false
 end
 
@@ -1116,9 +1124,9 @@ function Insight:HUDUpdate()
 	local HUD = self.inst.HUD
 
 	if not HUD then
-		mprint("Insight:HUDUpdate missing HUD 8/22 - 8/26 - 9/7")
-		table.foreach(self.inst, mprint)
-		mprint("===============================================================================================================================================")
+		mprint("Insight:HUDUpdate missing HUD")
+		--table.foreach(self.inst, mprint)
+		--mprint("===============================================================================================================================================")
 		return
 	end
 	
