@@ -186,7 +186,6 @@ local function DescribeRuinsStatue(inst, context)
 	end
 
 	return string.format(context.lstr.ruins_statue_gem, gem_colors[inst.gemmed], inst.gemmed)
-
 end
 
 
@@ -228,6 +227,34 @@ local function Describe(self, context)
 		description = string.format(context.lstr.wagstaff_tool, inst.prefab)
 	end
 
+	-- mushrooms, tags only exists for the cap..
+	if inst.rain and inst.data and inst.data.name and inst.data.name:sub(-8) == "mushroom" then
+		-- probably a mushroom
+		if inst.components.pickable ~= nil and not inst.components.pickable.canbepicked then -- and TheWorld.state.israining 
+			-- in regrowth mode
+			description = string.format(context.lstr.mushroom_rain, inst.rain)
+		end
+	end
+
+	if inst.nameoverride and inst.nameoverride == "ancient_statue" then
+		description = DescribeRuinsStatue(inst, context)
+	end
+
+	if inst:HasTag("singingshell") then
+		return {
+			name = "insight_ranged",
+			priority = 0,
+			description = nil,
+			range = TUNING.SINGINGSHELL_FARM_PLANT_INTERACT_RANGE,
+			color = "#40aeb8",
+			attach_player = false
+		}
+	end
+
+	if inst:HasTag("heavy") then
+		description = string.format(context.lstr.gym_weight_value, inst.gymweight or 2)
+	end
+
 	if inst:HasTag("winter_tree") then
 		if context.player.components.wintertreegiftable then
 			local days_remaining = Insight.descriptors.wintertreegiftable.GetDaysRemainingForRareGift(context.player.components.wintertreegiftable)
@@ -240,23 +267,6 @@ local function Describe(self, context)
 				description = context.lstr.wintertreegiftable.ready
 			end
 		end
-	end
-
-	-- mushrooms, tags only exists for the cap..
-	if inst.rain and inst.data and inst.data.name and inst.data.name:sub(-8) == "mushroom" then
-		-- probably a mushroom
-		if inst.components.pickable ~= nil and not inst.components.pickable.canbepicked then -- and TheWorld.state.israining 
-			-- in regrowth mode
-			description = string.format(context.lstr.mushroom_rain, inst.rain)
-		end
-	end
-
-	if inst:HasTag("heavy") then
-		description = string.format(context.lstr.gym_weight_value, inst.gymweight or 2)
-	end
-
-	if inst.nameoverride and inst.nameoverride == "ancient_statue" then
-		description = DescribeRuinsStatue(inst, context)
 	end
 
 	--[[
