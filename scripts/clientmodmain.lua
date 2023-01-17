@@ -567,11 +567,14 @@ local function placer_postinit_fn(inst, radius)
 	end
 end
 
-local function LocalPlayerDeactivated()
+local function LocalPlayerDeactivated(src)
+	if not localPlayer then
+		return
+	end
 	local insight = GetLocalInsight(localPlayer)
 	insight.context = nil
 	insight:Shutdown()
-	dprint("LOCALPLAYER DEACTIVATED", localPlayer)
+	dprint("LOCALPLAYER DEACTIVATED", localPlayer, "FROM", src)
 	localPlayer = nil
 	--[[
 	local x = 0
@@ -611,27 +614,13 @@ local function LoadLocalPlayer(player)
 		insight.context = context
 
 		if IS_DST then
-			player:ListenForEvent("playerdeactivated", LocalPlayerDeactivated)
-		else
-			player:ListenForEvent("onremove", LocalPlayerDeactivated)
+			-- This doesn't get triggered when the player gets removed via c_despawn() in a client hosted world.
+			player:ListenForEvent("playerdeactivated", function() LocalPlayerDeactivated("playerdeactivated") end)
 		end
-		--mprint("LOCALPLAYER FOUND")
+
+		player:ListenForEvent("onremove", function() LocalPlayerDeactivated("onremove") end)
 
 		local x = 0
-		--[[
-		while #onLocalPlayerReady > x do
-			mprint(string.format("Processing initializers with [%s] remaining.", #onLocalPlayerReady - x))
-
-			local todo = onLocalPlayerReady[x + 1]
-			todo.fn(GetLocalInsight(localPlayer), localPlayer._insight_context)
-			
-			if todo.persists then
-				x = x + 1
-			else
-				table.remove(onLocalPlayerReady, x + 1)
-			end
-		end
-		--]]
 
 		--mprint("LoadLocalPlayer", localPlayer, insight, context.player)
 		OnLocalPlayerPostInit:Push(insight, context)
