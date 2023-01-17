@@ -323,7 +323,24 @@ local function IsPlayerClientLoaded(player)
 	return (player and player.HUD and GetLocalInsight(player) and GetPlayerContext(player) and true) or false
 end
 
+local function AddDeployHelper(inst)
+	if IS_DST then
+		inst:AddComponent("deployhelper")
+	else
+		inst:AddComponent("dst_deployhelper")
+	end
+end
+
+local function GetDeployHelper(inst)
+	if IS_DST then
+		return inst.components.deployhelper
+	else
+		return inst.components.dst_deployhelper
+	end
+end
+
 function OnCurrentlySelectedItemChanged(old, new, itemInfo)
+	--mprint("OnCurrentlySelectedItemChanged", old, new)
 	if old and old.insight_hover_range then
 		old.insight_hover_range:Remove()
 		old.insight_hover_range = nil
@@ -331,6 +348,10 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 
 	if old and old.insight_combat_range_indicator and old.insight_combat_range_indicator.state_forced then
 		old.insight_combat_range_indicator:ForceStateChange(combatHelper.NET_STATES.NOTHING)
+	end
+
+	if old and GetDeployHelper(old) then
+		GetDeployHelper(old):StopHelper()
 	end
 
 	if not new then
@@ -356,32 +377,36 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		return
 	end
 
+
 	-- should i handle weapon range?
-	if not itemInfo.special_data.insight_ranged then
-		return
-	end
+	if itemInfo.special_data.insight_ranged then
+		local range = itemInfo.special_data.insight_ranged.range-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range)
+		local color = itemInfo.special_data.insight_ranged.color-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range_color)
 
-	local range = itemInfo.special_data.insight_ranged.range-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range)
-	local color = itemInfo.special_data.insight_ranged.color-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range_color)
-
-	if range then
-		new.insight_hover_range = SpawnPrefab("insight_range_indicator")
-		if itemInfo.special_data.insight_ranged.attach_player == false then
-			if new:HasTag("INLIMBO") then
-				--print'moved to player'
-				new.insight_hover_range:Attach(localPlayer)
+		if range then
+			new.insight_hover_range = SpawnPrefab("insight_range_indicator")
+			if itemInfo.special_data.insight_ranged.attach_player == false then
+				if new:HasTag("INLIMBO") then
+					--print'moved to player'
+					new.insight_hover_range:Attach(localPlayer)
+				else
+					--print'moved to self'
+					new.insight_hover_range:Attach(new)
+				end
 			else
-				--print'moved to self'
-				new.insight_hover_range:Attach(new)
+				new.insight_hover_range:Attach(localPlayer)
 			end
-		else
-			new.insight_hover_range:Attach(localPlayer)
+			new.insight_hover_range:SetRadius(range / WALL_STUDS_PER_TILE)
+			if color then
+				new.insight_hover_range:SetColour(Color.fromHex(color))
+			end
+			new.insight_hover_range:SetVisible(true)
 		end
-		new.insight_hover_range:SetRadius(range / WALL_STUDS_PER_TILE)
-		if color then
-			new.insight_hover_range:SetColour(Color.fromHex(color))
-		end
-		new.insight_hover_range:SetVisible(true)
+	elseif GetDeployHelper(new) then
+		local cmp = GetDeployHelper(new)
+		cmp:StartHelper(nil, nil)
+		cmp.delay = math.huge -- Prevent it from disappearing instantly, since it's kept open by (what I assume) is TriggerDeployHelpers running over and over?
+
 	end
 end
 
@@ -439,8 +464,6 @@ local function CanBlink(player)
 end
 
 local function OnHelperStateChange(inst, active, recipename, placerinst)
-	inst.components.dst_deployhelper.helping = active
-
 	if inst.prefab == "lightning_rod" then
 		inst.lightningrod_range:SetVisible(active)
 	elseif inst.prefab == "firesuppressor" then
@@ -1203,8 +1226,8 @@ AddPrefabPostInit("lightning_rod", function(inst) -- or i could just listen to a
 
 	if config == 1 then	-- strategic
 		inst.lightningrod_range:SetVisible(false)
-		inst:AddComponent("dst_deployhelper")
-		inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+		AddDeployHelper(inst)
+		GetDeployHelper(inst).onenablehelper = OnHelperStateChange
 	elseif config == 2 then -- always
 		inst.lightningrod_range:SetVisible(true)
 	else
