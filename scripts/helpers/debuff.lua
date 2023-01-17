@@ -142,21 +142,23 @@ local function GetItemEffects(inst, context)
 	local strs = {}
 	for buffname, buffdata in pairs(effects) do
 		local data = buffdata.data
-		if data.duration and data.value then -- percent based spices
-			strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { percent=Round(data.value * 100, 0), duration=data.duration })
+		if data then
+			if data.duration and data.value then -- percent based spices
+				strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { percent=Round(data.value * 100, 0), duration=data.duration })
 
-		elseif data.duration and data.tick_rate and data.tick_value then -- regenerators
-			local total_stat_gain = (data.duration or 0) / (data.tick_rate or 1) * (data.tick_value or 1)
-			strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { amount=total_stat_gain, duration=data.duration })
+			elseif data.duration and data.tick_rate and data.tick_value then -- regenerators
+				local total_stat_gain = (data.duration or 0) / (data.tick_rate or 1) * (data.tick_value or 1)
+				strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { amount=total_stat_gain, duration=data.duration })
 
-		elseif data.duration then -- just a buff
-			strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { duration=data.duration })
-		else
-			local duration = data.duration
-			local value = data.value
-			local tick_rate = data.tick_rate
-			local tick_value = data.tick_value
-			error("invalid effect?")
+			elseif data.duration then -- just a buff
+				strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { duration=data.duration })
+			else
+				local duration = data.duration
+				local value = data.value
+				local tick_rate = data.tick_rate
+				local tick_value = data.tick_value
+				error("invalid effect?")
+			end
 		end
 	end
 
