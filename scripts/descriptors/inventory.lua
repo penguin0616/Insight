@@ -29,12 +29,8 @@ local function SortDescriptors(a, b)
 	end
 end
 
-local function Describe(self, context)
+local function DescribeFollowerHat(self, context)
 	local alt_description
-
-	if not self.inst.components.follower then
-		return
-	end
 
 	local priority = 0
 	local head_item = self:GetEquippedItem(EQUIPSLOTS.HEAD)
@@ -83,6 +79,12 @@ local function Describe(self, context)
 		priority = priority,
 		alt_description = alt_description
 	}
+end
+
+local function Describe(self, context)
+	if self.inst.components.follower then
+		return DescribeFollowerHat(self, context)
+	end
 end
 
 
