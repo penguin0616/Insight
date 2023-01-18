@@ -996,22 +996,25 @@ AddPrefabPostInitAny(function(inst)
 	end
 end)
 
---[[
+--[==[
 AddPrefabPostInit("redgem", function(inst)
 	local a = SpawnPrefab("insight_range_indicator")
+	rawset(_G, "b", a)
 	a:Attach(inst)
 	a:SetRadius(4 / WALL_STUDS_PER_TILE)
 	a:SetColour(Color.fromHex("#ff0000"))
 	a:SetVisible(true)
 
+	--[[
 	a:DoPeriodicTask(1, function()
 		if not localPlayer then return end
 		print(FindEntity(a, 4, nil, {"player"}))
 		print(distsq(a:GetPosition(), localPlayer:GetPosition()), 4 * 4) -- physics range doesn't matter in this case. just need half the entity as usual.
 		print'--------'
 	end)
+	--]]
 end)
---]]
+--]==]
 
 --[[
 AddPrefabPostInit("deerclops", function(inst)
@@ -1148,6 +1151,15 @@ end)
 --]]
 
 AddPrefabPostInit("firesuppressor", function(inst) 
+	--[[
+	local a = SpawnPrefab("insight_range_indicator")
+	rawset(_G, "a", a)
+	a:Attach(inst)
+	a:SetRadius(4 / WALL_STUDS_PER_TILE)
+	a:SetColour(Color.fromHex("#ff0000"))
+	a:SetVisible(true)
+	--]]
+	
 	-- tuning says default range is 15
 	if IS_DST then return end
 	inst.snowball_range = SpawnPrefab("insight_range_indicator")

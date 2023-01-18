@@ -27,7 +27,18 @@ setfenv(1, _G.Insight.env)
 local assets = {
 	--Asset("ANIM", "anim/firefighter_placement.zip") -- bank: firefighter_placement, build: firefighter_placement
 	--Asset("ANIM", "anim/range_old.zip") -- bank: firefighter_placement, build: range_old
-	Asset("ANIM", "anim/range_tweak.zip") -- bank: bank_rt, build: range_tweak
+	--Asset("ANIM", "anim/range_tweak.zip") -- bank: bank_rt, build: range_tweak
+	Asset("ANIM", "anim/insight_range_indicator.zip")
+}
+
+local MODES = {
+	NORMAL = "firefighter_placemen",
+	SMALL = "winona_battery_placemen",
+}
+
+local TEXTURES = {
+	[MODES.NORMAL] = { SIZE={1900,1900} },
+	[MODES.SMALL] = { SIZE={350,350} },
 }
 
 local PLACER_SCALE = 1.55 -- from firesuppressor
@@ -49,15 +60,40 @@ local function ChangeIndicatorVisibility(inst, bool)
 	-- looked at my thing's anim.bin, tried a few of the strings, and apparently this is the winner.
 	-- https://forums.kleientertainment.com/forums/topic/122312-finding-an-animation-element-to-hideshow/
 
+	if inst._anim == nil then
+		error("ChangeIndicatorVisibility called without range indicator ._anim")
+	end
+
 	if bool then
-		inst.AnimState:Show("firefighter_placemen")
+		inst.AnimState:Show(inst._anim)
 		--inst.AnimState:ShowSymbol("firefighter_placement01") -- Does not exist in DS
 	else
-		inst.AnimState:Hide("firefighter_placemen")
+		inst.AnimState:Hide(inst._anim)
 		--inst.AnimState:HideSymbol("firefighter_placement01") -- Does not exist in DS
 	end
 end
 
+local function SetTextureMode(inst, mode)
+	if inst._anim == mode then
+		return
+	end
+
+	-- I don't know what the proper term is.
+	if inst._anim ~= nil then
+		inst.AnimState:Hide(inst._anim)
+	end
+
+	inst._anim = mode
+
+	--mprint("SetTextureMode", inst, mode, "|", inst.is_visible)
+	if inst.is_visible then
+		inst.AnimState:Show(inst._anim)
+	end
+end
+
+-- https://forums.kleientertainment.com/forums/topic/99705-info-scaling-ground-textures-to-in-game-units/
+
+--[[
 --- Changes the radius of the indicator.
 -- @param inst The indicator
 -- @number radius The radius the indicator will be set to. Interpreted as number of tiles.
@@ -76,7 +112,32 @@ local function SetRadius(inst, radius)
 	local a, b, c = parent.Transform:GetScale()
 
 	inst.Transform:SetScale(scale / a, scale / b, scale / c)
+end
+--]]
+
+local function SetRadius(inst, radius)
+	local parent = inst.entity:GetParent()
+	if not parent then
+		error("attempt to call SetRadius with no entity parent")
+		return
+	end
+
+	radius = radius * 4
+
+	if radius <= 3 then
+		SetTextureMode(inst, MODES.SMALL)
+	else
+		SetTextureMode(inst, MODES.NORMAL)
+	end
+
+	local scale = math.sqrt(radius * 300 / TEXTURES[inst._anim].SIZE[1])  -- the math.sqrt is a lucky guess. i was thinking along the lines of how SOMETHING (wortox soul detector but also the firefighter radius) needed to be reduced
 	
+	local a, b, c = 1, 1, 1
+	if parent then
+		a, b, c = parent.Transform:GetScale()
+	end
+
+	inst.Transform:SetScale(scale / a, scale / b, scale / c)
 end
 
 --- Changes the colour of the indicator.
@@ -91,11 +152,6 @@ local function SetColour(inst, ...)
 	else
 		error("SetColour not done properly: " .. tostring(inst) .. " | ")
 	end
-end
-
-local function OnVisibleDirty(inst)
-	inst.is_visible = inst.net_visible:value()
-	ChangeIndicatorVisibility(inst, inst.net_visible:value())
 end
 
 local function SetVisible(inst, bool)
@@ -153,7 +209,8 @@ local function base_fn()
 	
 	-- animations
 	inst.AnimState:SetBank("bank_rt")
-	inst.AnimState:SetBuild("range_tweak")
+	--inst.AnimState:SetBuild("range_tweak")
+	inst.AnimState:SetBuild("insight_range_indicator")
 	inst.AnimState:PlayAnimation("idle")
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)
@@ -165,12 +222,19 @@ local function base_fn()
 	--inst.AnimState:SetAddColour(0, 0, 0, 1)
 	--inst.AnimState:SetMultColour(.63, .16, .13, 1)
 
+	for i in pairs(TEXTURES) do
+		inst.AnimState:Hide(i)
+	end
+
+	SetTextureMode(inst, MODES.NORMAL)
+
 	inst.SetRadius = SetRadius
 	inst.SetColour = SetColour
 	inst.SetVisible = SetVisible
 	inst.Attach = Attach
 
 	inst:SetVisible(false)
+	--inst:SetRadius(1)
 
    	return inst
 end
