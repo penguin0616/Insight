@@ -46,11 +46,13 @@ local function Describe(self, context)
 			held_string = string.format(context.lstr.eater.eot_tofeed_restore, held_item.prefab, durability, percent)
 			alt_held_string = string.format(context.lstr.eater.eot_tofeed_restore_advanced, held_item.prefab, durability, hunger, health, percent)
 		elseif not is_eye_equipment then
-			local hunger, sanity, health = Insight.descriptors.edible.GetFoodStatsForEntity(held_item.components.edible, self.inst, context.player, true)
-			if hunger then
-				hunger, sanity, health = (hunger > 0 and "+" or "") .. hunger, (sanity > 0 and "+" or "") .. sanity, (health > 0 and "+" or "") .. health
-				held_string = string.format(context.lstr.eater.tofeed_restore, held_item.prefab, Insight.descriptors.edible.FormatFoodStats(hunger, sanity, health, context))
-				alt_held_string = held_string
+			if (IS_DST and self:PrefersToEat(held_item)) or (IS_DS and self:CanEat(held_item)) then
+				local hunger, sanity, health = Insight.descriptors.edible.GetFoodStatsForEntity(held_item.components.edible, self.inst, context.player, true)
+				if hunger then
+					hunger, sanity, health = (hunger > 0 and "+" or "") .. hunger, (sanity > 0 and "+" or "") .. sanity, (health > 0 and "+" or "") .. health
+					held_string = string.format(context.lstr.eater.tofeed_restore, held_item.prefab, Insight.descriptors.edible.FormatFoodStats(hunger, sanity, health, context))
+					alt_held_string = held_string
+				end
 			end
 		end
 	end
