@@ -238,7 +238,8 @@ function InsightTargetIndicator:OnUpdate()
 	elseif dist > MAX_INDICATOR_RANGE then
 		dist = MAX_INDICATOR_RANGE
 	end
-	local scale = Remap(dist, MIN_INDICATOR_RANGE, MAX_INDICATOR_RANGE, 1, MIN_SCALE)
+	
+	local scale = Remap(dist, MIN_INDICATOR_RANGE, MAX_INDICATOR_RANGE, .9, MIN_SCALE) -- 1
 	self:SetScale(scale)
 
 	-- Me
@@ -251,7 +252,6 @@ function InsightTargetIndicator:OnUpdate()
 		self.update_count = 0
 	end
 end
-
 local function GetXCoord(angle, width)
 	if angle >= 90 and angle <= 180 then -- left side
 		return 0
