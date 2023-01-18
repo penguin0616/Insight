@@ -19,6 +19,9 @@ directory. If not, please refer to
 ]]
 
 -- inventory.lua
+local inventory_cache = setmetatable({}, {__mode="kv"})
+local listeners_hooked = setmetatable({}, {__mode="kv"})
+
 local function SortDescriptors(a, b)
 	local p1, p2 = a[1] or 0, b[1] or 0
 
@@ -26,6 +29,34 @@ local function SortDescriptors(a, b)
 		return a[2] < b[2]
 	else
 		return p1 > p2
+	end
+end
+
+local function Uncache(inst)
+	inventory_cache[inst] = nil
+end
+
+
+local function GetInventory(self)
+	local inst = self.inst
+	
+	local items = inventory_cache[inst]
+	if not items then
+		items = {}
+		for k = 1, inst.components.inventory.maxslots do
+			local item = inst.components.inventory.itemslots[k]
+			if item ~= nil then
+				local stacksize = item.components.stackable and item.components.stackable:StackSize() or 1
+				items[#items+1] = {item.prefab, stacksize, item.components.perishable}
+			end
+		end
+		inventory_cache[inst] = items
+
+		if not listeners_hooked[inst] then
+			listeners_hooked[inst] = true
+			inst:ListenForEvent("itemlose", Uncache)
+			inst:ListenForEvent("itemget", Uncache)
+		end
 	end
 end
 

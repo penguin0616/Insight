@@ -164,10 +164,12 @@ local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatabl
 
 	-- food effects
 	if eater and world_type ~= 0 then -- accounting for strong stomach in anywhere except base game since no one cares there
-		if sanity < 0 and eater:DoFoodEffects(self.inst) == false then
+		local do_effects = eater:DoFoodEffects(self.inst)
+		
+		if sanity < 0 and do_effects == false then
 			sanity = 0
 		end
-		if health < 0 and eater:DoFoodEffects(self.inst) == false then
+		if health < 0 and do_effects == false then
 			health = 0
 		end
 	end
@@ -177,9 +179,11 @@ local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatabl
 	if not stats or (type(stats) == 'table' and not stats.fixed) then
 		-- uncompromising mode sets absorptions to 0 on first eat event and stores the original as a variable in the player.
 		-- \init\init_food\init_foodregen.lua in local function oneat, August 17, 2021.
-		hunger = hunger * base_mult * (uncompromising and eating_entity.hungerabsorption or eater.hungerabsorption)
-		sanity = sanity * base_mult * (uncompromising and eating_entity.sanityabsorption or eater.sanityabsorption)
-		health = health * base_mult * (uncompromising and eating_entity.healthabsorption or eater.healthabsorption)
+		-- Variable change necessary according to Atoba, Dec 16 2022
+		-- Do I want to do something with custom logic for uncomp absorption??
+		hunger = hunger * base_mult * (uncompromising and eating_entity.modded_hungerabsorption or eater.hungerabsorption)
+		sanity = sanity * base_mult * (uncompromising and eating_entity.modded_sanityabsorption or eater.sanityabsorption)
+		health = health * base_mult * (uncompromising and eating_entity.modded_healthabsorption or eater.healthabsorption)
 	end
 
 	-- new very helpful function by klei
