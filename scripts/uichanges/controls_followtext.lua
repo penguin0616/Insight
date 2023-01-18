@@ -119,6 +119,21 @@ local function UpdateFollowText(self, ...)
 			itemDescription = RichText.TrimNewlines(entityInformation.information)
 		end
 
+		if infotext_common.configs.hover_range_indicator then
+			local item = followerWidget.target
+			if item == nil or entityInformation == nil then
+				if currentlySelectedItem ~= nil then
+					OnCurrentlySelectedItemChanged(currentlySelectedItem, nil)
+					currentlySelectedItem = nil
+				end
+			elseif item and entityInformation and entityInformation.GUID then -- GUID presence means it is initialized
+				if currentlySelectedItem ~= item then
+					OnCurrentlySelectedItemChanged(currentlySelectedItem, item, entityInformation)
+					currentlySelectedItem = item
+				end
+			end
+		end
+
 		if itemDescription then
 			local insight_lines = select(2, itemDescription:gsub("\n", "\n")) + 1 -- Since I'm counting newlines, insight_lines is always 1 short. 
 			-- However, trailing newlines have about half their actual height here (probably due to the middle vertical align). That means I need to add 1 more (aka double it) for Insight. 

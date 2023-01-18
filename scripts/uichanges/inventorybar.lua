@@ -169,10 +169,27 @@ local function OnInventoryBarPostInit(inventoryBar)
 		local selected = inv_item or active_item
 
 		-- Fetch information
-		local entityInformation = RequestEntityInformation(inv_item or active_item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
+		local entityInformation = RequestEntityInformation(selected, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 		local itemDescription = nil
 		if entityInformation and entityInformation.information then
 			itemDescription = entityInformation.information
+		end
+
+		-- Normally, the constant update loop between followtext and this means followtext's focus will never get to show up.
+		-- So I'm restricting range information here for when the inventory is open.
+		if infotext_common.configs.hover_range_indicator and inventoryBar.open then 
+			local item = selected
+			if item == nil or entityInformation == nil then
+				if currentlySelectedItem ~= nil then
+					OnCurrentlySelectedItemChanged(currentlySelectedItem, nil)
+					currentlySelectedItem = nil
+				end
+			elseif item and entityInformation and entityInformation.GUID then -- GUID presence means it is initialized
+				if currentlySelectedItem ~= item then
+					OnCurrentlySelectedItemChanged(currentlySelectedItem, item, entityInformation)
+					currentlySelectedItem = item
+				end
+			end
 		end
 
 		inventoryBar.insightText:SetString(itemDescription)
