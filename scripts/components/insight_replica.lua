@@ -575,6 +575,9 @@ function Insight:StopUpdateLoop()
 
 	self.update_task:Cancel()
 	self.update_task = nil
+
+	mprint("\tInsight replica update loop has stopped")
+
 	if self.request_task then
 		self.request_task:Cancel()
 		self.request_task = nil
@@ -1129,10 +1132,9 @@ function Insight:HUDUpdate()
 		--mprint("===============================================================================================================================================")
 		return
 	end
-	
 	-- TheWorld and related analyzation
 	local world_data = self:GetWorldInformation()
-
+	self:RequestInformation(self.inst, { RAW=true })
 	local player_data = self:GetInformation(self.inst)
 
 	for i,v in pairs(self.menus) do
