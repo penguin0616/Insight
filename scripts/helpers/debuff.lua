@@ -138,6 +138,8 @@ local function GetDebuffEffects(debuffName, context)
 	local str
 
 	local data = debuff_definitions[debuffName]
+	if not data then return end
+
 	if data.duration and data.value then -- percent based spices
 		str = subfmt(context.lstr.debuffs[debuffName].description, { percent=Round(data.value * 100, 0), duration=data.duration })
 
@@ -147,6 +149,10 @@ local function GetDebuffEffects(debuffName, context)
 
 	elseif data.duration then -- just a buff
 		str = subfmt(context.lstr.debuffs[debuffName].description, { duration=data.duration })
+
+	elseif data.blank then
+		-- Just a string without any formatting needed.
+		str = context.lstr.debuffs[debuffName].description
 	else
 		local duration = data.duration
 		local value = data.value
@@ -166,7 +172,10 @@ local function GetItemEffects(inst, context)
 
 	local strs = {}
 	for i, debuffName in pairs(debuffs) do
-		strs[#strs+1] = GetDebuffEffects(debuffName, context)
+		local str = GetDebuffEffects(debuffName, context)
+		if str then
+			strs[#strs+1] = str
+		end
 	end
 
 	return strs
@@ -223,6 +232,28 @@ debuff_definitions["sweettea_buff"] = {
 	tick_rate = TUNING.SWEETTEA_TICK_RATE,
 	tick_value = TUNING.SWEETTEA_SANITY_DELTA,
 }
+
+-- Misc buffs
+debuff_definitions["wintersfeastbuff"] = {
+	blank = true
+}
+
+-- Halloween buffs
+debuff_definitions["halloweenpotion_health_buff"] = {
+	blank = true
+}
+
+debuff_definitions["halloweenpotion_sanity_buff"] = {
+	blank = true
+}
+
+debuff_definitions["halloweenpotion_bravery_buff"] = {
+	blank = true
+}
+
+
+
+
 
 --[[
 for name, data in pairs(debuff_definitions) do
