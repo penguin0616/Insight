@@ -68,7 +68,7 @@ local function MakeGrid()
 		widget_height = item_height + padding_between_rows,
 		scrollbar_offset = 15, -- Took this number from the math in insightscrolllist.
 		scrollbar_height_offset = 0,
-		peek_percent = 0, -- too much peek just clones the last item
+		peek_percent = 0.15, -- too much peek just clones the last item
 		allow_bottom_empty_row = false,
 		apply_fn = apply_fn,
 		item_ctor_fn = item_ctor_fn,

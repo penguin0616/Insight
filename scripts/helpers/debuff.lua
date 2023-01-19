@@ -31,7 +31,8 @@ local preparedfoods = require("preparedfoods")
 local preparedfoods_warly = IS_DST and require("preparedfoods_warly") or {}
 local spicedfoods = IS_DST and require("spicedfoods") or {}
 local world_type = GetWorldType()
-local debuff_effects = {}
+local item_debuffs = {}
+local debuff_definitions = {}
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -133,33 +134,39 @@ local function GetFoodEffects(self)
 	return bonuses
 end
 
+local function GetDebuffEffects(debuffName, context)
+	local str
+
+	local data = debuff_definitions[debuffName]
+	if data.duration and data.value then -- percent based spices
+		str = subfmt(context.lstr.debuffs[debuffName].description, { percent=Round(data.value * 100, 0), duration=data.duration })
+
+	elseif data.duration and data.tick_rate and data.tick_value then -- regenerators
+		local total_stat_gain = (data.duration or 0) / (data.tick_rate or 1) * (data.tick_value or 1)
+		str = subfmt(context.lstr.debuffs[debuffName].description, { amount=total_stat_gain, duration=data.duration })
+
+	elseif data.duration then -- just a buff
+		str = subfmt(context.lstr.debuffs[debuffName].description, { duration=data.duration })
+	else
+		local duration = data.duration
+		local value = data.value
+		local tick_rate = data.tick_rate
+		local tick_value = data.tick_value
+		error("invalid effect?")
+	end
+
+	return str
+end
+
 local function GetItemEffects(inst, context)
-	local effects = debuff_effects[inst.prefab]
-	if not effects then
+	local debuffs = item_debuffs[inst.prefab]
+	if not debuffs then
 		return nil
 	end
 
 	local strs = {}
-	for buffname, buffdata in pairs(effects) do
-		local data = buffdata.data
-		if data then
-			if data.duration and data.value then -- percent based spices
-				strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { percent=Round(data.value * 100, 0), duration=data.duration })
-
-			elseif data.duration and data.tick_rate and data.tick_value then -- regenerators
-				local total_stat_gain = (data.duration or 0) / (data.tick_rate or 1) * (data.tick_value or 1)
-				strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { amount=total_stat_gain, duration=data.duration })
-
-			elseif data.duration then -- just a buff
-				strs[#strs+1] = subfmt(context.lstr.debuffs[buffdata.prefab], { duration=data.duration })
-			else
-				local duration = data.duration
-				local value = data.value
-				local tick_rate = data.tick_rate
-				local tick_value = data.tick_value
-				error("invalid effect?")
-			end
-		end
+	for i, debuffName in pairs(debuffs) do
+		strs[#strs+1] = GetDebuffEffects(debuffName, context)
 	end
 
 	return strs
@@ -168,106 +175,126 @@ end
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
-debuff_effects["tillweedsalve"] = { -- (recipe) prefab
-	-- debuff name
-	["tillweedsalve_buff"] = {
-	 	-- debuff prefab
-		prefab = "tillweedsalve_buff",
-		-- debuff data
-		data = {
-			duration = TUNING.TILLWEEDSALVE_DURATION,
-			tick_rate = TUNING.TILLWEEDSALVE_TICK_RATE,
-			tick_value = TUNING.TILLWEEDSALVE_HEALTH_DELTA,
-		},
-	}
+-- Foodbuffs
+debuff_definitions["buff_attack"] = {
+	duration = TUNING.BUFF_ATTACK_DURATION, 
+	value = TUNING.BUFF_ATTACK_MULTIPLIER - 1
 }
 
-debuff_effects["jellybean"] = {
-	["healthregenbuff"] = {
-		prefab = "healthregenbuff",
-		data = {
-			duration = TUNING.JELLYBEAN_DURATION,
-			tick_rate = TUNING.JELLYBEAN_TICK_RATE,
-			tick_value = TUNING.JELLYBEAN_TICK_VALUE,
-		},
-	}
-}
-debuff_effects["sweettea"] = {
-	["sweettea_buff"] = {
-		prefab = "sweettea_buff",
-		data = {
-			duration = TUNING.SWEETTEA_DURATION,
-			tick_rate = TUNING.SWEETTEA_TICK_RATE,
-			tick_value = TUNING.SWEETTEA_SANITY_DELTA,
-		}
-	}
+debuff_definitions["buff_playerabsorption"] = {
+	duration = TUNING.BUFF_PLAYERABSORPTION_DURATION, 
+	value = TUNING.BUFF_PLAYERABSORPTION_MODIFIER
 }
 
-debuff_effects["frogfishbowl"] = {
-	["buff_moistureimmunity"] = {
-		prefab = "buff_moistureimmunity",
-		data = {
-			duration = TUNING.BUFF_MOISTUREIMMUNITY_DURATION,
-		}
-	}
+debuff_definitions["buff_workeffectiveness"] = {
+	duration = TUNING.BUFF_WORKEFFECTIVENESS_DURATION, 
+	value = TUNING.BUFF_WORKEFFECTIVENESS_MODIFIER - 1
 }
 
-debuff_effects["voltgoatjelly"] = {
-	["buff_electricattack"] = {
-		prefab = "buff_electricattack",
-		data = {
-			duration = TUNING.BUFF_ELECTRICATTACK_DURATION,
-		}
-	}
+debuff_definitions["buff_moistureimmunity"] = {
+	duration = TUNING.BUFF_MOISTUREIMMUNITY_DURATION
 }
 
-debuff_effects["shroomcake"] = {
-	["buff_sleepresistance"] = {
-		prefab = "buff_sleepresistance",
-		data = {
-			duration = TUNING.SLEEPRESISTBUFF_TIME,
-		}
-	}
+debuff_definitions["buff_electricattack"] = {
+	duration = TUNING.BUFF_ELECTRICATTACK_DURATION,
 }
+
+debuff_definitions["buff_sleepresistance"] = {
+	duration = TUNING.SLEEPRESISTBUFF_TIME,
+}
+
+-- Other buffs
+debuff_definitions["tillweedsalve_buff"] = {
+	duration = TUNING.TILLWEEDSALVE_DURATION,
+	tick_rate = TUNING.TILLWEEDSALVE_TICK_RATE,
+	tick_value = TUNING.TILLWEEDSALVE_HEALTH_DELTA,
+}
+
+
+debuff_definitions["healthregenbuff"] = {
+	duration = TUNING.JELLYBEAN_DURATION,
+	tick_rate = TUNING.JELLYBEAN_TICK_RATE,
+	tick_value = TUNING.JELLYBEAN_TICK_VALUE,
+}
+
+
+debuff_definitions["sweettea_buff"] = {
+	duration = TUNING.SWEETTEA_DURATION,
+	tick_rate = TUNING.SWEETTEA_TICK_RATE,
+	tick_value = TUNING.SWEETTEA_SANITY_DELTA,
+}
+
+--[[
+for name, data in pairs(debuff_definitions) do
+	data.prefab = name
+end
+--]]
+
+--=================================================================================================================
+--=================================================================================================================
+--=================================================================================================================
+--=================================================================================================================
+item_debuffs["tillweedsalve"] = {"tillweedsalve_buff"}
+
+item_debuffs["jellybean"] = {"healthregenbuff"}
+
+item_debuffs["sweettea"] = {"sweettea_buff"}
+
+item_debuffs["frogfishbowl"] = {"buff_moistureimmunity"}
+
+item_debuffs["voltgoatjelly"] = {"buff_electricattack"}
+
+item_debuffs["shroomcake"] = {"buff_sleepresistance"}
 
 
 
 local this = {
 	GetFoodEffects = GetFoodEffects,
 	GetItemEffects = GetItemEffects,
+	GetDebuffEffects = GetDebuffEffects,
 }
 
 if not IS_DST then
 	return this
 end
 
+--[[
+local spicedfoodsfn = loadfile("spicedfoods")
+
+setfenv(spicedfoodsfn, setmetatable({
+	Prefab = function(...)
+}, {
+	__index = getfenv(0),
+}))
+--]]
+
+
 
 local SPICES = util.getupvalue(GenerateSpicedFoods, "SPICES")
 
-local SPICES_STATS = {
-    SPICE_GARLIC = { duration=TUNING.BUFF_PLAYERABSORPTION_DURATION, value=TUNING.BUFF_PLAYERABSORPTION_MODIFIER },
-    SPICE_SUGAR  = { duration=TUNING.BUFF_WORKEFFECTIVENESS_DURATION, value=TUNING.BUFF_WORKEFFECTIVENESS_MODIFIER-1 },
-    SPICE_CHILI  = { duration=TUNING.BUFF_ATTACK_DURATION, value=TUNING.BUFF_ATTACK_MULTIPLIER-1 },
-    --SPICE_SALT   = {},
-}
-
-
+-- The purpose of this is to populate our database with every food that has a debuff.
+-- That way, when a spiced food gets inspected at any point, we can retrieve information about the spice used
+-- in GetItemEffects and display them to the user.
 for prefab, data in pairs(spicedfoods) do
-	if SPICES[data.spice].prefabs and SPICES[data.spice].prefabs[1] then
-		local spice_buff = SPICES[data.spice].prefabs[1]
-		debuff_effects[prefab] = {
-			[spice_buff] = {
-				prefab = spice_buff,
-				data = SPICES_STATS[data.spice]
-			}
-		}
+	local spice_used = data.spice -- The spice applied to the food
 
-		local original = debuff_effects[data.basename]
+	-- Only spices that have a prefab will apply a debuff.
+	if SPICES[spice_used].prefabs and SPICES[spice_used].prefabs[1] then
+		-- We're only doing the first debuff prefab for simplicity's sake though.
+		item_debuffs[prefab] = shallowcopy(SPICES[spice_used].prefabs)
+
+		-- In case we have the base food already in item_debuffs for non-spice-buff reasons, we'll apply those buffs
+		-- Into the spiced food database's entry for the item.
+		-- Ex: We have frogfishbowl already defined, but the dish can have spices.
+		-- So after we create those spiced dishes in the database, we need to bring over the moisture immunity debuff 
+		-- into the list of debuffs for spiced food.
+		local original = item_debuffs[data.basename]
 		if original then
-			for buffname, buffdata in pairs(original) do
-				debuff_effects[prefab][buffname] = buffdata
+			for i, buffname in pairs(original) do
+				table.insert(item_debuffs[prefab], i, buffname)
 			end
 		end
+		
 	end
 end
 

@@ -391,17 +391,24 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 	local did = {}
 	if player_page and player_data then
 		local info = player_data
-
+		
 		if info.special_data.debuffable then
-			for i,v in pairs(info.special_data.debuffable.debuffs) do
-				local name, text, icon = v.name, v.text, v.icon
-				name = name .. "debuffable_"
-				did[name] = true
-				
-				if player_page:GetItem(name) == nil then
-					player_page:AddItem(name, { text=text, icon=icon })
-				else
-					player_page:EditItem(name, { text=text, icon=icon })
+			if info.special_data.debuffable.debuffs then
+				for i,v in pairs(info.special_data.debuffable.debuffs) do
+					local name, text, icon = v.name, v.text, v.icon
+					name = name .. "debuffable_"
+					did[name] = true
+					
+					if player_page:GetItem(name) == nil then
+						player_page:AddItem(name, { text=text, icon=icon })
+					else
+						player_page:EditItem(name, { text=text, icon=icon })
+					end
+				end
+			elseif info.special_data.debuffable._error then -- info.special_data.debuffable._error
+				did["debuffable_error"] = true
+				if player_page:GetItem("debuffable_error") == nil then
+					player_page:AddItem("debuffable_error", { text=info.raw_information.debuffable })
 				end
 			end
 		end

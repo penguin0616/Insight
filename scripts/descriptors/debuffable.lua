@@ -43,111 +43,86 @@ directory. If not, please refer to
 	sporebomb
 ]]
 
-local definitions = {
-	buff_electricattack = {
-		name = "<color=WET>Electric attacks</color>",
-		prefab = "voltgoatjelly",
-	},
-	buff_moistureimmunity = {
-		name = "<color=WET>Moisture immunity</color>",
-		prefab = "frogfishbowl",
-	},
-	buff_playerabsorption = {
-		name = "<color=MEAT>Damage absorption</color>",
-		prefab = "spice_garlic",
-	},
-	buff_workeffectiveness = {
-		name = "<color=SWEETENER>Work efficiency</color>",
-		prefab = "spice_sugar",
-	},
-	buff_attack = {
-		name = "<color=HEALTH>Attack boost</color>",
-		prefab = "spice_chili",
-	},
+local debuffHelper = import("helpers/debuff")
 
-	healthregenbuff = {
-		name = "<color=HEALTH>Health regeneration</color>",
-		prefab = "jellybean",
-	},
+local debuff_to_prefab = {
+	buff_electricattack = "voltgoatjelly",
+	buff_moistureimmunity = "frogfishbowl",
+	buff_playerabsorption = "spice_garlic",
+	buff_workeffectiveness = "spice_sugar",
+	buff_attack = "spice_chili",
 
-	wintersfeastbuff = {
-		name = "<color=FROZEN>Winter's Feast Buff</color>",
-		prefab = "table_winters_feast"
-	},
+	
+	tillweedsalve_buff = "tillweedsalve",
+	healthregenbuff = "jellybean",
+	sweettea_buff = "sweettea",
 
-	halloweenpotion_health_buff = {
-		name = "<color=HEALTH>Health regeneration</color>",
-		prefab = "halloweenpotion_health_small",
-	},
-	halloweenpotion_sanity_buff = {
-		name = "<color=SANITY>Sanity regeneration</color>",
-		prefab = "halloweenpotion_sanity_small",
-	},
-	halloweenpotion_bravery_buff = {
-		name = "<color=SANITY>Bravery</color> against bats.",
-		prefab = "halloweenpotion_bravery_small",
-	},
+	wintersfeastbuff = "table_winters_feast",
+
+	halloweenpotion_health_buff = "halloweenpotion_health_small",
+	halloweenpotion_sanity_buff = "halloweenpotion_sanity_small",
+	halloweenpotion_bravery_buff = "halloweenpotion_bravery_small",
 }
 
 -- September 9 2020, Feast and Famine (https://steamcommunity.com/sharedfiles/filedetails/?id=1908933602) had its own debuff
+--[[
 setmetatable(definitions, {
 	__index = function(self, index)
-		local fake = {
-			name = "\"" .. index .. "\""
-		}
 		rawset(self, index, fake)
 		
 		return fake
 	end;
 })
+--]]
 
 local function Describe(self, context)
 	local description = nil
 
-	local list = {}
+	local list = nil
 
-	if self.inst == context.player then
-		for debuffPrefab, v in pairs(self.debuffs) do
-			local debuff = v.inst
-			if debuff then -- this is checked for in debuffable, inst is the actual buff prefab
-				local definition = definitions[debuffPrefab]
-				local remaining_time = "?"
-				local icon = nil
+	if self.inst ~= context.player then
+		return
+	end
 
-				-- taking a gamble that each buff has a single timer
-
-				if debuff.components.timer then -- ink timer missing
-					local name, value = next(debuff.components.timer.timers)
-					if next(debuff.components.timer.timers, name) == nil then
-						local t = debuff.components.timer:GetTimeLeft(name)
-						remaining_time = t and context.time:SimpleProcess(t) or "Missing time?"
-					else
-						-- doesnt have a single timer
-						remaining_time = "Buff has multiple timers?"
-					end
+	for debuffName, v in pairs(self.debuffs) do
+		local debuff = v.inst
+		if debuff then -- this is checked for in debuffable, inst is the actual debuff entity
+			-- This blob of whatever is responsible for getting the remaining time of the debuff.
+			-- taking a gamble that each buff has a single timer
+			local remaining_time
+			if debuff.components.timer then -- ink timer missing
+				local name, value = next(debuff.components.timer.timers)
+				if next(debuff.components.timer.timers, name) == nil then
+					local t = debuff.components.timer:GetTimeLeft(name)
+					remaining_time = t and context.time:SimpleProcess(t) or "Missing time?"
 				else
-					remaining_time = "No timer specified"
+					-- doesnt have a single timer
+					remaining_time = "Buff has multiple timers?"
 				end
-				
-				local text = string.format(context.lstr.buff_text, definition.name or ("\"" .. debuffPrefab .. "\""), remaining_time)
-
-				--dprint("server", debuffPrefab, text)
-
-				if definition.prefab then
-					icon = ResolvePrefabToImageTable(definition.prefab)
-					--[[
-					local exists, tex, atlas = PrefabHasIcon(definition.prefab)
-
-					if exists then
-						icon = { atlas=atlas, tex=tex }
-					end
-					--]]
-				end
-
-				list[#list+1] = {name = debuffPrefab, text = text, icon=icon}
+			else
+				remaining_time = "No timer specified"
 			end
-		end
 
+			local known_debuff = context.lstr.debuffs[debuffName] ~= nil
+
+			-- Make sure name exists, modded prefabs don't have one registered with us.
+			local name = ("\"" .. debuffName .. "\"")
+			if known_debuff and context.lstr.debuffs[debuffName].name and context.lstr.debuffs[debuffName].name ~= "" then
+				name = context.lstr.debuffs[debuffName].name
+			end
+
+			local primary_info = string.format(context.lstr.buff_text, name, remaining_time)
+			local desc = nil
+			if known_debuff and context.lstr.debuffs[debuffName].description then
+				desc = debuffHelper.GetDebuffEffects(debuffName, context)
+			end
+			local text = CombineLines(primary_info, desc)
+
+			local icon = debuff_to_prefab[debuffName] and ResolvePrefabToImageTable(debuff_to_prefab[debuffName]) or nil
+
+			if not list then list = {} end
+			list[#list+1] = {name = debuffName, text=text, icon=icon}
+		end
 	end
 
 	return {

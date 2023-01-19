@@ -155,17 +155,44 @@ return {
 	-- debuffable.lua
 	buff_text = "<color=MAGIC>Buff</color>: %s, %s",
 	debuffs = { -- ugh
-		["buff_attack"] = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
-		["buff_playerabsorption"] = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
-		["buff_workeffectiveness"] = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
+		["buff_attack"] = {
+			name = nil,
+			description = "Makes attacks <color=HEALTH>%s%% stronger</color> for %s(s).",
+		},
+		["buff_playerabsorption"] = {
+			name = nil,
+			description = "Take <color=MEAT>%s%%</color> less damage for %s(s).",
+		},
+		["buff_workeffectiveness"] = {
+			name = nil,
+			description = "Your work is <color=#DED15E>%s%%</color> more effective for %s(s).",
+		},
 		
-		["buff_moistureimmunity"] = "You are immune to <color=WET>wetness</color> for %s(s).",
-		["buff_electricattack"] = "Your attacks are <color=WET>electric</color> for %s(s).",
-		["buff_sleepresistance"] = "You resist <color=MONSTER>sleep</color> for %s(s).",
+		["buff_moistureimmunity"] = {
+			name = nil,
+			description = "You are immune to <color=WET>wetness</color> for %s(s).",
+		},
+		["buff_electricattack"] = {
+			name = nil,
+			description = "Your attacks are <color=WET>electric</color> for %s(s).",
+		},
+		["buff_sleepresistance"] = {
+			name = nil,
+			description = "You resist <color=MONSTER>sleep</color> for %s(s).",
+		},
 		
-		["tillweedsalve_buff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
-		["healthregenbuff"] = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
-		["sweettea_buff"] = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
+		["tillweedsalve_buff"] = {
+			name = nil,
+			description = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		},
+		["healthregenbuff"] = {
+			name = nil,
+			description = "Regenerates <color=HEALTH>%s health</color> over %s(s).",
+		},
+		["sweettea_buff"] = {
+			name = nil,
+			description = "Regenerates <color=SANITY>%s sanity</color> over %s(s).",
+		},
 	},
 
 	-- deerclopsspawner.lua

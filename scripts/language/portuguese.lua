@@ -302,17 +302,62 @@ return {
 	-- debuffable.lua
 	buff_text = "<color=MAGIC>Buff</color>: %s, %s",
 	debuffs = { -- ugh
-		["buff_attack"] = "Faz o ataque <color=HEALTH>{percent}% mais forte</color> por {duration}(s).",
-		["buff_playerabsorption"] = "Recebe <color=MEAT>{percent}%</color> menos dano por {duration}(s).",
-		["buff_workeffectiveness"] = "Seu trabalho é <color=#DED15E>{percent}%</color> mais efetivo por {duration}(s).",
+		["buff_attack"] = {
+			name = nil,
+			description = "Faz o ataque <color=HEALTH>{percent}% mais forte</color> por {duration}(s).",
+		},
+		["buff_playerabsorption"] = {
+			name = nil,
+			description = "Recebe <color=MEAT>{percent}%</color> menos dano por {duration}(s).",
+		},
+		["buff_workeffectiveness"] = {
+			name = nil,
+			description = "Seu trabalho é <color=#DED15E>{percent}%</color> mais efetivo por {duration}(s).",
+		},
 		
-		["buff_moistureimmunity"] = "Você está imune à <color=WET>umidade</color> por {duration}(s).",
-		["buff_electricattack"] = "Seus ataques estão <color=WET>eletrizados</color> por {duration}(s).",
-		["buff_sleepresistance"] = "Você está resistente à <color=MONSTER>sonolência</color> por {duration}(s).",
+		["buff_moistureimmunity"] = {
+			name = nil,
+			description = "Você está imune à <color=WET>umidade</color> por {duration}(s).",
+		},
+		["buff_electricattack"] = {
+			name = nil,
+			description = "Seus ataques estão <color=WET>eletrizados</color> por {duration}(s).",
+		},
+		["buff_sleepresistance"] = {
+			name = nil,
+			description = "Você está resistente à <color=MONSTER>sonolência</color> por {duration}(s).",
+		},
 		
-		["tillweedsalve_buff"] = "Regenera <color=HEALTH>{amount} vida</color> durante {duration}(s).",
-		["healthregenbuff"] = "Regenera<color=HEALTH>{amount} vida</color> durante {duration}(s).",
-		["sweettea_buff"] = "Regenera <color=SANITY>{amount} sanidade</color> durante {duration}(s).",
+		["tillweedsalve_buff"] = {
+			name = nil,
+			description = "Regenera <color=HEALTH>{amount} vida</color> durante {duration}(s).",
+		},
+		["healthregenbuff"] = {
+			name = nil,
+			description = "Regenera<color=HEALTH>{amount} vida</color> durante {duration}(s).",
+		},
+		["sweettea_buff"] = {
+			name = nil,
+			description = "Regenera <color=SANITY>{amount} sanidade</color> durante {duration}(s).",
+		},
+
+		["wintersfeastbuff"] = {
+			name = "<color=FROZEN>Winter's Feast Buff</color>",
+			description = nil
+		},
+		
+		["halloweenpotion_health_buff"] = {
+			name = "<color=HEALTH>Health regeneration</color>",
+			description = nil
+		},
+		["halloweenpotion_sanity_buff"] = {
+			name = "<color=SANITY>Sanity regeneration</color>",
+			description = nil
+		},
+		["halloweenpotion_bravery_buff"] = {
+			name = "<color=SANITY>Bravery</color> against bats.",
+			description = nil
+		},
 	},
 
 	-- deerclopsspawner.lua

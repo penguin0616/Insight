@@ -68,7 +68,7 @@ local ItemDetail = Class(Widget, function(self, info)
 	--self.icon:SetSize(icon_holder_width, icon_holder_height) 
 
 	self.text_holder = self:AddChild(Image("images/dst/scoreboard.xml", "row.tex")) -- avatars.xml
-	self.text_holder:SetSize(info.width - icon_holder_width - text_holder_padding, icon_holder_height)
+	self.text_holder:SetSize(info.width - icon_holder_width - text_holder_padding, icon_holder_height + (13/2)) -- blank pixels: ~8 empty top, ~5 empty bottom
 	self.text_holder:SetPosition(icon_holder_width/2 - text_holder_padding/2, 0) -- subtract 10 to keep icon_holder and text still bordering eachother
 	self.text_holder:Hide()
 	

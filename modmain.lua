@@ -211,7 +211,7 @@ local descriptors_ignore = {
 	
 	"lootdropper", "periodicspawner", "shearable", "mystery", "poisonable", "freezable",  -- may be interesting looking into
 	"thief", "characterspecific", "resurrector", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
-	"worldsettings", "piratespawner", "dockmanager", "undertile", -- may be interesting looking into
+	"worldsettings", "piratespawner", "dockmanager", "undertile", "cursable", -- may be interesting looking into
 
 	--notable
 	"bundlemaker", --used in bundling wrap before items
@@ -247,7 +247,8 @@ local descriptors_ignore = {
 	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
 	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
-	"cattoy", "updatelooper", "upgrademoduleremover", "hudindicatablemanager", "moonstormlightningmanager", -- don't care
+	"cattoy", "updatelooper", "upgrademoduleremover", "hudindicatablemanager", "moonstormlightningmanager", "playerhearing", "walkableplatformplayer", "hudindicatorwatcher", "seamlessplayerswapper", -- don't care
+	"boatcannonuser", "stageactor", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -647,9 +648,13 @@ function mprint(...)
 	if false then
 		local i = 2
 		local d = debug.getinfo(2, "Sln")
-		while d.name and d.name:sub(2, 6) == "print" do
+		while (d.name and d.name:sub(2, 6) == "print") or (d.source == "=[C]") do
 			i = i + 1
 			d = debug.getinfo(i, "Sln")
+			if not d then
+				d = {}
+				break
+			end
 		end
 
 		prefix = string.format("%s:%s:", d.source or "?", d.currentline or 0)
@@ -806,10 +811,10 @@ local function GetComponentDescriptor(name)
 		res = string.sub(res, (en or 0)+1)
 	
 		if res:find("File does not exist") then
-
+			
 		else
 			mprint("Failed to load descriptor", name, "|", res)
-			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end }
+			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, _error=true} end }
 		end
 
 		
@@ -850,7 +855,7 @@ local function GetPrefabDescriptor(name)
 		local _, en = string.find(res, ":%d+:%s")
 		res = string.sub(res, (en or 0)+1)
 		if not res:find("not exist") then
-			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res} end }
+			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, _error=true } end }
 		end
 
 		return false
@@ -958,13 +963,13 @@ local function GetEntityInformation(entity, player, params)
 	
 	for name, component in pairs(entity.components) do		
 		local descriptor = Insight.descriptors[name]
-		
+
 		if descriptor and descriptor.Describe then
 			local datas = {descriptor.Describe(component, player_context)}
 			ValidateDescribeResponse(chunks, name, datas, params)
 			
 		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
-			chunks[#chunks+1] = {priority = -2, name = name, description = "Disabled descriptor: " .. name};
+			chunks[#chunks+1] = {priority = -20, name = name, description = "Disabled descriptor: " .. name};
 
 		elseif player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not table.contains(descriptors_ignore, name) then
 			local description = "No information for: " .. name
@@ -979,7 +984,7 @@ local function GetEntityInformation(entity, player, params)
 			end
 
 			if description then
-				chunks[#chunks+1] = {priority = -1, name = name, description = description};
+				chunks[#chunks+1] = {priority = -10, name = name, description = description};
 			end
 		end
 	end
