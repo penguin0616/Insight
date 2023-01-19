@@ -51,6 +51,7 @@ local debuff_to_prefab = {
 	buff_playerabsorption = "spice_garlic",
 	buff_workeffectiveness = "spice_sugar",
 	buff_attack = "spice_chili",
+	buff_sleepresistance = "shroomcake",
 
 	
 	tillweedsalve_buff = "tillweedsalve",
@@ -87,6 +88,8 @@ local function Describe(self, context)
 	for debuffName, v in pairs(self.debuffs) do
 		local debuff = v.inst
 		if debuff then -- this is checked for in debuffable, inst is the actual debuff entity
+			local prefab = debuff.prefab
+
 			-- This blob of whatever is responsible for getting the remaining time of the debuff.
 			-- taking a gamble that each buff has a single timer
 			local remaining_time
@@ -94,7 +97,7 @@ local function Describe(self, context)
 				local name, value = next(debuff.components.timer.timers)
 				if next(debuff.components.timer.timers, name) == nil then
 					local t = debuff.components.timer:GetTimeLeft(name)
-					remaining_time = t and context.time:SimpleProcess(t) or "Missing time?"
+					remaining_time = t and context.time:SimpleProcess(t, "realtime_short") or "Missing time?"
 				else
 					-- doesnt have a single timer
 					remaining_time = "Buff has multiple timers?"
@@ -103,25 +106,27 @@ local function Describe(self, context)
 				remaining_time = "No timer specified"
 			end
 
-			local known_debuff = context.lstr.debuffs[debuffName] ~= nil
+			local known_debuff = context.lstr.debuffs[prefab] ~= nil
 
 			-- Make sure name exists, modded prefabs don't have one registered with us.
-			local name = ("\"" .. debuffName .. "\"")
-			if known_debuff and context.lstr.debuffs[debuffName].name and context.lstr.debuffs[debuffName].name ~= "" then
-				name = context.lstr.debuffs[debuffName].name
+			local name
+			if known_debuff and context.lstr.debuffs[prefab].name and context.lstr.debuffs[prefab].name ~= "" then
+				name = context.lstr.debuffs[prefab].name
+			else
+				name = string.format("%q (<color=#cccccc>%q</color>)\n", debuffName, prefab)
 			end
 
 			local primary_info = string.format(context.lstr.buff_text, name, remaining_time)
 			local desc = nil
-			if known_debuff and context.lstr.debuffs[debuffName].description then
-				desc = debuffHelper.GetDebuffEffects(debuffName, context)
+			if known_debuff and context.lstr.debuffs[prefab].description then
+				desc = debuffHelper.GetDebuffEffects(prefab, context)
 			end
 			local text = CombineLines(primary_info, desc)
 
-			local icon = debuff_to_prefab[debuffName] and ResolvePrefabToImageTable(debuff_to_prefab[debuffName]) or nil
+			local icon = debuff_to_prefab[prefab] and ResolvePrefabToImageTable(debuff_to_prefab[prefab]) or nil
 
 			if not list then list = {} end
-			list[#list+1] = {name = debuffName, text=text, icon=icon}
+			list[#list+1] = {name = debuffName, prefab=prefab, text=text, icon=icon}
 		end
 	end
 

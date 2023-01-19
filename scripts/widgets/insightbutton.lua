@@ -25,7 +25,10 @@ local InsightButton = Class(ImageButton, function(self)
 	--Widget._ctor(self, "Menu Button")
 	-- atlas, normal, focus, disabled, down, selected, scale, offset
 	ImageButton._ctor(self, "images/Blueprint.xml", "Blueprint.tex", nil, nil, nil, nil, {1,1}, {0,0})
+	self:SetImageNormalColour(1, 1, 1, 1)
+	--self:SetImageFocusColour(.9, 1, .9, 1)
 	self.move_on_click = false
+	--self.scale_on_focus = false -- Having this on while dragging is a little annoying.
 
 	self.drag_tolerance = 4
 	self:SetDraggable(false)
@@ -107,6 +110,10 @@ function InsightButton:BeginDrag()
 		return
 	end
 
+	if not TheFrontEnd.lastx or not TheFrontEnd.lasty then
+		return
+	end
+
 	TheFrontEnd:LockFocus(true)
 
 	self.o_pos = nil
@@ -117,6 +124,8 @@ function InsightButton:BeginDrag()
 		lastx = TheFrontEnd.lastx,
 		lasty = TheFrontEnd.lasty
 	}
+
+	self.image:SetScale(self.normal_scale[1], self.normal_scale[2], self.normal_scale[3])
 end
 
 function InsightButton:DoDrag()
@@ -172,6 +181,10 @@ function InsightButton:EndDrag()
 	end
 
 	self.drag_state = nil
+
+	if self.focus then
+		self.image:SetScale(self.focus_scale[1], self.focus_scale[2], self.focus_scale[3])
+	end
 end
 
 --[[

@@ -322,7 +322,7 @@ return {
 			description = "Your attacks are <color=WET>electric</color> for {duration}(s).",
 		},
 		["buff_sleepresistance"] = {
-			name = nil,
+			name = "<color=MONSTER>Sleep resistance</color>",
 			description = "You resist <color=MONSTER>sleep</color> for {duration}(s).",
 		},
 		
