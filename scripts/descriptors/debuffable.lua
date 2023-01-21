@@ -45,6 +45,7 @@ directory. If not, please refer to
 
 local debuffHelper = import("helpers/debuff")
 
+-- This table is for purposes of getting an icon for the buffs.
 local debuff_to_prefab = {
 	buff_electricattack = "voltgoatjelly",
 	buff_moistureimmunity = "frogfishbowl",
@@ -62,7 +63,8 @@ local debuff_to_prefab = {
 
 	halloweenpotion_health_buff = "halloweenpotion_health_small",
 	halloweenpotion_sanity_buff = "halloweenpotion_sanity_small",
-	halloweenpotion_bravery_buff = "halloweenpotion_bravery_small",
+	halloweenpotion_bravery_small_buff = "halloweenpotion_bravery_small",
+	halloweenpotion_bravery_large_buff = "halloweenpotion_bravery_large",
 }
 
 -- September 9 2020, Feast and Famine (https://steamcommunity.com/sharedfiles/filedetails/?id=1908933602) had its own debuff
@@ -86,17 +88,17 @@ local function Describe(self, context)
 	end
 
 	for debuffName, v in pairs(self.debuffs) do
-		local debuff = v.inst
-		if debuff then -- this is checked for in debuffable, inst is the actual debuff entity
-			local prefab = debuff.prefab
+		local debuffInst = v.inst
+		if debuffInst then -- this is checked for in debuffable, inst is the actual debuff entity
+			local prefab = debuffHelper.GetRealDebuffPrefab(debuffInst.prefab)
 
 			-- This blob of whatever is responsible for getting the remaining time of the debuff.
 			-- taking a gamble that each buff has a single timer
 			local remaining_time
-			if debuff.components.timer then -- ink timer missing
-				local name, value = next(debuff.components.timer.timers)
-				if next(debuff.components.timer.timers, name) == nil then
-					local t = debuff.components.timer:GetTimeLeft(name)
+			if debuffInst.components.timer then -- ink timer missing
+				local name, value = next(debuffInst.components.timer.timers)
+				if next(debuffInst.components.timer.timers, name) == nil then
+					local t = debuffInst.components.timer:GetTimeLeft(name)
 					remaining_time = t and context.time:SimpleProcess(t, "realtime_short") or "Missing time?"
 				else
 					-- doesnt have a single timer
@@ -113,7 +115,7 @@ local function Describe(self, context)
 			if known_debuff and context.lstr.debuffs[prefab].name and context.lstr.debuffs[prefab].name ~= "" then
 				name = context.lstr.debuffs[prefab].name
 			else
-				name = string.format("%q (<color=#cccccc>%q</color>)\n", debuffName, prefab)
+				name = string.format("%q\n(<color=#cccccc>%q</color>)", debuffName, prefab)
 			end
 
 			local primary_info = string.format(context.lstr.buff_text, name, remaining_time)

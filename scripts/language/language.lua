@@ -35,9 +35,48 @@ local __metatable = "[Insight] The metatable is locked."
 --------------------------------------------------------------------------
 --[[ Functions ]]
 --------------------------------------------------------------------------
-local function LoadLanguage(lang)
-	return deepcopy(import("language/" .. lang)) -- Don't want to taint the import.
+local function PostImportLanguage(tbl)
+	for i,v in pairs(tbl) do
+		if type(v) == "table" then
+			PostImportLanguage(v)
+		elseif type(v) == "function" then
+			local ret = v(tbl)
+			if type(ret) ~= "string" and type(ret) ~= "table" then
+				local info = debug.getinfo(v)
+				local src = (info.source or "?") .. ":" .. (info.linedefined or "?") 
+				mprint(type(ret))
+				mprint(ret)
+				errorf("Invalid post load fn for [%s]", src)
+			end
+			tbl[i] = ret
+		end
+	end
 end
+
+local function LoadLanguage(lang)
+	local path = "language/" .. lang
+	local new = import.has_loaded(path)
+	local tbl = import(path)
+
+	if new then
+		PostImportLanguage(tbl)
+	end
+
+	-- If for some reason we're hitting a "cannot override protected meta" yadda yadda, 
+	-- make sure none of the function returns in the langs directly return a reference to another table.
+	-- It's deceiving in that the deepcopy makes it seem like this should be fine, but you're setting a meta
+	-- On the same table twice from a single loaded language instance.
+	
+	local ret = deepcopy(tbl) -- Don't want to taint the import.
+
+	return ret
+end
+
+--[[
+local function LoadLanguage(lang)
+	return deepcopy(import("language/" .. lang))
+end
+--]]
 
 local function __newindex(self) 
 	error(tostring(self) .. " is readonly") 
@@ -89,6 +128,9 @@ local function main(config, locale)
 		rawset(primary, "lang", secondary)
 		rawset(secondary, "lang", fallback)
 	else
+		-- If primary is "en", it's basically extra lookup and loading for no reason.
+		-- However, I'm keeping this still to maintain load consistency across languages for testing purposes.
+
 		primary = LoadLanguage(languages[selected])
 		
 		LinkTables(primary, fallback)

@@ -220,7 +220,7 @@ local descriptors_ignore = {
 	"inventoryitem", "moisturelistener", "stackable", "cookable", "bait", "blowinwind", "blowinwindgust", "floatable", "selfstacker", -- don't care
 	"dryable", "highlight", "cooker", "lighter", "instrument", "poisonhealer", "trader", "smotherer", "knownlocations", "homeseeker", "occupier", "talker", -- don't care
 	"named", "activatable", "transformer", "deployable", "upgrader", "playerprox", "flotsamspawner", "rowboatwakespawner", "plantable", "waveobstacle", -- don't care
-	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", tiletracker", "payable", "useableitem", "drawable", "shaver", -- don't care
+	"fader", "lighttweener", "sleepingbag", "machine", "floodable", "firedetector", "heater", "tiletracker", "payable", "useableitem", "drawable", "shaver", -- don't care
 	"gridnudger", "entitytracker", "appeasable", "currency", "mateable", "sizetweener", "saltlicker", "sinkable", "sticker", "projectile", "hiddendanger", "deciduoustreeupdater", -- don't care
 	"geyserfx", "blinkstaff", -- don't care,
 

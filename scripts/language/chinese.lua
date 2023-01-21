@@ -361,10 +361,13 @@ return {
 			name = "<color=SANITY>Sanity regeneration</color>",
 			description = nil
 		},
-		["halloweenpotion_bravery_buff"] = {
+		["halloweenpotion_bravery_small_buff"] = {
 			name = "<color=SANITY>Bravery</color> against bats.",
 			description = nil
 		},
+		["halloweenpotion_bravery_large_buff"] = (function(parent)
+			return deepcopy(parent.halloweenpotion_bravery_small_buff)
+		end)
 	},
 
 	-- deerclopsspawner.lua

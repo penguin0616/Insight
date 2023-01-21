@@ -33,6 +33,7 @@ local spicedfoods = IS_DST and require("spicedfoods") or {}
 local world_type = GetWorldType()
 local item_debuffs = {}
 local debuff_definitions = {}
+local prefabs_to_generic_debuffs = {}
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -181,6 +182,10 @@ local function GetItemEffects(inst, context)
 	return strs
 end
 
+local function GetRealDebuffPrefab(whatever)
+	return prefabs_to_generic_debuffs[whatever] or whatever
+end
+
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
@@ -240,17 +245,24 @@ debuff_definitions["wintersfeastbuff"] = {
 
 -- Halloween buffs
 debuff_definitions["halloweenpotion_health_buff"] = {
-	blank = true
+	duration = TUNING.SEG_TIME * 2,
+	tick_rate = 2,
+	tick_value = 1
 }
 
 debuff_definitions["halloweenpotion_sanity_buff"] = {
-	blank = true
+	duration = TUNING.SEG_TIME * 2,
+	tick_rate = 2,
+	tick_value = 1
 }
 
-debuff_definitions["halloweenpotion_bravery_buff"] = {
-	blank = true
+debuff_definitions["halloweenpotion_bravery_small_buff"] = {
+	duration = TUNING.TOTAL_DAY_TIME * .5,
 }
 
+debuff_definitions["halloweenpotion_bravery_large_buff"] = {
+	duration = TUNING.TOTAL_DAY_TIME * .75,
+}
 
 
 
@@ -277,12 +289,27 @@ item_debuffs["voltgoatjelly"] = {"buff_electricattack"}
 
 item_debuffs["shroomcake"] = {"buff_sleepresistance"}
 
+--=================================================================================================================
+--=================================================================================================================
+--=================================================================================================================
+--=================================================================================================================
+prefabs_to_generic_debuffs["halloweenpotion_health_small_buff"] = "halloweenpotion_health_buff"
+prefabs_to_generic_debuffs["halloweenpotion_health_large_buff"] = "halloweenpotion_health_buff"
+prefabs_to_generic_debuffs["halloweenpotion_sanity_small_buff"] = "halloweenpotion_sanity_buff"
+prefabs_to_generic_debuffs["halloweenpotion_sanity_large_buff"] = "halloweenpotion_sanity_buff"
+--prefabs_to_generic_debuffs["halloweenpotion_bravery_small_buff"] = "halloweenpotion_bravery_buff"
+--prefabs_to_generic_debuffs["halloweenpotion_bravery_large_buff"] = "halloweenpotion_bravery_buff"
 
+--=================================================================================================================
+--=================================================================================================================
+--=================================================================================================================
+--=================================================================================================================
 
 local this = {
 	GetFoodEffects = GetFoodEffects,
 	GetItemEffects = GetItemEffects,
 	GetDebuffEffects = GetDebuffEffects,
+	GetRealDebuffPrefab = GetRealDebuffPrefab,
 }
 
 if not IS_DST then

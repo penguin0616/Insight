@@ -5,7 +5,12 @@ DST_CONSOLE_COMMANDS.c_pwdgt = function()
 		mprint(target, target and target.widget or nil)
 	end)
 end
-
+DST_CONSOLE_COMMANDS.c_nopirates = function(kill)
+	assert(TheWorld.ismastersim, "need to be mastersim")
+	local fn = kill and c_killall or c_removeall
+	fn("prime_mate")
+	fn("powder_monkey")
+end
 DST_CONSOLE_COMMANDS.c_nohounds = function()
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	c_removeall "firehound"

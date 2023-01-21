@@ -74,7 +74,7 @@ local function import(path)
 end
 
 local function clear_import(path)
-	real_path = ResolvePath(path)
+	local real_path = ResolvePath(path)
 
 	if import_cache[real_path] then
 		import_cache[real_path] = nil
@@ -83,10 +83,17 @@ local function clear_import(path)
 	end
 end
 
+local function has_loaded_import(path)
+	local real_path = ResolvePath(path)
+
+	return import_cache[real_path] ~= nil
+end
+
 local proxy = newproxy(true)
 local mt = getmetatable(proxy)
 mt.__index = { 
 	clear = clear_import,
+	has_loaded = has_loaded_import,
 	_init_cache = init_cache,
 	ResolvePath = ResolvePath,
 }
