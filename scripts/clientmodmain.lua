@@ -297,7 +297,14 @@ local function GenerateConfiguration()
 				if insight_subscribed or (util.table_find(v.tags, "undefined") and server_choice == "undefined") then
 					winner = client_choice
 				else
-					winner = server_choice
+					-- Originally, If the client isn't subscribed to Insight, the server could choose to enforce client options on the client.
+					-- This was because clients couldn't configure the mod.
+					-- But with the introduction of the configuration menu, that problem should be gone.
+					-- So what do I do about this?
+
+					-- For now, I'll revert it back to client choice and see who complains.
+					--winner = server_choice
+					winner = client_choice
 				end
 
 			elseif util.table_find(v.tags, "undefined") and server_choice == "undefined" then
