@@ -25,21 +25,16 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Basic ===========================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-local CraftSlot = require("widgets/craftslot")
-local IngredientUI = require("widgets/ingredientui")
 local ImageButton = require("widgets/imagebutton")
 local InsightButton = import("widgets/insightbutton")
 local RichText = import("widgets/RichText")
 local Text = require"widgets/text"
 
-local CraftingMenuWidget = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget")) or nil
-local CraftingMenuHUD = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud")) or nil
-
 local SHIF_CURRENT_CALLER = nil
 local SHIF_TASK = nil
-local SHIF_DELAY = IS_DST and 0.1 or 0.09
+local SHIF_DELAY = IS_DST and 1/30 or 0.09
 
-local function SetHighlightIngredientFocus(caller, arg)
+function SetHighlightIngredientFocus(caller, arg)
 	--local cstr = caller.ing and caller.ing.texture and string.match(caller.ing.texture, '[^/]+$'):gsub('%.tex$', '') or caller
 	--local argstr = arg and arg.ing and arg.ing.texture and string.match(arg.ing.texture, '[^/]+$'):gsub('%.tex$', '') or arg
 	--mprint("SetHighlightIngredientFocus", cstr, argstr)
@@ -298,219 +293,40 @@ import("uichanges/itemtile").Initialize()
 --======================================== Crafting Menu ===================================================================
 --==========================================================================================================================
 --==========================================================================================================================
---[==[
-local function CMW_OnGainFocus(self, ...)
-	mprint'ongainfocus'
-	if self.data and self.data.recipe and self.data.recipe.product then
-		SetHighlightIngredientFocus({ prefab=self.data.recipe.product })
-	end
-	--[[
-table.foreach(self.data.recipe, mprint)
-[00:27:32]: [workshop-2189004162 (Insight)]:	nounlock	false	
-[00:27:32]: [workshop-2189004162 (Insight)]:	atlas	images/inventoryimages2.xml	
-[00:27:32]: [workshop-2189004162 (Insight)]:	build_distance	1	
-[00:27:32]: [workshop-2189004162 (Insight)]:	is_deconstruction_recipe	false	
-[00:27:32]: [workshop-2189004162 (Insight)]:	character_ingredients	table: 000000010A6B9610	
-[00:27:32]: [workshop-2189004162 (Insight)]:	rpc_id	107	
-[00:27:32]: [workshop-2189004162 (Insight)]:	min_spacing	3.2	
-[00:27:32]: [workshop-2189004162 (Insight)]:	product	pickaxe	
-[00:27:32]: [workshop-2189004162 (Insight)]:	build_mode	1	
-[00:27:32]: [workshop-2189004162 (Insight)]:	image	pickaxe.tex	
-[00:27:32]: [workshop-2189004162 (Insight)]:	name	pickaxe	
-[00:27:32]: [workshop-2189004162 (Insight)]:	sortkey	107	
-[00:27:32]: [workshop-2189004162 (Insight)]:	numtogive	1	
-[00:27:32]: [workshop-2189004162 (Insight)]:	level	table: 00000000599BE800	
-[00:27:32]: [workshop-2189004162 (Insight)]:	ingredients	table: 000000010A6B8990	
-[00:27:32]: [workshop-2189004162 (Insight)]:	tech_ingredients	table: 000000010A6B92A0	
-	]]
-end
---]==]
+import("uichanges/craftingmenu").Initialize()
 
-function OnCellRootClick(self, widget)
-	--dprint("oncellrootclick")
-	if not localPlayer then return end;
-	-- yikes.
-	--local is_current = widget.data == localPlayer.HUD.controls.craftingmenu.craftingmenu.details_root.data
-	--local details_root_data = table.getfield(localPlayer, "HUD.controls.craftingmenu.craftingmenu.details_root.data")
-	local details_root_data = localPlayer.HUD.controls.craftingmenu:GetCurrentRecipeState()
-	if not details_root_data then return end
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Ingredient UI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import("uichanges/ingredientui").Initialize()
 
-	--[[
-	local is_current = widget.data == details_root_data
-	if is_current then
-		-- assume we've already clicked this
-		return
-	end
-	--]]
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CraftSlot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import("uichanges/craftslot").Initialize()
 
-	if widget.data and widget.data.recipe and widget.data.recipe.product then
-		SetHighlightIngredientFocus(self, { prefab = widget.data.recipe.product })
-	end
-end
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Recipe Popup ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import("uichanges/recipelookup").Initialize()
 
-function ItemWidgetOnGainFocus(self, ...)
-	dprint('ongainfocus', self.data.recipe.product)
-	if self.data and self.data.recipe and self.data.recipe.product then
-		SetHighlightIngredientFocus(self, { prefab = self.data.recipe.product })
-	end
-end
-
-function ItemWidgetOnLoseFocus(self, ...)
-	dprint('onlosefocus', self.data.recipe.product)
-	SetHighlightIngredientFocus(self, nil)
-end
-
-if CraftingMenuWidget and CraftingMenuHUD then
-	local oldTEMPLATES = util.getupvalue(CraftingMenuWidget.MakeRecipeList, "TEMPLATES")
-
-	local fakeTemplates = setmetatable({
-		ScrollingGrid = function(...)
-			local items, opts = ...
-			
-			local oldItemCtorFn = opts.item_ctor_fn
-			local oldApplyFn = opts.apply_fn
-
-			opts.item_ctor_fn = function(...)
-				--mprint("ReplacementCtor")
-				local widget = oldItemCtorFn(...)
-				--widget.OnGainFocus = ItemWidgetOnGainFocus;
-				--widget.OnLoseFocus = ItemWidgetOnLoseFocus;
-				
-				
-				local oldOnClick = widget.cell_root.onclick
-				widget.cell_root:SetOnClick(function(...) -- normally no args
-					OnCellRootClick(widget.cell_root, widget)
-					if oldOnClick then -- should exist, but just in case...
-						return oldOnClick(...)
-					end
-				end)
-				
-
-				return widget;
-			end
-
-			return oldTEMPLATES.ScrollingGrid(...)
-		end,
-	}, {
-		__index = oldTEMPLATES;
-		__newindex = oldTEMPLATES;
-	})
-
-	util.replaceupvalue(CraftingMenuWidget.MakeRecipeList, "TEMPLATES", fakeTemplates);
-
-
-	local oldOpen = CraftingMenuHUD.Open
-	function CraftingMenuHUD:Open(...)
-		if not localPlayer then return end
-		local details_root_data = localPlayer.HUD.controls.craftingmenu:GetCurrentRecipeState()
-		if details_root_data then
-			if details_root_data and details_root_data.recipe and details_root_data.recipe.product then
-				SetHighlightIngredientFocus(self, { prefab = details_root_data.recipe.product })
-			end
-		end
-		return oldOpen(self, ...)
-	end
-
-	local oldClose = CraftingMenuHUD.Close
-	function CraftingMenuHUD:Close(...)
-		SetHighlightIngredientFocus(self, nil)
-		return oldClose(self, ...)
-	end
-end
-
---==========================================================================================================================
---==========================================================================================================================
---======================================== Ingredient UI ===================================================================
---==========================================================================================================================
---==========================================================================================================================
-if IngredientUI then
-
-local oldIngredientUI_OnGainFocus = IngredientUI.OnGainFocus
-local oldIngredientUI_OnLoseFocus = IngredientUI.OnLoseFocus
-
-function IngredientUI:OnGainFocus(...)
-	--dprint("ingredientui OnGainFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
-	--highlighting.SetActiveIngredientUI(self)
-	SetHighlightIngredientFocus(self, self)
-	
-
-	if oldIngredientUI_OnGainFocus then
-		return oldIngredientUI_OnGainFocus(self, ...)
-	end
-end
-
-function IngredientUI:OnLoseFocus(...)
-	--dprint("ingredientui OnLoseFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
-	--highlighting.SetActiveIngredientUI(nil)
-	SetHighlightIngredientFocus(self, nil)
-
-	if oldIngredientUI_OnLoseFocus then
-		return oldIngredientUI_OnLoseFocus(self, ...)
-	end
-end
-
-end
---==========================================================================================================================
---==========================================================================================================================
---======================================== Craft Slot ======================================================================
---==========================================================================================================================
---==========================================================================================================================
--- Removed in new crafting menu
-if CraftSlot then
-
-local oldCraftSlot_OnGainFocus = CraftSlot.OnGainFocus
-local oldCraftSlot_OnLoseFocus = CraftSlot.OnLoseFocus
-
-function CraftSlot:OnGainFocus(...)
-	--highlighting.SetActiveIngredientUI({ prefab=self.recipename })
-	SetHighlightIngredientFocus(self, { prefab=self.recipename })
-
-	if oldCraftSlot_OnGainFocus then
-		return oldCraftSlot_OnGainFocus(self, ...)
-	end
-end
-
-function CraftSlot:OnLoseFocus(...)
-	SetHighlightIngredientFocus(self, nil)
-	
-	if oldCraftSlot_OnLoseFocus then
-		return oldCraftSlot_OnLoseFocus(self, ...)
-	end
-end
-
-end
---==========================================================================================================================
---==========================================================================================================================
---======================================== Stat Meter Inspection ===========================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stat Meter Inspection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 local meterInspectModule = import("uichanges/meterinspect")
 meterInspectModule.Initialize()
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== Recipe Popup ====================================================================
---==========================================================================================================================
---==========================================================================================================================
-import("uichanges/recipelookup").Initialize()
-
---==========================================================================================================================
---==========================================================================================================================
---======================================== WX-78 Charge Timer ==============================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ WX-78 Charge Timer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 local wxChargeDisplayModule = import("uichanges/wxchargedisplay")
 if wxChargeDisplayModule.CanHookUpgradeModuleDisplay() then
 	wxChargeDisplayModule.HookUpgradeModuleDisplay()
 end
 
-
-
---==========================================================================================================================
---==========================================================================================================================
---======================================== Craft Pot =======================================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Craft Pot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 if KnownModIndex:IsModEnabled("workshop-727774324") or KnownModIndex:IsModEnabled("workshop-662872357") then -- Craft Pot (DST) https://steamcommunity.com/sharedfiles/filedetails/?id=727774324
 	local FoodIngredientUI = require("widgets/foodingredientui")
 
@@ -550,11 +366,9 @@ if KnownModIndex:IsModEnabled("workshop-727774324") or KnownModIndex:IsModEnable
 	end
 end
 
---==========================================================================================================================
---==========================================================================================================================
---======================================== Hoverer =========================================================================
---==========================================================================================================================
---==========================================================================================================================
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Hoverer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 import("uichanges/hoverer").Initialize()
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
