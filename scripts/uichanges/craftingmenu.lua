@@ -137,7 +137,7 @@ end
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CraftingMenuHUD ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-local function CraftingMenuHUD_Open(...)
+local function CraftingMenuHUD_Open(self, ...)
 	if not localPlayer then return end
 	local details_root_data = localPlayer.HUD.controls.craftingmenu:GetCurrentRecipeState()
 	if details_root_data then
@@ -148,7 +148,7 @@ local function CraftingMenuHUD_Open(...)
 	return module.oldCraftingMenuHUD_Open(self, ...)
 end
 
-local function CraftingMenuHUD_Close(...)
+local function CraftingMenuHUD_Close(self, ...)
 	SetHighlightIngredientFocus(self, nil)
 	return module.oldCraftingMenuHUD_Close(self, ...)
 end

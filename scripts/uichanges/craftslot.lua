@@ -23,20 +23,20 @@ local module = {}
 local CraftSlot = require("widgets/craftslot")
 
 
-function CraftSlot_OnGainFocus(...)
+local function CraftSlot_OnGainFocus(self, ...)
 	--highlighting.SetActiveIngredientUI({ prefab=self.recipename })
 	SetHighlightIngredientFocus(self, { prefab=self.recipename })
 
-	if oldCraftSlot_OnGainFocus then
-		return oldCraftSlot_OnGainFocus(self, ...)
+	if module.oldCraftSlot_OnGainFocus then
+		return module.oldCraftSlot_OnGainFocus(self, ...)
 	end
 end
 
-function CraftSlot_OnLoseFocus(...)
+local function CraftSlot_OnLoseFocus(self, ...)
 	SetHighlightIngredientFocus(self, nil)
 	
-	if oldCraftSlot_OnLoseFocus then
-		return oldCraftSlot_OnLoseFocus(self, ...)
+	if module.oldCraftSlot_OnLoseFocus then
+		return module.oldCraftSlot_OnLoseFocus(self, ...)
 	end
 end
 

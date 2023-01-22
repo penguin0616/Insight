@@ -22,24 +22,24 @@ directory. If not, please refer to
 local module = {}
 local IngredientUI = require("widgets/ingredientui")
 
-function IngredientUI_OnGainFocus(...)
-	--dprint("ingredientui OnGainFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
+local function IngredientUI_OnGainFocus(self, ...)
+	dprint("ingredientui OnGainFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(self)
 	SetHighlightIngredientFocus(self, self)
 	
 
-	if oldIngredientUI_OnGainFocus then
-		return oldIngredientUI_OnGainFocus(self, ...)
+	if module.oldIngredientUI_OnGainFocus then
+		return module.oldIngredientUI_OnGainFocus(self, ...)
 	end
 end
 
-function IngredientUI_OnLoseFocus(...)
-	--dprint("ingredientui OnLoseFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
+local function IngredientUI_OnLoseFocus(self, ...)
+	dprint("ingredientui OnLoseFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(nil)
 	SetHighlightIngredientFocus(self, nil)
 
-	if oldIngredientUI_OnLoseFocus then
-		return oldIngredientUI_OnLoseFocus(self, ...)
+	if module.oldIngredientUI_OnLoseFocus then
+		return module.oldIngredientUI_OnLoseFocus(self, ...)
 	end
 end
 
