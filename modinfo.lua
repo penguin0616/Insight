@@ -6048,7 +6048,7 @@ configuration_options = {
 		}, 
 		default = false,
 		client = true,
-		tags = {},
+		tags = {"independent"},
 	},
 	{
 		name = "DEBUG_SHOW_DISABLED",
@@ -6058,7 +6058,7 @@ configuration_options = {
 		}, 
 		default = false,
 		client = true,
-		tags = {},
+		tags = {"independent"},
 	},
 	{
 		name = "DEBUG_SHOW_PREFAB",
@@ -6068,7 +6068,7 @@ configuration_options = {
 		},
 		default = false,
 		client = true,
-		tags = {},
+		tags = {"independent"},
 	},
 	{
 		name = "DEBUG_ENABLED",
@@ -6077,7 +6077,7 @@ configuration_options = {
 			{data = true},
 		},
 		default = false,
-		tags = {},
+		tags = {"independent"},
 	}
 }
 

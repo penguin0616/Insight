@@ -37,33 +37,46 @@ local function Describe(self, context)
 			or nil
 
 			if not listener then
-				description = "Missing data error [1]"
+				alt_description = "Missing data error [1]"
 			else
 				HERMIT_TASKS = util.getupvalue(listener, "checklureplant", "TASKS")
 				if not HERMIT_TASKS then
-					description = "Missing data error [2]"
+					alt_description = "Missing data error [2]"
 				else
 					HERMIT_TASKS_INVERTED = table.invert(HERMIT_TASKS)
 				end
 			end
 		end
 		
-		if HERMIT_TASKS and DEBUG_ENABLED then
-			taskstuff = {}
+		if HERMIT_TASKS and context.config["DEBUG_ENABLED"] then
+			taskstuffs = {}
+			local num = 1
+
 			for i,v in pairs(self.friendlytasks) do
 				if not v.complete then
-					table.insert(taskstuff, HERMIT_TASKS_INVERTED[i])
+					local idx = 1 + math.floor(num / 5)
+					if taskstuffs[idx] == nil then taskstuffs[idx] = {} end
+					local str = HERMIT_TASKS_INVERTED[i]
+					table.insert(taskstuffs[idx], str)
+					num = num + 1
 				end
 			end
-			table.sort(taskstuff)
-			description = friendlevel
-			alt_description = CombineLines(description, table.concat(taskstuff, ", "))
-		else
-			-- :(
+
+			for i,v in pairs(taskstuffs) do
+				table.sort(v)
+				for j = 1, #v do
+					if j % 2 == 0 then
+						v[j] = "<color=#888888>" .. v[j] .. "</color>"
+					end
+				end
+				taskstuffs[i] = table.concat(v, ", ")
+			end
+
+			alt_description = CombineLines(description, "<color=#ffcccc>Unfinished Tasks</color>:", table.concat(taskstuffs, "\n"))
 		end
-	else
-		description = friendlevel
 	end
+
+	description = friendlevel
 
 	return {
 		priority = 0,
