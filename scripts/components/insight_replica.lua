@@ -736,11 +736,13 @@ end
 
 
 function Insight:DoesFuelMatchFueled(fuel, fueled)
-	if IS_DS then
+	if IS_DS or IS_CLIENT_HOST then
 		if fuel.components.fuel and fueled.components.fueled then
 			return fueled.components.fueled:CanAcceptFuelItem(fuel)
 		end
 	else
+		-- This doesn't work in client hosted. So I just added client host to the check above.
+
 		local ed_fuel = self.entity_data[fuel]
 		--local ed_fuel = self:GetInformation(fuel)
 		local ed_fueled = self.entity_data[fueled]

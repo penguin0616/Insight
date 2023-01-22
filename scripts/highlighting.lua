@@ -209,6 +209,7 @@ local function RemoveHighlight(inst)
 	if inst[highlightColorKey] then
 		if IsWidget(inst) then -- ItemTile
 			inst.image:SetTint(1, 1, 1, 1)
+			--inst:GetParent():DeHighlight()
 			RemoveHighlight(inst.item) -- show the love further down too because why not
 		elseif IsPrefab(inst) then
 			local previous = inst[highlightColorKey]
@@ -243,6 +244,7 @@ local function ApplyHighlight(inst, color_key)
 		inst[highlightColorKey] = inst[highlightColorKey] or highlightColorKey -- Tint is just set back to 1,1,1,1
 		inst.image:SetTint(color[1], color[2], color[3], color[4])
 
+		--inst:GetParent():Highlight()
 		changed[inst] = true
 
 		ApplyHighlight(inst.item, color) -- show the love further down too because why not
@@ -256,7 +258,7 @@ local function ApplyHighlight(inst, color_key)
 			local color = color_table[color_key] or color_table.ERROR
 			
 			if use_mult then
-				inst[highlightColorKey] = inst[highlightColorKey] or {COLORS_MULT.NOTHING[1], COLORS_MULT.NOTHING[2], COLORS_MULT.NOTHING[3], COLORS_MULT.NOTHING[4]}
+				inst[highlightColorKey] = inst[highlightColorKey] or {inst.AnimState:GetMultColour()}
 				inst[highlightColorKey][5] = use_mult -- This is used for determining how to revert the highlighting.
 
 				if inst.AnimState.OverrideMultColour then

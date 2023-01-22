@@ -23,7 +23,7 @@ local module = {}
 local IngredientUI = require("widgets/ingredientui")
 
 local function IngredientUI_OnGainFocus(self, ...)
-	dprint("ingredientui OnGainFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
+	--dprint("ingredientui OnGainFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(self)
 	SetHighlightIngredientFocus(self, self)
 	
@@ -34,7 +34,7 @@ local function IngredientUI_OnGainFocus(self, ...)
 end
 
 local function IngredientUI_OnLoseFocus(self, ...)
-	dprint("ingredientui OnLoseFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
+	--dprint("ingredientui OnLoseFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(nil)
 	SetHighlightIngredientFocus(self, nil)
 
