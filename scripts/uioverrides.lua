@@ -35,23 +35,34 @@ local Text = require"widgets/text"
 local CraftingMenuWidget = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget")) or nil
 local CraftingMenuHUD = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud")) or nil
 
+local SHIF_CURRENT_CALLER = nil
 local SHIF_TASK = nil
-local SHIF_DELAY = IS_DST and 0 or 0.09
-local function SetHighlightIngredientFocus(arg)
-	--mprint("SetHighlightIngredientFocus", arg)
-	if SHIF_TASK then
-		--mprint("\tCANCEL")
-		SHIF_TASK:Cancel()
-		SHIF_TASK = nil
-	end
+local SHIF_DELAY = IS_DST and 0.1 or 0.09
+
+local function SetHighlightIngredientFocus(caller, arg)
+	--local cstr = caller.ing and caller.ing.texture and string.match(caller.ing.texture, '[^/]+$'):gsub('%.tex$', '') or caller
+	--local argstr = arg and arg.ing and arg.ing.texture and string.match(arg.ing.texture, '[^/]+$'):gsub('%.tex$', '') or arg
+	--mprint("SetHighlightIngredientFocus", cstr, argstr)
+	--mprint("\t\tCaller diff: old", SHIF_CURRENT_CALLER, "| new:", caller)
 
 	if arg == nil then
-		highlighting.SetActiveIngredientUI(nil)
+		-- When you quickly swap between two ingredients, the new one gets the highlighting call set but the second one triggers focus lose after and clears the highlighting task
+		-- We only reset the thing here if the caller is the correct caller.
+		if SHIF_CURRENT_CALLER == caller then
+			--mprint("\t\t\t\tSuccessful cancel")
+			highlighting.SetActiveIngredientUI(nil)
+			SHIF_CURRENT_CALLER = nil
+			if SHIF_TASK then SHIF_TASK:Cancel() SHIF_TASK = nil end
+		end
+
 		return
 	end
 
+	-- Presumably we have a new target now.
+	SHIF_CURRENT_CALLER = caller
+
+	if SHIF_TASK then SHIF_TASK:Cancel() SHIF_TASK = nil end
 	SHIF_TASK = TheGlobalInstance:DoTaskInTime(SHIF_DELAY, function()
-		--mprint("\tCOMMIT", arg)
 		highlighting.SetActiveIngredientUI(arg)
 	end)
 end
@@ -333,20 +344,20 @@ function OnCellRootClick(self, widget)
 	--]]
 
 	if widget.data and widget.data.recipe and widget.data.recipe.product then
-		SetHighlightIngredientFocus({ prefab = widget.data.recipe.product })
+		SetHighlightIngredientFocus(self, { prefab = widget.data.recipe.product })
 	end
 end
 
 function ItemWidgetOnGainFocus(self, ...)
 	dprint('ongainfocus', self.data.recipe.product)
 	if self.data and self.data.recipe and self.data.recipe.product then
-		SetHighlightIngredientFocus({ prefab = self.data.recipe.product })
+		SetHighlightIngredientFocus(self, { prefab = self.data.recipe.product })
 	end
 end
 
 function ItemWidgetOnLoseFocus(self, ...)
 	dprint('onlosefocus', self.data.recipe.product)
-	SetHighlightIngredientFocus(nil)
+	SetHighlightIngredientFocus(self, nil)
 end
 
 if CraftingMenuWidget and CraftingMenuHUD then
@@ -394,7 +405,7 @@ if CraftingMenuWidget and CraftingMenuHUD then
 		local details_root_data = localPlayer.HUD.controls.craftingmenu:GetCurrentRecipeState()
 		if details_root_data then
 			if details_root_data and details_root_data.recipe and details_root_data.recipe.product then
-				SetHighlightIngredientFocus({ prefab = details_root_data.recipe.product })
+				SetHighlightIngredientFocus(self, { prefab = details_root_data.recipe.product })
 			end
 		end
 		return oldOpen(self, ...)
@@ -402,7 +413,7 @@ if CraftingMenuWidget and CraftingMenuHUD then
 
 	local oldClose = CraftingMenuHUD.Close
 	function CraftingMenuHUD:Close(...)
-		SetHighlightIngredientFocus(nil)
+		SetHighlightIngredientFocus(self, nil)
 		return oldClose(self, ...)
 	end
 end
@@ -420,7 +431,7 @@ local oldIngredientUI_OnLoseFocus = IngredientUI.OnLoseFocus
 function IngredientUI:OnGainFocus(...)
 	--dprint("ingredientui OnGainFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(self)
-	SetHighlightIngredientFocus(self)
+	SetHighlightIngredientFocus(self, self)
 	
 
 	if oldIngredientUI_OnGainFocus then
@@ -431,7 +442,7 @@ end
 function IngredientUI:OnLoseFocus(...)
 	--dprint("ingredientui OnLoseFocus", self.ing and self.ing.texture and string.match(self.ing.texture, '[^/]+$'):gsub('%.tex$', ''))
 	--highlighting.SetActiveIngredientUI(nil)
-	SetHighlightIngredientFocus(nil)
+	SetHighlightIngredientFocus(self, nil)
 
 	if oldIngredientUI_OnLoseFocus then
 		return oldIngredientUI_OnLoseFocus(self, ...)
@@ -452,7 +463,7 @@ local oldCraftSlot_OnLoseFocus = CraftSlot.OnLoseFocus
 
 function CraftSlot:OnGainFocus(...)
 	--highlighting.SetActiveIngredientUI({ prefab=self.recipename })
-	SetHighlightIngredientFocus({ prefab=self.recipename })
+	SetHighlightIngredientFocus(self, { prefab=self.recipename })
 
 	if oldCraftSlot_OnGainFocus then
 		return oldCraftSlot_OnGainFocus(self, ...)
@@ -460,7 +471,7 @@ function CraftSlot:OnGainFocus(...)
 end
 
 function CraftSlot:OnLoseFocus(...)
-	SetHighlightIngredientFocus(nil)
+	SetHighlightIngredientFocus(self, nil)
 	
 	if oldCraftSlot_OnLoseFocus then
 		return oldCraftSlot_OnLoseFocus(self, ...)
@@ -515,13 +526,13 @@ if KnownModIndex:IsModEnabled("workshop-727774324") or KnownModIndex:IsModEnable
 			if type(arg) ~= "string" then
 				mprint("foodingredientui hook error", arg, type(arg), typ)
 			else
-				SetHighlightIngredientFocus({ prefab=arg })
+				SetHighlightIngredientFocus(self, { prefab=arg })
 			end
 		elseif typ == "tag" then
 			if type(arg) ~= "string" then
 				mprint("foodingredientui hook error", arg, type(arg), typ)
 			else
-				SetHighlightIngredientFocus({ prefab=nil, ingredient_tag=arg })
+				SetHighlightIngredientFocus(self, { prefab=nil, ingredient_tag=arg })
 			end
 		end
 		
@@ -531,7 +542,7 @@ if KnownModIndex:IsModEnabled("workshop-727774324") or KnownModIndex:IsModEnable
 	end
 
 	function FoodIngredientUI:OnLoseFocus(...)
-		SetHighlightIngredientFocus(nil)
+		SetHighlightIngredientFocus(self, nil)
 
 		if oldOnLoseFocus then
 			return oldOnLoseFocus(self, ...)
