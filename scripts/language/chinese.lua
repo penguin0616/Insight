@@ -939,7 +939,9 @@ return {
 	-- shadowlevel.lua
 	shadowlevel = {
 		level = "<color=BLACK>Shadow level</color>: %s",
-		level_diff = " / %s", -- Appended onto end of level
+		level_diff = "<color=BLACK>Shadow level</color>: %s/%s",
+		damage_boost = " (<color=HEALTH>+%s damage</color>)",
+		total_shadow_level = "<color=BLACK>Total Shadow level</color>: %s",
 	},
 
 	-- shadowsubmissive.lua

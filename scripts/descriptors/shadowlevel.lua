@@ -20,16 +20,45 @@ directory. If not, please refer to
 
 -- shadowlevel.lua
 local function Describe(self, context)
-	local level = self:GetCurrentLevel()
-	local description = string.format(context.lstr.shadowlevel.level, level)
+	local description, alt_description
+	local level = self:GetCurrentLevel() or 0
 
-	if level ~= self.level then
-		description = description .. string.format(context.lstr.shadowlevel.level_diff, self.level)
+	local damage = level * TUNING.SHADOWWAXWELL_PROTECTOR_DAMAGE_BONUS_PER_LEVEL
+	local damageString = string.format(context.lstr.shadowlevel.damage_boost, damage)
+
+	if level == self.level then
+		description = string.format(context.lstr.shadowlevel.level, level)
+	else
+		description = string.format(context.lstr.shadowlevel.level_diff, level, self.level)
+	end
+
+	description = description .. damageString
+
+	-- Alt description also shows your total shadow level.
+	alt_description = description
+
+	if context.player.components.inventory then
+		local total = 0
+		for k, v in pairs(EQUIPSLOTS) do
+			local equip = context.player.components.inventory:GetEquippedItem(v)
+			if equip ~= nil and equip.components.shadowlevel ~= nil then
+				total = total + equip.components.shadowlevel:GetCurrentLevel()
+			end
+		end
+
+		-- Only show if there would be an actual difference
+		if total > 0 and total ~= level then
+			local totalDamage = total * TUNING.SHADOWWAXWELL_PROTECTOR_DAMAGE_BONUS_PER_LEVEL
+			local totalString = string.format(context.lstr.shadowlevel.total_shadow_level, total)
+			totalString = totalString .. string.format(context.lstr.shadowlevel.damage_boost, totalDamage)
+			alt_description = CombineLines(description, totalString)
+		end
 	end
 
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		alt_description = alt_description
 	}
 end
 
