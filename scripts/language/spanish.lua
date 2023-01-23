@@ -928,6 +928,12 @@ return {
 		},
 	},
 
+	-- shadowlevel.lua
+	shadowlevel = {
+		level = "<color=BLACK>Shadow level</color>: %s",
+		level_diff = " / %s", -- Appended onto end of level
+	},
+
 	-- shadowsubmissive.lua
 	shadowsubmissive = {
 		shadowcreature = {

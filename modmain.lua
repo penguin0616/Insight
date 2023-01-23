@@ -131,6 +131,7 @@ local Insight = {
 		LIGHT_PINK = "#ffb6c1",
 		CAMO = "#4D6B43",
 		MOB_SPAWN = "#ee6666",
+		BLACK = "#2f3e49" -- #1b2a35 was the original intent, but needed to be lighter. so I bumped it up by 20 on r,g,b.
 	},
 
 	ENTITY_INFORMATION_FLAGS = {
@@ -762,6 +763,15 @@ local function hex_dump(buf)
 	end
 	return s
 end
+
+function UnloadComponentDescriptor(name)
+	if import.has_loaded(name) then
+		import.clear("descriptors/" .. name)
+	end
+	Insight.descriptors[name] = nil
+	mprint("Unloaded component descriptor", name)
+end
+
 
 --- Returns a component descriptor. 
 -- @tparam string name Name of the component.
