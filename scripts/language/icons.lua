@@ -812,6 +812,9 @@ return {
 	-- oar.lua
 	--oar_force = "<color=INEDIBLE>Force</color>: <color=INEDIBLE>%s%%</color>",
 
+	-- oceantree.lua [Prefab]
+	oceantree_supertall_growth_progress = "Supertall growth progress: %s / %s",
+	
 	-- oldager.lua
 	oldager = {
 		--age_change = "<color=AGE>Age</color>: <color=714E85>%+d</color>",
