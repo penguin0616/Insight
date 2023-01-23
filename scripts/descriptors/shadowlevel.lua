@@ -20,6 +20,10 @@ directory. If not, please refer to
 
 -- shadowlevel.lua
 local function Describe(self, context)
+	if context.player.prefab ~= "waxwell" then
+		return
+	end
+	
 	local description, alt_description
 	local level = self:GetCurrentLevel() or 0
 
