@@ -978,6 +978,15 @@ local function GetEntityInformation(entity, player, params)
 
 		if descriptor and descriptor.Describe then
 			local datas = {descriptor.Describe(component, player_context)}
+
+			local postFns = Insight.post_inits.describe[name]
+			if postFns then
+				for i = 1, #postFns do
+					postFns[i](component, player_context, datas)
+				end
+				ValidateDescribeResponse({}, name, datas, params)
+			end
+
 			ValidateDescribeResponse(chunks, name, datas, params)
 			
 		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
@@ -1809,7 +1818,20 @@ function RepairInsightConfig(client)
 end
 
 --- Called whenever a descriptor describes something.
+-- modname is not currently used but will probably get a use in the future.
 function AddDescriptorPostDescribe(modname, descriptor, callback)
+	if type(modname) ~= "string" then
+		errorf(2, "AddDescriptorPostDescribe expected arg#1 (modname) to be a string (got %q)", type(modname))
+	end
+
+	if type(descriptor) ~= "string" then
+		errorf(2, "AddDescriptorPostDescribe expected arg#2 (descriptor) to be a string (got %q)", type(descriptor))
+	end
+
+	if type(callback) ~= "function" then
+		errorf(2, "AddDescriptorPostDescribe expected arg#3 (callback) to be a string (got %q)", type(callback))
+	end
+
 	Insight.post_inits.describe[descriptor] = Insight.post_inits.describe[descriptor] or {}
 	
 	local posts = Insight.post_inits.describe[descriptor]
