@@ -733,7 +733,22 @@ function Insight:HandlePipspookQuest(data, ...)
 	end
 end
 
+function Insight:AddDeathSpot(x, y, z)
+	if not self.context or not self.context.config["death_indicator"] then
+		return
+	end
 
+	local data = { 
+		name = "Your Death Spot", 
+		vector = Vector3(x, y, z), 
+		max_distance = 9e9,
+		dismissable = true,
+		tex = "Skeleton.tex",
+		atlas = "images/Skeleton.xml",
+	}
+
+	self:StartTrackingEntity(data.vector, data)
+end
 
 function Insight:DoesFuelMatchFueled(fuel, fueled)
 	if IS_DS or IS_CLIENT_HOST then
@@ -1092,18 +1107,18 @@ function Insight:StartTrackingEntity(ent, data)
 		return
 	end
 
-	local img_data = data or {}
+	data = data or {}
 	--local exists, tex, atlas = PrefabHasIcon(ent.prefab)
-	if img_data.tex == nil and img_data.atlas == nil then
-		local tbl = ResolvePrefabToImageTable(ent.prefab)
+	if data.tex == nil and data.atlas == nil then
+		local tbl = ent.prefab and ResolvePrefabToImageTable(ent.prefab)
 
 		if tbl then
-			img_data.tex = tbl.tex
-			img_data.atlas = tbl.atlas
+			data.tex = tbl.tex
+			data.atlas = tbl.atlas
 		end
 	end
 
-	return self.indicators:Add(ent, img_data)
+	return self.indicators:Add(ent, data)
 end
 
 function Insight:StopTrackingEntity(ent)

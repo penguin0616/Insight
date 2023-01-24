@@ -24,6 +24,15 @@ if IS_DS then
 	return import("components/insight_replica")
 end
 
+local function OnPlayerDied(inst, data)
+	-- data.skeleton
+	-- data.fromload
+
+	if data.skeleton then
+		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "YouDied"), inst.userid, inst.Transform:GetWorldPosition())
+	end
+end
+
 --------------------------------------------------------------------------
 --[[ Queuer ]]
 --------------------------------------------------------------------------
@@ -125,6 +134,11 @@ local Insight = Class(function(self, inst)
 		self.queuer:Flush()
 	end)
 
+	if GetGhostEnabled() then
+		self.inst:ListenForEvent("makeplayerghost", OnPlayerDied)
+	else
+		self.inst:ListenForEvent("playerdied", OnPlayerDied)
+	end
 
 	--[==========[ Battlesongs ]==========]
 	self.inst:ListenForEvent("inspirationsongchanged", function(player, data)

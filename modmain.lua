@@ -2406,6 +2406,13 @@ if IS_DST then
 		shard_players = decompress(str)
 	end)
 
+	rpcNetwork.AddClientModRPCHandler(modname, "YouDied", function(x, y, z)
+		local insight = localPlayer and GetLocalInsight(localPlayer)
+		if insight then
+			insight:AddDeathSpot(x, y, z)
+		end
+	end)
+
 	--[[
 	_G.send_migrators = function()
 		local yes = {}

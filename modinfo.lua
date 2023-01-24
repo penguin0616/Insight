@@ -322,6 +322,57 @@ end
 --====================================================================================================================================================
 --====================================================================================================================================================
 --====================================================================================================================================================
+COMMON_STRINGS = {
+	
+}
+
+--[[
+example = {
+	label = {
+		"Example", 
+		["zh"] = nil, 
+		["br"] = nil, 
+		["es"] = nil
+	},
+	hover = {
+		"Description", 
+		["zh"] = nil, 
+		["br"] = nil, 
+		["es"] = nil
+	},
+	options = {
+		[false] = {
+			description = {
+				"Nope",
+				["zh"] = nil,
+				["br"] = nil,
+				["es"] = nil,
+			},
+			hover = {
+				"Hover",
+				["zh"] = nil,
+				["br"] = nil,
+				["es"] = nil,
+			},
+		},
+		[true] = {
+			description = {
+				"Yep",
+				["zh"] = nil,
+				["br"] = nil,
+				["es"] = nil,
+			},
+			hover = {
+				"Hover",
+				["zh"] = nil,
+				["br"] = nil,
+				["es"] = nil,
+			},
+		},
+	},
+},
+]]
+
 
 STRINGS = {
 	--==========================================================================================
@@ -1793,6 +1844,50 @@ STRINGS = {
 					["zh"] = "显示漂流瓶指示器。",
 					["br"] = "Indicadores de garrafas são mostrados.",
 					["es"] = "Se muestra los indicadores de mensajes.",
+				},
+			},
+		},
+	},
+	death_indicator = {
+		label = {
+			"Death Indicators", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether to show an indicator to your death locations.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = {
+					"No",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+				hover = {
+					"Indicator will not be shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = {
+					"Yes",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+				hover = {
+					"Indicator will be shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 		},
@@ -5397,6 +5492,15 @@ configuration_options = {
 		default = true,
 		client = true,
 		tags = {},
+	},
+	{
+		name = "death_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"dst_only"},
 	},
 	{
 		name = "hunt_indicator",

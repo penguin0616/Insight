@@ -93,6 +93,7 @@ local InsightTargetIndicator = Class(Widget, function(self, owner, target, data)
 	-- Klei
 	self.is_mod_character = target ~= nil and target.prefab ~= nil and table.contains(MODCHARACTERLIST, target.prefab)
 	self.config_data = data or {}
+
 	-- Me
 	self:SetTarget(target)
 	self.colour = nil
@@ -101,7 +102,7 @@ local InsightTargetIndicator = Class(Widget, function(self, owner, target, data)
 	self.headbg:SetSize(95, 95) -- default is 95
 
 	self.head = self.icon:AddChild(Image()) -- icon
-	self.head:RealSetTexture(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
+	self.head:RealSetTexture(self:GetAvatarAtlas(), self:GetAvatar())
 	self.head:SetSize(64, 64)
 	
 	self.headframe = self.icon:AddChild(Image()) -- ring
@@ -126,11 +127,19 @@ local InsightTargetIndicator = Class(Widget, function(self, owner, target, data)
 	self.inst.OnRemoveEntity = CancelIndicator
 end)
 
+function InsightTargetIndicator:OnControl(ctrl, down)
+	if ctrl == CONTROL_SECONDARY and not down and self.config_data.dismissable then
+		self.config_data.manager:Remove(self.target)
+		return true
+	end
+
+	return self._base.OnControl(self, ctrl, down)
+end
+
 function InsightTargetIndicator:OnGainFocus()
 	-- Klei
 	InsightTargetIndicator._base.OnGainFocus(self)
 	self.name_label:Show()
-
 end
 
 function InsightTargetIndicator:OnLoseFocus()
@@ -148,6 +157,12 @@ function InsightTargetIndicator:UpdateName()
 		self.name = "Vector3" .. tostring(self.target)
 	else
 		self.name = self.target:GetDisplayName()
+	end
+
+	if self.config_data.dismissable then
+		local ctx = self.owner and GetPlayerContext(self.owner) or nil
+		local lang = ctx and ctx.lstr or language.AssumeLanguageTable()
+		self.name = self.name .. "\n" .. string.format(lang.indicators.dismiss, TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY))
 	end
 
 	if self.name_label then
@@ -201,7 +216,7 @@ function InsightTargetIndicator:OnUpdate()
 		self.isCharacterState2 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_2)
 		self.isCharacterState3 = checkbit(userflags, USERFLAGS.CHARACTER_STATE_3)
 		self.headbg:RealSetTexture(DEFAULT_ATLAS, self.isGhost and "avatar_ghost_bg.tex" or "avatar_bg.tex")
-		self.head:RealSetTexture(self:GetAvatarAtlas(), self:GetAvatar(), DEFAULT_AVATAR)
+		self.head:RealSetTexture(self:GetAvatarAtlas(), self:GetAvatar())
 	end
 
 	-- Me
@@ -352,6 +367,11 @@ end
 
 function InsightTargetIndicator:GetAvatarAtlas()
 	-- Me
+	if self.config_data.atlas ~= nil then
+		-- Me
+		return self.config_data.atlas or DEFAULT_ATLAS
+	end
+	
 	if self.is_mod_character and self.target ~= nil and not self.targetIsVector3 then
 		-- Klei
 		local location = MOD_AVATAR_LOCATIONS["Default"]
@@ -367,9 +387,6 @@ function InsightTargetIndicator:GetAvatarAtlas()
 
 		return location..starting..self.target.prefab..ending..".xml"
 	end
-
-	-- Me
-	return self.config_data.atlas or DEFAULT_ATLAS
 end
 
 function InsightTargetIndicator:GetAvatar()
