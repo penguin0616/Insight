@@ -412,7 +412,7 @@ local function Comparator(held, inst)
 	return nil
 end
 
-local function GetContainerRelevance(ctr)
+local function GetContainerRelevance(container_inst)
 	local insight = (IS_DST and localPlayer.replica.insight) or localPlayer.components.insight
 	if not insight then 
 		return 
@@ -430,7 +430,7 @@ local function GetContainerRelevance(ctr)
 	
 	if activeIngredientFocus then
 		--push("GCR.activeIngredientFocus")
-		local res = insight:ContainerHas(ctr.inst, activeIngredientFocus, isSearchingForFoodTag)
+		local res = insight:ContainerHas(container_inst, activeIngredientFocus, isSearchingForFoodTag)
 		--pop()
 
 		if res == nil then
@@ -442,7 +442,7 @@ local function GetContainerRelevance(ctr)
 	elseif activeItem then
 		--push("GCR.activeItem")
 		--dprint(ctr.inst, "searching for:", activeItem)
-		local res = insight:ContainerHas(ctr.inst, activeItem, isSearchingForFoodTag)
+		local res = insight:ContainerHas(container_inst, activeItem, isSearchingForFoodTag)
 		--dprint("resx:", res)
 		--pop()
 
@@ -462,7 +462,7 @@ local function EvaluateRelevance(inst, isApplication)
 	end
 
 	if not highlighting_enabled then
-		return
+	return
 	end
 
 	--push("EvaluateRelevance")
@@ -490,7 +490,28 @@ local function EvaluateRelevance(inst, isApplication)
 		return
 	end
 
-	local container = prefab and ((IS_DST and inst.replica.container) or inst.components.container)
+	local container
+	if prefab then
+		container = (IS_DST and inst.replica.container) or inst.components.container
+
+		if not container and IS_DST then
+			-- Check to see if we have container data still for what is probably a container_proxy
+			local insight = (IS_DST and localPlayer.replica.insight) or localPlayer.components.insight
+			local ent_data = insight.entity_data[inst]
+			-- container_proxy echos the Describe from container and maintains the name
+			if ent_data and ent_data.GUID ~= nil and ent_data.special_data.container then
+				-- So if we have "container" data, that means we're good to go.
+				container = inst
+			end
+		else
+			-- We can assume that we successfuly passed or didn't, but either way we need to resolve to an inst here if possible.
+			if container then
+				container = container.inst
+			end
+		end
+	end
+
+	
 
 	if prefab and container then
 		local relevance = GetContainerRelevance(container)

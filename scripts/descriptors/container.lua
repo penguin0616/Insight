@@ -120,6 +120,7 @@ local function Describe(self, context)
 	end
 
 	return {
+		name = "container",
 		priority = 0,
 		description = description,
 		contents = items

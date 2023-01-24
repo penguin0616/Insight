@@ -814,6 +814,9 @@ function Insight:BundleHasPrefab(inst, prefab, isSearchingForFoodTag)
 	return false
 end
 
+--- Checks if a container has something.
+-- @tparam EntityScript container
+-- @param inst This is whatever is being searched for.
 function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 	--TheSim:ProfilerPush("ContainerHas")
 	-- container is a container inst
