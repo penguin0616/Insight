@@ -322,8 +322,23 @@ end
 --====================================================================================================================================================
 --====================================================================================================================================================
 --====================================================================================================================================================
-COMMON_STRINGS = {
-	
+COMMON_STRINGS = { 
+	NO = {
+		DESCRIPTION = {
+			"No",
+			["zh"] = "否",
+			["br"] = "Não",
+			["es"] = "Desactivado",
+		},
+	},
+	YES = {
+		DESCRIPTION = {
+			"Yes",
+			["zh"] = "是",
+			["br"] = "Sim",
+			["es"] = "Activado",
+		},
+	}
 }
 
 --[[
@@ -1078,12 +1093,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"No chest/item highlighting.",
 					["zh"] = "箱子/物品不会高亮显示",
@@ -1092,12 +1102,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Chests/items will be highlighted.",
 					["zh"] = "箱子/物品会高亮显示",
@@ -1122,12 +1127,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Normal highlighting will be used.",
 					["zh"] = nil,
@@ -1136,12 +1136,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Experimental highlighting will be used.",
 					["zh"] = nil,
@@ -1308,12 +1303,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Fuel entities will not be highlighted.",
 					["zh"] = "禁用燃料高亮显示",
@@ -1322,12 +1312,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Fuel entities will be highlighted.",
 					["zh"] = "启用燃料高亮显示",
@@ -1497,12 +1482,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Attack ranges are not shown.",
 					["zh"] = "不显示攻击范围",
@@ -1511,12 +1491,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Attack ranges are shown.",
 					["zh"] = "显示攻击范围",
@@ -1599,12 +1574,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Range is not shown.",
 					["zh"] = "不显示物品范围",
@@ -1613,12 +1583,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Range is shown.",
 					["zh"] = "显示物品范围。",
@@ -1643,12 +1608,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Boss indicators not shown.",
 					["zh"] = "不显示 Boss 指示器。",
@@ -1657,12 +1617,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Boss indicators are shown.",
 					["zh"] = "显示 Boss 指示器。",
@@ -1687,12 +1642,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Miniboss indicators not shown.",
 					["zh"] = nil, 
@@ -1701,12 +1651,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Miniboss indicators are shown.",
 					["zh"] = nil, 
@@ -1731,12 +1676,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Notable indicators not shown.",
 					["zh"] = "不显示指示器。",
@@ -1745,12 +1685,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Notable indicators are shown.",
 					["zh"] = "显示指示器。",
@@ -1775,12 +1710,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Pipspook toy indicators not shown.",
 					["zh"] = "不显示小惊吓玩具指示器。",
@@ -1789,12 +1719,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Pipspook toy indicators are shown.",
 					["zh"] = "显示小惊吓玩具指示器。",
@@ -1819,12 +1744,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Message indicators not shown.",
 					["zh"] = "不显示漂流瓶指示器。",
@@ -1833,12 +1753,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Message indicators are shown.",
 					["zh"] = "显示漂流瓶指示器。",
@@ -1863,12 +1778,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Indicator will not be shown.",
 					["zh"] = nil,
@@ -1877,12 +1787,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Indicator will be shown.",
 					["zh"] = nil,
@@ -1907,12 +1812,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Hunt indicators not shown.",
 					["zh"] = "不显示脚印指示器。",
@@ -1921,12 +1821,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Hunt indicators are shown.",
 					["zh"] = "显示脚印指示器。",
@@ -1951,12 +1846,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The solution is not displayed.",
 					["zh"] = "不显示答案。",
@@ -1965,12 +1855,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The solution is displayed.",
 					["zh"] = "显示答案。",
@@ -2053,12 +1938,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Blink range not shown.",
 					["zh"] = "不显示瞬移范围。",
@@ -2067,12 +1947,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Blink range shown.",
 					["zh"] = "显示瞬移范围。",
@@ -2097,12 +1972,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Soul pickup ranges not shown.",
 					["zh"] = "不显示灵魂范围功能。",
@@ -2111,12 +1981,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Soul pickup ranges shown.",
 					["zh"] = "显示灵魂范围功能。",
@@ -2213,12 +2078,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Loot Stash markers are not shown.",
 					["zh"] = "不显示标记",
@@ -2227,12 +2087,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Loot Stash markers are shown.",
 					["zh"] = "显示标记",
@@ -2318,12 +2173,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Food information is not shown.",
 					["zh"] = "不显示食物信息。",
@@ -2332,12 +2182,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Food information is shown.",
 					["zh"] = "显示食物信息。",
@@ -2450,12 +2295,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Food units will not be displayed.",
 					["zh"] = "不显示食物度。",
@@ -2464,12 +2304,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Food units WILL be displayed.",
 					["zh"] = "显示食物度。",
@@ -2494,12 +2329,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Special food effects will not show.",
 					["zh"] = "不显示特殊的食物属性。",
@@ -2508,12 +2338,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Special food effects will show.",
 					["zh"] = "显示特殊的食物属性。",
@@ -2538,12 +2363,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The chef will not be shown.",
 					["zh"] = "不显示料理的制作人。",
@@ -2552,12 +2372,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The chef will be shown.",
 					["zh"] = "显示料理的制作人。",
@@ -2582,12 +2397,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Your food memory will not be shown.",
 					["zh"] = "不显示食物计时。",
@@ -2596,12 +2406,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Your food memory will be shown.",
 					["zh"] = "显示食物计时。",
@@ -2626,12 +2431,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Perishable information is not shown.",
 					["zh"] = "不显示腐烂信息",
@@ -2640,12 +2440,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Perishable information is shown.",
 					["zh"] = "显示腐烂信息",
@@ -2673,12 +2468,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Cawnival information is not shown.",
 					["zh"] = "不显示鸦年华信息",
@@ -2687,12 +2477,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Cawnival information is shown.",
 					["zh"] = "显示鸦年华信息",
@@ -2717,12 +2502,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The pageant winners are not shown.",
 					["zh"] = "不显示选美大赛冠军",
@@ -2731,12 +2511,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The pageant winners are shown.",
 					["zh"] = "显示选美大赛冠军",
@@ -2761,12 +2536,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The appraisal values are not shown.",
 					["zh"] = "不显示评价值",
@@ -2775,12 +2545,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The appraisal values are shown.",
 					["zh"] = "显示评价值",
@@ -2805,12 +2570,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The stats are not shown.",
 					["zh"] = "不显示数据",
@@ -2819,12 +2579,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The stats are shown.",
 					["zh"] = "显示数据",
@@ -2849,12 +2604,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Portal information is not shown.",
 					["zh"] = "不显示传送信息",
@@ -2863,12 +2613,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Portal information is shown.",
 					["zh"] = "显示传送信息",
@@ -2893,12 +2638,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Bundle information is not shown.",
 					["zh"] = "不显示打包信息",
@@ -2907,12 +2647,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Bundle information is shown.",
 					["zh"] = "显示打包信息",
@@ -2937,12 +2672,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Fishing information is not shown.",
 					["zh"] = "不显示垂钓信息",
@@ -2951,12 +2681,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Fishing information is shown.",
 					["zh"] = "显示垂钓信息",
@@ -2981,12 +2706,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "禁用",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION, -- Originally the "No" here translated to "disabled" for Chinese ("禁用")
 				hover = {
 					"The spawner information is not shown.",
 					["zh"] = "不显示生物生成计时信息。",
@@ -2995,12 +2715,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "启用",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION, -- Originally the "Yes" here translated to "enable" for Chinese ("启用")
 				hover = {
 					"The spawner information is shown.",
 					["zh"] = "显示生物生成计时信息。",
@@ -3025,12 +2740,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Weapon damage is not shown.",
 					["zh"] = "不显示武器的伤害值。",
@@ -3039,12 +2749,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Weapon damage is shown.",
 					["zh"] = "显示武器的伤害值。",
@@ -3069,12 +2774,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Repair information is not shown.",
 					["zh"] = "不显示物品的修复信息",
@@ -3083,12 +2783,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Repair information is shown.",
 					["zh"] = "显示物品的修复信息。",
@@ -3113,12 +2808,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Loot stash contents are NOT visible.",
 					["zh"] = nil,
@@ -3127,12 +2817,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Loot stash contents are visible.",
 					["zh"] = nil,
@@ -3373,12 +3058,7 @@ STRINGS = {
 		},
 		options = {
 			[0] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Plant stress is not shown.",
 					["zh"] = "植物的压力将不会显示",
@@ -3431,12 +3111,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Fertilizer nutrients are not shown.",
 					["zh"] = "不显示肥料养分值",
@@ -3445,12 +3120,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Fertilizer nutrients are shown.",
 					["zh"] = "显示肥料养分值",
@@ -3475,12 +3145,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Item weight is not shown.",
 					["zh"] = "不显示物品的重量值",
@@ -3489,12 +3154,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Item weight is shown.",
 					["zh"] = "显示物品的重量值",
@@ -3519,12 +3179,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"World data is not shown.",
 					["zh"] = "不展示世界事件。",
@@ -3533,12 +3188,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"World data is shown.",
 					["zh"] = "显示世界事件。",
@@ -3563,12 +3213,7 @@ STRINGS = {
 		},
 		options = {
 			[0] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Weather is not shown.",
 					["zh"] = "不显示天气信息",
@@ -3591,12 +3236,7 @@ STRINGS = {
 				},
 			},
 			[2] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Weather is shown.",
 					["zh"] = "显示天气信息",
@@ -3679,12 +3319,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Health information is not shown.",
 					["zh"] = "不显示生命值信息。",
@@ -3693,12 +3328,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Health information is shown.",
 					["zh"] = "显示生命值信息。",
@@ -3723,12 +3353,7 @@ STRINGS = {
 		},
 		options = {
 			[0] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Will not display hunger.",
 					["zh"] = "不显示饥饿值。",
@@ -3913,12 +3538,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Mob attack damage is not shown.",
 					["zh"] = "不显示怪物的攻击范围",
@@ -3927,12 +3547,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Mob attack damage is shown.",
 					["zh"] = "显示怪物的攻击范围",
@@ -4015,12 +3630,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Pickable information will not be displayed.",
 					["zh"] = "不显示可采集信息",
@@ -4029,12 +3639,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Pickable information will be displayed.",
 					["zh"] = "显示可采集信息",
@@ -4059,12 +3664,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Harvestable information will not be displayed.",
 					["zh"] = "不显示可收获信息",
@@ -4073,12 +3673,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Harvestable information will be displayed.",
 					["zh"] = "显示可收获信息",
@@ -4103,12 +3698,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Tool durability will not be displayed.",
 					["zh"] = "不显示工具的耐久度",
@@ -4117,12 +3707,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Tool durability will be displayed.",
 					["zh"] = "显示工具的耐久度",
@@ -4147,12 +3732,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Timers will not be displayed.",
 					["zh"] = "关闭计时器。",
@@ -4161,12 +3741,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Timers will be displayed.",
 					["zh"] = "开启计时器。",
@@ -4191,12 +3766,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "No",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Will not display information for upgradeable structures.",
 					["zh"] = "不显示可升级的建筑等物品的信息。",
@@ -4205,12 +3775,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Yes",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Displays information for upgradeable structures, such as spider dens.",
 					["zh"] = "显示可升级的物品的信息，如蜘蛛巢等。",
@@ -4469,12 +4034,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Will not display gold or dubloon value.",
 					["zh"] = "不显示物品的价值。",
@@ -4483,12 +4043,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Will display gold and dubloon value.",
 					["zh"] = "显示物品值的价值。",
@@ -4513,12 +4068,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Will not display appeasement value.",
 					["zh"] = "不显示蚁狮的信息。",
@@ -4527,12 +4077,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Will display appeasement value.",
 					["zh"] = "显示蚁狮的信息。",
@@ -4615,12 +4160,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Shelter information is not shown.",
 					["zh"] = "不显示遮蔽处信息",
@@ -4629,12 +4169,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Shelter information is shown.",
 					["zh"] = "显示遮蔽处信息",
@@ -4659,12 +4194,7 @@ STRINGS = {
 		},
 		options = {
 			[0] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"No unique information is shown.",
 					["zh"] = "不显示特定信息",
@@ -4673,12 +4203,7 @@ STRINGS = {
 				},
 			},
 			[1] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Unique information is shown.",
 					["zh"] = "显示特定信息",
@@ -4706,12 +4231,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The button is not shown.",
 					["zh"] = "不显示按钮",
@@ -4720,12 +4240,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The button is shown.",
 					["zh"] = "显示按钮",
@@ -4750,12 +4265,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The button is not shown.",
 					["zh"] = "不显示按钮",
@@ -4764,12 +4274,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The button is shown.",
 					["zh"] = "显示按钮",
@@ -4794,12 +4299,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The indicator is not shown.",
 					["zh"] = "不显示星号",
@@ -4808,12 +4308,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The indicator is shown.",
 					["zh"] = "显示星号",
@@ -4999,12 +4494,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"The crash reporter is disabled.",
 					["zh"] = "关闭崩溃报告器。",
@@ -5013,12 +4503,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"The crash reporter is enabled.",
 					["zh"] = "开启崩溃报告器。",
@@ -5043,12 +4528,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Will not warn if there are any components not accounted for.",
 					["zh"] = "未找出错误原因时，不发出警告。",
@@ -5057,12 +4537,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Will warn you if there are any components not accounted for.",
 					["zh"] = "未找出错误原因时，发出警告。",
@@ -5087,12 +4562,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Will not display information for disabled descriptors.",
 					["zh"] = "不显示已禁用的描述符的信息。",
@@ -5101,12 +4571,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Will display information for disabled descriptors.",
 					["zh"] = "显示已禁用的描述符的信息。",
@@ -5131,12 +4596,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Will not display prefabs on entity.",
 					["zh"] = "不显示物品的预设名称。",
@@ -5145,12 +4605,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "否",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Will display prefabs on entity.",
 					["zh"] = "显示物品的预设名称。",
@@ -5175,12 +4630,7 @@ STRINGS = {
 		},
 		options = {
 			[false] = {
-				description = {
-					"No",
-					["zh"] = "否",
-					["br"] = "Não",
-					["es"] = "Desactivado",
-				},
+				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Insight will not show debugging information.",
 					["zh"] = "不显示调试信息",
@@ -5189,12 +4639,7 @@ STRINGS = {
 				},
 			},
 			[true] = {
-				description = {
-					"Yes",
-					["zh"] = "是",
-					["br"] = "Sim",
-					["es"] = "Activado",
-				},
+				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Insight will show debugging information.",
 					["zh"] = "显示调试信息",
@@ -6283,7 +5728,7 @@ if IsDST then
 	for i = 1, #configuration_options do
 		local entry = configuration_options[i]
 		
-		local default = GetDefaultSetting(entry)
+		local default = (not HasTag(entry, "ignore")) and GetDefaultSetting(entry) or nil
 
 		--[[
 		if HasTag(entry, "client_only") then
@@ -6292,9 +5737,16 @@ if IsDST then
 		--]]
 
 		if HasTag(entry, "undefined") then -- Server doesn't have to specify
+			--print'--------------------------------------------------------------------------------'
+			--table.foreach(entry, print)
+			--print("Desc", default.description)
 			entry.original_default = entry.default
 			entry.default = "undefined"
-			entry.options[#entry.options+1] = { description = T(STRINGS["undefined"]), data = "undefined", hover = T(STRINGS["undefined_description"]) .. default.description}
+			entry.options[#entry.options+1] = { 
+				description = T(STRINGS["undefined"]), 
+				data = "undefined", 
+				hover = T(STRINGS["undefined_description"]) .. default.description
+			}
 		end
 	end
 else
