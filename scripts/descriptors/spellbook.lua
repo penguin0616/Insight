@@ -35,6 +35,5 @@ end
 
 
 return {
-	Describe = Describe,
-	DescribeWaxwellJournal = 
+	Describe = Describe
 }

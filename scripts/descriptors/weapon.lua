@@ -26,6 +26,8 @@ local WEAPON_CACHE = {
 	-- ["prefab"] = true/false (safe or not)
 }
 
+local PRIORITY = 100000
+
 -- load slingshot ammo damages from prefab upvalues
 for i,v in pairs(_G.Prefabs) do
 	-- skins (glomling_winter) are missing .fn i think
@@ -35,6 +37,23 @@ for i,v in pairs(_G.Prefabs) do
 			SLINGSHOT_AMMO_DATA[ammo_data.name] = ammo_data
 		end
 	end
+end
+
+local function DescribeYOTRPillowWeapon(self, context)
+	local description, alt_description
+	local knockback = string.format(context.lstr.combat.yotr_pillows.knockback, self.inst._knockback, self.inst._strengthmult * 100)
+	local laglength = string.format(context.lstr.combat.yotr_pillows.laglength, string.format(context.lstr.time_seconds, self.inst._laglength))
+	local prize_value = string.format(context.lstr.combat.yotr_pillows.prize_value, self.inst._prize_value or "?")
+
+	description = CombineLines(knockback, laglength)
+	alt_description = CombineLines(description, prize_value)
+
+	return {
+		name = "weapon_yotr",
+		priority = PRIORITY + 1,
+		description = description,
+		alt_description = alt_description,
+	}
 end
 
 --[[
@@ -205,13 +224,23 @@ local function Describe(self, context)
 	_stimuli = _stimuli or "normal"
 	local damage_string = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type[_stimuli] or context.lstr.weapon_damage_type.normal, Round(damage * multiplier, 1) or "?")
 
+	
+
+	-- Other stuff
+	local pillow_info = self.inst:HasTag("pillow") and DescribeYOTRPillowWeapon(self, context) or nil
+	if pillow_info and damage == 0 then
+		damage_string = nil
+	end
+
+	-- Generate description and return datas
 	description = CombineLines(damage_string, attack_range)
 
 	return {
-		priority = 100000,
+		name = "weapon",
+		priority = PRIORITY,
 		description = description,
 		attack_range = self.attackrange
-	}
+	}, pillow_info
 end
 
 

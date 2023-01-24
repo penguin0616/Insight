@@ -1218,6 +1218,10 @@ AddPrefabPostInit("eyeturret_item_placer", function(inst)
 	placer_postinit_fn(inst, TUNING.EYETURRET_RANGE / WALL_STUDS_PER_TILE)
 end)
 
+AddPrefabPostInit("yotr_rabbitshrine_placer", function(inst)
+	--mprint'morsey'
+end)
+
 AddPrefabPostInit("lightning_rod_placer", function(inst)
 	placer_postinit_fn(inst, 40 / WALL_STUDS_PER_TILE)
 end)

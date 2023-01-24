@@ -19,6 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- equippable.lua
+local PRIORITY = 0.1
 local world_type = GetWorldType()
 --[[
 	x=ThePlayer.components.sanity.current; print(x)
@@ -160,6 +161,26 @@ local function GetHungerDrainModifier(self, player)
 	return hunger_modifier
 end
 
+local function DescribeYOTRPillowArmor(self, context)
+	if not self.inst:HasTag("bodypillow") then
+		return
+	end
+
+	local description, alt_description
+	local defense_amount = string.format(context.lstr.combat.yotr_pillows.defense_amount, self.inst._defense_amount)
+	local prize_value = string.format(context.lstr.combat.yotr_pillows.prize_value, self.inst._prize_value or "?")
+
+	description = defense_amount
+	alt_description = CombineLines(description, prize_value)
+
+	return {
+		name = "equippable_yotr",
+		priority = PRIORITY + 1,
+		description = description,
+		alt_description = alt_description,
+	}
+end
+
 local function Describe(self, context)
 	local inst = self.inst
 	local description = nil
@@ -203,10 +224,11 @@ local function Describe(self, context)
 	local alt_description = CombineLines(description, insulated)
 
 	return {
-		priority = 0.1,
+		name = "equippable",
+		priority = PRIORITY,
 		description = description,
 		alt_description = alt_description
-	}
+	}, DescribeYOTRPillowArmor(self, context)
 end
 
 

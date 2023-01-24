@@ -265,6 +265,18 @@ return {
 		damageToYou = " (<color=HEALTH>%s</color> to you)",
 		age_damage = "<color=HEALTH>Damage <color=AGE>(Age)</color></color>: <color=AGE>%+d</color>",
 		age_damageToYou = " (<color=AGE>%+d</color> to you)",
+		yotr_pillows = {
+			--@@ Weapons
+			knockback = "<color=VEGGIE>Knockback</color>: <color=VEGGIE>%s</color> (<color=VEGGIE>x%.1f%%</color>)",
+			--knockback_multiplier = "Knockback Multiplier: %s",
+			laglength = "<color=VEGGIE>Cooldown</color>: %s",
+			
+			--@@ Armor
+			defense_amount = "<color=VEGGIE>Defense</color>: %s",
+			
+			--@@ Both
+			prize_value = "Prize value: %s",
+		},
 	},
 
 	-- container.lua
