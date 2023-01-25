@@ -53,19 +53,19 @@ return {
 	},
 
 	-- Keybinds
-	unbind = "Unbind",
+	unbind = "取消绑定",
 	keybinds = {
-		label = "Keybinds (Keyboard Only)",
+		label = "快捷键 (仅键盘)",
 		togglemenu = {
-			name = "Open Insight Menu",
-			description = "Opens/Closes the Insight menu"
+			name = "打开 Insight 菜单",
+			description = "打开/关闭 Insight 菜单"
 		},
 	},
 
 	-- Danger Announcements
 	danger_announcement = {
-		generic = "[Danger Announcement]: ",
-		boss = "[Boss Announcement]: ",
+		generic = "[危险宣告]: ",
+		boss = "[Boss 宣告]: ",
 	},
 
 	-- Presets
@@ -173,23 +173,23 @@ return {
 	-- book.lua
 	book = {
 		wickerbottom = {
-			tentacles = "Summons <color=%s>%d tentacles</color>",
-			birds = "Summons up to <color=%s>%d birds</color>",
-			brimstone = "Summons <color=%s>%d lightning strikes</color>",
-			horticulture = "Grows up to <color=%s>%d plants</color>",
-			horticulture_upgraded = "Grows and tends up to <color=%s>%d plants</color>",
+			tentacles = "召唤 <color=%s>%d 条触手</color>",
+			birds = "召唤至多 <color=%s>%d 只鸟</color>",
+			brimstone = "召唤 <color=%s>%d 道闪电</color>",
+			horticulture = "催熟至多 <color=%s>%d 株作物</color>",
+			horticulture_upgraded = "催熟且照料至多 <color=%s>%d 株作物</color>",
 			--silviculture = "Grows basic resource plants.",
 			--fish = "",
 			--fire = ""
-			web = "Summons a <color=%s>spider web</color> that lasts for <color=%s>%s</color>",
+			web = "召唤一个<color=%s>蜘蛛网</color> 持续 <color=%s>%s</color>",
 			--temperature = ""
-			light = "Summons a <color=LIGHT>light</color> for <color=LIGHT>%s</color>",
+			light = "召唤<color=LIGHT>天光</color> 持续 <color=LIGHT>%s</color>",
 			-- light_upgraded is just light
-			rain = "Toggles <color=WET>rain</color> and <color=WET>waters nearby plants</color>",
-			bees = "Summons <color=%s>%d bees</color> up to <color=%s>%d</color>",
-			research_station = "Prototype charges: %s",
+			rain = "切换<color=WET>雨天</color>并且<color=WET>浇灌附近作物</color>",
+			bees = "召唤 <color=%s>%d 只蜜蜂</color> 至多 <color=%s>%d</color>",
+			research_station = "制作原型解锁: %s",
 			_research_station_charge = "<color=#aaaaee>%s</color> (%d)",
-			meteor = "Summons <color=%s>%d meteors</color>",
+			meteor = "召唤 <color=%s>%d 个流星</color>",
 		},
 	},
 
@@ -281,15 +281,15 @@ return {
 		age_damageToYou = " (对玩家 <color=AGE>%+d</color>)",
 		yotr_pillows = {
 			--@@ Weapons
-			knockback = "<color=VEGGIE>Knockback</color>: <color=VEGGIE>%s</color> (<color=VEGGIE>x%.1f%%</color>)",
+			knockback = "<color=VEGGIE>击退</color>: <color=VEGGIE>%s</color> (<color=VEGGIE>x%.1f%%</color>)",
 			--knockback_multiplier = "Knockback Multiplier: %s",
-			laglength = "<color=VEGGIE>Cooldown</color>: %s",
+			laglength = "<color=VEGGIE>冷却</color>: %s",
 			
 			--@@ Armor
-			defense_amount = "<color=VEGGIE>Defense</color>: %s",
+			defense_amount = "<color=VEGGIE>防守</color>: %s",
 			
 			--@@ Both
-			prize_value = "Prize value: %s",
+			prize_value = "奖励值: %s",
 		},
 	},
 
@@ -545,7 +545,7 @@ return {
 		DISLODGE = "凿", -- hamlet
 		SPY = "调查", -- hamlet
 		THROW = "扔", -- sw
-		ROW_FAIL = "划（失败）",
+		ROW_FAIL = "划(失败)",
 		ATTACK = "<string=ACTIONS.ATTACK.GENERIC>",
 		POUR_WATER = "<string=ACTIONS.POUR_WATER.GENERIC>",
 	},
@@ -553,7 +553,7 @@ return {
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
 	fish_recharge = "%s后增加一条鱼",
-	--fish_wait_time = "抓一条鱼将花费 <color=SHALLOWS>%s 秒</color>。",
+	fish_wait_time = "抓一条鱼将花费 <color=SHALLOWS>%s 秒</color>",
 
 	-- fishingrod.lua
 	fishingrod_waittimes = "等待时间: <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
@@ -731,6 +731,8 @@ return {
 
 	-- klaussackspawner.lua
 	klaussackspawner = {
+		klaussack_spawnsin = "%s",
+		klaussack_despawn = "消失于第 %s 天",
 		announce_despawn = "<prefab=klaus_sack>将消失于第 %s 天",
 		announce_spawn = "<prefab=klaus_sack>会生成于%s后",
 	},
@@ -822,7 +824,7 @@ return {
 	oar_force = "<color=INEDIBLE>力度</color>: <color=INEDIBLE>%s%%</color>",
 
 	-- oceantree.lua [Prefab]
-	oceantree_supertall_growth_progress = "Supertall growth progress: %s / %s",
+	oceantree_supertall_growth_progress = "疙瘩树生长进度: %s / %s",
 	
 	-- oldager.lua
 	oldager = {
@@ -938,7 +940,7 @@ return {
 	sanity = {
 		current_sanity = "<color=SANITY>理智</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<color=ENLIGHTENMENT>启蒙</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
-		interaction = "<color=SANITY>Sanity</color>: <color=SANITY>%+.1f</color>",
+		interaction = "<color=SANITY>理智</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
@@ -958,10 +960,10 @@ return {
 
 	-- shadowlevel.lua
 	shadowlevel = {
-		level = "<color=BLACK>Shadow level</color>: %s",
-		level_diff = "<color=BLACK>Shadow level</color>: %s/%s",
-		damage_boost = " (<color=HEALTH>+%s damage</color>)",
-		total_shadow_level = "<color=BLACK>Total Shadow level</color>: %s",
+		level = "<color=BLACK>暗影等级</color>: %s",
+		level_diff = "<color=BLACK>暗影等级</color>: %s/%s",
+		damage_boost = " (<color=HEALTH>+%s 伤害</color>)",
+		total_shadow_level = "<color=BLACK>总暗影等级</color>: %s",
 	},
 
 	-- shadowsubmissive.lua
@@ -1001,7 +1003,7 @@ return {
 
 	-- sleeper.lua
 	sleeper = {
-		wakeup_time = "Will wake up in %s",
+		wakeup_time = "%s后醒来",
 	},
 
 	-- soul.lua
