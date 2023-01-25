@@ -22,8 +22,8 @@ directory. If not, please refer to
 local function Describe(inst, context)
 	local description = nil
 	
-	if inst.supertall_growth_progress and inst.STAGES_TO_SUPERTALL then
-		description = string.format(context.lstr.oceantree_supertall_growth_progress, inst.supertall_growth_progress, inst.STAGES_TO_SUPERTALL)
+	if inst.supertall_growth_progress and TUNING.OCEANTREE_STAGES_TO_SUPERTALL then
+		description = string.format(context.lstr.oceantree_supertall_growth_progress, inst.supertall_growth_progress, TUNING.OCEANTREE_STAGES_TO_SUPERTALL)
 	end
 
 	return {
