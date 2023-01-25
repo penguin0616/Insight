@@ -37,9 +37,10 @@ local function Describe(self, context)
 			end
 			table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, amount))
 		end
+		alt_description = table.concat(alt_description, "\n")
 	end
 	
-	alt_description = table.concat(alt_description, "\n")
+	
 
 	return {
 		priority = 0,
