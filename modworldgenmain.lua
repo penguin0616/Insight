@@ -240,6 +240,12 @@ else
 		return mprint("\t!!!!!!!!!!!!!!!! SHARDINDEX IS MISSING GLOBALLY")
 	end
 	shardGameIndex = ShardIndex()
+	--[[
+	if not shardGameIndex then
+		--Don't Starve Alone (workshop-2657513551)
+	end
+	--]]
+
 	shardGameIndex:Load()
 	if shardGameIndex:IsValid() then
 		mprint("Checking shardindex.")

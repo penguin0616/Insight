@@ -29,7 +29,7 @@ directory. If not, please refer to
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.0.0" -- dst is 3.4.5, ds is 3.4.0
+version = "4.0.2" -- dst is 3.4.5, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -4424,7 +4424,8 @@ STRINGS = {
 			["es"] = "La frecuencia con la que puede volver a solicitar información para el mismo elemento."
 		},
 		options = {
-			[true] = {
+			--[[
+			[-1] = {
 				description = {
 					"Automatic",
 					["zh"] = "自动设定",
@@ -4438,6 +4439,7 @@ STRINGS = {
 					["es"] = "Cambia dinámicamente en función de las estadísticas de rendimiento actuales.",
 				},
 			},
+			--]]
 			[0] = {
 				description = {
 					"None",
@@ -5611,7 +5613,7 @@ configuration_options = {
 	{
 		name = "refresh_delay",
 		options = {
-			{data = true},
+			--{data = -1},
 			{data = 0},
 			--{data = 0.1},
 			{data = 0.25},
@@ -5619,7 +5621,7 @@ configuration_options = {
 			{data = 1},
 			{data = 3},
 		},
-		default = true,
+		default = -1,
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T(STRINGS["sectiontitle_debugging"])),

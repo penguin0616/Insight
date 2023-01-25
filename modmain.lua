@@ -1063,7 +1063,7 @@ local function GetEntityInformation(entity, player, params)
 			if params.RAW == true then
 				assembled.raw_information[v.name] = v.description
 			end
-			if aa then aa=aa+1 end
+			--if aa then aa=aa+1 end
 		end
 
 		-- Collect the alternate description if one was provided.
@@ -1081,7 +1081,7 @@ local function GetEntityInformation(entity, player, params)
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
-			if bb then bb=bb+1 end
+			--if bb then bb=bb+1 end
 		end
 	end
 
@@ -3281,10 +3281,33 @@ if IS_DST then -- not in UI overrides because server needs access too
 		-- game seems to have a problem encoding some characters with the messed up json implementation they have
 		-- but it'll handle b64 alright, so i'll just compress it and handle stuff properly on my end
 		--print("#log before:", #report.log) -- 137261
+		--local old = report.log
 		report.log = TheSim:ZipAndEncodeString(report.log) -- DS: TheSim:SetPersistentString(path, data, ENCODE_SAVES) (ENCODE_SAVES=true)
+		
+		--[[
+		print'\tasd1'
+		local f1 = io.open("before.txt", "w")
+		f1:write(old)
+		f1:close()
+
+		print'\tasd2'
+		local f2 = io.open("after.txt", "w")
+		f2:write(report.log)
+		f2:close()
+
+		print'\tasd3'
+
+
+		print("there", #old, "->", #report.log)
+		
+		
+		report.log = TheSim:ZipAndEncodeString("hi")
+		report.mods = {server=report.mods.server, client={}}
+		--]]
+
 		--print("#log after:", #report.log) -- 23408
 		report = json.encode_compliant(report)
-
+		--print"wagh"
 		
 		--[[
 		if not log then
@@ -3292,7 +3315,6 @@ if IS_DST then -- not in UI overrides because server needs access too
 			return
 		end
 		--]]
-
 		TheSim:QueryServer(
 			"https://dst.penguin0616.com/crashreporter/reportcrash",
 			function(res, isSuccessful, statusCode)
@@ -3400,10 +3422,11 @@ if IS_DST then -- not in UI overrides because server needs access too
 				return
 			end
 
-			mprint("Submitting log")
+			mprint("Finding log")
 			TheSim:GetPersistentString("../server_log.txt", function(successful, data)
 				local from = "server"
 				local log = (successful and data) or nil
+				mprintf("Submitting log (successfully found log: %s)", successful)
 				SendReport(self, from, log)
 			end)
 		else
