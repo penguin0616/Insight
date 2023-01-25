@@ -3198,6 +3198,40 @@ STRINGS = {
 			},
 		},
 	},
+	danger_announcements = {
+		label = {
+			"Danger Announcements", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Announcements that show in chat when a dangerous event is happening soon.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Danger announcements are not enabled.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Danger announcements are enabled.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	display_weather = {
 		label = {
 			"Weather information", 
@@ -5276,6 +5310,15 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "danger_announcements",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
 		tags = {"dst_only", "undefined"},
 	},
 	{

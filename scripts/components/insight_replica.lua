@@ -1163,7 +1163,7 @@ function Insight:HUDUpdate()
 		end	
 	end
 
-	if IS_DST and world_data then
+	if IS_DST and world_data and self.context and self.context.config["danger_announcements"] then
 		for component, special_data in pairs(world_data.special_data) do
 			-- Check if this is a boss spawner.
 			if special_data and _G.Insight.descriptors[component] and _G.Insight.descriptors[component].DangerAnnouncementDescribe then
