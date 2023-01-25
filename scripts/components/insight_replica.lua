@@ -1006,7 +1006,7 @@ function Insight:RequestInformation(entity, params)
 	--table.foreach(context, mprint)
 	local debounce = params.debounce or context.config["refresh_delay"]
 	
-	if true or debounce == -1 then
+	if debounce == true then
 		local host = self.performance_ratings and self.performance_ratings:GetHost() or 0
 		local client = self.performance_ratings and self.performance_ratings:GetClient() or 0
 		local ents = math.floor(self:CountEntities() / 1000) -- (2000 - host * 500) -- host? client? who knows which is better.

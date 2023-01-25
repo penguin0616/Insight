@@ -29,7 +29,7 @@ directory. If not, please refer to
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.0.2" -- dst is 3.4.5, ds is 3.4.0
+version = "4.0.3" -- dst is 3.4.5, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -56,6 +56,13 @@ all_clients_require_mod = true
 forge_compatible = true
 server_filter_tags = {"insight_" .. version}
 forcemanifest = false -- TODO: REMOVE THIS
+
+-- Clear some environment stuff out.
+local a = ChooseTranslationTable
+ChooseTranslationTable = nil
+local ChooseTranslationTable, a = a, nil
+
+local STRINGS
 
 --====================================================================================================================================================
 --====================================================================================================================================================
@@ -322,7 +329,7 @@ end
 --====================================================================================================================================================
 --====================================================================================================================================================
 --====================================================================================================================================================
-COMMON_STRINGS = { 
+local COMMON_STRINGS = { 
 	NO = {
 		DESCRIPTION = {
 			"No",
@@ -4424,8 +4431,7 @@ STRINGS = {
 			["es"] = "La frecuencia con la que puede volver a solicitar información para el mismo elemento."
 		},
 		options = {
-			--[[
-			[-1] = {
+			[true] = {
 				description = {
 					"Automatic",
 					["zh"] = "自动设定",
@@ -4439,7 +4445,6 @@ STRINGS = {
 					["es"] = "Cambia dinámicamente en función de las estadísticas de rendimiento actuales.",
 				},
 			},
-			--]]
 			[0] = {
 				description = {
 					"None",
@@ -5613,7 +5618,7 @@ configuration_options = {
 	{
 		name = "refresh_delay",
 		options = {
-			--{data = -1},
+			{data = true},
 			{data = 0},
 			--{data = 0.1},
 			{data = 0.25},
