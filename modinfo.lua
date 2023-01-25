@@ -29,7 +29,7 @@ directory. If not, please refer to
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
 -- Major.Minor.Patch
-version = "3.4.5" -- dst is 3.4.5, ds is 3.4.0
+version = "4.0.0" -- dst is 3.4.5, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -400,13 +400,13 @@ STRINGS = {
 		["es"] = "El mod debe estar habilitado para que funcione el modinfo.",
 	},
 	update_info = {
-		"Moon Quay update, Bug fixes. Check changelog for more details.",
+		"A *ton* of stuff. You should **really** check the Steam Change Notes.",
 		["zh"] = nil,
 		["br"] = nil,
 		["es"] = nil,
 	},
 	update_info_ds = {
-		"Bug fixes, check change notes.",
+		"A *ton* of stuff. You should **really** check the Steam Change Notes.",
 		["zh"] = nil,
 		["br"] = nil,
 		["es"] = nil,
@@ -4944,7 +4944,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		tags = {"dst_only"},
 	},
 	{
