@@ -1762,7 +1762,8 @@ function RepairInsightConfig(client)
 	client = client or false
 	assert(client == true, "RepairInsightConfig only works for clients.")
 
-	local cfg = deepcopy(_G.Insight.env.modinfo.configuration_options);
+	-- deepcopy(_G.Insight.env.modinfo.configuration_options) only works for full clients, not client host
+	local cfg = KnownModIndex:LoadModConfigurationOptions(modname, client)
 
 	local changes = {} -- changes we will need to make
 
@@ -1770,6 +1771,7 @@ function RepairInsightConfig(client)
 		-- expected is the currently saved config that we're looking for. we need to make sure it's still a valid configuration option.
 		local config_is_valid = false;
 
+		--mprint(c.name, "->", c.saved)
 		if c.saved ~= nil then
 			for i, v in pairs(c.options) do
 				if v.data == c.saved then

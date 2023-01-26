@@ -29,7 +29,7 @@ directory. If not, please refer to
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.0.3" -- dst is 3.4.5, ds is 3.4.0
+version = "4.0.4" -- dst is 3.4.5, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -5626,7 +5626,7 @@ configuration_options = {
 			{data = 1},
 			{data = 3},
 		},
-		default = -1,
+		default = true,
 		tags = {"undefined"},
 	},
 	AddSectionTitle(T(STRINGS["sectiontitle_debugging"])),
