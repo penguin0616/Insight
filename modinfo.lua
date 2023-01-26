@@ -420,7 +420,7 @@ STRINGS = {
 	},
 	crashreporter_info = {
 		"Insight has a crash reporter you can enable in the client & server config",
-		["zh"] = "**添加了崩溃报告器**, 你可以在客户端或服务器设置界面来开启它。",
+		["zh"] = "添加了崩溃报告器, 你可以在客户端或服务器设置界面来开启它。",
 		["br"] = "O Insight tem um relatório de falhas que você pode ativar na configuração do cliente e do servidor",
 		["es"] = "Insight tiene un informe de fallos que puedes activar en la configuración del cliente y del servidor.",
 	},
@@ -507,7 +507,7 @@ STRINGS = {
 	},
 	sectiontitle_complexconfiguration = {
 		"Special Configuration",
-		["zh"] = nil,
+		["zh"] = "特殊配置",
 		["br"] = "Configuração Especial",
 		["es"] = nil
 	},
@@ -517,13 +517,13 @@ STRINGS = {
 	boss_indicator_prefabs = {
 		label = {
 			"Boss Indicator Prefabs", 
-			["zh"] = nil, 
+			["zh"] = "Boss 指示器预设", 
 			["br"] = "Prefabs de Indicadores de Chefões", 
 			["es"] = nil,
 		},
 		hover = {
 			"Enabled boss indicator prefabs.", 
-			["zh"] = nil, 
+			["zh"] = "启用 Boss 指示器的生物。", 
 			["br"] = "Prefabs de Indicadores de Chefões ativados", 
 			["es"] = nil,
 		},
@@ -541,13 +541,13 @@ STRINGS = {
 	miniboss_indicator_prefabs = {
 		label = {
 			"Miniboss Indicator Prefabs", 
-			["zh"] = nil, 
+			["zh"] = "小 Boss 指示器预设", 
 			["br"] = "Prefabs de Indicadores de Mini-Chefões", 
 			["es"] = nil,
 		},
 		hover = {
 			"Enabled miniboss indicator prefabs.", 
-			["zh"] = nil, 
+			["zh"] = "启用小 Boss 指示器的生物。", 
 			["br"] = "Prefabs de Indicadores de Mini-Chefões ativados", 
 			["es"] = nil,
 		},
@@ -565,13 +565,13 @@ STRINGS = {
 	notable_indicator_prefabs = {
 		label = {
 			"Notable Indicator Prefabs", 
-			["zh"] = nil, 
+			["zh"] = "其他物品指示器预设", 
 			["br"] = "Prefabs de Indicadores Notáveis", 
 			["es"] = nil,
 		},
 		hover = {
 			"Enabled notable indicator prefabs.", 
-			["zh"] = nil, 
+			["zh"] = "启用指示器的其他物品。", 
 			["br"] = "Prefabs de Indicadores Notáveis ativados", 
 			["es"] = nil,
 		},
@@ -595,13 +595,13 @@ STRINGS = {
 	language = {
 		label = {
 			"Language", 
-			["zh"] = "图标模式", 
+			["zh"] = "语言", 
 			["br"] = "Idioma", 
 			["es"] = "Idioma"
 		},
 		hover = {
 			"The language you want information to display in.", 
-			["zh"] = "是否显示图标或文字", 
+			["zh"] = "你希望以哪种语言显示信息", 
 			["br"] = "O idioma em que você deseja que as informações sejam exibidas.", 
 			["es"] = "El idioma en el que se muestra la información."
 		},
@@ -769,13 +769,13 @@ STRINGS = {
 	hoverer_insight_font_size = {
 		label = {
 			"Mouse Hover Text Size",
-			["zh"] = nil, 
+			["zh"] = "鼠标悬停文本大小", 
 			["br"] = "Tamanho do Texto ao Passar o Mouse", 
 			["es"] = nil
 		},
 		hover = {
 			"The font size of Insight's hover text when using a mouse.",
-			["zh"] = nil, 
+			["zh"] = "使用鼠标悬停时 Insight 的文本字体大小。", 
 			["br"] = "O tamanho da fonte do texto flutuante do Insight ao usar um mouse.", 
 			["es"] = nil
 		},
@@ -784,13 +784,13 @@ STRINGS = {
 	inventorybar_insight_font_size = {
 		label = {
 			"Controller Inv. Text Size",
-			["zh"] = nil, 
+			["zh"] = "控制器物品栏文本大小", 
 			["br"] = "Tamanho do Texto do Controlador do Inv. ", 
 			["es"] = nil
 		},
 		hover = {
 			"The font size of Insight's inventory text when using a controller.",
-			["zh"] = nil, 
+			["zh"] = "使用控制器时 Insight 的物品栏文本字体大小。", 
 			["br"] = "O tamanho da fonte do texto do inventário do Insight ao usar um controlador.", 
 			["es"] = nil
 		},
@@ -799,13 +799,13 @@ STRINGS = {
 	followtext_insight_font_size = {
 		label = {
 			"Controller Follow Text Size",
-			["zh"] = nil, 
+			["zh"] = "控制器跟随文本大小", 
 			["br"] = "Tamanho do Texto do Controlador Seguidor", 
 			["es"] = nil
 		},
 		hover = {
 			"The font size of Insight's Follow text when using a controller.",
-			["zh"] = nil, 
+			["zh"] = "使用控制器时 Insight 的跟随文本字体大小。", 
 			["br"] = "O tamanho da fonte do texto Seguir do Insight ao usar um controlador.", 
 			["es"] = nil
 		},
@@ -964,7 +964,7 @@ STRINGS = {
 				},
 				hover = {
 					"Displays time information based on real time: hours, minutes, seconds.",
-					["zh"] = "以现实时间为基础现实时间信息：时，分，秒",
+					["zh"] = "以现实时间为基础显示时间信息：时，分，秒",
 					["br"] = "Exibe informações de tempo com base no tempo real: horas, minutos, segundos.",
 					["es"] = "Muestra información del tiempo basada en el tiempo real: horas, minutos, segundos.",
 				},
@@ -1030,13 +1030,13 @@ STRINGS = {
 	temperature_units = {
 		label = {
 			"Temperature units", 
-			["zh"] = nil, 
+			["zh"] = "温度单位", 
 			["br"] = "Unidades de temperatura", 
 			["es"] = nil
 		},
 		hover = {
 			"How to display temperature", 
-			["zh"] = nil, 
+			["zh"] = "如何显示温度", 
 			["br"] = "Como exibir a temperatura", 
 			["es"] = nil
 		},
@@ -1044,13 +1044,13 @@ STRINGS = {
 			["game"] = {
 				description = {
 					"Game",
-					["zh"] = nil,
+					["zh"] = "游戏温度",
 					["br"] = "Jogo",
 					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 0, Overheat: 70",
-					["zh"] = nil,
+					["zh"] = "结冰: 0, 过热: 70",
 					["br"] = "Congelar: 0º, Superaquecer: 70º",
 					["es"] = nil,
 				},
@@ -1058,13 +1058,13 @@ STRINGS = {
 			["celsius"] = {
 				description = {
 					"Celsius",
-					["zh"] = nil,
+					["zh"] = "摄氏度",
 					["br"] = "Celsius",
 					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 0, Overheat: 35",
-					["zh"] = nil,
+					["zh"] = "结冰: 0, 过热: 35",
 					["br"] = "Congelar: 0º, Superaquecer: 35º",
 					["es"] = nil,
 				},
@@ -1072,13 +1072,13 @@ STRINGS = {
 			["fahrenheit"] = {
 				description = {
 					"Fahrenheit",
-					["zh"] = nil,
+					["zh"] = "华氏度",
 					["br"] = "Fahrenheit",
 					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 32, Overheat: 158",
-					["zh"] = nil,
+					["zh"] = "结冰: 32, 过热: 158",
 					["br"] = "Congelar: 32 F, Superaquecer: 158 F",
 					["es"] = nil,
 				},
@@ -1122,13 +1122,13 @@ STRINGS = {
 	experimental_highlighting = {
 		label = {
 			"Experimental Highlighting", 
-			["zh"] = nil,
+			["zh"] = "实验性高亮显示",
 			["br"] = "Realce Experimental",
 			["es"] = nil,
 		},
 		hover = {
 			"When enabled, highlighting will perform better in very dense areas at the cost of being potentially unstable. Please let me know if you get issues with this.", 
-			["zh"] = nil,
+			["zh"] = "如果启用，高亮显示将在非常密集的区域表现更好，但可能存在不稳定性。如果有任何问题请告知。",
 			["br"] = "Quando ativado, o realce terá um desempenho melhor em áreas muito densas, ao custo de ser potencialmente instável. Por favor, deixe-me saber se você tiver problemas com isso.",
 			["es"] = nil,
 		},
@@ -1137,7 +1137,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Normal highlighting will be used.",
-					["zh"] = nil,
+					["zh"] = "使用正常高亮显示。",
 					["br"] = "O realce normal será usado.",
 					["es"] = nil,
 				},
@@ -1146,7 +1146,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Experimental highlighting will be used.",
-					["zh"] = nil,
+					["zh"] = "使用实验性高亮显示。",
 					["br"] = "Destaque experimental será usado.",
 					["es"] = nil,
 				},
@@ -1162,7 +1162,7 @@ STRINGS = {
 		},
 		hover = {
 			"The color to use for highlighting.", 
-			["zh"] = "高亮显示时的颜色", 
+			["zh"] = "高亮显示时的颜色。", 
 			["br"] = "A cor a ser usada para destacar.", 
 			["es"] = "Configura el color a utilizar para resaltar."
 		},
@@ -1584,7 +1584,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Range is not shown.",
-					["zh"] = "不显示物品范围",
+					["zh"] = "不显示物品范围。",
 					["br"] = "Alcance não é mostrado.",
 					["es"] = "No se muestra el rango.",
 				},
@@ -1609,7 +1609,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether boss indicators are shown.", 
-			["zh"] = "是否显示 Boss 指示器功能。", 
+			["zh"] = "是否显示 Boss 指示器。", 
 			["br"] = "Se os indicadores do chefe são mostrados.", 
 			["es"] = "Configura si se muestra los indicadores de jefes."
 		},
@@ -1637,13 +1637,13 @@ STRINGS = {
 	miniboss_indicator = {
 		label = {
 			"Miniboss Indicators", 
-			["zh"] = nil, 
+			["zh"] = "小 Boss 指示器", 
 			["br"] = "Indicadores de Mini-Chefões", 
 			["es"] = nil,
 		},
 		hover = {
 			"Whether miniboss indicators are shown.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示小 Boss 指示器。", 
 			["br"] = "Se os indicadores de Mini-Chefões são mostrados.", 
 			["es"] = nil,
 		},
@@ -1652,7 +1652,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Miniboss indicators not shown.",
-					["zh"] = nil, 
+					["zh"] = "不显示小 Boss 指示器。", 
 					["br"] = "Indicadores de Mini-Chefões não aparecem.", 
 					["es"] = nil,
 				},
@@ -1661,7 +1661,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Miniboss indicators are shown.",
-					["zh"] = nil, 
+					["zh"] = "显示小 Boss 指示器。", 
 					["br"] = "Indicadores de Mini-Chefões são mostrados.", 
 					["es"] = nil,
 				},
@@ -1671,7 +1671,7 @@ STRINGS = {
 	notable_indicator = {
 		label = {
 			"Notable Indicators", 
-			["zh"] = "其他物品的指示器", 
+			["zh"] = "其他物品指示器", 
 			["br"] = "Indicador Notável", 
 			["es"] = "Indicador notable"
 		},
@@ -1773,13 +1773,13 @@ STRINGS = {
 	death_indicator = {
 		label = {
 			"Death Indicators", 
-			["zh"] = nil, 
+			["zh"] = "死亡指示器", 
 			["br"] = "Indicadores de Morte", 
 			["es"] = nil
 		},
 		hover = {
 			"Whether to show an indicator to your death locations.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示指示你死亡地点的指示器。", 
 			["br"] = "Se deve mostrar um indicador para seus locais de morte.", 
 			["es"] = nil
 		},
@@ -1788,7 +1788,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Indicator will not be shown.",
-					["zh"] = nil,
+					["zh"] = "不显示指示器。",
 					["br"] = "Indicadores não são exibidos.",
 					["es"] = nil,
 				},
@@ -1797,7 +1797,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Indicator will be shown.",
-					["zh"] = nil,
+					["zh"] = "显示指示器。",
 					["br"] = "Indicadores são exibidos.",
 					["es"] = nil,
 				},
@@ -2107,13 +2107,13 @@ STRINGS = {
 	sinkhole_marks = {
 		label = {
 			"Sinkhole Marks", 
-			["zh"] = "落水洞标记", 
+			["zh"] = "洞穴标记", 
 			["br"] = "Marcações de Buraco", 
 			["es"] = "Indicador de sumidero"
 		},
 		hover = {
 			"How sinkhole marking is applied.", 
-			["zh"] = "如何显示落水洞的着色标记。", 
+			["zh"] = "如何显示洞穴的着色标记。", 
 			["br"] = "Como a marcação de buracos (entrada para as cavernas) é aplicada.", 
 			["es"] = "Configura como se muestra los indicadores de sumideros"
 		},
@@ -2127,7 +2127,7 @@ STRINGS = {
 				},
 				hover = {
 					"Do not do any sinkhole coloring.",
-					["zh"] = "不着色标记任何落水洞洞口。",
+					["zh"] = "不着色标记任何洞穴洞口。",
 					["br"] = "Não faça nenhum buraco colorido.",
 					["es"] = "No se muestra ningún indicador.",
 				},
@@ -2155,7 +2155,7 @@ STRINGS = {
 				},
 				hover = {
 					"Apply to both map icons & sinkholes.",
-					["zh"] = "同时着色标记地图图标和落水洞洞口。",
+					["zh"] = "同时着色标记地图图标和洞穴洞口。",
 					["br"] = "Aplicar a ícones de mapa e buracos.",
 					["es"] = "Colorear tanto a iconos del mapa como a los sumideros",
 				},
@@ -2803,13 +2803,13 @@ STRINGS = {
 	klaus_sack_info = {
 		label = {
 			"Loot Stash Info", 
-			["zh"] = nil, 
+			["zh"] = "赃物袋信息", 
 			["br"] = "Informações do Saco do Klaus", 
 			["es"] = nil
 		},
 		hover = {
 			"Whether the contents of the Loot Stash are visible.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示赃物袋内容信息。", 
 			["br"] = "Se os conteúdos do Saco do Klaus estarão visíveis.", 
 			["es"] = nil
 		},
@@ -2818,7 +2818,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Loot stash contents are NOT visible.",
-					["zh"] = nil,
+					["zh"] = "不显示赃物袋内容。",
 					["br"] = "Conteúdos do Saco do Klaus NÃO estarão visíveis.",
 					["es"] = nil,
 				},
@@ -2827,7 +2827,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Loot stash contents are visible.",
-					["zh"] = nil,
+					["zh"] = "显示赃物袋内容。",
 					["br"] = "Conteúdos do Saco do Klaus estarão visíveis.",
 					["es"] = nil,
 				},
@@ -2995,13 +2995,13 @@ STRINGS = {
 	soil_nutrients_needs_hat = {
 		label = {
 			"Display soil nutrients", 
-			["zh"] = nil, 
+			["zh"] = "土壤养分值显示", 
 			["br"] = "Exibir nutrientes do solo", 
 			["es"] = nil
 		},
 		hover = {
 			"When to display soil/plant nutrients.", 
-			["zh"] = nil, 
+			["zh"] = "何时显示土壤/植株的养分值。", 
 			["br"] = "Quando exibir nutrientes do solo/plantas.", 
 			["es"] = nil
 		},
@@ -3015,7 +3015,7 @@ STRINGS = {
 				},
 				hover = {
 					"Soil nutrients are only shown with the hat.",
-					["zh"] = nil,
+					["zh"] = "仅当佩戴高级耕作先驱帽时显示土壤养分值。",
 					["br"] = "Nutrientes do solo são mostrados apenas com o chapéu.",
 					["es"] = nil,
 				},
@@ -3023,13 +3023,13 @@ STRINGS = {
 			["hatonly"] = {
 				description = {
 					"Premier Gardeneer Hat",
-					["zh"] = nil,
+					["zh"] = "高级耕作先驱帽",
 					["br"] = "Chapéu Premier do Jardineiro",
 					["es"] = nil,
 				},
 				hover = {
 					"Soil nutrients are only shown with the hat.",
-					["zh"] = nil,
+					["zh"] = "仅当佩戴此帽时显示土壤养分值。",
 					["br"] = "Nutrientes do solo são mostrados apenas com o chapéu.",
 					["es"] = nil,
 				},
@@ -3043,7 +3043,7 @@ STRINGS = {
 				},
 				hover = {
 					"Soil nutrients are always shown.",
-					["zh"] = nil,
+					["zh"] = "总是显示土壤养分值。",
 					["br"] = "Nutrientes do solo sempre são mostrados.",
 					["es"] = nil,
 				},
@@ -3059,7 +3059,7 @@ STRINGS = {
 		},
 		hover = {
 			"Determines whether plant stress is shown.", 
-			["zh"] = "决定是否显示植物的压力", 
+			["zh"] = "是否显示植物的压力。", 
 			["br"] = "Determina se o estresse da planta é mostrado.", 
 			["es"] = "Configura si se muestra el estrés de las plantas."
 		},
@@ -3068,7 +3068,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Plant stress is not shown.",
-					["zh"] = "植物的压力将不会显示",
+					["zh"] = "不显示植物的压力。",
 					["br"] = "O estresse da planta não é mostrado.",
 					["es"] = "No se muestra el estrés.",
 				},
@@ -3076,13 +3076,13 @@ STRINGS = {
 			[1] = {
 				description = {
 					"With Hat",
-					["zh"] = "佩戴园艺帽时",
+					["zh"] = "佩戴高级耕作先驱帽",
 					["br"] = "Com chapéu",
 					["es"] = "Con sombrero",
 				},
 				hover = {
 					"Plant stress will be shown if you have the Premier Gardeneer Hat.",
-					["zh"] = "如果你身上有，或戴上远古园艺帽时，显示植物的压力",
+					["zh"] = "如果你身上有，或戴上高级耕作先驱帽时，显示植物的压力",
 					["br"] = "O estresse da planta será mostrado se você tiver o Chapéu Premier Gardeneer.",
 					["es"] = "El estrés se mostrará si se tiene un Gardeneer Hat.",
 				},
@@ -3096,7 +3096,7 @@ STRINGS = {
 				},
 				hover = {
 					"Plant stress is always shown.",
-					["zh"] = "总是显示植物的压力",
+					["zh"] = "总是显示植物的压力。",
 					["br"] = "O estresse da planta é sempre mostrado.",
 					["es"] = "Se muestra siempre el estrés de la planta.",
 				},
@@ -3189,7 +3189,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"World data is not shown.",
-					["zh"] = "不展示世界事件。",
+					["zh"] = "不显示世界事件。",
 					["br"] = "Os dados do mundo não são mostrados.",
 					["es"] = "No se muestran los eventos.",
 				},
@@ -3208,13 +3208,13 @@ STRINGS = {
 	danger_announcements = {
 		label = {
 			"Danger Announcements", 
-			["zh"] = nil, 
+			["zh"] = "危险宣告", 
 			["br"] = "Anúncios de Perigo", 
 			["es"] = nil
 		},
 		hover = {
 			"Announcements that show in chat when a dangerous event is happening soon.", 
-			["zh"] = nil, 
+			["zh"] = "当危险事件将要发生时在聊天栏进行宣告。", 
 			["br"] = "Anúncios que aparecem no chat quando um evento perigoso está acontecendo em breve.", 
 			["es"] = nil
 		},
@@ -3223,7 +3223,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Danger announcements are not enabled.",
-					["zh"] = nil,
+					["zh"] = "禁用危险宣告。",
 					["br"] = "Os anúncios de perigo não estão ativados.",
 					["es"] = nil,
 				},
@@ -3232,7 +3232,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Danger announcements are enabled.",
-					["zh"] = nil,
+					["zh"] = "启用危险宣告。",
 					["br"] = "Os anúncios de perigo estão ativados.",
 					["es"] = nil,
 				},
@@ -3265,13 +3265,13 @@ STRINGS = {
 			[1] = {
 				description = {
 					"With Rainometer",
-					["zh"] = nil,
+					["zh"] = "存在雨量计",
 					["br"] = "Com Pluviômetro",
 					["es"] = nil,
 				},
 				hover = {
 					"Weather is shown if a Rainometer is in the world.",
-					["zh"] = nil,
+					["zh"] = "如果世界中存在雨量计时显示天气信息。",
 					["br"] = "O tempo é mostrado se um Pluviômetro estiver no mundo.",
 					["es"] = nil,
 				},
@@ -3382,7 +3382,7 @@ STRINGS = {
 	display_hunger = {
 		label = {
 			"Hunger", 
-			["zh"] = "物品饥饿值", 
+			["zh"] = "饥饿值", 
 			["br"] = "Fome", 
 			["es"] = "Hambre"
 		},
@@ -3523,13 +3523,13 @@ STRINGS = {
 	display_sanity_interactions = {
 		label = {
 			"Sanity Interactions", 
-			["zh"] = nil, 
+			["zh"] = "影响理智交互显示", 
 			["br"] = "Interações de Sanidade", 
 			["es"] = nil
 		},
 		hover = {
 			"Whether interactions that affect sanity are shown.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示影响理智的交互行为。", 
 			["br"] = "Se as interações que afetam a sanidade são mostradas.", 
 			["es"] = nil
 		},
@@ -3543,7 +3543,7 @@ STRINGS = {
 				},
 				hover = {
 					"Will not display sanity interactions.",
-					["zh"] = nil,
+					["zh"] = "不显示影响理智的交互。",
 					["br"] = "Não exibirá interações de sanidade.",
 					["es"] = nil,
 				},
@@ -3557,7 +3557,7 @@ STRINGS = {
 				},
 				hover = {
 					"Will display sanity interactions.",
-					["zh"] = nil,
+					["zh"] = "显示影响理智的交互。",
 					["br"] = "Irá exibir interações de sanidade.",
 					["es"] = nil,
 				},
@@ -3573,7 +3573,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether mob attack damage is shown.", 
-			["zh"] = "是否显示怪物的攻击范围", 
+			["zh"] = "是否显示怪物的攻击范围。", 
 			["br"] = "Se o dano de ataque de mobs é mostrado.", 
 			["es"] = "Configura si se muestra el daño de ataque de mobs."
 		},
@@ -3582,7 +3582,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Mob attack damage is not shown.",
-					["zh"] = "不显示怪物的攻击范围",
+					["zh"] = "不显示怪物的攻击范围。",
 					["br"] = "Dano de ataque dos mobs não é mostrado.",
 					["es"] = "No se muestra el daño de ataque de mobs.",
 				},
@@ -3591,7 +3591,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Mob attack damage is shown.",
-					["zh"] = "显示怪物的攻击范围",
+					["zh"] = "显示怪物的攻击范围。",
 					["br"] = "Dano de ataque dos mobs é mostrado.",
 					["es"] = "Se muestra el daño de ataque de mobs.",
 				},
@@ -3665,7 +3665,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether pickable information should be shown (ex: Berry Bushes)", 
-			["zh"] = "Whether pickable information should be shown (ex: Berry Bushes)", 
+			["zh"] = "是否显示可采集信息 (如：浆果丛)", 
 			["br"] = "Se as informações selecionáveis devem ser mostradas (ex: Berry Bushes).", 
 			["es"] = "Configura si se muestra la información seleccionable (por ej., arbustos de bayas)"
 		},
@@ -3674,7 +3674,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Pickable information will not be displayed.",
-					["zh"] = "不显示可采集信息",
+					["zh"] = "不显示可采集信息。",
 					["br"] = "Informações selecionáveis não são exibidas.",
 					["es"] = "No se muestra la información de recolección.",
 				},
@@ -3683,7 +3683,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Pickable information will be displayed.",
-					["zh"] = "显示可采集信息",
+					["zh"] = "显示可采集信息。",
 					["br"] = "Informações selecionáveis são exibidas.",
 					["es"] = "Se muestra la información seleccionable.",
 				},
@@ -3699,7 +3699,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether harvestable information should be shown (ex: Bee Boxes)", 
-			["zh"] = "Whether harvestable information should be shown (ex: Bee Boxes)", 
+			["zh"] = "是否显示可收获信息 (如：蜂箱)", 
 			["br"] = "Se as informações de colheita devem ser mostradas (ex: Bee Boxes).", 
 			["es"] = "Configura si se muestra la información cosechable (por ej., cajas de abejas)"
 		},
@@ -3708,7 +3708,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Harvestable information will not be displayed.",
-					["zh"] = "不显示可收获信息",
+					["zh"] = "不显示可收获信息。",
 					["br"] = "Informações de colheitas não são exibidas.",
 					["es"] = "No se muestra la información de cosecha.",
 				},
@@ -3717,7 +3717,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Harvestable information will be displayed.",
-					["zh"] = "显示可收获信息",
+					["zh"] = "显示可收获信息。",
 					["br"] = "Informações de colheitas são exibidas.",
 					["es"] = "Se muestra la información de cosecha.",
 				},
@@ -3733,7 +3733,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether tool durability is displayed.", 
-			["zh"] = "是否显示工具的耐久度", 
+			["zh"] = "是否显示工具的耐久度。", 
 			["br"] = "Se a durabilidade da ferramenta é exibida.", 
 			["es"] = "Configura si se muestra la durabilidad de herramientas."
 		},
@@ -3742,7 +3742,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Tool durability will not be displayed.",
-					["zh"] = "不显示工具的耐久度",
+					["zh"] = "不显示工具的耐久度。",
 					["br"] = "A durabilidade da ferramenta não será exibida.",
 					["es"] = "No se muestra la durabilidad de las herramientas.",
 				},
@@ -3751,7 +3751,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Tool durability will be displayed.",
-					["zh"] = "显示工具的耐久度",
+					["zh"] = "显示工具的耐久度。",
 					["br"] = "A durabilidade da ferramenta será exibida.",
 					["es"] = "Se muestra la durabilidad de las herramientas.",
 				},
@@ -3801,7 +3801,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether upgradeable information is displayed.", 
-			["zh"] = "可升级物品", 
+			["zh"] = "是否显示可升级物品信息。", 
 			["br"] = "Se as informações de atualizáveis são exibidas.", 
 			["es"] = "Configura si se muestra la información de etapas en estructuras (árboles, nidos de araña, etc.)"
 		},
@@ -3937,7 +3937,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether herd information is displayed.", 
-			["zh"] = "兽群的信息是否会显示。", 
+			["zh"] = "是否显示兽群的信息。", 
 			["br"] = "Se as informações de rebanhos são exibidas.", 
 			["es"] = "Configura si se muestra información de la manada."
 		},
@@ -4151,7 +4151,7 @@ STRINGS = {
 				},
 				hover = {
 					"No fuel information will show.",
-					["zh"] = "不显示燃料信息",
+					["zh"] = "不显示燃料信息。",
 					["br"] = "Nenhuma informação de combustível será exibida.",
 					["es"] = "No se muestra ninguna información sobre el combustible.",
 				},
@@ -4165,7 +4165,7 @@ STRINGS = {
 				},
 				hover = {
 					"Standard fuel information will show.",
-					["zh"] = "显示标准的燃料信息",
+					["zh"] = "显示标准的燃料信息。",
 					["br"] = "Informações padrão de combustível são exibidas.",
 					["es"] = "Se muestra información estándar del combustible.",
 				},
@@ -4179,7 +4179,7 @@ STRINGS = {
 				},
 				hover = {
 					"All fuel information will show.",
-					["zh"] = "显示全面的燃料信息",
+					["zh"] = "显示全面的燃料信息。",
 					["br"] = "Todas as informações de combustível são exibidas.",
 					["es"] = "Se muestra toda la información sobre el combustible.",
 				},
@@ -4195,7 +4195,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to display shelter information.", 
-			["zh"] = "是否显示遮蔽处信息", 
+			["zh"] = "是否显示遮蔽处信息。", 
 			["br"] = "Se exibe informações do abrigo.", 
 			["es"] = "Configura si se muestra información del refugio."
 		},
@@ -4204,7 +4204,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Shelter information is not shown.",
-					["zh"] = "不显示遮蔽处信息",
+					["zh"] = "不显示遮蔽处信息。",
 					["br"] = "As informações do abrigo não são mostradas.",
 					["es"] = "No se muestra información del refugio.",
 				},
@@ -4213,7 +4213,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Shelter information is shown.",
-					["zh"] = "显示遮蔽处信息",
+					["zh"] = "显示遮蔽处信息。",
 					["br"] = "As informações do abrigo são mostradas.",
 					["es"] = "Se muestra información del refugio.",
 				},
@@ -4229,7 +4229,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to display unique information for certain entities.", 
-			["zh"] = "是否显示特定实体的特定信息", 
+			["zh"] = "是否显示特定实体的特定信息。", 
 			["br"] = "Se vai exibir informações exclusivas para determinadas entidades.", 
 			["es"] = "Configura si se muestra información única de ciertas entidades."
 		},
@@ -4238,7 +4238,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"No unique information is shown.",
-					["zh"] = "不显示特定信息",
+					["zh"] = "不显示特定信息。",
 					["br"] = "Nenhuma informação exclusiva é mostrada",
 					["es"] = "No se muestra ninguna información única.",
 				},
@@ -4247,7 +4247,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Unique information is shown.",
-					["zh"] = "显示特定信息",
+					["zh"] = "显示特定信息。",
 					["br"] = "Informações exclusivas são mostradas.",
 					["es"] = "Se muestra información única.",
 				},
