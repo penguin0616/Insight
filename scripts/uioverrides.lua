@@ -43,7 +43,7 @@ function SetHighlightIngredientFocus(caller, arg)
 	if arg == nil then
 		-- When you quickly swap between two ingredients, the new one gets the highlighting call set but the second one triggers focus lose after and clears the highlighting task
 		-- We only reset the thing here if the caller is the correct caller.
-		if SHIF_CURRENT_CALLER == caller then
+		if caller == true or SHIF_CURRENT_CALLER == caller then
 			--mprint("\t\t\t\tSuccessful cancel")
 			highlighting.SetActiveIngredientUI(nil)
 			SHIF_CURRENT_CALLER = nil

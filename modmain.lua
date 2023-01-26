@@ -1053,7 +1053,7 @@ local function GetEntityInformation(entity, player, params)
 
 		-- Collect the description if one was provided.
 		if v.description then -- type(v.description) == "string"
-			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq and eq(aa) or v.description)
+			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "")-- .. (eq and eq(aa) or v.description)
 
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
@@ -1068,15 +1068,15 @@ local function GetEntityInformation(entity, player, params)
 
 		-- Collect the alternate description if one was provided.
 		if v.alt_description then -- type(v.alt_description) == "string"
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq and eq(bb) or v.alt_description)
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "")-- .. (eq and eq(bb) or v.alt_description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
 			end
-			if bb then bb=bb+1 end
+			--if bb then bb=bb+1 end
 		elseif v.alt_description == nil and v.description ~= nil then
 			-- We don't want to remove a normal description if an alt wasn't provided.
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. (eq and eq(bb) or v.description)
+			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "")-- .. (eq and eq(bb) or v.description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
@@ -3570,7 +3570,8 @@ if pcall(string.dump, string.match) then
 			if err:match("bad argument #1 to '[^']+' %(string expected, got no value%)") then
 				local x, a, b, c = pcall(upv.value, "<testing=#222>!wow!</testing>", "<(%w+)=([#%w]+)>([^>]+)<")
 				if x and a == "testing" and b == "#222" and c == "!wow!" then
-					string.match = upv.value
+					string.match = upv.value -- Insight match
+					getfenv(0).string.match = upv.value -- Global match
 					mprint("string.match repaired successfully")
 					break
 				end

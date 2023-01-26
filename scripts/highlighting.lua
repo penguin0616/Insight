@@ -661,13 +661,13 @@ function highlighting:SetupRelevanceState(tbl, selected)
 end
 
 function highlighting.SetActiveItem(player, data)
-	
 	if not highlighting.activated then
 		return
 	end
 
 	--push("SetActiveItem")
 	isSearchingForFoodTag = false
+	activeIngredientFocus = nil -- Clear any active ingredient focuses.
 	activeItem = data.item
 
 	DoRelevanceChecks()
@@ -687,6 +687,8 @@ function highlighting.SetActiveIngredientUI(ui)
 	if activeIngredientFocus == ui then
 		return
 	end
+
+	activeItem = nil -- Clear any active items.
 
 	isSearchingForFoodTag = false
 

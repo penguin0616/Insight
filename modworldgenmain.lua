@@ -249,7 +249,7 @@ else
 	shardGameIndex:Load()
 	if shardGameIndex:IsValid() then
 		mprint("Checking shardindex.")
-		dumptable(shardGameIndex.enabled_mods)
+		--dumptable(shardGameIndex.enabled_mods)
 		if false or shardGameIndex.enabled_mods[modname] then
 			CheckShardIndex(shardGameIndex)
 		else

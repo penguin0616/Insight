@@ -180,6 +180,7 @@ end
 local Insight = Class(function(self, inst)
 	--mprint("Registering Insight replica for", inst, "but I am", ThePlayer)
 	self.inst = inst
+	self.ready = false
 
 	self.menus = setmetatable({}, { __mode="kv" })
 
@@ -199,6 +200,7 @@ local Insight = Class(function(self, inst)
 	end
 
 	if IS_DS or (IS_CLIENT_HOST and inst == ThePlayer) then
+		self.ready = true
 		self:SetupIndicators()
 		self:BeginUpdateLoop()
 	end
@@ -259,6 +261,8 @@ function Insight:AttachClassified(ent)
 	self.ondetachclassified = function() self:DetachClassified() end
 	self.classified:ListenForEvent("onremove", self.ondetachclassified)
 
+	self.ready = true
+
 	-- Insight cool stuff
 	self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
 	self.performance_ratings = PerformanceRatings()
@@ -282,6 +286,8 @@ function Insight:DetachClassified()
 end
 
 function Insight:Shutdown()
+	self.ready = false
+
 	-- Insight cool stuff
 	self.inst:RemoveEventCallback("insight_entity_information", GotEntityInformation)
 	self:StopUpdateLoop()
@@ -410,6 +416,12 @@ end
 --- Called when there needs to be a new hunt target.
 -- @tparam EntityScript target
 function Insight:OnHuntTargetDirty(target)
+	if not self.ready then
+		mprint("Insight_Replica:OnHuntTargetDirty called but client isn't ready")
+		mprint("LocalPlayer:", localPlayer)
+		return
+	end
+
 	if self.hunt_target then
 		self:StopTrackingEntity(self.hunt_target)
 		self.hunt_target = nil

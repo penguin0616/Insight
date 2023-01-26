@@ -23,6 +23,7 @@ local module = {}
 
 local CraftingMenuWidget = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_widget")) or nil
 local CraftingMenuHUD = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_hud")) or nil
+local CraftingMenuDetails = (IS_DST and CurrentRelease.GreaterOrEqualTo("R20_QOL_CRAFTING4LIFE") and require("widgets/redux/craftingmenu_details")) or nil
 
 --[==[
 local function CMW_OnGainFocus(self, ...)
@@ -97,7 +98,16 @@ end
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CraftingMenuWidget ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 local function HookCraftingMenuWidget()
+	-- TODO: Come up with a decent way to robustly hook and replace.
 	local oldTEMPLATES = util.getupvalue(CraftingMenuWidget.MakeRecipeList, "TEMPLATES")
+	if not oldTEMPLATES then
+		OnLocalPlayerPostInit:AddListener("HookCraftingMenuWidget_CANTFINDTEMPLATES", function()
+			mprint("Unable to hook HookCraftingMenuWidget")
+			ChatHistory:AddToHistory(ChatTypes.Announcement, nil, nil, "InsightServer", "Unable to setup Crafting Menu Highlighting.", WHITE, "insight", nil, true)
+		end)
+		
+		return
+	end
 
 	local fakeTemplates = setmetatable({
 		ScrollingGrid = function(...)
@@ -111,8 +121,8 @@ local function HookCraftingMenuWidget()
 				local widget = oldItemCtorFn(...)
 				--widget.OnGainFocus = ItemWidgetOnGainFocus;
 				--widget.OnLoseFocus = ItemWidgetOnLoseFocus;
-				
-				
+
+
 				local oldOnClick = widget.cell_root.onclick
 				widget.cell_root:SetOnClick(function(...) -- normally no args
 					OnCellRootClick(widget.cell_root, widget)
@@ -142,14 +152,14 @@ local function CraftingMenuHUD_Open(self, ...)
 	local details_root_data = localPlayer.HUD.controls.craftingmenu:GetCurrentRecipeState()
 	if details_root_data then
 		if details_root_data and details_root_data.recipe and details_root_data.recipe.product then
-			SetHighlightIngredientFocus(self, { prefab = details_root_data.recipe.product })
+			--SetHighlightIngredientFocus(self, { prefab = details_root_data.recipe.product })
 		end
 	end
 	return module.oldCraftingMenuHUD_Open(self, ...)
 end
 
 local function CraftingMenuHUD_Close(self, ...)
-	SetHighlightIngredientFocus(self, nil)
+	SetHighlightIngredientFocus(true, nil) -- Passing in true instead of self forces a close.
 	return module.oldCraftingMenuHUD_Close(self, ...)
 end
 
@@ -161,6 +171,27 @@ local function HookCraftingMenuHUD()
 	CraftingMenuHUD.Close = CraftingMenuHUD_Close
 end
 
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CraftingMenuDetails ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
+	-- Yeah, yeah. No returning...
+	module.oldCookbookPageCrockPot_PopulateRecipeDetailPanel(self, ...)
+	
+	local data = ...
+	if not data then
+		return
+	end
+end
+
+local function HookCraftingMenuDetails()
+	module.oldCraftingMenuDetails_PopulateRecipeDetailPanel = CraftingMenuDetails.PopulateRecipeDetailPanel
+	CraftingMenuDetails.PopulateRecipeDetailPanel = CraftingMenuDetails_PopulateRecipeDetailPanel
+end
+
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Module ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 module.Initialize = function()
 	if module.initialized then
@@ -168,11 +199,14 @@ module.Initialize = function()
 		return
 	end
 
-	module.USING_NEW_CRAFTING_MENU = CraftingMenuWidget ~= nil and CraftingMenuHUD ~= nil
+	module.USING_NEW_CRAFTING_MENU = CraftingMenuWidget ~= nil and CraftingMenuHUD ~= nil and CraftingMenuDetails ~= nil
 
 	if module.USING_NEW_CRAFTING_MENU then
 		HookCraftingMenuWidget()
+		--HookCraftingMenuDetails()
 		HookCraftingMenuHUD()
+	else
+		mprint("Not using new crafting menu.")
 	end
 
 	module.initialized = true
