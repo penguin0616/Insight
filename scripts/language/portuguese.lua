@@ -46,39 +46,39 @@ return {
 	},
 
 	-- Keybinds
-	unbind = "Unbind",
+	unbind = "Desvincular",
 	keybinds = {
-		label = "Keybinds (Keyboard Only)",
+		label = "Atalhos de Teclas (Apenas Teclado)",
 		togglemenu = {
-			name = "Open Insight Menu",
-			description = "Opens/Closes the Insight menu"
+			name = "Abrir Menu Insight",
+			description = "Abrir/Fechar o Menu Insight"
 		},
 	},
 
 	-- Danger Announcements
 	danger_announcement = {
-		generic = "[Danger Announcement]: ",
-		boss = "[Boss Announcement]: ",
+		generic = "[Anúncio de Perigo]: ",
+		boss = "[Anúncio de Boss]: ",
 	},
 
 	-- Presets
 	presets = {
 		types = {
 			new_player = {
-				label = "New Player",
-				description = "Recommended for players new to the game."
+				label = "Novo Jogador",
+				description = "Recomendado para jogadores novos no jogo."
 			},
 			simple = {
-				label = "Simple",
-				description = "A low amount of information, similar to Show Me.",
+				label = "Simples",
+				description = "Uma quantidade baixa de informações, semelhante ao Show Me",
 			},
 			decent = {
-				label = "Decent",
-				description = "An average amount of information. Very similar to default settings.",
+				label = "Equilibrado",
+				description = "Uma quantidade média de informações. Muito semelhante às configurações padrão.",
 			},
 			advanced = {
-				label = "Advanced",
-				description = "Good for people who like information.",
+				label = "Avançado",
+				description = "Bom para quem gosta de informação.",
 			},
 		},
 	},
@@ -86,13 +86,13 @@ return {
 	-- Insight Menu
 	insightmenu = {
 		tabs = {
-			world = "World",
-			player = "Player",
+			world = "Mundo",
+			player = "Jogador",
 		},
 	},
 
 	indicators = {
-		dismiss = "%s Dismiss",
+		dismiss = "%s Dispensar",
 	},
 
 	-------------------------------------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ return {
 
 	-- atrium_gate.lua [Prefab]
 	atrium_gate = {
-		cooldown = "<prefab=atrium_gate> will reset in %s",
+		cooldown = "<prefab=atrium_gate> irá reiniciar em %s",
 	},
 
 	-- attunable.lua
@@ -143,13 +143,13 @@ return {
 	-- beargerspawner.lua
 	beargerspawner = {
 		incoming_bearger_targeted = "<color=%s>Alvo: %s</color> -> %s",
-		announce_bearger_target = "<prefab=bearger> will spawn on %s (<prefab=%s>) in %s.",
-		bearger_attack = "<prefab=bearger> will attack in %s."
+		announce_bearger_target = "<prefab=bearger> irá surgir em %s (<prefab=%s>) em %s.",
+		bearger_attack = "<prefab=bearger> irá atacar em %s."
 	},
 
 	-- beequeenhive.lua [Prefab]
 	beequeenhive = {
-		time_to_respawn = "<prefab=beequeen> will respawn in %s.",
+		time_to_respawn = "<prefab=beequeen> irá reiniciar em %s.",
 	},
 
 	-- boatdrag.lua
@@ -165,23 +165,23 @@ return {
 	-- book.lua
 	book = {
 		wickerbottom = {
-			tentacles = "Summons <color=%s>%d tentacles</color>",
-			birds = "Summons up to <color=%s>%d birds</color>",
-			brimstone = "Summons <color=%s>%d lightning strikes</color>",
-			horticulture = "Grows up to <color=%s>%d plants</color>",
-			horticulture_upgraded = "Grows and tends up to <color=%s>%d plants</color>",
+			tentacles = "Invoca <color=%s>%d tentáculos</color>",
+			birds = "Evoca até <color=%s>%d pássaros</color>",
+			brimstone = "Convoca <color=%s>%d relâmpagos</color>",
+			horticulture = "Cresce até <color=%s>%d plantas</color>",
+			horticulture_upgraded = "Cresce e cuida de <color=%s>%d plantas</color>",
 			--silviculture = "Grows basic resource plants.",
 			--fish = "",
 			--fire = ""
-			web = "Summons a <color=%s>spider web</color> that lasts for <color=%s>%s</color>",
+			web = "Invoca uma <color=%s>teia de aranha</color> que dura por <color=%s>%s</color>",
 			--temperature = ""
-			light = "Summons a <color=LIGHT>light</color> for <color=LIGHT>%s</color>",
+			light = "Invoca uma <color=LIGHT>luz</color> por <color=LIGHT>%s</color>",
 			-- light_upgraded is just light
-			rain = "Toggles <color=WET>rain</color> and <color=WET>waters nearby plants</color>",
-			bees = "Summons <color=%s>%d bees</color> up to <color=%s>%d</color>",
-			research_station = "Prototype charges: %s",
+			rain = "Alterna <color=WET>chuva</color> e <color=WET>rega as plantas próximas</color>",
+			bees = "Convoca <color=%s>%d abelhas</color> até <color=%s>%d</color>",
+			research_station = "Taxas de protótipos: %s",
 			_research_station_charge = "<color=#aaaaee>%s</color> (%d)",
-			meteor = "Summons <color=%s>%d meteors</color>",
+			meteor = "Convoca <color=%s>%d meteoros</color>",
 		},
 	},
 
@@ -223,7 +223,7 @@ return {
 		},
 		shape = "Forma: %s",
 		rarity = "Raridade: %s",
-		season = "Season: %d",
+		season = "Temporada: %d",
 		undecided = "Deve ser colocado antes que o conteúdo seja determinado."
 	},
 
@@ -254,7 +254,7 @@ return {
 
 	-- chester_eyebone.lua [Prefab]
 	chester_respawn = "<color=MOB_SPAWN><prefab=chester></color> irá ressurgir em: %s",
-	announce_chester_respawn = "My <prefab=chester> will respawn in %s.",
+	announce_chester_respawn = "Meu <prefab=chester> vai reaparecer em %s.",
 
 	-- childspawner.lua
 	childspawner = {
@@ -278,10 +278,10 @@ return {
 			laglength = "<color=VEGGIE>Cooldown</color>: %s",
 			
 			--@@ Armor
-			defense_amount = "<color=VEGGIE>Defense</color>: %s",
+			defense_amount = "<color=VEGGIE>Defensa</color>: %s",
 			
 			--@@ Both
-			prize_value = "Prize value: %s",
+			prize_value = "Valor do prêmio: %s",
 		},
 	},
 
@@ -296,7 +296,7 @@ return {
 	-- crabkingspawner.lua
 	crabkingspawner = {
 		crabking_spawnsin = "%s",
-		time_to_respawn = "<prefab=crabking> will respawn in %s.",
+		time_to_respawn = "<prefab=crabking> vai reaparecer em %s.",
 	},
 
 	-- crittertraits.lua
@@ -358,20 +358,20 @@ return {
 		},
 
 		["wintersfeastbuff"] = {
-			name = "<color=FROZEN>Winter's Feast Buff</color>",
+			name = "<color=FROZEN>Buff do Festival de Inverno</color>",
 			description = nil
 		},
 		
 		["halloweenpotion_health_buff"] = {
-			name = "<color=HEALTH>Health regeneration</color>",
+			name = "<color=HEALTH>Regeneração de vida</color>",
 			description = nil
 		},
 		["halloweenpotion_sanity_buff"] = {
-			name = "<color=SANITY>Sanity regeneration</color>",
+			name = "<color=SANITY>Regeneração de sanidade</color>",
 			description = nil
 		},
 		["halloweenpotion_bravery_small_buff"] = {
-			name = "<color=SANITY>Bravery</color> against bats.",
+			name = "<color=SANITY>Bravura</color> contra morcegos.",
 			description = nil
 		},
 		["halloweenpotion_bravery_large_buff"] = (function(parent)
@@ -382,8 +382,8 @@ return {
 	-- deerclopsspawner.lua
 	deerclopsspawner = {
 		incoming_deerclops_targeted = "<color=%s>Alvo: %s</color> -> %s",
-		announce_deerclops_target = "<prefab=deerclops> will spawn on %s (<prefab=%s>) in %s.",
-		deerclops_attack = "<prefab=deerclops> will attack in %s.",
+		announce_deerclops_target = "<prefab=deerclops> irá surgir em %s (<prefab=%s>) em %s.",
+		deerclops_attack = "<prefab=deerclops> irá atacar em %s.",
 	},
 
 	-- diseaseable.lua
@@ -408,7 +408,7 @@ return {
 
 	-- dragonfly_spawner.lua [Prefab]
 	dragonfly_spawner = {
-		time_to_respawn = "<prefab=dragonfly> will respawn in %s.",
+		time_to_respawn = "<prefab=dragonfly> irá ressurgir em %s.",
 	},
 
 	-- drivable.lua
@@ -849,7 +849,7 @@ return {
 
 	-- polly_rogershat.lua [Prefab]
 	polly_rogershat = {
-		announce_respawn = "My <prefab=polly_rogers> will respawn in %s."
+		announce_respawn = "My <prefab=polly_rogers> irá ressurgir em %s."
 	},
 
 	-- preservative.lua
@@ -949,10 +949,10 @@ return {
 
 	-- shadowlevel.lua
 	shadowlevel = {
-		level = "<color=BLACK>Shadow level</color>: %s",
-		level_diff = "<color=BLACK>Shadow level</color>: %s/%s",
-		damage_boost = " (<color=HEALTH>+%s damage</color>)",
-		total_shadow_level = "<color=BLACK>Total Shadow level</color>: %s",
+		level = "<color=BLACK>Nível de sombra</color>: %s",
+		level_diff = "<color=BLACK>Nível de sombra</color>: %s/%s",
+		damage_boost = " (<color=HEALTH>+%s dano</color>)",
+		total_shadow_level = "<color=BLACK>Nível total de sombra</color>: %s",
 	},
 
 	-- shadowsubmissive.lua
@@ -985,14 +985,14 @@ return {
 	},
 
 	-- sinkholespawner.lua
-	antlion_rage = "Antlion will rage in %s",
+	antlion_rage = "Formileão irá atacar em %s",
 
 	-- skinner_beefalo.lua
 	skinner_beefalo = "Temível: %s, Festivo: %s, Formal: %s",
 
 	-- sleeper.lua
 	sleeper = {
-		wakeup_time = "Will wake up in %s",
+		wakeup_time = "Irá acordar em %s",
 	},
 
 	-- soul.lua
@@ -1064,7 +1064,7 @@ return {
 	-- tradable.lua
 	tradable_gold = "Vale %s pepita(s) de ouro.",
 	tradable_gold_dubloons = "Vale %s pepita(s) de ouro e %s dubloon(s).",
-	tradable_rocktribute = "Atrasa a raiva do <color=LIGHT>Antlion</color> em %s.",
+	tradable_rocktribute = "Atrasa a raiva do <color=LIGHT>Formileão</color> em %s.",
 
 	-- unwrappable.lua
 	-- handled by klei?
@@ -1077,18 +1077,18 @@ return {
 	-- upgrademodule.lua
 	upgrademodule = {
 		module_describers = {
-			maxhealth = "Increases <color=HEALTH>max health</color> by <color=HEALTH>%d</color>.",
-			maxsanity = "Increases <color=SANITY>max sanity</color> by <color=SANITY>%d</color>.",
-			movespeed = "Increases <color=DAIRY>speed</color> by %s.",
-			heat = "Increases <color=#cc0000>minimum temperature</color> by <color=#cc0000>%d</color>.",
-			heat_drying = "Increases <color=#cc000>drying rate</color> by <color=#cc0000>%.1f</color>.",
-			cold = "Decreases <color=#00C6FF>minimum temperature</color> by <color=#00C6FF>%d</color>.",
-			taser = "Deals <color=WET>%d</color> %s to attackers (cooldown: %.1f).",
-			light = "Provides a <color=LIGHT>light radius</color> of <color=LIGHT>%.1f</color> (extras only <color=LIGHT>%.1f</color>).",
+			maxhealth = "Aumenta a <color=HEALTH>saúde máxima</color> em <color=HEALTH>%d</color>.",
+			maxsanity = "Aumenta  <color=SANITY>sanidade máxima</color> em <color=SANITY>%d</color>.",
+			movespeed = "Aumenta a <color=DAIRY>velocidade</color> em %s.",
+			heat = "Aumenta a <color=#cc0000>temperatura mínima</color> em <color=#cc0000>%d</color>.",
+			heat_drying = "Aumenta a <color=#cc000>taxa de secagem</color> em <color=#cc0000>%.1f</color>.",
+			cold = "Diminui a <color=#00C6FF>temperatura mínima</color> em <color=#00C6FF>%d</color>.",
+			taser = "Causa <color=WET>%d</color> %s aos atacantes (cooldown: %.1f).",
+			light = "Promove um <color=LIGHT>raio de luz</color> de <color=LIGHT>%.1f</color> (extras apenas <color=LIGHT>%.1f</color>).",
 			maxhunger = "Increases <color=HUNGER>max hunger</color> by <color=HUNGER>%d</color>.",
-			music = "Provides a <color=SANITY>sanity aura</color> of <color=SANITY>%+.1f/min</color> within <color=SANITY>%.1f</color> tile(s).",
-			music_tend = "Tends to plants within <color=NATURE>%.1f</color> tiles.",
-			bee = "Regenerates <color=HEALTH>%d health/%ds</color> (<color=HEALTH>%d/day</color>).",
+			music = "Promove uma <color=SANITY>aura de sanidade</color> de <color=SANITY>%+.1f/min</color> dentro de <color=SANITY>%.1f</color> bloco(s).",
+			music_tend = "Cuida de plantas dentro de <color=NATURE>%.1f</color> blocos.",
+			bee = "Regenera <color=HEALTH>%d vida/%ds</color> (<color=HEALTH>%d/day</color>).",
 		},
 	},
 
@@ -1118,8 +1118,8 @@ return {
 
 	-- weather.lua
 	weather = {
-		progress_to_rain = "Progress to rain: %s / %s",
-		remaining_rain = "Remaining rain: %s",
+		progress_to_rain = "Progresso para chover: %s / %s",
+		remaining_rain = "Chuva restante: %s",
 	},
 
 	-- weighable.lua
@@ -1182,8 +1182,8 @@ return {
 	-- wx78.lua [Prefab]
 	wx78 = {
 		remaining_charge_time = "Carga restante: %s",
-		gain_charge_time = "Will gain a <color=LIGHT>charge</color> in: <color=LIGHT>%s</color>",
-		full_charge = "Fully charged!",
+		gain_charge_time = "Irá ganhar uma <color=LIGHT>carga</color> em: <color=LIGHT>%s</color>",
+		full_charge = "Completamente carregado!",
 	},
 
 	-- yotb_sewer.lua
