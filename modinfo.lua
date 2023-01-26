@@ -409,13 +409,13 @@ STRINGS = {
 	update_info = {
 		"A *ton* of stuff. You should **really** check the Steam Change Notes.",
 		["zh"] = nil,
-		["br"] = nil,
+		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
 	},
 	update_info_ds = {
 		"A *ton* of stuff. You should **really** check the Steam Change Notes.",
 		["zh"] = nil,
-		["br"] = nil,
+		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
 	},
 	crashreporter_info = {
@@ -508,7 +508,7 @@ STRINGS = {
 	sectiontitle_complexconfiguration = {
 		"Special Configuration",
 		["zh"] = nil,
-		["br"] = nil,
+		["br"] = "Configuração Especial",
 		["es"] = nil
 	},
 	--==========================================================================================
@@ -518,13 +518,13 @@ STRINGS = {
 		label = {
 			"Boss Indicator Prefabs", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Prefabs de Indicadores de Chefões", 
 			["es"] = nil,
 		},
 		hover = {
 			"Enabled boss indicator prefabs.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Prefabs de Indicadores de Chefões ativados", 
 			["es"] = nil,
 		},
 		options = function(config)
@@ -542,13 +542,13 @@ STRINGS = {
 		label = {
 			"Miniboss Indicator Prefabs", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Prefabs de Indicadores de Mini-Chefões", 
 			["es"] = nil,
 		},
 		hover = {
 			"Enabled miniboss indicator prefabs.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Prefabs de Indicadores de Mini-Chefões ativados", 
 			["es"] = nil,
 		},
 		options = function(config)
@@ -566,13 +566,13 @@ STRINGS = {
 		label = {
 			"Notable Indicator Prefabs", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Prefabs de Indicadores Notáveis", 
 			["es"] = nil,
 		},
 		hover = {
 			"Enabled notable indicator prefabs.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Prefabs de Indicadores Notáveis ativados", 
 			["es"] = nil,
 		},
 		options = function(config)
@@ -716,7 +716,7 @@ STRINGS = {
 				hover = {
 					"Icons will be used over text where possible.",
 					["zh"] = "显示图标替代文字",
-					["br"] = "Os ícones serão usados sobre o texto sempre que possível.",
+					["br"] = "Os ícones são usados sobre o texto sempre que possível.",
 					["es"] = "Se usan iconos cuando sea posible.",
 				},
 			},
@@ -770,13 +770,13 @@ STRINGS = {
 		label = {
 			"Mouse Hover Text Size",
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Tamanho do Texto ao Passar o Mouse", 
 			["es"] = nil
 		},
 		hover = {
 			"The font size of Insight's hover text when using a mouse.",
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "O tamanho da fonte do texto flutuante do Insight ao usar um mouse.", 
 			["es"] = nil
 		},
 		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.HOVERER),
@@ -785,13 +785,13 @@ STRINGS = {
 		label = {
 			"Controller Inv. Text Size",
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Tamanho do Texto do Controlador do Inv. ", 
 			["es"] = nil
 		},
 		hover = {
 			"The font size of Insight's inventory text when using a controller.",
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "O tamanho da fonte do texto do inventário do Insight ao usar um controlador.", 
 			["es"] = nil
 		},
 		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.INVENTORYBAR),
@@ -800,13 +800,13 @@ STRINGS = {
 		label = {
 			"Controller Follow Text Size",
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Tamanho do Texto do Controlador Seguidor", 
 			["es"] = nil
 		},
 		hover = {
 			"The font size of Insight's Follow text when using a controller.",
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "O tamanho da fonte do texto Seguir do Insight ao usar um controlador.", 
 			["es"] = nil
 		},
 		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.FOLLOWTEXT),
@@ -1031,13 +1031,13 @@ STRINGS = {
 		label = {
 			"Temperature units", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Unidades de temperatura", 
 			["es"] = nil
 		},
 		hover = {
 			"How to display temperature", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Como exibir a temperatura", 
 			["es"] = nil
 		},
 		options = {
@@ -1045,13 +1045,13 @@ STRINGS = {
 				description = {
 					"Game",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Jogo",
 					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 0, Overheat: 70",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Congelar: 0º, Superaquecer: 70º",
 					["es"] = nil,
 				},
 			},
@@ -1059,13 +1059,13 @@ STRINGS = {
 				description = {
 					"Celsius",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Celsius",
 					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 0, Overheat: 35",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Congelar: 0º, Superaquecer: 35º",
 					["es"] = nil,
 				},
 			},
@@ -1073,13 +1073,13 @@ STRINGS = {
 				description = {
 					"Fahrenheit",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Fahrenheit",
 					["es"] = nil,
 				},
 				hover = {
 					"Freeze: 32, Overheat: 158",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Congelar: 32 F, Superaquecer: 158 F",
 					["es"] = nil,
 				},
 			},
@@ -1113,7 +1113,7 @@ STRINGS = {
 				hover = {
 					"Chests/items will be highlighted.",
 					["zh"] = "箱子/物品会高亮显示",
-					["br"] = "Baús/itens serão destacados.",
+					["br"] = "Baús/itens são destacados.",
 					["es"] = "Los cofres y objetos se resaltarán.",
 				},
 			},
@@ -1123,13 +1123,13 @@ STRINGS = {
 		label = {
 			"Experimental Highlighting", 
 			["zh"] = nil,
-			["br"] = nil,
+			["br"] = "Realce Experimental",
 			["es"] = nil,
 		},
 		hover = {
 			"When enabled, highlighting will perform better in very dense areas at the cost of being potentially unstable. Please let me know if you get issues with this.", 
 			["zh"] = nil,
-			["br"] = nil,
+			["br"] = "Quando ativado, o realce terá um desempenho melhor em áreas muito densas, ao custo de ser potencialmente instável. Por favor, deixe-me saber se você tiver problemas com isso.",
 			["es"] = nil,
 		},
 		options = {
@@ -1138,7 +1138,7 @@ STRINGS = {
 				hover = {
 					"Normal highlighting will be used.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "O realce normal será usado.",
 					["es"] = nil,
 				},
 			},
@@ -1147,7 +1147,7 @@ STRINGS = {
 				hover = {
 					"Experimental highlighting will be used.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Destaque experimental será usado.",
 					["es"] = nil,
 				},
 			},
@@ -1314,7 +1314,7 @@ STRINGS = {
 				hover = {
 					"Fuel entities will not be highlighted.",
 					["zh"] = "禁用燃料高亮显示",
-					["br"] = "Entidades de combustível não serão destacadas.",
+					["br"] = "Entidades de combustível não são destacadas.",
 					["es"] = "No se resaltan objetos de combustible.",
 				},
 			},
@@ -1323,7 +1323,7 @@ STRINGS = {
 				hover = {
 					"Fuel entities will be highlighted.",
 					["zh"] = "启用燃料高亮显示",
-					["br"] = "Entidades de combustível serão destacadas.",
+					["br"] = "Entidades de combustível são destacadas.",
 					["es"] = "Los objetos de combustible serán resaltadas.",
 				},
 			},
@@ -1493,7 +1493,7 @@ STRINGS = {
 				hover = {
 					"Attack ranges are not shown.",
 					["zh"] = "不显示攻击范围",
-					["br"] = "Os alcances de ataque não serão mostrados.",
+					["br"] = "Os alcances de ataque não são mostrados.",
 					["es"] = "No se muestra los rangos de ataque.",
 				},
 			},
@@ -1502,7 +1502,7 @@ STRINGS = {
 				hover = {
 					"Attack ranges are shown.",
 					["zh"] = "显示攻击范围",
-					["br"] = "Os alcances de ataque serão mostrados.",
+					["br"] = "Os alcances de ataque são mostrados.",
 					["es"] = "Se muestra los rangos de ataque.",
 				},
 			},
@@ -1638,13 +1638,13 @@ STRINGS = {
 		label = {
 			"Miniboss Indicators", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Indicadores de Mini-Chefões", 
 			["es"] = nil,
 		},
 		hover = {
 			"Whether miniboss indicators are shown.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Se os indicadores de Mini-Chefões são mostrados.", 
 			["es"] = nil,
 		},
 		options = {
@@ -1653,7 +1653,7 @@ STRINGS = {
 				hover = {
 					"Miniboss indicators not shown.",
 					["zh"] = nil, 
-					["br"] = nil, 
+					["br"] = "Indicadores de Mini-Chefões não aparecem.", 
 					["es"] = nil,
 				},
 			},
@@ -1662,7 +1662,7 @@ STRINGS = {
 				hover = {
 					"Miniboss indicators are shown.",
 					["zh"] = nil, 
-					["br"] = nil, 
+					["br"] = "Indicadores de Mini-Chefões são mostrados.", 
 					["es"] = nil,
 				},
 			},
@@ -1774,13 +1774,13 @@ STRINGS = {
 		label = {
 			"Death Indicators", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Indicadores de Morte", 
 			["es"] = nil
 		},
 		hover = {
 			"Whether to show an indicator to your death locations.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Se deve mostrar um indicador para seus locais de morte.", 
 			["es"] = nil
 		},
 		options = {
@@ -1789,7 +1789,7 @@ STRINGS = {
 				hover = {
 					"Indicator will not be shown.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Indicadores não são exibidos.",
 					["es"] = nil,
 				},
 			},
@@ -1798,7 +1798,7 @@ STRINGS = {
 				hover = {
 					"Indicator will be shown.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Indicadores são exibidos.",
 					["es"] = nil,
 				},
 			},
@@ -2306,7 +2306,7 @@ STRINGS = {
 				hover = {
 					"Food units will not be displayed.",
 					["zh"] = "不显示食物度。",
-					["br"] = "Unidades de alimentos não serão exibidas.",
+					["br"] = "Unidades de alimentos não são exibidas.",
 					["es"] = "No se muestra unidades de comida.",
 				},
 			},
@@ -2315,7 +2315,7 @@ STRINGS = {
 				hover = {
 					"Food units WILL be displayed.",
 					["zh"] = "显示食物度。",
-					["br"] = "Unidades de alimentos SERÃO exibidas.",
+					["br"] = "Unidades de alimentos SÃO exibidas.",
 					["es"] = "Se muestra unidades de comida.",
 				},
 			},
@@ -2340,7 +2340,7 @@ STRINGS = {
 				hover = {
 					"Special food effects will not show.",
 					["zh"] = "不显示特殊的食物属性。",
-					["br"] = "Efeitos de alimentos especiais não serão exibidos.",
+					["br"] = "Efeitos de alimentos especiais não são exibidos.",
 					["es"] = "No se muestra los efectos especiales de la comida.",
 				},
 			},
@@ -2349,7 +2349,7 @@ STRINGS = {
 				hover = {
 					"Special food effects will show.",
 					["zh"] = "显示特殊的食物属性。",
-					["br"] = "Efeitos de alimentos especiais serão exibidos.",
+					["br"] = "Efeitos de alimentos especiais são exibidos.",
 					["es"] = "Se muestra los efectos especiales de la comida.",
 				},
 			},
@@ -2804,13 +2804,13 @@ STRINGS = {
 		label = {
 			"Loot Stash Info", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Informações do Saco do Klaus", 
 			["es"] = nil
 		},
 		hover = {
 			"Whether the contents of the Loot Stash are visible.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Se os conteúdos do Saco do Klaus estarão visíveis.", 
 			["es"] = nil
 		},
 		options = {
@@ -2819,7 +2819,7 @@ STRINGS = {
 				hover = {
 					"Loot stash contents are NOT visible.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Conteúdos do Saco do Klaus NÃO estarão visíveis.",
 					["es"] = nil,
 				},
 			},
@@ -2828,7 +2828,7 @@ STRINGS = {
 				hover = {
 					"Loot stash contents are visible.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Conteúdos do Saco do Klaus estarão visíveis.",
 					["es"] = nil,
 				},
 			},
@@ -2996,13 +2996,13 @@ STRINGS = {
 		label = {
 			"Display soil nutrients", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Exibir nutrientes do solo", 
 			["es"] = nil
 		},
 		hover = {
 			"When to display soil/plant nutrients.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Quando exibir nutrientes do solo/plantas.", 
 			["es"] = nil
 		},
 		options = {
@@ -3016,7 +3016,7 @@ STRINGS = {
 				hover = {
 					"Soil nutrients are only shown with the hat.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Nutrientes do solo são mostrados apenas com o chapéu.",
 					["es"] = nil,
 				},
 			},
@@ -3024,13 +3024,13 @@ STRINGS = {
 				description = {
 					"Premier Gardeneer Hat",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Chapéu Premier do Jardineiro",
 					["es"] = nil,
 				},
 				hover = {
 					"Soil nutrients are only shown with the hat.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Nutrientes do solo são mostrados apenas com o chapéu.",
 					["es"] = nil,
 				},
 			},
@@ -3044,7 +3044,7 @@ STRINGS = {
 				hover = {
 					"Soil nutrients are always shown.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Nutrientes do solo sempre são mostrados.",
 					["es"] = nil,
 				},
 			},
@@ -3107,13 +3107,13 @@ STRINGS = {
 		label = {
 			"Fertilizer", 
 			["zh"] = "肥料", 
-			["br"] = nil, 
+			["br"] = "Fertilizante", 
 			["es"] = nil
 		},
 		hover = {
 			"Determines whether fertilizer nutrients are shown.", 
 			["zh"] = "决定是否显示肥料养分值", 
-			["br"] = nil, 
+			["br"] = "Determina se os nutrientes fertilizantes são mostrados.", 
 			["es"] = nil
 		},
 		options = {
@@ -3122,7 +3122,7 @@ STRINGS = {
 				hover = {
 					"Fertilizer nutrients are not shown.",
 					["zh"] = "不显示肥料养分值",
-					["br"] = nil,
+					["br"] = "Nutrientes fertilizantes não são mostrados.",
 					["es"] = nil,
 				},
 			},
@@ -3131,7 +3131,7 @@ STRINGS = {
 				hover = {
 					"Fertilizer nutrients are shown.",
 					["zh"] = "显示肥料养分值",
-					["br"] = nil,
+					["br"] = "Nutrientes fertilizantes são mostrados.",
 					["es"] = nil,
 				},
 			},
@@ -3180,7 +3180,7 @@ STRINGS = {
 		},
 		hover = {
 			"Determines whether world data is shown.\nExamples: Hounds/Worms, Bosses, Earthquakes, etc.", 
-			["zh"] = "是否显示世界事件。世界事件有：猎犬/蠕虫，Boss，地震和其他事件。", 
+			["zh"] = "是否显示世界事件。世界事件有：猎犬/蠕虫，Boss，地震和其他事件。", -- Nonstandard commas
 			["br"] = "Determina se os dados do mundo são mostrados.\nExemplos: Hounds/Worms, Bosses, Earthquakes, etc.", 
 			["es"] = "Configura si se muestra los eventos del mundo (sabuesos/gusanos, jefes, terremotos, etc.)"
 		},
@@ -3209,13 +3209,13 @@ STRINGS = {
 		label = {
 			"Danger Announcements", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Anúncios de Perigo", 
 			["es"] = nil
 		},
 		hover = {
 			"Announcements that show in chat when a dangerous event is happening soon.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Anúncios que aparecem no chat quando um evento perigoso está acontecendo em breve.", 
 			["es"] = nil
 		},
 		options = {
@@ -3224,7 +3224,7 @@ STRINGS = {
 				hover = {
 					"Danger announcements are not enabled.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Os anúncios de perigo não estão ativados.",
 					["es"] = nil,
 				},
 			},
@@ -3233,7 +3233,7 @@ STRINGS = {
 				hover = {
 					"Danger announcements are enabled.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Os anúncios de perigo estão ativados.",
 					["es"] = nil,
 				},
 			},
@@ -3266,13 +3266,13 @@ STRINGS = {
 				description = {
 					"With Rainometer",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Com Pluviômetro",
 					["es"] = nil,
 				},
 				hover = {
 					"Weather is shown if a Rainometer is in the world.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "O tempo é mostrado se um Pluviômetro estiver no mundo.",
 					["es"] = nil,
 				},
 			},
@@ -3524,13 +3524,13 @@ STRINGS = {
 		label = {
 			"Sanity Interactions", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Interações de Sanidade", 
 			["es"] = nil
 		},
 		hover = {
 			"Whether interactions that affect sanity are shown.", 
 			["zh"] = nil, 
-			["br"] = nil, 
+			["br"] = "Se as interações que afetam a sanidade são mostradas.", 
 			["es"] = nil
 		},
 		options = {
@@ -3538,13 +3538,13 @@ STRINGS = {
 				description = {
 					"Disabled",
 					["zh"] = "否",
-					["br"] = nil,
+					["br"] = "Desabilitado",
 					["es"] = nil,
 				},
 				hover = {
 					"Will not display sanity interactions.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Não exibirá interações de sanidade.",
 					["es"] = nil,
 				},
 			},
@@ -3552,13 +3552,13 @@ STRINGS = {
 				description = {
 					"Enabled",
 					["zh"] = "是",
-					["br"] = nil,
+					["br"] = "Ativado",
 					["es"] = nil,
 				},
 				hover = {
 					"Will display sanity interactions.",
 					["zh"] = nil,
-					["br"] = nil,
+					["br"] = "Irá exibir interações de sanidade.",
 					["es"] = nil,
 				},
 			},
@@ -3675,7 +3675,7 @@ STRINGS = {
 				hover = {
 					"Pickable information will not be displayed.",
 					["zh"] = "不显示可采集信息",
-					["br"] = "Informações selecionáveis não serão exibidas.",
+					["br"] = "Informações selecionáveis não são exibidas.",
 					["es"] = "No se muestra la información de recolección.",
 				},
 			},
@@ -3684,7 +3684,7 @@ STRINGS = {
 				hover = {
 					"Pickable information will be displayed.",
 					["zh"] = "显示可采集信息",
-					["br"] = "Informações selecionáveis serão exibidas.",
+					["br"] = "Informações selecionáveis são exibidas.",
 					["es"] = "Se muestra la información seleccionable.",
 				},
 			},
@@ -3709,7 +3709,7 @@ STRINGS = {
 				hover = {
 					"Harvestable information will not be displayed.",
 					["zh"] = "不显示可收获信息",
-					["br"] = "Informações de colheitas não serão exibidas.",
+					["br"] = "Informações de colheitas não são exibidas.",
 					["es"] = "No se muestra la información de cosecha.",
 				},
 			},
@@ -3718,7 +3718,7 @@ STRINGS = {
 				hover = {
 					"Harvestable information will be displayed.",
 					["zh"] = "显示可收获信息",
-					["br"] = "Informações de colheitas serão exibidas.",
+					["br"] = "Informações de colheitas são exibidas.",
 					["es"] = "Se muestra la información de cosecha.",
 				},
 			},
@@ -3777,7 +3777,7 @@ STRINGS = {
 				hover = {
 					"Timers will not be displayed.",
 					["zh"] = "关闭计时器。",
-					["br"] = "Temporizadores não serão exibidos.",
+					["br"] = "Temporizadores não são exibidos.",
 					["es"] = "No se muestra temporizadores.",
 				},
 			},
@@ -3786,7 +3786,7 @@ STRINGS = {
 				hover = {
 					"Timers will be displayed.",
 					["zh"] = "开启计时器。",
-					["br"] = "Temporizadores serão exibidos.",
+					["br"] = "Temporizadores são exibidos.",
 					["es"] = "Se muestra temporizadores.",
 				},
 			},
@@ -3850,7 +3850,7 @@ STRINGS = {
 				hover = {
 					"Most naughtiness values will not display.",
 					["zh"] = "不显示淘气值。",
-					["br"] = "A maioria dos valores de travessuras não serão exibidos.",
+					["br"] = "A maioria dos valores de travessuras não são exibidos.",
 					["es"] = "La mayoría de valores de maldad no se mostrarán.",
 				},
 			},
@@ -3864,7 +3864,7 @@ STRINGS = {
 				hover = {
 					"Creature naughtiness values will display.",
 					["zh"] = "显示击杀生物的淘气值。",
-					["br"] = "Os valores de travessuras da criatura serão exibidos.",
+					["br"] = "Os valores de travessuras da criatura são exibidos.",
 					["es"] = "Se mostrarán los valores de maldad de los mobs.",
 				},
 			},
@@ -3878,7 +3878,7 @@ STRINGS = {
 				hover = {
 					"Player and creature naughtiness values will display.",
 					["zh"] = "同时显示玩家已有的淘气值和击杀生物的淘气值。",
-					["br"] = "Os valores de travessuras do jogador e da criatura serão exibidos.",
+					["br"] = "Os valores de travessuras do jogador e da criatura são exibidos.",
 					["es"] = "Se mostrarán los valores de maldad de jugadores y mobs.",
 				},
 			},
@@ -4166,7 +4166,7 @@ STRINGS = {
 				hover = {
 					"Standard fuel information will show.",
 					["zh"] = "显示标准的燃料信息",
-					["br"] = "Informações padrão de combustível serão exibidas.",
+					["br"] = "Informações padrão de combustível são exibidas.",
 					["es"] = "Se muestra información estándar del combustible.",
 				},
 			},
@@ -4180,7 +4180,7 @@ STRINGS = {
 				hover = {
 					"All fuel information will show.",
 					["zh"] = "显示全面的燃料信息",
-					["br"] = "Todas as informações de combustível serão exibidas.",
+					["br"] = "Todas as informações de combustível são exibidas.",
 					["es"] = "Se muestra toda la información sobre el combustible.",
 				},
 			},
