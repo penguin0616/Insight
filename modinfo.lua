@@ -29,7 +29,7 @@ directory. If not, please refer to
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.0.5" -- dst is 4.0.5, ds is 3.4.0
+version = "4.0.6" -- dst is 4.0.5, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
