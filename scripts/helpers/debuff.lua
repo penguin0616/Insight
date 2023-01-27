@@ -189,6 +189,17 @@ end
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
+local this = {
+	GetFoodEffects = GetFoodEffects,
+	GetItemEffects = GetItemEffects,
+	GetDebuffEffects = GetDebuffEffects,
+	GetRealDebuffPrefab = GetRealDebuffPrefab,
+}
+
+if not IS_DST then
+	return this
+end
+
 -- Foodbuffs
 debuff_definitions["buff_attack"] = {
 	duration = TUNING.BUFF_ATTACK_DURATION, 
@@ -305,27 +316,15 @@ prefabs_to_generic_debuffs["halloweenpotion_sanity_large_buff"] = "halloweenpoti
 --=================================================================================================================
 --=================================================================================================================
 
-local this = {
-	GetFoodEffects = GetFoodEffects,
-	GetItemEffects = GetItemEffects,
-	GetDebuffEffects = GetDebuffEffects,
-	GetRealDebuffPrefab = GetRealDebuffPrefab,
-}
-
-if not IS_DST then
-	return this
-end
-
---[[
 local spicedfoodsfn = loadfile("spicedfoods")
 
+--[[
 setfenv(spicedfoodsfn, setmetatable({
 	Prefab = function(...)
 }, {
 	__index = getfenv(0),
 }))
 --]]
-
 
 
 local SPICES = util.getupvalue(GenerateSpicedFoods, "SPICES")

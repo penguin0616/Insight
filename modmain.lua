@@ -3257,9 +3257,9 @@ if IS_DST then -- not in UI overrides because server needs access too
 		report.mods = GetMods() -- in case of compatability issues
 		report.platform = GetPlatform() -- please be steam on windows
 		report.log_type = from -- "client" or "server" 
+		report.mastersim = TheNet:GetIsMasterSimulation() -- has authority
 
 		report.server = GetDefaultServerData() -- better?
-		report.server.mastersim = TheNet:GetIsMasterSimulation() -- has authority
 		report.server.clients = TheNet:GetClientTable() -- how many people did we possibly just crash?
 		report.server.is_master_shard = TheShard:IsMaster() -- is this the master shard?
 		report.server.shard_id = TheShard:GetShardId() -- caves or not

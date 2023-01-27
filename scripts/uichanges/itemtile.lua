@@ -28,7 +28,7 @@ local ItemTile = require("widgets/itemtile")
 local ITEMTILE_DISPLAY = "percentages"; 
 OnContextUpdate:AddListener(function(context) 
 	ITEMTILE_DISPLAY = context.config["itemtile_display"]
-	if IS_DS then 
+	if true then -- if IS_DS then
 		-- thought only refresh was needed, but creating a Hamlet as Willow leads to a crash because components.inventory.itemslots has the lighter,
 		-- but controls.inv.inv is missing the slots so...  
 		localPlayer.HUD.controls.inv:Rebuild()

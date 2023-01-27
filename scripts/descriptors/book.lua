@@ -205,6 +205,10 @@ end
 
 
 WICKER_BOOK_INFO.book_meteor.DescribeBook = function(data, context)
+	if IS_DST then
+		return
+	end
+	
 	return {
 		name = "book_meteor",
 		priority = WICKER_BOOK_INFO_PRIORITY,
