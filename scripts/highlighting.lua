@@ -284,67 +284,6 @@ local function ApplyHighlight(inst, color_key)
 	end
 end
 
-local function GetItemSlots()
-	if not localPlayer then return {} end
-
-	-- performance-ing
-	local slots = {}
-	local len_slots = 0
-
-	
-	if not localPlayer.HUD then
-		mprint("Missing localPlayer HUD in highlight...?", localPlayer:IsValid())
-		return slots
-	end
-	
-
-	local inventoryBar = localPlayer.HUD.controls.inv
-
-	-- main inventory
-	for i = 1, #inventoryBar.inv do
-		local v = inventoryBar.inv[i]
-		if v then
-			len_slots = len_slots + 1
-			slots[len_slots] = v
-		end
-	end
-
-	-- equipped items
-	for equipname, slot in pairs(inventoryBar.equip) do
-		if slot then
-			len_slots = len_slots + 1
-			slots[len_slots] = slot
-		end
-	end
-
-	-- open containers
-	--k, v = next(self.controls.containers) return v -- PlayerHud:GetFirstOpenContainerWidget
-	for _, c in pairs(localPlayer.HUD.controls.containers) do
-		if c and c.inv then
-			for i = 1, #c.inv do
-				local v = c.inv[i]
-				if v then
-					len_slots = len_slots + 1
-					slots[len_slots] = v
-				end
-			end
-		end
-	end
-
-	-- backpack inventory
-	local backpackInventory = inventoryBar.backpackinv -- DST: Profile:GetIntegratedBackpack() -> true/false : is a thing
-
-	for i = 1, #backpackInventory do
-		local v = backpackInventory[i]
-		if v then
-			len_slots = len_slots + 1
-			slots[len_slots] = v
-		end
-	end
-
-	return slots
-end
-
 local function Comparator(held, inst)
 	if not localPlayer then return end
 	local insight = (IS_DST and localPlayer.replica.insight) or localPlayer.components.insight
@@ -726,7 +665,9 @@ function highlighting.SetEntitySleep(inst)
 		highlighting.relevance_state[inst] = nil
 	end
 	
-	RemoveHighlight(inst)
+	if IS_CLIENT then
+		RemoveHighlight(inst)
+	end
 end
 
 function highlighting.SetEntityAwake(inst)
