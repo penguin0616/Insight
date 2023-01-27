@@ -58,7 +58,7 @@ local COLORS_ADD = { -- brighter but most color gets siphoned at night
 	BLUE = {0, 0, 1, 1}, -- blue (by itself, #0000ff, it's blue.)
 	--GRAY = {0.4, 0.4, 1}, -- gray (by itself, #666666, is gray)
 	--BLACK = {0, 0, 0, 1}, -- black (by itself, #000000, is black)
-	NOTHING = {0, 0, 0, 1}, -- default without any changes
+	NOTHING = {0, 0, 0, 0}, -- default without any changes
 
 	LIGHT_BLUE = {0, 0.4, 0.6, 1}, -- light blue (by itself, #006699, its a nice ocean blue)
 	PURPLE = {0.4, 0, 1, 1}, -- purple (by itself, #6600ff, dark blue with red tint) -- rgb(155, 89, 182) {0.6, 0.35, 0.71, 1} sin purple -- rgb(98, 37, 209) {0.38, 0.145, 0.82, 1} royal purple
@@ -236,8 +236,11 @@ local function RemoveHighlight(inst)
 end
 
 local function ApplyHighlight(inst, color_key)
-	-- No need to remove old highlight if we're applying a new one on top, just keep the cached highlight info for reverting.
-	--RemoveHighlight(inst) -- preemptive strike
+	if changed[inst] then
+		-- Previously, I said: "No need to remove old highlight if we're applying a new one on top, just keep the cached highlight info for reverting."
+		-- However: That logic falls when use_mult differs for any reason.. say, if we're using UNKNOWN or ERROR.
+		RemoveHighlight(inst)
+	end
 
 	if IsWidget(inst) then -- ItemTile
 		local color = mult_colors_to_use[color_key] or mult_colors_to_use.ERROR
@@ -268,6 +271,7 @@ local function ApplyHighlight(inst, color_key)
 				end
 			else
 				inst[highlightColorKey] = inst[highlightColorKey] or {inst.AnimState:GetAddColour()}
+				inst[highlightColorKey][5] = use_mult
 				inst.AnimState:SetLightOverride(.4)
 				inst.AnimState:SetAddColour(color[1], color[2], color[3], color[4])
 			end
@@ -560,6 +564,7 @@ local function relevance_iterator_ctor(tbl)
 end
 
 local function DoRelevanceChecks(force_apply)
+	--mprint("DoRelevanceChecks ---------------------------------------------------------------------------------------------------------------")
 	if not highlighting_enabled then
 		return
 	end
@@ -715,6 +720,10 @@ end
 function highlighting.SetEntitySleep(inst)
 	if not highlighting.activated then
 		return
+	end
+
+	if highlighting.relevance_state and use_shallow_copy then
+		highlighting.relevance_state[inst] = nil
 	end
 	
 	RemoveHighlight(inst)

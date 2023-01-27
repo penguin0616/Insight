@@ -411,7 +411,10 @@ end
 ---
 -- @tparam EntityScript entity
 function Insight:OnInvalidateCachedEntity(entity)
+	--if true then return end
+	--dprint("Invalidate", entity)
 	self.entity_data[entity] = nil
+	self.entity_request_queue[entity] = nil
 	self:RequestInformation(entity)
 end
 
