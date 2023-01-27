@@ -62,6 +62,67 @@ function SetHighlightIngredientFocus(caller, arg)
 	end)
 end
 
+function GetItemSlots()
+	if not localPlayer then return {} end
+
+	-- performance-ing
+	local slots = {}
+	local len_slots = 0
+
+	
+	if not localPlayer.HUD then
+		mprint("Missing localPlayer HUD in highlight...?", localPlayer:IsValid())
+		return slots
+	end
+	
+
+	local inventoryBar = localPlayer.HUD.controls.inv
+
+	-- main inventory
+	for i = 1, #inventoryBar.inv do
+		local v = inventoryBar.inv[i]
+		if v then
+			len_slots = len_slots + 1
+			slots[len_slots] = v
+		end
+	end
+
+	-- equipped items
+	for equipname, slot in pairs(inventoryBar.equip) do
+		if slot then
+			len_slots = len_slots + 1
+			slots[len_slots] = slot
+		end
+	end
+
+	-- open containers
+	--k, v = next(self.controls.containers) return v -- PlayerHud:GetFirstOpenContainerWidget
+	for _, c in pairs(localPlayer.HUD.controls.containers) do
+		if c and c.inv then
+			for i = 1, #c.inv do
+				local v = c.inv[i]
+				if v then
+					len_slots = len_slots + 1
+					slots[len_slots] = v
+				end
+			end
+		end
+	end
+
+	-- backpack inventory
+	local backpackInventory = inventoryBar.backpackinv -- DST: Profile:GetIntegratedBackpack() -> true/false : is a thing
+
+	for i = 1, #backpackInventory do
+		local v = backpackInventory[i]
+		if v then
+			len_slots = len_slots + 1
+			slots[len_slots] = v
+		end
+	end
+
+	return slots
+end
+
 -- Not really the spot for it, but I'm going to patch the Image class here with RealSetTexture since I'm nuking the old widget libraries. Old comments included!
 -- Image.SetTexture gets replaced, December 5, 2020: ([DST]HD Item Icon - Shang) https://steamcommunity.com/sharedfiles/filedetails/?id=2260439333
 -- then i realized other mods, such as the reskinners, do the same thing.
