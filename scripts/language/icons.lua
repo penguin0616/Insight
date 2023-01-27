@@ -686,7 +686,7 @@ return {
 	--player_naughtiness = "Your naughtiness: %s / %s", -- "Random" from character select?
 
 	-- heatrock.lua [Prefab]
-	--heatrock_temperature = "Temperature: %s < %s < %s",
+	heatrock_temperature = "<icon=winterometer> %s < %s < %s",
 
 	-- herdmember.lua
 	--herd_size = "Herd size: %s / %s",
@@ -1046,7 +1046,7 @@ return {
 	stickable = "<icon=n> %s",
 
 	-- temperature.lua
-	temperature = "<icon=winterometer> %s",
+	temperature = "<icon=winterometer> <temperature=%s>",
 
 	-- terrarium.lua [Prefab]
 	terrarium = {
