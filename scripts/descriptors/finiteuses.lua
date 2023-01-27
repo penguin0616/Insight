@@ -44,6 +44,7 @@ local function Describe(self, context)
 	local description, alt_description = nil, nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
 
 	local uses = self:GetUses()
+	local constant_consumption = nil
 	if context.finiteuses_forced or context.config["display_finiteuses"] then
 		local efficientuser = context.player.components.efficientuser
 
@@ -91,6 +92,13 @@ local function Describe(self, context)
 		for action, amount in pairs(consumptions) do
 			num_actions = num_actions + 1
 			consumptions2[num_actions] = {action, amount}
+			
+			-- The purpose of this code is to make sure that if we have constant_consumption, it's a good number.
+			if constant_consumption == nil then
+				constant_consumption = amount
+			elseif constant_consumption and constant_consumption ~= amount then
+				constant_consumption = false
+			end
 		end
 
 		table.sort(consumptions2, SortActions)
@@ -139,9 +147,13 @@ local function Describe(self, context)
 
 		description = table.concat(actions, ", ")
 		alt_description = table.concat(actions_verbose, ", ")
-
 	end
 
+
+	if constant_consumption then
+		uses = uses / constant_consumption
+	end
+	
 	return {
 		priority = 10,
 		description = description,
