@@ -239,7 +239,7 @@ local function OnHovererPostInit(hoverer)
 			-- control pressed doesn't have the game focus issues (alt+tab keeps the key down) and handles the changed keybinds in control menu. 
 			if TheInput_IsControlPressed(TheInput, CONTROL_FORCE_INSPECT) then
 				local altOnlyIsVerbose = TheInput_IsControlPressed(TheInput, CONTROL_FORCE_TRADE)
-				if informationOnAltOnly == true and altOnlyIsVerbose == false then
+				if infotext_common.configs.alt_only_information == true and altOnlyIsVerbose == false then
 					itemDescription = entityInformation.information
 
 					if entityInformation.information ~= entityInformation.alt_information then
@@ -254,7 +254,7 @@ local function OnHovererPostInit(hoverer)
 				else
 					itemDescription = entityInformation.alt_information
 				end
-			elseif informationOnAltOnly then
+			elseif infotext_common.configs.alt_only_information then
 				itemDescription = nil
 			else
 				itemDescription = entityInformation.information
