@@ -34,7 +34,9 @@ local function PostButtons(screen, buttons)
 				localPlayer.HUD.controls:ToggleInsightMenu()
 			end 
 		})
-		screen.pause_button_index = screen.pause_button_index + 1
+		if screen.pause_button_index then
+			screen.pause_button_index = screen.pause_button_index + 1
+		end
 		screen.options_button_index = screen.options_button_index + 1
 	end
 end

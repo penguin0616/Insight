@@ -1231,6 +1231,10 @@ AddPrefabPostInit("lightning_rod", function(inst) -- or i could just listen to a
 
 	if config == 0 then return end -- off
 
+	if inst.components.deployhelper ~= nil then
+		return
+	end
+
 	inst.lightningrod_range = SpawnPrefab("insight_range_indicator")
 	inst.lightningrod_range:Attach(inst)
 	inst.lightningrod_range:SetRadius(40 / WALL_STUDS_PER_TILE)
