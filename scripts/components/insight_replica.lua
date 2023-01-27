@@ -211,6 +211,7 @@ local Insight = Class(function(self, inst)
 		if TheWorld.ismastersim then
 			self.classified = SpawnPrefab("insight_classified")
 			self.classified.entity:SetParent(inst.entity)
+			self.classified.Network:SetClassifiedTarget(self.inst)
 
 			if IS_CLIENT_HOST then
 				self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
@@ -286,6 +287,7 @@ function Insight:DetachClassified()
 end
 
 function Insight:Shutdown()
+	mprint("InsightReplica::Shutdown", self.inst)
 	self.ready = false
 
 	-- Insight cool stuff
