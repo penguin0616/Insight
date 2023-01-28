@@ -246,6 +246,34 @@ else
 	end
 	--]]
 
+	if KnownModIndex:IsModEnabled("workshop-2657513551") then
+		-- Don't Starve Alone has a crash when calling :Load() at this point.
+		--[[
+		[00:02:26]: [string "../mods/workshop-2657513551/modmain/save.lu..."]:214: attempt to index global 'ShardSaveGameIndex' (a nil value)
+		LUA ERROR stack traceback:
+        ../mods/workshop-2657513551/modmain/save.lua(214,1) in function 'Load'
+        ../mods/workshop-2189004162/modworldgenmain.lua(243,1) in main chunk
+        =[C] in function 'xpcall'
+        scripts/util.lua(781,1) in function 'RunInEnvironment'
+        scripts/mods.lua(569,1) in function 'InitializeModMain'
+        scripts/mods.lua(539,1) in function 'LoadMods'
+        scripts/main.lua(364,1) in function 'ModSafeStartup'
+        scripts/main.lua(485,1)
+        =[C] in function 'SetPersistentString'
+        scripts/mainfunctions.lua(29,1) in function 'SavePersistentString'
+        scripts/modindex.lua(119,1)
+        =[C] in function 'GetPersistentString'
+        scripts/modindex.lua(106,1) in function 'BeginStartupSequence'
+        scripts/main.lua(484,1) in function 'callback'
+        scripts/modindex.lua(735,1)
+        =[C] in function 'GetPersistentString'
+        scripts/modindex.lua(709,1) in function 'Load'
+        scripts/main.lua(483,1) in main chunk
+		]]
+		mprint("!!!!!!!!!!!!!!!!!! Don't Starve Alone is enabled, so not doing corrective configuration.")
+		return
+	end
+
 	shardGameIndex:Load()
 	if shardGameIndex:IsValid() then
 		mprint("Checking shardindex.")
