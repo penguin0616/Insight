@@ -519,7 +519,7 @@ function Insight:BeginUpdateLoop()
 
 	-- self.inst:StartUpdatingComponent(self)
 	-- hud was sometimes missing in OnUpdate
-	self.update_task = self.inst:DoPeriodicTask(8/10, function(inst)
+	self.update_task = self.inst:DoPeriodicTask(4/10, function(inst)
 		self:HUDUpdate()
 		if self.performance_ratings then
 			self.performance_ratings:Refresh()
@@ -1071,6 +1071,10 @@ end
 
 -- entity functions
 function Insight:EntityInactive(ent)
+	if not self.ready then
+		mprint("InsightReplica: EntityActive called when not ready", self.inst, "|", ent)
+		return
+	end
 	--[[
 	if self.entity_data[ent] == nil then
 		dprint("attempt to sleep nonregistered entity", ent)
@@ -1087,6 +1091,11 @@ function Insight:EntityInactive(ent)
 end
 
 function Insight:EntityActive(ent)
+	if not self.ready then
+		mprint("InsightReplica: EntityActive called when not ready", self.inst, "|", ent)
+		return
+	end
+
 	if self.entity_data[ent] then
 		--dprint("attempt to reawaken existing entity", ent)
 		return
@@ -1154,6 +1163,39 @@ function Insight:OnUpdate(dt)
 	if highlighting.activated and highlighting.OnUpdate then
 		highlighting.OnUpdate(dt)
 	end
+
+	local HUD = self.inst.HUD
+	
+
+	if (IS_DST and not TheWorld.ismastersim) and 
+		(HUD and HUD.controls.inv and HUD.controls.inv.equip) and 
+		self.context and (self.context.config["itemtile_display"] == "numbers" or self.context.config["itemtile_display"] == "mixed") then
+		-- only needs to be refreshed if a client, mastersim host gets free updates by nature of being the sim
+		-- (APP_VERSION 478130, September 11 2021) this was in place to refresh usages for equipped items, so waiting on a percent change wasn't needed.
+		-- however, this eventually calls inventoryitem_classified:DeserializeRecharge() and :DeserializeRechargeTime()
+		-- these methods will trigger OnRechargeDirty, which replaces the stored inst._recharge with the netvar's value (inst.recharge:value() == 0)
+		-- this continually resets the recharge back to 0, because inst.recharge:value() is 0 as it is never updated
+		-- HUD.controls.inv:Refresh()
+		for slotname, itemslot in pairs(HUD.controls.inv.equip) do
+			local item = itemslot.tile and itemslot.tile.item
+			if item then
+				local classified = item.replica and item.replica.inventoryitem and item.replica.inventoryitem.classified
+				if classified then
+					if classified.DeserializePercentUsed then
+						classified:DeserializePercentUsed()
+					end
+					if classified.DeserializePerish then
+						classified:DeserializePerish()
+					end
+
+					--if SIM_DEV then
+					--classified:DeserializeRecharge() -- messes up rechargeable
+					--classified:DeserializeRechargeTime() -- messes up rechargeable
+					--end
+				end
+			end
+		end
+	end
 end
 
 function Insight:HUDUpdate()
@@ -1206,17 +1248,9 @@ function Insight:HUDUpdate()
 			end
 		end
 	end
-	
-	-- inventory
-	if IS_DST and not TheWorld.ismastersim and HUD.controls.inv and HUD.controls.inv.equip then
-		-- only needs to be refreshed if a client, mastersim host gets free updates by nature of being the sim
-		-- (APP_VERSION 478130, September 11 2021) this was in place to refresh usages for equipped items, so waiting on a percent change wasn't needed.
-		-- however, this eventually calls inventoryitem_classified:DeserializeRecharge() and :DeserializeRechargeTime()
-		-- these methods will trigger OnRechargeDirty, which replaces the stored inst._recharge with the netvar's value (inst.recharge:value() == 0)
-		-- this continually resets the recharge back to 0, because inst.recharge:value() is 0 as it is never updated
-		-- HUD.controls.inv:Refresh()
 
-		for slotname, itemslot in pairs(HUD.controls.inv.equip) do
+	if self.context.config["itemtile_display"] == "numbers" or self.context.config["itemtile_display"] == "mixed" then
+		for _, itemslot in pairs(GetItemSlots()) do
 			local item = itemslot.tile and itemslot.tile.item
 			if item then
 				local classified = item.replica and item.replica.inventoryitem and item.replica.inventoryitem.classified
@@ -1227,15 +1261,60 @@ function Insight:HUDUpdate()
 					if classified.DeserializePerish then
 						classified:DeserializePerish()
 					end
-
-					--if SIM_DEV then
-					--classified:DeserializeRecharge() -- messes up rechargeable
-					--classified:DeserializeRechargeTime() -- messes up rechargeable
-					--end
 				end
 			end
 		end
 	end
+
+	--[==[
+	local inventoryBar = HUD.controls.inv
+	for i = 1, #inventoryBar.inv do
+		local itemslot = inventoryBar.inv[i]
+		local item = itemslot.tile and itemslot.tile.item
+		if item then
+			local classified = item.replica and item.replica.inventoryitem and item.replica.inventoryitem.classified
+			if classified then
+				if classified.DeserializePercentUsed then
+					classified:DeserializePercentUsed()
+				end
+				if classified.DeserializePerish then
+					classified:DeserializePerish()
+				end
+			end
+		end
+	end
+
+	--[[
+	for _, c in pairs(localPlayer.HUD.controls.containers) do
+		if c and c.inv then
+			for i = 1, #c.inv do
+				local v = c.inv[i]
+				if v then
+					len_slots = len_slots + 1
+					slots[len_slots] = v
+				end
+			end
+		end
+	end
+	--]]
+
+	local backpackInventory = inventoryBar.backpackinv
+	for i = 1, #backpackInventory do
+		local itemslot = backpackInventory[i]
+		local item = itemslot.tile and itemslot.tile.item
+		if item then
+			local classified = item.replica and item.replica.inventoryitem and item.replica.inventoryitem.classified
+			if classified then
+				if classified.DeserializePercentUsed then
+					classified:DeserializePercentUsed()
+				end
+				if classified.DeserializePerish then
+					classified:DeserializePerish()
+				end
+			end
+		end
+	end
+	--]==]
 	
 	if IS_DST and HUD.controls.insight_menu and TheInput:ControllerAttached() then
 		if HUD.controls.insight_menu.shown then

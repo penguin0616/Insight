@@ -25,14 +25,27 @@ local module = {}
 
 local ItemTile = require("widgets/itemtile")
 
-local ITEMTILE_DISPLAY = "percentages"; 
+local ITEMTILE_DISPLAY = GetModConfigData("itemtile_display", true); 
 OnContextUpdate:AddListener(function(context) 
 	ITEMTILE_DISPLAY = context.config["itemtile_display"]
-	if true then -- if IS_DS then
-		-- thought only refresh was needed, but creating a Hamlet as Willow leads to a crash because components.inventory.itemslots has the lighter,
-		-- but controls.inv.inv is missing the slots so...  
-		localPlayer.HUD.controls.inv:Rebuild()
-		localPlayer.HUD.controls.inv:Refresh()
+	-- if IS_DS then
+	-- thought only refresh was needed, but creating a Hamlet as Willow leads to a crash because components.inventory.itemslots has the lighter,
+	-- but controls.inv.inv is missing the slots so...  
+	--localPlayer.HUD.controls.inv:Rebuild()
+	--localPlayer.HUD.controls.inv:Refresh()
+	for _, itemslot in pairs(GetItemSlots()) do
+		local item = itemslot.tile and itemslot.tile.item
+		if item then
+			local classified = item.replica and item.replica.inventoryitem and item.replica.inventoryitem.classified
+			if classified then
+				if classified.DeserializePercentUsed then
+					classified:DeserializePercentUsed()
+				end
+				if classified.DeserializePerish then
+					classified:DeserializePerish()
+				end
+			end
+		end
 	end
 end);
 
@@ -54,6 +67,7 @@ local function ItemTile_SetPercent(self, percent, ...)
 	--dprint('hello')
 	
 	if not self.percent then
+		--dprint("Setup itemtile")
 		-- have klei take care of setting up the percent first.
 		module.oldItemTile_SetPercent(self, percent, ...)
 		if not self.percent then
@@ -80,7 +94,7 @@ local function ItemTile_SetPercent(self, percent, ...)
 		
 		local itemInfo = RequestEntityInformation(self.item, localPlayer, { FROM_INSPECTION = true, IGNORE_WORLDLY = true })
 
-		if itemInfo then
+		if itemInfo and itemInfo.GUID ~= nil then
 			if itemInfo.special_data.temperature then -- thermal stone, coming in STRONG
 				value = itemInfo.special_data.temperature.temperatureValue
 
