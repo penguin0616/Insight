@@ -152,6 +152,9 @@ local function Describe(self, context)
 
 	if constant_consumption then
 		uses = uses / constant_consumption
+		if isbadnumber(uses) then
+			uses = -1
+		end
 	end
 	
 	return {

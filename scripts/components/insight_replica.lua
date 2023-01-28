@@ -411,6 +411,12 @@ end
 ---
 -- @tparam EntityScript entity
 function Insight:OnInvalidateCachedEntity(entity)
+	-- This can trigger when going into the caves because the backpack container closes.
+	-- The replica has shutdown by then.
+	if not self.ready then
+		return
+	end
+
 	--if true then return end
 	--dprint("Invalidate", entity)
 	self.entity_data[entity] = nil
