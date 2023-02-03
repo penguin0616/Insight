@@ -1031,7 +1031,7 @@ return {
 	stickable = "<color=FISH>Mejillones</color>: %s",
 
 	-- temperature.lua
-	temperature = "Temperatura: %s",
+	temperature = "Temperatura: <temperature=%s>",
 
 	-- terrarium.lua [Prefab]
 	terrarium = {
