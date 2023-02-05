@@ -1756,6 +1756,19 @@ function DecodeRequestParams(encoded)
 	return params
 end
 
+do
+	local safeModIndex = loadfile("modindex")
+	setfenv(safeModIndex, setmetatable({}, {__index = getfenv(1)}))
+	safeModIndex = getfenv(safeModIndex()).KnownModIndex
+
+	local real = safeModIndex.LoadModConfigurationOptions
+	safeModIndex = nil
+
+	LoadModConfigurationOptions = function(...)
+		return real(KnownModIndex, ...)
+	end
+end
+
 -- only works for clients
 function RepairInsightConfig(client)
 	mprint("Checking configuration for bad options...")
@@ -1763,7 +1776,7 @@ function RepairInsightConfig(client)
 	assert(client == true, "RepairInsightConfig only works for clients.")
 
 	-- deepcopy(_G.Insight.env.modinfo.configuration_options) only works for full clients, not client host
-	local cfg = KnownModIndex:LoadModConfigurationOptions(modname, client)
+	local cfg = LoadModConfigurationOptions(modname, client)
 
 	local changes = {} -- changes we will need to make
 

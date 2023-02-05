@@ -249,18 +249,8 @@ local function GenerateConfiguration()
 	t=KnownModIndex:LoadModConfigurationOptions(modname, false)[42]; print(t.name, t.saved);
 	--]]
 
-
-
-	--local fat = KnownModIndex:LoadModConfigurationOptions(modname, false)
-
-	--util.table_find(fat, function(v) return v.name == "crash_reporter")
-
-	--local mod_info = KnownModIndex:InitializeModInfo(modname)
-
-	
-
 	--mprint("CALLED FOR CONFIG GEN")
-	local config_data = deepcopy(KnownModIndex:LoadModConfigurationOptions(modname, true))
+	local config_data = deepcopy(LoadModConfigurationOptions(modname, true))
 
 	if not config_data then
 		error("[insight]: unable to fetch config")

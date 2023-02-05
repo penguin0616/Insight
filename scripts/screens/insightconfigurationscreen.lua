@@ -724,7 +724,7 @@ function InsightConfigurationScreen:LoadModConfig()
 		end
 	end
 
-	self.raw_config_options = KnownModIndex:LoadModConfigurationOptions(self.modname, self.client_config)
+	self.raw_config_options = LoadModConfigurationOptions(self.modname, self.client_config)
 
 	if self.raw_config_options and type(self.raw_config_options) == "table" then
 		for i,v in ipairs(self.raw_config_options) do

@@ -80,7 +80,7 @@ function InsightPresetScreen:ApplyPreset(name)
 
 	local client_config = true
 
-	local configs = KnownModIndex:LoadModConfigurationOptions(self.modname, client_config)
+	local configs = LoadModConfigurationOptions(self.modname, client_config)
 
 	for i, config in pairs(configs) do
 		local selected = preset[config.name]
