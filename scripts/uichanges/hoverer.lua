@@ -18,6 +18,7 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+local Text = require("widgets/text")
 local RichText = import("widgets/RichText")
 local infotext_common = import("uichanges/infotext_common").Initialize()
 
@@ -58,6 +59,8 @@ local TheInputProxy_GetLocalizedControl = TheInputProxy.GetLocalizedControl
 local TheInput_IsControlPressed = TheInput.IsControlPressed
 local CONTROL_FORCE_INSPECT = CONTROL_FORCE_INSPECT
 local CONTROL_FORCE_TRADE = CONTROL_FORCE_TRADE
+
+local SetString = Text.SetString
 
 local function OnHovererPostInit(hoverer)
 	local oldSetString = hoverer.text.SetString
@@ -299,6 +302,12 @@ local function OnHovererPostInit(hoverer)
 		end
 
 		hoverer.insightText:SetString(itemDescription) -- Trimming newlines handled here
+
+		-- Trigger other mods that might have text stuff to do
+		if oldSetString ~= SetString then
+			oldSetString(self, text)
+			text = self:GetString()
+		end
 		
 		-- size info
 		local font_size_diff = self.size - hoverer.insightText.size
@@ -379,7 +388,7 @@ local function OnHovererPostInit(hoverer)
         	hoverer:UpdatePosition(pos.x, pos.y)
 		end
 
-		oldSetString(self, text .. textPadding)
+		SetString(self, text .. textPadding)
 	end
 
 	hoverer.secondarytext.SetString = function(self, text)
