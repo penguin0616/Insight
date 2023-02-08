@@ -1,4 +1,4 @@
-local KEEP = newproxy(true)
+--local KEEP = newproxy(true) -- Crashes when GC'd, see reference in metaclass
 local DEFAULT = newproxy(true)
 
 -- new_player, simple, decent, advanced, (everything?)
