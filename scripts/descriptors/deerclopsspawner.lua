@@ -44,7 +44,8 @@ local function GetDeerclopsData(self)
 		time_to_attack = save_data.timetoattack
 	end
 
-	local target = util.getupvalue(self.OnUpdate, "_targetplayer")
+	local target, upvalue_exists = util.getupvalue(self.OnUpdate, "_targetplayer")
+	local target_error_string = nil
 
 	if target then
 		target = {
@@ -52,20 +53,34 @@ local function GetDeerclopsData(self)
 			userid = target.userid,
 			prefab = target.prefab,
 		}
+	else
+		if upvalue_exists == false then
+			target_error_string = "???"
+		end
 	end
 
 	return {
 		time_to_attack = time_to_attack,
 		target = target,
 		warning = save_data.warning,
+		target_error_string = target_error_string
 	}
 end
 
-local function ProcessInformation(context, time_to_attack, target)
+local function ProcessInformation(context, time_to_attack, target, target_error_string)
 	local time_string = context.time:SimpleProcess(time_to_attack)
 	local client_table = target and TheNet:GetClientTableForUser(target.userid)
 
 	if not client_table then
+		if target_error_string then
+			return string.format(
+				context.lstr.deerclopsspawner.incoming_deerclops_targeted, 
+				"#cc4444",
+				target_error_string, 
+				time_string
+			)
+		end
+
 		return time_string
 	else
 		local target_string = string.format("%s - %s", target.name, target.prefab)
@@ -93,7 +108,7 @@ local function Describe(self, context)
 	end
 
 	if data.time_to_attack then
-		description = ProcessInformation(context, data.time_to_attack, data.target)
+		description = ProcessInformation(context, data.time_to_attack, data.target, data.target_error_string)
 	end
 
 	return {

@@ -765,20 +765,23 @@ end
 -- @tparam function func
 -- @string name
 -- @return
---[[
 function module.getupvalue(func, name)
 	local i = 1
 	while true do
 		local n, v = debug.getupvalue(func, i)
 		if not n then break end
-		if n == name then return v end
+		if n == name then 
+			return v, true
+		end
 		i = i + 1
 	end
+
+	return nil, false
 end
---]]
-function module.getupvalue(func, ...)
+
+function module.getupvalue_chain(func, ...)
 	if func == nil then
-		return error("util.getupvalue got nil for func")
+		return error("util.getupvalue_chain got nil for func")
 	end
 
 	-- last function we got upvalues from
@@ -805,7 +808,7 @@ function module.getupvalue(func, ...)
 
 			if name == args[n] then 
 				-- we've found the upvalue we were looking for
-				last = value					
+				last = value
 				break
 			end
 
@@ -813,6 +816,8 @@ function module.getupvalue(func, ...)
 		end
 	end
 
+	
+	-- Why did I do this return? I can't fathom the use case for this right now.
 	return last, end_pos
 end
 

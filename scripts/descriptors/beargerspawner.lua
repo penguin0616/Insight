@@ -44,7 +44,7 @@ local function GetBeargerData(self)
 		return {}
 	end
 
-	local target = util.getupvalue(self.OnUpdate, "_targetplayer")
+	local target, upvalue_exists = util.getupvalue(self.OnUpdate, "_targetplayer")
 
 	if target then
 		target = {
@@ -52,20 +52,34 @@ local function GetBeargerData(self)
 			userid = target.userid,
 			prefab = target.prefab,
 		}
+	else
+		if upvalue_exists == false then
+			target_error_string = "???"
+		end
 	end
 
 	return {
 		time_to_attack = time_to_attack,
 		target = target,
-		warning = save_data.warning
+		warning = save_data.warning,
+		target_error_string = target_error_string
 	}
 end
 
-local function ProcessInformation(context, time_to_attack, target)
+local function ProcessInformation(context, time_to_attack, target, target_error_string)
 	local time_string = context.time:SimpleProcess(time_to_attack)
 	local client_table = target and TheNet:GetClientTableForUser(target.userid)
 
 	if not client_table then
+		if target_error_string then
+			return string.format(
+				context.lstr.beargerspawner.incoming_bearger_targeted, 
+				"#cc4444",
+				target_error_string, 
+				time_string
+			)
+		end
+
 		return time_string
 	else
 		local target_string = string.format("%s - %s", target.name, target.prefab)
@@ -93,7 +107,7 @@ local function Describe(self, context)
 	end
 
 	if data.time_to_attack then
-		description = ProcessInformation(context, data.time_to_attack, data.target)
+		description = ProcessInformation(context, data.time_to_attack, data.target, target_error_string)
 	end
 
 	return {
