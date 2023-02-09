@@ -230,7 +230,11 @@ local function Describe(self, context)
 		end
 	else
 		if checknumber(self.read_sanity) then
-			description = string.format(context.lstr.sanity.interaction, self.read_sanity)
+			local sanity = self.read_sanity
+			if reader.GetSanityPenaltyMultiplier then
+				sanity = sanity * reader:GetSanityPenaltyMultiplier()
+			end
+			description = string.format(context.lstr.sanity.interaction, sanity)
 		end
 	end
 
