@@ -26,6 +26,7 @@ DST_CONSOLE_COMMANDS.c_noshadows = function(x)
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	c_removeall "terrorbeak"
 	c_removeall "crawlinghorror"
+	c_removeall "oceanhorror"
 	if x then
 		c_removeall "nightmarebeak"
 		c_removeall "crawlingnightmare"
