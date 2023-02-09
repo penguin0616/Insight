@@ -39,7 +39,7 @@ local function Describe(self, context)
 			if not listener then
 				alt_description = "Missing data error [1]"
 			else
-				HERMIT_TASKS = util.getupvalue(listener, "checklureplant", "TASKS")
+				HERMIT_TASKS = util.getupvalue_chain(listener, "checklureplant", "TASKS")
 				if not HERMIT_TASKS then
 					alt_description = "Missing data error [2]"
 				else
