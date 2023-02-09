@@ -166,7 +166,7 @@ local function Describe(self, context)
 	if bundlingAlreadyHandled == nil then
 		-- https://steamcommunity.com/sharedfiles/filedetails/?id=1916988643 shows bundle information in a much nicer way, also requested in https://github.com/penguin0616/insight/issues/10
 		-- since i'm checking this ID specifically, IS_DST is implied
-		if KnownModIndex:IsModEnabled("workshop-1916988643") and _G.GetModConfigData("BUNDLE", "workshop-1916988643", true) then
+		if (KnownModIndex:IsModEnabled("workshop-1916988643") and _G.GetModConfigData("BUNDLE", "workshop-1916988643", true)) or KnownModIndex:IsModEnabled("workshop-1111658995") then
 			-- skip
 			bundlingAlreadyHandled = true
 		else

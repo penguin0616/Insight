@@ -240,6 +240,18 @@ local function Describe(self, context)
 		description = DescribeRuinsStatue(inst, context)
 	end
 
+	if inst:HasTag("lamp") then
+		if inst.components.container then
+			local things = Insight.descriptors.container.DescribeItemAndPerishable(self.inst.components.container, context)
+			if things then
+				for i = 1, #things do
+					things[i].name = "oceantrawler_" .. i
+				end
+				return unpack(things)
+			end
+		end
+	end
+
 	if inst:HasTag("singingshell") then
 		return {
 			name = "insight_ranged",

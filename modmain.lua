@@ -199,7 +199,7 @@ local player_contexts = {}
 local mod_component_cache = {}
 
 local log_buffer = ""
-local LOG_LIMIT = 0600000 -- 0.6 million
+local LOG_LIMIT = 0700000 -- 0.7 million
 local SERVER_OWNER_HAS_OPTED_IN = nil
 
 local descriptors_ignore = {
@@ -3290,7 +3290,7 @@ if IS_DST then -- not in UI overrides because server needs access too
 		end
 		
 		if #report.log > LOG_LIMIT then
-			report.log = report.log:sub(#report.log - LOG_LIMIT + 1, #report.log)
+			report.log = "LOG TRIMMED: ORIGINAL SIZE = " .. #report.log .. "\n" .. report.log:sub(#report.log - LOG_LIMIT + 1, #report.log)
 		end
 
 		-- game seems to have a problem encoding some characters with the messed up json implementation they have

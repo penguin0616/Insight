@@ -107,6 +107,34 @@ local function GetContainerContents(self, context)
 	return containers[self.inst]
 end
 
+--- Describes items in the format <prefab>: <perishable>
+local function DescribeItemAndPerishable(self, context)
+	local ret = {}
+
+	for i,v in pairs(self:GetAllItems()) do
+		local this = {
+			name = "container_" .. i, -- Not like the order's accurate anyway.
+			priority = 0,
+			description = string.format("<color=%s><prefab=%s></color>", "#eeeeee", v.prefab),
+		}
+
+		ret[#ret+1] = this
+
+		if v.components.perishable then
+			local perish = Insight.descriptors.perishable.Describe(v.components.perishable, context)
+			if perish then
+				this.alt_description = this.description
+
+				this.description = this.description .. ": " .. (perish.description or "?")
+				this.alt_description = this.alt_description .. ": " .. (perish.alt_description or "?")
+			end
+		end
+	end
+
+	return ret
+end
+
+
 local function Describe(self, context)
 	local description
 	local items = GetContainerContents(self, context)
@@ -130,5 +158,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	DescribeItemAndPerishable = DescribeItemAndPerishable
 }
