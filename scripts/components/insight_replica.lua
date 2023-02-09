@@ -264,6 +264,14 @@ function Insight:AttachClassified(ent)
 
 	self.ready = true
 
+	-- So apparently, a classified can be detached and reattached in less than a second for an unknown reason (likely the same one)
+	if not self.entity_data then
+		self.entity_data = setmetatable({}, { __mode="k" }) -- {[entity] = {data}}
+	end
+	if self._shutdown_debug then
+		mprint("!!!!!!!!!!!!!!! THIS IS NOT THE FIRST ATTACHMENT TO THE REPLICA")
+	end
+
 	-- Insight cool stuff
 	self.inst:ListenForEvent("insight_entity_information", GotEntityInformation)
 	self.performance_ratings = PerformanceRatings()
@@ -298,6 +306,8 @@ function Insight:Shutdown()
 
 	-- Misc
 	self.entity_data = nil
+
+	self._shutdown_debug = true
 end
 
 --- Sets world data. 
@@ -1133,7 +1143,7 @@ end
 -- tracker functions
 function Insight:StartTrackingEntity(ent, data)
 	if not self.indicators then
-		mprint("!!!!!!!!!!!!! Attempt to start tracking entity for non-client")
+		mprint("!!!!!!!!!!!!! Attempt to start tracking entity while missing indicators")
 		return
 	end
 
