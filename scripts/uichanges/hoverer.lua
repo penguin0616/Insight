@@ -64,6 +64,7 @@ local SetString = Text.SetString
 
 local function OnHovererPostInit(hoverer)
 	local oldSetString = hoverer.text.SetString
+	local oldSecondarySetString = hoverer.secondarytext.SetString
 	local oldOnUpdate = hoverer.OnUpdate
 	local oldHide = hoverer.text.Hide
 	local oldHide2 = hoverer.secondarytext.Hide
@@ -305,10 +306,12 @@ local function OnHovererPostInit(hoverer)
 
 		-- Trigger other mods that might have text stuff to do
 		if oldSetString ~= SetString then
+			--mprint(text)
 			oldSetString(self, text)
 			text = self:GetString()
+			--mprint(text, "\n", string.rep("=", 66))
 		end
-		
+	
 		-- size info
 		local font_size_diff = self.size - hoverer.insightText.size
 		local font_size_diff_ratio = hoverer.insightText.size / self.size 
@@ -431,7 +434,8 @@ local function OnHovererPostInit(hoverer)
 			self:SetPosition(0, offset)
 		end
 
-		return oldSetString(self, text)
+		--mprint("SECONDARY::", text)
+		return oldSecondarySetString(self, text)
 	end
 end
 
