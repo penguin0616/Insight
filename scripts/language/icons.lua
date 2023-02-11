@@ -903,14 +903,14 @@ return {
 
 	-- repairer.lua
 	repairer = {
-		type = "Repair material: <color=#aaaaaa>%s</color>",
-		health = "<color=HEALTH>Health restore</color>: <color=HEALTH>%s</color> + <color=HEALTH>%s%%</color>",
-		health2 = "<color=HEALTH>%s<sub>flat HP</sub></color> + <color=HEALTH>%s%%<sub>percent HP</sub></color>",
-		work = "<color=#DED15E>Work repair</color>: <color=#DED15E>%s</color>",
-		work2 = "<color=#DED15E>%s<sub>work</sub></color>",
-		perish = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
-		perish2 = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
-		materials = (IS_DST and {
+		--type = "Repair material: <color=#aaaaaa>%s</color>",
+		--health = "<color=HEALTH>Health restore</color>: <color=HEALTH>%s</color> + <color=HEALTH>%s%%</color>",
+		--health2 = "<color=HEALTH>%s<sub>flat HP</sub></color> + <color=HEALTH>%s%%<sub>percent HP</sub></color>",
+		--work = "<color=#DED15E>Work repair</color>: <color=#DED15E>%s</color>",
+		--work2 = "<color=#DED15E>%s<sub>work</sub></color>",
+		--perish = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
+		--perish2 = "<color=MONSTER>Freshen</color>: <color=MONSTER>%s%%</color>",
+		--[[materials = (IS_DST and {
 			[MATERIALS.WOOD] =  "Wood",
 			[MATERIALS.STONE] =  "Stone",
 			[MATERIALS.HAY] =  "Hay",
@@ -922,7 +922,7 @@ return {
 			[MATERIALS.SCULPTURE] =  "Sculpture",
 			[MATERIALS.FOSSIL] =  "Fossil",
 			[MATERIALS.MOON_ALTAR] =  "Moon Altar",
-		} or {}),
+		} or {}),--]]
 	},
 
 	-- repairable.lua

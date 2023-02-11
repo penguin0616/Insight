@@ -96,7 +96,7 @@ local function UpdateFollowText(self, ...)
 			local text = widgetWithEntityName.text:GetString()
 
 			local pos = string.find(text, "\n")
-			local prefab = " [" .. followerWidget.target.prefab .. "]"
+			local prefab = " [" .. (followerWidget.target.prefab or "ERROR") .. "]"
 			if pos then
 				text = string.sub(text, 1, pos - 1) .. prefab .. string.sub(text, pos)
 			else

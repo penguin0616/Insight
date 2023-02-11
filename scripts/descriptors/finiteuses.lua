@@ -90,14 +90,16 @@ local function Describe(self, context)
 		local consumptions2 = {}
 		local num_actions = 0
 		for action, amount in pairs(consumptions) do
-			num_actions = num_actions + 1
-			consumptions2[num_actions] = {action, amount}
-			
-			-- The purpose of this code is to make sure that if we have constant_consumption, it's a good number.
-			if constant_consumption == nil then
-				constant_consumption = amount
-			elseif constant_consumption and constant_consumption ~= amount then
-				constant_consumption = false
+			if type(action.id) == "string" then -- I keep seeing id as a number whenever (workshop-2839359499) is enabled.
+				num_actions = num_actions + 1
+				consumptions2[num_actions] = {action, amount}
+				
+				-- The purpose of this code is to make sure that if we have constant_consumption, it's a good number.
+				if constant_consumption == nil then
+					constant_consumption = amount
+				elseif constant_consumption and constant_consumption ~= amount then
+					constant_consumption = false
+				end
 			end
 		end
 

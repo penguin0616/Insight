@@ -889,7 +889,7 @@ return {
 	repairer = {
 		type = "Material de reparo: <color=#aaaaaa>%s</color>",
 		health = "<color=HEALTH>Restauração de integridade</color>: <color=HEALTH>%s</color> + <color=HEALTH>%s%%</color>",
-		health2 = "<color=HEALTH>%s<sub>flat HP</sub></color> + <color=HEALTH>%s%%<sub> % de HP</sub></color>",
+		health2 = "<color=HEALTH>%s<sub>flat HP</sub></color> + <color=HEALTH>%s%%<sub> %% de HP</sub></color>",
 		work = "<color=#DED15E>Reparo de trabalho</color>: <color=#DED15E>%s</color>",
 		work2 = "<color=#DED15E>%s<sub>Trabalho</sub></color>",
 		perish = "<color=MONSTER>Reanimar</color>: <color=MONSTER>%s%%</color>",
