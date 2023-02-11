@@ -18,22 +18,18 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- mushroom_farm.lua [Prefab]
+-- antlionhat.lua
 local function Describe(inst, context)
-	if not inst.remainingharvests then
-		return
+	if inst.components.container then
+		local things = Insight.descriptors.container.DescribeItemAndStackable(inst.components.container, context)
+		if things then
+			for i = 1, #things do
+				things[i].name = "antlionhat_" .. i
+			end
+			return unpack(things)
+		end
 	end
-	
-	local description = string.format(context.lstr.harvests, inst.remainingharvests, TUNING.MUSHROOMFARM_MAX_HARVESTS)
-	
-	return {
-		priority = 0,
-		description = description,
-		prefably = true
-	}
 end
-
-
 
 return {
 	Describe = Describe

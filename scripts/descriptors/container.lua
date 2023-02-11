@@ -134,6 +134,27 @@ local function DescribeItemAndPerishable(self, context)
 	return ret
 end
 
+local function DescribeItemAndStackable(self, context)
+	local ret = {}
+
+	for i,v in pairs(self:GetAllItems()) do
+		local this = {
+			name = "container_" .. i, -- Not like the order's accurate anyway.
+			priority = 0,
+			description = string.format("<color=%s><prefab=%s></color>", "#ffffff", v.prefab),
+		}
+
+		ret[#ret+1] = this
+		
+		if v.components.stackable then
+			this.description = this.description .. string.format(" (%s)", v.components.stackable:StackSize())
+		end
+	end
+
+	return ret
+end
+
+
 
 local function Describe(self, context)
 	local description
@@ -159,5 +180,6 @@ end
 
 return {
 	Describe = Describe,
-	DescribeItemAndPerishable = DescribeItemAndPerishable
+	DescribeItemAndPerishable = DescribeItemAndPerishable,
+	DescribeItemAndStackable = DescribeItemAndStackable,
 }

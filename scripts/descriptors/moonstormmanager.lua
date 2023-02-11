@@ -43,7 +43,7 @@ end
 local function Describe(self, context)
 	local description = nil
 
-	if not self.stormdays then
+	if not self.stormdays or not self.moonstorm_spark_task then -- Stormdays always exists after a moonstorm happens.
 		return
 	end
 
