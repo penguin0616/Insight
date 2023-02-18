@@ -161,7 +161,7 @@ local function DangerAnnouncementDescribe(special_data, context)
 	end
 
 	local description
-	local client_table = TheNet:GetClientTableForUser(special_data.target_userid)
+	local client_table = special_data.target_userid and TheNet:GetClientTableForUser(special_data.target_userid)
 	local time_string = context.time:SimpleProcess(special_data.time_to_attack, "realtime")
 	
 	if not client_table then
