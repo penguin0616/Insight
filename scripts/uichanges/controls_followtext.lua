@@ -40,6 +40,11 @@ local function OnInspectPressed(down)
 end
 
 local function UpdateFollowText(self, ...)
+	if not localPlayer then
+		-- I guess this doesn't exist sometimes, and consequently an info request with no player happens.
+		return
+	end
+
 	if self.primaryInsightText.text.size ~= infotext_common.configs.followtext_insight_font_size then
 		self.primaryInsightText.text:SetSize(infotext_common.configs.followtext_insight_font_size)
 		if self.primaryInsightText2 then
