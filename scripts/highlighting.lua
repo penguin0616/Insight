@@ -666,7 +666,8 @@ function highlighting.SetEntitySleep(inst)
 	end
 	
 	if IS_CLIENT then
-		RemoveHighlight(inst)
+		-- Is this what's causing the stale component reference?
+		--RemoveHighlight(inst)
 	end
 end
 
