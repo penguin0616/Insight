@@ -2934,6 +2934,7 @@ STRINGS = {
 			["es"] = "Configura como se muestran los nutrientes del suelo/de las plantas."
 		},
 		options = {
+			--[[
 			[0] = {
 				description = {
 					"Off",
@@ -2948,6 +2949,7 @@ STRINGS = {
 					["es"] = "No se muestra los nutrientes.",
 				},
 			},
+			--]]
 			[1] = {
 				description = {
 					"Soil",
@@ -5263,7 +5265,7 @@ configuration_options = {
 	{
 		name = "soil_nutrients",
 		options = {
-			{data = 0},
+			--{data = 0},
 			{data = 1},
 			{data = 2},
 			{data = 3},
