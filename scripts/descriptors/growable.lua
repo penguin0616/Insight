@@ -61,6 +61,10 @@ local function Describe(self, context)
 		end
 	end
 
+	if verbosity == 2 then
+		description = alt_description
+	end
+
 	return {
 		priority = 5,
 		description = description,
