@@ -457,8 +457,22 @@ TheInput:AddControlHandler(controlHelper.controller_scheme.open_insight_menu:Get
 	if not TheInput:ControllerAttached() then
 		return -- turns out caps lock inside the tab menu. whoops.
 	end
-		
-	local screen_name = TheFrontEnd:GetActiveScreen().name
+	
+	-- I guess this can be triggered while prefabs are being registered (and I guess DSA is active.)
+	--[[
+	[00:32:42]: Mod: workshop-2189004162 (Insight)	  Registering default mod prefab	
+	[00:32:42]: Could not unload undefined prefab (cnfonts_workshop-XXXXXX)
+	[00:32:42]: 	LOAD BE	
+	[00:32:47]: [string "../mods/workshop-2189004162/scripts/uioverr..."]:461: attempt to index a nil value
+	]]
+
+	local screen = TheFrontEnd:GetActiveScreen()
+
+	if not screen then
+		return
+	end
+
+	local screen_name = screen.name
 
 	if screen_name == "PlayerStatusScreen" or (IS_DS and screen_name == "PauseScreen") then
 		TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
