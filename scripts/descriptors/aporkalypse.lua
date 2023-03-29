@@ -27,7 +27,7 @@ local function Describe(self, context)
 	local description
 
 	if not self.aporkalypse_active and self:GetBeginDate() then
-		description = TimeToText(time.new(self:GetBeginDate() - GetClock():GetTotalTime(), context))
+		description = context.time:SimpleProcess(self:GetBeginDate() - GetClock():GetTotalTime())
 	end
 
 	return {
