@@ -68,18 +68,6 @@ local function Perish(self, bundle)
 
 	local season_manager = GetSeasonManager and GetSeasonManager()
 	if world_type > 0 then -- dlcs
-		-- Cool off hot foods over time (faster if in a fridge)
-		if inst.components.edible and inst.components.edible.temperaturedelta and inst.components.edible.temperaturedelta > 0 then
-			if owner and owner:HasTag("fridge") then
-				if not owner:HasTag("nocool") then
-					inst.components.edible.temperatureduration = inst.components.edible.temperatureduration - 1
-				end
-			elseif season_manager and season_manager:GetCurrentTemperature() < TUNING.OVERHEAT_TEMP - 5 then
-				inst.components.edible.temperatureduration = inst.components.edible.temperatureduration - .25
-			end
-			if inst.components.edible.temperatureduration < 0 then inst.components.edible.temperatureduration = 0 end
-		end
-
 		local mm = GetWorld().components.moisturemanager
 		if mm:IsEntityWet(inst) then
 			modifier = modifier * TUNING.PERISH_WET_MULT
