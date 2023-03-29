@@ -87,7 +87,12 @@ local function DescribeNutrients(self, context, definition)
 	end
 
 	if context.config["soil_nutrients_needs_hat"] == "hatonly" then
-		if not context.player.components.inventory:EquipHasTag("nutrientsvision") then
+		--if context.player.components.inventory:Has("nutrientsgoggleshat", 1) then
+		if not (
+			context.player.components.inventory:HasItemWithTag("nutrientsvision", 1) or 
+			context.player.components.inventory:EquipHasTag("nutrientsvision")
+			) 
+		then
 			return
 		end
 	end

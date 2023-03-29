@@ -119,6 +119,11 @@ local function Describe(self, context)
 	else
 		alt_description = string.format(context.lstr.workable.treeguard_chance, Round(npc_chance * 100, 2))
 	end
+	--[[
+	if context.config["DEBUG_ENABLED"] then
+		description = CombineLines(description, string.format("%s / %s", self.workleft, self.maxwork))
+	end
+	--]]
 
 	return {
 		priority = 0,
