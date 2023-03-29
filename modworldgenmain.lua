@@ -176,6 +176,10 @@ function CheckModOverrides(shardGameIndex)
 	local issueFound = false
 
 	local savedInsightOptions = modoverrides[modname].configuration_options
+	if not savedInsightOptions then
+		-- I guess having configuration_options isn't required?
+		return
+	end
 	for name, saved in pairs(savedInsightOptions) do
 		local valid, defaultValue = isConfigValid(name, saved)
 		if valid == nil then
