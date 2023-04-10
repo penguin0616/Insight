@@ -1,4 +1,66 @@
 DST_CONSOLE_COMMANDS = {}
+DST_CONSOLE_COMMANDS.c_moon_altar_stuff = function()
+
+	local offset = 7
+	local pos = ConsoleCommandPlayer():GetPosition()
+	local altar
+
+	altar = SpawnPrefab("moon_altar")
+	altar.Transform:SetPosition(pos.x, 0, pos.z - offset)
+	altar:set_stage_fn(2)
+
+	SpawnPrefab("moon_altar_idol").Transform:SetPosition(pos.x, 0, pos.z - offset - 2)
+
+	altar = SpawnPrefab("moon_altar_astral")
+	altar.Transform:SetPosition(pos.x - offset, 0, pos.z + offset / 3)
+	altar:set_stage_fn(2)
+
+	altar = SpawnPrefab("moon_altar_cosmic")
+	altar.Transform:SetPosition(pos.x + offset, 0, pos.z + offset / 3)
+
+	local bp = SpawnPrefab("moonstorm_goggleshat_blueprint")
+	bp.Transform:SetPosition(pos.x, 0, pos.z + offset / 1.5)
+	local bp2 = SpawnPrefab("moon_device_construction1_blueprint")
+	bp2.Transform:SetPosition(pos.x, 0, pos.z - offset / 1.5)
+
+	
+	c_setsanity(0.5)
+	c_maintainsanity()
+
+	-- Incomplete Experiment (moon_device_construction1)
+	c_give("moonstorm_static_item", 1)
+	c_give("moonstorm_spark", 5)
+	c_give("transistor", 2)
+
+	-- Build 1
+	c_give("moonstorm_static_item", 1)
+	c_give("moonstorm_spark", 10)
+	c_give("moonglass_charged", 10)
+
+	-- Build 2
+	c_give("moonstorm_static_item", 1)
+	c_give("moonglass_charged", 20)
+
+	local orb = c_findnext'moonrockseed'
+	if not orb then
+		orb = c_findnext'moon_rock_shell'
+		if orb then
+			orb:Remove()
+		end
+		c_give("moonrockseed", 1)
+	else
+		ConsoleCommandPlayer().components.inventoryitem:GiveItem(orb)
+	end
+
+	c_setabsorption(.99)
+	c_setdamagemultiplier(25)
+	c_give('nightsword')
+	c_give('multitool_axe_pickaxe')
+	c_give('minerhat')
+end
+DST_CONSOLE_COMMANDS.i_longtimer = function(inst, timer, delay)
+	inst:LongUpdate(inst.components.timer:GetTimeLeft(timer) - (delay or 5))
+end
 DST_CONSOLE_COMMANDS.c_pwdgt = function()
 	TheGlobalInstance:DoTaskInTime(2, function()
 		local target = TheInput:GetHUDEntityUnderMouse()

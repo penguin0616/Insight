@@ -568,6 +568,9 @@ local function LocalPlayerDeactivated(src)
 	if not localPlayer then
 		return
 	end
+	
+	ClientCoreEventer:PushEvent("force_insightui_exit")
+
 	local insight = GetLocalInsight(localPlayer)
 	insight.context = nil
 	insight:Shutdown()

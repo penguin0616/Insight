@@ -201,6 +201,10 @@ end
 function InsightMenu:Activate()
 	self:SetPage(1)
 	--self.tabs[1]:SetFocus()
+
+	self.force_exit_listener = ClientCoreEventer:ListenForEventOnce("force_insightui_exit", function()
+		self:Hide()
+	end)
 end
 
 function InsightMenu:ActivateFromScreen()
@@ -463,6 +467,8 @@ end
 
 --rawset(_G, "fff", false)
 --[[
+
+
 local PlayerController = util.LoadComponent("playercontroller")
 local oldIsEnabled = PlayerController.IsEnabled
 PlayerController.IsEnabled = function(self, ...)
