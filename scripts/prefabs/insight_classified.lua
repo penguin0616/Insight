@@ -30,7 +30,12 @@ local function OnWorldDataDirty(inst)
 	if str == "" then return end 
 	local data = json.decode(str)
 
-	inst._parent.replica.insight.world_data = data
+	if inst._parent.replica.insight then
+		inst._parent.replica.insight.world_data = data
+	else
+		mprint("Missing Insight Replica")
+		print(debugstack())
+	end
 end
 
 local function OnNaughtinessDirty(inst)
@@ -47,34 +52,64 @@ local function OnNaughtinessDirty(inst)
 
 	actions, threshold = tonumber(actions), tonumber(threshold)
 
-	inst._parent.replica.insight:OnNaughtinessDirty({ actions = actions, threshold = threshold })
+	if inst._parent.replica.insight then
+		inst._parent.replica.insight:OnNaughtinessDirty({ actions = actions, threshold = threshold })
+	else
+		mprint("Missing Insight Replica")
+		print(debugstack())
+	end
 end
 
 local function OnInvalidateDirty(inst)
 	local ent = inst.net_invalidate:value()
 	if ent then
-		inst._parent.replica.insight:OnInvalidateCachedEntity(ent)
+		if inst._parent.replica.insight then
+			inst._parent.replica.insight:OnInvalidateCachedEntity(ent)
+		else
+			mprint("Missing Insight Replica")
+			print(debugstack())
+		end
 	end
 end
 
 local function OnHuntTargetDirty(inst)
 	local target = inst.net_hunt_target:value()
-	inst._parent.replica.insight:OnHuntTargetDirty(target)
+	if inst._parent.replica.insight then
+		inst._parent.replica.insight:OnHuntTargetDirty(target)
+	else
+		mprint("Missing Insight Replica")
+		print(debugstack())
+	end
 end
 
 local function OnHungerRateDirty(inst)
 	local rate = inst.net_hunger_rate:value()
-	inst._parent.replica.insight:OnHungerRateDirty(rate)
+	if inst._parent.replica.insight then
+		inst._parent.replica.insight:OnHungerRateDirty(rate)
+	else
+		mprint("Missing Insight Replica")
+		print(debugstack())
+	end
 end
 
 local function OnSanityRateDirty(inst)
 	local rate = inst.net_sanity_rate:value()
-	inst._parent.replica.insight:OnSanityRateDirty(rate)
+	if inst._parent.replica.insight then
+		inst._parent.replica.insight:OnSanityRateDirty(rate)
+	else
+		mprint("Missing Insight Replica")
+		print(debugstack())
+	end
 end
 
 local function OnMoistureRateDirty(inst)
 	local rate = inst.net_moisture_rate:value()
-	inst._parent.replica.insight:OnMoistureRateDirty(rate)
+	if inst._parent.replica.insight then
+		inst._parent.replica.insight:OnMoistureRateDirty(rate)
+	else
+		mprint("Missing Insight Replica")
+		print(debugstack())
+	end
 end
 
 local function OnMoonCycleDirty(inst)
