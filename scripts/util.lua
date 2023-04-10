@@ -266,7 +266,7 @@ function IsBundleWrap(inst)
 	-- ACTION_COMPONENT_IDS in EntityScript is "component" = id
 	-- entity.actioncomponents is {index = id}
 	-- these 2 ids are the same
-	local res = (inst.components and inst.components.unwrappable) or (inst.HasActionComponent and inst:HasActionComponent("unwrappable"))
+	local res = (inst.components and inst.components.unwrappable) or (inst.HasActionComponent and HasVanillaActionComponent(inst, "unwrappable"))
 	
 	if res then
 		known_bundles[inst] = true
@@ -959,7 +959,7 @@ if not shallowcopy then
 	end
 end
 
---[[
+
 module.MOD_COMPONENT_ACTIONS = module.getupvalue(AddComponentAction, "MOD_COMPONENT_ACTIONS")
 module.MOD_ACTION_COMPONENT_NAMES = module.getupvalue(AddComponentAction, "MOD_ACTION_COMPONENT_NAMES")
 module.MOD_ACTION_COMPONENT_IDS = module.getupvalue(AddComponentAction, "MOD_ACTION_COMPONENT_IDS")
@@ -973,8 +973,9 @@ function HasVanillaActionComponent(inst, name)
 			end
 		end
 	end
+	return false
 end
---]]
+
 
 module.LoadComponent = assert(module.getupvalue(EntityScript.AddComponent, "LoadComponent"), "Failed to retrieve EntityScript -> LoadComponent")
 

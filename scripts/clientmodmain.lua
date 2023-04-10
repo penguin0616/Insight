@@ -449,9 +449,9 @@ local function CanBlink(player)
 	local holding = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 	local cursor = inventory:GetActiveItem()
 
-	if holding and (holding.components.blinkstaff or (IS_DST and holding:HasActionComponent("blinkstaff"))) then
+	if holding and (holding.components.blinkstaff or (IS_DST and HasVanillaActionComponent(holding, "blinkstaff"))) then
 		return true
-	elseif cursor and (cursor.components.blinkstaff or (IS_DST and cursor:HasActionComponent("blinkstaff"))) then
+	elseif cursor and (cursor.components.blinkstaff or (IS_DST and HasVanillaActionComponent(cursor, "blinkstaff"))) then
 		return true
 	end
 
@@ -568,7 +568,7 @@ local function LocalPlayerDeactivated(src)
 	if not localPlayer then
 		return
 	end
-	
+
 	ClientCoreEventer:PushEvent("force_insightui_exit")
 
 	local insight = GetLocalInsight(localPlayer)
