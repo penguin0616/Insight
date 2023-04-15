@@ -136,7 +136,7 @@ function Reader:ReadTag()
 	
 		--print(string.match == self.buffer.match)
 		--print(pcall(string.dump, string.match))
-		local tag, value, fin = string.match(self.buffer, "^<(%w+)=?([#_%w?.]*)>()") -- "^<(%w+)=?([#_%w]*)>()"
+		local tag, value, fin = string.match(self.buffer, "^<(%w+)=?([#_%w?.-]*)>()") -- "^<(%w+)=?([#_%w]*)>()"
 		--print(tag, value, fin)
 		if value == "" then
 			value = nil
