@@ -102,7 +102,7 @@ local function Describe(self, context)
 		priority = 0,
 		description = description,
 		alt_description = alt_description,
-		temperatureValue = temperatureValue
+		temperatureValue = temp
 	}
 end
 
