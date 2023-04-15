@@ -516,6 +516,7 @@ function UpdatePlayerContext(player, data)
 
 	if oldLang ~= context.config["language"] or oldUsingIcons ~= context.usingIcons then
 		context.lstr = language(context.config, context.etc.locale)
+		context.etc.locale = context.config["language"]
 	end
 end
 
