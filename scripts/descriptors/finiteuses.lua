@@ -90,7 +90,9 @@ local function Describe(self, context)
 		local consumptions2 = {}
 		local num_actions = 0
 		for action, amount in pairs(consumptions) do
-			if type(action.id) == "string" then -- I keep seeing id as a number whenever (workshop-2839359499) is enabled.
+			-- I keep seeing id as a number whenever (workshop-2839359499) is enabled.
+			-- I guess that same mod probably made "action" a number too.
+			if type(action) == "table" and type(action.id) == "string" then 
 				num_actions = num_actions + 1
 				consumptions2[num_actions] = {action, amount}
 				
