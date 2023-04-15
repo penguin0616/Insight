@@ -960,9 +960,10 @@ if not shallowcopy then
 end
 
 
-module.MOD_COMPONENT_ACTIONS = module.getupvalue(AddComponentAction, "MOD_COMPONENT_ACTIONS")
-module.MOD_ACTION_COMPONENT_NAMES = module.getupvalue(AddComponentAction, "MOD_ACTION_COMPONENT_NAMES")
-module.MOD_ACTION_COMPONENT_IDS = module.getupvalue(AddComponentAction, "MOD_ACTION_COMPONENT_IDS")
+module.MOD_COMPONENT_ACTIONS = module.getupvalue(_G.AddComponentAction, "MOD_COMPONENT_ACTIONS")
+module.MOD_ACTION_COMPONENT_NAMES = module.getupvalue(_G.AddComponentAction, "MOD_ACTION_COMPONENT_NAMES")
+module.MOD_ACTION_COMPONENT_IDS = module.getupvalue(_G.AddComponentAction, "MOD_ACTION_COMPONENT_IDS")
+module.ACTION_COMPONENT_IDS = module.getupvalue(_G.EntityScript.HasActionComponent, "ACTION_COMPONENT_IDS")
 
 function HasVanillaActionComponent(inst, name)
 	local id = module.ACTION_COMPONENT_IDS[name]
