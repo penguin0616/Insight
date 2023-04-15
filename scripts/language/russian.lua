@@ -488,8 +488,9 @@ return {
 
 	-- malbatrossspawner.lua
 	malbatrossspawner = {
-	malbatross_spawnsin = "%s",
-	malbatross_waiting = "Waiting for someone to go to a shoal.",
+		malbatross_spawnsin = "%s",
+		malbatross_waiting = "Waiting for someone to go to a shoal.",
+	},
 
 	-- mast.lua
 	mast_sail_force = "Sail force: %s",
