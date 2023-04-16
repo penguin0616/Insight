@@ -1274,154 +1274,17 @@ function GetWorldInformation(player) -- refactor?
 	if IS_DST then
 		local helper = world.shard.components.shard_insight
 
-		-- antlion
-		--[[
-		local antlion_timer = helper:GetAntlionData() or -1
-		if antlion_timer >= 0 then
-			data.special_data["antlion"] = {
-				icon = {
-					atlas = "images/Antlion.xml",
-					tex = "Antlion.tex",
-				},
-				worldly = true,
-				from = "prefab"
-			}
-
-			data.raw_information["antlion"] = context.time:SimpleProcess(antlion_timer)
-		end
-		--]]
-		
-
-		-- sinkholespawner (used to be "antlion" but for consistency's sake for client descriptors)
-		if data.raw_information["sinkholespawner"] == nil and helper:GetAntlionData() then
-			context.antlion_data = helper:GetAntlionData()
-			local res = Insight.descriptors.sinkholespawner and Insight.descriptors.sinkholespawner.Describe(nil, context) or nil
-			data.special_data["sinkholespawner"] = res and GetSpecialData(res) or nil
-			data.raw_information["sinkholespawner"] = res and res.description or nil
-		end
-
-		-- ancient gateway
-		local atrium_gate_cooldown = helper:GetAtriumGateCooldown() or -1
-		if atrium_gate_cooldown >= 0 then
-			data.special_data["atrium_gate"] = {
-				icon = {
-					atlas = "images/Atrium_Gate.xml",
-					tex = "Atrium_Gate.tex"
-				},
-				worldly = true, -- meeeh
-				prefably = true,
-				from = "prefab",
-				cooldown = atrium_gate_cooldown,
-			}
-
-			data.raw_information["atrium_gate"] = context.time:SimpleProcess(atrium_gate_cooldown)
-		end
-
-		-- dragonfly
-		local dragonfly_respawn = helper:GetDragonflyRespawnTime() or -1
-		if dragonfly_respawn >= 0 then
-			data.special_data["dragonfly_spawner"] = {
-				icon = {
-					atlas = "images/Dragonfly.xml",
-					tex = "Dragonfly.tex",
-				},
-				worldly = true, -- meeeh
-				prefably = true,
-				from = "prefab",
-				time_to_respawn = dragonfly_respawn,
-			}
-
-			data.raw_information["dragonfly_spawner"] = context.time:SimpleProcess(dragonfly_respawn)	
-		end
-
-		-- bee queen
-		local beequeen_respawn = helper:GetBeeQueenRespawnTime() or -1
-		if beequeen_respawn >= 0 then
-			data.special_data["beequeenhive"] = {
-				icon = {
-					atlas = "images/Beequeen.xml",
-					tex = "Beequeen.tex",
-				},
-				worldly = true, -- meeeh
-				prefably = true,
-				from = "prefab",
-				time_to_respawn = beequeen_respawn,
-			}
-
-			data.raw_information["beequeenhive"] = context.time:SimpleProcess(beequeen_respawn)
-		end
-
-		-- terrarium
-		--[[
-		local terrarium_cooldown = helper:GetTerrariumCooldown() or -1
-		if terrarium_cooldown >= 0 then
-			data.special_data["terrarium_cd"] = {
-				icon = {
-					atlas = "images/Terrarium.xml",
-					tex = "Terrarium.tex",
-				},
-				worldly = true,
-				from = "prefab"
-			}
-
-			data.raw_information["terrarium_cd"] = context.time:SimpleProcess(terrarium_cooldown)
-		end
-		--]]
-		
-		-- unfinished
-		if data.raw_information["terrarium"] == nil and helper:GetTerrariumCooldown() then
-			local res = Insight.prefab_descriptors.terrarium and Insight.prefab_descriptors.terrarium.DescribeCooldown(nil, context) or nil
-			data.special_data["terrarium"] = res and GetSpecialData(res) or nil
-			data.raw_information["terrarium"] = res and res.description or nil
-		end
-		
-
-		-- bearger
-		if data.raw_information["beargerspawner"] == nil and helper:GetBeargerData() then
-			context.bearger_data = helper:GetBeargerData()
-			local res = Insight.descriptors.beargerspawner and Insight.descriptors.beargerspawner.Describe(nil, context) or nil
-			data.special_data["beargerspawner"] = res and GetSpecialData(res) or nil
-			data.raw_information["beargerspawner"] = res and res.description or nil
-		end
-
-		-- crabking
-		if data.raw_information["crabkingspawner"] == nil and helper:GetCrabKingData() then
-			context.crabking_data = helper:GetCrabKingData()
-			local res = Insight.descriptors.crabkingspawner and Insight.descriptors.crabkingspawner.Describe(nil, context) or nil
-			data.special_data["crabkingspawner"] = res and GetSpecialData(res) or nil
-			data.raw_information["crabkingspawner"] = res and res.description or nil
-		end
-
-		-- deerclops
-		if data.raw_information["deerclopsspawner"] == nil and helper:GetDeerclopsData() then
-			context.deerclops_data = helper:GetDeerclopsData()
-			local res = Insight.descriptors.deerclopsspawner and Insight.descriptors.deerclopsspawner.Describe(nil, context) or nil
-			data.special_data["deerclopsspawner"] = res and GetSpecialData(res) or nil
-			data.raw_information["deerclopsspawner"] = res and res.description or nil
-		end
-
-		-- klaussack
-		if data.raw_information["klaussackspawner"] == nil and helper:GetKlausSackData() then
-			context.klaussack_data = helper:GetKlausSackData()
-			local res = Insight.descriptors.klaussackspawner and Insight.descriptors.klaussackspawner.Describe(nil, context) or nil
-			data.special_data["klaussackspawner"] = res and GetSpecialData(res) or nil
-			data.raw_information["klaussackspawner"] = res and res.description or nil
-		end
-
-		-- malbatross
-		if data.raw_information["malbatrossspawner"] == nil and helper:GetMalbatrossData() then
-			context.malbatross_data = helper:GetMalbatrossData()
-			local res = Insight.descriptors.malbatrossspawner and Insight.descriptors.malbatrossspawner.Describe(nil, context) or nil
-			data.special_data["malbatrossspawner"] = res and GetSpecialData(res) or nil
-			data.raw_information["malbatrossspawner"] = res and res.description or nil
-		end
-
-		-- toadstool
-		if data.raw_information["toadstoolspawner"] == nil and helper:GetToadstoolData() then
-			context.toadstool_data = helper:GetToadstoolData()
-			local res = Insight.descriptors.toadstoolspawner and Insight.descriptors.toadstoolspawner.Describe(nil, context) or nil
-			data.special_data["toadstoolspawner"] = res and GetSpecialData(res) or nil
-			data.raw_information["toadstoolspawner"] = res and res.description or nil
+		for name, desciptor in pairs(helper:GetWorldDescriptors()) do
+			-- print("checking data for", name)
+			local d = (helper.local_data and helper.local_data[name]) or (helper.extra_data and helper.extra_data[name]) or nil
+			-- printwrap("data", d)
+			-- printwrap("running", desciptor)
+			if d then
+				local res = desciptor(d, context)
+				-- printwrap("return", res)
+				data.special_data[name] = res and GetSpecialData(res) or nil
+				data.raw_information[name] = res and res.description or nil
+			end
 		end
 
 		-- add data from network
@@ -2510,6 +2373,22 @@ if IS_DST then
 	AddPrefabPostInit("shard_network", function(self)
 		if TheWorld.ismastersim then
 			self:AddComponent("shard_insight")
+
+			self.components.shard_insight:RegisterWorldDataFetcher("beargerspawner", function()
+				return TheWorld.components.beargerspawner and _G.Insight.descriptors.beargerspawner and _G.Insight.descriptors.beargerspawner.GetBeargerData(TheWorld.components.beargerspawner) or nil
+			end)
+			self.components.shard_insight:RegisterWorldDataFetcher("deerclopsspawner", function()
+				return TheWorld.components.deerclopsspawner and _G.Insight.descriptors.deerclopsspawner and _G.Insight.descriptors.deerclopsspawner.GetDeerclopsData(TheWorld.components.deerclopsspawner) or nil
+			end)
+			self.components.shard_insight:RegisterWorldDataFetcher("klaussackspawner", function()
+				return TheWorld.components.klaussackspawner and _G.Insight.descriptors.klaussackspawner and _G.Insight.descriptors.klaussackspawner.GetKlausSackData(TheWorld.components.klaussackspawner) or nil
+			end)
+			self.components.shard_insight:RegisterWorldDataFetcher("malbatrossspawner", function()
+				return TheWorld.components.malbatrossspawner and _G.Insight.descriptors.malbatrossspawner and _G.Insight.descriptors.malbatrossspawner.GetMalbatrossData(TheWorld.components.malbatrossspawner) or nil
+			end)
+			self.components.shard_insight:RegisterWorldDataFetcher("toadstoolspawner", function()
+				return TheWorld.components.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner and _G.Insight.descriptors.toadstoolspawner.GetToadstoolData(TheWorld.components.toadstoolspawner) or nil
+			end)
 		end
 	end)
 

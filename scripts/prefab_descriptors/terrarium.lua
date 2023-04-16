@@ -23,8 +23,8 @@ local HEALTH_PER_DAY = TUNING.EYEOFTERROR_HEALTHPCT_PERDAY * TUNING.EYEOFTERROR_
 local MAX_GAIN_DAYS = 1/TUNING.EYEOFTERROR_HEALTHPCT_PERDAY -- =20
 
 
-local function DescribeCooldown(inst, context)
-	local cooldown = TheWorld.shard.components.shard_insight:GetTerrariumCooldown() or -1
+local function RemoteDescribe(data, context)
+	local cooldown = data or -1
 
 	if cooldown < 0 then
 		return
@@ -146,6 +146,6 @@ end
 
 return {
 	Describe = Describe,
-	DescribeCooldown = DescribeCooldown,
+	RemoteDescribe = RemoteDescribe,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

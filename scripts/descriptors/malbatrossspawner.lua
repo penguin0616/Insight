@@ -39,16 +39,10 @@ local function GetMalbatrossData(self)
 	}
 end
 
-local function Describe(self, context)
+local function RemoteDescribe(data, context)
 	local description = nil
-	local data = nil
-
-	if self == nil and context.malbatross_data then
-		data = context.malbatross_data
-	elseif self and context.malbatross_data == nil then
-		data = GetMalbatrossData(self)
-	else
-		error(string.format("malbatrossspawner.Describe improperly called with self=%s & malbatross_data=%s", tostring(self), tostring(context.malbatross_data)))
+	if not data then
+		return nil
 	end
 
 	if data.time_to_respawn and data.time_to_respawn > 0 then
@@ -86,7 +80,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 end
 
 return {
-	Describe = Describe,
+	RemoteDescribe = RemoteDescribe,
 	GetMalbatrossData = GetMalbatrossData,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }
