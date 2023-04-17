@@ -111,6 +111,11 @@ end
 local function GotEntityInformation(inst, data)
 	local insight = inst.replica.insight
 
+	if not insight then
+		mprint("[GotEntityInformation] Missing Insight Replica")
+		return
+	end
+
 	--mprint("got:", #data.data, data.data:sub(#data.data-32))
 	local safe, items = true, decompress(data.data)
 
