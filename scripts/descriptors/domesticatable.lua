@@ -77,10 +77,12 @@ local function Describe(self, context)
 
 	for i = 1, #ORDER do
 		local tendency = ORDER[i]
+		local tendency_amt = self.tendencies[tendency] or 0
+		local tendency_percent = total_tendency_points > 0 and (tendency_amt / total_tendency_points * 100) or 0
 		full_tendency_string = full_tendency_string .. string.format("%s: %s (<color=" .. TENDENCY_COLORS[tendency].. ">%s%%</color>), ", 
 			ApplyColour(context.lstr.domesticatable.tendencies[tendency] or "?", TENDENCY_COLORS[tendency]),
-			Round(self.tendencies[tendency] or 0, 3),
-			Round((self.tendencies[tendency] or 0) / total_tendency_points * 100, 2)
+			Round(tendency_amt, 3),
+			Round(tendency_percent, 2)
 		)
 	end
 
