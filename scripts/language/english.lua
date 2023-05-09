@@ -786,6 +786,12 @@ return {
 	-- moisture.lua
 	moisture = "<color=WET>Wetness</color>: <color=WET>%s%%</color>", --moisture = "<color=WET>Wetness</color>: %s / %s (%s%%)",
 
+	-- monkey_smallhat.lua [Prefab]
+	monkey_smallhat = "Mast & Anchor interaction speed: {feature_speed}\nOar durability use: {durability_efficiency}",
+
+	-- monkey_mediumhat.lua [Prefab]
+	monkey_mediumhat = "Boat damage reduction: {reduction}",
+
 	-- mood.lua
 	mood = {
 		exit = "Will exit mood in %s day(s).",

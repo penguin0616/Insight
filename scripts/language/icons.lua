@@ -801,6 +801,12 @@ return {
 	-- moisture.lua
 	moisture = "<icon=wetness> %s%%",
 
+	-- monkey_smallhat.lua [Prefab]
+	--monkey_smallhat = "Mast & Anchor interaction speed: {feature_speed}\nOar durability use: {durability_efficiency}",
+
+	-- monkey_mediumhat.lua [Prefab]
+	--monkey_mediumhat = "Boat damage reduction: {reduction}",
+
 	-- mood.lua
 	mood = {
 		--exit = "Will exit mood in %s day(s).",

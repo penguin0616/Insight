@@ -796,6 +796,11 @@ return {
 	-- moisture.lua
 	moisture = "<color=WET>潮湿</color>: <color=WET>%s%%</color>",
 
+	-- monkey_smallhat.lua [Prefab]
+	monkey_smallhat = "Mast & Anchor interaction speed: {feature_speed}\nOar durability use: {durability_efficiency}",
+
+	-- monkey_mediumhat.lua [Prefab]
+	monkey_mediumhat = "Boat damage reduction: {reduction}",
 	-- mood.lua
 	mood = {
 		exit = "发情结束于 %s 天后",

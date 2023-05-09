@@ -20,6 +20,7 @@ for i in range(len(allfiles)):
 	v = allfiles[i]
 	
 	if v > sys.argv[1]:
+		print("-2:", allfiles[i-2]) # place below this
 		print("Place below:", allfiles[i-1]) # place below this
 		print("Place Above:", v) # place above this
 		print(":< :", allfiles[i+1])
