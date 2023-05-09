@@ -108,19 +108,20 @@ local function Describe(self, context)
 				remaining_time = "No timer specified"
 			end
 
-			local known_debuff = context.lstr.debuffs[prefab] ~= nil
+			local known_debuff = debuffHelper.IsKnownDebuff(prefab) --context.lstr.debuffs[prefab] ~= nil
 
 			-- Make sure name exists, modded prefabs don't have one registered with us.
 			local name
-			if known_debuff and context.lstr.debuffs[prefab].name and context.lstr.debuffs[prefab].name ~= "" then
+			if known_debuff and context.lstr.debuffs[prefab] and context.lstr.debuffs[prefab].name and context.lstr.debuffs[prefab].name ~= "" then
 				name = context.lstr.debuffs[prefab].name
 			else
-				name = string.format("%q\n(<color=#cccccc>%q</color>)", debuffName, prefab)
+				local clr = known_debuff and "#00ff00" or "#cccccc"
+				name = string.format("%q\n(<color=%s>%q</color>)", debuffName, clr, prefab)
 			end
 
 			local primary_info = string.format(context.lstr.buff_text, name, remaining_time)
 			local desc = nil
-			if known_debuff and context.lstr.debuffs[prefab].description then
+			if known_debuff and context.lstr.debuffs[prefab] and context.lstr.debuffs[prefab].description then
 				desc = debuffHelper.GetDebuffEffects(prefab, context)
 			end
 			local text = CombineLines(primary_info, desc)

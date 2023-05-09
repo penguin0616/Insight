@@ -137,6 +137,11 @@ return {
 		sanity_cost = "Drena <color=SANITY>%s de sanidade</color> por ataque.",
 	},
 
+	batnosehat = {
+		hunger_gain = "Restores %s hunger every %s second(s)",
+
+	},
+
 	-- beard.lua
 	beard = "Texurso irá surgir em %s dia(s).",
 
@@ -360,6 +365,10 @@ return {
 		["wintersfeastbuff"] = {
 			name = "<color=FROZEN>Buff do Festival de Inverno</color>",
 			description = nil
+		},
+		["hungerregenbuff"] = {
+			name = "<color=HUNGER><prefab=batnosehat> Buff</color>",
+			description = "Regenerates <color=HUNGER>{amount} hunger</color> over {duration}(s).",
 		},
 		
 		["halloweenpotion_health_buff"] = {

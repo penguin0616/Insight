@@ -135,6 +135,10 @@ local function GetFoodEffects(self)
 	return bonuses
 end
 
+local function IsKnownDebuff(debuffName)
+	return debuff_definitions[debuffName] ~= nil
+end
+
 local function GetDebuffEffects(debuffName, context)
 	local str
 
@@ -192,6 +196,7 @@ end
 local this = {
 	GetFoodEffects = GetFoodEffects,
 	GetItemEffects = GetItemEffects,
+	IsKnownDebuff = IsKnownDebuff,
 	GetDebuffEffects = GetDebuffEffects,
 	GetRealDebuffPrefab = GetRealDebuffPrefab,
 }
@@ -254,6 +259,12 @@ debuff_definitions["wintersfeastbuff"] = {
 	blank = true
 }
 
+debuff_definitions["hungerregenbuff"] = {
+	duration = TUNING.BATNOSEHAT_PERISHTIME,
+	tick_rate = TUNING.HUNGERREGEN_TICK_RATE,
+	tick_value = TUNING.HUNGERREGEN_TICK_VALUE,
+}
+
 -- Halloween buffs
 debuff_definitions["halloweenpotion_health_buff"] = {
 	duration = TUNING.SEG_TIME * 2,
@@ -288,6 +299,8 @@ end
 --=================================================================================================================
 --=================================================================================================================
 --=================================================================================================================
+item_debuffs["batnosehat"] = {"hungerregenbuff"}
+
 item_debuffs["tillweedsalve"] = {"tillweedsalve_buff"}
 
 item_debuffs["jellybean"] = {"healthregenbuff"}

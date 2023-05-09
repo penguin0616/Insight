@@ -362,6 +362,10 @@ return {
 			name = "<color=FROZEN>Winter's Feast Buff</color>",
 			description = nil
 		},
+		["hungerregenbuff"] = {
+			name = "<color=HUNGER><prefab=batnosehat> Buff</color>",
+			description = "Regenerates <color=HUNGER>{amount} hunger</color> over {duration}(s).",
+		},
 		
 		["halloweenpotion_health_buff"] = {
 			name = "<color=HEALTH>Health regeneration</color>",

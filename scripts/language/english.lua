@@ -359,6 +359,10 @@ return {
 			name = "<color=FROZEN>Winter's Feast Buff</color>",
 			description = "Restores <color=HUNGER>Hunger</color>, <color=SANITY>Sanity</color>, and <color=HEALTH>Health</color>."
 		},
+		["hungerregenbuff"] = {
+			name = "<color=HUNGER><prefab=batnosehat> Buff</color>",
+			description = "Regenerates <color=HUNGER>{amount} hunger</color> over {duration}(s).",
+		},
 		
 		["halloweenpotion_health_buff"] = {
 			name = "<color=HEALTH>Health regeneration</color>",
