@@ -22,6 +22,11 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description = nil
 
+	if not context.config["display_gyminfo"] then
+		return
+	end
+
+
 	local weight = self.weight or self:CalcWeight() -- man this function is kind of scuffed. heck all of the inventory interactions in this component are.
 	local weight_string = string.format(context.lstr.mightygym.weight, weight)
 

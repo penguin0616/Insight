@@ -3207,6 +3207,40 @@ STRINGS = {
 			},
 		},
 	},
+	display_gyminfo = {
+		label = {
+			"Gym Info", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether information about gym-related stuff is shown.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Gym-related information is not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Gym-related information is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	display_world_events = {
 		label = {
 			"Show World Data", 
@@ -5353,6 +5387,15 @@ configuration_options = {
 			{data = true},
 		},
 		default = false,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_gyminfo",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
 		tags = {"dst_only", "undefined"},
 	},
 	{

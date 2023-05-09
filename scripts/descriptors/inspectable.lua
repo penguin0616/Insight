@@ -263,7 +263,7 @@ local function Describe(self, context)
 		}
 	end
 
-	if inst:HasTag("heavy") then
+	if context.config["display_gyminfo"] and inst:HasTag("heavy") then
 		description = string.format(context.lstr.gym_weight_value, inst.gymweight or 2)
 	end
 
