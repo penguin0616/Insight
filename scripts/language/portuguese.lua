@@ -909,6 +909,7 @@ return {
 		work2 = "<color=#DED15E>%s<sub>Trabalho</sub></color>",
 		perish = "<color=MONSTER>Reanimar</color>: <color=MONSTER>%s%%</color>",
 		perish2 = "<color=MONSTER>Reanimar</color>: <color=MONSTER>%s%%</color>",
+		held_repair = "Held <color=SWEETENER><prefab=%s></color> will repair <color=LIGHT>%s</color> uses (<color=LIGHT>%s%%</color>).",
 		materials = (IS_DST and {
 			[MATERIALS.WOOD] =  "Madeira",
 			[MATERIALS.STONE] =  "Pedra",

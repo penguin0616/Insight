@@ -19,8 +19,41 @@ directory. If not, please refer to
 ]]
 
 -- repairable.lua
+local function CanRepair(self, repair_item)
+	if self.testvalidrepairfn and not self.testvalidrepairfn(self.inst, repair_item) then
+		return false
+	elseif repair_item.components.repairer == nil or self.repairmaterial ~= repair_item.components.repairer.repairmaterial then
+		return false
+	elseif self.checkmaterialfn ~= nil then
+		local success, reason = self.checkmaterialfn(self.inst, repair_item)
+		if not success then
+			return false
+		end
+	end
+
+	return true
+end
+
 local function Describe(self, context)
 	local description, alt_description
+
+	if self.finiteusesrepairable and self.inst.components.finiteuses then
+		-- I consider this to be in the realm of "refueling" and as such shouldn't be affected by the repair config.
+		
+		local held_item = context.player.components.inventory and context.player.components.inventory:GetActiveItem()
+		if held_item and CanRepair(self, held_item) then
+			local use_value = held_item.components.repairer.finiteusesrepairvalue or 0
+			local percent_restore = use_value / self.inst.components.finiteuses.total
+			
+			description = string.format(context.lstr.repairer.held_repair, held_item.prefab, use_value, Round(percent_restore * 100, 0))
+			return {
+				priority = 0,
+				description = description,
+				alt_description = alt_description
+			}
+		end
+		return
+	end
 
 	if not (context.config["repair_values"] == false or context.config["repair_values"] == 0) then
 		return
