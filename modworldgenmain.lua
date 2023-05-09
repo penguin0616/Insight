@@ -129,6 +129,10 @@ function CheckShardIndex(shardIndex)
 
 	-- So something to note about this is that when an invalid option is saved, it'll appear as whatever the default should be despite it not actually being the default.
 	local savedInsightOptions = shardIndex.enabled_mods[modname].configuration_options
+	if not savedInsightOptions then
+		-- I guess having configuration_options isn't required here as well.
+		return
+	end
 	for name, saved in pairs(savedInsightOptions) do
 		local valid, defaultValue = isConfigValid(name, saved)
 		if valid == nil then

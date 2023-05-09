@@ -1,4 +1,14 @@
 DST_CONSOLE_COMMANDS = {}
+DST_CONSOLE_COMMANDS.i_moon_postern_stuff = function()
+	assert(TheWorld.ismastersim, "need to be mastersim")
+	local plr = ConsoleCommandPlayer()
+
+	plr.components.inventory:GiveItem(SpawnPrefab("multiplayer_portal_moonrock_constr_plans"))
+	plr.components.inventory:GiveItem(SpawnPrefab("moonrockcrater"))
+	plr.components.inventory:GiveItem(SpawnPrefab("purplegem"))
+	for i = 1, 20 do plr.components.inventory:GiveItem(SpawnPrefab("moonrocknugget")) end
+	
+end
 DST_CONSOLE_COMMANDS.c_moon_altar_stuff = function()
 
 	local offset = 7

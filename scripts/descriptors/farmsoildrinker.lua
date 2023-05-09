@@ -82,7 +82,7 @@ local function DescribeNutrients(self, context, definition)
 	local verbosity = context.config["soil_nutrients"]
 
 	-- soil_nutrients add config hat whatever check insight comments
-	if verbosity == 0 or context.config["soil_nutrients_needs_hat"] == "none" then
+	if verbosity == 0 or context.config["soil_nutrients_needs_hat"] == "off" then
 		return
 	end
 
