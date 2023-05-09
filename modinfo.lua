@@ -3139,6 +3139,40 @@ STRINGS = {
 			},
 		},
 	},
+	display_compostvalue = {
+		label = {
+			"Compost Value", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether compost values are shown.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Compost values are not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Compost values are shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	display_weighable = {
 		label = {
 			"Item Weight", 
@@ -5296,6 +5330,15 @@ configuration_options = {
 	},
 	{
 		name = "display_fertilizer",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_compostvalue",
 		options = {
 			{data = false},
 			{data = true},

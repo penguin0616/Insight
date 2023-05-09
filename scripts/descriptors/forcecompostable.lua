@@ -22,6 +22,10 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local str = {}
 
+	if not context.config["display_compostvalue"] then
+		return
+	end
+
 	if self.green then
 		table.insert(str, ApplyColour("Green", "NATURE"))
 	end
