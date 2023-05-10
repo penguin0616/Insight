@@ -62,13 +62,15 @@ local function Describe(self, context)
 	local domestication = Round(self.domestication * 100, 2)
 	local obedience = Round(self.obedience * 100, 1)
 	local total_tendency_points = GetTotalTendencyPoints(self)
+	--local ride_obedience = self.inst.components.rideable and math.floor(self.inst.components.rideable.requiredobedience * 100) or "?"
 
 	-- make strings
 	local domestication_string = domestication > 0 and string.format(context.lstr.domesticatable.domestication, domestication) or nil
 	
 	local obedience_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience, obedience) or nil
-	--local obedience_extended_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience_extended, obedience, TUNING.BEEFALO_SADDLEABLE_OBEDIENCE, TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE, self.minobedience or "?") or nil
-	local obedience_extended_string = obedience_string
+	--local obedience_extended_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience_extended, obedience, TUNING.BEEFALO_SADDLEABLE_OBEDIENCE*100, TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE*100, ride_obedience) or nil
+	local obedience_extended_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience_extended, obedience, TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE*100, (self.minobedience and Round(self.minobedience * 100, 0))) or nil
+	-- (self.minobedience and Round(self.minobedience * 100, 0)) TUNING.BEEFALO_MIN_DOMESTICATED_OBEDIENCE[inst.tendency]
 
 	local dominant_tendency_string = self.inst.tendency and ApplyColour(context.lstr.domesticatable.tendencies[self.inst.tendency] or "???", TENDENCY_COLORS[self.inst.tendency])
 	local tendency_string = dominant_tendency_string and string.format(context.lstr.domesticatable.tendency, dominant_tendency_string) or nil

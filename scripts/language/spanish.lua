@@ -400,7 +400,7 @@ return {
 	domesticatable = {
 		domestication = "Domesticación: %s%%",
 		obedience = "Obediencia: %s%%",
-		obedience_extended = "Obediencia: %s%% (Montura: >=%s%%, Mantiene montura: >%s%%, Pierde domesticación: <=%s%%)",
+		obedience_extended = "Obedience: %s%% (<%s%%<sub>bucks saddle</sub>, %s%%<sub>minimum</sub>)",
 		tendency = "Tendencia: %s",
 		tendencies = {
 			["NONE"] = "Ninguna",

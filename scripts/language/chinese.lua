@@ -407,7 +407,7 @@ return {
 	domesticatable = {
 		domestication = "驯化: %s%%",
 		obedience = "顺从: %s%%",
-		obedience_extended = "顺从: %s%% (鞍具: >=%s%%, 保持鞍具: >%s%%, 失去驯化: <=%s%%)",
+		obedience_extended = "Obedience: %s%% (<%s%%<sub>bucks saddle</sub>, %s%%<sub>minimum</sub>)",
 		tendency = "倾向: %s",
 		tendencies = {
 			["NONE"] = "无",

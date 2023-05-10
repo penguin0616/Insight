@@ -404,7 +404,7 @@ return {
 	domesticatable = {
 		domestication = "Domesticação: %s%%",
 		obedience = "Obediência: %s%%",
-		obedience_extended = "Obediência: %s%% (Saddle: >=%s%%, Keep Saddle: >%s%%, Lose Domestication: <=%s%%)",
+		obedience_extended = "Obedience: %s%% (<%s%%<sub>bucks saddle</sub>, %s%%<sub>minimum</sub>)",
 		tendency = "Tendência: %s",
 		tendencies = {
 			["NONE"] = "Nenhuma",
