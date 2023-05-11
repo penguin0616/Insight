@@ -87,7 +87,7 @@ local CONFIG_PRESETS = {
 		appeasement_value = false,
 		fuel_verbosity = 1,
 		display_shelter_info = false,
-		unique_info = true,
+		--unique_info = true,
 		-- Miscellaneous
 		--display_crafting_lookup_button = DEFAULT,
 		--display_insight_menu_button = DEFAULT,
@@ -168,7 +168,7 @@ local CONFIG_PRESETS = {
 		appeasement_value = false,
 		fuel_verbosity = 1,
 		display_shelter_info = false,
-		unique_info = DEFAULT,
+		--unique_info = DEFAULT,
 		-- Miscellaneous
 		--display_crafting_lookup_button = DEFAULT,
 		--display_insight_menu_button = DEFAULT,
@@ -249,7 +249,7 @@ local CONFIG_PRESETS = {
 		appeasement_value = DEFAULT,
 		fuel_verbosity = DEFAULT,
 		display_shelter_info = DEFAULT,
-		unique_info = DEFAULT,
+		--unique_info = DEFAULT,
 		-- Miscellaneous
 		--display_crafting_lookup_button = DEFAULT,
 		--display_insight_menu_button = DEFAULT,
@@ -330,7 +330,7 @@ local CONFIG_PRESETS = {
 		appeasement_value = true,
 		fuel_verbosity = 2,
 		display_shelter_info = DEFAULT,
-		unique_info = DEFAULT,
+		--unique_info = DEFAULT,
 		-- Miscellaneous
 		--display_crafting_lookup_button = DEFAULT,
 		--display_insight_menu_button = DEFAULT,

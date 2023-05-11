@@ -21,8 +21,8 @@ directory. If not, please refer to
 -- batbat.lua [Prefab]
 local function Describe(inst, context)
 	local description = nil
-
-	if inst.components.weapon and inst.components.weapon.onattack and context.config["unique_info"] == 1 then
+	
+	if inst.components.weapon and inst.components.weapon.onattack and context.complex_config["unique_info_prefabs"][inst.prefab] then
 		local heal_string = string.format(context.lstr.batbat.health_restore, Round(TUNING.BATBAT_DRAIN, 1))
 		local sanity_string = string.format(context.lstr.batbat.sanity_cost, Round(0.5 * TUNING.BATBAT_DRAIN, 1))
 		

@@ -181,7 +181,9 @@ local function DescribeRuinsStatue(inst, context)
 		return
 	end
 
-	if not context.config["unique_info"] then
+	-- ANCIENT_STATUE
+	-- ancient_statue isn't a real prefab, it's a nameoverride.
+	if not context.complex_config["unique_info_prefabs"]["ancient_statue"] then
 		return
 	end
 

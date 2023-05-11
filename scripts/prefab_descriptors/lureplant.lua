@@ -82,9 +82,14 @@ local function Describe(inst, context)
 	end
 
 	-- inventory
-	local inventory_string = SummarizeInventory(inst)
+	local inventory_string
+
+	if not context.complex_config["unique_info_prefabs"][inst.prefab] then
+		inventory_string = SummarizeInventory(inst)
+	end
+
 	description = CombineLines(active_string, inventory_string)
-	
+
 	return {
 		priority = 0,
 		description = description

@@ -64,6 +64,21 @@ local ChooseTranslationTable, a = a, nil
 
 local STRINGS
 
+-- Documentation
+--[==[
+	
+]==]
+
+--[==[
+	Tags: 
+		"dynamic_option_strings": 
+			If a configuration has this tag, that means the options table for the configuration in STRINGS is a function.
+			The function gets called in AddConfigurationOptionStrings, which ***isn't*** called on complex configuration here in modinfo.
+			It's called by clientmodmain after the options and default functions are run.
+
+			In other words, STRINGS for complex configuration functions with this tag don't get calculated.
+]==]
+
 --====================================================================================================================================================
 --====================================================================================================================================================
 --====================================================================================================================================================
@@ -322,6 +337,9 @@ do
 	end
 end
 
+-- Unique Prefabs
+local UNIQUE_INFO_PREFABS = {"alterguardianhat", "batbat", "eyeplant", "ancient_statue"}
+
 --====================================================================================================================================================
 --====================================================================================================================================================
 --====================================================================================================================================================
@@ -574,6 +592,30 @@ STRINGS = {
 			["zh"] = "启用指示器的其他物品。", 
 			["br"] = "Prefabs de Indicadores Notáveis ativados", 
 			["es"] = nil,
+		},
+		options = function(config)
+			local t = {} 
+			for i,v in ipairs(config.options) do
+				t[v.data] = {
+					description = {"<prefab=" .. v.data .. ">"},
+					hover = nil,
+				}
+			end
+			return t
+		end,
+	},
+	unique_info_prefabs = {
+		label = {
+			"Unique Information", 
+			["zh"] = "特定信息", 
+			["br"] = "Informações Únicas", 
+			["es"] = "Información única"
+		},
+		hover = {
+			"Whether to display unique information for certain entities.", 
+			["zh"] = "是否显示特定实体的特定信息。", 
+			["br"] = "Se vai exibir informações exclusivas para determinadas entidades.", 
+			["es"] = "Configura si se muestra información única de ciertas entidades."
 		},
 		options = function(config)
 			local t = {} 
@@ -4290,6 +4332,7 @@ STRINGS = {
 			},
 		},
 	},
+	--[[
 	unique_info = {
 		label = {
 			"Unique Information", 
@@ -4324,6 +4367,7 @@ STRINGS = {
 			},
 		},
 	},
+	--]]
 	--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	--[[ Miscellaneous ]]
 	--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -5630,6 +5674,7 @@ configuration_options = {
 		default = true,
 		tags = {"undefined"},
 	},
+	--[[
 	{
 		name = "unique_info",
 		options = {
@@ -5639,6 +5684,7 @@ configuration_options = {
 		default = 1,
 		tags = {"undefined"},
 	},
+	--]]
 	AddSectionTitle(T(STRINGS["sectiontitle_miscellaneous"])),
 	{
 		name = "display_crafting_lookup_button",
@@ -5840,6 +5886,29 @@ complex_configuration_options = {
 		end),
 		config_type = "listbox",
 		client = true,
+		tags = {"dynamic_option_strings", "richtext"},
+	},
+	{
+		name = "unique_info_prefabs",
+		options = (function()
+			local t = {}
+			for i,v in ipairs(UNIQUE_INFO_PREFABS) do
+				if _G.STRINGS.NAMES[v:upper()] ~= nil or _G.Prefabs[v] ~= nil then
+					t[#t+1] = { data=v }
+				end
+			end
+			return t
+		end),
+		default = (function()
+			local t = {}
+			-- The default should be whatever exists in vanilla for either game.
+			for i,v in ipairs(UNIQUE_INFO_PREFABS) do
+				t[#t+1] = v
+			end
+			return t
+		end),
+		config_type = "listbox",
+		client = false, -- Hmm. This is the first complex configuration option that isn't client sided.
 		tags = {"dynamic_option_strings", "richtext"},
 	},
 }
