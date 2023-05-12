@@ -996,6 +996,8 @@ AddPrefabPostInitAny(function(inst)
 	end
 end)
 
+
+
 --[==[
 AddPrefabPostInit("redgem", function(inst)
 	local a = SpawnPrefab("insight_range_indicator")

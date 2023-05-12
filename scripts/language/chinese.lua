@@ -1207,6 +1207,11 @@ return {
 		full_charge = "电量已充满!",
 	},
 
+	-- wx78_scanner.lua [Prefab]
+	wx78_scanner = {
+		scan_progress = "Scan progress: %.1f%%",
+	},
+
 	-- yotb_sewer.lua
 	yotb_sewer = "缝制将完成于%s",
 }

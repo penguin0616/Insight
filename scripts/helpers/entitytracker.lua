@@ -146,6 +146,14 @@ function module:CountInstancesOf(prefab)
 	return #self.prefabs_to_track[prefab]
 end
 
+function module:GetInstancesOf(prefab)
+	if not self.prefabs_to_track[prefab] then
+		return {}
+	end
+
+	return self.prefabs_to_track[prefab]
+end
+
 --- Checks if there is at least 1 instance of the tracked prefab
 function module:WorldHasInstanceOf(prefab)
 	return self:CountInstancesOf(prefab) > 0

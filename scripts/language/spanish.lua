@@ -1198,6 +1198,11 @@ return {
 		full_charge = "Fully charged!",
 	},
 
+	-- wx78_scanner.lua [Prefab]
+	wx78_scanner = {
+		scan_progress = "Scan progress: %.1f%%",
+	},
+
 	-- yotb_sewer.lua
 	yotb_sewer = "Terminará de coser en: %s",
 }

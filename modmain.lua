@@ -186,6 +186,7 @@ Time = import("time")
 Color = import("helpers/color")
 rpcNetwork = import("rpcnetwork")
 combatHelper = import("helpers/combat")
+entity_tracker = import("helpers/entitytracker")
 
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
 SHOW_INFO_ORIGIN = false
@@ -793,6 +794,18 @@ local function GetComponentDescriptor(name)
 				res.name = res.name or name
 				setmetatable(res, { })
 			end
+			
+			if res.OnServerInit then
+				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+					res.OnServerInit()
+				end
+			end
+
+			if res.OnClientInit then
+				if IS_DS or IsClient() or IsClientHost() then
+					res.OnClientInit()
+				end
+			end
 
 			return res
 		else
@@ -855,6 +868,23 @@ local function GetPrefabDescriptor(name)
 			if getmetatable(res) == nil then
 				res.name = res.name or name
 				setmetatable(res, {  })
+			end
+
+			if getmetatable(res) == nil then
+				res.name = res.name or name
+				setmetatable(res, { })
+			end
+			
+			if res.OnServerInit then
+				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+					res.OnServerInit()
+				end
+			end
+
+			if res.OnClientInit then
+				if IS_DS or IsClient() or IsClientHost() then
+					res.OnClientInit()
+				end
 			end
 
 			return res
@@ -1935,6 +1965,10 @@ setmetatable(Insight.descriptors, {
 		rawset(self, index, value)
 		return value
 	end,
+	__call = function(self, index)
+		-- Just the same as __index except we don't have to do anything with the result.
+		return self[index]
+	end,
 	__metatable = "[Insight] This metatable is locked."
 })
 
@@ -1944,6 +1978,10 @@ setmetatable(Insight.prefab_descriptors, {
 		local value = GetPrefabDescriptor(index)
 		rawset(self, index, value)
 		return value
+	end,
+	__call = function(self, index)
+		-- Just the same as __index except we don't have to do anything with the result.
+		return self[index]
 	end,
 	__metatable = "[Insight] This metatable is locked."
 })
@@ -2476,7 +2514,6 @@ if IS_DST then
 	
 	--======================= PostInits =======================================================================================
 	if TheNet and TheNet:GetIsMasterSimulation() then
-		local entity_tracker = import("helpers/entitytracker")
 		entity_tracker:TrackPrefab("rainometer")
 	end
 
@@ -3551,6 +3588,10 @@ if IS_DS or IsClient() or IsClientHost() then
 	entityManager = import("helpers/entitymanager")
 	import("clientmodmain")
 end
+
+
+-- Further Post Inits
+Insight.prefab_descriptors("wx78_scanner")
 
 
 --==========================================================================================================================

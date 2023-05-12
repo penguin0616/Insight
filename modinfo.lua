@@ -3457,6 +3457,40 @@ STRINGS = {
 			},
 		},
 	},
+	wx78_scanner_info = {
+		label = {
+			"WX-78 Scanner Info", 
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+		},
+		hover = {
+			"Whether scanning information from WX-78's scanner is shown.", 
+			["zh"] = nil, 
+			["br"] = nil,
+			["es"] = nil,
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Scanning information is not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Scanning information is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	display_health = {
 		label = {
 			"Health", 
@@ -5479,6 +5513,15 @@ configuration_options = {
 		}, 
 		default = 2,
 		tags = {"undefined"},
+	},
+	{
+		name = "wx78_scanner_info",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "display_health",
