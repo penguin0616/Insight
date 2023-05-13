@@ -95,16 +95,10 @@ local function ProcessInformation(context, time_to_attack, target, target_error_
 	end
 end
 
-local function Describe(self, context)
+local function RemoteDescribe(data, context)
 	local description = nil
-	local data = {}
-
-	if self == nil and context.deerclops_data then
-		data = context.deerclops_data
-	elseif self and context.deerclops_data == nil then
-		data = GetDeerclopsData(self)
-	else
-		error(string.format("deerclopsspawner.Describe improperly called with self=%s & deerclops_data=%s", tostring(self), tostring(context.deerclops_data)))
+	if not data then
+		return nil
 	end
 
 	if data.time_to_attack then
@@ -179,7 +173,7 @@ local function DangerAnnouncementDescribe(special_data, context)
 end
 
 return {
-	Describe = Describe,
+	RemoteDescribe = RemoteDescribe,
 	GetDeerclopsData = GetDeerclopsData,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
 	DangerAnnouncementDescribe = DangerAnnouncementDescribe,

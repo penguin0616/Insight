@@ -27,16 +27,10 @@ local function GetAntlionData(inst)
 	}
 end
 
-local function Describe(self, context)
+local function RemoteDescribe(data, context)
 	local description = nil
-
-	local data
-	if self == nil and context.antlion_data then
-		data = context.antlion_data
-	elseif self and context.antlion_data == nil then
-		data = GetAntlionData(self.inst)
-	else
-		error(string.format("sinkholespawner.Describe improperly called with self=%s & antlion_data=%s", tostring(self), tostring(context.bearger_data)))
+	if not data then
+		return nil
 	end
 
 	local time_to_rage = data.time_to_rage
@@ -76,7 +70,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 end
 
 return {
-	Describe = Describe,
+	RemoteDescribe = RemoteDescribe,
 	GetAntlionData = GetAntlionData,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

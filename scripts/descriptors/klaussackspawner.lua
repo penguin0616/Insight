@@ -54,16 +54,10 @@ local function GetKlausSackData(self)
 	}
 end
 
-local function Describe(self, context)
+local function RemoteDescribe(data, context)
 	local description = nil
-	local data = {}
-
-	if self == nil and context.klaussack_data then
-		data = context.klaussack_data
-	elseif self and context.klaussack_data == nil then
-		data = GetKlausSackData(self)
-	else
-		error(string.format("klaussackspawner.Describe improperly called with self=%s & klaussack_data=%s", tostring(self), tostring(context.klaussack_data)))
+	if not data then
+		return nil
 	end
 
 	if data.despawn_day then
@@ -110,7 +104,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 end
 
 return {
-	Describe = Describe,
+	RemoteDescribe = RemoteDescribe,
 	GetKlausSackData = GetKlausSackData,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
 }

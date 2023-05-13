@@ -39,16 +39,10 @@ local function GetToadstoolData(self)
 	}
 end
 
-local function Describe(self, context)
+local function RemoteDescribe(data, context)
 	local description = nil
-	local data = nil
-
-	if self == nil and context.toadstool_data then
-		data = context.toadstool_data
-	elseif self and context.toadstool_data == nil then
-		data = GetToadstoolData(self)
-	else
-		error(string.format("deerclopsspawner.Describe improperly called with self=%s & toadstool_data=%s", tostring(self), tostring(context.toadstool_data)))
+	if not data then
+		return nil
 	end
 	
 	if data.time_to_respawn then
@@ -84,7 +78,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 end
 
 return {
-	Describe = Describe,
+	RemoteDescribe = RemoteDescribe,
 	GetToadstoolData = GetToadstoolData,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }

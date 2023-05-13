@@ -94,16 +94,10 @@ local function ProcessInformation(context, time_to_attack, target, target_error_
 	end
 end
 
-local function Describe(self, context)
+local function RemoteDescribe(data, context)
 	local description = nil
-	local data = {}
-
-	if self == nil and context.bearger_data then
-		data = context.bearger_data
-	elseif self and context.bearger_data == nil then
-		data = GetBeargerData(self)
-	else
-		error(string.format("beargerspawner.Describe improperly called with self=%s & bearger_data=%s", tostring(self), tostring(context.bearger_data)))
+	if not data then
+		return nil
 	end
 
 	if data.time_to_attack then
@@ -181,7 +175,7 @@ end
 
 
 return {
-	Describe = Describe,
+	RemoteDescribe = RemoteDescribe,
 	GetBeargerData = GetBeargerData,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
 	DangerAnnouncementDescribe = DangerAnnouncementDescribe,

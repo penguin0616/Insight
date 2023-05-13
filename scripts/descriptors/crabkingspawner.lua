@@ -28,19 +28,10 @@ local function GetCrabKingData(inst)
 	}
 end
 
-local function Describe(self, context)
+local function RemoteDescribe(data, context)
 	local description = nil
-	local data = {}
-
-	-- in QoL beta, self == [inst] crabking_spawner
-	-- otherwise, self == [component] crabkingspawner
-
-	if self == nil and context.crabking_data then
-		data = context.crabking_data
-	elseif self and context.crabking_data == nil then
-		data = GetCrabKingData(TheWorld.shard.components.shard_insight.notables.crabking_spawner)
-	else
-		error(string.format("crabkingspawner.Describe improperly called with self=%s & crabking_data=%s", tostring(self), tostring(context.crabking_data)))
+	if not data then
+		return nil
 	end
 
 	if data.time_to_respawn then
@@ -76,7 +67,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 end
 
 return {
-	Describe = Describe,
+	RemoteDescribe = RemoteDescribe,
 	GetCrabKingData = GetCrabKingData,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }
