@@ -187,7 +187,9 @@ function LoadComplexConfiguration()
 		end
 	end
 
-	insightSaveData:Save()
+	if insightSaveData:IsDirty() then
+		insightSaveData:Save()
+	end
 
 	-- "Load" the config
 	local loaded_data = deepcopy(modinfo.complex_configuration_options)
@@ -643,7 +645,7 @@ local function LoadLocalPlayer(player)
 end
 
 function SendConfigurationToServer()
-	rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ProcessConfiguration"), json.encode({
+	local data = {
 		configs = {
 			vanilla = GenerateConfiguration(),
 			external = GenerateExternalConfiguration(),
@@ -655,7 +657,9 @@ function SendConfigurationToServer()
 			DEBUG_ENABLED = DEBUG_ENABLED,
 			server_deaths = GetMorgueDeathsForWorld(TheNet:GetServerName()),
 		},
-	}))
+	}
+
+	rpcNetwork.SendModRPCToServer(GetModRPC(modname, "ProcessConfiguration"), json.encode(data))
 end
 
 function NEW_VERSION_INFO_FN(button)

@@ -935,7 +935,11 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 			insightKeybinds:ChangeKey(v.name, v.saved)
 		end
 	end
-	insightSaveData:Save()
+
+	if insightSaveData:IsDirty() then
+		insightSaveData:Save()
+	end
+
 	settings.keybind = nil
 
 	-- Do listbox settings
@@ -945,7 +949,11 @@ function InsightConfigurationScreen:ApplyChanges(callback)
 			insightSaveData:Get("configuration_options")[v.name] = v.saved
 		end
 	end
-	insightSaveData:Save()
+
+	if insightSaveData:IsDirty() then
+		insightSaveData:Save()
+	end
+	
 	settings.listbox = nil
 
 	-- Do vanilla settings

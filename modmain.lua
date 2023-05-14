@@ -441,6 +441,18 @@ function GetPlayerContext(player)
 	--return context
 end
 
+function ValidateComplexConfiguration(player, complex_config_table)
+	for name, config in pairs(modinfo.complex_configuration_options) do
+		local val = complex_config_table[name]
+		if config.type == "listbox" then
+			if type(val) ~= "table" then
+				complex_config_table[name] = {}
+				mprintf("!!!!!!!!!! %s had an invalid complex config for %s: %s (%s)", tostring(player), name, tostring(val), type(val))
+			end
+		end
+	end
+end
+
 local CONTEXT_META = {
 	__newindex = function()
 		error("context is readonly")
@@ -454,10 +466,26 @@ local CONTEXT_META = {
 -- @tparam table external_config Configuration from client mods.
 -- @tparam table etc
 function CreatePlayerContext(player, configs, etc)
-	assert(player, "[Insight]: Player is missing!")
-	assert(configs.vanilla, "[Insight]: Config is missing!")
-	assert(configs.external, "[Insight]: external config is missing!")
-	assert(configs.complex, "[Insight]: complex config is missing!")
+	if not player then
+		error("[Insight]: Player is missing!")
+	end
+
+	if type(configs.vanilla) ~= "table" then
+		if IS_DST then TheNet:Kick(player.userid) return end
+		error("[Insight]: Config is invalid!")
+	end
+
+	if type(configs.external) ~= "table" then
+		if IS_DST then TheNet:Kick(player.userid) return end
+		error("[Insight]: external config is invalid!")
+	end
+
+	if type(configs.complex) ~= "table" then
+		if IS_DST then TheNet:Kick(player.userid) return end
+		error("[Insight]: complex config is invalid!")
+	end
+
+	ValidateComplexConfiguration(player, configs.complex)
 	
 
 	local context = {
@@ -502,6 +530,23 @@ function UpdatePlayerContext(player, data)
 
 	local oldLang = context.config["language"]
 	if data.configs then
+		if type(data.configs.vanilla) ~= "table" then
+			if IS_DST then TheNet:Kick(player.userid) return end
+			error("[Insight]: UpdatePlayerContext Config is invalid!")
+		end
+
+		if type(data.configs.external) ~= "table" then
+			if IS_DST then TheNet:Kick(player.userid) return end
+			error("[Insight]: UpdatePlayerContext external config is invalid!")
+		end
+
+		if type(data.configs.complex) ~= "table" then
+			if IS_DST then TheNet:Kick(player.userid) return end
+			error("[Insight]: UpdatePlayerContext complex config is invalid!")
+		end
+
+		ValidateComplexConfiguration(player, data.configs.complex)
+
 		context.config = setmetatable(data.configs.vanilla, CONTEXT_META)
 		context.external_config = setmetatable(data.configs.external, CONTEXT_META)
 		context.complex_config = setmetatable(data.configs.complex, CONTEXT_META)

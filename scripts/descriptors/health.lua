@@ -74,7 +74,7 @@ local function Describe(self, context)
 
 	local naughtiness_table = nil
 
-	if context.config["naughtiness_verbosity"] > 0 and not inst:HasTag("player") then
+	if (type(context.config["naughtiness_verbosity"]) == "number" and context.config["naughtiness_verbosity"] > 0) and not inst:HasTag("player") then
 		local naughtiness = GetNaughtiness(inst, context)
 		if naughtiness and naughtiness ~= 0 then
 			naughtiness_table = { name="naughtiness", priority=0 }
