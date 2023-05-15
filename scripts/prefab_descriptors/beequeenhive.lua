@@ -19,6 +19,50 @@ directory. If not, please refer to
 ]]
 
 -- beequeenhive.lua [Prefab]
+local BEE_QUEEN_HIVE_STAGES = {
+	[1] = "hivegrowth1",
+	[2] = "hivegrowth2",
+	[3] = "hivegrowth",
+}
+
+local function GetRespawnTime(inst)
+	local remaining_time
+
+	for stage, name in pairs(BEE_QUEEN_HIVE_STAGES) do
+		local t = inst.components.timer:GetTimeElapsed(name) -- how far we are in the timer, instead of how much time left
+		if t then
+			remaining_time = TUNING.BEEQUEEN_RESPAWN_TIME
+			for _ = 1, stage - 1 do
+				remaining_time = remaining_time - TUNING.BEEQUEEN_RESPAWN_TIME / #BEE_QUEEN_HIVE_STAGES
+			end
+			remaining_time = remaining_time - t
+			break
+		end
+	end
+
+	return remaining_time
+end
+
+local function RemoteDescribe(data, context)
+	local beequeen_respawn = data or -1
+	if beequeen_respawn >= 0 then
+		local description = context.time:SimpleProcess(beequeen_respawn)
+		return {
+			description = description,
+			icon = {
+				atlas = "images/Beequeen.xml",
+				tex = "Beequeen.tex",
+			},
+			worldly = true, -- meeeh
+			prefably = true,
+			from = "prefab",
+			time_to_respawn = beequeen_respawn,
+		}
+	end
+
+	return nil
+end
+
 local function StatusAnnoucementsDescribe(special_data, context)
 	if not special_data.time_to_respawn then
 		return
@@ -36,5 +80,8 @@ local function StatusAnnoucementsDescribe(special_data, context)
 end
 
 return {
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	GetRespawnTime = GetRespawnTime,
+	
+	RemoteDescribe = RemoteDescribe,
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
 }

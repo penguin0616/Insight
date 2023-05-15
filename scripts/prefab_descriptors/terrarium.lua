@@ -22,6 +22,11 @@ directory. If not, please refer to
 local HEALTH_PER_DAY = TUNING.EYEOFTERROR_HEALTHPCT_PERDAY * TUNING.EYEOFTERROR_HEALTH -- =250
 local MAX_GAIN_DAYS = 1/TUNING.EYEOFTERROR_HEALTHPCT_PERDAY -- =20
 
+local function GetRemainingCooldown(inst)
+	if inst.components.worldsettingstimer then
+		return inst.components.worldsettingstimer:GetTimeLeft("cooldown")
+	end
+end
 
 local function RemoteDescribe(data, context)
 	local cooldown = data or -1
@@ -145,6 +150,8 @@ local function StatusAnnoucementsDescribe(special_data, context, inst)
 end
 
 return {
+	GetRemainingCooldown = GetRemainingCooldown,
+	
 	Describe = Describe,
 	RemoteDescribe = RemoteDescribe,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe

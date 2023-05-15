@@ -46,7 +46,7 @@ local function Describe(inst, context)
 
 	-- close enough to ancient gateway?
 	local atrium_string = nil
-	local stargate = TheWorld.shard.components.shard_insight.notables.atrium_gate
+	local stargate = TheWorld.shard.components.shard_insight.atrium_gate
 	if stargate and context.player.components.areaaware:CurrentlyInTag("Atrium") then
 		local distance = inst:GetDistanceSqToInst(stargate)
 		-- 1 geo stud is 3 to 0.5

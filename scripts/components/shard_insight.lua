@@ -24,12 +24,6 @@ setfenv(1, _G.Insight.env)
 --[[ Constants ]]
 --------------------------------------------------------------------------
 
-local R15_QOL_WORLDSETTINGS = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS")
-local BEE_QUEEN_HIVE_STAGES = {
-	[1] = "hivegrowth1",
-	[2] = "hivegrowth2",
-	[3] = "hivegrowth",
-}
 
 --[[
 return {
@@ -61,12 +55,10 @@ return {
 --------------------------------------------------------------------------
 --[[ Private Variables ]]
 --------------------------------------------------------------------------
-local DRAGONFLY_SPAWNTIMER = R15_QOL_WORLDSETTINGS and assert(util.recursive_getupvalue(_G.Prefabs.dragonfly_spawner.fn, "DRAGONFLY_SPAWNTIMER"), "Unable to find \"DRAGONFLY_SPAWNTIMER\"") --"regen_dragonfly"
 
 --------------------------------------------------------------------------
 --[[ Event Handlers ]]
 --------------------------------------------------------------------------
-
 local function OnWorldDataDirty(src, event_data, world_data)
 	local self = src.shard.components.shard_insight
 
@@ -86,66 +78,6 @@ local function OnWorldDataDirty(src, event_data, world_data)
 end
 
 --------------------------------------------------------------------------
---[[ Remain Descriptors ]]
---------------------------------------------------------------------------
-
-local function AtriumGate(data, context)
-	local atrium_gate_cooldown = data or -1
-	if atrium_gate_cooldown >= 0 then
-		local description = context.time:SimpleProcess(atrium_gate_cooldown)
-		return {
-			description = description,
-			icon = {
-				atlas = "images/Atrium_Gate.xml",
-				tex = "Atrium_Gate.tex"
-			},
-			worldly = true, -- meeeh
-			prefably = true,
-			from = "prefab",
-			cooldown = atrium_gate_cooldown,
-		}
-	end
-	return nil
-end
-
-local function Dragonfly(data, context)
-	local dragonfly_respawn = data or -1
-	if dragonfly_respawn >= 0 then
-		local description = context.time:SimpleProcess(dragonfly_respawn)
-		return {
-			description = description,
-			icon = {
-				atlas = "images/Dragonfly.xml",
-				tex = "Dragonfly.tex",
-			},
-			worldly = true, -- meeeh
-			prefably = true,
-			from = "prefab",
-			time_to_respawn = dragonfly_respawn,
-		}
-	end
-	return nil
-end
-local function BeeQueen(data, context)
-	local beequeen_respawn = data or -1
-	if beequeen_respawn >= 0 then
-		local description = context.time:SimpleProcess(beequeen_respawn)
-		return {
-			description = description,
-			icon = {
-				atlas = "images/Beequeen.xml",
-				tex = "Beequeen.tex",
-			},
-			worldly = true, -- meeeh
-			prefably = true,
-			from = "prefab",
-			time_to_respawn = beequeen_respawn,
-		}
-	end
-	return nil
-end
-
---------------------------------------------------------------------------
 --[[ Shard_Insight ]]
 --------------------------------------------------------------------------
 
@@ -155,9 +87,9 @@ local Shard_Insight = Class(function(self, inst)
 
 	self.shard_data_fetcher = {}
 	self.shard_descriptors = {
-		atrium_gate = AtriumGate,
-		dragonfly_spawner = Dragonfly,
-		beequeenhive = BeeQueen,
+		atrium_gate = Insight.prefab_descriptors.atrium_gate and Insight.prefab_descriptors.atrium_gate.RemoteDescribe or nil,
+		dragonfly_spawner = Insight.prefab_descriptors.dragonfly_spawner and Insight.prefab_descriptors.dragonfly_spawner.RemoteDescribe or nil,
+		beequeenhive = Insight.prefab_descriptors.beequeenhive and Insight.prefab_descriptors.beequeenhive.RemoteDescribe or nil,
 		terrarium = Insight.prefab_descriptors.terrarium and Insight.prefab_descriptors.terrarium.RemoteDescribe or nil,
 	}
 	for index, value in ipairs({
@@ -225,23 +157,15 @@ function Shard_Insight:SetAtriumGate(entity)
 		return
 	end
 
+	self.atrium_gate = entity
+
 	self:RegisterWorldDataFetcher("atrium_gate", function()
-		local atriumgate_timer
-		if entity then
-			-- destabilizing = time before reset
-			-- cooldown = time before can resocket the key
-			-- destabilizedelay = time before can pulse on rejoin
-			if R15_QOL_WORLDSETTINGS then
-				atriumgate_timer = entity.components.worldsettingstimer:GetTimeLeft("cooldown")
-			else
-				atriumgate_timer = entity.components.timer:GetTimeLeft("cooldown")
-			end
-		end
-		return atriumgate_timer
+		return Insight.prefab_descriptors.atrium_gate and Insight.prefab_descriptors.atrium_gate.GetRemainingCooldown and Insight.prefab_descriptors.atrium_gate.GetRemainingCooldown(entity) or nil
 	end)
 
 
 	entity:ListenForEvent("onremove", function()
+		self.atrium_gate = nil
 		self:RemoveWorldDataFetcher("atrium_gate")
 	end)
 	mprint("Got atrium_gate")
@@ -254,15 +178,7 @@ function Shard_Insight:SetDragonflySpawner(entity)
 	end
 
 	self:RegisterWorldDataFetcher("dragonfly_spawner", function()
-		local dragonfly_spawner_timer = nil
-		if entity then
-			if R15_QOL_WORLDSETTINGS then
-				dragonfly_spawner_timer = entity.components.worldsettingstimer:GetTimeLeft(DRAGONFLY_SPAWNTIMER)
-			else
-				dragonfly_spawner_timer = entity.components.timer:GetTimeLeft("regen_dragonfly")
-			end
-		end
-		return dragonfly_spawner_timer
+		return Insight.prefab_descriptors.dragonfly_spawner and Insight.prefab_descriptors.dragonfly_spawner.GetRespawnTime and Insight.prefab_descriptors.dragonfly_spawner.GetRespawnTime(entity) or nil
 	end)
 
 	entity:ListenForEvent("onremove", function()
@@ -278,25 +194,7 @@ function Shard_Insight:SetBeeQueenHive(entity)
 	end
 
 	self:RegisterWorldDataFetcher("beequeenhive", function()
-		local beequeenhive_timer
-		if entity then
-			local remaining_time
-
-			for stage, name in pairs(BEE_QUEEN_HIVE_STAGES) do
-				local t = entity.components.timer:GetTimeElapsed(name) -- how far we are in the timer, instead of how much time left
-				if t then
-					remaining_time = TUNING.BEEQUEEN_RESPAWN_TIME
-					for _ = 1, stage - 1 do
-						remaining_time = remaining_time - TUNING.BEEQUEEN_RESPAWN_TIME / #BEE_QUEEN_HIVE_STAGES
-					end
-					remaining_time = remaining_time - t
-					break
-				end
-			end
-
-			beequeenhive_timer = remaining_time
-		end
-		return beequeenhive_timer
+		return Insight.prefab_descriptors.beequeenhive and Insight.prefab_descriptors.beequeenhive.GetRespawnTime and Insight.prefab_descriptors.beequeenhive.GetRespawnTime(entity) or nil
 	end)
 
 	entity:ListenForEvent("onremove", function()
@@ -312,13 +210,7 @@ function Shard_Insight:SetTerrarium(entity)
 	end
 
 	self:RegisterWorldDataFetcher("terrarium", function()
-		local terrarium_timer
-		if entity then
-			if entity.components.worldsettingstimer then
-				terrarium_timer = entity.components.worldsettingstimer:GetTimeLeft("cooldown")
-			end
-		end
-		return terrarium_timer
+		return Insight.prefab_descriptors.terrarium and Insight.prefab_descriptors.terrarium.GetRemainingCooldown and Insight.prefab_descriptors.terrarium.GetRemainingCooldown(entity) or nil
 	end)
 
 	entity:ListenForEvent("onremove", function()

@@ -19,6 +19,40 @@ directory. If not, please refer to
 ]]
 
 -- atrium_gate.lua [Prefab]
+local R15_QOL_WORLDSETTINGS = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS")
+
+local function GetRemainingCooldown(inst)
+	local atriumgate_timer
+	-- destabilizing = time before reset
+	-- cooldown = time before can resocket the key
+	-- destabilizedelay = time before can pulse on rejoin
+	if R15_QOL_WORLDSETTINGS then
+		atriumgate_timer = inst.components.worldsettingstimer:GetTimeLeft("cooldown")
+	else
+		atriumgate_timer = inst.components.timer:GetTimeLeft("cooldown")
+	end
+	return atriumgate_timer
+end
+
+local function RemoteDescribe(data, context)
+	local atrium_gate_cooldown = data or -1
+	if atrium_gate_cooldown >= 0 then
+		local description = context.time:SimpleProcess(atrium_gate_cooldown)
+		return {
+			description = description,
+			icon = {
+				atlas = "images/Atrium_Gate.xml",
+				tex = "Atrium_Gate.tex"
+			},
+			worldly = true, -- meeeh
+			prefably = true,
+			from = "prefab",
+			cooldown = atrium_gate_cooldown,
+		}
+	end
+	return nil
+end
+
 local function StatusAnnoucementsDescribe(special_data, context)
 	if not special_data.cooldown then
 		-- Not like we can do anything...
@@ -37,5 +71,8 @@ local function StatusAnnoucementsDescribe(special_data, context)
 end
 
 return {
+	GetRemainingCooldown = GetRemainingCooldown,
+
+	RemoteDescribe = RemoteDescribe,
 	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }
