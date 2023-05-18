@@ -336,7 +336,7 @@ end
 --================================================================================================================================================================--
 
 --- Checks whether we are in DS.
--- @return boolean
+---@return boolean
 function IsDS()
 	return TheSim:GetGameID() == "DS"
 end
@@ -469,6 +469,7 @@ local CONTEXT_META = {
 	--__tostring = function(self) return string.format("Player Context (%s): %s", tostring(self.player), self._name or "ADDR") end,
 	__metatable = "[Insight] The metatable is locked"
 }
+
 --- Creates player's insight context.
 ---@param player EntityScript Player to create context for.
 ---@param configs table Holds the different config types: vanilla, external, complex.
@@ -529,6 +530,9 @@ function CreatePlayerContext(player, configs, etc)
 	player_contexts[player] = context
 end
 
+--- Updates a player's context if they already have one.
+---@param player EntityScript
+---@param data table
 function UpdatePlayerContext(player, data)
 	local context = player_contexts[player]
 	if not context then
@@ -692,8 +696,8 @@ function GetWorldType()
 end
 
 --- Custom print command specifically for the mod.
--- Indicates that a print came from the mod.
--- @param ... can be pretty much anything
+--- Indicates that a print came from the mod.
+---@param ... @can be pretty much anything
 function mprint(...)
 	local msg, argnum = "", select("#",...)
 	for i = 1, argnum do
@@ -721,6 +725,9 @@ function mprint(...)
 	return print(prefix .. "[" .. ModInfoname(modname) .. "]:\t" .. msg)
 end
 
+--- Mod print with formatting with 'safe' formatting arguments
+---@param strf string The string to be formatted.
+---@param ... @Can be anything, all inputs here get tostring'd.
 function mprintf(strf, ...)
 	local n = select("#", ...)
 	local args = {...}
@@ -731,6 +738,9 @@ function mprintf(strf, ...)
 	return mprint(string.format(strf, unpack(args, 1, n)))
 end
 
+--- Error with formatting that takes arguments that are made safe.
+---@param level number|string If this is a number, this is the error level. If this is a string, this parameter becomes error_pattern.
+---@param error_pattern string|... This can be the error pattern if it wasn't used already. Otherwise, it's part of the vararg used for formatting.
 function errorf(level, error_pattern, ...)
 	local t = type(level)
 
@@ -745,6 +755,7 @@ function errorf(level, error_pattern, ...)
 	end
 end
 
+--- Debug print that only shows if DEBUG_ENABLED is true.
 function dprint(...)
 	if not DEBUG_ENABLED then
 		return
@@ -752,6 +763,9 @@ function dprint(...)
 	mprint(...)
 end
 
+--- Debug print with formatting.
+---@param strf string The string to be formatted.
+---@param ... @Can be anything, all inputs here get tostring'd.
 function dprintf(strf, ...)
 	if not DEBUG_ENABLED then
 		return
@@ -766,6 +780,8 @@ function dprintf(strf, ...)
 	return dprint(string.format(strf, unpack(args, 1, n)))
 end 
 
+--- Special print I use when testing multiple shard clusters. Sends print string over an RPC to my client.
+---@param ... @Can be anything, all inputs here get tostring'd.
 function cprint(...)
 	if not TheNet:GetClientTableForUser(MyKleiID) then
 		return
@@ -819,6 +835,9 @@ local function hex_dump(buf)
 	return s
 end
 
+--- Unloads a loaded component descriptor and clears the import cache for the file.
+--- NOTE: THIS DOES NOT CLEAN UP ANYTHING THAT COULD HAVE BEEN DONE BY THE DESCRIPTOR
+---@param name string
 function UnloadComponentDescriptor(name)
 	if import.has_loaded(name) then
 		import.clear("descriptors/" .. name)

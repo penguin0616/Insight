@@ -620,7 +620,7 @@ end
 --- Returns the first result of the table that agrees with param 'fn'
 ---@param tbl table
 ---@param fn function
--- @return anything
+---@return any
 function module.table_find(tbl, fn)
 	local typ = type(fn)
 
@@ -672,7 +672,7 @@ end
 --- Retrives value from a table and removes the key.
 ---@param tbl table
 ---@param index ?int|string
--- @return
+---@return any
 function module.table_extract(tbl, index)
 	local typ = type(tbl)
 	if typ ~= "table" then
@@ -781,7 +781,7 @@ end
 --- Retrives the first upvalue that matches the arguments.
 ---@param func function
 ---@param name string
--- @return
+---@return any, boolean @The boolean indicates whether the serach was successful or not.
 function module.getupvalue(func, name)
 	local i = 1
 	while true do
@@ -866,7 +866,7 @@ end
 --- Retrives the first local that matches the arguments.
 ---@param level integer
 ---@param name string
--- @return
+---@return any
 function module.getlocal(level, name) 
 	local i = 1
 	while true do
@@ -909,9 +909,9 @@ end
 
 --- Retrives and replaces the first upvalue that matches the arguments.
 ---@param func function
----@param name string
+---@param name string Name of the upvalue to search for.
 ---@param replacement
--- @return
+---@return any
 function module.replaceupvalue(func, name, replacement)
 	if type(name) ~= "string" then
 		error("argument #2 expected string, got " .. type(name))

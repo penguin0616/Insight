@@ -195,7 +195,7 @@ local function RecipePopup_Refresh(self)
 end
 
 --- Returns whether the old crafting system is available.
--- @return boolean
+---@return boolean
 module.IsUsingOldCraftingMenu = function() 
 	return RecipePopupExists
 end
