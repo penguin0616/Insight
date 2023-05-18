@@ -103,6 +103,15 @@ local Insight = {
 		SHALLOWS = "#66A570", -- shallows in SW
 		NATURE = "#9BD554", --"#8BA94B", -- palm tree
 
+		-- took these time ones from the clock
+		DAY_BRIGHT = "#FDD356",
+		DAY_DARK = "#BF9F41",
+		DUSK_BRIGHT = "#A55B52",
+		DUSK_DARK = "#7B433D",
+		NIGHT_BRIGHT = "#4A546B",
+		NIGHT_DARK = "#7B433D",
+
+
 		-- foods
 		MEAT = "#955D70", -- meat icon
 		MONSTER = "#7D4381", -- monster meat icon
@@ -247,7 +256,7 @@ local descriptors_ignore = {
 	"sandstormwatcher", "reader", "plantregistryupdater", "moonstormwatcher", "hudindicatable", "cookbookupdater", "wereeater", -- from mousing over player
 
 	"hauntable", "savedrotation", "halloweenmoonmutable", "storytellingprop", "floater", "spawnfader", "transparentonsanity", "beefalometrics", "uniqueid", "reticule", -- don't care
-	"complexprojectile", "shedder", "disappears", "oceanfishingtackle", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
+	"complexprojectile", "shedder", "disappears", "shelf", "maprevealable", "winter_treeseed", "summoningitem", "portablestructure", "deployhelper", -- don't care
 	"symbolswapdata", "amphibiouscreature", "gingerbreadhunt", "nutrients_visual_manager", "vase", "vasedecoration", "murderable", "poppable", "balloonmaker", "heavyobstaclephysics", -- don't care
 	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
 	"cattoy", "updatelooper", "upgrademoduleremover", "hudindicatablemanager", "moonstormlightningmanager", "playerhearing", "walkableplatformplayer", "hudindicatorwatcher", "seamlessplayerswapper", -- don't care

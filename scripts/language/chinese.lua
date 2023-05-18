@@ -832,6 +832,25 @@ return {
 	-- oar.lua
 	oar_force = "<color=INEDIBLE>力度</color>: <color=INEDIBLE>%s%%</color>",
 
+	-- oceanfishingrod.lua
+	oceanfishingrod = {
+
+	},
+
+	-- oceanfishingtackle.lua
+	oceanfishingtackle = {
+		casting = {
+			bonus_distance = "Bonus distance: %s",
+			bonus_accuracy = "Bonus accuracy: <color=#66CC00>%+.1f%%<sub>min</sub></color> / <color=#5B63D2>%+.1f%%<sub>max</sub></color>",
+		},
+		lure = {
+			charm = "Charm: <color=#66CC00>%.1f<sub>base</sub></color> + <color=#5B63D2>%.1f<sub>reel</sub></color>",
+			stamina_drain = "Bonus stamina drain: %.1f",
+			time_of_day_modifier = "Phase effectiveness: <color=DAY_BRIGHT>%d%%<sub>day</sub></color> / <color=DUSK_BRIGHT>%d%%<sub>dusk</sub></color> / <color=NIGHT_BRIGHT>%d%%<sub>night</sub></color>",
+			weather_modifier = "Weather effectiveness: <color=#bbbbbb>%d%%<sub>clear</sub></color> / <color=#7BA3F2>%d%%<sub>raining</sub></color> / <color=FROZEN>%d%%<sub>snowing</sub></color>",
+		},
+	},
+
 	-- oceantree.lua [Prefab]
 	oceantree_supertall_growth_progress = "疙瘩树生长进度: %s / %s",
 	

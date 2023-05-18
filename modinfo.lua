@@ -2740,6 +2740,40 @@ STRINGS = {
 			},
 		},
 	},
+	display_tackle_information = {
+		label = {
+			"Tackle information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether to show information about floats and lures.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Tackle information is not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Tackle information is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	display_spawner_information = {
 		label = {
 			"Spawner information", 
@@ -5358,6 +5392,15 @@ configuration_options = {
 		},
 		default = true,
 		tags = {"undefined"},
+	},
+	{
+		name = "display_tackle_information",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"dst_only", "undefined"},
 	},
 	{
 		name = "display_spawner_information",

@@ -567,6 +567,24 @@ function CombineLines(...)
 	return (lines and table.concat(lines, "\n")) or nil
 end
 
+--- Combines inputs into a single string seperated by a separator.
+-- @tparam ?string|nil ...
+-- @treturn string
+function CombineStrings(separator, ...)
+	local lines, argnum = nil, select("#",...)
+
+	for i = 1, argnum do
+		local v = select(i, ...)
+		
+		if v ~= nil then
+			lines = lines or {}
+			lines[#lines+1] = tostring(v)
+		end
+	end
+
+	return (lines and table.concat(lines, separator)) or nil
+end
+
 -- This is originally from https://stackoverflow.com/a/53038524/887438
 -- I edited it to be able to pass in a value in place of a function and pass in additional arguments.
 -- For some reason, this runs better in a normal 5.1 than the hardcoded version in the pastebin test in the source link though. Weird.
