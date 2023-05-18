@@ -81,9 +81,9 @@ _G.pritty=pretty
 _G.strclass=strclass
 
 --- Yes.
--- @tparam class_to_patch Class This is the original class that requested a global patching.
--- @tparam klass Class This is the current subclass or whatever that is receiving the patches.
--- @tparam patches table These are the patches.
+---@param Class class_to_patch This is the original class that requested a global patching.
+---@param Class klass This is the current subclass or whatever that is receiving the patches.
+---@param table patches These are the patches.
 local function ApplyClassPatches(class_to_patch, klass, patches)
 	-- Note that we cannot do any checks based on class_to_patch.
 	-- If we do so, they risk losing integrity because the class contents will change.

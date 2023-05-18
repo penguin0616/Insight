@@ -53,8 +53,8 @@ local ratio = 1 / PLACER_SCALE -- "s" in placer_postinit_fn in firesuppressor
 --------------------------------------------------------------------------
 
 --- Changes the visibility of the indicator.
--- @param inst The indicator
--- @tparam bool bool
+---@param inst EntityScript The indicator
+---@param bool boolean
 local function ChangeIndicatorVisibility(inst, bool)
 	-- so i looked at bee queen's :Hide("honey0") and stuff, broke it down in spriter. didn't show up at all, so i edited anim.bin in n++ to see if references to that string was there, they were.
 	-- looked at my thing's anim.bin, tried a few of the strings, and apparently this is the winner.

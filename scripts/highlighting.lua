@@ -173,7 +173,7 @@ end)
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
 --- Returns prefab name from texture (used for UIs)
--- @tparam string tex
+---@param tex string
 -- @treturn ?string|nil
 local function GetPrefabFromTexture(tex)
 	if texturePrefabCache[tex] then

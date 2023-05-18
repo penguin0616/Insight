@@ -31,7 +31,7 @@ local Y_OFFSET = -120
 local statusAnnouncementsPresent = false
 
 --- Generates the hover text string. 
--- @tparam bool plain Whether formatting tags are included.
+---@param plain boolean Whether formatting tags are included.
 local function GetChargeString(plain)
 	local context = GetPlayerContext(localPlayer)
 	local info = localPlayer.replica.insight:GetInformation(localPlayer)

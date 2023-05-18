@@ -51,7 +51,7 @@ local function GetPlayerNaughtiness(player)
 end
 
 --- [DST] Returns naughtiness value of a creature.
--- @tparam Entity inst The living creature.
+---@param inst EntityScript The living creature.
 -- @treturn number
 local function DST_GetCreatureNaughtiness(inst)
 	if not TheWorld.ismastersim then
@@ -78,7 +78,7 @@ local function DST_GetCreatureNaughtiness(inst)
 end
 
 --- [DS] Returns naughtiness value of a creature.
--- @tparam Entity inst The living creature.
+---@param inst EntityScript The living creature.
 -- @treturn number
 local function GetCreatureNaughtiness(inst)
 	if IS_DST then

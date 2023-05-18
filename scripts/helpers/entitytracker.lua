@@ -67,8 +67,8 @@ end
 --]]
 
 --[[
--- @tparam Component cmp
--- @tparam string name
+---@param cmp Component
+---@param name string
 local function OnComponentPostInit(cmp, name)
 	if not module.components_to_track[name] then
 		error("Somehow tracking a component without it being tracked?")
@@ -81,7 +81,7 @@ end
 
 --[[
 --- Tracks an entity
--- @tparam Entity inst
+---@param inst EntityScript
 function module:TrackEntity(inst)
 	if self.prefabs_to_track[inst.prefab] then
 		OnTrackedEntitySpawned(inst)
@@ -95,7 +95,7 @@ end
 --[[
 --- Tracks a component. Really fits with the name & theme huh?
 -- This is kind of unnecessary but it's kinda "ehhh".
--- @tparam string component
+---@param component string
 function module:TrackComponent(component)
 	if self.components_to_track[component] then
 		error("Attempt to track component more than once.")
@@ -111,7 +111,7 @@ end
 --[[
 --- Tracks a component. If a component gets added to the entity, it starts getting tracked.
 -- This is kind of unnecessary but it's kinda "ehhh".
--- @tparam string component
+---@param component string
 function module:TrackComponentEntities(component)
 	if self.components_to_track[component] then
 		error("Attempt to track component more than once.")
@@ -125,7 +125,7 @@ end
 --]]
 
 --- Tracks a prefab
--- @tparam string prefab
+---@param prefab string
 function module:TrackPrefab(prefab)
 	if self.prefabs_to_track[prefab] then
 		error("Attempt to track prefab more than once.")

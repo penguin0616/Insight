@@ -785,7 +785,7 @@ function InsightConfigurationScreen:PopulateKeybinds(tbl)
 end
 
 --- Prompts user to change config.
--- @tparam config Config_Entry
+---@param config table Config_Entry
 function InsightConfigurationScreen:MapControl(config)
 	local default_text = string.format(STRINGS.UI.CONTROLSSCREEN.DEFAULT_CONTROL_TEXT, KeybindChar(config.default))
 	local body_text = STRINGS.UI.CONTROLSSCREEN.CONTROL_SELECT .. "\n\n" .. default_text

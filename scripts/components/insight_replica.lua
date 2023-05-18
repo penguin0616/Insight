@@ -250,7 +250,7 @@ end
 --------------------------------------------------------------------------
 
 --- Attaches classified for networking
--- @tparam EntityScript ent
+---@param ent EntityScript Classified instance
 function Insight:AttachClassified(ent)
 	if TheWorld.ismastersim then
 		error("AttachClassified on server-side")
@@ -316,7 +316,7 @@ function Insight:Shutdown()
 end
 
 --- Sets world data. 
--- @tparam string data_string World data table encoded as json string
+---@param data_string string World data table encoded as json string
 function Insight:SetWorldData(data_string)
 	if self.classified ~= nil then
 		-- ...Why don't I just move this to an RPC?
@@ -325,7 +325,7 @@ function Insight:SetWorldData(data_string)
 end
 
 --- Sets naughtiness on netvar.
--- @tparam string str String format can be represented as string.format("%d|%d", accumulated, threshold)
+---@param str string String format can be represented as string.format("%d|%d", accumulated, threshold)
 function Insight:SetNaughtiness(str)
 	if self.classified ~= nil then
 		self.classified.net_naughtiness:set(str)
@@ -333,7 +333,7 @@ function Insight:SetNaughtiness(str)
 end
 
 --- Removes an entity from the local cache.
--- @tparam EntityScript entity
+---@param entity EntityScript
 function Insight:InvalidateCachedEntity(entity)
 	-- If this in DST, this will need to go through the netvar. 
 	-- Otherwise, we can just handle it here.
@@ -348,7 +348,7 @@ function Insight:InvalidateCachedEntity(entity)
 end
 
 --- Sets hunt target.
--- @tparam EntityScript target The target entity that will be get an indicator. 
+---@param target EntityScript The target entity that will be get an indicator. 
 function Insight:SetHuntTarget(target)
 	-- If this is DST, this will need to go through the netvar.
 	-- In DS, we can directly send it through the handler.
@@ -360,13 +360,13 @@ function Insight:SetHuntTarget(target)
 end
 
 --- Sets whether the player is currently singing.
--- @tparam bool bool
+---@param bool boolean
 function Insight:SetBattleSongActive(bool)
 	self.net_battlesong_active:set(bool)
 end
 
 --- Sets hunger rate.
--- @tparam float rate
+---@param rate number
 function Insight:SetHungerRate(rate)
 	if not IS_DST then
 		error("Insight_Replica::SetHungerRate only works in DST.")
@@ -379,7 +379,7 @@ function Insight:SetHungerRate(rate)
 end
 
 --- Sets the sanity rate.
--- @tparam float rate
+---@param rate number
 function Insight:SetSanityRate(rate)
 	if not IS_DST then
 		error("Insight_Replica::SetSanityRate only works in DST.")
@@ -392,7 +392,7 @@ function Insight:SetSanityRate(rate)
 end
 
 --- Sets the moisture rate.
--- @tparam float rate
+---@param rate number
 function Insight:SetMoistureRate(rate)
 	if not IS_DST then
 		error("Insight_Replica::SetMoistureRate only works in DST.")
@@ -405,7 +405,7 @@ function Insight:SetMoistureRate(rate)
 end
 
 --- Sets moon cycle on netvar.
--- @tparam integer int The current position in the moon cycle.
+---@param int integer The current position in the moon cycle.
 function Insight:SetMoonCycle(int)
 	if self.classified ~= nil then
 		self.classified.net_moon_cycle:set_local(int)
@@ -417,14 +417,14 @@ end
 --[[ Classified Handlers ]]
 --------------------------------------------------------------------------
 --- Called when we receive new naughtiness data.
--- @tparam table data
+---@param data table
 function Insight:OnNaughtinessDirty(data)
 	-- { actions = actions, threshold = threshold }
 	self.inst:PushEvent("naughtydelta", data) -- This is an event that gets listened to by Combined Status
 end
 
 ---
--- @tparam EntityScript entity
+---@param entity EntityScript
 function Insight:OnInvalidateCachedEntity(entity)
 	-- This can trigger when going into the caves because the backpack container closes.
 	-- The replica has shutdown by then.
@@ -440,7 +440,7 @@ function Insight:OnInvalidateCachedEntity(entity)
 end
 
 --- Called when there needs to be a new hunt target.
--- @tparam EntityScript target
+---@param target EntityScript
 function Insight:OnHuntTargetDirty(target)
 	if not self.ready then
 		mprint("Insight_Replica:OnHuntTargetDirty called but client isn't ready")
@@ -464,7 +464,7 @@ function Insight:OnHuntTargetDirty(target)
 end
 
 --- Called when there's a new hunger rate.
--- @tparam float rate
+---@param rate number
 function Insight:OnHungerRateDirty(rate)
 	self.current_hunger_rate = rate
 
@@ -475,7 +475,7 @@ function Insight:OnHungerRateDirty(rate)
 end
 
 --- Called when there's a new sanity rate.
--- @tparam float rate
+---@param rate number
 function Insight:OnSanityRateDirty(rate)
 	self.current_sanity_rate = rate
 
@@ -487,7 +487,7 @@ end
 
 --[[
 --- Called when there's a new health rate.
--- @tparam float rate
+---@param rate number
 function Insight:OnHealthRateDirty(rate)
 	self.current_health_rate = rate
 
@@ -499,7 +499,7 @@ end
 --]]
 
 --- Called when there's a new moisture rate.
--- @tparam float rate
+---@param rate number
 function Insight:OnMoistureRateDirty(rate)
 	self.current_moisture_rate = rate
 
@@ -853,8 +853,9 @@ function Insight:BundleHasPrefab(inst, prefab, isSearchingForFoodTag)
 end
 
 --- Checks if a container has something.
--- @tparam EntityScript container
--- @param inst This is whatever is being searched for.
+---@param container EntityScript
+---@param inst EntityScript This is whatever is being searched for.
+---@param isSearchingForFoodTag boolean
 function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 	--TheSim:ProfilerPush("ContainerHas")
 	-- container is a container inst

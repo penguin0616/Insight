@@ -488,8 +488,8 @@ function FormatDecimal(num, places)
 	return string.format("%+." .. places .. "f", num)
 end
 
---- Formats a number into a string. Adds a + if positive. 
--- @tparam number num
+--- Formats a number into a string. Adds a + if positive.
+---@param num number
 -- @treturn string
 function FormatNumber(num)
 	--[[
@@ -506,10 +506,9 @@ function FormatNumber(num)
 	return string.format("%+d", num)
 end
 
--- didn't know rounding was this easy, thanks star/serp
 --- Rounds float.
--- @tparam Number num
--- @tparam Integer places How many decimal places to round to.
+---@param num number
+---@param places integer How many decimal places to round to.
 -- @treturn number
 function Round(num, places)
 	places = places or 1
@@ -535,9 +534,9 @@ function FormatTemperature(num, mode)
 end
 
 --- Calculates Region Size of a Text Widget
--- @tparam string str The text you want to measure.
--- @tparam Font font
--- @tparam integer sz Size
+---@param str string The text you want to measure.
+---@param font string
+---@param sz integer Font size
 -- @treturn number, number
 function CalculateSize(str, font, sz)
 	font = font or UIFONT
@@ -609,9 +608,9 @@ function ArrayPurge(t, fnKeep, ...)
 end
 
 --- Clamps a math value.
--- @number num (required) The number to clamp.
--- @tparam ?number|nil min (optional) The minimum value.
--- @tparam ?number|nil max (optional) The minimum value.
+---@param num number (required) The number to clamp.
+---@param min ?number|nil (optional) The minimum value.
+---@param max ?number|nil (optional) The minimum value.
 -- @treturn number
 function module.math_clamp(num, min, max)
 	-- previous code was a disgrace
@@ -619,8 +618,8 @@ function module.math_clamp(num, min, max)
 end
 
 --- Returns the first result of the table that agrees with param 'fn'
--- @tparam table tbl The string.
--- @tparam function fn Returns the first value in a table
+---@param tbl table
+---@param fn function
 -- @return anything
 function module.table_find(tbl, fn)
 	local typ = type(fn)
@@ -671,8 +670,8 @@ function module.string_startsWith(str, chunk)
 end
 
 --- Retrives value from a table and removes the key.
--- @tparam table tbl
--- @tparam ?int|string index
+---@param tbl table
+---@param index ?int|string
 -- @return
 function module.table_extract(tbl, index)
 	local typ = type(tbl)
@@ -693,7 +692,7 @@ function module.table_extract(tbl, index)
 end
 
 --- Retrieves all of a function's upvalues.
--- @tparam function func
+---@param func function
 -- @treturn table
 function module.getupvalues(func) 
 	local upvs = {}
@@ -780,8 +779,8 @@ end
 --]]
 
 --- Retrives the first upvalue that matches the arguments.
--- @tparam function func
--- @string name
+---@param func function
+---@param name string
 -- @return
 function module.getupvalue(func, name)
 	local i = 1
@@ -865,8 +864,8 @@ function module.recursive_getupvalue(func, name)
 end
 
 --- Retrives the first local that matches the arguments.
--- @tparam integer level
--- @string name
+---@param level integer
+---@param name string
 -- @return
 function module.getlocal(level, name) 
 	local i = 1
@@ -909,9 +908,9 @@ function module.setlocal(level, name, replacement)
 end
 
 --- Retrives and replaces the first upvalue that matches the arguments.
--- @tparam function func
--- @string name
--- @param replacement
+---@param func function
+---@param name string
+---@param replacement
 -- @return
 function module.replaceupvalue(func, name, replacement)
 	if type(name) ~= "string" then

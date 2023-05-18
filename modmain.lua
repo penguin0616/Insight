@@ -408,7 +408,7 @@ function IsPrefab(arg)
 end
 
 --- Return player's Insight component or replica, depending on what side we're running on.
--- @tparam Player player
+---@param player EntityScript
 -- @treturn ?Insight|nil
 function GetInsight(player)
 	if IS_EXECUTIVE_AUTHORITY then
@@ -427,7 +427,7 @@ function GetLocalInsight(player)
 end
 
 --- Returns player's insight context.
--- @tparam Player player
+---@param player EntityScript
 -- @treturn ?table|nil
 function GetPlayerContext(player)
 	if not IsPrefab(player) then
@@ -470,10 +470,9 @@ local CONTEXT_META = {
 	__metatable = "[Insight] The metatable is locked"
 }
 --- Creates player's insight context.
--- @tparam Player player Player to create context for.
--- @tparam table config Insight configuration.
--- @tparam table external_config Configuration from client mods.
--- @tparam table etc
+---@param player EntityScript Player to create context for.
+---@param configs table Holds the different config types: vanilla, external, complex.
+---@param etc table
 function CreatePlayerContext(player, configs, etc)
 	if not player then
 		error("[Insight]: Player is missing!")
@@ -663,7 +662,7 @@ function GetPrefabOrigin(prefabname)
 end
 
 --- Retrives item posessor.
--- @tparam Prefab item
+---@param item EntityScript The held item.
 -- @treturn ?Prefab|nil The player/creature that is holding the item.
 function GetItemPossessor(item)
 	if not (IS_DS or (IS_DST and TheWorld.ismastersim)) then
@@ -830,7 +829,7 @@ end
 
 
 --- Returns a component descriptor. 
--- @tparam string name Name of the component.
+---@param name string Name of the component.
 -- @treturn ?table|false
 local function GetComponentDescriptor(name)
 	local safe, res = pcall(import, "descriptors/" .. name)
@@ -906,7 +905,7 @@ local function GetComponentDescriptor(name)
 end
 
 --- Returns a prefab descriptor. 
--- @tparam string name Prefab name.
+---@param name string Prefab name.
 -- @treturn ?table|false
 local function GetPrefabDescriptor(name)
 	-- This is like an exact duplicate of GetComponentDescriptor, except prefab_descriptors. pensive.
@@ -1016,10 +1015,10 @@ local function SortDescriptors(a, b)
 	end
 end
 
---- Retrives our information for an item.
--- @tparam Prefab item
--- @tparam Player player
--- @tparam table params
+--- Retrives our information for an entity.
+---@param entity EntityScript
+---@param player EntityScript
+---@param params table Special parameters for how information should be retrieved
 -- @treturn string
 local function GetEntityInformation(entity, player, params)
 	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab

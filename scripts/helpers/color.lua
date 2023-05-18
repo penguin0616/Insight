@@ -39,7 +39,7 @@ local function IsValidHex(str)
 end
 
 --- Converts a hexadecimal number or string to it's RGBA components.
--- @tparam string hex A hexadecimal string.
+---@param hex string A hexadecimal string.
 -- @treturn int,int,int,int
 local function HexToRGBA(hex)
 	local typ = type(hex)
@@ -112,7 +112,7 @@ function Color.ToHex(self)
 end
 
 --- Creates a new Color 'object' from a hexadecimal string.
--- @tparam string hex
+---@param hex string
 -- @treturn Color
 function Color.fromHex(hex)
 	local r, g, b, a = HexToRGBA(hex)

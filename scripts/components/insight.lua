@@ -195,7 +195,7 @@ function Insight:SendNaughtiness()
 end
 
 --- Tells the client to remove an entity from its information cache.
--- @tparam EntityScript entity
+---@param entity EntityScript
 function Insight:InvalidateCachedEntity(entity)
 	if self.is_local_host then
 		self.inst.replica.insight:OnInvalidateCachedEntity(entity)
