@@ -849,6 +849,8 @@ local function GetComponentDescriptor(name)
 				setmetatable(res, { })
 			end
 			
+			-- DS should activate both..? Can't think of a reason otherwise yet, but it feels off.
+			
 			if res.OnServerInit then
 				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
 					res.OnServerInit()
@@ -2892,21 +2894,7 @@ if IS_DST then
 		end)
 	end)
 else
-	AddPrefabPostInit("heatrock", function(inst)
-		--local cache = 0 -- stop network spam
-		inst:ListenForEvent("temperaturedelta", function()
-			if GetModConfigData("itemtile_display", true) == "numbers" then
-				--local temp = Round(inst.components.temperature:GetCurrent(), 1)
-
-				--if temp ~= cache then
-					--dprint('thermal push', temp, cache)
-					inst:PushEvent("percentusedchange", { percent = .123 })
-					--cache = temp
-
-				--end
-			end
-		end)
-	end)
+	
 end
 
 do

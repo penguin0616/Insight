@@ -103,6 +103,31 @@ local function Describe(inst, context)
 	}
 end
 
+--- This is responsible for making sure percentusedchanged gets pushed in DS when temperature changes. 
+--- I don't remember why this is needed.
+local function OnHeatrockSpawned(inst)
+	--local cache = 0 -- stop network spam
+	inst:ListenForEvent("temperaturedelta", function()
+		if GetModConfigData("itemtile_display", true) == "numbers" then
+			--local temp = Round(inst.components.temperature:GetCurrent(), 1)
+
+			--if temp ~= cache then
+				--dprint('thermal push', temp, cache)
+				inst:PushEvent("percentusedchange", { percent = .123 })
+				--cache = temp
+
+			--end
+		end
+	end)
+end
+
+local function OnClientInit()
+	if IS_DST then return end
+	AddPrefabPostInit("heatrock", OnHeatrockSpawned)
+end
+
 return {
-	Describe = Describe
+	Describe = Describe,
+
+	OnClientInit = OnClientInit,
 }
