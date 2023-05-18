@@ -1024,7 +1024,6 @@ end)
 
 --[[
 AddPrefabPostInit("deerclops", function(inst)
-	-- tuning says default range is 15
 	f = SpawnPrefab("insight_range_indicator")
 	f:Attach(inst)
 	f:SetRadius(8 / WALL_STUDS_PER_TILE)
@@ -1143,8 +1142,7 @@ AddPrefabPostInit("redgem", function(inst)
 	if not DEBUG_ENABLED then
 		return
 	end
-
-	-- tuning says default range is 15
+	
 	inst.snowball_range = SpawnPrefab("insight_range_indicator")
 	inst.snowball_range:Attach(inst)
 	inst.snowball_range:SetRadius(12 / WALL_STUDS_PER_TILE)
@@ -1156,52 +1154,9 @@ AddPrefabPostInit("redgem", function(inst)
 end)
 --]]
 
-AddPrefabPostInit("firesuppressor", function(inst) 
-	--[[
-	local a = SpawnPrefab("insight_range_indicator")
-	rawset(_G, "a", a)
-	a:Attach(inst)
-	a:SetRadius(4 / WALL_STUDS_PER_TILE)
-	a:SetColour(Color.fromHex("#ff0000"))
-	a:SetVisible(true)
-	--]]
-	
-	-- tuning says default range is 15
-	if IS_DST then return end
-	inst.snowball_range = SpawnPrefab("insight_range_indicator")
-	inst.snowball_range:Attach(inst)
-	inst.snowball_range:SetRadius(TUNING.FIRE_DETECTOR_RANGE / WALL_STUDS_PER_TILE)
-	inst.snowball_range:SetColour(Color.fromHex(Insight.COLORS.WET))
-	inst.snowball_range:SetVisible(false)
-
-	inst:AddComponent("dst_deployhelper")
-	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
-end)
-
-AddPrefabPostInit("sprinkler", function(inst) 
-	if IS_DST then return end
-	inst.range_indicator = SpawnPrefab("insight_range_indicator")
-	inst.range_indicator:Attach(inst)
-	inst.range_indicator:SetRadius(8 / WALL_STUDS_PER_TILE)
-	inst.range_indicator:SetColour(Color.fromHex(Insight.COLORS.WET))
-	inst.range_indicator:SetVisible(false)
-
-	inst:AddComponent("dst_deployhelper")
-	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
-end)
-
-AddPrefabPostInit("basefan", function(inst) 
-	-- tuning says default range is 15
-	if IS_DST then return end
-	inst.range_indicator = SpawnPrefab("insight_range_indicator")
-	inst.range_indicator:Attach(inst)
-	inst.range_indicator:SetRadius(30 / WALL_STUDS_PER_TILE)
-	inst.range_indicator:SetColour(Color.fromHex(Insight.COLORS.WET))
-	inst.range_indicator:SetVisible(false)
-
-	inst:AddComponent("dst_deployhelper")
-	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
-end)
+Insight.prefab_descriptors("firesuppressor")
+Insight.prefab_descriptors("sprinkler")
+Insight.prefab_descriptors("basefan")
 
 --[[
 AddPrefabPostInit("eyeturret", function(inst)
@@ -1250,28 +1205,7 @@ AddPrefabPostInit("lightning_rod", function(inst) -- or i could just listen to a
 	end
 end)
 
-AddPrefabPostInit("wortox_soul_spawn", function(inst) -- the dropped one
-	if not (localPlayer and localPlayer:HasTag("soulstealer")) then
-		return
-	end
-
-	if not GetModConfigData("wortox_soul_range", true) then
-		return
-	end
-
-	inst.pickup_indicator = SpawnPrefab("insight_range_indicator")
-	inst.pickup_indicator:Attach(inst)
-	inst.pickup_indicator:SetRadius(TUNING.WORTOX_SOULSTEALER_RANGE / WALL_STUDS_PER_TILE) 
-	inst.pickup_indicator:SetColour(Color.fromHex(Insight.COLORS.HEALTH))
-
-	--[[
-	local yes2 = SpawnPrefab("insight_range_indicator")
-	yes2.entity:SetParent(inst.entity)
-
-	yes2:SetRadius_Zark(TUNING.WORTOX_SOULSTEALER_RANGE / WALL_STUDS_PER_TILE - offset)
-	yes2:SetColour(0, 1, 0, 1)
-	--]]
-end)
+Insight.prefab_descriptors("wortox_soul_spawn")
 
 AddPlayerPostInit(function(player)
 	if IS_DS then

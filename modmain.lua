@@ -1916,7 +1916,6 @@ AddPrefabPostInit("redgem", function(inst)
 		return
 	end
 
-	-- tuning says default range is 15
 	inst.snowball_range = SpawnPrefab("insight_range_indicator")
 	inst.snowball_range:Attach(inst)
 	inst.snowball_range:SetRadius(12 / WALL_STUDS_PER_TILE)

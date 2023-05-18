@@ -18,13 +18,23 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- basefan.lua [Prefab]
-local function OnBaseFanSpawned(inst)
-	inst.range_indicator = SpawnPrefab("insight_range_indicator")
-	inst.range_indicator:Attach(inst)
-	inst.range_indicator:SetRadius(30 / WALL_STUDS_PER_TILE)
-	inst.range_indicator:SetColour(Color.fromHex(Insight.COLORS.WET))
-	inst.range_indicator:SetVisible(false)
+-- firesupressor.lua [Prefab]
+local function OnFireSuppressorSpawned(inst)
+	--[[
+	local a = SpawnPrefab("insight_range_indicator")
+	rawset(_G, "a", a)
+	a:Attach(inst)
+	a:SetRadius(4 / WALL_STUDS_PER_TILE)
+	a:SetColour(Color.fromHex("#ff0000"))
+	a:SetVisible(true)
+	--]]
+	
+	-- tuning says default range is 15
+	inst.snowball_range = SpawnPrefab("insight_range_indicator")
+	inst.snowball_range:Attach(inst)
+	inst.snowball_range:SetRadius(TUNING.FIRE_DETECTOR_RANGE / WALL_STUDS_PER_TILE)
+	inst.snowball_range:SetColour(Color.fromHex(Insight.COLORS.WET))
+	inst.snowball_range:SetVisible(false)
 
 	inst:AddComponent("dst_deployhelper")
 	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
@@ -32,25 +42,9 @@ end
 
 local function OnClientInit()
 	if not IS_DS then return end
-	AddPrefabPostInit("basefan", OnSprinklerSpawned)
+	AddPrefabPostInit("firesuppressor", OnFireSuppressorSpawned)
 end
-
-local function Describe(self, context)
-	-- adds tags to itself and then moisture/hay fever handler stuff check for the tags
-	return {
-		name = "insight_ranged",
-		priority = 0,
-		description = nil,
-		range = 30,
-		color = "#00ffff",
-		attach_player = false
-	}
-end
-
-
 
 return {
-	Describe = Describe,
-
-	OnClientInit = OnClientInit,
+	OnClientInit = OnClientInit
 }

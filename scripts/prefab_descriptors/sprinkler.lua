@@ -19,6 +19,23 @@ directory. If not, please refer to
 ]]
 
 -- sprinkler.lua [Prefab]
+local function OnSprinklerSpawned(inst)
+	inst.range_indicator = SpawnPrefab("insight_range_indicator")
+	inst.range_indicator:Attach(inst)
+	inst.range_indicator:SetRadius(8 / WALL_STUDS_PER_TILE)
+	inst.range_indicator:SetColour(Color.fromHex(Insight.COLORS.WET))
+	inst.range_indicator:SetVisible(false)
+
+	inst:AddComponent("dst_deployhelper")
+	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
+end
+
+local function OnClientInit()
+	if not IS_DS then return end
+	AddPrefabPostInit("sprinkler", OnSprinklerSpawned)
+end
+
+
 local function Describe(self, context)
 	return {
 		name = "insight_ranged",
@@ -33,5 +50,7 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	
+	OnClientInit = OnClientInit,
 }
