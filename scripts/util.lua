@@ -357,7 +357,7 @@ end
 
 --- Checks if number is an integer.
 -- @number num
--- @treturn boolean
+---@return boolean
 function IsInt(num)
 	-- http://web.archive.org/web/20210325065927/http://lua.2524044.n2.nabble.com/Fastest-way-to-determine-number-is-integer-in-plain-Lua-td7639129.html
 	return num%1 == 0
@@ -490,7 +490,7 @@ end
 
 --- Formats a number into a string. Adds a + if positive.
 ---@param num number
--- @treturn string
+---@return string
 function FormatNumber(num)
 	--[[
 	num = tonumber(num)
@@ -509,7 +509,7 @@ end
 --- Rounds float.
 ---@param num number
 ---@param places integer How many decimal places to round to.
--- @treturn number
+---@return number
 function Round(num, places)
 	places = places or 1
 	return tonumber(string.format("%." .. places .. "f", num)) or 0
@@ -537,7 +537,7 @@ end
 ---@param str string The text you want to measure.
 ---@param font string
 ---@param sz integer Font size
--- @treturn number, number
+---@return number, number @Calculated width and height
 function CalculateSize(str, font, sz)
 	font = font or UIFONT
 	sz = sz or 30
@@ -550,7 +550,7 @@ end
 
 --- Combines inputs into a single string seperated by newlines.
 -- @tparam ?string|nil ...
--- @treturn string
+---@return string
 function CombineLines(...)
 	local lines, argnum = nil, select("#",...)
 
@@ -568,7 +568,7 @@ end
 
 --- Combines inputs into a single string seperated by a separator.
 -- @tparam ?string|nil ...
--- @treturn string
+---@return string
 function CombineStrings(separator, ...)
 	local lines, argnum = nil, select("#",...)
 
@@ -611,7 +611,7 @@ end
 ---@param num number (required) The number to clamp.
 ---@param min ?number|nil (optional) The minimum value.
 ---@param max ?number|nil (optional) The minimum value.
--- @treturn number
+---@return number
 function module.math_clamp(num, min, max)
 	-- previous code was a disgrace
 	return (num < min and min) or (num > max and max) or num
@@ -637,7 +637,7 @@ end
 
 --- Parses a string into a bool, if possible.
 -- @string b The string.
--- @treturn ?boolean|string Returns the boolean if it succeeded, the string you passed in otherwise.
+---@return boolean|string @Returns the boolean if it succeeded, the string you passed in otherwise.
 function module.parsebool(b)
 	local typ = type(b)
 	if typ ~= "string" then
@@ -656,7 +656,7 @@ end
 --- Checks if a string ends with the provided input.
 -- @string str The string.
 -- @string chunk What the ending should be.
--- @treturn boolean
+---@return boolean
 function module.string_endsWith(str, chunk)
 	return str:sub(#str - #chunk) == chunk
 end
@@ -664,7 +664,7 @@ end
 --- Checks if a string begins with the provided input.
 -- @string str The string.
 -- @string chunk What the beginning should be.
--- @treturn boolean
+---@return boolean
 function module.string_startsWith(str, chunk)
 	return str:sub(1, #chunk) == chunk
 end
@@ -693,7 +693,7 @@ end
 
 --- Retrieves all of a function's upvalues.
 ---@param func function
--- @treturn table
+---@return table
 function module.getupvalues(func) 
 	local upvs = {}
 	local i = 1

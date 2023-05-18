@@ -40,7 +40,7 @@ end
 
 --- Converts a hexadecimal number or string to it's RGBA components.
 ---@param hex string A hexadecimal string.
--- @treturn int,int,int,int
+---@return int,int,int,int
 local function HexToRGBA(hex)
 	local typ = type(hex)
 	if typ == "string" then
@@ -113,7 +113,7 @@ end
 
 --- Creates a new Color 'object' from a hexadecimal string.
 ---@param hex string
--- @treturn Color
+---@return Color
 function Color.fromHex(hex)
 	local r, g, b, a = HexToRGBA(hex)
 	local self = Color.fromRGBA(r, g, b, a)
@@ -127,7 +127,7 @@ end
 -- @int g Green (defaults to 0).
 -- @int b Blue (defaults to 0).
 -- @int a Alpha (defaults to 255).
--- @treturn Color
+---@return Color
 function Color.fromRGBA(r, g, b, a)
 	r, g, b, a = r or 0, g or 0, b or 0, a or 255
 
@@ -172,7 +172,7 @@ end
 -- @int r Red (defaults to 0).
 -- @int g Green (defaults to 0).
 -- @int b Blue (defaults to 0).
--- @treturn Color
+---@return Color
 function Color.fromRGB(r, g, b)
 	return Color.fromRGBA(r, g, b, 255)
 end
@@ -194,7 +194,7 @@ local __tostring = function(self) return string.format("Color (%s, %s, %s, %s)",
 -- @number g Green (defaults to 0).
 -- @number b Blue (defaults to 0).
 -- @number a Alpha (defaults to 1).
--- @treturn Color
+---@return Color
 function Color.new(r, g, b, a)
 	local self = {}
 	setmetatable(self, {

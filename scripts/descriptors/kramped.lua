@@ -52,7 +52,7 @@ end
 
 --- [DST] Returns naughtiness value of a creature.
 ---@param inst EntityScript The living creature.
--- @treturn number
+---@return number
 local function DST_GetCreatureNaughtiness(inst)
 	if not TheWorld.ismastersim then
 		error("[Insight]: DST_GetCreatureNaughtiness called on client")
@@ -79,7 +79,7 @@ end
 
 --- [DS] Returns naughtiness value of a creature.
 ---@param inst EntityScript The living creature.
--- @treturn number
+---@return number
 local function GetCreatureNaughtiness(inst)
 	if IS_DST then
 		return DST_GetCreatureNaughtiness(inst)

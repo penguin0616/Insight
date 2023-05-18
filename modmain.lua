@@ -344,7 +344,7 @@ end
 IS_DS = IsDS()
 
 --- Checks whether we are in DST.
--- @treturn boolean
+---@return boolean
 function IsDST()
 	return TheSim:GetGameID() == "DST"
 end
@@ -352,7 +352,7 @@ end
 IS_DST = IsDST()
 
 --- Checks whether the mod is running on a client
--- @treturn boolean
+---@return boolean
 function IsClient()
 	return IS_DST and TheNet:GetIsClient()
 end
@@ -361,7 +361,7 @@ IS_CLIENT = IsClient()
 
 --- Checks whether the mod is running on a dedicated server
 -- This is basically (IsClient() or IsClientHost())
--- @treturn boolean
+---@return boolean
 function IsDedicated()
 	return IS_DST and TheNet:IsDedicated()
 end
@@ -369,7 +369,7 @@ end
 IS_DEDICATED = IsDedicated()
 
 --- Checks whether the mod is running on a client that is also the host.
--- @treturn boolean
+---@return boolean
 function IsClientHost()
 	return IS_DST and TheNet:IsDedicated() == false and TheNet:GetIsMasterSimulation() == true
 	--return IS_DST and TheNet:IsDedicated() == false and TheWorld.ismastersim == true
@@ -378,7 +378,7 @@ end
 IS_CLIENT_HOST = IsClientHost()
 
 --- Checks whether the mod is running on something that has full game control. Essentially anything in DS and worlds in DST where you are the host.
--- @treturn boolean
+---@return boolean
 function IsExecutiveAuthority()
 	return TheSim:GetGameID() == "DS" or TheNet:GetIsMasterSimulation() == true
 end
@@ -386,7 +386,7 @@ end
 IS_EXECUTIVE_AUTHORITY = IsExecutiveAuthority()
 
 --- Checks whether the mod is running in The Forge.
--- @treturn boolean
+---@return boolean
 function IsForge()
 	return IS_DST and TheNet:GetDefaultGameMode() == "lavaarena"
 end
@@ -395,21 +395,21 @@ IS_FORGE = IsForge()
 
 --- Checks if argument is a widget.
 -- @param arg
--- @treturn boolean
+---@return boolean
 function IsWidget(arg)
 	return arg and arg.inst and arg.inst.widget and true
 end
 
 --- Checks if argument is a prefab.
 -- @param arg
--- @treturn boolean
+---@return boolean
 function IsPrefab(arg)
 	return type(arg) == 'table' and arg.GUID and arg.prefab and true
 end
 
 --- Return player's Insight component or replica, depending on what side we're running on.
 ---@param player EntityScript
--- @treturn ?Insight|nil
+---@return Insight|nil
 function GetInsight(player)
 	if IS_EXECUTIVE_AUTHORITY then
 		return player.components.insight
@@ -428,7 +428,7 @@ end
 
 --- Returns player's insight context.
 ---@param player EntityScript
--- @treturn ?table|nil
+---@return table|nil @Wrapper of player's context
 function GetPlayerContext(player)
 	if not IsPrefab(player) then
 		error("[Insight]: GetPlayerContext called on non-player")
@@ -576,7 +576,7 @@ end
 
 --- Returns the component's origin. 
 -- @string componentname
--- @treturn ?string|nil nil if it is native, string is mod's fancy name
+---@return string|nil @nil if it is native, string is mod's fancy name
 local function GetComponentOrigin(componentname)
 	if IS_DS then
 		return false
@@ -634,7 +634,7 @@ end
 
 --- Returns the prefab's origin
 -- @string prefabname
--- @treturn ?string|nil nil if it is native, string is mod's fancy name
+---@return string|nil @nil if it is native, string is mod's fancy name
 function GetPrefabOrigin(prefabname)
 	if IS_DS then
 		return false
@@ -663,7 +663,7 @@ end
 
 --- Retrives item posessor.
 ---@param item EntityScript The held item.
--- @treturn ?Prefab|nil The player/creature that is holding the item.
+---@return EntityScript|nil @The player/creature that is holding the item.
 function GetItemPossessor(item)
 	if not (IS_DS or (IS_DST and TheWorld.ismastersim)) then
 		error("GetItemPosessor not called from master")
@@ -673,7 +673,7 @@ function GetItemPossessor(item)
 end
 
 --- Returns the current world type (DLCs and base game) that is active.
--- @treturn Integer (0 = Base Game, 1 = Reign of Giants, 2 = Shipwrecked, 3 = Hamlet, -1 = DST)
+---@return number @(0 = Base Game, 1 = Reign of Giants, 2 = Shipwrecked, 3 = Hamlet, -1 = DST)
 function GetWorldType()
 	if TheSim:GetGameID() == "DST" then
 		return -1 -- Don't Starve Together
@@ -828,9 +828,9 @@ function UnloadComponentDescriptor(name)
 end
 
 
---- Returns a component descriptor. 
+--- Loads and returns a component descriptor. 
 ---@param name string Name of the component.
--- @treturn ?table|false
+---@return table|false @Returned table from the descriptor, or false if the descriptor failed to load.
 local function GetComponentDescriptor(name)
 	local safe, res = pcall(import, "descriptors/" .. name)
 	
@@ -904,9 +904,9 @@ local function GetComponentDescriptor(name)
 	end
 end
 
---- Returns a prefab descriptor. 
+--- Loads and returns a prefab descriptor. 
 ---@param name string Prefab name.
--- @treturn ?table|false
+---@return table|false @Returned table from the prefab descriptor, or false if the prefab descriptor failed to load.
 local function GetPrefabDescriptor(name)
 	-- This is like an exact duplicate of GetComponentDescriptor, except prefab_descriptors. pensive.
 	local safe, res = pcall(import, "prefab_descriptors/" .. name)
@@ -1019,7 +1019,7 @@ end
 ---@param entity EntityScript
 ---@param player EntityScript
 ---@param params table Special parameters for how information should be retrieved
--- @treturn string
+---@return table
 local function GetEntityInformation(entity, player, params)
 	-- some mods (https://steamcommunity.com/sharedfiles/filedetails/?id=2081254154) were setting .item to a non-prefab
 	-- 5/2/2020

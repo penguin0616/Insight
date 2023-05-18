@@ -147,7 +147,7 @@ local Eventer = Class(function(self)
 end)
 
 --- Creates an events.
--- @treturn Event The created event.
+---@return Event @The created event.
 function Eventer:CreateEvent(eventName)
 	if self.events[eventName] then
 		error("Duplciate Event not allowed")

@@ -410,7 +410,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 end
 
 --- Retrives the current selected item, be it from hud or world.
--- @treturn ?Item|nil
+---@return EntityScript|nil
 function GetMouseTargetItem()
 	local target = TheInput:GetHUDEntityUnderMouse()
 	-- target.widget.parent is ItemTile

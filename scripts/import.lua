@@ -41,7 +41,7 @@ end
 
 --- Importer function.
 -- @string path Path to the lua file to load (do not append .lua)
--- @treturn function
+---@return ... @Returned whatever from the imported file.
 local function import(path)
 	--path = "../mods/" .. modname .. "/" ..  path
 	path = ResolvePath(path)
