@@ -636,7 +636,7 @@ function module.table_find(tbl, fn)
 end
 
 --- Parses a string into a bool, if possible.
--- @string b The string.
+---@param b string The string.
 ---@return boolean|string @Returns the boolean if it succeeded, the string you passed in otherwise.
 function module.parsebool(b)
 	local typ = type(b)
@@ -654,16 +654,16 @@ function module.parsebool(b)
 end
 
 --- Checks if a string ends with the provided input.
--- @string str The string.
--- @string chunk What the ending should be.
+---@param str string The string.
+---@param chunk string What the ending should be.
 ---@return boolean
 function module.string_endsWith(str, chunk)
 	return str:sub(#str - #chunk) == chunk
 end
 
 --- Checks if a string begins with the provided input.
--- @string str The string.
--- @string chunk What the beginning should be.
+---@param str string The string.
+---@param chunk string What the beginning should be.
 ---@return boolean
 function module.string_startsWith(str, chunk)
 	return str:sub(1, #chunk) == chunk

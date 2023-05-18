@@ -95,7 +95,7 @@ end
 
 --[[
 --- Changes the radius of the indicator.
--- @param inst The indicator
+---@param inst The indicator
 -- @number radius The radius the indicator will be set to. Interpreted as number of tiles.
 local function SetRadius(inst, radius)
 	local parent = inst.entity:GetParent()
@@ -141,7 +141,7 @@ local function SetRadius(inst, radius)
 end
 
 --- Changes the colour of the indicator.
--- @param inst The indicator
+---@param inst @The indicator
 -- @tparam ?Color|table|{r,g,b,a} The colour the indicator will be set to. Interpreted as number of tiles.
 local function SetColour(inst, ...)
 	-- yeah i don't know how SetAddColour and SetMultColour work, i just know SetMultColour is what i've used before

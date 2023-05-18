@@ -394,14 +394,14 @@ end
 IS_FORGE = IsForge()
 
 --- Checks if argument is a widget.
--- @param arg
+---@param arg
 ---@return boolean
 function IsWidget(arg)
 	return arg and arg.inst and arg.inst.widget and true
 end
 
 --- Checks if argument is a prefab.
--- @param arg
+---@param arg
 ---@return boolean
 function IsPrefab(arg)
 	return type(arg) == 'table' and arg.GUID and arg.prefab and true
@@ -575,7 +575,7 @@ function UpdatePlayerContext(player, data)
 end
 
 --- Returns the component's origin. 
--- @string componentname
+---@param componentname string
 ---@return string|nil @nil if it is native, string is mod's fancy name
 local function GetComponentOrigin(componentname)
 	if IS_DS then
@@ -633,7 +633,7 @@ local function GetComponentOrigin(componentname)
 end
 
 --- Returns the prefab's origin
--- @string prefabname
+---@param prefabname string
 ---@return string|nil @nil if it is native, string is mod's fancy name
 function GetPrefabOrigin(prefabname)
 	if IS_DS then
