@@ -105,7 +105,12 @@ end
 
 --------------------------------------------------------------------------
 --[[ Insight ]]
---------------------------------------------------------------------------\
+--------------------------------------------------------------------------
+--- Server-side portion of Insight's networking. 
+--- Provides interfaces for the server to send certain types of data to the client.
+---@param self table
+---@param inst EntityScript Player
+---@class Insight
 local Insight = Class(function(self, inst)
 	self.inst = inst
 	self.is_local_host = IS_CLIENT_HOST and inst == ThePlayer
@@ -148,8 +153,24 @@ local Insight = Class(function(self, inst)
 
 	--[==========[ Moon Cycle ]==========]
 	self:SendMoonCycle(GetMoonCycle())
+
+
+	self.inst:ListenForEvent("newfishingtarget", function(player, data)
+		--mprint("newfishingtarget", data.target, data.target and data.target.components.oceanfishable, data.target and data.target.components.oceanfishable and type(data.target.fish_def))
+		if data.target and data.target.components.oceanfishable and type(data.target.fish_def) == "table" then
+			-- Hooked a fish.
+			-- I could just send which fish it is and check the data on the client side,
+			-- but there could be a server-only mod modifying the data.
+			Insight.descriptors.oceanfishingrod.SERVER_OnFishHooked(player, data.target)
+		elseif data.target == nil then
+			--Insight.descriptors.oceanfishingrod.SERVER_OnFishLost(player)
+		end
+	end)
 end)
 
+--- Sets entity data for networking.
+---@param entity EntityScript The entity that has information
+---@param data table The information for the entity
 function Insight:SetEntityData(entity, data)
 	if self.is_local_host then
 		self.inst.replica.insight.entity_data[entity] = data
@@ -166,7 +187,9 @@ function Insight:SetEntityData(entity, data)
 	end
 	--]==]
 end
--- optimize stuffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+
+--- Sets world data for networking.
+---@param data table
 function Insight:SetWorldData(data)
 	if self.is_local_host then
 		self.inst.replica.insight.world_data = data
@@ -204,6 +227,8 @@ function Insight:InvalidateCachedEntity(entity)
 	end
 end
 
+--- Tells the client to set the current hunt target.
+---@param target EntityScript
 function Insight:SetHuntTarget(target)
 	if self.is_local_host then
 		self.inst.replica.insight:OnHuntTargetDirty(target)
@@ -212,10 +237,13 @@ function Insight:SetHuntTarget(target)
 	end
 end
 
+--- Sets whether the player has a battlesong active.
+---@param bool boolean
 function Insight:SetBattleSongActive(bool)
 	self.inst.replica.insight:SetBattleSongActive(bool)
 end
 
+--- Networks the current rate for stats.
 function Insight:SendStatRates()
 	if self.inst.components.hunger then
 		self.inst.replica.insight:SetHungerRate(self.inst.components.hunger.hungerrate)
@@ -230,6 +258,8 @@ function Insight:SendStatRates()
 	end
 end
 
+--- Sends the current moon cycle to the client for Combined Status.
+---@param int integer Current section of the moon cycle.
 function Insight:SendMoonCycle(int)
 	if not int then
 		dprint("Missing int for SendMoonCycle?")
@@ -238,8 +268,5 @@ function Insight:SendMoonCycle(int)
 
 	self.inst.replica.insight:SetMoonCycle(int)
 end
-
-
-
 
 return Insight

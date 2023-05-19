@@ -1889,7 +1889,7 @@ if IS_DST then -- server + dedi check
 	end
 end
 
-PrefabFiles = {"insight_range_indicator", "insight_map_marker"}
+PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_entitytext"}
 if IS_DST then
 	table.insert(PrefabFiles, "insight_ghost_klaus_sack")
 	table.insert(PrefabFiles, "insight_classified")
@@ -2371,6 +2371,24 @@ if IS_DST then
 		OnLocalPlayerPostInit:AddWeakListener(function(insight)
 			insight:HandlePipspookQuest(decompress(data))
 		end)
+	end)
+
+	rpcNetwork.AddClientModRPCHandler(modname, "SetOceanFishingStatus", function(status, ...)
+		--mprint('SetOceanFishingStatus', status, data, fish)
+		
+
+		if status == "fish_hooked" then
+			local fish, data = ...
+			data = json.decode(data)
+
+			localPlayer:PushEvent("insight_fishhooked", { fish = fish, fish_def = data })
+
+		elseif status == "fish_caught" then
+			localPlayer:PushEvent("insight_fishcaught")
+			
+		elseif status == "fish_lost" then
+			localPlayer:PushEvent("insight_fishlost")
+		end
 	end)
 	
 	rpcNetwork.AddClientModRPCHandler(modname, "ServerError", function(data)
@@ -3530,6 +3548,7 @@ end
 
 -- Further Post Inits
 Insight.prefab_descriptors("wx78_scanner")
+Insight.descriptors("oceanfishingrod")
 
 
 --==========================================================================================================================
