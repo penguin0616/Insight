@@ -42,18 +42,27 @@ local function Describe(self, context)
 			remaining_time = context.time:SimpleProcess(remaining_time)
 
 			if context.usingIcons and self.product and PrefabHasIcon(self.product) then
-				description = string.format(context.lstr.regrowth, self.product, remaining_time)
+				description = string.format(context.lstr.pickable.regrowth, self.product, remaining_time)
 			else
-				description = string.format(context.lstr.lang.regrowth, remaining_time)
+				description = string.format(context.lstr.lang.pickable.regrowth, remaining_time)
 			end
 
 		elseif self.paused then
-			description = string.format(context.lstr.regrowth_paused)
+			description = string.format(context.lstr.pickable.regrowth_paused)
 		end
 	end
 
 	if self.cycles_left and self.max_cycles and self.transplanted then -- self.transplanted needed for DS
-		remaining_harvests = string.format(context.lstr.pickable_cycles, self.cycles_left, self.max_cycles)
+		remaining_harvests = string.format(context.lstr.pickable.cycles, self.cycles_left, self.max_cycles)
+	end
+
+	-- Mushroom logic
+	if self.inst.prefab:sub(-9) == "_mushroom" and type(inst.data) == "table" and inst.data.name and type(self.inst.rain) == "number" then
+		-- Probably a mushroom.
+		if not self.canbepicked then
+			-- Needs regrowth!
+			description = string.format(context.lstr.mushroom_rain, inst.rain)
+		end
 	end
 
 	description = CombineLines(description, remaining_harvests)

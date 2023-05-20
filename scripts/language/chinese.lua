@@ -713,7 +713,6 @@ return {
 	-- inspectable.lua
 	wagstaff_tool = "这个工具的名字是: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "健身房重量数值: %s",
-	mushroom_rain = "需要的<color=WET>雨</color>: %s",
 	ruins_statue_gem = "Contains a <color=%s><prefab=%s></color>.",
 
 	-- insulator.lua
@@ -880,9 +879,12 @@ return {
 	petrify = "%s后石化",
 
 	-- pickable.lua
-	regrowth = "<color=NATURE>%s</color>后<color=NATURE>重新生长</color>",
-	regrowth_paused = "生长暂停",
-	pickable_cycles = "剩余收获次数: %s / %s",
+	pickable = {
+		regrowth = "<color=NATURE>%s</color>后<color=NATURE>重新生长</color>",
+		regrowth_paused = "生长暂停",
+		cycles = "剩余收获次数: %s / %s",
+		mushroom_rain = "需要的<color=WET>雨</color>: %s",
+	},
 
 	-- pollinator.lua
 	pollination = "花朵授粉: (%s) / %s",

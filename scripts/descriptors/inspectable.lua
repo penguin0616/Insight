@@ -229,15 +229,6 @@ local function Describe(self, context)
 		description = string.format(context.lstr.wagstaff_tool, inst.prefab)
 	end
 
-	-- mushrooms, tags only exists for the cap..
-	if inst.rain and inst.data and inst.data.name and inst.data.name:sub(-8) == "mushroom" then
-		-- probably a mushroom
-		if inst.components.pickable ~= nil and not inst.components.pickable.canbepicked then -- and TheWorld.state.israining 
-			-- in regrowth mode
-			description = string.format(context.lstr.mushroom_rain, inst.rain)
-		end
-	end
-
 	if inst.nameoverride and inst.nameoverride == "ancient_statue" then
 		description = DescribeRuinsStatue(inst, context)
 	end

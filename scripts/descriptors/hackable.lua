@@ -30,13 +30,13 @@ local function Describe(self, context)
 			remaining_time = context.time:SimpleProcess(remaining_time)
 
 			if context.usingIcons and PrefabHasIcon(self.product) then
-				description = string.format(context.lstr.regrowth, self.product, remaining_time)
+				description = string.format(context.lstr.pickable.regrowth, self.product, remaining_time)
 			else
-				description = string.format(context.lstr.lang.regrowth, remaining_time)
+				description = string.format(context.lstr.lang.pickable.regrowth, remaining_time)
 			end
 
 		elseif self.paused then
-			description = string.format(context.lstr.regrowth_paused)
+			description = string.format(context.lstr.pickable.regrowth_paused)
 		end
 	end
 

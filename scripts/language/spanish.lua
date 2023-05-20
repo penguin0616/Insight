@@ -705,7 +705,6 @@ return {
 	-- inspectable.lua
 	wagstaff_tool = "Esta herramienta se llama: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "Valor en pesas de gimnasio: %s",
-	mushroom_rain = "<color=WET>Lluvia</color> necesaria: %s",
 	ruins_statue_gem = "Contains a <color=%s><prefab=%s></color>.",
 
 	-- insulator.lua
@@ -872,9 +871,12 @@ return {
 	petrify = "Se petrifica en %s.",
 
 	-- pickable.lua
-	regrowth = "<color=NATURE>Vuelve a crecer</color> en: <color=NATURE>%s</color>",
-	regrowth_paused = "El crecimiento se detuvo.",
-	pickable_cycles = "<color=DECORATION>Cosechas restantes</color>: <color=DECORATION>%s</color>/<color=DECORATION>%s</color>",
+	pickable = {
+		regrowth = "<color=NATURE>Vuelve a crecer</color> en: <color=NATURE>%s</color>",
+		regrowth_paused = "El crecimiento se detuvo.",
+		cycles = "<color=DECORATION>Cosechas restantes</color>: <color=DECORATION>%s</color>/<color=DECORATION>%s</color>",
+		mushroom_rain = "<color=WET>Lluvia</color> necesaria: %s",
+	},
 
 	-- pollinator.lua
 	pollination = "Flores polinizadas: (%s)/%s",
