@@ -33,7 +33,9 @@ directory. If not, please refer to
 
 -- oceanfishinghook's reelmod is 0 until the first reel and then lerps from 1 to 0 over a rather long time
 
-local text_entity = nil
+--local text_entity = nil
+local RichFollowText = import("widgets/richfollowtext")
+local followtext = nil
 
 
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,6 +57,38 @@ local function OnDoneFishing(rod, reason, lose_tackle, fisher, target)
 	fishing_states[fisher] = nil
 end
 
+local function SERVER_UpdateFishingBattleState(player)
+	local state = fishing_states[player]
+	if not state then
+		mprintf("Missing fishing state for %s??", player)
+		return
+	end
+
+	local tension = {
+		current = state.rod.components.oceanfishingrod.line_tension,
+		--unreeling = TUNING.OCEAN_FISHING.START_UNREELING_TENSION, -- Hmmm.. is this really necessary?
+		max = TUNING.OCEAN_FISHING.REELING_SNAP_TENSION
+	}
+
+	local slack = {
+		current = state.rod.components.oceanfishingrod.line_slack,
+		max = 1
+	}
+
+	local distance = {
+		-- The presence of tag "catch_distance" chooses whether the fish can be caught or not.
+		catch = state.target_fish.components.oceanfishable.catch_distance,
+		flee = TUNING.OCEAN_FISHING.MAX_HOOK_DIST,
+	}
+
+	local data = {
+		tension = tension,
+		slack = slack,
+		distance = distance,
+	}
+
+	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "battle_state", json.encode(data))
+end
 
 local function SERVER_OnFishHooked(player, fish)
 	local rod = fish.components.oceanfishable:GetRod()
@@ -77,7 +111,9 @@ local function SERVER_OnFishHooked(player, fish)
 	end
 
 	fishing_states[player] = {
-		target_fish = fish
+		target_fish = fish,
+		rod = rod,
+		task = player:DoPeriodicTask(FRAMES, SERVER_UpdateFishingBattleState)
 	}
 
 	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "fish_hooked", fish, json.encode(fish.fish_def))
@@ -91,25 +127,70 @@ end
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Client Logic ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+local target_fish = nil
+local GREEN = Color.fromHex("#00cc00")
+local RED = Color.fromHex("#dd5555")
+
 local function OnFishCaught(player)
-	text_entity:Clear()
+	target_fish = nil
+	--text_entity:Clear()
+	followtext:SetTarget(nil)
+	followtext:Hide()
 end
 
 local function OnFishLost(player)
-	text_entity:Clear()
+	target_fish = nil
+	--text_entity:Clear()
+	followtext:SetTarget(nil)
+	followtext:Hide()
+end
+
+local function CLIENT_UpdateFishingBattleState(player, data)
+	if not target_fish then
+		mprint("CLIENT UpdateFishingBattleState called with missing fish?")
+		return
+	end
+
+	-- Tension
+	local tension_color = GREEN:Lerp(RED, data.tension.current / data.tension.max):ToHex()
+	local tension_str = string.format("Tension: <color=%s>%.2f</color> / %.2f<sub>line snaps</sub>", tension_color, data.tension.current, data.tension.max)
+
+	-- Slack
+	local slack_color = GREEN:Lerp(RED, data.slack.current / data.slack.max):ToHex()
+	local slack_str = string.format("Slack: <color=%s>%.2f</color> / %.2f <sub>fish escapes</sub>", slack_color, data.slack.current, data.slack.max)
+
+	-- Distance
+	local distance = player:GetDistanceSqToInst(target_fish)
+	local catch_distance_sq = data.distance.catch * data.distance.catch
+	local distance_to_catch = distance - catch_distance_sq
+	local distance_to_flee = data.distance.flee * data.distance.flee
+
+	local distance_str = string.format("Distance: %.2f <sub>catch</sub>  /  %.2f <sub>current</sub>  /  %.2f <sub>flee</sub>", 0, distance_to_catch, distance_to_flee)
+
+
+	local str = CombineLines(tension_str, slack_str, distance_str)
+	--text_entity:SetText(str)
+	followtext.text:SetString(str)
 end
 
 local function CLIENT_OnFishHooked(player, fish, fish_def)
-	mprint("haha fishey hook", player, fish, fish_def)
-	text_entity:SetTarget(fish)
-	text_entity:SetText("fishy :)")
+	--mprint("haha fishy hook", player, fish, fish_def)
+	target_fish = fish
+	followtext:SetTarget(fish)
+	followtext:Show()
+	--text_entity:SetTarget(fish)
+	--text_entity:SetText("fishy :)")
 end
 
 local function OnClientInit()
 	if not IS_DST then return end
 	
 	OnLocalPlayerPostInit:AddListener("oceanfishingrod_client", function()
-		text_entity = text_entity or SpawnPrefab("insight_entitytext")
+		--text_entity = text_entity or SpawnPrefab("insight_entitytext")
+		followtext = localPlayer.HUD:AddChild(RichFollowText(CHATFONT_OUTLINE, 22))
+		followtext:SetHUD(localPlayer.HUD.inst)
+    	followtext:SetOffset(Vector3(0, 200, 0))
+    	followtext:Hide()
 
 		localPlayer:ListenForEvent("insight_fishhooked", function(inst, data)
 			CLIENT_OnFishHooked(inst, data.fish, data.fish_def)
@@ -117,6 +198,7 @@ local function OnClientInit()
 
 		localPlayer:ListenForEvent("insight_fishcaught", OnFishCaught)
 		localPlayer:ListenForEvent("insight_fishlost", OnFishLost)
+		localPlayer:ListenForEvent("insight_fishingbattlestate", CLIENT_UpdateFishingBattleState)
 	end)
 end
 

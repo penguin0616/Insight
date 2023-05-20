@@ -2385,9 +2385,15 @@ if IS_DST then
 
 		elseif status == "fish_caught" then
 			localPlayer:PushEvent("insight_fishcaught")
-			
+
 		elseif status == "fish_lost" then
 			localPlayer:PushEvent("insight_fishlost")
+
+		elseif status == "battle_state" then
+			local data = ...
+			data = json.decode(data)
+
+			localPlayer:PushEvent("insight_fishingbattlestate", data)
 		end
 	end)
 	
