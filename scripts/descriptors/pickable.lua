@@ -61,7 +61,7 @@ local function Describe(self, context)
 		-- Probably a mushroom.
 		if not self.canbepicked then
 			-- Needs regrowth!
-			description = string.format(context.lstr.mushroom_rain, self.inst.rain)
+			description = string.format(context.lstr.pickable.mushroom_rain, self.inst.rain)
 		end
 	end
 
