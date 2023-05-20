@@ -45,22 +45,99 @@ local fishing_states = {}
 
 --- Triggers whenever an oceanfishingrod is done fishing.
 local function OnDoneFishing(rod, reason, lose_tackle, fisher, target)
-	if fishing_states[fisher] then
+	local state = fishing_states[fisher]
+	if state then
 		if reason == "success" then
 			-- The fisher successfully caught the fish.
 			rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), fisher.userid, "fish_caught")
 		else
 			rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), fisher.userid, "fish_lost")
 		end
+
+		if state.task then
+			state.task:Cancel()
+			state.task = nil
+		end
 	end
 
 	fishing_states[fisher] = nil
 end
 
+--- Hooks a rod for OnDoneFishing tracking.
+---@param rod EntityScript
+---@return boolean @true if the rod has been hooked before.
+local function HookDoneFnForRod(rod)
+	if not rod._insighthooked then
+		rod._insighthooked = true
+		
+		local old = rod.components.oceanfishingrod.ondonefishing
+		rod.components.oceanfishingrod.ondonefishing = function(...)
+			OnDoneFishing(...)
+			if old then
+				return old(...)
+			end
+		end
+
+		return false
+	end
+
+	return true
+end
+
+local function SERVER_UpdateInterestedFish(player)
+	local state = fishing_states[player]
+	if not state then
+		mprintf("[SERVER_UpdateInterestedFish] Missing fishing state for %s??", player)
+		return
+	end
+	
+	local count = 0
+	local interested_fish = {}
+	local interest_levels = {}
+	for guid, interest in pairs(state.hook.components.oceanfishinghook.interest) do
+		local fish = Ents[guid]
+		if fish then
+			count = count + 1
+			interested_fish[count] = fish
+			-- I just thought of this approach for truncating a decimal. It's probably already a known thing, but it feels cool right now.
+			interest_levels[count] = (interest - interest % 0.01)
+		end
+	end
+
+	interest_levels = table.concat(interest_levels, ";")
+
+	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "interested_fish", interest_levels, unpack(interested_fish))
+end
+
+local function SERVER_OnHookLanded(player, hook)
+	--mprint'SERVER_OnHookLanded'
+	local rod = hook.components.oceanfishable:GetRod()
+	if not rod then
+		-- Something's not right?
+		mprintf("SERVER_OnHookLanded can't find the rod of hook [%s] for player %s", hook, player)
+		return
+	end
+
+	HookDoneFnForRod(rod)
+
+	fishing_states[player] = {
+		rod = rod,
+		hook = hook,
+	}
+	
+	-- This RPC is randomly not sending.
+	player:DoTaskInTime(0.5, function()
+		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "hook_landed", hook)
+		player:DoTaskInTime(0.5, function()
+			fishing_states[player].task = player:DoPeriodicTask(0.1, SERVER_UpdateInterestedFish)
+		end)
+	end)
+end
+
 local function SERVER_UpdateFishingBattleState(player)
 	local state = fishing_states[player]
 	if not state then
-		mprintf("Missing fishing state for %s??", player)
+		mprintf("[SERVER_UpdateFishingBattleState] Missing fishing state for %s??", player)
 		return
 	end
 
@@ -92,34 +169,26 @@ end
 
 local function SERVER_OnFishHooked(player, fish)
 	local context = GetPlayerContext(player)
+	--[[
 	if not context.config["display_oceanfishing"] then
 		return
 	end
+	--]]
 
 	local rod = fish.components.oceanfishable:GetRod()
 	if not rod then
 		-- Something's not right?
-		mprintf("SERVER_OnFishHooked can't find the rod of the hooked fish (%s) for player %s", fish, player)
+		mprintf("SERVER_OnFishHooked can't find the rod of the hooked fish [%s] for player %s", fish, player)
 		return
 	end
 
-	if not rod._insighthooked then
-		rod._insighthooked = true
-		
-		local old = rod.components.oceanfishingrod.ondonefishing
-		rod.components.oceanfishingrod.ondonefishing = function(...)
-			OnDoneFishing(...)
-			if old then
-				return old(...)
-			end
-		end
-	end
+	local state = fishing_states[player]
 
-	fishing_states[player] = {
-		target_fish = fish,
-		rod = rod,
-		task = player:DoPeriodicTask(FRAMES, SERVER_UpdateFishingBattleState)
-	}
+	state.hook = nil
+	state.task:Cancel()
+
+	state.target_fish = fish
+	state.task = player:DoPeriodicTask(FRAMES, SERVER_UpdateFishingBattleState)
 
 	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "fish_hooked", fish, json.encode(fish.fish_def))
 end
@@ -132,14 +201,28 @@ end
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Client Logic ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+local current_hook = nil
 local target_fish = nil
+local last_interested = nil
+
 local GREEN = Color.fromHex("#00cc00")
 local RED = Color.fromHex("#dd5555")
-
 local COOL_GREEN = Color.fromHex("#66CC00")
 local BLUE = Color.fromHex("#5B63D2")
 
+local function AddLabel(inst)
+	local label = inst.entity:AddLabel()
+	label:SetWorldOffset(0, -2, 0)
+	label:SetFont(CHATFONT_OUTLINE)
+	label:SetFontSize(12)
+	label:Enable(false)
+	label:SetText("")
+
+	return label
+end
+
 local function OnFishCaught(player)
+	dprint'OnFishCaught'
 	target_fish = nil
 	--text_entity:Clear()
 	followtext:SetTarget(nil)
@@ -147,10 +230,52 @@ local function OnFishCaught(player)
 end
 
 local function OnFishLost(player)
+	dprint'OnFishLost'
 	target_fish = nil
 	--text_entity:Clear()
 	followtext:SetTarget(nil)
 	followtext:Hide()
+end
+
+local function CLIENT_UpdateInterestedFish(player, data)
+	if not current_hook then
+		mprint("[CLIENT_UpdateInterestedFish] Missing hook?")
+		return
+	end
+
+	local context = GetPlayerContext(player)
+
+	local interested = data.interested
+
+	if last_interested then
+		for fish in pairs(last_interested) do
+			fish.insight_interest_label:Enable(false)
+		end
+	end
+
+	local count = 0
+	for fish, amount in pairs(interested) do
+		if not fish.insight_interest_label then fish.insight_interest_label = AddLabel(fish) end
+
+		if amount > 0 then
+			fish.insight_interest_label:SetText(string.format(context.lstr.oceanfishingrod.hook.interest, amount))
+			fish.insight_interest_label:Enable(true)
+			count = count + 1
+		end
+	end
+
+	--mprint("UPDATE", followtext.text:GetString(), followtext.shown, followtext.target)
+	followtext.text:SetString(string.format(context.lstr.oceanfishingrod.hook.num_interested, count))
+
+	last_interested = interested
+end
+
+local function CLIENT_OnHookLanded(player, hook)
+	current_hook = hook
+	
+	followtext:SetTarget(hook)
+	followtext.text:SetString("?")
+	followtext:Show()
 end
 
 local function CLIENT_UpdateFishingBattleState(player, data)
@@ -163,11 +288,11 @@ local function CLIENT_UpdateFishingBattleState(player, data)
 
 	-- Tension
 	local tension_color = GREEN:Lerp(RED, data.tension.current / data.tension.max):ToHex()
-	local tension_str = string.format(context.lstr.oceanfishingrod.tension, tension_color, data.tension.current * 100, data.tension.max * 100)
+	local tension_str = string.format(context.lstr.oceanfishingrod.battle.tension, tension_color, data.tension.current * 100, data.tension.max * 100)
 
 	-- Slack
 	local slack_color = GREEN:Lerp(RED, data.slack.current / data.slack.max):ToHex()
-	local slack_str = string.format(context.lstr.oceanfishingrod.slack, slack_color, data.slack.current * 100, data.slack.max * 100)
+	local slack_str = string.format(context.lstr.oceanfishingrod.battle.slack, slack_color, data.slack.current * 100, data.slack.max * 100)
 
 	-- Distance
 	local distance = player:GetDistanceSqToInst(target_fish)
@@ -176,7 +301,7 @@ local function CLIENT_UpdateFishingBattleState(player, data)
 	local distance_to_flee = data.distance.flee * data.distance.flee
 
 	--local distance_color = COOL_GREEN:Lerp(BLUE, distance_to_catch / distance_to_flee):ToHex()
-	--local distance_str = string.format(context.lstr.oceanfishingrod.distance, 0, distance_color, distance_to_catch, distance_to_flee)
+	--local distance_str = string.format(context.lstr.oceanfishingrod.battle.distance, 0, distance_color, distance_to_catch, distance_to_flee)
 
 
 	local str = CombineLines(tension_str, slack_str)
@@ -185,6 +310,14 @@ local function CLIENT_UpdateFishingBattleState(player, data)
 end
 
 local function CLIENT_OnFishHooked(player, fish, fish_def)
+	current_hook = nil
+	if last_interested then
+		for fish in pairs(last_interested) do
+			fish.insight_interest_label:Enable(false)
+		end
+	end
+
+	followtext.text:SetString("")
 	--mprint("haha fishy hook", player, fish, fish_def)
 	target_fish = fish
 	followtext:SetTarget(fish)
@@ -202,6 +335,9 @@ local function OnClientInit()
 		followtext:SetHUD(localPlayer.HUD.inst)
     	followtext:SetOffset(Vector3(0, 200, 0))
     	followtext:Hide()
+
+		localPlayer:ListenForEvent("insight_fishinghooklanded", CLIENT_OnHookLanded)
+		localPlayer:ListenForEvent("insight_fishinginterested", CLIENT_UpdateInterestedFish)
 
 		localPlayer:ListenForEvent("insight_fishhooked", function(inst, data)
 			CLIENT_OnFishHooked(inst, data.fish, data.fish_def)
@@ -246,6 +382,7 @@ end
 return {
 	Describe = Describe,
 
+	SERVER_OnHookLanded = SERVER_OnHookLanded,
 	SERVER_OnFishHooked = SERVER_OnFishHooked,
 
 	OnServerInit = OnServerInit,

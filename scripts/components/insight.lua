@@ -156,14 +156,32 @@ local Insight = Class(function(self, inst)
 
 
 	self.inst:ListenForEvent("newfishingtarget", function(player, data)
-		--mprint("newfishingtarget", data.target, data.target and data.target.components.oceanfishable, data.target and data.target.components.oceanfishable and type(data.target.fish_def))
+		local context = GetPlayerContext(player)
+		if not context.config["display_oceanfishing"] then
+			return
+		end
+		--[[
+		mprint(
+			"newfishingtarget", 
+			data.target, 
+			data.target and data.target.components.oceanfishinghook, 
+			"AAAAAAA", data.target and data.target.components.oceanfishinghook and data.target.components.oceanfishinghook.lure_data, 
+			data.target and data.target.components.oceanfishable
+		)
+		--]]
 		if data.target and data.target.components.oceanfishable and type(data.target.fish_def) == "table" then
 			-- Hooked a fish.
 			-- I could just send which fish it is and check the data on the client side,
 			-- but there could be a server-only mod modifying the data.
 			Insight.descriptors.oceanfishingrod.SERVER_OnFishHooked(player, data.target)
-		elseif data.target == nil then
-			--Insight.descriptors.oceanfishingrod.SERVER_OnFishLost(player)
+		elseif data.target and data.target.components.oceanfishinghook and data.target.components.oceanfishable then
+			-- oceanfishinghook.lure_data isn't provided yet. See prefabs/oceanfishingbobber.lua -> OnProjectileLand
+			-- SetRod triggers this event.
+			data.target:DoTaskInTime(0, function()
+				if type(data.target.components.oceanfishinghook.lure_data) == "table" then
+					Insight.descriptors.oceanfishingrod.SERVER_OnHookLanded(player, data.target)
+				end
+			end)
 		end
 	end)
 end)

@@ -824,9 +824,15 @@ return {
 
 	-- oceanfishingrod.lua
 	oceanfishingrod = {
-		tension = "Tension: <color=%s>%.1f</color> / %.1f<sub>line snaps</sub>",
-		slack = "Slack: <color=%s>%.1f</color> / %.1f<sub>fish escapes</sub>",
-		distance = "Distance: %.1f<sub>catch</sub> / <color=%s>%.1f<sub>current</sub></color> / %.1f<sub>flee</sub>",
+		hook = {
+			interest = "Interest: %.2f",
+			num_interested = "Interested fish: %s",
+		},
+		battle = {
+			tension = "Tension: <color=%s>%.1f</color> / %.1f<sub>line snaps</sub>",
+			slack = "Slack: <color=%s>%.1f</color> / %.1f<sub>fish escapes</sub>",
+			distance = "Distance: %.1f<sub>catch</sub> / <color=%s>%.1f<sub>current</sub></color> / %.1f<sub>flee</sub>",
+		},
 	},
 
 	-- oceanfishingtackle.lua

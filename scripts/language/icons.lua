@@ -839,22 +839,28 @@ return {
 
 	-- oceanfishingrod.lua
 	oceanfishingrod = {
-		tension = "Tension: <color=%s>%.1f</color> / %.1f<sub>line snaps</sub>",
-		slack = "Slack: <color=%s>%.1f</color> / %.1f<sub>fish escapes</sub>",
-		distance = "Distance: %.1f<sub>catch</sub> / <color=%s>%.1f<sub>current</sub></color> / %.1f<sub>flee</sub>",
+		hook = {
+			--interest = "Interest: %.2f",
+			--num_interested = "Interested fish: %s",
+		},
+		battle = {
+			--tension = "Tension: <color=%s>%.1f</color> / %.1f<sub>line snaps</sub>",
+			--slack = "Slack: <color=%s>%.1f</color> / %.1f<sub>fish escapes</sub>",
+			--distance = "Distance: %.1f<sub>catch</sub> / <color=%s>%.1f<sub>current</sub></color> / %.1f<sub>flee</sub>",
+		},
 	},
 
 	-- oceanfishingtackle.lua
 	oceanfishingtackle = {
 		casting = {
-			bonus_distance = "Bonus distance: %s",
-			bonus_accuracy = "Bonus accuracy: <color=#66CC00>%+.1f%%<sub>min</sub></color> / <color=#5B63D2>%+.1f%%<sub>max</sub></color>",
+			--bonus_distance = "Bonus distance: %s",
+			--bonus_accuracy = "Bonus accuracy: <color=#66CC00>%+.1f%%<sub>min</sub></color> / <color=#5B63D2>%+.1f%%<sub>max</sub></color>",
 		},
 		lure = {
-			charm = "Charm: <color=#66CC00>%.1f<sub>base</sub></color> + <color=#5B63D2>%.1f<sub>reel</sub></color>",
-			stamina_drain = "Bonus stamina drain: %.1f",
-			time_of_day_modifier = "Phase effectiveness: <color=DAY_BRIGHT>%d%%<sub>day</sub></color> / <color=DUSK_BRIGHT>%d%%<sub>dusk</sub></color> / <color=NIGHT_BRIGHT>%d%%<sub>night</sub></color>",
-			weather_modifier = "Weather effectiveness: <color=#bbbbbb>%d%%<sub>clear</sub></color> / <color=#7BA3F2>%d%%<sub>raining</sub></color> / <color=FROZEN>%d%%<sub>snowing</sub></color>",
+			--charm = "Charm: <color=#66CC00>%.1f<sub>base</sub></color> + <color=#5B63D2>%.1f<sub>reel</sub></color>",
+			--stamina_drain = "Bonus stamina drain: %.1f",
+			--time_of_day_modifier = "Phase effectiveness: <color=DAY_BRIGHT>%d%%<sub>day</sub></color> / <color=DUSK_BRIGHT>%d%%<sub>dusk</sub></color> / <color=NIGHT_BRIGHT>%d%%<sub>night</sub></color>",
+			--weather_modifier = "Weather effectiveness: <color=#bbbbbb>%d%%<sub>clear</sub></color> / <color=#7BA3F2>%d%%<sub>raining</sub></color> / <color=FROZEN>%d%%<sub>snowing</sub></color>",
 		},
 	},
 

@@ -2374,10 +2374,29 @@ if IS_DST then
 	end)
 
 	rpcNetwork.AddClientModRPCHandler(modname, "SetOceanFishingStatus", function(status, ...)
-		--mprint('SetOceanFishingStatus', status, data, fish)
+		mprint('SetOceanFishingStatus', status)
 		
+		if status == "hook_landed" then
+			local hook = ...
+			localPlayer:PushEvent("insight_fishinghooklanded", hook)
 
-		if status == "fish_hooked" then
+		elseif status == "interested_fish" then
+			local fishes = {...}
+			local interest_levels_string = table.remove(fishes, 1)
+			local combined = {}
+			
+			local count = 0
+			for yes in interest_levels_string:gmatch("([%d.]+)") do
+				count = count + 1
+				combined[fishes[count]] = tonumber(yes)
+			end
+
+			--print'----------------------------------------'
+
+			localPlayer:PushEvent("insight_fishinginterested", { interested = combined })
+
+
+		elseif status == "fish_hooked" then
 			local fish, data = ...
 			data = json.decode(data)
 
