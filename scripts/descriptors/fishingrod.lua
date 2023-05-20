@@ -22,7 +22,7 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description, alt_description
 
-	if not context.config["display_fishing_information"] then
+	if not context.config["display_simplefishing"] then
 		return
 	end
 

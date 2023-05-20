@@ -26,7 +26,7 @@ local function Describe(self, context)
 		return
 	end
 
-	if not context.config["display_fishing_information"] then
+	if not context.config["display_simplefishing"] then
 		return
 	end
 

@@ -91,6 +91,11 @@ local function SERVER_UpdateFishingBattleState(player)
 end
 
 local function SERVER_OnFishHooked(player, fish)
+	local context = GetPlayerContext(player)
+	if not context.config["display_oceanfishing"] then
+		return
+	end
+
 	local rod = fish.components.oceanfishable:GetRod()
 	if not rod then
 		-- Something's not right?
@@ -131,6 +136,9 @@ local target_fish = nil
 local GREEN = Color.fromHex("#00cc00")
 local RED = Color.fromHex("#dd5555")
 
+local COOL_GREEN = Color.fromHex("#66CC00")
+local BLUE = Color.fromHex("#5B63D2")
+
 local function OnFishCaught(player)
 	target_fish = nil
 	--text_entity:Clear()
@@ -151,24 +159,27 @@ local function CLIENT_UpdateFishingBattleState(player, data)
 		return
 	end
 
+	local context = GetPlayerContext(player)
+
 	-- Tension
 	local tension_color = GREEN:Lerp(RED, data.tension.current / data.tension.max):ToHex()
-	local tension_str = string.format("Tension: <color=%s>%.2f</color> / %.2f<sub>line snaps</sub>", tension_color, data.tension.current, data.tension.max)
+	local tension_str = string.format(context.lstr.oceanfishingrod.tension, tension_color, data.tension.current * 100, data.tension.max * 100)
 
 	-- Slack
 	local slack_color = GREEN:Lerp(RED, data.slack.current / data.slack.max):ToHex()
-	local slack_str = string.format("Slack: <color=%s>%.2f</color> / %.2f <sub>fish escapes</sub>", slack_color, data.slack.current, data.slack.max)
+	local slack_str = string.format(context.lstr.oceanfishingrod.slack, slack_color, data.slack.current * 100, data.slack.max * 100)
 
 	-- Distance
 	local distance = player:GetDistanceSqToInst(target_fish)
 	local catch_distance_sq = data.distance.catch * data.distance.catch
-	local distance_to_catch = distance - catch_distance_sq
+	local distance_to_catch = math.max(0, distance - catch_distance_sq)
 	local distance_to_flee = data.distance.flee * data.distance.flee
 
-	local distance_str = string.format("Distance: %.2f <sub>catch</sub>  /  %.2f <sub>current</sub>  /  %.2f <sub>flee</sub>", 0, distance_to_catch, distance_to_flee)
+	--local distance_color = COOL_GREEN:Lerp(BLUE, distance_to_catch / distance_to_flee):ToHex()
+	--local distance_str = string.format(context.lstr.oceanfishingrod.distance, 0, distance_color, distance_to_catch, distance_to_flee)
 
 
-	local str = CombineLines(tension_str, slack_str, distance_str)
+	local str = CombineLines(tension_str, slack_str)
 	--text_entity:SetText(str)
 	followtext.text:SetString(str)
 end

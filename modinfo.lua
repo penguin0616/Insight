@@ -2706,36 +2706,70 @@ STRINGS = {
 			},
 		},
 	},
-	display_fishing_information = {
+	display_simplefishing = {
 		label = {
-			"Fishing information", 
-			["zh"] = "垂钓信息", 
-			["br"] = "Informações de pesca", 
-			["es"] = "Información de pesca"
+			"Freshwater fishing information", 
+			--["zh"] = "垂钓信息", 
+			--["br"] = "Informações de pesca", 
+			--["es"] = "Información de pesca"
 		},
 		hover = {
-			"Whether fishing information is shown.", 
-			["zh"] = "是否显示垂钓信息", 
-			["br"] = "Se as informações de pesca são mostradas.", 
-			["es"] = "Configura si se muestra la información de pesca."
+			"Whether freshwater fishing information is shown.", 
+			--["zh"] = "是否显示垂钓信息", 
+			--["br"] = "Se as informações de pesca são mostradas.", 
+			--["es"] = "Configura si se muestra la información de pesca."
 		},
 		options = {
 			[false] = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
-					"Fishing information is not shown.",
-					["zh"] = "不显示垂钓信息",
-					["br"] = "Informações de pesca não são mostradas.",
-					["es"] = "La información de pesca no se muestra.",
+					"Freshwater fishing information is not shown.",
+					--["zh"] = "不显示垂钓信息",
+					--["br"] = "Informações de pesca não são mostradas.",
+					--["es"] = "La información de pesca no se muestra.",
 				},
 			},
 			[true] = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
-					"Fishing information is shown.",
-					["zh"] = "显示垂钓信息",
-					["br"] = "Informações de pesca são mostradas.",
-					["es"] = "Se muestra la información de pesca.",
+					"Freshwater fishing information is shown.",
+					--["zh"] = "显示垂钓信息",
+					--["br"] = "Informações de pesca são mostradas.",
+					--["es"] = "Se muestra la información de pesca.",
+				},
+			},
+		},
+	},
+	display_oceanfishing = {
+		label = {
+			"Ocean fishing information", 
+			--["zh"] = "垂钓信息", 
+			--["br"] = "Informações de pesca", 
+			--["es"] = "Información de pesca"
+		},
+		hover = {
+			"Whether ocean fishing information is shown.", 
+			--["zh"] = "是否显示垂钓信息", 
+			--["br"] = "Se as informações de pesca são mostradas.", 
+			--["es"] = "Configura si se muestra la información de pesca."
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Ocean fishing information is not shown.",
+					--["zh"] = "不显示垂钓信息",
+					--["br"] = "Informações de pesca não são mostradas.",
+					--["es"] = "La información de pesca no se muestra.",
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Ocean fishing information is shown.",
+					--["zh"] = "显示垂钓信息",
+					--["br"] = "Informações de pesca são mostradas.",
+					--["es"] = "Se muestra la información de pesca.",
 				},
 			},
 		},
@@ -5385,7 +5419,16 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	{
-		name = "display_fishing_information",
+		name = "display_simplefishing",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_oceanfishing",
 		options = {
 			{data = false},
 			{data = true},
