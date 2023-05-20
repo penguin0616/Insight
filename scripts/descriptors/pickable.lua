@@ -57,11 +57,11 @@ local function Describe(self, context)
 	end
 
 	-- Mushroom logic
-	if self.inst.prefab:sub(-9) == "_mushroom" and type(inst.data) == "table" and inst.data.name and type(self.inst.rain) == "number" then
+	if self.inst.prefab:sub(-9) == "_mushroom" and type(self.inst.data) == "table" and self.inst.data.name and type(self.inst.rain) == "number" then
 		-- Probably a mushroom.
 		if not self.canbepicked then
 			-- Needs regrowth!
-			description = string.format(context.lstr.mushroom_rain, inst.rain)
+			description = string.format(context.lstr.mushroom_rain, self.inst.rain)
 		end
 	end
 
