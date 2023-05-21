@@ -295,14 +295,16 @@ local function CLIENT_UpdateFishingBattleState(player, data)
 	local slack_str = string.format(context.lstr.oceanfishingrod.battle.slack, slack_color, data.slack.current * 100, data.slack.max * 100)
 
 	-- Distance
-	local distance = player:GetDistanceSqToInst(target_fish)
-	local catch_distance_sq = data.distance.catch * data.distance.catch
-	local distance_to_catch = math.max(0, distance - catch_distance_sq)
-	local distance_to_flee = data.distance.flee * data.distance.flee
+	if target_fish:IsValid() then
+		-- Someone had a case where target_fish was invalid. Don't know why, but 
+		local distance = player:GetDistanceSqToInst(target_fish)
+		local catch_distance_sq = data.distance.catch * data.distance.catch
+		local distance_to_catch = math.max(0, distance - catch_distance_sq)
+		local distance_to_flee = data.distance.flee * data.distance.flee
 
-	--local distance_color = COOL_GREEN:Lerp(BLUE, distance_to_catch / distance_to_flee):ToHex()
-	--local distance_str = string.format(context.lstr.oceanfishingrod.battle.distance, 0, distance_color, distance_to_catch, distance_to_flee)
-
+		--local distance_color = COOL_GREEN:Lerp(BLUE, distance_to_catch / distance_to_flee):ToHex()
+		--local distance_str = string.format(context.lstr.oceanfishingrod.battle.distance, 0, distance_color, distance_to_catch, distance_to_flee)
+	end
 
 	local str = CombineLines(tension_str, slack_str)
 	--text_entity:SetText(str)
