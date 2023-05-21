@@ -157,6 +157,10 @@ local Insight = Class(function(self, inst)
 
 	self.inst:ListenForEvent("newfishingtarget", function(player, data)
 		local context = GetPlayerContext(player)
+		if true then
+			return
+		end
+		
 		if not context.config["display_oceanfishing"] then
 			return
 		end

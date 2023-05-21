@@ -907,6 +907,11 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 
 	--push("ContainerHas")
 	-- i check for is_unwrappable to provide the opportunity for non-bundles to terminate faster
+	if not container_info.special_data["container"] then
+		mprint("!!!!!!!!!!!!!!!!!!!!! DUMPING CONTAINER")
+		dumptable(container_info)
+	end
+
 	local contents = container_info.special_data["container"].contents
 	for i = 1, #contents do -- explore the inside of the container
 		local v = contents[i]
