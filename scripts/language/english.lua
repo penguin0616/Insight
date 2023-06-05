@@ -956,6 +956,17 @@ return {
 		chess = "<color=#99635D>Gears</color> needed: <color=#99635D>%s</color>",
 	},
 
+	-- riftspawner
+	riftspawner = {
+		stage = "Stage %d / %d",
+		next_stage = "Next stage in %s",
+		spawning = "Spawning rift in %s",
+		lunarrift = {
+			max_stage = "Spawning <prefab=lunarthrall_plant_gestalt>",
+			crystals = "%d <prefab=lunarrift_crystal_big>",
+		},
+	},
+
 	-- rocmanager.lua
 	rocmanager = {
 		cant_spawn = "Unable to spawn."

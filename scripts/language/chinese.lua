@@ -964,6 +964,17 @@ return {
 		chess = "需要<color=#99635D>齿轮</color>: <color=#99635D>%s</color>",
 	},
 
+	-- riftspawner
+	riftspawner = {
+		stage = "阶段 %d / %d",
+		next_stage = "%s 后升级",
+		spawning = "%s 后生成裂缝",
+		lunarrift = {
+			max_stage = "释放<prefab=lunarthrall_plant_gestalt>中",
+			crystals = "已有 %d <prefab=lunarrift_crystal_big>",
+		},
+	},
+
 	-- rocmanager.lua
 	rocmanager = {
 		cant_spawn = "无法生成",
