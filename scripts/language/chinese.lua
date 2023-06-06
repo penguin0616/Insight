@@ -761,6 +761,14 @@ return {
 		crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>available</sub> / %d<sub>total</sub> / %d<sub>max</sub>", -- I can't think of a way to word 
 		next_crystal = "Next <color=#4093B2><prefab=lunarrift_crystal_big></color> spawns in %s",
 	},
+	
+	-- lunarthrall_plantspawner.lua
+	lunarthrall_plantspawner = {
+		infested_count = "已寄生 %d 株",
+		spawn = "%s 后开始寄生",
+		next_wave = "%s 后开始下一波",
+		remain_waves = "剩余 %d 波",
+	},
 
 	-- lureplant.lua [Prefab]
 	lureplant = {

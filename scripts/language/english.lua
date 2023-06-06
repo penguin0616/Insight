@@ -753,6 +753,14 @@ return {
 		next_crystal = "Next <color=#4093B2><prefab=lunarrift_crystal_big></color> spawns in %s",
 	},
 
+	-- lunarthrall_plantspawner.lua
+	lunarthrall_plantspawner = {
+		infested_count = "%d plants infested",
+		spawn = "Gestalts spawn in %s",
+		next_wave = "Next wave in %s",
+		remain_waves = "%d waves remaining",
+	},
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "Will become active in: %s",
