@@ -745,6 +745,14 @@ return {
 	-- lightninggoat.lua
 	lightninggoat_charge = "Irá descarregar em %s dia(s).",
 
+	-- lunarthrall_plantspawner.lua
+	lunarthrall_plantspawner = {
+		infested_count = "%d",
+		spawn = "Gestalts spawn in %s",
+		next_wave = "Next wave in %s",
+		remain_waves = "%d waves remaining",
+	},
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "Se tornará ativo em: %s",

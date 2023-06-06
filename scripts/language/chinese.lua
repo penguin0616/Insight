@@ -751,6 +751,14 @@ return {
 	-- lightninggoat.lua
 	lightninggoat_charge = "充能将消失于%s后",
 
+	-- lunarthrall_plantspawner.lua
+	lunarthrall_plantspawner = {
+		infested_count = "已寄生 %d 株",
+		spawn = "%s 后开始寄生",
+		next_wave = "%s 后开始下一波",
+		remain_waves = "剩余 %d 波",
+	},
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "%s后开始活动",

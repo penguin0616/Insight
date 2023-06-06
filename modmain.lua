@@ -2492,6 +2492,7 @@ if IS_DST then
 	--======================= PostInits =======================================================================================
 	if TheNet and TheNet:GetIsMasterSimulation() then
 		entity_tracker:TrackPrefab("rainometer")
+		entity_tracker:TrackPrefab("lunarthrall_plant")
 	end
 
 	--[[
