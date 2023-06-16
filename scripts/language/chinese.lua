@@ -407,7 +407,7 @@ return {
 	domesticatable = {
 		domestication = "驯化: %s%%",
 		obedience = "顺从: %s%%",
-		obedience_extended = "顺从: %s%% (<%s%%<sub>摔下鞍具</sub>, %s%%<sub>最小</sub>)",
+		obedience_extended = "顺从: %s%% (<%s%%<sub>甩鞍</sub>, %s%%<sub>最小</sub>)",
 		tendency = "倾向: %s",
 		tendencies = {
 			["NONE"] = "无",
@@ -800,7 +800,7 @@ return {
 	moisture = "<color=WET>潮湿</color>: <color=WET>%s%%</color>",
 
 	-- monkey_smallhat.lua [Prefab]
-	monkey_smallhat = "收帆和起锚速度: {feature_speed}\n船桨耐久消耗: {durability_efficiency}",
+	monkey_smallhat = "收帆起锚速度: {feature_speed}\n船桨耐久消耗: {durability_efficiency}",
 
 	-- monkey_mediumhat.lua [Prefab]
 	monkey_mediumhat = "船只损坏减少: {reduction}",
