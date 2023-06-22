@@ -30,10 +30,10 @@ local function OnWorldDataDirty(inst)
 	if str == "" then return end 
 	local data = json.decode(str)
 
-	if inst._parent.replica.insight then
+	if inst._parent and inst._parent.replica.insight then
 		inst._parent.replica.insight.world_data = data
 	else
-		mprint("Missing Insight Replica")
+		mprint("Missing Insight Replica", inst._parent)
 		print(debugstack())
 	end
 end
@@ -52,10 +52,10 @@ local function OnNaughtinessDirty(inst)
 
 	actions, threshold = tonumber(actions), tonumber(threshold)
 
-	if inst._parent.replica.insight then
+	if inst._parent and inst._parent.replica.insight then
 		inst._parent.replica.insight:OnNaughtinessDirty({ actions = actions, threshold = threshold })
 	else
-		mprint("Missing Insight Replica")
+		mprint("Missing Insight Replica", inst._parent)
 		print(debugstack())
 	end
 end
@@ -63,10 +63,10 @@ end
 local function OnInvalidateDirty(inst)
 	local ent = inst.net_invalidate:value()
 	if ent then
-		if inst._parent.replica.insight then
+		if inst._parent and inst._parent.replica.insight then
 			inst._parent.replica.insight:OnInvalidateCachedEntity(ent)
 		else
-			mprint("Missing Insight Replica")
+			mprint("Missing Insight Replica", inst._parent)
 			print(debugstack())
 		end
 	end
@@ -74,40 +74,40 @@ end
 
 local function OnHuntTargetDirty(inst)
 	local target = inst.net_hunt_target:value()
-	if inst._parent.replica.insight then
+	if inst._parent and inst._parent.replica.insight then
 		inst._parent.replica.insight:OnHuntTargetDirty(target)
 	else
-		mprint("Missing Insight Replica")
+		mprint("Missing Insight Replica", inst._parent)
 		print(debugstack())
 	end
 end
 
 local function OnHungerRateDirty(inst)
 	local rate = inst.net_hunger_rate:value()
-	if inst._parent.replica.insight then
+	if inst._parent and inst._parent.replica.insight then
 		inst._parent.replica.insight:OnHungerRateDirty(rate)
 	else
-		mprint("Missing Insight Replica")
+		mprint("Missing Insight Replica", inst._parent)
 		print(debugstack())
 	end
 end
 
 local function OnSanityRateDirty(inst)
 	local rate = inst.net_sanity_rate:value()
-	if inst._parent.replica.insight then
+	if inst._parent and inst._parent.replica.insight then
 		inst._parent.replica.insight:OnSanityRateDirty(rate)
 	else
-		mprint("Missing Insight Replica")
+		mprint("Missing Insight Replica", inst._parent)
 		print(debugstack())
 	end
 end
 
 local function OnMoistureRateDirty(inst)
 	local rate = inst.net_moisture_rate:value()
-	if inst._parent.replica.insight then
+	if inst._parent and inst._parent.replica.insight then
 		inst._parent.replica.insight:OnMoistureRateDirty(rate)
 	else
-		mprint("Missing Insight Replica")
+		mprint("Missing Insight Replica", inst._parent)
 		print(debugstack())
 	end
 end

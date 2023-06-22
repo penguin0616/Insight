@@ -1276,7 +1276,7 @@ function Insight:HUDUpdate()
 		end
 	end
 
-	if self.context.config["itemtile_display"] == "numbers" or self.context.config["itemtile_display"] == "mixed" then
+	if self.context and (self.context.config["itemtile_display"] == "numbers" or self.context.config["itemtile_display"] == "mixed") then
 		for _, itemslot in pairs(GetItemSlots()) do
 			local item = itemslot.tile and itemslot.tile.item
 			if item then

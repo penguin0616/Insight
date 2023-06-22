@@ -81,7 +81,7 @@ function Event:AddListener(name, fn, weak)
 	end
 
 	if self.listeners[name] then
-		error("Duplicate listener not allowed")
+		errorf("Duplicate listener '%s' not allowed on Event '%s'", name, self.name)
 	end
 
 	if type(fn) ~= "function" then
@@ -109,7 +109,9 @@ function Event:AddWeakListener(name, fn)
 	if type(name) == "function" and fn == nil then
 		-- No name.
 		fn = name
-		name = "weak_listener" .. math.random(1, 0xFFFFFF)
+		repeat
+			name = "weak_listener" .. math.random(1, 0xFFFFFF)
+		until self.listeners[name] == nil -- Rare edge case where number was the same
 	end
 
 	return self:AddListener(name, fn, true)

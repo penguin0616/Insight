@@ -26,14 +26,14 @@ local function Describe(inst, context)
 	local experiment_string
 
 	local msm = TheWorld.components.moonstormmanager
-	if msm.tools_need then
+	if msm and msm.tools_need then
 		local time_left = GetTaskRemaining(msm.tools_need)
 		if time_left > 0 then
 			tool_string = string.format(context.lstr.moonstormmanager.wagstaff_hunt.time_for_next_tool, context.time:SimpleProcess(time_left, "realtime_short"))
 		end
 	end
 
-	if msm.inst.components.timer then
+	if msm and msm.inst.components.timer then
 		local time_left = msm.inst.components.timer:GetTimeLeft("moonstorm_experiment_complete")
 		if time_left then
 			experiment_string = string.format(context.lstr.moonstormmanager.wagstaff_hunt.experiment_time, context.time:SimpleProcess(time_left, "realtime_short"))
