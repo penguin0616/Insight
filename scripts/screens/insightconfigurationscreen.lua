@@ -550,6 +550,13 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.dirty_changes = {}
 	self.owner = localPlayer
 
+	--[[
+	if not self.owner then
+		self.inst:DoTaskInTime(0, function() self:Kill() end)
+		return
+	end
+	]]
+
 	-- Background tint
 	self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
 	self.black:SetControl(CONTROL_PRIMARY) -- Control is unchanging, but makes the clicker mouseonly.

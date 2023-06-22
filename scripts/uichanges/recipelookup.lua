@@ -61,13 +61,13 @@ local function GetRecipeURL(recipe)
 		-- vanilla
 		if not STRINGS.NAMES[string.upper(recipe.product)] then
 			recipe_urls[recipe.name] = { nil, nil }
-			return recipe_urls[recipe.name]
+			return unpack(recipe_urls[recipe.name])
 		end
 
 		local url = "https://dontstarve.fandom.com/wiki/" .. STRINGS.NAMES[string.upper(recipe.product)]:gsub("%s", "_")
 		recipe_urls[recipe.name] = { url, false }
 
-		return url, false
+		return unpack(recipe_urls[recipe.name])
 	end
 
 	-- modded

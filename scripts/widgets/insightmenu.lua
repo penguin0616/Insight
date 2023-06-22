@@ -142,8 +142,12 @@ local InsightMenu = Class(Widget,function(self)
 	self.config_button:SetOnClick(function()
 		--self:SetPage(3)
 		--TheFrontEnd.screenstack[#TheFrontEnd.screenstack]:ClearFocus()
-		local sc = InsightConfigurationScreen()
-		TheFrontEnd:PushScreen(sc)
+		if localPlayer then
+			local sc = InsightConfigurationScreen()
+			TheFrontEnd:PushScreen(sc)
+		else
+			mprint("Missing localPlayer to be able to spawn configuration menu")
+		end
 	end)
 	self.pages[3] = false
 	self.tabs[3] = self.config_button
