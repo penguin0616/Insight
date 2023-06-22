@@ -1279,8 +1279,6 @@ function RequestEntityInformation(entity, player, params)
 		if TRACK_INFORMATION_REQUESTS then
 			dprint("Information set for", entity)
 		end
-
-		
 		player.components.insight:SetEntityData(entity, data)
 	else
 		-- We're on a plain client, and that means we're actually requesting information.
@@ -1294,7 +1292,7 @@ function RequestEntityInformation(entity, player, params)
 	end
 	--]]
 
-	if player.replica.insight.entity_data[entity] then
+	if player.replica.insight.entity_data and player.replica.insight.entity_data[entity] then
 		return player.replica.insight.entity_data[entity]
 	end
 
