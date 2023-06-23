@@ -2115,7 +2115,7 @@ STRINGS = {
 	klaus_sack_markers = {
 		label = {
 			"Loot Stash Markers", 
-			["zh"] = "克劳斯袋子标记 (服务器选项)", 
+			["zh"] = "克劳斯袋子标记", 
 			["br"] = "Marcadores do Klaus", 
 			["es"] = "Indicador de Saco de Klaus"
 		},
@@ -2709,13 +2709,13 @@ STRINGS = {
 	display_simplefishing = {
 		label = {
 			"Freshwater fishing information", 
-			--["zh"] = "垂钓信息", 
+			["zh"] = "淡水垂钓信息", 
 			--["br"] = "Informações de pesca", 
 			--["es"] = "Información de pesca"
 		},
 		hover = {
 			"Whether freshwater fishing information is shown.", 
-			--["zh"] = "是否显示垂钓信息", 
+			["zh"] = "是否显示淡水垂钓信息", 
 			--["br"] = "Se as informações de pesca são mostradas.", 
 			--["es"] = "Configura si se muestra la información de pesca."
 		},
@@ -2724,7 +2724,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Freshwater fishing information is not shown.",
-					--["zh"] = "不显示垂钓信息",
+					["zh"] = "不显示淡水垂钓信息",
 					--["br"] = "Informações de pesca não são mostradas.",
 					--["es"] = "La información de pesca no se muestra.",
 				},
@@ -2733,7 +2733,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Freshwater fishing information is shown.",
-					--["zh"] = "显示垂钓信息",
+					["zh"] = "显示淡水垂钓信息",
 					--["br"] = "Informações de pesca são mostradas.",
 					--["es"] = "Se muestra la información de pesca.",
 				},
@@ -2743,13 +2743,13 @@ STRINGS = {
 	display_oceanfishing = {
 		label = {
 			"Ocean fishing information", 
-			--["zh"] = "垂钓信息", 
+			["zh"] = "海洋垂钓信息", 
 			--["br"] = "Informações de pesca", 
 			--["es"] = "Información de pesca"
 		},
 		hover = {
 			"Whether ocean fishing information is shown.", 
-			--["zh"] = "是否显示垂钓信息", 
+			["zh"] = "是否显示海洋垂钓信息", 
 			--["br"] = "Se as informações de pesca são mostradas.", 
 			--["es"] = "Configura si se muestra la información de pesca."
 		},
@@ -2758,7 +2758,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Ocean fishing information is not shown.",
-					--["zh"] = "不显示垂钓信息",
+					["zh"] = "不显示海洋垂钓信息",
 					--["br"] = "Informações de pesca não são mostradas.",
 					--["es"] = "La información de pesca no se muestra.",
 				},
@@ -2767,7 +2767,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Ocean fishing information is shown.",
-					--["zh"] = "显示垂钓信息",
+					["zh"] = "显示海洋垂钓信息",
 					--["br"] = "Informações de pesca são mostradas.",
 					--["es"] = "Se muestra la información de pesca.",
 				},
@@ -2777,13 +2777,13 @@ STRINGS = {
 	display_tackle_information = {
 		label = {
 			"Tackle information", 
-			["zh"] = nil, 
+			["zh"] = "渔具信息", 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
 			"Whether to show information about floats and lures.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示关于浮标和鱼饵的信息", 
 			["br"] = nil, 
 			["es"] = nil
 		},
@@ -2792,7 +2792,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Tackle information is not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示渔具信息",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -2801,7 +2801,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Tackle information is shown.",
-					["zh"] = nil,
+					["zh"] = "显示渔具信息",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3252,13 +3252,13 @@ STRINGS = {
 	display_compostvalue = {
 		label = {
 			"Compost Value", 
-			["zh"] = nil, 
+			["zh"] = "堆肥值", 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
 			"Whether compost values are shown.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示堆肥值", 
 			["br"] = nil, 
 			["es"] = nil
 		},
@@ -3267,7 +3267,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Compost values are not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示堆肥值",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3276,7 +3276,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Compost values are shown.",
-					["zh"] = nil,
+					["zh"] = "显示堆肥值",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3320,13 +3320,13 @@ STRINGS = {
 	display_gyminfo = {
 		label = {
 			"Gym Info", 
-			["zh"] = nil, 
+			["zh"] = "健身房信息", 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
 			"Whether information about gym-related stuff is shown.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示与健身房有关的物品信息", 
 			["br"] = nil, 
 			["es"] = nil
 		},
@@ -3335,7 +3335,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Gym-related information is not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示与健身房有关的信息",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3344,7 +3344,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Gym-related information is shown.",
-					["zh"] = nil,
+					["zh"] = "显示与健身房有关的信息",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3528,13 +3528,13 @@ STRINGS = {
 	wx78_scanner_info = {
 		label = {
 			"WX-78 Scanner Info", 
-			["zh"] = nil,
+			["zh"] = "WX-78 扫描信息",
 			["br"] = nil,
 			["es"] = nil,
 		},
 		hover = {
 			"Whether scanning information from WX-78's scanner is shown.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示来自 WX-78 的扫描分析仪的扫描信息", 
 			["br"] = nil,
 			["es"] = nil,
 		},
@@ -3543,7 +3543,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Scanning information is not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示扫描信息",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3552,7 +3552,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Scanning information is shown.",
-					["zh"] = nil,
+					["zh"] = "显示扫描信息",
 					["br"] = nil,
 					["es"] = nil,
 				},

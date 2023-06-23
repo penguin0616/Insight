@@ -324,66 +324,66 @@ return {
 	dapperness = "<color=SANITY>理智</color>: <color=SANITY>%s/分</color>",
 
 	-- debuffable.lua
-	buff_text = "<color=MAGIC>加成</color>: <color=MAGIC>%s</color>, %s",
+	buff_text = "<color=MAGIC>加成</color>: %s, %s",
 	debuffs = { -- ugh
 		["buff_attack"] = {
-			name = nil,
+			name = "<color=HEALTH>攻击提升</color>",
 			description = "攻击加强 <color=HEALTH>{percent}%</color>, 持续 {duration} 秒",
 		},
 		["buff_playerabsorption"] = {
-			name = nil,
+			name = "<color=MEAT>伤害减免</color>",
 			description = "伤害减少 <color=MEAT>{percent}%</color>, 持续 {duration} 秒",
 		},
 		["buff_workeffectiveness"] = {
-			name = nil,
+			name = "<color=SWEETENER>工作效率</color>",
 			description = "效率提升 <color=#DED15E>{percent}%</color>, 持续 {duration} 秒",
 		},
 
 		["buff_moistureimmunity"] = {
-			name = nil,
+			name = "<color=WET>防潮</color>",
 			description = "免疫<color=WET>潮湿</color>, 持续 {duration} 秒",
 		},
 		["buff_electricattack"] = {
-			name = nil,
+			"<color=WET>电击</color>",
 			description = "攻击<color=WET>带电</color>, 持续 {duration} 秒",
 		},
 		["buff_sleepresistance"] = {
-			name = nil,
+			name = "<color=MONSTER>睡眠抵抗</color>",
 			description = "抵抗<color=MONSTER>睡眠</color>, 持续 {duration} 秒",
 		},
 
 		["tillweedsalve_buff"] = {
-			name = nil,
+			name = "<color=HEALTH>生命回复</color>",
 			description = "{duration} 秒内回复 <color=HEALTH>{amount} 生命</color>",
 		},
 		["healthregenbuff"] = {
-			name = nil,
+			name = "<color=HEALTH>生命回复</color>",
 			description = "{duration} 秒内回复 <color=HEALTH>{amount} 生命</color>",
 		},
 		["sweettea_buff"] = {
-			name = nil,
+			name = "<color=SANITY>理智回复</color>",
 			description = "{duration} 秒内回复 <color=SANITY>{amount} 理智</color>",
 		},
 
 		["wintersfeastbuff"] = {
-			name = "<color=FROZEN>Winter's Feast Buff</color>",
-			description = nil
+			name = "<color=FROZEN>冬季盛宴加成</color>",
+			description = "恢复<color=HUNGER>饥饿</color>, <color=SANITY>理智</color>, <color=HEALTH>生命</color>"
 		},
 		["hungerregenbuff"] = {
-			name = "<color=HUNGER><prefab=batnosehat> Buff</color>",
-			description = "Regenerates <color=HUNGER>{amount} hunger</color> over {duration}(s).",
+			name = "<color=HUNGER><prefab=batnosehat>加成</color>",
+			description = "{duration} 秒内回复 <color=HUNGER>{amount} 饥饿</color>",
 		},
 		
 		["halloweenpotion_health_buff"] = {
-			name = "<color=HEALTH>Health regeneration</color>",
+			name = "<color=HEALTH>生命回复</color>",
 			description = nil
 		},
 		["halloweenpotion_sanity_buff"] = {
-			name = "<color=SANITY>Sanity regeneration</color>",
+			name = "<color=SANITY>理智回复</color>",
 			description = nil
 		},
 		["halloweenpotion_bravery_small_buff"] = {
-			name = "<color=SANITY>Bravery</color> against bats.",
+			name = "<color=SANITY>勇敢</color>面对蝙蝠",
 			description = nil
 		},
 		["halloweenpotion_bravery_large_buff"] = (function(parent)
@@ -407,7 +407,7 @@ return {
 	domesticatable = {
 		domestication = "驯化: %s%%",
 		obedience = "顺从: %s%%",
-		obedience_extended = "Obedience: %s%% (<%s%%<sub>bucks saddle</sub>, %s%%<sub>minimum</sub>)",
+		obedience_extended = "顺从: %s%% (<%s%%<sub>甩鞍</sub>, %s%%<sub>最小</sub>)",
 		tendency = "倾向: %s",
 		tendencies = {
 			["NONE"] = "无",
@@ -557,7 +557,7 @@ return {
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
 	fish_recharge = "%s后增加一条鱼",
-	fish_wait_time = "抓一条鱼将花费 <color=SHALLOWS>%s 秒</color>",
+	fish_wait_time = "钓到一条鱼需要 <color=SHALLOWS>%s 秒</color>",
 
 	-- fishingrod.lua
 	fishingrod_waittimes = "等待时间: <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
@@ -568,7 +568,7 @@ return {
 	loyalty_duration = "忠诚持续时间: %s",
 
 	-- forcecompostable.lua
-	forcecompostable = "肥料值: %s",
+	forcecompostable = "堆肥值: %s",
 
 	-- fossil_stalker.lua [Prefab]
 	fossil_stalker = {
@@ -611,7 +611,7 @@ return {
 		time_verbose = "<color=LIGHT>%s</color>持续时间 (<color=LIGHT>%s%%</color>): %s", -- type, percent, time
 		efficiency = "<color=LIGHT>燃烧效率</color>: <color=LIGHT>%s%%</color>",
 		units = "<color=LIGHT>燃料</color>: <color=LIGHT>%s</color>",
-		held_refuel = "添加<color=SWEETENER><prefab=%s></color>将补充燃料 <color=LIGHT>%s%%</color>",
+		held_refuel = "使用<color=SWEETENER><prefab=%s></color>将补充燃料 <color=LIGHT>%s%%</color>",
 	},
 
 	-- ghostlybond.lua
@@ -713,7 +713,7 @@ return {
 	-- inspectable.lua
 	wagstaff_tool = "这个工具的名字是: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "健身房重量数值: %s",
-	ruins_statue_gem = "Contains a <color=%s><prefab=%s></color>.",
+	ruins_statue_gem = "包含一个<color=%s><prefab=%s></color>",
 
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
@@ -768,7 +768,7 @@ return {
 
 	-- mast.lua
 	mast_sail_force = "帆力: %s",
-	mast_max_velocity = "最高速度: %s",
+	mast_max_velocity = "最大速度: %s",
 
 	-- mermcandidate.lua
 	mermcandidate = "卡路里: %s / %s",
@@ -800,10 +800,10 @@ return {
 	moisture = "<color=WET>潮湿</color>: <color=WET>%s%%</color>",
 
 	-- monkey_smallhat.lua [Prefab]
-	monkey_smallhat = "Mast & Anchor interaction speed: {feature_speed}\nOar durability use: {durability_efficiency}",
+	monkey_smallhat = "收帆起锚速度: {feature_speed}\n船桨耐久消耗: {durability_efficiency}",
 
 	-- monkey_mediumhat.lua [Prefab]
-	monkey_mediumhat = "Boat damage reduction: {reduction}",
+	monkey_mediumhat = "船只损坏减少: {reduction}",
 	-- mood.lua
 	mood = {
 		exit = "发情结束于 %s 天后",
@@ -834,27 +834,27 @@ return {
 	-- oceanfishingrod.lua
 	oceanfishingrod = {
 		hook = {
-			interest = "Interest: %.2f",
-			num_interested = "Interested fish: %s",
+			interest = "吸引力: %.2f",
+			num_interested = "被吸引的鱼: %s",
 		},
 		battle = {
-			tension = "Tension: <color=%s>%.1f</color> / %.1f<sub>line snaps</sub>",
-			slack = "Slack: <color=%s>%.1f</color> / %.1f<sub>fish escapes</sub>",
-			distance = "Distance: %.1f<sub>catch</sub> / <color=%s>%.1f<sub>current</sub></color> / %.1f<sub>flee</sub>",
+			tension = "收紧: <color=%s>%.1f</color> / %.1f<sub>断线</sub>",
+			slack = "放松: <color=%s>%.1f</color> / %.1f<sub>逃离</sub>",
+			distance = "距离: %.1f<sub>捕获</sub> / <color=%s>%.1f<sub>当前</sub></color> / %.1f<sub>逃脱</sub>",
 		},
 	},
 	
 	-- oceanfishingtackle.lua
 	oceanfishingtackle = {
 		casting = {
-			bonus_distance = "Bonus distance: %s",
-			bonus_accuracy = "Bonus accuracy: <color=#66CC00>%+.1f%%<sub>min</sub></color> / <color=#5B63D2>%+.1f%%<sub>max</sub></color>",
+			bonus_distance = "额外抛竿距离: %s",
+			bonus_accuracy = "额外抛竿准度: <color=#66CC00>%+.1f%%<sub>min</sub></color> / <color=#5B63D2>%+.1f%%<sub>max</sub></color>",
 		},
 		lure = {
-			charm = "Charm: <color=#66CC00>%.1f<sub>base</sub></color> + <color=#5B63D2>%.1f<sub>reel</sub></color>",
-			stamina_drain = "Bonus stamina drain: %.1f",
-			time_of_day_modifier = "Phase effectiveness: <color=DAY_BRIGHT>%d%%<sub>day</sub></color> / <color=DUSK_BRIGHT>%d%%<sub>dusk</sub></color> / <color=NIGHT_BRIGHT>%d%%<sub>night</sub></color>",
-			weather_modifier = "Weather effectiveness: <color=#bbbbbb>%d%%<sub>clear</sub></color> / <color=#7BA3F2>%d%%<sub>raining</sub></color> / <color=FROZEN>%d%%<sub>snowing</sub></color>",
+			charm = "吸引力: <color=#66CC00>%.1f<sub>基础</sub></color> + <color=#5B63D2>%.1f<sub>收线</sub></color>",
+			stamina_drain = "额外精力消耗: %.1f",
+			time_of_day_modifier = "时段效益: <color=DAY_BRIGHT>%d%%<sub>白天</sub></color> / <color=DUSK_BRIGHT>%d%%<sub>黄昏</sub></color> / <color=NIGHT_BRIGHT>%d%%<sub>夜晚</sub></color>",
+			weather_modifier = "天气效益: <color=#bbbbbb>%d%%<sub>晴天</sub></color> / <color=#7BA3F2>%d%%<sub>下雨</sub></color> / <color=FROZEN>%d%%<sub>下雪</sub></color>",
 		},
 	},
 
@@ -943,7 +943,7 @@ return {
 		work2 = "<color=#DED15E>%s<sub>做工</sub></color>",
 		perish = "<color=MONSTER>提鲜</color>: <color=MONSTER>%s%%</color>",
 		perish2 = "<color=MONSTER>提鲜</color>: <color=MONSTER>%s%%</color>",
-		held_repair = "Held <color=SWEETENER><prefab=%s></color> will repair <color=LIGHT>%s</color> uses (<color=LIGHT>%s%%</color>).",
+		held_repair = "使用<color=SWEETENER><prefab=%s></color>将修复 <color=LIGHT>%s</color> 耐久 (<color=LIGHT>%s%%</color>)",
 		materials = (IS_DST and {
 			[MATERIALS.WOOD] = "木头",
 			[MATERIALS.STONE] = "石头",
@@ -1168,8 +1168,8 @@ return {
 
 	-- weather.lua
 	weather = {
-		progress_to_rain = "Progress to rain: %s / %s",
-		remaining_rain = "Remaining rain: %s",
+		progress_to_rain = "降雨进度: %s / %s",
+		remaining_rain = "降雨持续: %s",
 	},
 
 	-- weighable.lua
@@ -1238,7 +1238,7 @@ return {
 
 	-- wx78_scanner.lua [Prefab]
 	wx78_scanner = {
-		scan_progress = "Scan progress: %.1f%%",
+		scan_progress = "扫描进度: %.1f%%",
 	},
 
 	-- yotb_sewer.lua
