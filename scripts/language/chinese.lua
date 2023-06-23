@@ -981,6 +981,11 @@ return {
 			max_stage = "释放<prefab=lunarthrall_plant_gestalt>中",
 			crystals = "已有 %d <prefab=lunarrift_crystal_big>",
 		},
+		shadowrift = {
+			max_stage = "%s 后关闭",
+			next_fissure = "%s 后可控制梦魇裂缝",
+			thralls = "已控制裂缝，剩余 %d <prefab=shadowthrall_hands>",
+		},
 	},
 
 	-- rocmanager.lua

@@ -976,6 +976,11 @@ return {
 			max_stage = "Spawning <prefab=lunarthrall_plant_gestalt>",
 			crystals = "%d <prefab=lunarrift_crystal_big>",
 		},
+		shadowrift = {
+			max_stage = "Close in %s",
+			next_fissure = "%s till next fissure controll",
+			thralls = "Fissure controlled, %d <prefab=shadowthrall_hands> remaining",
+		},
 	},
 
 	-- rocmanager.lua
