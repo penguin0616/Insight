@@ -51,10 +51,12 @@ local function apply_fn(context, widget, data, index)
 		
 		widget:SetText(data.text)
 		widget.component = data.component
+		widget.real_component = data.real_component
 	else
 		widget:SetText(nil)
 		widget:SetIcon(nil, nil)
 		widget.component = nil
+		widget.real_component = nil
 	end
 end
 

@@ -93,20 +93,27 @@ function ItemDetail:OnControl(control, down)
 	if self.component and control == CONTROL_ACCEPT and down and TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
 		-- Check localplayer status
 		if localPlayer and localPlayer.HUD._StatusAnnouncer then
+			local cmp = self.real_component or self.component
+
 			-- Check component status
+			-- Using self.component so that we can use the special data from the named data.
 			local special_data = localPlayer.replica.insight.world_data.special_data[self.component]
+
 			local describer = special_data and (
-				(special_data.prefably and Insight.prefab_descriptors[self.component] and Insight.prefab_descriptors[self.component].StatusAnnoucementsDescribe) or
-				(Insight.descriptors[self.component] and Insight.descriptors[self.component].StatusAnnoucementsDescribe)
+				(special_data.prefably and Insight.prefab_descriptors[cmp] and Insight.prefab_descriptors[cmp].StatusAnnoucementsDescribe) or
+				(Insight.descriptors[cmp] and Insight.descriptors[cmp].StatusAnnoucementsDescribe)
 			)
 
 			if describer then
 				local data = describer(special_data, GetPlayerContext(localPlayer), TheWorld)
-				if data.description then
-					localPlayer.HUD._StatusAnnouncer:Announce(data.description, self.component)
+				if data and data.description then
+					-- Using self.component here so that the cooldown is unique per individual data, not for the entire descriptor.
+					localPlayer.HUD._StatusAnnouncer:Announce(data.description, self.component) 
 				end
 			end
 		end
+
+		return true
 	end
 
 	return Widget.OnControl(self, control, down)

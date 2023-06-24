@@ -1006,6 +1006,9 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 			end
 
 			d.name = d.name or name -- chosen name or default component name
+			if d.name ~= name then
+				d.real_component = name
+			end
 
 			if d.description ~= nil and type(d.description) ~= "string" then
 				error(string.format("Invalid description: %s | Descriptor: %s", tostring(d.description), d.name))
