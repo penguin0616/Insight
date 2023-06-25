@@ -1,4 +1,27 @@
 DST_CONSOLE_COMMANDS = {}
+DST_CONSOLE_COMMANDS.i_accelerate_rift = function(crystals)
+	assert(TheWorld.ismastersim, "need to be mastersim")
+
+	
+	if TheWorld.worldprefab == "forest" then
+		local portal = TheSim:FindFirstEntityWithTag("lunarrift_portal")
+		if not portal then
+			TheWorld.components.worldsettingstimer:SetTimeLeft("rift_spawn_timer", 10)
+		else
+			local timer = portal.components.timer
+			if crystals then
+				if timer:TimerExists("try_crystals") then
+					timer:SetTimeLeft("try_crystals", 10)
+				end
+			else
+				if timer:TimerExists("trynextstage") then
+					timer:SetTimeLeft("trynextstage", 10)
+				end
+			end
+		end
+	end
+end
+
 DST_CONSOLE_COMMANDS.i_moon_postern_stuff = function()
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	local plr = ConsoleCommandPlayer()
@@ -9,7 +32,7 @@ DST_CONSOLE_COMMANDS.i_moon_postern_stuff = function()
 	for i = 1, 20 do plr.components.inventory:GiveItem(SpawnPrefab("moonrocknugget")) end
 	
 end
-DST_CONSOLE_COMMANDS.c_moon_altar_stuff = function()
+DST_CONSOLE_COMMANDS.i_moon_altar_stuff = function()
 
 	local offset = 7
 	local pos = ConsoleCommandPlayer():GetPosition()
