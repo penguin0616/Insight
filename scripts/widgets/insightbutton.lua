@@ -129,6 +129,11 @@ function InsightButton:BeginDrag()
 end
 
 function InsightButton:DoDrag()
+	if not self.drag_state then
+		-- Happened once
+		mprint("MISSING DRAG STATE???")
+		return
+	end
 	local pos = self.drag_state.pos
 
 	-- lastx was nil? Which one? Frontend?

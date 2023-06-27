@@ -35,6 +35,15 @@ REGISTER_HOT_RELOAD({"screens/insightconfigurationscreen"}, function(imports)
 end)
 --
 
+-- Before 3 line per detail update
+
+local BACKGROUND_SIZE = {540, 460}
+local MAIN_MENU_SIZE = {540 - 80, 460 - 100}
+
+local PAGE_WIDTH = MAIN_MENU_SIZE[1] - 30
+local PAGE_HEIGHT = 64
+local PAGE_ITEM_SPACE = 16
+
 
 -- Class InsightMenu
 local InsightMenu = Class(Widget,function(self)
@@ -51,20 +60,20 @@ local InsightMenu = Class(Widget,function(self)
 	self.page_num = 0
 
 	self.bg = self:AddChild(Image("images/dst/scoreboard.xml", "scoreboard_frame.tex")) -- data/images
-	self.bg:SetSize(540, 460) -- Original size before config: 480, 460
+	self.bg:SetSize(unpack(BACKGROUND_SIZE)) -- Original size before config: 480, 460
 
 	self.main = self:AddChild(Image(DEBUG_IMAGE(false)))
 	--self.main:SetTint(1, 1, 1, .1)
-	self.main:SetSize(540-80, 460-100)
+	self.main:SetSize(unpack(MAIN_MENU_SIZE))
 
 	local mainw, mainh = self.main:GetSize()
 
-	self:SetPosition(0, 460/2 - 75)
+	self:SetPosition(0, MAIN_MENU_SIZE[2]/2 - 75)
 	
 	self.header = self.main:AddChild(Image(DEBUG_IMAGE(false)))
 	self.header:SetTint(1, 1, 1, .1)
 	self.header:SetSize(mainw, 60)
-	self.header:SetPosition(0, 460/2 - 75)
+	self.header:SetPosition(0, BACKGROUND_SIZE[2]/2 - 75)
 
 	local headerw, headerh = self.header:GetSize()
 	local available_tab_space = headerw - 64
@@ -109,7 +118,11 @@ local InsightMenu = Class(Widget,function(self)
 		table.insert(self.tabs, tab)
 
 		-- Create the page
-		local page = self.main:AddChild(InsightPage(v))
+		local page = self.main:AddChild(InsightPage(v, 
+			PAGE_WIDTH, 
+			PAGE_HEIGHT, 
+			PAGE_ITEM_SPACE
+		))
 		page.list.custom_focus_check = function() -- TODO: Temporary Workaround
 			-- Make sure that the scroller can accept scroll actions even when focus is on our tab buttons.
 			return self.current_page == page

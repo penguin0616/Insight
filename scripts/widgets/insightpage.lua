@@ -24,15 +24,17 @@ local ImageButton = require("widgets/imagebutton")
 local ItemDetail = import("widgets/itemdetail")
 local InsightScrollList = import("widgets/insightscrolllist")
 
+--[[
 local item_width = 400
 local item_height = 64
 -- 16 is because item_height used to be 80 for padding reasons. 
 -- Moving it to 64 means we move it to between rows.
 local padding_between_rows = 10 + 16
+--]]
 
 
 local function item_ctor_fn(context, index)
-	return ItemDetail({width = item_width, height = item_height})
+	return ItemDetail({width = context.item_width, height = context.item_height})
 end
 
 local function apply_fn(context, widget, data, index)
@@ -60,10 +62,16 @@ local function apply_fn(context, widget, data, index)
 	end
 end
 
-local function MakeGrid()
+local function MakeGrid(item_width, item_height, padding_between_rows)
 	local TEMPLATES = require "widgets/redux/templates"
 
 	return TEMPLATES.ScrollingGrid({}, {
+		scroll_context = {
+			item_width = item_width,
+			item_height = item_height,
+			padding_between_rows = padding_between_rows,
+
+		},
 		num_visible_rows = 3,
 		num_columns = 1,
 		widget_width = item_width,
@@ -78,19 +86,26 @@ local function MakeGrid()
 end
 
 
-local InsightPage = Class(Widget, function(self, name)
+local InsightPage = Class(Widget, function(self, name, width, height, padding_between_rows)
 	Widget._ctor(self, "InsightPage")
 	assert(type(name) == "string", "Page expected name as first argument")
 
 	self._name = name
 	self.items = {}
+	self.item_width = width
+	self.item_height = height
+	self.padding_between_rows = padding_between_rows
+
+	assert(self.item_width, "missing width")
+	assert(self.item_height, "missing height")
+	assert(self.padding_between_rows, "missing padding")
 
 	--self.main = self:AddChild(Image(DEBUG_IMAGE()))
 	--self.main:SetSize(400, 290)
 	--self.main:SetPosition(5, -25)
 
 	if IS_DST then
-		self.list = self:AddChild(MakeGrid())
+		self.list = self:AddChild(MakeGrid(self.item_width, self.item_height, self.padding_between_rows))
 	else
 		--[[
 			num_visible_rows = 3,
@@ -108,10 +123,10 @@ local InsightPage = Class(Widget, function(self, name)
 			scroll_context = {},
 			item_ctor_fn = item_ctor_fn,
 			apply_fn = apply_fn,
-			widget_width = item_width,
-			widget_height = item_height,
+			widget_width = self.item_width,
+			widget_height = self.item_height,
 			num_visible_rows = 3,
-			row_padding = padding_between_rows
+			row_padding = self.padding_between_rows
 		}))
 	end
 

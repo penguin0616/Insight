@@ -39,11 +39,10 @@ local ItemDetail = Class(Widget, function(self, info)
 
 	self.component = nil
 
-	--[[
-	self.yep = self:AddChild(Image(DEBUG_IMAGE()))
+	
+	self.yep = self:AddChild(Image(DEBUG_IMAGE(true)))
 	self.yep:SetTint(1, 1, 1, .5)
 	self.yep:SetSize(info.width, info.height)
-	--]]
 	
 
 	--[[
@@ -67,10 +66,15 @@ local ItemDetail = Class(Widget, function(self, info)
 	self.icon = (self.icon_holder2 or self.icon_holder):AddChild(Image())
 	--self.icon:SetSize(icon_holder_width, icon_holder_height) 
 
+	-- The image for row.tex has blank pixels: ~8 empty top, ~5 empty bottom
 	self.text_holder = self:AddChild(Image("images/dst/scoreboard.xml", "row.tex")) -- avatars.xml
-	self.text_holder:SetSize(info.width - icon_holder_width - text_holder_padding, icon_holder_height + (13/2)) -- blank pixels: ~8 empty top, ~5 empty bottom
+	self.text_holder:SetSize(info.width - icon_holder_width - text_holder_padding, info.height + (13/2.5)) 
 	self.text_holder:SetPosition(icon_holder_width/2 - text_holder_padding/2, 0) -- subtract 10 to keep icon_holder and text still bordering eachother
 	self.text_holder:Hide()
+
+	local f = self.text_holder:AddChild(Image("images/dst/scoreboard.xml", "row.tex"))
+	f:SetSize(self.text_holder:GetSize())
+	f:SetRotation(180)
 	
 	--self.text = self.text_holder:AddChild(Text(UIFONT, 30, nil))
 	--self.text:SetHAlign(ANCHOR_RIGHT)
