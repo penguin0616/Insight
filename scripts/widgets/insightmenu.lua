@@ -41,8 +41,8 @@ local BACKGROUND_SIZE = {540, 460}
 local MAIN_MENU_SIZE = {540 - 80, 460 - 100}
 
 local PAGE_WIDTH = MAIN_MENU_SIZE[1] - 30
-local PAGE_HEIGHT = 64
-local PAGE_ITEM_SPACE = 16
+local PAGE_ITEM_HEIGHT = 80
+local PAGE_ITEM_PADDING = 10
 
 
 -- Class InsightMenu
@@ -120,8 +120,8 @@ local InsightMenu = Class(Widget,function(self)
 		-- Create the page
 		local page = self.main:AddChild(InsightPage(v, 
 			PAGE_WIDTH, 
-			PAGE_HEIGHT, 
-			PAGE_ITEM_SPACE
+			PAGE_ITEM_HEIGHT, 
+			PAGE_ITEM_PADDING
 		))
 		page.list.custom_focus_check = function() -- TODO: Temporary Workaround
 			-- Make sure that the scroller can accept scroll actions even when focus is on our tab buttons.
