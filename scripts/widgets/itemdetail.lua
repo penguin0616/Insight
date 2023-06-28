@@ -40,7 +40,7 @@ local ItemDetail = Class(Widget, function(self, info)
 	self.component = nil
 
 	
-	self.yep = self:AddChild(Image(DEBUG_IMAGE(true)))
+	self.yep = self:AddChild(Image(DEBUG_IMAGE()))
 	self.yep:SetTint(1, 1, 1, .5)
 	self.yep:SetSize(info.width, info.height)
 	

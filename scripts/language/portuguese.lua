@@ -320,6 +320,11 @@ return {
 	-- dapperness.lua
 	dapperness = "<color=SANITY>Sanidade</color>: <color=SANITY>%s/min</color>",
 
+	-- daywalkerspawner.lua
+	daywalkerspawner = {
+		days_to_respawn = "<prefab=DAYWALKER> will respawn in %s day(s)",
+	},
+
 	-- debuffable.lua
 	buff_text = "<color=MAGIC>Buff</color>: %s, %s",
 	debuffs = { -- ugh
@@ -745,6 +750,12 @@ return {
 	-- lightninggoat.lua
 	lightninggoat_charge = "Irá descarregar em %s dia(s).",
 
+	-- lunarrift_portal.lua [Prefab]
+	lunarrift_portal = {
+		crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>available</sub> / %d<sub>total</sub> / %d<sub>max</sub>", -- I can't think of a way to word 
+		next_crystal = "Next <color=#4093B2><prefab=lunarrift_crystal_big></color> spawns in %s",
+	},
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "Se tornará ativo em: %s",
@@ -959,6 +970,14 @@ return {
 		chess = "<color=#99635D>Engrenagens</color> necessárias: <color=#99635D>%s</color>",
 	},
 
+	-- riftspawner.lua
+	riftspawner = {
+		next_spawn = "<prefab=LUNARRIFT_PORTAL> spawns in %s",
+		announce_spawn = "A <prefab=LUNARRIFT_PORTAL> will spawn in %s",
+
+		stage = "Stage: %d / %d", -- augmented by growable
+	},
+
 	-- rocmanager.lua
 	rocmanager = {
 		cant_spawn = "Não foi possível gerar."
@@ -1000,6 +1019,11 @@ return {
 		total_shadow_level = "<color=BLACK>Nível total de sombra</color>: %s",
 	},
 
+	-- shadowrift_portal.lua [Prefab]
+	shadowrift_portal = {
+		close = "<prefab=SHADOWRIFT_PORTAL> will close in %s",
+	},
+
 	-- shadowsubmissive.lua
 	shadowsubmissive = {
 		shadowcreature = {
@@ -1009,7 +1033,15 @@ return {
 		},
 	},
 
-	-- sheltered
+	-- shadowthrallmanager.lua
+	shadowthrallmanager = {
+		fissure_cooldown = "Next fissure will be ready for takeover in %s",
+		waiting_for_players = "Waiting for a player to come near",
+		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
+		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> will regenerate in %s",
+	},
+
+	-- sheltered.lua
 	sheltered = {
 		range = "Alcance do abrigo: %s unidade(s) de parede",
 		shelter = "Abrigo ",

@@ -140,7 +140,7 @@ local Insight = {
 		LIGHT_PINK = "#ffb6c1",
 		CAMO = "#4D6B43",
 		MOB_SPAWN = "#ee6666",
-		BLACK = "#2f3e49" -- #1b2a35 was the original intent, but needed to be lighter. so I bumped it up by 20 on r,g,b.
+		BLACK = "#2f3e49", -- #1b2a35 was the original intent, but needed to be lighter. so I bumped it up by 20 on r,g,b.
 	},
 
 	ENTITY_INFORMATION_FLAGS = {
@@ -223,7 +223,7 @@ local descriptors_ignore = {
 	"lootdropper", "periodicspawner", "shearable", "mystery", "poisonable", "freezable",  -- may be interesting looking into
 	"thief", "characterspecific", "resurrector", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
 	"worldsettings", "piratespawner", "dockmanager", "undertile", "cursable", "battery", "batteryuser", "dataanalyzer", "upgrademoduleowner", -- may be interesting looking into
-	"craftingstation", 
+	"craftingstation", "ruinsshadelingspawner",
 	
 	--notable
 	"bundlemaker", --used in bundling wrap before items
@@ -279,7 +279,7 @@ local descriptors_ignore = {
 	"worlddeciduoustreeupdater", "schoolspawner", "specialeventsetup", "playerspawner", "walkableplatformmanager", "lureplantspawner", "wavemanager",
 
 	-- Caves
-	"retrofitcavemap_anr", "caveins", "grottowaterfallsoundcontroller", "grottowarmanager", "archivemanager", 
+	"retrofitcavemap_anr", "caveins", "grottowaterfallsoundcontroller", "grottowarmanager", "archivemanager", "miasmamanager", 
 	
 
 
@@ -976,6 +976,18 @@ local function GetPrefabDescriptor(name)
 		end
 
 		return false
+	end
+end
+
+--- Picks out a specific data from a describe call.
+---@param name string The name of the desired data. 
+---@vararg DescribeCallResults The datas returned from the describe call.
+function GetDataFromDescribe(name, ...)
+	local results = {...}
+	for i,v in pairs(results) do
+		if v.name == name then
+			return v
+		end
 	end
 end
 
@@ -2495,6 +2507,7 @@ if IS_DST then
 	--======================= PostInits =======================================================================================
 	if TheNet and TheNet:GetIsMasterSimulation() then
 		entity_tracker:TrackPrefab("rainometer")
+		entity_tracker:TrackPrefab("lunar_grazer")
 	end
 
 	--[[

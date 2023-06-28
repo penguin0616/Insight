@@ -323,6 +323,11 @@ return {
 	-- dapperness.lua
 	dapperness = "<color=SANITY>理智</color>: <color=SANITY>%s/分</color>",
 
+	-- daywalkerspawner.lua
+	daywalkerspawner = {
+		days_to_respawn = "<prefab=DAYWALKER> will respawn in %s day(s)",
+	},
+
 	-- debuffable.lua
 	buff_text = "<color=MAGIC>加成</color>: %s, %s",
 	debuffs = { -- ugh
@@ -751,6 +756,12 @@ return {
 	-- lightninggoat.lua
 	lightninggoat_charge = "充能将消失于%s后",
 
+	-- lunarrift_portal.lua [Prefab]
+	lunarrift_portal = {
+		crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>available</sub> / %d<sub>total</sub> / %d<sub>max</sub>", -- I can't think of a way to word 
+		next_crystal = "Next <color=#4093B2><prefab=lunarrift_crystal_big></color> spawns in %s",
+	},
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "%s后开始活动",
@@ -964,6 +975,14 @@ return {
 		chess = "需要<color=#99635D>齿轮</color>: <color=#99635D>%s</color>",
 	},
 
+	-- riftspawner.lua
+	riftspawner = {
+		next_spawn = "<prefab=LUNARRIFT_PORTAL> spawns in %s",
+		announce_spawn = "A <prefab=LUNARRIFT_PORTAL> will spawn in %s",
+
+		stage = "Stage: %d / %d", -- augmented by growable
+	},
+
 	-- rocmanager.lua
 	rocmanager = {
 		cant_spawn = "无法生成",
@@ -1005,6 +1024,11 @@ return {
 		total_shadow_level = "<color=BLACK>总暗影等级</color>: %s",
 	},
 
+	-- shadowrift_portal.lua [Prefab]
+	shadowrift_portal = {
+		close = "<prefab=SHADOWRIFT_PORTAL> will close in %s",
+	},
+
 	-- shadowsubmissive.lua
 	shadowsubmissive = {
 		shadowcreature = {
@@ -1014,7 +1038,15 @@ return {
 		},
 	},
 
-	-- sheltered
+	-- shadowthrallmanager.lua
+	shadowthrallmanager = {
+		fissure_cooldown = "Next fissure will be ready for takeover in %s",
+		waiting_for_players = "Waiting for a player to come near",
+		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
+		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> will regenerate in %s",
+	},
+
+	-- sheltered.lua
 	sheltered = {
 		range = "遮蔽范围: %s墙体单位",
 		shelter = "遮蔽处",
