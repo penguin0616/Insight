@@ -20,11 +20,17 @@ directory. If not, please refer to
 
 
 -- armor.lua
+local damageHelper = import("helpers/damage")
+
 local function FormatCondition(condition, context)
 	return string.format(context.lstr.durability_unwrappable, condition)
 end
 
 local function Describe(self, context)
+	if not context.config["armor"] then
+		return
+	end
+	
 	--local description = nil
 	local durabilityValue = Round(self.condition, 0)
 
@@ -42,12 +48,12 @@ local function Describe(self, context)
 
 	return {
 		name = "armor_durability",
-		priority = 1,
+		priority = 1.5,
 		description = durability,
 		durabilityValue = durabilityValue
 	}, {
 		name = "armor_protection",
-		priority = 1.1,
+		priority = damageHelper.DAMAGE_PRIORITY - 1,
 		description = protection
 	}
 end

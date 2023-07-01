@@ -2876,6 +2876,40 @@ STRINGS = {
 			},
 		},
 	},
+	armor = {
+		label = {
+			"Armor", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether defensive information from armor is shown.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Defensive information is not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Defensive information is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},
+	},
 	repair_values = {
 		label = {
 			"Repair Values", 
@@ -5456,6 +5490,15 @@ configuration_options = {
 	},
 	{
 		name = "weapon_damage",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "armor",
 		options = {
 			{data = false},
 			{data = true},
