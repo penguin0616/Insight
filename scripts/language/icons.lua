@@ -93,6 +93,16 @@ return {
 		dismiss = "%s Dismiss",
 	},
 
+	-- Damage helper
+	damage_types = {
+		-- Normal
+		explosive = "Explosive",
+		
+		-- Planar
+		lunar_aligned = "Lunar Aligned",
+		shadow_aligned = "Shadow Aligned",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 
 	-- alterguardianhat.lua [Prefab]
@@ -309,6 +319,16 @@ return {
 	cyclable = {
 		--step = "Step: %s / %s",
 		--note = ", note: %s",
+	},
+
+	-- damagetypebonus.lua
+	damagetypebonus = {
+		modifier = "<color=%s>%+.1f%%</color> damage to %s entities",
+	},
+
+	-- damagetyperesist.lua
+	damagetyperesist = {
+		modifier = "<color=%s>%+.1f%%</color> damage from %s attacks",
 	},
 
 	-- dapperness.lua
@@ -765,6 +785,7 @@ return {
 	lunarrift_portal = {
 		--crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>available</sub> / %d<sub>total</sub> / %d<sub>max</sub>", -- I can't think of a way to word 
 		--next_crystal = "Next <color=#4093B2><prefab=lunarrift_crystal_big></color> spawns in %s",
+		close = "<prefab=LUNARRIFT_PORTAL> will close in approximately %s",
 	},
 	
 	-- lunarthrall_plantspawner.lua
@@ -916,6 +937,18 @@ return {
 		--regrowth_paused = "Regrowth paused.",
 		--cycles = "Remaining harvests: %s / %s",
 		--mushroom_rain = "<color=WET>Rain</color> needed: %s",
+	},
+
+	-- planardamage.lua
+	planardamage = {
+		planar_damage = "<color=PLANAR>Planar Damage</color>: <color=PLANAR>%s</color>",
+		additional_damage = " (<color=PLANAR>+%s<sub>bonus</sub></color>)",
+	},
+
+	-- planardefense.lua
+	planardefense = {
+		planar_defense = "<color=PLANAR>Planar Defense</color>: <color=PLANAR>%s</color>",
+		additional_defense = " (<color=PLANAR>+%s<sub>bonus</sub></color>)",
 	},
 	
 	-- pollinator.lua

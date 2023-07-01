@@ -27,6 +27,10 @@ local MIN_CRYSTAL_DISTANCE -- = 3
 local MAX_CRYSTAL_DISTANCE_BY_STAGE
 local TERRAFORM_DELAY -- = TUNING.RIFT_LUNAR1_STAGEUP_BASE_TIME / 3
 
+-- lunarthrall plant spawner
+local TIME_UNIT = TUNING.SEG_TIME*8
+local PERIODIC_TIME = TUNING.TOTAL_DAY_TIME *2
+
 local function OnServerInit()
 	-- The power of recursive-ness.
 	MAX_CRYSTAL_RING_COUNT_BY_STAGE = util.recursive_getupvalue(_G.Prefabs.lunarrift_portal.fn, "MAX_CRYSTAL_RING_COUNT_BY_STAGE")
@@ -44,7 +48,33 @@ local function Describe(inst, context)
 	---------------------------------------
 	local stage_info = string.format(context.lstr.riftspawner.stage, inst._stage, TUNING.RIFT_LUNAR1_MAXSTAGE)
 	
-	if inst.components.timer:TimerExists(STAGE_GROWTH_TIMER) then
+	if inst._stage == TUNING.RIFT_LUNAR1_MAXSTAGE then
+		local plantspawner = TheWorld.components.lunarthrall_plantspawner
+		if plantspawner and plantspawner.currentrift == inst then
+			-- This is probably somewhat accurate... right?
+			local rift_close_time = 0
+
+			if plantspawner.inst.components.timer:TimerExists("endrift") then
+				rift_close_time = plantspawner.inst.components.timer:GetTimeLeft("endrift")
+			else
+				-- The approximation for the randomization is rough. 
+				-- So instead of replacing math.random() with 1 like I've done before for small matters,
+				-- I'll do 0.5 here to better approximate.
+				local waves_left = plantspawner.waves_to_release
+				rift_close_time = 10 + (waves_left - 1) * (TIME_UNIT + (0.5*TIME_UNIT) - (TIME_UNIT/2))
+
+				-- Current states
+				if waves_left > 1 and plantspawner._spawntask then
+					rift_close_time = rift_close_time + GetTaskRemaining(plantspawner._spawntask)
+				elseif plantspawner._nextspawn then
+					rift_close_time = rift_close_time + GetTaskRemaining(plantspawner._nextspawn)
+				end
+			end
+
+			stage_info = stage_info .. ": " .. string.format(context.lstr.lunarrift_portal.close, context.time:SimpleProcess(rift_close_time))
+	
+		end
+	elseif inst.components.timer:TimerExists(STAGE_GROWTH_TIMER) then
 		stage_info = stage_info .. ": " .. string.format(context.lstr.growable.next_stage, context.time:SimpleProcess(inst.components.timer:GetTimeLeft(STAGE_GROWTH_TIMER)))
 	end
 

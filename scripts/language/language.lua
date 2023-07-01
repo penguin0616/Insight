@@ -55,7 +55,7 @@ end
 
 local function LoadLanguage(lang)
 	local path = "language/" .. lang
-	local new = import.has_loaded(path)
+	local new = import.HasLoaded(path)
 	local tbl = import(path)
 
 	if new then

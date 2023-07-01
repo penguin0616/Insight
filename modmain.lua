@@ -141,6 +141,9 @@ local Insight = {
 		CAMO = "#4D6B43",
 		MOB_SPAWN = "#ee6666",
 		BLACK = "#2f3e49", -- #1b2a35 was the original intent, but needed to be lighter. so I bumped it up by 20 on r,g,b.
+	
+		PLANAR = "#b079e8", -- -- darker #b079e8, lighter #c99cf7
+		SHADOW_ALIGNED = "#9C2C31",
 	},
 
 	ENTITY_INFORMATION_FLAGS = {
@@ -836,16 +839,28 @@ local function hex_dump(buf)
 end
 
 --- Unloads a loaded component descriptor and clears the import cache for the file.
---- NOTE: THIS DOES NOT CLEAN UP ANYTHING THAT COULD HAVE BEEN DONE BY THE DESCRIPTOR
 ---@param name string
 function UnloadComponentDescriptor(name)
-	if import.has_loaded(name) then
-		import.clear("descriptors/" .. name)
+	local path = "descriptors/" .. name
+	if import.HasLoaded(path) then
+		import.Clear(path)
+		mprintf("DESCRIPTOR '%s' IMPORT CLEARED", name)
+	else
+		mprintf("DESCRIPTOR '%s' WAS NOT IN IMPORT CACHE", name)
 	end
-	Insight.descriptors[name] = nil
-	mprint("Unloaded component descriptor", name)
+	
+	if rawget(Insight.descriptors, name) ~= nil then
+		if Insight.descriptors[name] and Insight.descriptors[name].OnUnload then
+			Insight.descriptors[name].OnUnload()
+		end
+		Insight.descriptors[name] = nil
+		mprintf("DESCRIPTOR '%s' CACHE CLEARED", name)
+	else
+		mprintf("DESCRIPTOR '%s' WAS NOT IN DESCRIPTOR CACHE", name)
+	end
 end
 
+_G.UnloadComponentDescriptor = UnloadComponentDescriptor
 
 --- Loads and returns a component descriptor. 
 ---@param name string Name of the component.
@@ -910,8 +925,8 @@ local function GetComponentDescriptor(name)
 		local _, en = string.find(res, ":%d+:%s")
 		res = string.sub(res, (en or 0)+1)
 	
-		if res:find("File does not exist") then
-			
+		if res:find("[ERR] File does not exist: " .. MODROOT .. "scripts/descriptors/" .. name .. ".lua", 1, true) then
+			-- Failed to load itself since it couldn't find itself
 		else
 			mprint("Failed to load descriptor", name, "|", res)
 			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, _error=true} end }
@@ -971,7 +986,10 @@ local function GetPrefabDescriptor(name)
 		-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
 		local _, en = string.find(res, ":%d+:%s")
 		res = string.sub(res, (en or 0)+1)
-		if not res:find("not exist") then
+		if res:find("[ERR] File does not exist: " .. MODROOT .. "scripts/prefab_descriptors/" .. name .. ".lua", 1, true) then
+			-- Failed to load itself since it couldn't find itself
+		else
+			mprint("Failed to load prefab descriptor", name, "|", res)
 			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, _error=true } end }
 		end
 
@@ -1488,7 +1506,7 @@ function INSIGHT_HOT_RELOAD()
 	-- Clear them
 	for i,v in pairs(all_files_to_clear) do
 		dprint("Clearing import", v)
-		import.clear(v)
+		import.Clear(v)
 	end
 
 	-- Load them back in
@@ -1537,8 +1555,6 @@ function REGISTER_HOT_RELOAD(files_to_clear, callback)
 
 	dprint("REGISTERED HOT RELOAD:", dbg.source)
 end
-
-
 
 local function sprint(c)
 	local x = c

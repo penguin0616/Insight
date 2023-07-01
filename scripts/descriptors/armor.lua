@@ -27,10 +27,6 @@ local function FormatCondition(condition, context)
 end
 
 local function Describe(self, context)
-	if not context.config["armor"] then
-		return
-	end
-	
 	--local description = nil
 	local durabilityValue = Round(self.condition, 0)
 
@@ -46,16 +42,22 @@ local function Describe(self, context)
 	local protection = string.format(context.lstr.protection, (self.absorb_percent and self.absorb_percent * 100) or "?")
 	local durability = string.format(context.lstr.durability, durabilityValue, Round(self.maxcondition, 0))
 
+
+	local armor_protection
+	if context.config["armor"] then
+		armor_protection = {
+			name = "armor_protection",
+			priority = damageHelper.DAMAGE_PRIORITY - 1,
+			description = protection
+		}
+	end
+
 	return {
 		name = "armor_durability",
 		priority = 1.5,
 		description = durability,
 		durabilityValue = durabilityValue
-	}, {
-		name = "armor_protection",
-		priority = damageHelper.DAMAGE_PRIORITY - 1,
-		description = protection
-	}
+	}, armor_protection
 end
 
 

@@ -296,13 +296,16 @@ function AreEntityPrefabsEqual(inst1, inst2)
 	return false
 end
 
-function ApplyColour(str, clr)
+
+function ApplyColor(str, clr)
 	if clr.ToHex ~= nil then
 		clr = clr.hex or clr:ToHex()
 	end
 	
 	return string.format("<color=%s>%s</color>", clr, str)
 end
+
+ApplyColour = ApplyColor
 
 function front(widget)
 	widget:MoveToFront()

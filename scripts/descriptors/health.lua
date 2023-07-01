@@ -101,7 +101,7 @@ local function Describe(self, context)
 
 	return {
 		name = "health",
-		priority = 100000,
+		priority = 200000,
 		forge_enabled = true,
 		description = description,
 		alt_description = alt_description,

@@ -92,8 +92,9 @@ end
 local proxy = newproxy(true)
 local mt = getmetatable(proxy)
 mt.__index = { 
-	clear = clear_import,
-	has_loaded = has_loaded_import,
+	Clear = clear_import,
+	HasLoaded = has_loaded_import,
+
 	_init_cache = init_cache,
 	ResolvePath = ResolvePath,
 }

@@ -19,14 +19,14 @@ directory. If not, please refer to
 ]]
 
 -- weapon.lua
+local damageHelper = import("helpers/damage")
+
 local world_type = GetWorldType()
 local SLINGSHOT_AMMO_DATA = {}
 local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison", }
 local WEAPON_CACHE = {
 	-- ["prefab"] = true/false (safe or not)
 }
-
-local PRIORITY = 100000
 
 -- load slingshot ammo damages from prefab upvalues
 for i,v in pairs(_G.Prefabs) do
@@ -50,7 +50,7 @@ local function DescribeYOTRPillowWeapon(self, context)
 
 	return {
 		name = "weapon_yotr",
-		priority = PRIORITY + 1,
+		priority = damageHelper.DAMAGE_PRIORITY + 1,
 		description = description,
 		alt_description = alt_description,
 	}
@@ -237,7 +237,7 @@ local function Describe(self, context)
 
 	return {
 		name = "weapon",
-		priority = PRIORITY,
+		priority = damageHelper.DAMAGE_PRIORITY,
 		description = description,
 		attack_range = self.attackrange
 	}, pillow_info
@@ -246,7 +246,8 @@ end
 
 
 return {
-	Describe = Describe,
 	GetSlingshotAmmoData = GetSlingshotAmmoData,
 	GetDamage = GetDamage,
+
+	Describe = Describe,
 }

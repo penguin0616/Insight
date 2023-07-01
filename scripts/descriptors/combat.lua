@@ -19,6 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- combat.lua
+local damageHelper = import("helpers/damage")
+
 local ConvertHealthAmountToAge = Insight.descriptors.oldager and Insight.descriptors.oldager.ConvertHealthAmountToAge or function() return 0 end
 local world_type = GetWorldType()
 
@@ -237,7 +239,7 @@ local function Describe(self, context)
 
 
 	return {
-		priority = 100,
+		priority = damageHelper.DAMAGE_PRIORITY + 1,
 		forge_enabled = true,
 		description = description,
 		alt_description = alt_description,
