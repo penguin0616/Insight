@@ -42,9 +42,9 @@ end
 
 -- This function from Klei
 local function IsEntityInFront(inst, entity, doer_rotation, doer_pos)
-    local facing = Vector3(math.cos(-doer_rotation / RADIANS), 0 , math.sin(-doer_rotation / RADIANS))
+	local facing = Vector3(math.cos(-doer_rotation / RADIANS), 0 , math.sin(-doer_rotation / RADIANS))
 
-    return IsWithinAngle(doer_pos, facing, TUNING.VOIDCLOTH_SCYTHE_HARVEST_ANGLE_WIDTH, entity:GetPosition())
+	return IsWithinAngle(doer_pos, facing, TUNING.VOIDCLOTH_SCYTHE_HARVEST_ANGLE_WIDTH, entity:GetPosition())
 end
 
 --est = SpawnPrefab("nightstick")
@@ -66,12 +66,9 @@ local function UpdateScytheSelection(doer)
 	local target_pos = target:GetPosition()
 	local estimated_pos
 
-	local v1 = doer_pos
-	local v2 = target_pos
-
-	local dx = (v1.x or v1[1]) - (v2.x or v2[1])
-    local dy = (v1.y or v1[2]) - (v2.y or v2[2])
-    local dz = (v1.z or v1[3]) - (v2.z or v2[3])
+	local dx = doer_pos.x - target_pos.x
+	local dy = doer_pos.y - target_pos.y
+	local dz = doer_pos.z - target_pos.z
 
 	local magnitude = math.sqrt(dx*dx + dy*dy + dz*dz)
 
@@ -111,6 +108,8 @@ local function UpdateScytheSelection(doer)
 		end
 	end
 
+	--state.target.AnimState:SetAddColour(1, 0.1, 0.3, 1)
+
 	for ent in pairs(state.got) do
 		if not safe[ent] then
 			state.got[ent] = nil
@@ -131,6 +130,12 @@ local function OnScytheTargetSelected(inst, target, doer)
 		task = doer:DoPeriodicTask(0.1, UpdateScytheSelection)
 	}
 
+	-- Hide highlight so we can see our red tint.
+	doer.shownothightlight = true
+	if target.components.highlight then
+		target.components.highlight:UnHighlight()
+	end
+
 	UpdateScytheSelection(doer)
 
 	--target.AnimState:SetAddColour(0.1, 0.1, 0.3, 0.3)
@@ -144,7 +149,8 @@ local function OnScytheTargetUnselected(doer)
 	if not state then
 		return
 	end
-
+	
+	doer.shownothightlight = nil
 	state.task:Cancel()
 
 	for ent in pairs(state.got) do
