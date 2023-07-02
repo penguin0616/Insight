@@ -190,10 +190,10 @@ end
 local __tostring = function(self) return string.format("Color (%s, %s, %s, %s)", self.r * 255, self.g * 255, self.b * 255, self.a * 255) end
 --- Creates a new Color 'object'.
 --- Uses values between 0 and 1.
--- @number r Red (defaults to 0).
--- @number g Green (defaults to 0).
--- @number b Blue (defaults to 0).
--- @number a Alpha (defaults to 1).
+---@param r number Red (defaults to 0).
+---@param g number Green (defaults to 0).
+---@param b number Blue (defaults to 0).
+---@param a number Alpha (defaults to 1).
 ---@return Color
 function Color.new(r, g, b, a)
 	local self = {}

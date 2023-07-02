@@ -96,7 +96,7 @@ end
 --[[
 --- Changes the radius of the indicator.
 ---@param inst The indicator
--- @number radius The radius the indicator will be set to. Interpreted as number of tiles.
+---@param radius number The radius the indicator will be set to. Interpreted as number of tiles.
 local function SetRadius(inst, radius)
 	local parent = inst.entity:GetParent()
 	if not parent then

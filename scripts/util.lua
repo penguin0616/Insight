@@ -359,7 +359,7 @@ end
 -- functions i took out of modmain for organization reasons
 
 --- Checks if number is an integer.
--- @number num
+---@param num number
 ---@return boolean
 function IsInt(num)
 	-- http://web.archive.org/web/20210325065927/http://lua.2524044.n2.nabble.com/Fastest-way-to-determine-number-is-integer-in-plain-Lua-td7639129.html
