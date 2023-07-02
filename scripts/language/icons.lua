@@ -127,6 +127,12 @@ return {
 	durability = "<icon=health> %s / %s",
 	durability_unwrappable = "<icon=armorwood> %s",
 
+	-- armordreadstone.lua
+	armordreadstone = {
+		--regen = "Regenerates <color=%s>%.1f</color> <color=#C0C0C0>durability</color>/%ds",
+		--regen_complete = "Regenerates <color=%s>%.1f<sub>min</sub></color> / <color=%s>%.1f<sub>current</sub></color> / <color=%s>%.1f<sub>max</sub></color> <color=#C0C0C0>durability</color>/%ds based on insanity"
+	},
+
 	-- atrium_gate.lua [Prefab]
 	atrium_gate = {
 		--cooldown = "<prefab=atrium_gate> will reset in %s",

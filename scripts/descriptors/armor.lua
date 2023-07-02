@@ -41,8 +41,7 @@ local function Describe(self, context)
 
 	local protection = string.format(context.lstr.protection, (self.absorb_percent and self.absorb_percent * 100) or "?")
 	local durability = string.format(context.lstr.durability, durabilityValue, Round(self.maxcondition, 0))
-
-
+	
 	local armor_protection
 	if context.config["armor"] then
 		armor_protection = {
