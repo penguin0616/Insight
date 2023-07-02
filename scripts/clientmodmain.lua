@@ -345,7 +345,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 	local new_desc = new and Insight.prefab_descriptors[new.prefab] or nil
 
 	if old and old._scything then
-		Insight.prefab_descriptors.voidcloth_scythe.OnScytheTargetUnselected(old, localPlayer)
+		Insight.prefab_descriptors.voidcloth_scythe.OnScytheTargetUnselected(localPlayer)
 		old._scything = nil
 	end
 	

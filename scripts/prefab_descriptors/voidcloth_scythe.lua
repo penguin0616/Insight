@@ -49,14 +49,16 @@ end
 
 --est = SpawnPrefab("nightstick")
 
-
-
-local function OnScytheTargetSelected(inst, target, doer)
-	scything[doer] = {}
-
-	--target.AnimState:SetAddColour(0.1, 0.1, 0.3, 0.3)
-
+local function UpdateScytheSelection(doer)
+	local state = scything[doer]
 	
+	if not scything[doer] then
+		mprint("scything??????")
+		return
+	end
+
+	local target = state.target
+
 	-- Bear with me, math isn't my strong suit.
 	local reap_dist = ACTIONS.SCYTHE.distance
 
@@ -94,30 +96,59 @@ local function OnScytheTargetSelected(inst, target, doer)
 	-- Logic from Klei
 	local x, y, z = estimated_pos:Get()
 
+	local safe = {}
+
 	local ents = TheSim:FindEntities(x, y, z, TUNING.VOIDCLOTH_SCYTHE_HARVEST_RADIUS, HARVEST_MUSTTAGS, HARVEST_CANTTAGS, HARVEST_ONEOFTAGS)
 	for _, ent in pairs(ents) do
 		if ent:IsValid() then
 			if IsEntityInFront(inst, ent, estimated_rotation, estimated_pos) then
-				scything[doer][ent] = true
-				--ent.AnimState:SetLightOverride(0)
+				state.got[ent] = true
+				safe[ent] = true
+				ent.AnimState:SetLightOverride(0.5)
 				--ent.AnimState:SetMultColour(1, 0.3, 0.3, 1)
 				ent.AnimState:SetAddColour(0.3, 0.1, 0.1, 0.3)
 			end
 		end
 	end
+
+	for ent in pairs(state.got) do
+		if not safe[ent] then
+			state.got[ent] = nil
+			ent.AnimState:SetLightOverride(0)
+			--ent.AnimState:SetMultColour(1, 1, 1, 1)
+			ent.AnimState:SetAddColour(0, 0, 0, 0)
+		end
+	end
 end
 
-local function OnScytheTargetUnselected(target, doer)
-	--target.AnimState:SetAddColour(0, 0, 0, 0)
+local function OnScytheTargetSelected(inst, target, doer)
+	--print('SELECTED', target, inst, doer)
+	scything[doer] = {
+		scythe = inst,
+		target = target,
+		got = {},
 
+		task = doer:DoPeriodicTask(0.1, UpdateScytheSelection)
+	}
+
+	UpdateScytheSelection(doer)
+
+	--target.AnimState:SetAddColour(0.1, 0.1, 0.3, 0.3)
+end
+
+local function OnScytheTargetUnselected(doer)
+	--target.AnimState:SetAddColour(0, 0, 0, 0)
 	--print('UNSELECTED', target, doer)
-	if not scything[doer] then
-		print'aha'
+
+	local state = scything[doer]
+	if not state then
 		return
 	end
 
-	for ent in pairs(scything[doer]) do
-		--ent.AnimState:SetLightOverride(0)
+	state.task:Cancel()
+
+	for ent in pairs(state.got) do
+		ent.AnimState:SetLightOverride(0)
 		--ent.AnimState:SetMultColour(1, 1, 1, 1)
 		ent.AnimState:SetAddColour(0, 0, 0, 0)
 	end
