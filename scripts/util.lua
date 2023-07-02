@@ -979,6 +979,8 @@ if not shallowcopy then
 	end
 end
 
+module.COMPONENT_ACTIONS = module.getupvalue(_G.EntityScript.IsActionValid, "COMPONENT_ACTIONS")
+module.IsValidScytheTarget = module.getupvalue(module.COMPONENT_ACTIONS.ISVALID.pickable, "IsValidScytheTarget")
 
 module.MOD_COMPONENT_ACTIONS = module.getupvalue(_G.AddComponentAction, "MOD_COMPONENT_ACTIONS")
 module.MOD_ACTION_COMPONENT_NAMES = module.getupvalue(_G.AddComponentAction, "MOD_ACTION_COMPONENT_NAMES")

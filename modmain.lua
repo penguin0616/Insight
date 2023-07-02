@@ -798,6 +798,7 @@ function cprint(...)
 
 	if IsClient() then
 		msg = "[" .. ModInfoname(modname) .. " - SERVER (BUT ACTUALLY CLIENT)]: " .. msg 
+		print(msg)
 	elseif ALLOW_SERVER_DEBUGGING then
 		msg = "[" .. ModInfoname(modname) .. " - SERVER]: " .. msg 
 		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "Print"), MyKleiID, msg)

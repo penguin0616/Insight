@@ -338,7 +338,17 @@ local function GetDeployHelper(inst)
 	end
 end
 
+
+
 function OnCurrentlySelectedItemChanged(old, new, itemInfo)
+	local old_desc = old and Insight.prefab_descriptors[old.prefab] or nil
+	local new_desc = new and Insight.prefab_descriptors[new.prefab] or nil
+
+	if old and old._scything then
+		Insight.prefab_descriptors.voidcloth_scythe.OnScytheTargetUnselected(old, localPlayer)
+		old._scything = nil
+	end
+	
 	--mprint("OnCurrentlySelectedItemChanged", old, new)
 	if old and old.insight_hover_range then
 		old.insight_hover_range:Remove()
@@ -351,6 +361,10 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 
 	if old and GetDeployHelper(old) then
 		GetDeployHelper(old):StopHelper()
+	end
+
+	if old_desc and old_desc.OnUnselect then
+		old_desc.OnUnselect(old)
 	end
 
 	if not new then
@@ -376,6 +390,32 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		return
 	end
 
+	if context.complex_config["unique_info_prefabs"]["voidcloth_scythe"] and new:HasTag("pickable") then
+		--print'a'
+		local inventory = localPlayer.replica.inventory
+		if inventory then
+			--print'b'
+			local holding = inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+			-- Was going to check for tag originally ("SCYTHE_tool") (Tag doesn't exist in client tag db but can still check for it)
+			-- But then double checking the scythe code, the range stuff is specific to the prefab.
+			if holding and holding.prefab == "voidcloth_scythe" then
+				--print'c'
+				if util.IsValidScytheTarget(new) then
+					--print'd'
+					local d = Insight.prefab_descriptors.voidcloth_scythe
+					if d and d.OnScytheTargetSelected then
+						--print'e'
+						new._scything = true
+						d.OnScytheTargetSelected(holding, new, localPlayer)
+					end
+				end
+			end
+		end
+	end
+
+	if new_desc and new_desc.OnSelect then
+		new_desc.OnSelect(new)
+	end
 
 	-- should i handle weapon range?
 	if itemInfo.special_data.insight_ranged then
@@ -405,7 +445,6 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		local cmp = GetDeployHelper(new)
 		cmp:StartHelper(nil, nil)
 		cmp.delay = math.huge -- Prevent it from disappearing instantly, since it's kept open by (what I assume) is TriggerDeployHelpers running over and over?
-
 	end
 end
 

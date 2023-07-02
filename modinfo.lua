@@ -338,7 +338,7 @@ do
 end
 
 -- Unique Prefabs
-local UNIQUE_INFO_PREFABS = {"alterguardianhat", "batbat", "eyeplant", "ancient_statue", "armordreadstone"}
+local UNIQUE_INFO_PREFABS = {"alterguardianhat", "batbat", "eyeplant", "ancient_statue", "armordreadstone", "voidcloth_scythe"}
 
 --====================================================================================================================================================
 --====================================================================================================================================================
