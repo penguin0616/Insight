@@ -38,7 +38,7 @@ local function Describe(self, context)
 	local remaining = self:GetTimeToCharge()
 	if remaining / remaining == remaining then -- widgets/itemtile.lua:411
 		description = string.format(context.lstr.rechargeable.charged_in, 
-			ApplyColour(context.time:SimpleProcess(remaining), ST:Lerp(EN, percent))
+			ApplyColor(context.time:SimpleProcess(remaining), ST:Lerp(EN, percent))
 		)
 		alt_description = string.format(context.lstr.rechargeable.charge, Round(self.current, 0), Round(self.total, 0)) .. ", " .. description
 	end

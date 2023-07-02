@@ -41,9 +41,9 @@ local function Describe(self, context)
 	else
 		local clr = colors[self.receivedPortal] or "#ffffff"
 
-		local target = string.format(context.lstr.worldmigrator.target_shard, ApplyColour(self.linkedWorld or "", clr))
-		local received = string.format(context.lstr.worldmigrator.received_portal, ApplyColour(self.receivedPortal or "", clr))
-		local id = string.format(context.lstr.worldmigrator.id, ApplyColour(self.id or "", clr))
+		local target = string.format(context.lstr.worldmigrator.target_shard, ApplyColor(self.linkedWorld or "", clr))
+		local received = string.format(context.lstr.worldmigrator.received_portal, ApplyColor(self.receivedPortal or "", clr))
+		local id = string.format(context.lstr.worldmigrator.id, ApplyColor(self.id or "", clr))
 		--Shard Migrator: %s, This #: %s", self.linkedWorld or "", self.receivedPortal or "", self.id or "")
 
 		description = target .. ", " .. received .. ", " .. id

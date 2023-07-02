@@ -96,7 +96,7 @@ local function PipspookQuest(self, context)
 
 	if playerlink ~= context.player then
 		description = string.format(context.lstr.questowner.pipspook.assisted_by, 
-			ApplyColour(
+			ApplyColor(
 				playerlink.name, 
 				GetPlayerColour(playerlink):ToHex()
 			)

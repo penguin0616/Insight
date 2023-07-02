@@ -38,7 +38,7 @@ local function Describe(self, context)
 		local target_string = (self.inst.spawnedforplayer.name or "?") .. " - " .. GetPrefabNameOrElse(self.inst.spawnedforplayer.prefab, "\"%s\"")
 
 		spawnedforplayer_string = string.format(context.lstr.shadowsubmissive.shadowcreature.spawned_for, 
-			ApplyColour(target_string, color)
+			ApplyColor(target_string, color)
 		)
 	end
 

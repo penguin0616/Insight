@@ -55,7 +55,7 @@ module_describers.movespeed = function(self, context)
 	local len = #TUNING.WX78_MOVESPEED_CHIPBOOSTS
 	for i = 2, len do
 		local boost = (TUNING.WX78_MOVESPEED_CHIPBOOSTS[i] - TUNING.WX78_MOVESPEED_CHIPBOOSTS[i - 1]) * 100
-		str = str .. ApplyColour(
+		str = str .. ApplyColor(
 			(i == num and "<u>" or "") .. boost .. "%" .. (i == num and "</u>" or ""),
 			i == num and "#469de8" or "DAIRY"
 		)

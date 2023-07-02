@@ -38,9 +38,9 @@ local function Describe(self, context)
 	if self.is_blooming or self.level ~= 0 then
 		local clr1 = WHITE:Lerp(LIGHT_PINK, self.level / self.max):ToHex()
 		local clr2 = WHITE:Lerp(LIGHT_PINK, next_stage / self.max):ToHex()
-		--description = string.format("Will enter stage %s/<color=LIGHT_PINK>%s</color> in %s", ApplyColour(next_stage, clr), self.max, remaining_time)
+		--description = string.format("Will enter stage %s/<color=LIGHT_PINK>%s</color> in %s", ApplyColor(next_stage, clr), self.max, remaining_time)
 		
-		description = string.format("Stage %s -> %s in %s", ApplyColour(self.level, clr1), ApplyColour(next_stage, clr2), remaining_time)
+		description = string.format("Stage %s -> %s in %s", ApplyColor(self.level, clr1), ApplyColor(next_stage, clr2), remaining_time)
 	end
 
 	return {

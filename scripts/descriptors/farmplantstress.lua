@@ -92,18 +92,18 @@ local function Describe(self, context)
 
 	for i = 1, #plant_stressors do
 		local stressor = plant_stressors[i]
-		strs[i] = ApplyColour(stressor, "#dd5555")
+		strs[i] = ApplyColor(stressor, "#dd5555")
 	end
 
-	local stress_points = string.format(context.lstr.farmplantstress.stress_points, ApplyColour(self.stress_points, STRESS_COLORS[stress_state]))
-	local stress_points_extended = stress_points .. " - " .. string.format(context.lstr.farmplantstress.stress_tier, ApplyColour(context.lstr.farmplantstress.tiers[stress_state], STRESS_COLORS[stress_state]))
+	local stress_points = string.format(context.lstr.farmplantstress.stress_points, ApplyColor(self.stress_points, STRESS_COLORS[stress_state]))
+	local stress_points_extended = stress_points .. " - " .. string.format(context.lstr.farmplantstress.stress_tier, ApplyColor(context.lstr.farmplantstress.tiers[stress_state], STRESS_COLORS[stress_state]))
 	local stressors_string
 
 	if #strs > 0 then
 		stressors_string = string.format(context.lstr.farmplantstress.display, table.concat(strs, ", "))
 	end
 
-	--description = ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.NONE]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.LOW]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.MODERATE]) .. ApplyColour("hey ", STRESS_COLORS[FARM_PLANT_STRESS.HIGH])
+	--description = ApplyColor("hey ", STRESS_COLORS[FARM_PLANT_STRESS.NONE]) .. ApplyColor("hey ", STRESS_COLORS[FARM_PLANT_STRESS.LOW]) .. ApplyColor("hey ", STRESS_COLORS[FARM_PLANT_STRESS.MODERATE]) .. ApplyColor("hey ", STRESS_COLORS[FARM_PLANT_STRESS.HIGH])
 
 	return {
 		name = "farmplantstress_stresspoints",

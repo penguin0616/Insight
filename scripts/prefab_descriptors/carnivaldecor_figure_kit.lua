@@ -119,9 +119,9 @@ local function Describe(inst, context)
 			return
 		end
 
-		local shape = string.format(context.lstr.carnivaldecor_figure_kit.shape, ApplyColour(inst.shape, data.rarity_color))
+		local shape = string.format(context.lstr.carnivaldecor_figure_kit.shape, ApplyColor(inst.shape, data.rarity_color))
 		local rarity = string.format(context.lstr.carnivaldecor_figure_kit.rarity,
-			ApplyColour(context.lstr.carnivaldecor_figure_kit.rarity_types[data.rarity], data.rarity_color)
+			ApplyColor(context.lstr.carnivaldecor_figure_kit.rarity_types[data.rarity], data.rarity_color)
 		)
 		local season = string.format(context.lstr.carnivaldecor_figure_kit.season, data.season)
 		local decor = string.format(context.lstr.carnivaldecor.value, data.decor)

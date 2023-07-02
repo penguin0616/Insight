@@ -67,9 +67,9 @@ local function Describe(inst, context)
 
 	--[[
 	alt_description = string.format(context.lstr.armordreadstone.regen_complete, 
-		ApplyColour(min_rate * PERIOD_MOD, tiny), 
-		ApplyColour(current_rate * PERIOD_MOD, tiny:Lerp(big, current_rate / max_rate)), 
-		ApplyColour(max_rate * PERIOD_MOD, big), 
+		ApplyColor(min_rate * PERIOD_MOD, tiny), 
+		ApplyColor(current_rate * PERIOD_MOD, tiny:Lerp(big, current_rate / max_rate)), 
+		ApplyColor(max_rate * PERIOD_MOD, big), 
 		TUNING.ARMOR_DREADSTONE_REGEN_PERIOD * PERIOD_MOD
 	)
 	--]]

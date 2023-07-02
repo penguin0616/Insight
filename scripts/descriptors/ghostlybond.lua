@@ -36,8 +36,8 @@ local function AbigailDescribe(self, context)
 
 	if context.usingIcons then 
 		description = string.format(context.lstr.ghostlybond.abigail, 
-			ApplyColour(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
-			ApplyColour(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
+			ApplyColor(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
+			ApplyColor(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
 		)
 
 		if levelup_time then
@@ -46,8 +46,8 @@ local function AbigailDescribe(self, context)
 	else
 		description = string.format(context.lstr.lang.ghostlybond.abigail, 
 			LEVEL_COLORS[self.bondlevel],
-			ApplyColour(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
-			ApplyColour(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
+			ApplyColor(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
+			ApplyColor(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
 		)
 
 		if levelup_time then
@@ -68,8 +68,8 @@ local function FlowerDescribe(self, context)
 
 	if context.usingIcons then 
 		description = string.format(context.lstr.ghostlybond.flower, 
-			ApplyColour(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
-			ApplyColour(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
+			ApplyColor(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
+			ApplyColor(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
 		)
 
 		if levelup_time then
@@ -78,8 +78,8 @@ local function FlowerDescribe(self, context)
 	else
 		description = string.format(context.lstr.lang.ghostlybond.flower, 
 			LEVEL_COLORS[self.bondlevel],
-			ApplyColour(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
-			ApplyColour(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
+			ApplyColor(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
+			ApplyColor(self.maxbondlevel, LEVEL_COLORS[self.maxbondlevel])
 		)
 
 		if levelup_time then

@@ -47,13 +47,13 @@ local function Describe(self, context)
 		weight_percent = self:GetWeightPercent()
 		local weight_color = bottom:Lerp(top, weight_percent)
 		
-		--local function ApplyColour(s) return s end;
+		--local function ApplyColor(s) return s end;
 
 		alt_description = string.format(context.lstr.weighable.weight_bounded, 
-			ApplyColour(self.min_weight, bottom),
-			ApplyColour(weight, weight_color),
-			ApplyColour(Round(weight_percent * 100, 2) .. "%", weight_color),
-			ApplyColour(self.max_weight, top)
+			ApplyColor(self.min_weight, bottom),
+			ApplyColor(weight, weight_color),
+			ApplyColor(Round(weight_percent * 100, 2) .. "%", weight_color),
+			ApplyColor(self.max_weight, top)
 		) .. owner_name
 	end
 

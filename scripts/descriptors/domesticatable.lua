@@ -72,7 +72,7 @@ local function Describe(self, context)
 	local obedience_extended_string = obedience > 0 and string.format(context.lstr.domesticatable.obedience_extended, obedience, TUNING.BEEFALO_KEEP_SADDLE_OBEDIENCE*100, (self.minobedience and Round(self.minobedience * 100, 0))) or nil
 	-- (self.minobedience and Round(self.minobedience * 100, 0)) TUNING.BEEFALO_MIN_DOMESTICATED_OBEDIENCE[inst.tendency]
 
-	local dominant_tendency_string = self.inst.tendency and ApplyColour(context.lstr.domesticatable.tendencies[self.inst.tendency] or "???", TENDENCY_COLORS[self.inst.tendency])
+	local dominant_tendency_string = self.inst.tendency and ApplyColor(context.lstr.domesticatable.tendencies[self.inst.tendency] or "???", TENDENCY_COLORS[self.inst.tendency])
 	local tendency_string = dominant_tendency_string and string.format(context.lstr.domesticatable.tendency, dominant_tendency_string) or nil
 	
 	local full_tendency_string = ""
@@ -82,7 +82,7 @@ local function Describe(self, context)
 		local tendency_amt = self.tendencies[tendency] or 0
 		local tendency_percent = total_tendency_points > 0 and (tendency_amt / total_tendency_points * 100) or 0
 		full_tendency_string = full_tendency_string .. string.format("%s: %s (<color=" .. TENDENCY_COLORS[tendency].. ">%s%%</color>), ", 
-			ApplyColour(context.lstr.domesticatable.tendencies[tendency] or "?", TENDENCY_COLORS[tendency]),
+			ApplyColor(context.lstr.domesticatable.tendencies[tendency] or "?", TENDENCY_COLORS[tendency]),
 			Round(tendency_amt, 3),
 			Round(tendency_percent, 2)
 		)

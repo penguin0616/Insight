@@ -387,7 +387,7 @@ end
 
 function GetPrefabNameOrElse(prefab, other)
 	if not prefab then
-		return string.format(other or "ERROR: %s</color>", ApplyColour(tostring(nil), "#ff0000"))
+		return string.format(other or "ERROR: %s</color>", ApplyColor(tostring(nil), "#ff0000"))
 	end
 
 	local upper = prefab:upper()

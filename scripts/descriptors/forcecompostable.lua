@@ -27,11 +27,11 @@ local function Describe(self, context)
 	end
 
 	if self.green then
-		table.insert(str, ApplyColour("Green", "NATURE"))
+		table.insert(str, ApplyColor("Green", "NATURE"))
 	end
 
 	if self.brown then
-		table.insert(str, ApplyColour("Brown", "INEDIBLE"))
+		table.insert(str, ApplyColor("Brown", "INEDIBLE"))
 	end
 
 	if not (#str > 0) then

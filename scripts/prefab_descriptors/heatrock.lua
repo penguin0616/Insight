@@ -82,16 +82,16 @@ local function Describe(inst, context)
 		local target_color = colors[level + 1]
 
 		alt_description = string.format(context.lstr.heatrock_temperature, 
-			ApplyColour("<temperature="..min..">", colors[level]), -- 1
-			--ApplyColour(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(target_color, percent)),
-			ApplyColour(
+			ApplyColor("<temperature="..min..">", colors[level]), -- 1
+			--ApplyColor(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(target_color, percent)),
+			ApplyColor(
 				"<sub>" .. level .. " </sub>" .. "<temperature="..temp..">" .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>",
 				(
 				colors[level]:Lerp(target_color, percent)
 				) or
 				"#ffffff"
 			),
-			ApplyColour("<temperature="..max..">", target_color)-- 4
+			ApplyColor("<temperature="..max..">", target_color)-- 4
 		)
 	end
 

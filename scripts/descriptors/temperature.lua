@@ -84,16 +84,16 @@ local function Describe(self, context)
 		local target_color = colors[level+1]
 
 		alt_description = string.format(context.lstr.temperature, string.format("%s < %s < %s", 
-			ApplyColour(Round(min, 1), colors[level]), -- 1
-			--ApplyColour(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(target_color, percent)),
-			ApplyColour(
+			ApplyColor(Round(min, 1), colors[level]), -- 1
+			--ApplyColor(temperatureValue .. "<sub>" .. (level .. " - " .. Round(percent * 100, 1) .. "%") .. "</sub>", colors[level]:Lerp(target_color, percent)),
+			ApplyColor(
 				"<sub>" .. level .. " </sub>" .. temperatureValue .. "<sub> " .. Round(percent * 100, 1) .. "%" .. "</sub>", 
 				(
 					colors[level]:Lerp(target_color, percent)
 				) or 
 				"#ffffff"
 			),
-			ApplyColour(Round(max, 1), target_color) -- 4
+			ApplyColor(Round(max, 1), target_color) -- 4
 		))
 	end
 	--]]

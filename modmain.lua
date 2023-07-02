@@ -1179,7 +1179,7 @@ local function GetEntityInformation(entity, player, params)
 	local function eq(num)
 		local act = entity.components.health and "Examine" or "Equip"
 		return nil
-		--return string.format(ApplyColour("%s: " .. act, clrs[num] or "#ffffff"), TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY))
+		--return string.format(ApplyColor("%s: " .. act, clrs[num] or "#ffffff"), TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY))
 	end
 	--]]
 
