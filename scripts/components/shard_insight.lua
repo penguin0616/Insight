@@ -59,19 +59,11 @@ return {
 --------------------------------------------------------------------------
 --[[ Event Handlers ]]
 --------------------------------------------------------------------------
-local function OnWorldDataDirty(src, event_data, world_data)
+local function OnWorldDataDirty(src, event_data)
 	local self = src.shard.components.shard_insight
 
-	local data
-	local sending_shard_id
-	
-	if not world_data then
-		sending_shard_id = event_data.sending_shard_id
-		data = decompress(event_data.data)
-	else
-		sending_shard_id = TheShard:GetShardId()
-		data = world_data
-	end
+	local data = decompress(event_data.data)
+	local sending_shard_id = event_data.sending_shard_id
 
 	self.extra_data = data
 	-- print("extra_data got", data)
@@ -100,6 +92,7 @@ local Shard_Insight = Class(function(self, inst)
 		"klaussackspawner",
 		"malbatrossspawner",
 		"toadstoolspawner",
+		"daywalkerspawner"
 	}) do
 		self.shard_descriptors[value] = Insight.descriptors[value] and Insight.descriptors[value].RemoteDescribe or nil
 	end

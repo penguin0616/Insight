@@ -19,13 +19,21 @@ directory. If not, please refer to
 ]]
 
 -- daywalkerspawner.lua
-local function Describe(self, context)
-	local description = nil
-
+local function GetDaywalkerData(self)
 	if not self.daywalker and self.days_to_spawn then
 		-- +1 Because the actual logic doesn't do the spawn once it hits zero until the next day.
 		-- See daywalkerspawner:OnDayChange()
-		description = string.format(context.lstr.daywalkerspawner.days_to_respawn, self.days_to_spawn + 1)
+		return {
+			days_to_spawn = self.days_to_spawn + 1,
+		}
+	end
+end
+
+local function RemoteDescribe(data, context)
+	local description = nil
+
+	if data.days_to_spawn then
+		description = string.format(context.lstr.daywalkerspawner.days_to_respawn, data.days_to_spawn + 1)
 	end
 
 	return {
@@ -42,5 +50,7 @@ end
 
 
 return {
-	Describe = Describe
+	GetDaywalkerData = GetDaywalkerData,
+
+	RemoteDescribe = RemoteDescribe,
 }

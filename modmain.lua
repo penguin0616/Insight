@@ -2574,6 +2574,9 @@ if IS_DST then
 			self.components.shard_insight:RegisterWorldDataFetcher("toadstoolspawner", function()
 				return TheWorld.components.toadstoolspawner and Insight.descriptors.toadstoolspawner and Insight.descriptors.toadstoolspawner.GetToadstoolData(TheWorld.components.toadstoolspawner) or nil
 			end)
+			self.components.shard_insight:RegisterWorldDataFetcher("daywalkerspawner", function()
+				return TheWorld.components.daywalkerspawner and Insight.descriptors.daywalkerspawner and Insight.descriptors.daywalkerspawner.GetDaywalkerData(TheWorld.components.daywalkerspawner) or nil
+			end)
 		end
 	end)
 
