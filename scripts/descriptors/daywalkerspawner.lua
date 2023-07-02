@@ -22,16 +22,18 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description = nil
 
-	if self.days_to_spawn then
-		description = string.format(context.lstr.daywalkerspawner.days_to_respawn, self.days_to_spawn)
+	if not self.daywalker and self.days_to_spawn then
+		-- +1 Because the actual logic doesn't do the spawn once it hits zero until the next day.
+		-- See daywalkerspawner:OnDayChange()
+		description = string.format(context.lstr.daywalkerspawner.days_to_respawn, self.days_to_spawn + 1)
 	end
 
 	return {
 		priority = 0,
 		description = description,
 		icon = {
-			atlas = "images/Nightmare_Werepig.xml",
-			tex = "Nightmare_Werepig.tex",
+			atlas = "images/Daywalker.xml",
+			tex = "Daywalker.tex",
 		},
 		worldly = true
 	}

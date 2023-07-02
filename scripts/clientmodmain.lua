@@ -971,7 +971,7 @@ do
 	local bosses = {
 		"minotaur", "bearger", "deerclops", "dragonfly", -- Both
 
-		"antlion", "beequeen", "crabking",  "klaus", "malbatross", "moose", "stalker_atrium", "toadstool", "eyeofterror", "twinofterror1", "twinofterror2", -- DST
+		"antlion", "beequeen", "crabking",  "klaus", "malbatross", "moose", "stalker_atrium", "toadstool", "eyeofterror", "twinofterror1", "twinofterror2", "daywalker", -- DST
 
 		"ancient_herald", "ancient_hulk", "pugalisk", "twister", "twister_seal", "tigershark", "kraken", "antqueen", -- DS
 		 -- "shadow_knight", "shadow_bishop", "shadow_rook"

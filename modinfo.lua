@@ -259,7 +259,7 @@ end
 
 --[[ Indicator stuff ]]
 local BOSSES = {"minotaur", "bearger", "deerclops", "dragonfly"}
-local BOSSES_DST = {"antlion", "beequeen", "crabking",  "klaus", "malbatross", "moose", "stalker_atrium", "toadstool", "eyeofterror", "twinofterror1", "twinofterror2"}
+local BOSSES_DST = {"antlion", "beequeen", "crabking",  "klaus", "malbatross", "moose", "stalker_atrium", "toadstool", "eyeofterror", "twinofterror1", "twinofterror2", "daywalker"}
 local BOSSES_DS = {"ancient_herald", "ancient_hulk", "pugalisk", "twister", "twister_seal", "tigershark", "kraken", "antqueen"}
 local BOSSES_ALL = {}
 
