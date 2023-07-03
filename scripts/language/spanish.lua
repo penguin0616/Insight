@@ -573,7 +573,8 @@ return {
 		THROW = "Lanzar", -- sw -- Action string is "Throw At"
 		ROW_FAIL = "Row Fail",
 		ATTACK = "Ataques", -- "STRINGS.ACTIONS.ATTACK.GENERIC"
-		POUR_WATER = "<string=ACTIONS.POUR_WATER.GENERIC>",
+		--POUR_WATER = "<string=ACTIONS.POUR_WATER.GENERIC>",
+		--BLINK = "<string=ACTIONS.BLINK.GENERIC>",
 	},
 
 	-- fishable.lua

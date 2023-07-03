@@ -87,6 +87,11 @@ local function Describe(self, context)
 			consumptions[ACTIONS.LIFT_DUMBBELL] = inst.components.mightydumbbell.consumption
 		end
 
+		-- for lazy explorer
+		if inst.components.blinkstaff then
+			consumptions[ACTIONS.BLINK] = 1
+		end
+
 		local consumptions2 = {}
 		local num_actions = 0
 		for action, amount in pairs(consumptions) do

@@ -591,6 +591,7 @@ return {
 		--ROW_FAIL = "oar",
 		TILL = "farm_hoe",
 		POUR_WATER = "wateringcan",
+		BLINK = "orangestaff",
 	},
 
 	-- fishable.lua

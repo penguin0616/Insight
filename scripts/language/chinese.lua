@@ -580,8 +580,9 @@ return {
 		SPY = "调查", -- hamlet
 		THROW = "扔", -- sw
 		ROW_FAIL = "划(失败)",
-		ATTACK = "<string=ACTIONS.ATTACK.GENERIC>",
-		POUR_WATER = "<string=ACTIONS.POUR_WATER.GENERIC>",
+		--ATTACK = "<string=ACTIONS.ATTACK.GENERIC>",
+		--POUR_WATER = "<string=ACTIONS.POUR_WATER.GENERIC>",
+		--BLINK = "<string=ACTIONS.BLINK.GENERIC>",
 	},
 
 	-- fishable.lua
