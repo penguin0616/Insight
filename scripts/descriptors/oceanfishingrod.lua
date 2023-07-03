@@ -45,6 +45,7 @@ local fishing_states = {}
 
 --- Triggers whenever an oceanfishingrod is done fishing.
 local function OnDoneFishing(rod, reason, lose_tackle, fisher, target)
+	--mprint'ondonefishing'
 	local state = fishing_states[fisher]
 	if state then
 		if reason == "success" then
@@ -120,15 +121,20 @@ local function SERVER_OnHookLanded(player, hook)
 
 	HookDoneFnForRod(rod)
 
-	fishing_states[player] = {
+	local state = {
 		rod = rod,
 		hook = hook,
 	}
+
+	fishing_states[player] = state
 	
+	--indmprint'onhooklanded'
 	-- This RPC is randomly not sending.
 	player:DoTaskInTime(0.5, function()
+		if fishing_states[player] ~= state then return end
 		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "hook_landed", hook)
 		player:DoTaskInTime(0.5, function()
+			if fishing_states[player] ~= state then return end
 			fishing_states[player].task = player:DoPeriodicTask(0.1, SERVER_UpdateInterestedFish)
 		end)
 	end)
