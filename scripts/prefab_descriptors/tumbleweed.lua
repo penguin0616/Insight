@@ -167,12 +167,12 @@ local function OnClientSpawn(inst)
 		if not IS_CLIENT_HOST then
 			-- I'm not dealing with util networking.
 			inst:ListenForEvent("insight_tumbleweedloot_dirty", OnLootDirty)
+			OnLootDirty(inst)
 			return
 		end
+	else
+		OnLootDirty(inst)
 	end
-
-
-	OnLootDirty(inst)
 end
 
 local function OnClientInit()
