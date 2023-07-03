@@ -51,44 +51,8 @@ local COLOR_TYPES = {
 	ERROR = "ERROR",
 }
 
-local COLORS_ADD = { -- brighter but most color gets siphoned at night
-	-- alpha doesn't matter? 
-	RED = {0.6, 0, 0, 1}, -- red (by itself, #ff0000, it's red.)
-	GREEN = {0, 0.5, 0, 1}, -- green (by itself, #00ff00, it's green.)
-	BLUE = {0, 0, 1, 1}, -- blue (by itself, #0000ff, it's blue.)
-	--GRAY = {0.4, 0.4, 1}, -- gray (by itself, #666666, is gray)
-	--BLACK = {0, 0, 0, 1}, -- black (by itself, #000000, is black)
-	NOTHING = {0, 0, 0, 0}, -- default without any changes
-
-	LIGHT_BLUE = {0, 0.4, 0.6, 1}, -- light blue (by itself, #006699, its a nice ocean blue)
-	PURPLE = {0.4, 0, 1, 1}, -- purple (by itself, #6600ff, dark blue with red tint) -- rgb(155, 89, 182) {0.6, 0.35, 0.71, 1} sin purple -- rgb(98, 37, 209) {0.38, 0.145, 0.82, 1} royal purple
-	YELLOW = {0.4, 0.4, 0, 1}, -- yellow (by itself, #666600, ugly dark yellow)
-	WHITE = {0.4, 0.4, 0.4, 1},
-	ORANGE = {0.8, 0.35, 0, 1}, -- orange -- {1, 0.5, 0, 1}
-	PINK = {1, 0, 1, 1}
-}
-
-COLORS_ADD.GRAY = COLORS_ADD.NOTHING
-COLORS_ADD.BLACK = COLORS_ADD.NOTHING
-
-local COLORS_MULT = { -- more resistant to night siphoning color, but dimmer
-	RED = {1, 0.4, 0.4, 1}, -- red (by itself, #ff6666, lighter version of MOB_COLOR)
-	GREEN = {0.3, 1, 1, 1}, -- greenish (by itself, #4dffff, seems to be slightly lighter cyan)
-	BLUE = {0.4, 0.4, 1, 1},
-	GRAY = {0.4, 0.4, 0.4, 1}, -- gray (by itself, #666666, is gray)
-	BLACK = {0, 0, 0, 1}, -- black (by itself, #000000, is black)
-	NOTHING = {1, 1, 1, 1}, -- default without any changes
-
-	LIGHT_BLUE = {0, 0.9, 1, 1},  -- 0, 0.5, 1
-	PURPLE = {0.4, 0, 1, 1},
-	--YELLOW = {0.5, 0.5, 0, 1},
-	--WHITE = {1, 1, 1, 1},
-	ORANGE = {1, 0.4, 0.4, 1},
-	PINK = {1, 0, 1, 1},
-}
-
-COLORS_MULT.YELLOW = COLORS_MULT.GREEN
-COLORS_MULT.WHITE = COLORS_MULT.GREEN
+local COLORS_ADD = util.COLORS_ADD
+local COLORS_MULT = util.COLORS_MULT
 
 --[[
 local COLORS_ADD = {

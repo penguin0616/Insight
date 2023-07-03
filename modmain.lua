@@ -3608,6 +3608,7 @@ end
 
 -- Further Post Inits
 Insight.prefab_descriptors("wx78_scanner")
+Insight.prefab_descriptors("tumbleweed")
 Insight.descriptors("oceanfishingrod")
 
 

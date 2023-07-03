@@ -382,12 +382,7 @@ example = {
 	},
 	options = {
 		[false] = {
-			description = {
-				"Nope",
-				["zh"] = nil,
-				["br"] = nil,
-				["es"] = nil,
-			},
+			description = COMMON_STRINGS.NO.DESCRIPTION,
 			hover = {
 				"Hover",
 				["zh"] = nil,
@@ -396,12 +391,7 @@ example = {
 			},
 		},
 		[true] = {
-			description = {
-				"Yep",
-				["zh"] = nil,
-				["br"] = nil,
-				["es"] = nil,
-			},
+			description = COMMON_STRINGS.YES.DESCRIPTION,
 			hover = {
 				"Hover",
 				["zh"] = nil,
@@ -1910,6 +1900,40 @@ STRINGS = {
 					["zh"] = "显示答案。",
 					["br"] = "A solução é exibida..",
 					["es"] = "Se muestra la solución.",
+				},
+			},
+		},
+	},
+	tumbleweed_info = {
+		label = {
+			"Tumbleweed indicator", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether tumbleweeds are color-coded to indicate their contents.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Tumbleweed information is not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Tumbleweed information is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 		},
@@ -5246,7 +5270,7 @@ configuration_options = {
 		}, 
 		default = true,
 		tags = {"undefined"},
-	},
+	}, 
 	{
 		name = "orchestrina_indicator",
 		options = {
@@ -5255,6 +5279,15 @@ configuration_options = {
 		}, 
 		default = true,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "tumbleweed_info",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
+		tags = {"undefined"},
 	},
 	{
 		name = "lightningrod_range",
