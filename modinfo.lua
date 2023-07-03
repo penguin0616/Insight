@@ -29,7 +29,7 @@ directory. If not, please refer to
 local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.2.5" -- dst is 4.0.9, ds is 3.4.0
+version = "4.3.0" -- dst is 4.0.9, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -415,7 +415,7 @@ STRINGS = {
 		["es"] = "El mod debe estar habilitado para que funcione el modinfo.",
 	},
 	update_info = {
-		"Added ocean fishing information, added more config options, bug fixes. See Steam changelog for more info.",
+		"Added information for the From Beyond updates and other stuff. See Steam changelog for more info.",
 		["zh"] = nil,
 		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
