@@ -241,6 +241,35 @@ local FONT_SIZE = {
 	}
 }
 
+-- Just plucked some ones in common in DS/T
+local FONTS = {"UIFONT", "TITLEFONT", "DIALOGFONT", "NUMBERFONT", "BODYTEXTFONT", "TALKINGFONT"}
+
+--- Generates options from a list.
+---@param typ boolean False for text, True for options.
+local function GenerateOptionsFromList(typ, list, hoverfn)
+	local t = {}
+	for i = 1, #list do
+		local opt = list[i]
+
+		if typ == false then
+			local hover = hoverfn and hoverfn(i, opt)
+			t[opt] = { 
+				description = {
+					opt -- English
+				}, 
+				hover = hover
+			}
+		elseif typ == true then
+			t[#t+1] = { 
+				data = opt
+			}
+		else
+			yahoo()
+		end
+	end
+	return t
+end
+
 local function GenerateFontSizeTexts(which)
 	local t = {}
 	for i = which[1], which[2] do
@@ -797,6 +826,21 @@ STRINGS = {
 				},
 			},
 		},
+	},
+	insight_font = {
+		label = {
+			"Font",
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil
+		},
+		hover = {
+			"Which font Insight uses for its text",
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil
+		},
+		options = GenerateOptionsFromList(false, FONTS, function(i,v) return {("Insight will use the game font '%s'"):format(v)} end),
 	},
 	hoverer_insight_font_size = {
 		label = {
@@ -5025,6 +5069,13 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "insight_font",
+		options = GenerateOptionsFromList(true, FONTS),
+		default = FONTS[1],
 		client = true,
 		tags = {},
 	},

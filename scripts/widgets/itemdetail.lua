@@ -24,7 +24,7 @@ local Widget = require("widgets/widget")
 local Image = require("widgets/image")
 local RichText = import("widgets/RichText")
 local Text = require("widgets/text")
-local resolvefilepath = resolvefilepath
+local infotext_common = import("uichanges/infotext_common").Initialize()
 
 local text_holder_padding = 0 -- padding of 20 for the scrollbar
 
@@ -78,7 +78,7 @@ local ItemDetail = Class(Widget, function(self, info)
 	
 	--self.text = self.text_holder:AddChild(Text(UIFONT, 30, nil))
 	--self.text:SetHAlign(ANCHOR_RIGHT)
-	self.text = self.text_holder:AddChild(RichText())
+	self.text = self.text_holder:AddChild(RichText(util.GetInsightFont()))
 	self.text:SetSize(22)
 	--self.text:SetRegionSize(self.text_holder:GetSize())
 	--self.text:SetPosition(icon_holder_width/2, 0)
@@ -90,7 +90,18 @@ local ItemDetail = Class(Widget, function(self, info)
 	self.heckler:SetSize(info.width - icon_holder_width - 20, icon_holder_height) -- padding of 20 for the scrollbar
 	self.heckler:SetPosition(icon_holder_width/2 - 10, 0) -- subtract 10 to keep icon_holder and text still bordering eachother
 	--]]
+
+	self.config_listener = infotext_common.new_configs_event:AddListener("ItemDetail_" .. self.inst.GUID, function()
+		if self.inst:IsValid() then
+			self.text:SetFont(util.GetInsightFont())
+		end
+	end)
 end)
+
+function ItemDetail:Kill()
+	self.config_listener:Remove()
+	return Widget.Kill(self)
+end
 
 function ItemDetail:OnControl(control, down)
 	-- Check input

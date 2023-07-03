@@ -72,7 +72,14 @@ local function OnHovererPostInit(hoverer)
 	--rawset(_G, "hoverer", hoverer)
 
 	--local altOnlyIsVerbose
-	hoverer.insightText = hoverer:AddChild(RichText(UIFONT, infotext_common.configs.hoverer_insight_font_size))
+	hoverer.insightText = hoverer:AddChild(RichText(
+		util.GetInsightFont(), 
+		infotext_common.configs.hoverer_insight_font_size
+	))
+
+	hoverer.text:SetFont(util.GetInsightFont())
+	hoverer.secondarytext:SetFont(util.GetInsightFont())
+
 	--hoverer.text:SetSize(HOVERER_TEXT_SIZE)
 	--hoverer.secondarytext:SetSize(HOVERER_TEXT_SIZE)
 
@@ -198,6 +205,10 @@ local function OnHovererPostInit(hoverer)
 		if self.insightText.size ~= infotext_common.configs.hoverer_insight_font_size then
 			self.insightText:SetSize(infotext_common.configs.hoverer_insight_font_size)
 		end
+
+		self.insightText:SetFont(util.GetInsightFont())
+		hoverer.text:SetFont(util.GetInsightFont())
+		hoverer.secondarytext:SetFont(util.GetInsightFont())
 
 		--[[
 		if self.text.size ~= HOVERER_TEXT_SIZE then

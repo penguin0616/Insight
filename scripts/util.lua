@@ -27,6 +27,8 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 local STRINGS = STRINGS
 
+local infotext_common = import("uichanges/infotext_common")
+
 local module = {
 	temperature = {
 		conversion_fns = {
@@ -645,6 +647,14 @@ function ArrayPurge(t, fnKeep, ...)
     end
 
     return t;
+end
+
+function module.GetInsightFont()
+	if infotext_common and infotext_common.initialized then
+		return Insight.env[infotext_common.configs.insight_font]
+	end
+
+	return UIFONT
 end
 
 --- Clamps a math value.

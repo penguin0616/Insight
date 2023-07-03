@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 local configs_to_load = {
-	"DEBUG_SHOW_PREFAB", "hoverer_insight_font_size", "inventorybar_insight_font_size", 
+	"DEBUG_SHOW_PREFAB", "insight_font", "hoverer_insight_font_size", "inventorybar_insight_font_size", 
 	"followtext_insight_font_size", "alt_only_information", "hover_range_indicator", "extended_info_indicator"
 }
 
@@ -27,7 +27,8 @@ local module = {
 	configs = {
 		alt_visible_time = 7, --  Not a real config.
 	},
-	new_configs = ClientCoreEventer:CreateEvent("new_configs"),
+	new_configs_event = nil,
+	initialized = false,
 }
 
 module.ShouldShowInsightText = function(last_inspect_time)
@@ -44,12 +45,14 @@ module.Initialize = function()
 		module.configs[v] = GetModConfigData(v, true)
 	end
 
+	module.new_configs_event = ClientCoreEventer:CreateEvent("new_configs")
+
 	OnContextUpdate:AddListener("infotext_common", function(context) 
 		for i,v in pairs(configs_to_load) do
 			module.configs[v] = context.config[v]
 		end
 
-		module.new_configs:Push(module.configs)
+		module.new_configs_event:Push(module.configs)
 	end)
 
 
