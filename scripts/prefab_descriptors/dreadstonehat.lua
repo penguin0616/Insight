@@ -19,6 +19,4 @@ directory. If not, please refer to
 ]]
 
 -- dreadstonehat.lua [Prefab]
-if Insight.descriptors.armordreadstone then
-	return Insight.descriptors.armordreadstone
-end
+return Insight.prefab_descriptors.armordreadstone
