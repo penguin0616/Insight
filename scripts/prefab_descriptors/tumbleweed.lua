@@ -36,7 +36,10 @@ end
 -- RegisterPrefabsImpl
 local function OnServerSpawn(inst)
 	inst._loot = net_string(inst.GUID, "insight_tumbleweed_loot", "insight_tumbleweedloot_dirty")
-	inst._loot:set(table.concat(inst.loot, ","))
+	
+	if inst.loot then
+		inst._loot:set(table.concat(inst.loot, ","))
+	end
 end
 
 local function OnServerInit()
@@ -195,6 +198,10 @@ end
 
 local function Describe(inst, context)
 	if not context.config["tumbleweed_info"] then return end
+	if not inst.loot then
+		return
+	end
+
 	-- inst.loot is actual loot prefabs
 	-- inst.lootaggro is used for determining combat aggression, indexes match across tables
 	local alt_description = {}
