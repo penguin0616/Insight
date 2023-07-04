@@ -33,6 +33,10 @@ local function Describe(self, context)
 		if not context.config["display_mob_attack_damage"] then return end
 	end
 
+	if self.inst:HasTag("player") then
+		-- Not really necessary to be visible on players.
+		return
+	end
 
 	local base_damage = self:GetBaseDamage()
 	local current_damage = self:GetDamage()

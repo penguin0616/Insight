@@ -131,6 +131,11 @@ local function ProcessLoot(inst)
 end
 
 local function OnLootDirty(inst)
+	if not localPlayer then 
+		OnLocalPlayerPostInit:AddWeakListener(function() OnLootDirty(inst) end)
+		return 
+	end
+
 	local context = GetPlayerContext(localPlayer)
 	if not context.config["tumbleweed_info"] then
 		if inst.insight_loot then

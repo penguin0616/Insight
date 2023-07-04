@@ -341,8 +341,9 @@ end
 
 
 function OnCurrentlySelectedItemChanged(old, new, itemInfo)
-	local old_desc = old and Insight.prefab_descriptors[old.prefab] or nil
-	local new_desc = new and Insight.prefab_descriptors[new.prefab] or nil
+	-- Somehow people are hovering something without a prefab that also fails IsPrefab on the server
+	local old_desc = old and old.prefab and Insight.prefab_descriptors[old.prefab] or nil
+	local new_desc = new and old.prefab and Insight.prefab_descriptors[new.prefab] or nil
 
 	if old and old._scything then
 		Insight.prefab_descriptors.voidcloth_scythe.OnScytheTargetUnselected(localPlayer)
