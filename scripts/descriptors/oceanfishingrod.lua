@@ -190,6 +190,12 @@ local function SERVER_OnFishHooked(player, fish)
 
 	local state = fishing_states[player]
 
+	if not state then
+		-- Something's not right?
+		mprintf("SERVER_OnFishHooked can't find the state for player %s", player)
+		return
+	end
+
 	state.hook = nil
 	state.task:Cancel()
 

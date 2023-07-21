@@ -40,7 +40,12 @@ local function Describe(self, context)
 	local compost_value_string
 	local health_value_string
 
-	if IS_DS or farmingHelper.WorldHasOldGrowers() then
+	-- Check for fertilizervalue: 
+	--[[ Someone reported: Got this crash today. 
+	Friend went to harvest from a Heap of Foods Keg, 
+	suspected to have turned into sludge from being left too long.
+	]]
+	if (IS_DS or farmingHelper.WorldHasOldGrowers()) and self.fertilizervalue then
 		growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
 	end
 

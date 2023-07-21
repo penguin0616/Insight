@@ -46,7 +46,7 @@ Several properties:
 -- MAX_HOOK_DIST
 
 local function Describe(self, context)
-	local description = nil
+	local description, alt_description = nil, nil
 
 	-- I'm doing a bunch of conditionals for members of the datas in case some mod does something weird. 
 	-- As far as I'm aware, they shouldn't be nil in vanilla.
@@ -72,7 +72,7 @@ local function Describe(self, context)
 			)
 		end
 
-		description = CombineLines(bonus_distance, bonus_accuracy)
+		alt_description = CombineLines(bonus_distance, bonus_accuracy)
 	end
 
 	if self.lure_data then
@@ -108,14 +108,16 @@ local function Describe(self, context)
 				self.lure_data.weather.snowing * 100
 			)
 		end
-
 		
-		description = CombineLines(description, charm, stamina_drain, timeofday, weather)
+		alt_description = CombineLines(alt_description, charm, stamina_drain, timeofday, weather)
 	end
+
+	
 
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		alt_description = alt_description,
 	}
 end
 

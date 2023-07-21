@@ -531,6 +531,7 @@ function CreatePlayerContext(player, configs, etc)
 
 
 	player_contexts[player] = context
+	mprint("Created player context for", player)
 end
 
 --- Updates a player's context if they already have one.
@@ -2170,7 +2171,7 @@ if IS_DST then
 
 	--======================= RPCs ============================================================================================
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
-		--mprint("ProcessConfiguration", player)
+		mprint("ProcessConfiguration", player)
 		data = json.decode(data)
 		if player_contexts[player] then
 			UpdatePlayerContext(player, {
