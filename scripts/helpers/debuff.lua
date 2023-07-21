@@ -349,7 +349,8 @@ for prefab, data in pairs(spicedfoods) do
 	local spice_used = data.spice -- The spice applied to the food
 
 	-- Only spices that have a prefab will apply a debuff.
-	if SPICES[spice_used].prefabs and SPICES[spice_used].prefabs[1] then
+	-- Check for spice to exist in the SPICES table in case mods are adding to spicedfoods.
+	if SPICES[spice_used] and SPICES[spice_used].prefabs and SPICES[spice_used].prefabs[1] then
 		-- We're only doing the first debuff prefab for simplicity's sake though.
 		item_debuffs[prefab] = shallowcopy(SPICES[spice_used].prefabs)
 
