@@ -517,10 +517,7 @@ function CreatePlayerContext(player, configs, etc)
 	if context.is_server_owner then
 		if context.config["crash_reporter"] then
 			SERVER_OWNER_HAS_OPTED_IN = true
-			for id, shard in pairs(Shard_GetConnectedShards()) do
-				--mprint("sending data to:", id)
-				rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "CrashReporter"), id, compress({ server_owner_enabled=true }))
-			end
+			SyncSecondaryInsightData({ SERVER_OWNER_HAS_OPTED_IN=true })
 		end
 	end
 
@@ -1481,6 +1478,17 @@ function GetMoonCycle()
 	return moon_cycle
 end
 
+function SyncSecondaryInsightData(data)
+	for id, shard in pairs(Shard_GetConnectedShards()) do
+		--mprint("sending data to:", id)
+		rpcNetwork.SendModRPCToShard(
+			GetShardModRPC(modname, "SyncSecondaryData"), 
+			id, 
+			json.encode(data)
+		)
+	end
+end
+
 function INSIGHT_HOT_RELOAD()
 	if not DEBUG_ENABLED then
 		mprint("Unable to INSIGHT_HOT_RELOAD without DEBUG_ENABLED.")
@@ -2373,9 +2381,15 @@ if IS_DST then
 		--]]
 	end)
 
-	rpcNetwork.AddShardModRPCHandler(modname, "CrashReporter", function(sending_shard_id, data)
-		if data.server_owner_enabled then
+	rpcNetwork.AddShardModRPCHandler(modname, "SyncSecondaryData", function(sending_shard_id, data)
+		data = json.decode(data)
+
+		if data.SERVER_OWNER_HAS_OPTED_IN then
 			SERVER_OWNER_HAS_OPTED_IN = true
+		end
+		
+		if data.ALLOW_SERVER_DEBUGGING then
+			ALLOW_SERVER_DEBUGGING = true
 		end
 	end)
 
@@ -2942,6 +2956,8 @@ if IS_DST then
 				--mprint("sending data to:", id)
 				rpcNetwork.SendModRPCToShard(GetShardModRPC(modname, "WorldData"), id, compress(data))
 			end
+
+			SyncSecondaryInsightData({ ALLOW_SERVER_DEBUGGING=ALLOW_SERVER_DEBUGGING })
 		end)
 
 		--[[
