@@ -35,9 +35,31 @@ DST_CONSOLE_COMMANDS.i_accelerate_rift = function(crystals)
 	end
 end
 
+-- 0xa7, 0xa7
+-- 0x4a, 0x4a
+DST_CONSOLE_COMMANDS.i_doroll = function(rolls, max)
+	assert(TheWorld.ismastersim, "need to be mastersim")
+	local plr = InsightCommandPlayer()
+	local tbl = TheNet:GetClientTableForUser(plr.userid)
+
+	if type(rolls) == "number" then
+		rolls = {rolls}
+	end
+
+	max = max or 100
+
+	--Networking_RollAnnouncement(plr.userid, plr.name, plr.prefab, tbl.colour, rolls, max)
+	TheNet:Announce(
+		string.format(STRINGS.UI.NOTIFICATION.DICEROLLED, ChatHistory:GetDisplayName(plr.name, plr.prefab), table.concat(rolls, ", "), max),
+		nil,
+		nil,
+		"dice_roll"
+	)
+end
+
 DST_CONSOLE_COMMANDS.i_moon_postern_stuff = function()
 	assert(TheWorld.ismastersim, "need to be mastersim")
-	local plr = ConsoleCommandPlayer()
+	local plr = InsightCommandPlayer()
 
 	plr.components.inventory:GiveItem(SpawnPrefab("multiplayer_portal_moonrock_constr_plans"))
 	plr.components.inventory:GiveItem(SpawnPrefab("moonrockcrater"))
@@ -48,7 +70,7 @@ end
 DST_CONSOLE_COMMANDS.i_moon_altar_stuff = function()
 
 	local offset = 7
-	local pos = ConsoleCommandPlayer():GetPosition()
+	local pos = InsightCommandPlayer():GetPosition()
 	local altar
 
 	altar = SpawnPrefab("moon_altar")
@@ -95,7 +117,7 @@ DST_CONSOLE_COMMANDS.i_moon_altar_stuff = function()
 		end
 		c_give("moonrockseed", 1)
 	else
-		ConsoleCommandPlayer().components.inventoryitem:GiveItem(orb)
+		InsightCommandPlayer().components.inventoryitem:GiveItem(orb)
 	end
 
 	c_setabsorption(.99)
@@ -162,11 +184,11 @@ DST_CONSOLE_COMMANDS.c_nextday = function()
 end
 DST_CONSOLE_COMMANDS.c_setdamagemultiplier = function(n)
 	assert(TheWorld.ismastersim, "need to be mastersim")
-	ConsoleCommandPlayer().components.combat.damagemultiplier = n
+	InsightCommandPlayer().components.combat.damagemultiplier = n
 end
 DST_CONSOLE_COMMANDS.c_setabsorption = function(n)
 	assert(TheWorld.ismastersim, "need to be mastersim")
-	ConsoleCommandPlayer().components.health:SetAbsorptionAmount(n)
+	InsightCommandPlayer().components.health:SetAbsorptionAmount(n)
 end
 DST_CONSOLE_COMMANDS.c_kill = function(inst)
 	assert(TheWorld.ismastersim, "need to be mastersim")
@@ -179,11 +201,11 @@ DST_CONSOLE_COMMANDS.c_kill = function(inst)
 end
 DST_CONSOLE_COMMANDS.c_makevisible = function()
 	assert(TheWorld.ismastersim, "need to be mastersim")
-	ConsoleCommandPlayer():RemoveTag("debugnoattack")
+	InsightCommandPlayer():RemoveTag("debugnoattack")
 end
 DST_CONSOLE_COMMANDS.c_invremove = function(arg)
 	assert(TheWorld.ismastersim, "need to be mastersim")
-	local items = ConsoleCommandPlayer().components.inventory:GetItemByName(arg, 1)
+	local items = InsightCommandPlayer().components.inventory:GetItemByName(arg, 1)
 	local item = next(items)
 	if item then
 		item:Remove()
@@ -214,7 +236,7 @@ DST_CONSOLE_COMMANDS.c_setseason = function(season)
 	TheWorld:PushEvent("ms_setseason", season)
 end
 DST_CONSOLE_COMMANDS.c_insight_countactives = function()
-	local plr = ConsoleCommandPlayer()
+	local plr = InsightCommandPlayer()
 	local str =
 		string.format("Replica: %s, Manager: %s", GetInsight(plr):CountEntities(), _G.Insight.env.entityManager:Count())
 	if TheWorld.ismastersim then
@@ -275,7 +297,7 @@ end
 DST_CONSOLE_COMMANDS.c_pickup = function(inst)
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	if inst.components.inventoryitem and not inst.components.inventoryitem:GetGrandOwner() then
-		ConsoleCommandPlayer().components.inventory:GiveItem(inst)
+		InsightCommandPlayer().components.inventory:GiveItem(inst)
 	else
 		print(inst, "is not able to be held")
 	end
@@ -293,7 +315,7 @@ end
 DST_CONSOLE_COMMANDS.c_prefabring = function(prefab)
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	local items = {prefab} --Which items spawn.
-	local player = ConsoleCommandPlayer() --DebugKeyPlayer()
+	local player = InsightCommandPlayer() --DebugKeyPlayer()
 	if player == nil then
 		return true
 	end
@@ -334,7 +356,7 @@ end
 DST_CONSOLE_COMMANDS.c_flowerring = function()
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	local items = {"flower"} --Which items spawn.
-	local player = ConsoleCommandPlayer() --DebugKeyPlayer()
+	local player = InsightCommandPlayer() --DebugKeyPlayer()
 	if player == nil then
 		return true
 	end
@@ -375,7 +397,7 @@ end
 DST_CONSOLE_COMMANDS.c_chestring = function(prefabs)
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	local items = {"treasurechest"} --Which items spawn.
-	local player = ConsoleCommandPlayer() --DebugKeyPlayer()
+	local player = InsightCommandPlayer() --DebugKeyPlayer()
 	if player == nil then
 		return true
 	end
@@ -420,7 +442,7 @@ end
 
 DST_CONSOLE_COMMANDS.c_bringmarbles = function()
 	assert(TheWorld.ismastersim, "need to be mastersim")
-	local player = ConsoleCommandPlayer() --DebugKeyPlayer()
+	local player = InsightCommandPlayer() --DebugKeyPlayer()
 	if player == nil then
 		return true
 	end
@@ -465,7 +487,7 @@ DST_CONSOLE_COMMANDS.c_formcircle = function(list, params)
 	assert(type(list) == "table")
 	params = (type(params) == "table" and params) or {}
 
-	local player = ConsoleCommandPlayer() --DebugKeyPlayer()
+	local player = InsightCommandPlayer() --DebugKeyPlayer()
 	if player == nil then
 		return true
 	end

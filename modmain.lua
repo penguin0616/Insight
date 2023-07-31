@@ -1489,6 +1489,14 @@ function SyncSecondaryInsightData(data)
 	end
 end
 
+function InsightCommandPlayer()
+	if ALLOW_SERVER_DEBUGGING then
+		return UserToPlayer(MyKleiID)
+	else
+		return ConsoleCommandPlayer()
+	end
+end
+
 function INSIGHT_HOT_RELOAD()
 	if not DEBUG_ENABLED then
 		mprint("Unable to INSIGHT_HOT_RELOAD without DEBUG_ENABLED.")
