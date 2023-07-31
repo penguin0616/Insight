@@ -1035,7 +1035,7 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 			end
 
 			d.name = d.name or name -- chosen name or default component name
-			if d.name ~= name then
+			if d.name ~= name and d.real_component == nil then
 				d.real_component = name
 			end
 

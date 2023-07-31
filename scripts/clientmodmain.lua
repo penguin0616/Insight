@@ -968,6 +968,19 @@ do
 		end)
 	end
 
+	local function AddSuspiciousMarbleIndicator(inst)
+		if not inst:IsValid() then return end
+
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
+			if not context.config["suspicious_marble_indicator"] then
+				return
+			end
+
+			local clr = "#c0c0c0"
+			insight:StartTrackingEntity(inst, {color = Color.fromHex(clr)})
+		end)
+	end
+
 	-- https://dontstarve.fandom.com/wiki/Category%3ABoss_Monsters
 	local bosses = {
 		"minotaur", "bearger", "deerclops", "dragonfly", -- Both
@@ -1023,6 +1036,10 @@ do
 	end
 
 	AddPrefabPostInit("messagebottle", AddBottleIndicator)
+
+	for _, name in pairs({"sculpture_knighthead", "sculpture_bishophead", "sculpture_rooknose"}) do
+		AddPrefabPostInit(name, AddSuspiciousMarbleIndicator)
+	end
 end
 
 

@@ -1829,7 +1829,7 @@ STRINGS = {
 			[false] = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
-					"Message indicators not shown.",
+					"Message bottle indicators not shown.",
 					["zh"] = "不显示漂流瓶指示器。",
 					["br"] = "Indicadores de garrafas não são mostrados.",
 					["es"] = "No se muestra los indicadores de mensajes.",
@@ -1838,10 +1838,44 @@ STRINGS = {
 			[true] = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
-					"Message indicators are shown.",
+					"Message bottle indicators are shown.",
 					["zh"] = "显示漂流瓶指示器。",
 					["br"] = "Indicadores de garrafas são mostrados.",
 					["es"] = "Se muestra los indicadores de mensajes.",
+				},
+			},
+		},
+	},
+	suspicious_marble_indicator = {
+		label = {
+			"Suspicious Marble Indicator", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"Whether indicators to pieces of suspicious marble are shown.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Marble indicators are not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Marble indicators are shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
 				},
 			},
 		},
@@ -5301,6 +5335,16 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
+		client = true,
+		tags = {},
+	},
+	{
+		name = "suspicious_marble_indicator",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
 		client = true,
 		tags = {},
 	},

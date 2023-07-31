@@ -132,7 +132,7 @@ local function Describe(inst, context)
 
 end
 
-local function StatusAnnoucementsDescribe(special_data, context, inst)
+local function StatusAnnoucementsDescribe(special_data, context, inventoryinst)
 	-- This can be called from either the ItemDetail in InsightMenu or the actual item
 	if not special_data or not special_data.cooldown then
 		return

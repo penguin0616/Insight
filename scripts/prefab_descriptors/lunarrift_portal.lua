@@ -188,12 +188,12 @@ local function Describe(inst, context)
 	}
 end
 
-
-
 return {
 	OnServerInit = OnServerInit,
 
 	Describe = Describe,
+
+	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
 }
 
 
