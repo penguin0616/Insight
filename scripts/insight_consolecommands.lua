@@ -49,6 +49,7 @@ DST_CONSOLE_COMMANDS.i_doroll = function(rolls, max)
 	max = max or 100
 
 	--Networking_RollAnnouncement(plr.userid, plr.name, plr.prefab, tbl.colour, rolls, max)
+	--Networking_RollAnnouncement(ThePlayer.userid, "bob", "wilson", {.8, .31, .22, 1}, {1000}, 100)
 	TheNet:Announce(
 		string.format(STRINGS.UI.NOTIFICATION.DICEROLLED, ChatHistory:GetDisplayName(plr.name, plr.prefab), table.concat(rolls, ", "), max),
 		nil,

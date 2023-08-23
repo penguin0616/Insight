@@ -1094,7 +1094,8 @@ local function GetEntityInformation(entity, player, params)
 	local player_context = GetPlayerContext(player)
 	if not player_context then
 		assembled.raw_information = nil
-		assembled.information = "missing player context for " .. player.name
+		assembled.information = string.format("missing player context for %s (%s) | requested ent: %s", player.name, tostring(player), tostring(entity))
+		mprint(assembled.information)
 		return assembled
 	end
 
@@ -2798,7 +2799,7 @@ if IS_DST then
 		end)
 
 		TheWorld:ListenForEvent("ms_playerleft", function(_, player)
-			--dprint("Player Left:", player, player.userid)
+			mprintf("Player %s (userid: %s) left, removing context", player, player.userid)
 			player_contexts[player] = nil
 		end)
 

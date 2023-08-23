@@ -611,12 +611,13 @@ local function LocalPlayerDeactivated(src)
 		return
 	end
 
+	dprint("LOCALPLAYER DEACTIVATED", localPlayer, "FROM", src)
+
 	ClientCoreEventer:PushEvent("force_insightui_exit")
 
 	local insight = GetLocalInsight(localPlayer)
 	insight.context = nil
 	insight:Shutdown()
-	dprint("LOCALPLAYER DEACTIVATED", localPlayer, "FROM", src)
 	localPlayer = nil
 	--[[
 	local x = 0

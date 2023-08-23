@@ -212,7 +212,7 @@ local Insight = Class(function(self, inst)
 
 	if IS_DST then
 		-- TODO: See if I can hit a classified missing with this
-		mprint("Insight Replica added for", self.inst)
+		mprintf("Insight Replica (%s) added for %s", self, self.inst)
 		if TheWorld.ismastersim then
 			self.classified = SpawnPrefab("insight_classified")
 			self.classified.entity:SetParent(inst.entity)
@@ -229,8 +229,20 @@ local Insight = Class(function(self, inst)
 	end
 end)
 
+function Insight:__tostring()
+	if self._string == nil then
+		-- This is fine. 
+		local x = getmetatable(self)
+		setmetatable(self, nil)
+		self._string = tostring(self)
+		setmetatable(self, x)
+	end
+
+	return self._string .. " ~ [" .. tostring(self.inst) .. "]"
+end
+
 function Insight:OnRemoveFromEntity()
-	mprint("Insight Replica removed")
+	mprintf("Insight Replica (%s) removed", self)
 	if self.classified ~= nil then
 		if TheWorld.ismastersim then
 			self.classified = nil
@@ -286,17 +298,22 @@ function Insight:AttachClassified(ent)
 end
 
 --- Detaches classified
-function Insight:DetachClassified()
+function Insight:DetachClassified(shutdown)
+	if shutdown == nil then shutdown = true end
 	assert(TheWorld.ismastersim == false, "DetachClassified on server-side")
 	assert(self.classified, "Attempt to detach classified without existing one.")
 	mprint("Detached classified", self.classified, "from", self.inst)
+
+	--mprint(debugstack())
 
 	-- Classified stuff
 	self.classified:RemoveEventCallback("onremove", self.ondetachclassified)
 	self.classified = nil
 	self.ondetachclassified = nil
 	
-	self:Shutdown()
+	if shutdown then
+		self:Shutdown()
+	end
 end
 
 function Insight:Shutdown()
@@ -308,6 +325,11 @@ function Insight:Shutdown()
 	self:StopUpdateLoop()
 	self:KillIndicators()
 	self:SetBattleSongActive(false)
+
+	if self.classified then
+		-- Kill the classified early so Shutdown doesn't get called again by it when the classified gets removed
+		self:DetachClassified(false)
+	end
 
 	-- Misc
 	self.entity_data = nil
@@ -534,7 +556,7 @@ function Insight:BeginUpdateLoop()
 	end
 
 	self.updating = true
-	mprint("\tInsight replica update loop has begun")
+	mprintf("\tInsight replica (%s) update loop has begun", self)
 
 	self.inst:StartUpdatingComponent(self)
 
@@ -614,7 +636,7 @@ function Insight:StopUpdateLoop()
 	self.update_task:Cancel()
 	self.update_task = nil
 
-	mprint("\tInsight replica update loop has stopped")
+	mprintf("\tInsight replica (%s) update loop has stopped", self)
 
 	if self.request_task then
 		self.request_task:Cancel()
@@ -908,8 +930,30 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 	--push("ContainerHas")
 	-- i check for is_unwrappable to provide the opportunity for non-bundles to terminate faster
 	if not container_info.special_data["container"] then
+		-- Okay, so this will happen if the server receives an information request from a client that hasn't sent their config yet.
+		-- Commonly seen from cases with swapping players (see discussion with Niko), 
+		-- requires split second timing to get the client to send a request to the server AFTER client is loaded but BEFORE server gets the context for the new player.
+
+		-- Some options for mitigation:
+		-- 1. Server detects player swapping and moves the context from the old player to the new player (see event ms_playerseamlessswaped)
+		-- 		Could listen for the event on a player and when it triggers, find the new player (maybe through client table or something)
+		--		This seems like the most reasonable approach and would be nice if nice if I implemented it with the addition of option #2.
+
+		-- 2. Update RPCs to consolidate ClientInitialized and ProcessConfiguration into a single RPC that supports different operations
+		--		Could be complex but would allow easier expansion later on if I decide to have encourage more handshake-like behaviour
+
+		-- 3. Mark context-less requests from the server as invalid and have the client dump them or do some other logic with them
+		-- 		This feels hacky and weird. We might as well just not have the server respond to the request if that's the case.
+
+		-- 4. Whatever! (winner)
+		-- 		Since this is the only place hitting a crash with specific evaluations of data from the server (we know what the special_data is supposed to be),
+		--		We can just return nil here and call it a day. In the future though, option #2+#1 seems like a pretty good idea but I don't have time for that right now.
+
+
 		mprint("!!!!!!!!!!!!!!!!!!!!! DUMPING CONTAINER")
 		dumptable(container_info)
+
+		return nil
 	end
 
 	local contents = container_info.special_data["container"].contents
