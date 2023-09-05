@@ -830,13 +830,13 @@ STRINGS = {
 	insight_font = {
 		label = {
 			"Font",
-			["zh"] = nil,
+			["zh"] = "字体",
 			["br"] = nil,
 			["es"] = nil
 		},
 		hover = {
 			"Which font Insight uses for its text",
-			["zh"] = nil,
+			["zh"] = "使用哪种字体来显示 Insight 的文本",
 			["br"] = nil,
 			["es"] = nil
 		},
@@ -1849,13 +1849,13 @@ STRINGS = {
 	suspicious_marble_indicator = {
 		label = {
 			"Suspicious Marble Indicator", 
-			["zh"] = nil, 
+			["zh"] = "可疑的大理石指示器", 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
 			"Whether indicators to pieces of suspicious marble are shown.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示可疑的大理石指示器", 
 			["br"] = nil, 
 			["es"] = nil
 		},
@@ -1864,7 +1864,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Marble indicators are not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示可疑的大理石指示器",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -1873,7 +1873,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Marble indicators are shown.",
-					["zh"] = nil,
+					["zh"] = "显示可疑的大理石指示器",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -1985,13 +1985,13 @@ STRINGS = {
 	tumbleweed_info = {
 		label = {
 			"Tumbleweed indicator", 
-			["zh"] = nil, 
+			["zh"] = "风滚草指示器", 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
 			"Whether tumbleweeds are color-coded to indicate their contents.", 
-			["zh"] = nil, 
+			["zh"] = "是否高亮着色拥有特殊物品的风滚草", 
 			["br"] = nil, 
 			["es"] = nil
 		},
@@ -2000,7 +2000,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Tumbleweed information is not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示风滚草指示器",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -2009,7 +2009,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Tumbleweed information is shown.",
-					["zh"] = nil,
+					["zh"] = "显示风滚草指示器",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -2981,13 +2981,13 @@ STRINGS = {
 	armor = {
 		label = {
 			"Armor", 
-			["zh"] = nil, 
+			["zh"] = "护甲", 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
 			"Whether defensive information from armor is shown.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示护甲的防御信息", 
 			["br"] = nil, 
 			["es"] = nil
 		},
@@ -2996,7 +2996,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Defensive information is not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示防御信息",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3005,7 +3005,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Defensive information is shown.",
-					["zh"] = nil,
+					["zh"] = "显示防御信息",
 					["br"] = nil,
 					["es"] = nil,
 				},

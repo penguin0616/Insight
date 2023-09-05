@@ -99,24 +99,24 @@ return {
 	},
 
 	indicators = {
-		dismiss = "%s Dismiss",
+		dismiss = "%s 关闭",
 	},
 
 	-- Damage helper
 	damage_types = {
 		-- Normal
-		explosive = "Explosive",
+		explosive = "爆炸",
 		
 		-- Planar
-		lunar_aligned = "Lunar Aligned",
-		shadow_aligned = "Shadow Aligned",
+		lunar_aligned = "月亮阵营",
+		shadow_aligned = "暗影阵营",
 	},
 
 	-------------------------------------------------------------------------------------------------------------------------
 
 	-- alterguardianhat.lua [Prefab]
 	alterguardianhat = {
-		minimum_sanity = "最低<color=SANITY>理智</color>光源: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
+		minimum_sanity = "照明最低<color=SANITY>理智</color>: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_sanity = "你的<color=SANITY>理智</color>: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		summoned_gestalt_damage = "召唤<color=ENLIGHTENMENT>月灵</color>造成<color=HEALTH>%s</color>伤害",
 	},
@@ -138,8 +138,8 @@ return {
 
 	-- armordreadstone.lua
 	armordreadstone = {
-		regen = "Regenerates <color=%s>%.1f</color> <color=#C0C0C0>durability</color>/%ds",
-		regen_complete = "Regenerates <color=%s>%.1f<sub>min</sub></color> / <color=%s>%.1f<sub>current</sub></color> / <color=%s>%.1f<sub>max</sub></color> <color=#C0C0C0>durability</color>/%ds based on insanity"
+		regen = "恢复 <color=%s>%.1f</color> <color=#C0C0C0>耐久</color>/%d 秒",
+		regen_complete = "恢复 <color=%s>%.1f<sub>最小</sub></color> / <color=%s>%.1f<sub>当前</sub></color> / <color=%s>%.1f<sub>最大</sub></color> <color=#C0C0C0>耐久</color>/%d 秒基于理智值"
 	},
 
 	-- atrium_gate.lua [Prefab]
@@ -337,12 +337,12 @@ return {
 
 	-- damagetypebonus.lua
 	damagetypebonus = {
-		modifier = "<color=%s>%+.1f%%</color> damage to %s entities",
+		modifier = "<color=%s>%+.1f%%</color> 伤害对%s生物",
 	},
 
 	-- damagetyperesist.lua
 	damagetyperesist = {
-		modifier = "<color=%s>%+.1f%%</color> damage from %s attacks",
+		modifier = "<color=%s>%+.1f%%</color> 伤害自%s攻击",
 	},
 
 	-- dapperness.lua
@@ -350,7 +350,7 @@ return {
 
 	-- daywalkerspawner.lua
 	daywalkerspawner = {
-		days_to_respawn = "<prefab=DAYWALKER> will respawn in %s day(s)",
+		days_to_respawn = "<prefab=DAYWALKER>会重生于 %s 天后",
 	},
 
 	-- debuffable.lua
@@ -558,7 +558,7 @@ return {
 		nutrient_value = "养分: [<color=NATURE>%s<sub>催长剂</sub></color>, <color=CAMO>%s<sub>堆肥</sub></color>, <color=INEDIBLE>%s<sub>粪肥</sub></color>]",
 		wormwood = {
 			formula_growth = "你的<color=LIGHT_PINK>开花</color>加速 <color=LIGHT_PINK>%s</color>",
-			compost_heal = "<color=HEALTH>回复</color> <color=HEALTH>{duration}</color> 秒你的<color=HEALTH>{healing}</color>",
+			compost_heal = "<color=HEALTH>回复</color> <color=HEALTH>{healing}</color> 生命持续 <color=HEALTH>{duration}</color> 秒",
 		},
 	},
 
@@ -784,9 +784,9 @@ return {
 
 	-- lunarrift_portal.lua [Prefab]
 	lunarrift_portal = {
-		crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>available</sub> / %d<sub>total</sub> / %d<sub>max</sub>", -- I can't think of a way to word 
-		next_crystal = "Next <color=#4093B2><prefab=lunarrift_crystal_big></color> spawns in %s",
-		close = "<prefab=LUNARRIFT_PORTAL> will close in approximately %s",
+		crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>可用</sub> / %d<sub>总共</sub> / %d<sub>最大</sub>", -- I can't think of a way to word 
+		next_crystal = "下一波<color=#4093B2><prefab=lunarrift_crystal_big></color>生成于%s后",
+		close = "<prefab=LUNARRIFT_PORTAL>大约会关闭于%s后",
 	},
 	
 	-- lunarthrall_plantspawner.lua
@@ -941,14 +941,14 @@ return {
 
 	-- planardamage.lua
 	planardamage = {
-		planar_damage = "<color=PLANAR>Planar Damage</color>: <color=PLANAR>%s</color>",
-		additional_damage = " (<color=PLANAR>+%s<sub>bonus</sub></color>)",
+		planar_damage = "<color=PLANAR>位面伤害</color>: <color=PLANAR>%s</color>",
+		additional_damage = " (<color=PLANAR>+%s<sub>额外</sub></color>)",
 	},
 
 	-- planardefense.lua
 	planardefense = {
-		planar_defense = "<color=PLANAR>Planar Defense</color>: <color=PLANAR>%s</color>",
-		additional_defense = " (<color=PLANAR>+%s<sub>bonus</sub></color>)",
+		planar_defense = "<color=PLANAR>位面防御</color>: <color=PLANAR>%s</color>",
+		additional_defense = " (<color=PLANAR>+%s<sub>额外</sub></color>)",
 	},
 
 	-- pollinator.lua
@@ -1024,10 +1024,10 @@ return {
 
 	-- riftspawner.lua
 	riftspawner = {
-		next_spawn = "<prefab=LUNARRIFT_PORTAL> spawns in %s",
-		announce_spawn = "A <prefab=LUNARRIFT_PORTAL> will spawn in %s",
+		next_spawn = "<prefab=LUNARRIFT_PORTAL>生成于%s后",
+		announce_spawn = "一个<prefab=LUNARRIFT_PORTAL>将生成于%s后",
 
-		stage = "Stage: %d / %d", -- augmented by growable
+		stage = "阶段: %d / %d", -- augmented by growable
 	},
 
 	-- rocmanager.lua
@@ -1073,7 +1073,7 @@ return {
 
 	-- shadowrift_portal.lua [Prefab]
 	shadowrift_portal = {
-		close = "<prefab=SHADOWRIFT_PORTAL> will close in %s",
+		close = "<prefab=SHADOWRIFT_PORTAL>将关闭于%s后",
 	},
 
 	-- shadowsubmissive.lua
@@ -1087,10 +1087,10 @@ return {
 
 	-- shadowthrallmanager.lua
 	shadowthrallmanager = {
-		fissure_cooldown = "Next fissure will be ready for takeover in %s",
-		waiting_for_players = "Waiting for a player to come near",
+		fissure_cooldown = "下一裂隙可控制于%s后",
+		waiting_for_players = "等待一个玩家接近",
 		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
-		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> will regenerate in %s",
+		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color>会再生于%s后",
 	},
 
 	-- sheltered.lua
