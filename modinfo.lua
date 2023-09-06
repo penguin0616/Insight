@@ -26,10 +26,27 @@ directory. If not, please refer to
 -- DS 2081254154
 -- DST 2189004162
 -- loadstring is present
-local IsDST = folder_name ~= nil -- present in DST, not DS. big brain engaged
+local IsDST = folder_name == "workshop-2189004162" -- https://forums.kleientertainment.com/forums/topic/150829-game-update-571392/      manifest: 506706240727140821
+local IsDS = folder_name == "workshop-2081254154"
+
+if IsDST == false and IsDS == false then
+	-- Probable reasons:
+	-- #1: Pre2023 update branch in DS.
+	-- #2: Using one of those mods that nukes the modinfo.
+	-- #3: Using an unofficial/stolen version of Insight.
+	if folder_name == nil then
+		-- Hopefully #1 or #2.
+		IsDST = false
+		IsDS = true
+	else
+		-- Unofficial/stolen version of Insight.
+	end
+end
+
+
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.4.0" -- dst is 4.0.9, ds is 3.4.0
+version = "3.4.0" -- dst is 4.4.0, ds is 3.4.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"

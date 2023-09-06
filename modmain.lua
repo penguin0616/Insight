@@ -3590,6 +3590,7 @@ end
 import("assets")
 
 if IS_DS or IsClient() or IsClientHost() then
+	--[=[
 	if IS_DS then
 		-- oh god. why must I suffer.
 		-- alright, so the gist of this stuff is that I want to avoid tainting KnownModIndex as much as I can
@@ -3626,7 +3627,7 @@ if IS_DS or IsClient() or IsClientHost() then
 			return oldInitializeModInfo(self, name, ...) -- other mods get the whatever
 		end
 	end
-
+	--]=]
 	entityManager = import("helpers/entitymanager")
 	import("clientmodmain")
 end

@@ -120,7 +120,10 @@ local InsightPage = Class(Widget, function(self, name, width, height, padding_be
 			item_ctor_fn = item_ctor_fn,
 		]]
 		self.list = self:AddChild(InsightScrollList({
-			scroll_context = {},
+			scroll_context = {
+				item_width = self.item_width,
+				item_height = self.item_height,
+			},
 			item_ctor_fn = item_ctor_fn,
 			apply_fn = apply_fn,
 			widget_width = self.item_width,
