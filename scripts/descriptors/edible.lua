@@ -174,6 +174,12 @@ local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatabl
 		end
 	end
 
+	if world_type == 3 and eating_entity:HasTag("donthealfromfood") then
+		-- In Hamlet, this tag prevents Wormwood from getting any health impact from food.
+		health = 0
+	end
+
+
 	-- food multipliers
 	local base_mult = eating_entity.components.foodmemory ~= nil and eating_entity.components.foodmemory:GetFoodMultiplier(self.inst.prefab) or 1 -- warly? added while was doing food stat modifiers
 	if not stats or (type(stats) == 'table' and not stats.fixed) then
