@@ -951,6 +951,11 @@ return {
 		additional_defense = " (<color=PLANAR>+%s<sub>额外</sub></color>)",
 	},
 
+	-- poisonable.lua
+	poisonable = {
+		remaining_time = "<color=NATURE>Poison</color> expires in %s",
+	},
+
 	-- pollinator.lua
 	pollination = "花朵授粉: (%s) / %s",
 

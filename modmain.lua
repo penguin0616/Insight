@@ -223,7 +223,7 @@ local descriptors_ignore = {
 	"bloomable", -- hamlet trees
 	"fixable", -- hamlet pig houses
 	
-	"lootdropper", "periodicspawner", "shearable", "mystery", "poisonable", "freezable",  -- may be interesting looking into
+	"lootdropper", "periodicspawner", "shearable", "mystery", "freezable",  -- may be interesting looking into
 	"thief", "characterspecific", "resurrector", "rideable", "mood", "thrower", "windproofer", "creatureprox", "groundpounder", "prototyper", -- maybe interesting looking into
 	"worldsettings", "piratespawner", "dockmanager", "undertile", "cursable", "battery", "batteryuser", "dataanalyzer", "upgrademoduleowner", -- may be interesting looking into
 	"craftingstation", "ruinsshadelingspawner",

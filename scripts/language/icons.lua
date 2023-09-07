@@ -957,6 +957,11 @@ return {
 		planar_defense = "<color=PLANAR>Planar Defense</color>: <color=PLANAR>%s</color>",
 		additional_defense = " (<color=PLANAR>+%s<sub>bonus</sub></color>)",
 	},
+
+	-- poisonable.lua
+	poisonable = {
+		--remaining_time = "<color=NATURE>Poison</color> expires in %s",
+	},
 	
 	-- pollinator.lua
 	--pollination = "Flowers pollinated: (%s) / %s",

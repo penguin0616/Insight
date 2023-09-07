@@ -946,6 +946,11 @@ return {
 		additional_defense = " (<color=PLANAR>+%s<sub>bonus</sub></color>)",
 	},
 
+	-- poisonable.lua
+	poisonable = {
+		remaining_time = "<color=NATURE>Poison</color> expires in %s",
+	},
+
 	-- pollinator.lua
 	pollination = "Flores polinizadas: (%s) / %s",
 
