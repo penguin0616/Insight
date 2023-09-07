@@ -38,6 +38,9 @@ local prefabs_to_generic_debuffs = {}
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
+--- Returns the general food effects from cooking (not *really* special effects like Jellybeans)
+---@param self Edible
+---@return table
 local function GetFoodEffects(self)
 	local bonuses = {}
 
@@ -109,7 +112,7 @@ local function GetFoodEffects(self)
 	end
 
 	-- @Hamlet
-	if self.antihistamine then
+	if self.antihistamine and self.antihistamine ~= 0 then
 		bonuses.antihistamine = {
 			delta = self.antihistamine,
 			duration = false

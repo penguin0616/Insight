@@ -308,7 +308,10 @@ local function Describe(self, context)
 		local effect_description = {}
 
 		for name, data in pairs(effects) do
-			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], data.delta and FormatDecimal(data.delta, 1) or ("MISSING DELTA FOR [" .. name .. "]"), data.duration and context.time:SimpleProcess(data.duration, "realtime_short") or "[YOU SHOULDN'T SEE THIS]")
+			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], 
+				data.delta and FormatDecimal(data.delta, 1) or ("MISSING DELTA FOR [" .. name .. "]"), 
+				data.duration and context.time:SimpleProcess(data.duration, "realtime_short") or "[YOU SHOULDN'T SEE THIS]"
+			)
 		end
 
 		if #effect_description > 0 then

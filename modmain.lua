@@ -130,6 +130,7 @@ local Insight = {
 		INEDIBLE = "#614A24", -- coconut
 		BUG = "#804E32", -- bean bug
 		SEED = "#8EA152", -- birchnut
+		ANTIHISTAMINE = "#9CCFBD", -- inner light blue from cutnettle
 
 		-- mob
 		FEATHER = "#331D43", -- black feather

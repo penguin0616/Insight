@@ -482,7 +482,8 @@ return {
 		dried = "meatrack",
 		inedible = "inedible",
 		bug = "bugs",
-		seed = "acorn_cooked"
+		seed = "acorn_cooked",
+		antihistamine = "antihistamine", -- Only "cutnettle"
 	},
 	edible_foodeffect = {
 		temperature = "<icon=pocket_scale> <icon=winterometer> %s, %s",

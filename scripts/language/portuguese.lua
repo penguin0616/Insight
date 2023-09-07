@@ -486,6 +486,7 @@ return {
 		inedible = "não comestível",
 		bug = "inseto",
 		seed = "semente",
+		antihistamine = "antihistamine", -- Only "cutnettle"
 	},
 	edible_foodeffect = {
 		temperature = "Temperatura: %s, %s",
