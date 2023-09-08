@@ -326,7 +326,7 @@ function Insight:Shutdown()
 	self:KillIndicators()
 	self:SetBattleSongActive(false)
 
-	if self.classified then
+	if self.classified and TheWorld.ismastersim == false then
 		-- Kill the classified early so Shutdown doesn't get called again by it when the classified gets removed
 		self:DetachClassified(false)
 	end
