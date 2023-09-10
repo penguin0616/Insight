@@ -311,7 +311,7 @@ function IsBundleWrap(inst)
 		known_bundles[inst] = true
 	else
 		if inst.HasTag and inst:HasTag("unwrappable") then
-			if not inst.prefab:sub(1, #("quagmire_seedpacket")) == "quagmire_seedpacket" then
+			if not inst.prefab:sub(1, 19) == "quagmire_seedpacket" then -- carl said this would drastically decrease the world's energy consumption
 				error("[Insight]: Attempt to disable known bundle") --quagmire_seedpacket
 			end
 		end

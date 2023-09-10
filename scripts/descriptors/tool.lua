@@ -88,6 +88,26 @@ local function Describe(self, context)
 
 		-- #aaaaee
 		if effectiveness ~= 1 then
+			--[[
+				[03:10:38]: [string "../mods/workshop-2189004162/scripts/descrip..."]:91: bad argument #2 to 'format' (string expected, got table)
+LUA ERROR stack traceback:
+=[C]:-1 in (field) format (C) <-1--1>
+../mods/workshop-2189004162/scripts/descriptors/tool.lua:91 in (field) Describe (Lua) <54-103>
+   self =
+      inst = 574082 - horn (valid:true)
+      actions = table: 00000000C19F6C50
+   context = table: 00000000A743F030
+   description = nil
+   tbl = table: 00000000C19F6C50
+   actions = table: 00000000A7440340
+   effs = table: 00000000A7440480
+   workmultiplier = table: 00000000B0811260
+   i = 1
+   v = table: 00000000A74407A0
+   action = table: 000000001620AF80
+   effectiveness = 10
+   name = PLAY
+			]]
 			actions[#actions+1] = string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", Round(effectiveness * 100, 0))
 		end
 	end

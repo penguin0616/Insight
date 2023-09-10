@@ -1774,11 +1774,14 @@ function DecodeRequestParams(encoded)
 end
 
 do
+	--KnownModIndex.LoadModConfigurationOptions = "waha"
 	local safeModIndex = loadfile("modindex")
 	setfenv(safeModIndex, setmetatable({}, {__index = getfenv(1)}))
-	safeModIndex = getfenv(safeModIndex()).KnownModIndex
+	safeModIndex()
+	safeModIndex = getfenv(safeModIndex).KnownModIndex
 
 	local real = safeModIndex.LoadModConfigurationOptions
+	--mprint("hooplah", real, KnownModIndex.LoadModConfigurationOptions)
 	safeModIndex = nil
 
 	LoadModConfigurationOptions = function(...)
