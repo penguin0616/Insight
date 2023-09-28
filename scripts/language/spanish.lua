@@ -903,6 +903,12 @@ return {
 		age_change = "<color=AGE>Edad</color>: <color=714E85>%+d</color>",
 	},
 
+	-- pangolden.lua [Prefab]
+	pangolden = {
+		gold_level_progress = "<color=#E3D740>Gold</color> level: %.1f / %.1f",
+		gold_level = "<color=#E3D740>Gold</color> level: %.1f",
+	},
+
 	-- periodicthreat.lua
 	worms_incoming = "%s",
 	worms_incoming_danger = "<color=HEALTH>%s</color>",

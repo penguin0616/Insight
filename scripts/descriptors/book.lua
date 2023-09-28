@@ -225,11 +225,11 @@ local function Describe(self, context)
 	end
 
 	if reader.aspiring_bookworm then
-		if checknumber(self.peruse_sanity) then
+		if type(self.peruse_sanity) == "number" then
 			description = string.format(context.lstr.sanity.interaction, self.peruse_sanity)
 		end
 	else
-		if checknumber(self.read_sanity) then
+		if type(self.read_sanity) == "number" then
 			local sanity = self.read_sanity
 			if reader.GetSanityPenaltyMultiplier then
 				sanity = sanity * reader:GetSanityPenaltyMultiplier()
