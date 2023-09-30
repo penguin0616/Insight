@@ -991,6 +991,17 @@ if not table.invert then
 	end
 end
 
+if not table.reverselookup then
+	function table.reverselookup(t, lookup_value)
+		for k, v in pairs(t) do
+			if v == lookup_value then
+				return k
+			end
+		end
+		return nil
+	end
+end
+
 -- Sourced from https://web.archive.org/web/20131225070434/http://snippets.luacode.org/snippets/Deep_Comparison_of_Two_Values_3
 function deepcompare(t1, t2, ignore_mt)
 	local ty1 = type(t1)
