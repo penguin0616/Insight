@@ -78,6 +78,8 @@ local function ProcessLoot(inst)
 	end
 
 	
+
+	
 	-- The priority approach
 	local final_color
 	if info.valuable then
@@ -94,6 +96,7 @@ local function ProcessLoot(inst)
 		final_color = LOOT_COLORS.none
 	end
 
+	-- This isn't applying visually on c_spawn in DS despite calling the method (confirmed changes in GetAddColour).
 	inst.AnimState:SetAddColour(unpack(final_color))
 
 	-- The summation approach
@@ -146,18 +149,23 @@ local function OnLootDirty(inst)
 	end
 
 
-	local str = inst._loot:value()
-	if str == "" then
-		if inst.insight_loot then
-			inst.AnimState:SetAddColour(0, 0, 0, 0)
-			inst.insight_loot = nil
+	local loot
+	if IS_DST then
+		local str = inst._loot:value()
+		if str == "" then
+			if inst.insight_loot then
+				inst.AnimState:SetAddColour(0, 0, 0, 0)
+				inst.insight_loot = nil
+			end
+			return
 		end
-		return
-	end
 
-	local loot = {}
-	for prefab in string.gmatch(str, "([^,]+)") do
-		loot[#loot+1] = prefab
+		loot = {}
+		for prefab in string.gmatch(str, "([^,]+)") do
+			loot[#loot+1] = prefab
+		end
+	else
+		loot = inst.loot
 	end
 	
 	inst.insight_loot = loot

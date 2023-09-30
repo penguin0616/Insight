@@ -49,6 +49,11 @@ local function Uncache(inst)
 end
 
 local function SummarizeInventory(inst)
+	if not inst.components.inventory then
+		-- Doesn't have inventory in DS or DLCs
+		return
+	end
+
 	local items = inventory_cache[inst]
 	if not items then
 		items = {}
