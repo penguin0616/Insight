@@ -27,7 +27,7 @@ local function Describe(inst, context)
 	local time_to_gain_charge
 
 	if not wx78_refresh and inst.charge_time and inst.charge_time > 0 then -- inspectable manually added in DS
-		description = string.format(context.lstr.remaining_charge_time, context.time:SimpleProcess(inst.charge_time))
+		description = string.format(context.lstr.wx78.remaining_charge_time, context.time:SimpleProcess(inst.charge_time))
 	end
 
 	if wx78_refresh then

@@ -82,8 +82,14 @@ local function Describe(self, context)
 
 			local player_naughtiness
 			if ShouldShowPlayerNaughtiness(context) then
-				player_naughtiness = GetNaughtiness(context.player, context)
-				player_naughtiness = player_naughtiness and string.format(context.lstr.player_naughtiness, player_naughtiness.actions, player_naughtiness.threshold) or nil
+				if player_naughtiness and type(player_naughtiness) == "table" then
+					player_naughtiness = GetNaughtiness(context.player, context)
+					player_naughtiness = player_naughtiness and string.format(context.lstr.player_naughtiness, player_naughtiness.actions, player_naughtiness.threshold) or nil
+				else
+					player_naughtiness = string.format("[Invalid Naughtiness Data] %s (%s)", tostring(player_naughtiness), type(player_naughtiness))
+					mprintf("Player naughtiness information is invalid: %s (%s)", tostring(player_naughtiness), type(player_naughtiness))d
+					print(debugstack())
+				end
 			end
 			
 			--[[

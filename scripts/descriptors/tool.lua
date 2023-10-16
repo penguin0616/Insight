@@ -108,7 +108,14 @@ LUA ERROR stack traceback:
    effectiveness = 10
    name = PLAY
 			]]
-			actions[#actions+1] = string.format(context.lstr.action_efficiency, STRINGS.ACTIONS[name] or name .. "*", Round(effectiveness * 100, 0))
+			local str = STRINGS.ACTIONS[name]
+			if type(str) == "table" then
+				str = "t:STRINGS.ACTIONS[" .. tostring(name) .. "]"
+			elseif type(str) == nil then
+				str = name .. "*"
+			end
+
+			actions[#actions+1] = string.format(context.lstr.action_efficiency, str, Round(effectiveness * 100, 0))
 		end
 	end
 
