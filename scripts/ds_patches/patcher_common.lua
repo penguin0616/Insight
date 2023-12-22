@@ -64,17 +64,29 @@ local function xprintf(...)
 	end
 end
 
+local function getsource(arg)
+	local src = debug.getinfo(arg, "S").source
+	
+	if src then
+		src = src:match("data/(.+[%w_]+.lua)$") or src
+	end
+
+	src = src or "SOURCE"
+
+	return src
+end
+
 
 local function pretty(fn)
 	if type(fn) ~= "function" then
 		return "[" .. tostring(fn) .. "]"
 	end
 
-	return "[" .. tostring(fn) .. " - " .. debug.getinfo(fn, "S").source:match("data/(.+[%w_]+.lua)$") .. "]"
+	return "[" .. tostring(fn) .. " - " .. getsource(fn) .. "]"
 end
 
 local function strclass(class)
-	return "<" .. debug.getinfo(class._ctor, "S").source:match("data/(.+[%w_]+.lua)$") .. ">"
+	return "<" .. getsource(class._ctor) .. ">"
 end
 
 _G.pritty=pretty
