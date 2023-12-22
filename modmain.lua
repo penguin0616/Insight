@@ -214,7 +214,7 @@ local mod_component_cache = {}
 
 local log_buffer = ""
 local LOG_LIMIT = 0700000 -- 0.7 million
-local SERVER_OWNER_HAS_OPTED_IN = nil
+local SERVER_OWNER_HAS_OPTED_IN = false
 
 local descriptors_ignore = {
 	--"mapiconhandler", -- this is just from a mod i use :^)
@@ -1429,7 +1429,7 @@ function GetWorldInformation(player) -- refactor?
 		for i,v in pairs(secondary_data.special_data) do
 			if data.special_data[i] ~= nil then
 				if DEBUG_ENABLED then
-					dumptable(data.special_data[i])
+					dumptable(data.special_data[i]) -- commonly seems to be an empty table for key "timer"
 					error("[Insight]: attempt to overwrite special_data: " .. tostring(i))
 					return
 				end

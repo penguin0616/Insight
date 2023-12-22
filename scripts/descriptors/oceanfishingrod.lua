@@ -197,7 +197,11 @@ local function SERVER_OnFishHooked(player, fish)
 	end
 
 	state.hook = nil
-	state.task:Cancel()
+
+	-- There's some funny stuff with the new ice fishing hole thing for Michael.
+	if state.task then
+		state.task:Cancel()
+	end
 
 	state.target_fish = fish
 	state.task = player:DoPeriodicTask(FRAMES, SERVER_UpdateFishingBattleState)
