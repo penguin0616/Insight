@@ -1,4 +1,5 @@
 DST_CONSOLE_COMMANDS = {}
+-- TheSkillTree.skillxp.wathgrithr = 0; TheSkillTree:UpdateSaveState("wathgrithr")
 DST_CONSOLE_COMMANDS.i_reveal_map = function()
 	-- Thanks to CarlZalph for his permission to include this very useful and mathematically superior map-reveal code!
 	local r=25;local p=math.sqrt(3);local q=.5*p*r;local w,h=TheWorld.Map:GetSize();w=4*w;h=4*h;for _,v in pairs(AllPlayers) do for x=-w,w,3*r do for y=-h,h,2*q do v.player_classified.MapExplorer:RevealArea(x,0,y) end end for x=-w+q*p,w,2*q*p do for y=-h+q,h,2*q do v.player_classified.MapExplorer:RevealArea(x,0,y) end end end

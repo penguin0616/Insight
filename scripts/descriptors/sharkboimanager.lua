@@ -36,11 +36,23 @@ local function GetDebugString(self)
 end
 
 local function Describe(self, context)
-	local description = nil --GetDebugString(self)
+	local description = context.etc.DEBUG_ENABLED and GetDebugString(self) or nil
+
+	if self.arena then
+		local cooldown = (self.arena and self.arena.cooldowntask and GetTaskRemaining(self.arena.cooldowntask)) or nil
+		if cooldown then
+			description = context.time:SimpleProcess(cooldown)
+		end
+	end
+
 
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		icon = {
+			atlas = "images/Sharkboi.xml",
+			tex = "Sharkboi.tex",
+		},
 	}
 end
 
