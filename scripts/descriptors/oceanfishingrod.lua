@@ -91,7 +91,7 @@ local function SERVER_UpdateInterestedFish(player)
 		mprintf("[SERVER_UpdateInterestedFish] Missing fishing state for %s??", player)
 		return
 	end
-	
+
 	local count = 0
 	local interested_fish = {}
 	local interest_levels = {}
@@ -102,6 +102,11 @@ local function SERVER_UpdateInterestedFish(player)
 			interested_fish[count] = fish
 			-- I just thought of this approach for truncating a decimal. It's probably already a known thing, but it feels cool right now.
 			interest_levels[count] = (interest - interest % 0.01)
+		end
+
+		if #fish >= 48 then
+			-- RPC limit
+			break
 		end
 	end
 
@@ -134,8 +139,14 @@ local function SERVER_OnHookLanded(player, hook)
 		if fishing_states[player] ~= state then return end
 		rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "hook_landed", hook)
 		player:DoTaskInTime(0.5, function()
+			-- Make sure this is still the same state.
 			if fishing_states[player] ~= state then return end
-			fishing_states[player].task = player:DoPeriodicTask(0.1, SERVER_UpdateInterestedFish)
+			-- It seems that the virtualocean (icefishing_hole) has the ability to instantly hook a fish,
+			-- which removes the hook from the state.
+			-- So starting the fish interest polling causes a crash.
+			if fishing_states[player].hook ~= nil then
+				fishing_states[player].task = player:DoPeriodicTask(0.1, SERVER_UpdateInterestedFish)
+			end
 		end)
 	end)
 end
@@ -200,12 +211,24 @@ local function SERVER_OnFishHooked(player, fish)
 
 	-- There's some funny stuff with the new ice fishing hole thing for Michael.
 	if state.task then
+		--mprint("Clear previous task")
 		state.task:Cancel()
+		state.task = nil
 	end
+
+
+	--mprint("SERVER_OnFishHooked", player, fish)
 
 	state.target_fish = fish
 	state.task = player:DoPeriodicTask(FRAMES, SERVER_UpdateFishingBattleState)
 
+	-- For the sharkboimanager, the server is spawning a fish and it hasn't been replicated to the client yet.
+	-- So this RPC never lands and the battle state doesn't have the fish tracked.
+	-- Ugh. Fixing this is more trouble than it's worth, 
+	-- And doing so provides little real value. The fish in the "virtualocean" hole
+	-- Is pretty easy to catch and seems to be largely impossible to lose once it's been hooked.
+	-- Which means that the information provided is basically useless.
+	-- So I'll just have the client say data is missing.
 	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "fish_hooked", fish, json.encode(fish.fish_def))
 end
 
@@ -297,6 +320,16 @@ end
 local function CLIENT_UpdateFishingBattleState(player, data)
 	if not target_fish then
 		mprint("CLIENT UpdateFishingBattleState called with missing fish?")
+		current_hook = nil
+		if last_interested then
+			for fish in pairs(last_interested) do
+				fish.insight_interest_label:Enable(false)
+			end
+			last_interested = nil -- Not necessary anymore.
+		end
+		followtext:SetTarget(localPlayer)
+		followtext.text:SetString("(Missing Fish Data)")
+		-- followtext:Hide()
 		return
 	end
 
@@ -333,6 +366,7 @@ local function CLIENT_OnFishHooked(player, fish, fish_def)
 		for fish in pairs(last_interested) do
 			fish.insight_interest_label:Enable(false)
 		end
+		last_interested = nil -- Not necessary anymore.
 	end
 
 	followtext.text:SetString("")
