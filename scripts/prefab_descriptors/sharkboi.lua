@@ -18,31 +18,23 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- oceanicemanager.lua
-local oceanicemanager = nil
-local upvalues = {
-	create_ice_at_point = nil
-}
+-- sharkboi.lua [Prefab]
+local function Describe(inst, context)
+	local description = nil
 
-local function OnServerInit()
-	oceanicemanager = TheWorld.components.oceanicemanager
-end
-
-
-
-local function Describe(self, context)
-	local description = nil --"asdfgh"
-
+	if inst.stock then
+		description = string.format(context.lstr.sharkboi.trades_remaining, inst.stock)
+	end
+	
 	return {
 		priority = 0,
 		description = description,
+		prefably = true
 	}
 end
 
 
 
 return {
-	OnServerInit = OnServerInit,
-
-	Describe = Describe,
+	Describe = Describe
 }

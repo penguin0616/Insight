@@ -1098,6 +1098,11 @@ return {
 		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> will regenerate in %s",
 	},
 
+	-- sharkboi.lua [Prefab]
+	sharkboi = {
+		trades_remaining = "Trades left: %d",
+	},
+
 	-- sheltered.lua
 	sheltered = {
 		range = "Shelter range: %s wall units",
