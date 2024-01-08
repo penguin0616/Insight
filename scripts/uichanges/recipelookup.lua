@@ -29,9 +29,30 @@ local CraftingMenuDetailsExists, CraftingMenuDetails = pcall(function() return r
 local mod_tint = { 0, 1, 0, 1 }
 local normal_tint = { 1, 1, 1, 1 }
 
+local FandomBaseURL = "https://dontstarve.fandom.com/"
+local WikiGGBaseURL = "https://dontstarve.wiki.gg/"
+
 --========================================================================================================================--
 --= Recipe Thingamjig ====================================================================================================--
 --========================================================================================================================--
+local function GetBaseWikiURL()
+	local base = WikiGGBaseURL
+
+	local ctx = localPlayer and GetPlayerContext(localPlayer)
+	if ctx and ctx.etc.locale ~= "en" then
+		if ctx.etc.locale == "zh" then
+			-- I'll leave this as Fandom for now.
+			base = FandomBaseURL
+		end
+
+		base = base .. ctx.etc.locale .. "/"
+	end
+
+	base = base .. "wiki/"
+
+	return base
+end
+
 local recipe_urls = {}
 local function GetRecipeURL(recipe)
 	-- Returns URL, modded
@@ -64,7 +85,7 @@ local function GetRecipeURL(recipe)
 			return unpack(recipe_urls[recipe.name])
 		end
 
-		local url = "https://dontstarve.fandom.com/wiki/" .. STRINGS.NAMES[string.upper(recipe.product)]:gsub("%s", "_")
+		local url = GetBaseWikiURL() .. STRINGS.NAMES[string.upper(recipe.product)]:gsub("%s", "_")
 		recipe_urls[recipe.name] = { url, false }
 
 		return unpack(recipe_urls[recipe.name])
@@ -124,7 +145,7 @@ function CookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
 	self.lookup:SetOnClick(function()
 		-- the wiki url automatically resolves spaces to underscores.
 		local title = header:GetString()
-		VisitURL("https://dontstarve.fandom.com/wiki/" .. title) 
+		VisitURL(GetBaseWikiURL() .. title) 
 	end)
 
 	return details_root
