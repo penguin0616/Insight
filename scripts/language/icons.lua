@@ -514,7 +514,7 @@ return {
 	farmplantable = {
 		product = "<icon=%s>",
 		--nutrient_consumption = "Plant consumes: [<color=NATURE>%d<sub>Formula</sub></color>, <color=CAMO>%d<sub>Compost</sub></color>, <color=INEDIBLE>%d<sub>Manure</sub></color>]",
-		good_seasons = "Seasons: %s",
+		--good_seasons = "Seasons: %s",
 	},
 
 	-- farmplantstress.lua
@@ -528,6 +528,15 @@ return {
 			--[FARM_PLANT_STRESS.MODERATE] = ":(",
 			--[FARM_PLANT_STRESS.HIGH] = ">:(",
 		} or {}),
+		categories = {
+			--["nutrients"] = "nutrients", -- missing nutrients
+			--["moisture"] = "moisture", -- needs water
+			--["killjoys"] = "killjoys", -- weeds nearby
+			--["family"] = "family", -- no similar plants nearby
+			--["overcrowding"] = "overcrowding", -- too crowded
+			--["season"] = "season", -- out of season
+			--["happiness"] = "happiness", -- not tended to
+		},
 	},
 
 	-- farmsoildrinker.lua

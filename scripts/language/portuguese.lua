@@ -531,6 +531,15 @@ return {
 			[FARM_PLANT_STRESS.MODERATE] = "Moderado",
 			[FARM_PLANT_STRESS.HIGH] = "Alto",
 		} or {}),
+		categories = {
+			["nutrients"] = "nutrients", -- missing nutrients
+			["moisture"] = "moisture", -- needs water
+			["killjoys"] = "killjoys", -- weeds nearby
+			["family"] = "family", -- no similar plants nearby
+			["overcrowding"] = "overcrowding", -- too crowded
+			["season"] = "season", -- out of season
+			["happiness"] = "happiness", -- not tended to
+		},
 	},
 
 	-- farmsoildrinker.lua
