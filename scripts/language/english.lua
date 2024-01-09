@@ -527,13 +527,13 @@ return {
 			[FARM_PLANT_STRESS.HIGH] = "High",
 		} or {}),
 		categories = {
-			["nutrients"] = "nutrients", -- missing nutrients
-			["moisture"] = "moisture", -- needs water
-			["killjoys"] = "killjoys", -- weeds nearby
-			["family"] = "family", -- no similar plants nearby
-			["overcrowding"] = "overcrowding", -- too crowded
-			["season"] = "season", -- out of season
-			["happiness"] = "happiness", -- not tended to
+			["nutrients"] = "Nutrients", -- missing nutrients
+			["moisture"] = "Moisture", -- needs water
+			["killjoys"] = "Weeds", -- weeds nearby
+			["family"] = "Family", -- no similar plants nearby
+			["overcrowding"] = "Overcrowding", -- too crowded
+			["season"] = "Season", -- out of season
+			["happiness"] = "Happiness", -- not tended to
 		},
 	},
 

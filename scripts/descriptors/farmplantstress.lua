@@ -91,7 +91,7 @@ local function Describe(self, context)
 	local strs = {}
 
 	for i = 1, #plant_stressors do
-		local stressor = contedxt.lstr.farmplantstress.categories[plant_stressors[i]] or ("\"" .. plant_stressors[i] .. "\"")
+		local stressor = context.lstr.farmplantstress.categories[plant_stressors[i]] or ("\"" .. plant_stressors[i] .. "\"")
 		strs[i] = ApplyColor(stressor, "#dd5555")
 	end
 
