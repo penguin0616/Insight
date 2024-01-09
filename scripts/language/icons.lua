@@ -889,6 +889,12 @@ return {
 		--phase_locked = "Locked by the <color=#CE3D45>Ancient Key</color>.",
 		--announce_phase_locked = "The ruins are currently locked in the nightmare phase.",
 		--announce_phase = "The ruins are in the %s phase (%s remaining).",
+		phases = {
+			--["calm"] = "Calm",
+			--["warn"] = "Warning",
+			--["wild"] = "Nightmare",
+			--["dawn"] = "Dawn"
+		},
 	},
 
 	-- oar.lua

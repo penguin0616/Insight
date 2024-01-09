@@ -882,6 +882,12 @@ return {
 		phase_locked = "被<color=#CE3D45>远古钥匙</color>锁住",
 		announce_phase_locked = "遗迹现在锁定在暴动期",
 		announce_phase = "遗迹现在在%s期 (还剩%s)",
+		phases = {
+			["calm"] = "Calm",
+			["warn"] = "Warning",
+			["wild"] = "Nightmare",
+			["dawn"] = "Dawn"
+		},
 	},
 
 	-- oar.lua

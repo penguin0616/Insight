@@ -44,7 +44,7 @@ local icons = {
 		--atlas = "images/inventoryimages1.xml",
 		tex = "nightmare_timepiece_warn.tex",
 	},
-	nightmare = {
+	wild = {
 		atlas = true,
 		--atlas = "images/inventoryimages1.xml",
 		tex = "nightmare_timepiece_nightmare.tex",
@@ -71,7 +71,7 @@ end
 local colors = setmetatable({ -- paint.net eyedropper on the medallions
 	calm = "#897559",
 	warn = "#663235",
-	nightmare = "#CE3D45",
+	wild = "#CE3D45",
 	dawn = "#E99A68",
 }, {
 	__index = function(self, index)
@@ -122,9 +122,9 @@ local function Describe(self, context)
 		end
 	end
 
-	local phase = save_data.phase == "wild" and "nightmare" or save_data.phase
+	local phase = context.lstr.nightmareclock.phases[save_data.phase] or ("\"" .. save_data.phase .. "\"")
 
-	description = string.format(context.lstr.nightmareclock.phase_info, colors[phase], phase:sub(1, 1):upper() .. phase:sub(2):lower(), remaining_time)
+	description = string.format(context.lstr.nightmareclock.phase_info, colors[save_data.phase], phase, remaining_time)
 	icon = icons[phase]
 
 	return {
