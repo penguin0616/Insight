@@ -1131,7 +1131,7 @@ local function GetEntityInformation(entity, player, params)
 		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
 			chunks[#chunks+1] = {priority = -20, name = name, description = "Disabled descriptor: " .. name};
 
-		elseif descriptor and player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not table.contains(descriptors_ignore, name) then
+		elseif not descriptor and player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not table.contains(descriptors_ignore, name) then
 			local description = "No information for: " .. name
 			local origin = GetComponentOrigin(name)
 

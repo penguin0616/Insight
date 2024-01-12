@@ -132,6 +132,8 @@ local function Describe(self, context)
 			local action, amount = v[1], v[2]
 			local action_id = action.id
 
+
+
 			-- ∞
 			if action_id and amount ~= 0 then
 				local uses = math.ceil(self.current / amount)
@@ -141,8 +143,33 @@ local function Describe(self, context)
 					actions[c] = string.format(context.lstr.action_uses, context.lstr.actions[action_id], uses)
 					actions_verbose[c] = string.format(context.lstr.action_uses_verbose, context.lstr.actions[action_id], uses, max_uses)
 				else
-					actions[c] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or ("<string=ACTIONS." .. action.id .. ">"), uses)
-					actions_verbose[c] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions[action_id] or ("<string=ACTIONS." .. action.id .. ">"), uses, max_uses)
+					-- Some actions have specific types (i.e. PLAY)
+					--[[
+					local sub_key = nil
+					if not context.lstr.lang.actions[action_id] then
+						local dummy = {
+							doer = context.player,
+							target = self.inst,
+							action = action,
+							invobject = self.inst, 
+							--pos, 
+							--recipe, 
+							--distance, 
+							--rotation
+						}
+						sub_key = type(action.strfn) == "function" and action.strfn(dummy) or nil
+						end
+					--]]
+
+					local fallback = "<string=ACTIONS." .. action.id .. ">"
+					if type(STRINGS.ACTIONS[action.id]) == "table" then
+						if STRINGS.ACTIONS[action.id].GENERIC ~= nil then
+							fallback = string.format("<string=ACTIONS.%s.GENERIC>", action.id)
+						end
+					end
+
+					actions[c] = string.format(context.lstr.lang.action_uses, context.lstr.lang.actions[action_id] or fallback, uses)
+					actions_verbose[c] = string.format(context.lstr.lang.action_uses_verbose, context.lstr.lang.actions[action_id] or fallback, uses, max_uses)
 				end
 				
 				c = c + 1
