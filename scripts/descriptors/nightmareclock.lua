@@ -125,7 +125,7 @@ local function Describe(self, context)
 	local phase = context.lstr.nightmareclock.phases[save_data.phase] or ("\"" .. save_data.phase .. "\"")
 
 	description = string.format(context.lstr.nightmareclock.phase_info, colors[save_data.phase], phase, remaining_time)
-	icon = icons[phase]
+	icon = icons[save_data.phase]
 
 	return {
 		priority = 0,

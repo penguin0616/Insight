@@ -19,31 +19,71 @@ directory. If not, please refer to
 ]]
 
 -- rainometer.lua [Prefab]
+local world_type = GetWorldType()
+
 local function Describe(inst, context)
 	local description = nil
 
+	local moistureManager = world_type >= 1 and GetWorld().components.moisturemanager or nil
+	local seasonManager = world_type >= 0 and GetSeasonManager() or nil
+	
+	-- Wetness
 	local wetness = nil
-	local precipitation_rate = nil
-	local frog_rain_chance = nil
+	local wetnessString = nil
 
-	if IS_DST then
-		wetness = string.format(context.lstr.global_wetness, Round(TheWorld.state.wetness, 1))
-		
-		if TheWorld.state.precipitationrate > 0 then
-			precipitation_rate = string.format(context.lstr.precipitation_rate, Round(TheWorld.state.precipitationrate, 2))
-		end
-
-		local frog_rain = TheWorld.components.frograin
-		if frog_rain and TheWorld.state.isspring then
-			if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
-				frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(TUNING.FROG_RAIN_CHANCE * 100, 1))
-			else
-				frog_rain_chance = string.format(context.lstr.frog_rain_chance, Round(frog_rain:OnSave().chance * 100, 1))
-			end
-		end
+	if world_type == -1 then
+		wetness = TheWorld.state.wetness
+	elseif world_type >= 1 then
+		wetness = moistureManager and moistureManager:GetWorldMoisture() or nil
 	end
 
-	description = CombineLines(wetness, precipitation_rate, frog_rain_chance)
+	if wetness then
+		wetnessString = string.format(context.lstr.global_wetness, Round(wetness, 1))
+	end
+	
+	-- Precipitation rate
+	local precipitationRate = nil
+	local precipitationRateString = nil
+
+	if world_type == -1 then
+		precipitationRate = TheWorld.state.precipitationrate
+	elseif world_type >= 0 then
+		precipitationRate = seasonManager and seasonManager.precip_rate or nil
+	end
+
+	if precipitationRate and precipitationRate > 0 then
+		precipitationRateString = string.format(context.lstr.precipitation_rate, Round(precipitationRate, 2))
+	end
+
+	-- Frog rain
+	local frogRainChance = nil
+	local frogRainChanceString = nil
+	if world_type == -1 then
+		local frogRainCmp = TheWorld.components.frograin
+		if frogRainCmp and TheWorld.state.isspring then
+			if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+				frogRainChance = Round(TUNING.FROG_RAIN_CHANCE * 100, 1)
+			else
+				frogRainChance = Round(frogRainCmp:OnSave().chance * 100, 1)
+			end
+			--[[
+			if CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") then
+				frogRainChance = string.format(context.lstr.frog_rain_chance, Round(TUNING.FROG_RAIN_CHANCE * 100, 1))
+			else
+				frogRainChance = string.format(context.lstr.frog_rain_chance, Round(frogRainCmp:OnSave().chance * 100, 1))
+			end
+			--]]
+		end
+	else
+		local frogRainCmp = GetWorld().components.frograin
+		-- Meh.
+	end
+
+	if frogRainChance then
+		frogRainChanceString = string.format(context.lstr.frog_rain_chance, frogRainChance)
+	end
+
+	description = CombineLines(wetnessString, precipitationRateString, frogRainChanceString)
 	
 	return {
 		priority = 0,
