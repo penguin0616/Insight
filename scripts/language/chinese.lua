@@ -20,15 +20,6 @@ directory. If not, please refer to
 
 -- Translated by: https://steamcommunity.com/id/interesting28/ and https://steamcommunity.com/id/cloudyyoung and (Placeholder) https://github.com/penguin0616/Insight/pull/29
 
-local function AdjectiveToNoun(str)
-	return str:gsub('%的', '')
-end
---[[
-local beard = STRINGS.UI.COLLECTIONSCREEN.BEARD
-local catcoon = STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
-local stale = AdjectiveToNoun(STRINGS.UI.HUD.STALE)
---]]
-
 return {
 	-- insightservercrash.lua
 	server_crash = "服务器崩溃",
@@ -72,20 +63,20 @@ return {
 	presets = {
 		types = {
 			new_player = {
-				label = "New Player",
-				description = "Recommended for players new to the game."
+				label = "新手",
+				description = "适合刚开始玩这个游戏的玩家"
 			},
 			simple = {
-				label = "Simple",
-				description = "A low amount of information, similar to Show Me.",
+				label = "简单",
+				description = "显示较少数量信息, 与 Show Me 类似",
 			},
 			decent = {
-				label = "Decent",
-				description = "An average amount of information. Very similar to default settings.",
+				label = "中等",
+				description = "显示中等数量信息, 与默认设置接近",
 			},
 			advanced = {
-				label = "Advanced",
-				description = "Good for people who like information.",
+				label = "高级",
+				description = "适合喜欢显示各种信息的玩家",
 			},
 		},
 	},
@@ -161,7 +152,7 @@ return {
 	},
 
 	-- beard.lua
-	beard = "你的" .. "胡须" .. "将于 %s 天后长好", -- 胡须 used to be STRINGS.UI.COLLECTIONSCREEN.BEARD
+	beard = "你的胡须将于 %s 天后长好",
 
 	-- beargerspawner.lua
 	beargerspawner = {
@@ -266,8 +257,8 @@ return {
 
 	-- catcoonden.lua [Prefab]
 	catcoonden = {
-		lives = "一只浣猫" .. "寿命: %s / %s", -- STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
-		regenerate = "一只浣猫" .. "%s后复活", -- STRINGS.UI.HUD.TROPHYSCALE_PREFAB_OVERRIDE_OWNER.catcoon
+		lives = "浣猫寿命: %s / %s",
+		regenerate = "浣猫将于%s后重生",
 		waiting_for_sleep = "等待附近的玩家走开",
 	},
 
@@ -489,7 +480,7 @@ return {
 		inedible = "不可食用物",
 		bug = "虫子",
 		seed = "种子",
-		antihistamine = "antihistamine", -- Only "cutnettle"
+		antihistamine = "抗组胺剂", -- Only "cutnettle"
 	},
 	edible_foodeffect = {
 		temperature = "温度变化: %s, %s",
@@ -535,13 +526,13 @@ return {
 			[FARM_PLANT_STRESS.HIGH] = "高"
 		} or {}),
 		categories = {
-			["nutrients"] = "Nutrients", -- missing nutrients
-			["moisture"] = "Moisture", -- needs water
-			["killjoys"] = "Weeds", -- weeds nearby
-			["family"] = "Family", -- no similar plants nearby
-			["overcrowding"] = "Overcrowding", -- too crowded
-			["season"] = "Season", -- out of season
-			["happiness"] = "Happiness", -- not tended to
+			["nutrients"] = "养分", -- missing nutrients
+			["moisture"] = "水分", -- needs water
+			["killjoys"] = "杂物", -- weeds nearby
+			["family"] = "家庭", -- no similar plants nearby
+			["overcrowding"] = "拥挤", -- too crowded
+			["season"] = "季节", -- out of season
+			["happiness"] = "幸福", -- not tended to
 		},
 	},
 
@@ -679,7 +670,7 @@ return {
 
 	-- growable.lua
 	growable = {
-		stage = "<color=#8c8c8c>'%s'</color> 阶段: %s / %s: ",
+		stage = "<color=#8c8c8c>'%s'</color> 阶段: %s / %s, ",
 		paused = "暂停生长",
 		next_stage = "%s后进入下一阶段",
 	},
@@ -883,10 +874,10 @@ return {
 		announce_phase_locked = "遗迹现在锁定在暴动期",
 		announce_phase = "遗迹现在在%s期 (还剩%s)",
 		phases = {
-			["calm"] = "Calm",
-			["warn"] = "Warning",
-			["wild"] = "Nightmare",
-			["dawn"] = "Dawn"
+			["calm"] = "平静",
+			["warn"] = "警告",
+			["wild"] = "暴动",
+			["dawn"] = "黎明"
 		},
 	},
 
@@ -930,8 +921,8 @@ return {
 
 	-- pangolden.lua [Prefab]
 	pangolden = {
-		gold_level_progress = "<color=#E3D740>Gold</color> level: %.1f / %.1f",
-		gold_level = "<color=#E3D740>Gold</color> level: %.1f",
+		gold_level_progress = "<color=#E3D740>金块</color>等级: %.1f / %.1f",
+		gold_level = "<color=#E3D740>金块</color>等级: %.1f",
 	},
 
 	-- periodicthreat.lua
@@ -941,7 +932,7 @@ return {
 	-- perishable.lua
 	perishable = {
 		rot = "腐烂",
-		stale = AdjectiveToNoun("陈腐"), -- AdjectiveToNoun(STRINGS.UI.HUD.STALE)
+		stale = "陈腐",
 		spoil = "变质",
 		dies = "死亡",
 		starves = "饿死",
@@ -975,7 +966,7 @@ return {
 
 	-- poisonable.lua
 	poisonable = {
-		remaining_time = "<color=NATURE>Poison</color> expires in %s",
+		remaining_time = "<color=NATURE>毒</color>解除于%s后",
 	},
 
 	-- pollinator.lua
@@ -1122,12 +1113,12 @@ return {
 
 	-- sharkboi.lua [Prefab]
 	sharkboi = {
-		--trades_remaining = "Trades left: %d",
+		trades_remaining = "交易剩余: %d",
 	},
 
 	-- sheltered.lua
 	sheltered = {
-		range = "遮蔽范围: %s墙体单位",
+		range = "遮蔽范围: %s 墙体单位",
 		shelter = "遮蔽处",
 	},
 
