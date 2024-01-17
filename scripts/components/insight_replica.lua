@@ -1114,7 +1114,12 @@ function Insight:RequestInformation(entity, params)
 		return false, "WEIRD_DEBOUNCE_CASE"
 	end
 
-	if debounce > 0 then
+	if debounce == nil then
+		local orig = params.debounce or context.config["refresh_delay"]
+		mprintf("(Something's broken?): Debounce is nil: [%s] (%s)", tostring(orig), type(orig))
+	end
+
+	if debounce and debounce > 0 then
 		SetDebounce(self, entity, debounce)
 	end
 
