@@ -165,6 +165,7 @@ function InterpretReaderChunk(chunk, richtext) -- text, color
 	return obj
 end
 
+-- TODO: ..? This seems unnecessary.
 local function LineIndex(self, index) 
 	local x = {} 
 	rawset(self, index, x) 
@@ -304,7 +305,7 @@ function RichText:SetString(str, forced)
 	str = ResolveColors(str) -- Resolve any color tags that reference the Insight table's colors.
 	local chunks = Reader:new(str):Read()
 
-	local lines = setmetatable({}, { __index=LineIndex })
+	local lines = setmetatable({}, { __index=LineIndex }) 
 	local i = 1;
 	local lineCount = 1
 
@@ -334,6 +335,9 @@ function RichText:SetString(str, forced)
 				chunks[i] = new_chunk
 				chunk = new_chunk
 			end
+
+			text = UnescapeRichText(text)
+			chunk.text = text
 			
 			-- Now we need to deal with cases where our chunks have newlines in them.
 			-- When we hit a newline, we need to break off the current one and continue onto a new one.

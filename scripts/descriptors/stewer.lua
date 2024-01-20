@@ -162,7 +162,7 @@ local function Describe(self, context)
 	if self.done or cooktime > 0 then -- IsDone() missing in DS, exists in DLC
 		local chef = context.config["stewer_chef"] and GetChef(self)
 		if chef then
-			chef_string = string.format(context.lstr.stewer.cooker, chef.colour, chef.name)
+			chef_string = string.format(context.lstr.stewer.cooker, chef.colour, EscapeRichText(chef.name))
 		end
 
 		cooktime = math.ceil(cooktime)

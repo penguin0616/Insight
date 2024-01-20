@@ -194,18 +194,32 @@ function ProcessRichTextPlainly(string)
 	
 	for i = 1, #chunks do
 		local chunk = chunks[i]
+		 
+		local next = nil
 		if chunk:IsObject() then
 			if chunk.object.class == "prefab" then
 				local prefab = chunk.object.value
-				str = str .. GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
+				next = GetPrefabNameOrElse(prefab, "[prefab \"%s\"]")
 			end
 		else
-			str = str .. chunk.text
+			next = chunk.text
 		end
+
+		str = str .. UnescapeRichText(next)
 	end
 
 	return str
 end
+
+
+function EscapeRichText(str)
+	return str:gsub("<", "&lt;"):gsub(">", "&gt;")
+end
+
+function UnescapeRichText(str)
+	return str:gsub("&lt;", "<"):gsub("&gt;", ">")
+end
+
 
 function GetReduxListItemPrefix(row_width, row_height)
 	local prefix = "listitem_thick" -- 320 / 90 = 3.6

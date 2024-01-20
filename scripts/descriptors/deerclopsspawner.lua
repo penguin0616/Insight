@@ -83,7 +83,7 @@ local function ProcessInformation(context, time_to_attack, target, target_error_
 
 		return time_string
 	else
-		local target_string = string.format("%s - %s", target.name, target.prefab)
+		local target_string = string.format("%s - %s", EscapeRichText(target.name), target.prefab)
 		return string.format(
 			context.lstr.deerclopsspawner.incoming_deerclops_targeted, 
 			Color.ToHex(
@@ -130,7 +130,7 @@ local function StatusAnnoucementsDescribe(special_data, context)
 	if target then
 		description = ProcessRichTextPlainly(string.format(
 			context.lstr.deerclopsspawner.announce_deerclops_target,
-			target.name,
+			EscapeRichText(target.name),
 			target.prefab,
 			context.time:TryStatusAnnouncementsTime(special_data.time_to_attack)
 		))
@@ -163,7 +163,7 @@ local function DangerAnnouncementDescribe(special_data, context)
 	else
 		description = string.format(
 			context.lstr[filename].announce_deerclops_target, 
-			client_table.name, 
+			EscapeRichText(client_table.name), 
 			client_table.prefab, 
 			time_string
 		)

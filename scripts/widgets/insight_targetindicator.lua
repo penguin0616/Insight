@@ -156,7 +156,7 @@ function InsightTargetIndicator:UpdateName()
 	elseif self.targetIsVector3 then
 		self.name = "Vector3" .. tostring(self.target)
 	else
-		self.name = self.target:GetDisplayName()
+		self.name = EscapeRichText(self.target:GetDisplayName())
 	end
 
 	if self.config_data.dismissable then

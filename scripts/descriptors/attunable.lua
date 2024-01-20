@@ -28,7 +28,7 @@ local function Describe(self, context)
 		local client_table = TheNet:GetClientTableForUser(player.userid) or yep
 		local player_string = string.format(context.lstr.attunable.player, 
 			Color.ToHex(client_table.colour),
-			player.name or "?",
+			EscapeRichText(player.name) or "?",
 			player.prefab or "?"
 		)
 		players[#players+1] = player_string
