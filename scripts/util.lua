@@ -485,30 +485,11 @@ function GetPrefabNameOrElse(prefab, other)
 	end
 	
 	-- ornament?
-	local ornament_type = string.match(upper, "WINTER_ORNAMENT_(%a+)")
-	if ornament_type then
-		ornament_type = ((ornament_type == "FANCY" or ornament_type=="PLAIN") and "") or ornament_type
-		if ornament_type == "FESTIVALEVENTS" then
-			if tonumber(upper:sub(-1)) <= 3 then
-				ornament_type = "FORGE"
-			else
-				ornament_type = "GORGE"
-			end
-		end
-		
-		local name = STRINGS.NAMES["WINTER_ORNAMENT" .. ornament_type]
-		if name then
-			return name
-		end
+	local ornaments = Insight.prefab_descriptors.winter_ornaments and Insight.prefab_descriptors.winter_ornaments.ORNAMENT_DATA
+	if ornaments and ornaments[prefab] then
+		local override = string.upper(ornaments[prefab].overridename or "?")
+		return STRINGS.NAMES[override] or override
 	end
-
-	--[[
-		table.insert(ornament, MakeOrnament("festivalevents1", "winter_ornamentforge", nil, "winter_ornaments2018", 0.95))
-table.insert(ornament, MakeOrnament("festivalevents2", "winter_ornamentforge", nil, "winter_ornaments2018", 0.95))
-table.insert(ornament, MakeOrnament("festivalevents3", "winter_ornamentforge", nil, "winter_ornaments2018", 1.00))
-table.insert(ornament, MakeOrnament("festivalevents4", "winter_ornamentgorge", nil, "winter_ornaments2018", 0.80))
-table.insert(ornament, MakeOrnament("festivalevents5", "winter_ornamentgorge", nil, "winter_ornaments2018", 0.80))
-	]]
 
 	-- blueprint? (blueprint.lua onload)
 	local blueprint_match = string.match(upper, "([%w_]+)_BLUEPRINT")
