@@ -43,14 +43,15 @@ local function Describe(self, context)
 	
 	local bonus_damage = current_damage - base_damage
 
+	if current_damage ~= 0 then	
+		description = string.format(context.lstr.planardamage.planar_damage, Round(current_damage, 1))
 
-	description = string.format(context.lstr.planardamage.planar_damage, Round(current_damage, 1))
-
-	alt_description = string.format(context.lstr.planardamage.planar_damage, Round(base_damage, 1))
-	if bonus_damage ~= 0 then
-		alt_description = alt_description .. string.format(context.lstr.planardamage.additional_damage, Round(bonus_damage, 1))
+		alt_description = string.format(context.lstr.planardamage.planar_damage, Round(base_damage, 1))
+		if bonus_damage ~= 0 then
+			alt_description = alt_description .. string.format(context.lstr.planardamage.additional_damage, Round(bonus_damage, 1))
+		end
 	end
-
+	
 	return {
 		priority = damageHelper.DAMAGE_PRIORITY - 1,
 		description = description,
