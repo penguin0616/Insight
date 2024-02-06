@@ -570,7 +570,17 @@ end
 DS_CONSOLE_COMMANDS.c_reset = function()
 	TheSim:Reset()
 end
-
+DS_CONSOLE_COMMANDS.c_nohounds = function()
+	c_removeall "firehound"
+	c_removeall "icehound"
+	c_removeall "hound"
+	c_removeall "crocodog"
+	c_removeall "watercrocodog"
+	c_removeall "poisoncrocodog"
+end
+DS_CONSOLE_COMMANDS.c_nextphase = function()
+	GetClock():NextPhase()
+end
 DS_CONSOLE_COMMANDS.c_nextday = function()
 	GetClock():MakeNextDay()
 end

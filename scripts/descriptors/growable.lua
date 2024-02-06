@@ -32,10 +32,13 @@ local function Describe(self, context)
 	-- self.stages = (t) -> {name = (s), ...}
 	-- self.targettime
 
+
 	local stage_data = self:GetCurrentStageData()
 	if not stage_data then
 		return
 	end
+
+	local time_style = context.config["time_style"]
 
 	description = ""
 	alt_description = string.format(context.lstr.growable.stage, stage_data.name or "MISSING_NAME", self.stage, #self.stages)
@@ -43,9 +46,12 @@ local function Describe(self, context)
 	if self.pausedremaining then
 		description = description .. context.lstr.growable.paused
 		alt_description = alt_description .. context.lstr.growable.paused
-		
-	elseif self.targettime and context.config["time_style"] ~= "none" then -- we need a target time so.
+
+	elseif self.targettime and time_style ~= "none" then -- we need a target time so.
 		local remaining_time = self.targettime - GetTime()
+
+		-- water/objects/coralreef
+		-- description = description .. tostring(self.task) .. " " .. tostring(remaining_time)
 
 		-- times can be from 1 frame short to 935 seconds short. nice.
 		if self.task and remaining_time > 0 then
@@ -64,6 +70,7 @@ local function Describe(self, context)
 	if verbosity == 2 then
 		description = alt_description
 	end
+	 
 
 	return {
 		priority = 5,
