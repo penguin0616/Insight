@@ -64,6 +64,14 @@ local function xprintf(...)
 	end
 end
 
+local function xerror(...)
+	if debugging or module.debugging then
+		return error(...)
+	else
+		mprint("[SILENT PATCHER ERROR]:", ...)
+	end
+end
+
 local function getsource(arg)
 	local src = debug.getinfo(arg, "S").source
 	
@@ -144,7 +152,7 @@ local function ApplyClassPatches(class_to_patch, klass, patches)
 				xprint("The replacement was defined at:", pretty(replacement))
 				xprint("============= LIST OF PATCHES ====================")
 				dumptable(patches)
-				error("Filename difference.")
+				xerror("Filename difference.")
 			end
 			--xprintf("\tPatching(2): %s - %s: %s ===> %s", key, strclass(klass), pretty(klass[key]), pretty(replacement))
 			--klass[key] = replacement
@@ -207,7 +215,7 @@ local function ApplyClassPatches(class_to_patch, klass, patches)
 					xprint("The replacement was defined at:", pretty(replacement))
 					xprint("============= LIST OF PATCHES ====================")
 					dumptable(patches)
-					error("filename error with klass==inherit")
+					xerror("filename xerror with klass==inherit")
 					--]]
 				end
 			else
@@ -304,7 +312,7 @@ local function ApplyClassPatches(class_to_patch, klass, patches)
 					xprint("The replacement was defined at:", pretty(replacement))
 					xprint("============= LIST OF PATCHES ====================")
 					dumptable(patches)
-					error("filename error with different methods")
+					xerror("filename xerror with different methods")
 				end
 			end
 		else
@@ -318,7 +326,7 @@ local function ApplyClassPatches(class_to_patch, klass, patches)
 			xprint("============= LIST OF PATCHES ====================")
 			dumptable(patches)
 
-			error("Don't know what to do!")
+			xerror("Don't know what to do!")
 		end
 	end
 end
@@ -399,14 +407,14 @@ function CreateInstancePatcher(patches)
 				mprint("The Inherited's version was defined at:", (type(inherited[i]) == "function" and debug.getinfo(inherited[i], "S").source) or tostring(inherited[i]) )
 				mprint("============= LIST OF PATCHES ====================")
 				dumptable(patches)
-				error("CreateInstancePatcher not setup to handle function overwrites.")
+				xerror("CreateInstancePatcher not setup to handle function overwrites.")
 			end
 		end
 	end
 end
 
 local function NOP() end
-local function ERR() error("Attempted to use a nonexistant Patch function.", 0) end
+local function ERR() xerror("Attempted to use a nonexistant Patch function.", 0) end
 function GetPatcher(which)
 	if IS_DS then
 		local p = import("ds_patches/" .. which)
