@@ -1276,8 +1276,11 @@ return {
 
 	-- weather.lua
 	weather = {
-		progress_to_rain = "降雨进度: %s / %s",
-		remaining_rain = "降雨持续: %s",
+		progress_to_rain = "<color=WET>降雨进</color>度", -- [Colors may be inaccurate for this translation] Numbers appended by code
+		remaining_rain = "<color=WET>降雨</color>持续", -- [Colors may be inaccurate for this translation] Numbers appended by code
+
+		progress_to_hail = "Progress to <color=LUNAR_RIFT>hail</color>", -- Numbers appended by code
+		remaining_hail = "<color=LUNAR_RIFT>Remaining hail</color>", -- Numbers appended by code
 	},
 
 	-- weighable.lua

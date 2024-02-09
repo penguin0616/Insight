@@ -3620,6 +3620,50 @@ STRINGS = {
 			},
 		},
 	},
+	weather_detail = {
+		label = {
+			"Weather Detail", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		hover = {
+			"How detailed the weather information is.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil
+		},
+		options = {
+			[0] = {
+				description = {
+					"Standard detail",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+				hover = {
+					"The normal level of detail is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+			[1] = {
+				description = {
+					"Advanced detail",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+				hover = {
+					"Specific numbers about weather conditions are visible.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+				},
+			},
+		},	
+	},
 	nightmareclock_display = {
 		label = {
 			"Nightmare Phases", 
@@ -5776,6 +5820,15 @@ configuration_options = {
 			{data = 2},
 		}, 
 		default = 2,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "weather_detail",
+		options = {
+			{data = 0},
+			{data = 1},
+		}, 
+		default = 0,
 		tags = {"dst_only", "undefined"},
 	},
 	{

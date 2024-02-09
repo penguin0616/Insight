@@ -144,6 +144,7 @@ local Insight = {
 		BLACK = "#2f3e49", -- #1b2a35 was the original intent, but needed to be lighter. so I bumped it up by 20 on r,g,b.
 	
 		PLANAR = "#b079e8", -- -- darker #b079e8, lighter #c99cf7
+		LUNAR_RIFT = "#5ADFAD",
 		SHADOW_ALIGNED = "#9C2C31",
 	},
 
