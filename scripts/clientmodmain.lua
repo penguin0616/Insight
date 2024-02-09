@@ -420,8 +420,12 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 
 	-- should i handle weapon range?
 	if itemInfo.special_data.insight_ranged then
-		local range = itemInfo.special_data.insight_ranged.range-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range)
-		local color = itemInfo.special_data.insight_ranged.color-- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range_color)
+		local range = itemInfo.special_data.insight_ranged.range -- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range)
+		local color = itemInfo.special_data.insight_ranged.color -- or (itemInfo.special_data.soul and itemInfo.special_data.soul.soul_heal_range_color)
+		
+		if color then
+			color = Insight.COLORS[color:upper()] or color
+		end
 
 		if range then
 			new.insight_hover_range = SpawnPrefab("insight_range_indicator")

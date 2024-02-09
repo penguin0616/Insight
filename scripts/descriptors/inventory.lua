@@ -115,6 +115,10 @@ end
 local function Describe(self, context)
 	if self.inst.components.follower then
 		return DescribeFollowerHat(self, context)
+	else
+		-- TODO: Figure out when to show inventory and fix other things that might be dependent on similar calls.
+		-- TODO: Finish this
+		
 	end
 end
 
