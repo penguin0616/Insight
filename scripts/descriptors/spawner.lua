@@ -45,7 +45,7 @@ local function Describe(self, context)
 	if respawn_time then
 		description = subfmt(context.lstr.spawner.next, { child_name=self.childname, respawn_time=context.time:SimpleProcess(respawn_time) })
 	else
-		alt_description = string.format(context.lstr.spawner.child, self.childname)
+		alt_description = string.format(context.lstr.spawner.child, self.childname) .. ", " .. string.format(context.lstr.spawner.occupied, tostring(self:IsOccupied()))
 	end
 
 	return {

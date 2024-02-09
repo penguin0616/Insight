@@ -1157,6 +1157,7 @@ return {
 	spawner = {
 		next = "Will spawn a <color=MOB_SPAWN><prefab={child_name}></color> in {respawn_time}.",
 		child = "Spawns a <color=MOB_SPAWN><prefab=%s></color>",
+		occupied = "Occupied: %s",
 	},
 
 	-- spider_healer.lua [Prefab]

@@ -1159,6 +1159,7 @@ return {
 	spawner = {
 		next = "Irá surgir um(a) <color=MOB_SPAWN><prefab={child_name}></color> em {respawn_time}.",
 		child = "Surgiu um(a) <color=MOB_SPAWN><prefab=%s></color>",
+		occupied = "Occupied: %s",
 	},
 
 	-- spider_healer.lua [Prefab]
