@@ -798,6 +798,11 @@ return {
 		remain_waves = "剩余 %d 波",
 	},
 
+	-- lunarthrall_plant.lua [Prefab]
+	lunarthrall_plant = {
+		time_to_aggro = "Vulnerability ends in: <color=%s>%1.f</color>",
+	},
+
 	-- lureplant.lua [Prefab]
 	lureplant = {
 		become_active = "%s后开始活动",
