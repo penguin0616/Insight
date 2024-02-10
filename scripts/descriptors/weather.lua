@@ -293,15 +293,15 @@ local function OnServerInit()
 	LUNAR_HAIL_CEIL = RecordUpvalue(ThisComponent.OnUpdate, "LUNAR_HAIL_CEIL")
 	LUNAR_HAIL_EVENT_RATE = RecordUpvalue(ThisComponent.OnUpdate, "LUNAR_HAIL_EVENT_RATE")
 
+
+	TheWorld:ListenForEvent("weathertick", OnWeatherTick)
+
 	for name, found in pairs(requested_upvalues) do
 		if found == false then
 			mprintf("\tDisabled because of missing upvalue '%s'", name)
-			module.Describe = nil
-			break
+			return
 		end
 	end
-
-	TheWorld:ListenForEvent("weathertick", OnWeatherTick)
 
 	PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.none] = DescribeNone
 	PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.rain] = DescribeRain
@@ -310,8 +310,6 @@ end
 
 
 local function Describe(self, context)
-	-- This won't run if any of the upvalues are missing.
-
 	if context.config["display_weather"] == 0 then
 		return
 	end
@@ -323,8 +321,8 @@ local function Describe(self, context)
 
 	local description = nil
 
+	-- None of the descriptors will run if any upvalues are missing, because they won't get added to the table.
 	local describeFn = PRECIP_TYPE_DESCRIPTORS[_preciptype:value()]
-
 	if describeFn then
 		description = describeFn(self, context)
 	end

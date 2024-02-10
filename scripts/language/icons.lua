@@ -1292,6 +1292,9 @@ return {
 
 		--progress_to_hail = "Progress to <color=LUNAR_RIFT>hail</color>", -- Numbers appended by code
 		--remaining_hail = "<color=LUNAR_RIFT>Remaining hail</color>", -- Numbers appended by code
+		
+		progress_to_acid_rain = "Progress to <color=SHADOW_ALIGNED>acid <color=WET>rain</color></color>", -- Numbers appended by code
+		remaining_acid_rain = "<color=SHADOW_ALIGNED>Remaining acid <color=WET>rain</color></color>", -- Numbers appended by code
 	},
 
 	-- weighable.lua
