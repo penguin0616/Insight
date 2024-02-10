@@ -48,13 +48,13 @@ local DAMAGE_TYPE_DEFS = {
 }
 
 
-local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison"}
+local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison"} -- Turns out the game doesn't set the .stimuli on these.
 local WEAPON_STIMULI = {
 	normal = {
 
 	},
 	electric = {
-
+		damage_modifier = TUNING.ELECTRIC_DAMAGE_MULT
 	},
 	poisonous = {
 
@@ -99,10 +99,10 @@ module.GetSlingshotAmmoData = function(prefab)
 	return SLINGSHOT_AMMO_DATA[prefab]
 end
 
---- Gets stimuli data for a given stimuli string. A nil stimuli or modded one is classified as normal.
+--- Gets stimuli data for a given stimuli string. A nil stimuli or unknown one is classified as normal.
 ---@param stimuli string
 ---@return table @Stimuli data
-module.ResolveWeaponStimuli = function(stimuli)
+module.GetStimuliData = function(stimuli)
 	if type(stimuli) == "nil" then
 		return WEAPON_STIMULI.normal
 	end
@@ -118,7 +118,7 @@ end
 
 --- Checks if a weapon is poisonous through the prefab table. Annoying.
 ---@param prefab string
-module.IsBackupPoisonous = function(prefab)
+module.IsPrefabPoisonous = function(prefab)
 	return table.contains(POISONOUS_WEAPONS, prefab)
 end
 

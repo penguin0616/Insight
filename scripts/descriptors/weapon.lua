@@ -146,18 +146,11 @@ local function Describe(self, context)
 		damage = damage * WandaCustomCombatDamage(context.player, nil, self.inst, nil, context.player.components.rider and context.player.components.rider.mount or nil)
 	end
 
-	--local stimuli_data = 
+	local stimuli_type = combatHelper.IsPrefabPoisonous(self.inst.prefab) and "poisonous" or self.stimuli
+	local stimuli_data = combatHelper.GetStimuliData(stimuli_type)
 
-	local _stimuli = self.stimuli
-	-- Weapon type
-	if _stimuli == "electric" then
-		
-		damage = damage * TUNING.ELECTRIC_DAMAGE_MULT
-
-	elseif self.stimuli == "poisonous" or util.table_find(POISONOUS_WEAPONS, inst.prefab) then -- turns out the game doesn't set the .stimuli
-		_stimuli = "poisonous"
-	elseif self.stimuli == "thorns" then
-		
+	if stimuli_data.damage_modifier then
+		damage = damage * stimuli_data.damage_modifier
 	end
 
 	-- Walter's slingshot
@@ -178,8 +171,7 @@ local function Describe(self, context)
 		attack_range = string.format(context.lstr.attack_range, attack_range)
 	end
 
-	_stimuli = _stimuli or "normal"
-	local damage_string = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type[_stimuli] or context.lstr.weapon_damage_type.normal, Round(damage * multiplier, 1) or "?")
+	local damage_string = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type[stimuli_data.name] or context.lstr.weapon_damage_type.normal, Round(damage * multiplier, 1) or "?")
 
 	
 
