@@ -56,7 +56,7 @@ local function Describe(self, context)
 	local efficiency_string = nil
 	
 	-- remaining fuel
-	if self.rate > 0 then
+	if self.rate > 0 and not isbadnumber(remaining_time) then
 		local current_percent = self:GetPercent()
 		local fuel_time = context.time:SimpleProcess(remaining_time)
 		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(current_percent * 100, 0), fuel_time)
@@ -98,7 +98,7 @@ local function Describe(self, context)
 				end
 				--]]
 
-				percent_restore = fuel_value / self.maxfuel
+				percent_restore = SanitizeNumber(fuel_value / self.maxfuel, 0)
 			end
 
 			refuel_string = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))

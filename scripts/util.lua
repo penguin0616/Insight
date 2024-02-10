@@ -82,8 +82,20 @@ if IS_DS and not UICOLOURS then
 	}
 end
 
+function SanitizeNumber(num, default)
+	if num ~= num or num == math.inf or num == -math.inf then
+		return default
+	end
+	return num
+end
+
 if IS_DS then
 	function _G.ClickMouseoverSoundReduction() return nil end
+
+	function isnan(x) return x ~= x end
+	math.inf = 1/0 
+	function isinf(x) return x == math.inf or x == -math.inf end
+	function isbadnumber(x) return isinf(x) or isnan(x) end
 	
 	function _G.FunctionOrValue(func_or_val, ...)
 		if type(func_or_val) == "function" then
