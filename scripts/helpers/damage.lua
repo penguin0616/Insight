@@ -43,6 +43,25 @@ local DAMAGE_TYPE_DEFS = {
 	}, 
 }
 
+
+local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison"}
+
+local WEAPON_STIMULI = {
+	normal = {
+
+	},
+	electric = {
+
+	},
+	poisonous = {
+
+	},
+	thorns = {
+
+	},
+}
+for i,v in pairs(WEAPON_STIMULI) do v.name = i end
+
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
@@ -51,7 +70,27 @@ local DAMAGE_TYPE_DEFS = {
 --------------------------------------------------------------------------
 --[[ Module Functions ]]
 --------------------------------------------------------------------------
+--- Gets stimuli data for a given stimuli string. A nil stimuli or modded one is classified as normal.
+---@param stimuli string
+module.ResolveWeaponStimuli = function(stimuli)
+	if type(stimuli) == "nil" then
+		return WEAPON_STIMULI.normal
+	end
 
+	stimuli = stimuli:lower()
+
+	if WEAPON_STIMULI[stimuli] == nil then
+		return WEAPON_STIMULI.normal
+	end
+
+	return WEAPON_STIMULI[stimuli]
+end
+
+--- Checks if a weapon is poisonous through the prefab table. Annoying.
+---@param prefab string
+module.IsBackupPoisonous = function(prefab)
+	return table.contains(POISONOUS_WEAPONS, prefab)
+end
 
 --------------------------------------------------------------------------
 --[[ Initialization ]]
