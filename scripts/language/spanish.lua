@@ -940,6 +940,11 @@ return {
 		gold_level_progress = "<color=#E3D740>Gold</color> level: %.1f / %.1f",
 		gold_level = "<color=#E3D740>Gold</color> level: %.1f",
 	},
+	
+	-- parryweapon.lua
+	parryweapon = {
+		parry_duration = "Parry duration: {duration}",
+	},
 
 	-- periodicthreat.lua
 	worms_incoming = "%s",
@@ -1273,6 +1278,11 @@ return {
 	-- wateryprotection.lua
 	wateryprotection = {
 		wetness = "Aumenta la humedad en <color=WET>%s</color>."
+	},
+
+	-- wathgrithr_shield.lua [Prefab]
+	wathgrithr_shield = {
+		parry_duration_complex = "Parry duration: <color=%s>%.1f<sub>normal</sub></color> | <color=%s>%.1f<sub>skill</sub></color>",
 	},
 
 	-- weapon.lua

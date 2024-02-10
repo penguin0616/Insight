@@ -18,24 +18,27 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- aoeweapon_lunge.lua (Inherits from aoeweapon_base)
+-- parryweapon.lua
 local combatHelper = import("helpers/combat")
 
-local function Describe(self, context)
-	local described = Insight.descriptors.aoeweapon_base.DescribeDamage(
-		self, 
-		context, 
-		context.lstr.aoeweapon_lunge.lunge_damage, 
-		context.player.components.combat
-	)
-	described.name = "aoeweapon_lunge"
-	described.priority = combatHelper.DAMAGE_PRIORITY - 1
-	
-	return described, Insight.descriptors.aoeweapon_base.Describe(self, context)
+local function DescribeParryDuration(self, context, duration, format)
+	-- I was thinking about putting parry duration checks here on parryweapon, 
+	-- but right now the number always comes from an external source.
+	-- So instead, I'll add this seperate describer.
+	-- It'll be called by things that know their parrying information.
+
+	-- or context.lstr.parryweapon.parry_duration
+	local description = subfmt(format, { duration=Round(duration, 1) })
+
+	return {
+		name = "parryweapon_parryduration",
+		priority = combatHelper.DAMAGE_PRIORITY - 5,
+		description = description
+	}
 end
 
 
 
 return {
-	Describe = Describe
+	DescribeParryDuration = DescribeParryDuration
 }

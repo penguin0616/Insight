@@ -42,7 +42,11 @@ local function DescribeDamage(self, context, format, combat)
 
 	damage = damage * combatHelper.GetOutgoingDamageModifier(combat)
 
-	return subfmt(format, { damageType=context.lstr.weapon_damage_type[stimuli_data.name], damage=damage })
+	return {
+		name = "aoeweapon_base_DescribeDamage",
+		priority = combatHelper.DAMAGE_PRIORITY - 1,
+		description = subfmt(format, { damageType=context.lstr.weapon_damage_type[stimuli_data.name], damage=damage })
+	}
 end
 
 local function Describe(self, context)
