@@ -199,7 +199,7 @@ import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
 Color = import("helpers/color")
 rpcNetwork = import("rpcnetwork")
-combatHelper = import("helpers/combat")
+attackRangeHelper = import("helpers/attack_range")
 entity_tracker = import("helpers/entitytracker")
 
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
@@ -2002,7 +2002,7 @@ end)
 
 AddComponentPostInit("combat", function(self)
 	if IS_DS or (TheWorld.ismastersim) then
-		combatHelper.HookCombat(self)
+		attackRangeHelper.HookCombat(self)
 	else
 		dprint("oh no")
 	end
@@ -2107,7 +2107,7 @@ if true then
 				return
 			end
 
-			combatHelper.RegisterFalseCombat(inst, data)
+			attackRangeHelper.RegisterFalseCombat(inst, data)
 		end)
 	end
 end

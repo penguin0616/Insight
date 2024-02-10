@@ -357,7 +357,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 	end
 
 	if old and old.insight_combat_range_indicator and old.insight_combat_range_indicator.state_forced then
-		old.insight_combat_range_indicator:ForceStateChange(combatHelper.NET_STATES.NOTHING)
+		old.insight_combat_range_indicator:ForceStateChange(attackRangeHelper.NET_STATES.NOTHING)
 	end
 
 	if old and GetDeployHelper(old) then
@@ -387,7 +387,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 			return	
 		end
 
-		ind:ForceStateChange(combatHelper.NET_STATES.TARGETTING)
+		ind:ForceStateChange(attackRangeHelper.NET_STATES.TARGETTING)
 		return
 	end
 
@@ -771,7 +771,7 @@ end)
 OnLocalPlayerPostInit:AddListener("highlighting_activate", highlighting.Activate)
 OnLocalPlayerRemove:AddListener("highlighting_deactivate", highlighting.Deactivate)
 
-OnLocalPlayerPostInit:AddListener(combatHelper.Activate)
+OnLocalPlayerPostInit:AddListener(attackRangeHelper.Activate)
 
 OnContextUpdate:AddListener("blinkrange_attacher", function(context)
 	if context.config["blink_range"] then
@@ -1102,7 +1102,7 @@ AddPrefabPostInit("deerclops", function(inst)
 end)
 --]]
 
-AddPrefabPostInit("insight_combat_range_indicator", import("helpers/combat").HookClientIndicator)
+AddPrefabPostInit("insight_combat_range_indicator", import("helpers/attack_range").HookClientIndicator)
 AddPrefabPostInit("insight_ghost_klaus_sack", function(inst)
 	OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 		if not context.config["klaus_sack_markers"] then
@@ -1515,7 +1515,7 @@ end)
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
---AddLocalPlayerPostRemove(combatHelper.Deactivate, true)
+--AddLocalPlayerPostRemove(attackRangeHelper.Deactivate, true)
 
 if IS_DST then
 	--[[
