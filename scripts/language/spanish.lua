@@ -501,9 +501,6 @@ return {
 	hunger_drain = "Drena el <color=HUNGER>hambre</color>: <color=HUNGER>%s%%</color>",
 	insulated = "Te protege de los rayos.",
 
-	-- example.lua
-	why = "[¿por qué estoy vacío?]",
-
 	-- explosive.lua
 	explosive_damage = "<color=LIGHT>Daño por explosión</color>: %s",
 	explosive_range = "<color=LIGHT>Rango de explosión</color>: %s",

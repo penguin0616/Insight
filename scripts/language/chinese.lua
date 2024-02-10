@@ -500,9 +500,6 @@ return {
 	hunger_drain = "<color=HUNGER>饥饿度降低</color>: <color=HUNGER>%s%%</color>",
 	insulated = "保护你免遭雷击",
 
-	-- example.lua
-	why = "[为什么我是空的]",
-
 	-- explosive.lua
 	explosive_damage = "<color=LIGHT>爆炸伤害</color>: %s",
 	explosive_range = "<color=LIGHT>爆炸范围</color>: %s",

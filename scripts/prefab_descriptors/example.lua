@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 -- example.lua [Prefab]
 local function Describe(inst, context)
-	local description = context.lstr.why
+	local description = nil
 	
 	return {
 		priority = 0,
