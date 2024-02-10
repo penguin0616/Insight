@@ -19,16 +19,14 @@ directory. If not, please refer to
 ]]
 
 -- reloaditem.lua
+local combatHelper = import("helpers/combat")
 local function Describe(self, context)
 	local description = nil
 
 	if self.inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
-		local func = Insight.descriptors.weapon and Insight.descriptors.weapon.GetSlingshotAmmoData
-		if func then
-			local data = func(self.inst)
-			local damage = data and data.damage or 0
-			description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage)
-		end
+		local data = combatHelper.GetSlingshotAmmoData(self.inst.prefab)
+		local damage = data and data.damage or 0
+		description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage)
 	end
 
 

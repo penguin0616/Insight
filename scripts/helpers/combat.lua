@@ -25,7 +25,11 @@ directory. If not, please refer to
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
 
-local module = {}
+local module = {
+	
+}
+
+local SLINGSHOT_AMMO_DATA = nil
 
 -- Sourced from instances of damagetypebonus/damagetyperesist
 local DAMAGE_TYPE_DEFS = {
@@ -45,7 +49,6 @@ local DAMAGE_TYPE_DEFS = {
 
 
 local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison"}
-
 local WEAPON_STIMULI = {
 	normal = {
 
@@ -66,12 +69,39 @@ for i,v in pairs(WEAPON_STIMULI) do v.name = i end
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
 
+local function LoadSlingAmmoData()
+	SLINGSHOT_AMMO_DATA = {}
+
+	-- load slingshot ammo damages from prefab upvalues
+	for i,v in pairs(_G.Prefabs) do
+		-- skins (glomling_winter) are missing .fn i think
+		if v.fn and debug.getinfo(v.fn, "S").source == "scripts/prefabs/slingshotammo.lua" then
+			if v.name:sub(-5) == "_proj" then
+				local ammo_data = util.getupvalue(v.fn, "v")
+				SLINGSHOT_AMMO_DATA[ammo_data.name] = ammo_data
+			end
+		end
+	end
+end
 
 --------------------------------------------------------------------------
 --[[ Module Functions ]]
 --------------------------------------------------------------------------
+
+--- Gets slingshot ammo data for a prefab after lazy loading the ammo data.
+---@param prefab string
+---@return table|nil
+module.GetSlingshotAmmoData = function(prefab)
+	if SLINGSHOT_AMMO_DATA == nil then
+		LoadSlingAmmoData()
+	end
+
+	return SLINGSHOT_AMMO_DATA[prefab]
+end
+
 --- Gets stimuli data for a given stimuli string. A nil stimuli or modded one is classified as normal.
 ---@param stimuli string
+---@return table @Stimuli data
 module.ResolveWeaponStimuli = function(stimuli)
 	if type(stimuli) == "nil" then
 		return WEAPON_STIMULI.normal
@@ -95,6 +125,7 @@ end
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
+
 module.DAMAGE_TYPE_DEFS = DAMAGE_TYPE_DEFS
 module.DAMAGE_TYPE_COLORS = setmetatable({}, {
 	__index = function(self, index)
