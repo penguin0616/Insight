@@ -20,85 +20,66 @@ directory. If not, please refer to
 
 -- weather.lua
 local PRECIP_TYPE_DESCRIPTORS = {}
-local entity_tracker = import("helpers/entitytracker")
-
-local world_prefix = ((TheWorld.worldprefab == "forest" and "") or (TheWorld.worldprefab == "cave" and "cave") or TheWorld.worldprefab)
-local OnUpdate = TheWorld.net.components[world_prefix.."weather"].OnUpdate
-if debug.getinfo(OnUpdate, "S").source ~= "scripts/components/" .. world_prefix .. "weather.lua" then
-	mprint("Weather.OnUpdate has been replaced by:", debug.getinfo(OnUpdate, "S").source, "@", debug.getinfo(OnUpdate, "l").linedefined)
-	
-	-- also workshop-1837053004
-	--[[
-	if KnownModIndex:IsModEnabled("workshop-1589856657") then -- https://steamcommunity.com/sharedfiles/filedetails/?id=1589856657 replaces it
-		local realOnUpdate = util.getupvalue(OnUpdate, "_OnUpdate") 
-		if realOnUpdate then
-			mprint("\tFound real Weather.OnUpdate")
-			OnUpdate = realOnUpdate
-		else
-			mprint("\tUnable to find real Weather.OnUpdate")
-		end
-	elseif KnownModIndex:IsModEnabled("workshop-1467214795") then
-		-- yeah no im not dealing with this. regardless, OnUpdate_old
-		OnUpdate = nil
-		mprint("Ignoring weather since Island Adventures is present.")
-	end
-	--]]
-end
-
--- Mostly for debugging purposes.
-local RECORDED_UPVALUES = {}
-local function RecordUpvalue(name)
-	local got = OnUpdate and util.recursive_getupvalue(OnUpdate, name) or nil
-	RECORDED_UPVALUES[name] = got
-	return got
-end
-
-local _moisture = RecordUpvalue("_moisture")
-local _preciptype = RecordUpvalue("_preciptype")
-local _peakprecipitationrate = RecordUpvalue("weather._peakprecipitationrate")
-local _moisturefloor = RecordUpvalue("_moisturefloor")
-local _moistureceil = RecordUpvalue("_moistureceil")
-local _moisturerate = RecordUpvalue("_moisturerate")
-local _lunarhaillevel = RecordUpvalue("_lunarhaillevel")
-
-local PRECIP_TYPES = RecordUpvalue("PRECIP_TYPES")
-local PRECIP_RATE_SCALE = RecordUpvalue("PRECIP_RATE_SCALE")
-local MIN_PRECIP_RATE = RecordUpvalue("MIN_PRECIP_RATE")
-
-local LUNAR_HAIL_FLOOR = RecordUpvalue("LUNAR_HAIL_FLOOR")
-local LUNAR_HAIL_CEIL = RecordUpvalue("LUNAR_HAIL_CEIL")
-local LUNAR_HAIL_EVENT_RATE = RecordUpvalue("LUNAR_HAIL_EVENT_RATE")
 
 local WHITE = Color.fromRGB(255, 255, 255)
 local RAIN_COLOR = Color.fromHex(Insight.COLORS.WET)
 local HAIL_COLOR = Color.fromHex(Insight.COLORS.LUNAR_RIFT)
 
+local entity_tracker = import("helpers/entitytracker")
+
+--local world_prefix = ((TheWorld.worldprefab == "forest" and "") or (TheWorld.worldprefab == "cave" and "cave") or TheWorld.worldprefab)
+--local OnUpdate = TheWorld.net.components[world_prefix.."weather"].OnUpdate
 
 
+-- Mostly for debugging purposes.
+local ThisComponent = nil
+local module = nil
+local requested_upvalues = {}
+local upvalues = {}
+
+local function RequestUpvalue(name)
+	requested_upvalues[name] = false
+end
+
+local function RecordUpvalue(fn, name)
+	if not fn then
+		dprintf("Missing function [GetDebugString] for RecordUpvalue?")
+	end
+
+	local got = fn and util.recursive_getupvalue(fn, name) or nil
+	requested_upvalues[name] = got ~= nil
+	upvalues[name] = got
+	return got
+end
+
+-- These exist in OnLoad
+local _moisture = RequestUpvalue("_moisture")
+local _preciptype = RequestUpvalue("_preciptype")
+local _peakprecipitationrate = RequestUpvalue("_peakprecipitationrate")
+local _moisturefloor = RequestUpvalue("_moisturefloor")
+local _moistureceil = RequestUpvalue("_moistureceil")
+local _moisturerate = RequestUpvalue("_moisturerate")
+local _lunarhaillevel = RequestUpvalue("_lunarhaillevel")
+
+-- These exist in OnUpdate
+local PRECIP_TYPES = RequestUpvalue("PRECIP_TYPES")
+local PRECIP_RATE_SCALE = RequestUpvalue("PRECIP_RATE_SCALE")
+local MIN_PRECIP_RATE = RequestUpvalue("MIN_PRECIP_RATE")
+
+local LUNAR_HAIL_FLOOR = RequestUpvalue("LUNAR_HAIL_FLOOR")
+local LUNAR_HAIL_CEIL = RequestUpvalue("LUNAR_HAIL_CEIL")
+local LUNAR_HAIL_EVENT_RATE = RequestUpvalue("LUNAR_HAIL_EVENT_RATE")
+
+-- Misc
 local precip_rate = 0
 
---local CalculatePrecipitationRate = util.getupvalue(OnUpdate, "CalculatePrecipitationRate")
---local precipitation_rate = CalculatePrecipitationRate()
 
---[[
-TheWorld:DoPeriodicTask(0.1, function()
-	precipitation_rate = CalculatePrecipitationRate()
-end)
---]]
 
---[[
-	_moisture = TheWorld.state.moisture
-	CalculatePrecipitationRate = TheWorld.state.precipitationrate
-]]
 
 local function OnWeatherTick(inst, data)
 	precip_rate = data.precipitationrate
-	print("onweathertick", precip_rate)
 end
 
-local function OnServerInit()
-	TheWorld:ListenForEvent("weathertick", OnWeatherTick)
-end
 
 local function LunarHailEnabled()
 	return (TheWorld.components.riftspawner ~= nil and
@@ -121,10 +102,6 @@ end
 --= None =================================================================================================================--
 --========================================================================================================================--
 local function DescribeNone(self, context)
-	if not OnUpdate then
-		return
-	end
-
 	local advanced = context.config["weather_detail"] == 1
 
 	-- "none"
@@ -180,7 +157,6 @@ local function DescribeNone(self, context)
 	
 	return CombineLines(rain_progress_string, hail_progress_string)
 end
-PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.none] = DescribeNone
 
 --========================================================================================================================--
 --= Rain =================================================================================================================--
@@ -228,7 +204,6 @@ local function DescribeRain(self, context)
 	end
 	--]]
 end
-PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.rain] = DescribeRain
 
 --========================================================================================================================--
 --= LunarHail ============================================================================================================--
@@ -260,17 +235,83 @@ local function DescribeHail(self, context)
 
 	return hail_progress_string
 end
-PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.lunarhail] = DescribeHail
+
 
 
 --========================================================================================================================--
 --= Main ============================================================================================================--
 --========================================================================================================================--
-local function Describe(self, context)
-	if not OnUpdate then
+local function OnServerInit()
+	local cmp_name = debug.getinfo(1, "S").source:match("([%w_]+)%.lua$")
+
+	dprintf("%s OnServerInit", cmp_name)
+
+	ThisComponent = TheWorld.net.components[cmp_name]
+	if not ThisComponent then
+		mprintf("Unable to find TheWorld.net.components['%s'] in setup for '%s' descriptor.", cmp_name, cmp_name)
 		return
 	end
-	
+
+	local debugInfo_OnUpdate = debug.getinfo(ThisComponent.OnUpdate, "Sl")
+
+	if debugInfo_OnUpdate.source ~= "scripts/components/" .. cmp_name .. ".lua" then
+		mprintf("%s.OnUpdate has been replaced by: %s@%s" , cmp_name, debugInfo_OnUpdate.source, debugInfo_OnUpdate.linedefined)
+		
+		-- also workshop-1837053004
+		--[[
+		if KnownModIndex:IsModEnabled("workshop-1589856657") then -- https://steamcommunity.com/sharedfiles/filedetails/?id=1589856657 replaces it
+			local realOnUpdate = util.getupvalue(OnUpdate, "_OnUpdate") 
+			if realOnUpdate then
+				mprint("\tFound real Weather.OnUpdate")
+				OnUpdate = realOnUpdate
+			else
+				mprint("\tUnable to find real Weather.OnUpdate")
+			end
+		elseif KnownModIndex:IsModEnabled("workshop-1467214795") then
+			-- yeah no im not dealing with this. regardless, OnUpdate_old
+			OnUpdate = nil
+			mprint("Ignoring weather since Island Adventures is present.")
+		end
+		--]]
+	end
+
+	-- These exist in OnLoad
+	_moisture = RecordUpvalue(ThisComponent.OnLoad, "_moisture")
+	_preciptype = RecordUpvalue(ThisComponent.OnLoad, "_preciptype")
+	_peakprecipitationrate = RecordUpvalue(ThisComponent.OnLoad, "_peakprecipitationrate")
+	_moisturefloor = RecordUpvalue(ThisComponent.OnLoad, "_moisturefloor")
+	_moistureceil = RecordUpvalue(ThisComponent.OnLoad, "_moistureceil")
+	_moisturerate = RecordUpvalue(ThisComponent.OnLoad, "_moisturerate")
+	_lunarhaillevel = RecordUpvalue(ThisComponent.OnLoad, "_lunarhaillevel")
+
+	-- These exist in OnUpdate
+	PRECIP_TYPES = RecordUpvalue(ThisComponent.OnUpdate, "PRECIP_TYPES")
+	PRECIP_RATE_SCALE = RecordUpvalue(ThisComponent.OnUpdate, "PRECIP_RATE_SCALE")
+	MIN_PRECIP_RATE = RecordUpvalue(ThisComponent.OnUpdate, "MIN_PRECIP_RATE")
+
+	LUNAR_HAIL_FLOOR = RecordUpvalue(ThisComponent.OnUpdate, "LUNAR_HAIL_FLOOR")
+	LUNAR_HAIL_CEIL = RecordUpvalue(ThisComponent.OnUpdate, "LUNAR_HAIL_CEIL")
+	LUNAR_HAIL_EVENT_RATE = RecordUpvalue(ThisComponent.OnUpdate, "LUNAR_HAIL_EVENT_RATE")
+
+	for name, found in pairs(requested_upvalues) do
+		if found == false then
+			mprintf("\tDisabled because of missing upvalue '%s'", name)
+			module.Describe = nil
+			break
+		end
+	end
+
+	TheWorld:ListenForEvent("weathertick", OnWeatherTick)
+
+	PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.none] = DescribeNone
+	PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.rain] = DescribeRain
+	PRECIP_TYPE_DESCRIPTORS[PRECIP_TYPES.lunarhail] = DescribeHail
+end
+
+
+local function Describe(self, context)
+	-- This won't run if any of the upvalues are missing.
+
 	if context.config["display_weather"] == 0 then
 		return
 	end
@@ -299,10 +340,12 @@ local function Describe(self, context)
 	}
 end
 
-return {
+module = {
 	OnServerInit = OnServerInit,
 	Describe = Describe,
 
 	PRECIP_TYPE_DESCRIPTORS = PRECIP_TYPE_DESCRIPTORS,
-	debug = RECORDED_UPVALUES, 
+	debug = upvalues, 
 }
+
+return module
