@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- damagetyperesist.lua
-local damageHelper = import("helpers/damage")
+local combatHelper = import("helpers/combat")
 
 local function Describe(self, context)
 	local description = nil
@@ -36,7 +36,7 @@ local function Describe(self, context)
 		-- The signs are flipped across damagetypebonus/resist.
 		local percent_color = (percent < 0 and "#66cc00") or (percent > 0 and "#dd5555") or "#ffffff"
 		
-		local type_color = damageHelper.DAMAGE_TYPE_COLORS[tag] or "#8c8c8c"
+		local type_color = combatHelper.DAMAGE_TYPE_COLORS[tag] or "#8c8c8c"
 		local name = context.lstr.damage_types[tag] or ("\"" .. tag .. "\"")
 		name = ApplyColor(name, type_color)
 		
@@ -48,7 +48,7 @@ local function Describe(self, context)
 	if description == "" then description = nil end
 
 	return {
-		priority = damageHelper.DAMAGE_PRIORITY - 5,
+		priority = combatHelper.DAMAGE_PRIORITY - 5,
 		description = description
 	}
 end

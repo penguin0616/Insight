@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 
 -- armor.lua
-local damageHelper = import("helpers/damage")
+local combatHelper = import("helpers/combat")
 
 local function FormatCondition(condition, context)
 	return string.format(context.lstr.durability_unwrappable, condition)
@@ -46,7 +46,7 @@ local function Describe(self, context)
 	if context.config["armor"] then
 		armor_protection = {
 			name = "armor_protection",
-			priority = damageHelper.DAMAGE_PRIORITY - 1,
+			priority = combatHelper.DAMAGE_PRIORITY - 1,
 			description = protection
 		}
 	end

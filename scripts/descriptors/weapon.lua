@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- weapon.lua
-local damageHelper = import("helpers/damage")
+local combatHelper = import("helpers/combat")
 
 local world_type = GetWorldType()
 local SLINGSHOT_AMMO_DATA = {}
@@ -50,7 +50,7 @@ local function DescribeYOTRPillowWeapon(self, context)
 
 	return {
 		name = "weapon_yotr",
-		priority = damageHelper.DAMAGE_PRIORITY + 1,
+		priority = combatHelper.DAMAGE_PRIORITY + 1,
 		description = description,
 		alt_description = alt_description,
 	}
@@ -191,6 +191,8 @@ local function Describe(self, context)
 		damage = damage * WandaCustomCombatDamage(context.player, nil, self.inst, nil, context.player.components.rider and context.player.components.rider.mount or nil)
 	end
 
+	--local stimuli_data = 
+
 	local _stimuli = self.stimuli
 	-- Weapon type
 	if _stimuli == "electric" then
@@ -237,7 +239,7 @@ local function Describe(self, context)
 
 	return {
 		name = "weapon",
-		priority = damageHelper.DAMAGE_PRIORITY,
+		priority = combatHelper.DAMAGE_PRIORITY,
 		description = description,
 		attack_range = self.attackrange
 	}, pillow_info
