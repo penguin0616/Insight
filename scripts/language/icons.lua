@@ -112,6 +112,21 @@ return {
 		--summoned_gestalt_damage = "Summoned <color=ENLIGHTENMENT>gestalts</color> deal <color=HEALTH>%s</color> damage.",
 	},
 
+	-- aoeweapon_base.lua
+	aoeweapon_base = {
+		--weapon_damage = "AoE %s: <color=HEALTH>{damage}</color>",
+	},
+
+	-- aoeweapon_leap.lua
+	aoeweapon_leap = {
+
+	},
+
+	-- aoeweapon_lunge.lua
+	aoeweapon_lunge = {
+		lunge_damage = "Lunge {damageType}: <color=HEALTH>{damage}</color>",
+	},
+
 	-- appeasement.lua
 	appease_good = "<icon=volcano> %s segment(s).",
 	appease_bad = "<icon=volcano_active> -%s segment(s).",

@@ -18,41 +18,24 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- damagetyperesist.lua
+-- aoeweapon_lunge.lua (Inherits from aoeweapon_base)
 local combatHelper = import("helpers/combat")
 
 local function Describe(self, context)
-	local description = nil
+	local description = Insight.descriptors.aoeweapon_base.DescribeDamage(
+		self, 
+		context, 
+		context.lstr.aoeweapon_lunge.lunge_damage, 
+		context.player.components.combat
+	)
 
-	if self.inst.components.armor ~= nil then
-		if not context.config["armor"] then return end
-	end
-
-	local modifiers = {}
-	for tag, sml in pairs(self.tags) do
-		local percent = (sml:Get() - 1) * 100
-		-- Modifier is generally something like 1.1 or 0.9, where 1 is normal
-
-		-- The signs are flipped across damagetypebonus/resist.
-		local percent_color = (percent < 0 and "#66cc00") or (percent > 0 and "#dd5555") or "#ffffff"
-		
-		local type_color = combatHelper.DAMAGE_TYPE_COLORS[tag] or "#8c8c8c"
-		local name = context.lstr.damage_types[tag] or ("\"" .. tag .. "\"")
-		name = ApplyColor(name, type_color)
-		
-		modifiers[#modifiers+1] = string.format(context.lstr.damagetyperesist.modifier, percent_color, percent, name)
-	end
-
-	description = table.concat(modifiers, "\n")
-
-	if description == "" then description = nil end
-
+	
 	return {
-		priority = combatHelper.DAMAGE_PRIORITY - 500,
+		name = "aoeweapon_lunge",
+		priority = combatHelper.DAMAGE_PRIORITY - 1,
 		description = description
-	}
+	}, Insight.descriptors.aoeweapon_base.Describe(self, context)
 end
-
 
 
 

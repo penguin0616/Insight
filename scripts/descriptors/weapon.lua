@@ -68,23 +68,6 @@ local function WandaCustomCombatDamage(inst, target, weapon, multiplier, mount)
     return 1
 end
 
-local function GetDamageModifier(combat, context)
-	if not combat or context.config["account_combat_modifiers"] == false then
-		return 1
-	end
-
-	if world_type == -1 then
-		--cprint((combat.damagemultiplier or 1), combat.externaldamagemultipliers:Get(), (combat.damagemultiplier or 1) * combat.externaldamagemultipliers:Get())
-		return (combat.damagemultiplier or 1) * combat.externaldamagemultipliers:Get()
-		--return combat.externaldamagemultipliers:Get()
-	elseif world_type == 0 or world_type == 1 then
-		return combat.damagemultiplier or 1
-	else
-		return combat:GetDamageModifier()
-	end
-end
-
-
 -- also used by combat descriptor
 local function GetDamage(self, attacker, target)
 	-- attacker is the weapon owner
@@ -129,7 +112,7 @@ local function Describe(self, context)
 		return
 	end
 
-	local multiplier = GetDamageModifier(owner.components.combat, context)
+	local multiplier = combatHelper.GetOutgoingDamageModifier(owner.components.combat)
 
 	-- Add obsidian power to multiplier
 	if inst.components.obsidiantool then -- only have to worry about it in sw or hamlet, which already agrees with the number formatting
@@ -149,8 +132,16 @@ local function Describe(self, context)
 	local stimuli_type = combatHelper.IsPrefabPoisonous(self.inst.prefab) and "poisonous" or self.stimuli
 	local stimuli_data = combatHelper.GetStimuliData(stimuli_type)
 
-	if stimuli_data.damage_modifier then
-		damage = damage * stimuli_data.damage_modifier
+	if stimuli_data == combatHelper.WEAPON_STIMULI_DEFS.electric then
+		-- Check if weapon has custom damage mults for electric.
+		local electric_damage_mult = self.electric_damage_mult or TUNING.ELECTRIC_DAMAGE_MULT
+		local electric_wet_damage_mult = self.electric_wet_damage_mult or TUNING.ELECTRIC_WET_DAMAGE_MULT
+
+		damage = damage * electric_damage_mult
+	else
+		if stimuli_data.default_damage_modifier then
+			damage = damage * stimuli_data.default_damage_modifier
+		end
 	end
 
 	-- Walter's slingshot

@@ -112,6 +112,21 @@ return {
 		summoned_gestalt_damage = "召唤<color=ENLIGHTENMENT>月灵</color>造成<color=HEALTH>%s</color>伤害",
 	},
 
+	-- aoeweapon_base.lua
+	aoeweapon_base = {
+		--weapon_damage = "AoE %s: <color=HEALTH>{damage}</color>",
+	},
+
+	-- aoeweapon_leap.lua
+	aoeweapon_leap = {
+
+	},
+
+	-- aoeweapon_lunge.lua
+	aoeweapon_lunge = {
+		lunge_damage = "Lunge {damageType}: <color=HEALTH>{damage}</color>",
+	},
+
 	-- appeasement.lua
 	appease_good = "延迟火山喷发 %s 个时段",
 	appease_bad = "加速火山喷发 %s 个时段",

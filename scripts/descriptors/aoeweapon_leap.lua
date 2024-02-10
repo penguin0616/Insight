@@ -18,34 +18,13 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- planardefense.lua
-local combatHelper = import("helpers/combat")
-
--- darker #b079e8
--- lighter #c99cf7
+-- aoeweapon_leap.lua
 local function Describe(self, context)
-	local description, alt_description = nil, nil
+	local description = nil
 
-	if self.inst.components.armor ~= nil then
-		if not context.config["armor"] then return end
-	end
-
-	local base_defense = self:GetBaseDefense()
-	local current_defense = self:GetDefense()
-	
-	local bonus_defense = current_defense - base_defense
-
-	description = string.format(context.lstr.planardefense.planar_defense, Round(current_defense, 1))
-
-	alt_description = string.format(context.lstr.planardefense.planar_defense, Round(base_defense, 1))
-	if bonus_defense ~= 0 then
-		alt_description = alt_description .. string.format(context.lstr.planardefense.additional_defense, Round(bonus_defense, 1))
-	end
-	
 	return {
-		priority = combatHelper.DAMAGE_PRIORITY - 200,
-		description = description,
-		alt_description = alt_description
+		priority = 0,
+		description = description
 	}
 end
 

@@ -46,7 +46,7 @@ local function Describe(self, context)
 	if context.config["armor"] then
 		armor_protection = {
 			name = "armor_protection",
-			priority = combatHelper.DAMAGE_PRIORITY - 1,
+			priority = combatHelper.DAMAGE_PRIORITY - 100,
 			description = protection
 		}
 	end

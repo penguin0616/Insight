@@ -113,6 +113,21 @@ return {
 		summoned_gestalt_damage = "Os <color=ENLIGHTENMENT>Espíritos da Lua</color> invocados causam <color=HEALTH>%s</color> de dano.",
 	},
 
+	-- aoeweapon_base.lua
+	aoeweapon_base = {
+		--weapon_damage = "AoE %s: <color=HEALTH>{damage}</color>",
+	},
+
+	-- aoeweapon_leap.lua
+	aoeweapon_leap = {
+
+	},
+
+	-- aoeweapon_lunge.lua
+	aoeweapon_lunge = {
+		lunge_damage = "Lunge {damageType}: <color=HEALTH>{damage}</color>",
+	},
+
 	-- appeasement.lua
 	appease_good = "Atrasa a erupção por %s segmento(s).",
 	appease_bad = "Acelera a erupção em %s segmento(s).",

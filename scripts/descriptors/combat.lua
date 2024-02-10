@@ -239,7 +239,7 @@ local function Describe(self, context)
 
 
 	return {
-		priority = combatHelper.DAMAGE_PRIORITY + 1,
+		priority = combatHelper.DAMAGE_PRIORITY + 100,
 		forge_enabled = true,
 		description = description,
 		alt_description = alt_description,

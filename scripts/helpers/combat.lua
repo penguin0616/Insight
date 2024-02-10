@@ -24,6 +24,7 @@ directory. If not, please refer to
 --------------------------------------------------------------------------
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
+local world_type = GetWorldType()
 
 local module = {
 	
@@ -49,12 +50,13 @@ local DAMAGE_TYPE_DEFS = {
 
 
 local POISONOUS_WEAPONS = {"blowdart_poison", "spear_poison"} -- Turns out the game doesn't set the .stimuli on these.
-local WEAPON_STIMULI = {
+local WEAPON_STIMULI_DEFS = {
 	normal = {
 
 	},
 	electric = {
-		damage_modifier = TUNING.ELECTRIC_DAMAGE_MULT
+		-- This is used if the weapon's electric damage multiplier is missing.
+		--default_damage_modifier = TUNING.ELECTRIC_DAMAGE_MULT
 	},
 	poisonous = {
 
@@ -63,7 +65,7 @@ local WEAPON_STIMULI = {
 
 	},
 }
-for i,v in pairs(WEAPON_STIMULI) do v.name = i end
+for i,v in pairs(WEAPON_STIMULI_DEFS) do v.name = i end
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
@@ -88,6 +90,29 @@ end
 --[[ Module Functions ]]
 --------------------------------------------------------------------------
 
+--- Calculates the outgoing damage modifier of a character. 
+--- It likely only considers "standard" combat modifiers (i.e. Wolfgang, Wigfrid, Wendy).
+---@param combat Component
+---@return number
+module.GetOutgoingDamageModifier = function(combat)
+	-- if not combat or context.config["account_combat_modifiers"] == false then
+	if not combat then
+		return 1
+	end
+
+	if world_type == -1 then
+		--cprint((combat.damagemultiplier or 1), combat.externaldamagemultipliers:Get(), (combat.damagemultiplier or 1) * combat.externaldamagemultipliers:Get())
+		return (combat.damagemultiplier or 1) * combat.externaldamagemultipliers:Get()
+		--return combat.externaldamagemultipliers:Get()
+
+	elseif world_type == 0 or world_type == 1 then
+		return combat.damagemultiplier or 1
+
+	else
+		return combat:GetDamageModifier()
+	end
+end
+
 --- Gets slingshot ammo data for a prefab after lazy loading the ammo data.
 ---@param prefab string
 ---@return table|nil
@@ -104,16 +129,16 @@ end
 ---@return table @Stimuli data
 module.GetStimuliData = function(stimuli)
 	if type(stimuli) == "nil" then
-		return WEAPON_STIMULI.normal
+		return WEAPON_STIMULI_DEFS.normal
 	end
 
 	stimuli = stimuli:lower()
 
-	if WEAPON_STIMULI[stimuli] == nil then
-		return WEAPON_STIMULI.normal
+	if WEAPON_STIMULI_DEFS[stimuli] == nil then
+		return WEAPON_STIMULI_DEFS.normal
 	end
 
-	return WEAPON_STIMULI[stimuli]
+	return WEAPON_STIMULI_DEFS[stimuli]
 end
 
 --- Checks if a weapon is poisonous through the prefab table. Annoying.
@@ -125,8 +150,9 @@ end
 --------------------------------------------------------------------------
 --[[ Initialization ]]
 --------------------------------------------------------------------------
-
+module.WEAPON_STIMULI_DEFS = WEAPON_STIMULI_DEFS
 module.DAMAGE_TYPE_DEFS = DAMAGE_TYPE_DEFS
+
 module.DAMAGE_TYPE_COLORS = setmetatable({}, {
 	__index = function(self, index)
 		return DAMAGE_TYPE_DEFS[index] and DAMAGE_TYPE_DEFS[index].text_color or nil
