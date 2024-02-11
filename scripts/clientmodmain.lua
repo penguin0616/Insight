@@ -456,11 +456,32 @@ end
 --- Retrives the current selected item, be it from hud or world.
 ---@return EntityScript|nil
 function GetMouseTargetItem()
-	local target = TheInput:GetHUDEntityUnderMouse()
+	-- Winner
+	local target
+
+	local hudTarget = TheInput:GetHUDEntityUnderMouse()
 	-- target.widget.parent is ItemTile
-	
-	-- game prefers inventory items over world items
-	target = (target and target.widget and target.widget:GetParent() ~= nil and target.widget:GetParent().item) or TheInput:GetWorldEntityUnderMouse() or nil
+
+	mprint("target:", target)
+
+	-- Game prefers inventory items over world items
+	if hudTarget and hudTarget.widget then
+		local parent = hudTarget.widget:GetParent()
+		if parent and parent.item then
+			target = parent.item
+		elseif parent then
+			-- Wigfrid's "Charged Elding Spear" has an Image in the way instead of an ItemTile.
+			-- I think it has something to do with the inventoryitem:ChangeImageName("spear_wathgrithr_lightning") that it does.
+			parent = parent:GetParent()
+			if parent and parent.item then
+				target = parent.item
+			end
+		end
+	end
+
+	if not target then
+		target = TheInput:GetWorldEntityUnderMouse()
+	end
 
 	--mprint('target', target, TheInput:GetWorldEntityUnderMouse())	
 	if target and target == localPlayer then
