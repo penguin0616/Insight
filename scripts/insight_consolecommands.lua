@@ -99,7 +99,7 @@ DST_CONSOLE_COMMANDS.i_moon_altar_stuff = function()
 
 	
 	c_setsanity(0.5)
-	c_maintainsanity()
+	c_maintainsanity(nil, 0.5)
 
 	-- Incomplete Experiment (moon_device_construction1)
 	c_give("moonstorm_static_item", 1)

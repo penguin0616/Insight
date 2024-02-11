@@ -1001,6 +1001,12 @@ return {
 	-- preservative.lua
 	preservative = "Restaura %s%% de frescura",
 
+	-- preserver.lua
+	preserver = {
+		spoilage_rate = "<color=#ad5db3>Spoilage rate</color>: <color=#ad5db3>%.1f%%</color>",
+		freshness_rate = "<color=FROZEN>Freshness rate</color>: <color=FROZEN>%.1f%%</color>",
+	},
+
 	-- quaker.lua
 	quaker = {
 		next_quake = "<color=INEDIBLE>Terremoto</color> en %s",
