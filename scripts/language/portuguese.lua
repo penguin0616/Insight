@@ -1083,6 +1083,7 @@ return {
 	-- saddler.lua
 	saddler = {
 		bonus_damage = "<color=HEALTH>Bônus de dano</color>: <color=HEALTH>%s</color>",
+		absorption = "<color=HEALTH>Damage absorption</color>: <color=HEALTH>%s%%</color>",
 		bonus_speed = "<color=DAIRY>Bônus de velocidade</color>: %s%%",
 	},
 

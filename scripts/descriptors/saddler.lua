@@ -27,12 +27,17 @@ local function Describe(self, context)
 		damage_string = string.format(context.lstr.saddler.bonus_damage, self.bonusdamage)
 	end
 
+	local absorption_string
+	if self.absorbpercent and self.absorbpercent ~= 0 then
+		absorption_string = string.format(context.lstr.saddler.absorption, self.absorbpercent * 100)
+	end
+
 	local speed_string
 	if self.speedmult and self.speedmult ~= 1 then
 		speed_string = string.format(context.lstr.saddler.bonus_speed, Round((self.speedmult - 1) * 100, 0))
 	end
 
-	description = CombineLines(damage_string, speed_string)
+	description = CombineLines(damage_string, absorption_string, speed_string)
 
 	return {
 		priority = 0,
