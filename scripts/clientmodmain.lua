@@ -462,8 +462,6 @@ function GetMouseTargetItem()
 	local hudTarget = TheInput:GetHUDEntityUnderMouse()
 	-- target.widget.parent is ItemTile
 
-	mprint("target:", target)
-
 	-- Game prefers inventory items over world items
 	if hudTarget and hudTarget.widget then
 		local parent = hudTarget.widget:GetParent()

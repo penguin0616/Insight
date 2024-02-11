@@ -35,7 +35,9 @@ local function Describe(self, context)
 	
 	local bonus_defense = current_defense - base_defense
 
-	description = string.format(context.lstr.planardefense.planar_defense, Round(current_defense, 1))
+	if current_defense ~= 0 then
+		description = string.format(context.lstr.planardefense.planar_defense, Round(current_defense, 1))
+	end
 
 	alt_description = string.format(context.lstr.planardefense.planar_defense, Round(base_defense, 1))
 	if bonus_defense ~= 0 then
