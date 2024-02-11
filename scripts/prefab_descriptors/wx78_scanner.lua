@@ -25,6 +25,10 @@ local function CLIENT_OnWX78ScannerSpawned(inst)
 	OnLocalPlayerPostInit:AddWeakListener(function()
 		if localPlayer:HasTag("upgrademoduleowner") and inst._insight_scan_label == nil then
 			local label = inst.entity:AddLabel()
+			if not label then
+				-- TODO: Ask a dev to see what cases this would return nil in.
+				return
+			end
 			label:SetWorldOffset(0, 1, 0)
 			label:SetFont(CHATFONT_OUTLINE)
 			label:SetFontSize(18)

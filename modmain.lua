@@ -3459,7 +3459,7 @@ if IS_DST then -- not in UI overrides because server needs access too
 
 	local triggered = false
 	AddClassPostConstruct("widgets/scripterrorwidget", function(self)
-		mprint("A crash has occured.")
+		mprint("A crash has occured (THIS DOES NOT MEAN IT WAS INSIGHT, THIS IS JUST HERE FOR DEBUGGING PURPOSES)")
 		if self.title then
 			mprint("Title:", self.title:GetString())
 		end
