@@ -92,6 +92,7 @@ local Insight = {
 		ENLIGHTENMENT = "#ACC5C3",
 		AGE = "#714E85", -- age meter
 		MIGHTINESS = "#0B704A",
+		INSPIRATION = "#6F3483", -- from the inspiration meter
 
 		-- mechanic
 		LIGHT = "#CCBC78", -- light tab icon
@@ -144,8 +145,8 @@ local Insight = {
 		BLACK = "#2f3e49", -- #1b2a35 was the original intent, but needed to be lighter. so I bumped it up by 20 on r,g,b.
 	
 		PLANAR = "#b079e8", -- -- darker #b079e8, lighter #c99cf7
-		LUNAR_RIFT = "#5ADFAD",
-		SHADOW_ALIGNED = "#9C2C31",
+		LUNAR_ALIGNED = "#5ADFAD", -- Got from the bright edge of the lunar rift icon
+		SHADOW_ALIGNED = "#DD2C31", -- This was originally "#9C2C31", but I made it more intense because it looked too similar to HEALTH on wigfrid's lunar/shadow songs.
 	},
 
 	ENTITY_INFORMATION_FLAGS = {

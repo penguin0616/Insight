@@ -1152,10 +1152,15 @@ return {
 			battlesong_sanitygain = "Golpear enemigos restaura <color=SANITY>%s</color> de <color=SANITY>sanity</color>",
 			battlesong_sanityaura = "Las <color=SANITY>auras de cordura</color> son <color=SANITY>%s%%</color> menos efectivas",
 			battlesong_fireresistance = "Mitiga <color=HEALTH>%s%%</color> el <color=HEALTH>daño</color> por <color=LIGHT>fuego</color>",
+			battlesong_lunaraligned = "Take <color=HEALTH>%s%% less damage</color> from <color=LUNAR_ALIGNED>lunar enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=SHADOW_ALIGNED>shadow enemies</color>.",
+			battlesong_shadowaligned = "Take <color=HEALTH>%s%% less damage</color> from <color=SHADOW_ALIGNED>shadow enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=LUNAR_ALIGNED>lunar enemies</color>.",
+
 			battlesong_instant_taunt = "Provoca a todos los enemigos cercanos",
 			battlesong_instant_panic = "Asusta a todos enemigos menores por %s segundo(s)",
+			battlesong_instant_revive = "Revives up to %d nearby allies.",
 		},
-		cost = "Cuesta %s de inspiración",
+		cost = "Cuesta <color=INSPIRATION>%s de inspiración</color>",
+		cooldown = "Song cooldown: %s",
 	},
 
 	-- sinkholespawner.lua
@@ -1301,8 +1306,8 @@ return {
 		progress_to_rain = "Progress to <color=WET>rain</color>", -- Numbers appended by code
 		remaining_rain = "<color=WET>Remaining rain</color>", -- Numbers appended by code
 
-		progress_to_hail = "Progress to <color=LUNAR_RIFT>hail</color>", -- Numbers appended by code
-		remaining_hail = "<color=LUNAR_RIFT>Remaining hail</color>", -- Numbers appended by code
+		progress_to_hail = "Progress to <color=LUNAR_ALIGNED>hail</color>", -- Numbers appended by code
+		remaining_hail = "<color=LUNAR_ALIGNED>Remaining hail</color>", -- Numbers appended by code
 
 		progress_to_acid_rain = "Progress to <color=SHADOW_ALIGNED>acid <color=WET>rain</color></color>", -- Numbers appended by code
 		remaining_acid_rain = "<color=SHADOW_ALIGNED>Remaining acid <color=WET>rain</color></color>", -- Numbers appended by code

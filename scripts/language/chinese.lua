@@ -1153,10 +1153,15 @@ return {
 			battlesong_sanitygain = "攻击敌人回复 <color=SANITY>%s 理智</color>",
 			battlesong_sanityaura = "<color=SANITY>负理智光环</color>效果减少 <color=SANITY>%s%%</color>",
 			battlesong_fireresistance = "受到的<color=LIGHT>火焰</color>伤害<color=HEALTH>减少 %s%%</color>", -- need optimization
+			battlesong_lunaraligned = "Take <color=HEALTH>%s%% less damage</color> from <color=LUNAR_ALIGNED>lunar enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=SHADOW_ALIGNED>shadow enemies</color>.",
+			battlesong_shadowaligned = "Take <color=HEALTH>%s%% less damage</color> from <color=SHADOW_ALIGNED>shadow enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=LUNAR_ALIGNED>lunar enemies</color>.",
+
 			battlesong_instant_taunt = "嘲讽所有战歌范围内的敌人",
 			battlesong_instant_panic = "使周围的敌人陷入恐慌 %s 秒",
+			battlesong_instant_revive = "Revives up to %d nearby allies.",
 		},
-		cost = "消耗 %s 灵感值来使用",
+		cost = "消耗 <color=INSPIRATION>%s 灵感值</color>来使用", -- color may be inaccurate in this translation
+		cooldown = "Song cooldown: %s",
 	},
 
 	-- sinkholespawner.lua
@@ -1302,8 +1307,8 @@ return {
 		progress_to_rain = "<color=WET>降雨进</color>度", -- [Colors may be inaccurate for this translation] Numbers appended by code
 		remaining_rain = "<color=WET>降雨</color>持续", -- [Colors may be inaccurate for this translation] Numbers appended by code
 
-		progress_to_hail = "Progress to <color=LUNAR_RIFT>hail</color>", -- Numbers appended by code
-		remaining_hail = "<color=LUNAR_RIFT>Remaining hail</color>", -- Numbers appended by code
+		progress_to_hail = "Progress to <color=LUNAR_ALIGNED>hail</color>", -- Numbers appended by code
+		remaining_hail = "<color=LUNAR_ALIGNED>Remaining hail</color>", -- Numbers appended by code
 
 		progress_to_acid_rain = "Progress to <color=SHADOW_ALIGNED>acid <color=WET>rain</color></color>", -- Numbers appended by code
 		remaining_acid_rain = "<color=SHADOW_ALIGNED>Remaining acid <color=WET>rain</color></color>", -- Numbers appended by code

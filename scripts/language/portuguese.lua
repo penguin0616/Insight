@@ -1158,10 +1158,15 @@ return {
 			battlesong_sanitygain = "Atingir inimigos restaura  <color=SANITY>%s de sanidade</color>.",
 			battlesong_sanityaura = "As <color=SANITY>auras de sanidade</color> negativas são <color=SANITY>%s%%</color> menos eficazes.",
 			battlesong_fireresistance = "Recebe <color=HEALTH>%s%% menos dano</color> de <color=LIGHT>fogo</color>.",
+			battlesong_lunaraligned = "Take <color=HEALTH>%s%% less damage</color> from <color=LUNAR_ALIGNED>lunar enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=SHADOW_ALIGNED>shadow enemies</color>.",
+			battlesong_shadowaligned = "Take <color=HEALTH>%s%% less damage</color> from <color=SHADOW_ALIGNED>shadow enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=LUNAR_ALIGNED>lunar enemies</color>.",
+
 			battlesong_instant_taunt = "Provoca todos os inimigos próximos dentro do raio da música.",
 			battlesong_instant_panic = "Apavora inimigos assombráveis próximos durante %s segundo(s).",
+			battlesong_instant_revive = "Revives up to %d nearby allies.",
 		},
-		cost = "Custa %s de inspiração para usar.",
+		cost = "Custa <color=INSPIRATION>%s de inspiração</color> para usar.",
+		cooldown = "Song cooldown: %s",
 	},
 
 	-- sinkholespawner.lua
@@ -1307,8 +1312,8 @@ return {
 		progress_to_rain = "Progresso para <color=WET>chover</color>", -- [Colors may be inaccurate for this translation] Numbers appended by code
 		remaining_rain = "<color=WET>Chuva</color> restante", -- [Colors may be inaccurate for this translation] Numbers appended by code
 
-		progress_to_hail = "Progress to <color=LUNAR_RIFT>hail</color>", -- Numbers appended by code
-		remaining_hail = "<color=LUNAR_RIFT>Remaining hail</color>", -- Numbers appended by code
+		progress_to_hail = "Progress to <color=LUNAR_ALIGNED>hail</color>", -- Numbers appended by code
+		remaining_hail = "<color=LUNAR_ALIGNED>Remaining hail</color>", -- Numbers appended by code
 
 		progress_to_acid_rain = "Progress to <color=SHADOW_ALIGNED>acid <color=WET>rain</color></color>", -- Numbers appended by code
 		remaining_acid_rain = "<color=SHADOW_ALIGNED>Remaining acid <color=WET>rain</color></color>", -- Numbers appended by code

@@ -23,7 +23,7 @@ local PRECIP_TYPE_DESCRIPTORS = {}
 
 local WHITE = Color.fromRGB(255, 255, 255)
 local RAIN_COLOR = Color.fromHex(Insight.COLORS.WET)
-local HAIL_COLOR = Color.fromHex(Insight.COLORS.LUNAR_RIFT)
+local HAIL_COLOR = Color.fromHex(Insight.COLORS.LUNAR_ALIGNED)
 
 local entity_tracker = import("helpers/entitytracker")
 
@@ -143,7 +143,7 @@ local function DescribeNone(self, context)
 		local time_left = amount_left / delta
 
 		local base_string = advanced and (
-			"%s: %s (<color=" .. WHITE:Lerp(HAIL_COLOR, current_hail_level / LUNAR_HAIL_CEIL):ToHex() .. ">%.2f</color> / <color=LUNAR_RIFT>%.1f</color>)"
+			"%s: %s (<color=" .. WHITE:Lerp(HAIL_COLOR, current_hail_level / LUNAR_HAIL_CEIL):ToHex() .. ">%.2f</color> / <color=LUNAR_ALIGNED>%.1f</color>)"
 		) or "%s: %s"
 
 		hail_progress_string = string.format(
@@ -223,7 +223,7 @@ local function DescribeHail(self, context)
 	local time_left = amount_left / delta
 
 	local base_string = advanced and (
-		"%s: %s (%.1f / <color=" .. WHITE:Lerp(HAIL_COLOR, current_hail_level / LUNAR_HAIL_CEIL):ToHex() .. ">%.2f</color> / <color=LUNAR_RIFT>%.1f</color>)"
+		"%s: %s (%.1f / <color=" .. WHITE:Lerp(HAIL_COLOR, current_hail_level / LUNAR_HAIL_CEIL):ToHex() .. ">%.2f</color> / <color=LUNAR_ALIGNED>%.1f</color>)"
 	) or "%s: %s"
 
 	local hail_progress_string = string.format(
