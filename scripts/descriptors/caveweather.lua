@@ -104,7 +104,7 @@ local function DescribeNone(self, context)
 
 		local moisture_needed = target_moisture - current_moisture
 		local delta = _moisturerate:value()
-		local time_left = math.min(moisture_needed / delta, 86400)
+		local time_left = moisture_needed / delta
 
 		local is_acid_rain = AcidRainEnabled()
 
@@ -116,8 +116,8 @@ local function DescribeNone(self, context)
 
 		rain_progress_string = string.format(
 			base_string, 
-			other_string ,
-			context.time:SimpleProcess(time_left),
+			other_string,
+			isbadnumber(time_left) and "???" or context.time:SimpleProcess(time_left),
 			current_moisture, target_moisture
 		)
 
@@ -162,7 +162,7 @@ local function DescribeRain(self, context)
 	rain_progress_string = string.format(
 		base_string, 
 		other_string, 
-		context.time:SimpleProcess(time_left),
+		isbadnumber(time_left) and "???" or context.time:SimpleProcess(time_left),
 		_moisturefloor:value(), current_moisture, _moistureceil:value()
 	)
 

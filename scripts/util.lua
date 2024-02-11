@@ -82,6 +82,10 @@ if IS_DS and not UICOLOURS then
 	}
 end
 
+--- Returns the default if the number is not a valid number.
+---@param num number
+---@param default
+---@return number @Returns the sanitized number.
 function SanitizeNumber(num, default)
 	if num ~= num or num == math.inf or num == -math.inf then
 		return default

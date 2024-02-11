@@ -115,7 +115,7 @@ local function DescribeNone(self, context)
 
 		local moisture_needed = target_moisture - current_moisture
 		local delta = _moisturerate:value()
-		local time_left = math.min(moisture_needed / delta, 86400)
+		local time_left = moisture_needed / delta
 
 		local base_string = advanced and (
 			"%s: %s (<color=" .. WHITE:Lerp(RAIN_COLOR, current_moisture / target_moisture):ToHex() .. ">%.1f</color> / <color=WET>%.1f</color>)"
@@ -124,7 +124,7 @@ local function DescribeNone(self, context)
 		rain_progress_string = string.format(
 			base_string, 
 			context.lstr.weather.progress_to_rain, 
-			context.time:SimpleProcess(time_left),
+			isbadnumber(time_left) and "???" or context.time:SimpleProcess(time_left),
 			current_moisture, target_moisture
 		)
 
@@ -149,7 +149,7 @@ local function DescribeNone(self, context)
 		hail_progress_string = string.format(
 			base_string, -- %.1f%%
 			context.lstr.weather.progress_to_hail, 
-			context.time:SimpleProcess(time_left), -- (level / LUNAR_HAIL_CEIL) * 100
+			isbadnumber(time_left) and "???" or context.time:SimpleProcess(time_left), -- (level / LUNAR_HAIL_CEIL) * 100
 			current_hail_level, LUNAR_HAIL_CEIL
 		)
 	end
@@ -187,7 +187,7 @@ local function DescribeRain(self, context)
 	rain_progress_string = string.format(
 		base_string, 
 		context.lstr.weather.remaining_rain, 
-		context.time:SimpleProcess(time_left),
+		isbadnumber(time_left) and "???" or context.time:SimpleProcess(time_left),
 		_moisturefloor:value(), current_moisture, _moistureceil:value()
 	)
 
@@ -229,7 +229,7 @@ local function DescribeHail(self, context)
 	local hail_progress_string = string.format(
 		base_string,
 		context.lstr.weather.remaining_hail, 
-		context.time:SimpleProcess(time_left),
+		isbadnumber(time_left) and "???" or context.time:SimpleProcess(time_left),
 		LUNAR_HAIL_FLOOR, current_hail_level, LUNAR_HAIL_CEIL
 	)
 
