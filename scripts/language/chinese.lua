@@ -124,7 +124,7 @@ return {
 
 	-- aoeweapon_lunge.lua
 	aoeweapon_lunge = {
-		lunge_damage = "Lunge {damageType}: <color=HEALTH>{damage}</color>",
+		lunge_damage = "冲刺 {damageType}: <color=HEALTH>{damage}</color>",
 	},
 
 	-- appeasement.lua
@@ -600,7 +600,7 @@ return {
 
 	-- fishable.lua
 	fish_count = "<color=SHALLOWS>鱼</color>: <color=WET>%s</color> / <color=WET>%s</color>",
-	fish_recharge = "%s后增加一条鱼",
+	fish_recharge = ", %s后增加一条鱼",
 	fish_wait_time = "钓到一条鱼需要 <color=SHALLOWS>%s 秒</color>",
 
 	-- fishingrod.lua
@@ -812,7 +812,7 @@ return {
 
 	-- lunarthrall_plant.lua [Prefab]
 	lunarthrall_plant = {
-		time_to_aggro = "Vulnerability ends in: <color=%s>%1.f</color>",
+		time_to_aggro = "虚弱状态结束: <color=%s>%.1f</color>",
 	},
 
 	-- lureplant.lua [Prefab]
@@ -944,7 +944,7 @@ return {
 
 	-- parryweapon.lua
 	parryweapon = {
-		parry_duration = "Parry duration: {duration}",
+		parry_duration = "格挡持续: {duration}",
 	},
 
 	-- periodicthreat.lua
@@ -1004,8 +1004,8 @@ return {
 
 	-- preserver.lua
 	preserver = {
-		spoilage_rate = "<color=#ad5db3>Spoilage rate</color>: <color=#ad5db3>%.1f%%</color>",
-		freshness_rate = "<color=FROZEN>Freshness rate</color>: <color=FROZEN>%.1f%%</color>",
+		spoilage_rate = "<color=#ad5db3>腐烂率</color>: <color=#ad5db3>%.1f%%</color>",
+		freshness_rate = "<color=FROZEN>回鲜率</color>: <color=FROZEN>%.1f%%</color>",
 	},
 
 	-- quaker.lua
@@ -1084,7 +1084,7 @@ return {
 	-- saddler.lua
 	saddler = {
 		bonus_damage = "<color=HEALTH>额外伤害</color>: <color=HEALTH>%s</color>",
-		absorption = "<color=HEALTH>Damage absorption</color>: <color=HEALTH>%s%%</color>",
+		absorption = "<color=HEALTH>伤害吸收</color>: <color=HEALTH>%s%%</color>",
 		bonus_speed = "<color=DAIRY>额外速度</color>: %s%%",
 	},
 
@@ -1157,17 +1157,17 @@ return {
 			battlesong_durability = "<color=HEALTH>武器</color>持续时间增加 <color=#aaaaee>%s%%</color>",
 			battlesong_healthgain = "攻击敌人回复 <color=HEALTH>%s 生命</color> (薇格弗德为 <color=HEALTH>%s</color>)",
 			battlesong_sanitygain = "攻击敌人回复 <color=SANITY>%s 理智</color>",
-			battlesong_sanityaura = "<color=SANITY>负理智光环</color>效果减少 <color=SANITY>%s%%</color>",
-			battlesong_fireresistance = "受到的<color=LIGHT>火焰</color>伤害<color=HEALTH>减少 %s%%</color>", -- need optimization
-			battlesong_lunaraligned = "Take <color=HEALTH>%s%% less damage</color> from <color=LUNAR_ALIGNED>lunar enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=SHADOW_ALIGNED>shadow enemies</color>.",
-			battlesong_shadowaligned = "Take <color=HEALTH>%s%% less damage</color> from <color=SHADOW_ALIGNED>shadow enemies</color>.\nDeal <color=HEALTH>%s%% more damage</color> to <color=LUNAR_ALIGNED>lunar enemies</color>.",
+			battlesong_sanityaura = "<color=SANITY>疯狂光环</color>效果减少 <color=SANITY>%s%%</color>",
+			battlesong_fireresistance = "受到<color=LIGHT>火焰</color>伤害<color=HEALTH>减少 %s%%</color>", -- need optimization
+			battlesong_lunaraligned = "受到<color=LUNAR_ALIGNED>月亮阵营生物</color>伤害<color=HEALTH>减少 %s%%</color>\n对于<color=SHADOW_ALIGNED>暗影阵营生物</color>伤害<color=HEALTH>增加 %s%%</color>",
+			battlesong_shadowaligned = "受到<color=SHADOW_ALIGNED>暗影阵营生物</color>伤害<color=HEALTH>减少 %s%%</color>\n对于<color=LUNAR_ALIGNED>月亮阵营生物</color>伤害<color=HEALTH>增加 %s%%</color>",
 
 			battlesong_instant_taunt = "嘲讽所有战歌范围内的敌人",
 			battlesong_instant_panic = "使周围的敌人陷入恐慌 %s 秒",
-			battlesong_instant_revive = "Revives up to %d nearby allies.",
+			battlesong_instant_revive = "复活周围 %d 名盟友",
 		},
-		cost = "消耗 <color=INSPIRATION>%s 灵感值</color>来使用", -- color may be inaccurate in this translation
-		cooldown = "Song cooldown: %s",
+		cost = "消耗 <color=INSPIRATION>%s 灵感值</color>来使用",
+		cooldown = "吟唱冷却: %s",
 	},
 
 	-- sinkholespawner.lua
@@ -1189,7 +1189,7 @@ return {
 	spawner = {
 		next = "{respawn_time}后生成<color=MOB_SPAWN><prefab={child_name}></color>",
 		child = "生成一个<color=MOB_SPAWN><prefab=%s></color>",
-		occupied = "Occupied: %s",
+		occupied = "占据: %s",
 	},
 
 	-- spider_healer.lua [Prefab]
@@ -1295,7 +1295,7 @@ return {
 
 	-- wathgrithr_shield.lua [Prefab]
 	wathgrithr_shield = {
-		parry_duration_complex = "Parry duration: <color=%s>%.1f<sub>normal</sub></color> | <color=%s>%.1f<sub>skill</sub></color>",
+		parry_duration_complex = "格挡持续: <color=%s>%.1f<sub>正常</sub></color> | <color=%s>%.1f<sub>技能</sub></color>",
 	},
 
 	-- weapon.lua
@@ -1310,14 +1310,14 @@ return {
 
 	-- weather.lua
 	weather = {
-		progress_to_rain = "<color=WET>降雨进</color>度", -- [Colors may be inaccurate for this translation] Numbers appended by code
-		remaining_rain = "<color=WET>降雨</color>持续", -- [Colors may be inaccurate for this translation] Numbers appended by code
+		progress_to_rain = "<color=WET>降雨</color>进度", -- Numbers appended by code
+		remaining_rain = "<color=WET>降雨</color>持续", -- Numbers appended by code
 
-		progress_to_hail = "Progress to <color=LUNAR_ALIGNED>hail</color>", -- Numbers appended by code
-		remaining_hail = "<color=LUNAR_ALIGNED>Remaining hail</color>", -- Numbers appended by code
+		progress_to_hail = "<color=LUNAR_ALIGNED>月雹</color>进度", -- Numbers appended by code
+		remaining_hail = "<color=LUNAR_ALIGNED>月雹</color>持续", -- Numbers appended by code
 
-		progress_to_acid_rain = "Progress to <color=SHADOW_ALIGNED>acid <color=WET>rain</color></color>", -- Numbers appended by code
-		remaining_acid_rain = "<color=SHADOW_ALIGNED>Remaining acid <color=WET>rain</color></color>", -- Numbers appended by code
+		progress_to_acid_rain = "<color=SHADOW_ALIGNED>酸<color=WET>雨</color></color>进度", -- Numbers appended by code
+		remaining_acid_rain = "<color=SHADOW_ALIGNED>酸<color=WET>雨</color></color>持续", -- Numbers appended by code
 	},
 
 	-- weighable.lua

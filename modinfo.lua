@@ -3623,13 +3623,13 @@ STRINGS = {
 	weather_detail = {
 		label = {
 			"Weather Detail", 
-			["zh"] = nil, 
+			["zh"] = "天气明细", 
 			["br"] = nil, 
 			["es"] = nil
 		},
 		hover = {
 			"How detailed the weather information is.", 
-			["zh"] = nil, 
+			["zh"] = "天气信息有多详细", 
 			["br"] = nil, 
 			["es"] = nil
 		},
@@ -3637,13 +3637,13 @@ STRINGS = {
 			[0] = {
 				description = {
 					"Standard detail",
-					["zh"] = nil,
+					["zh"] = "标准",
 					["br"] = nil,
 					["es"] = nil,
 				},
 				hover = {
 					"The normal level of detail is shown.",
-					["zh"] = nil,
+					["zh"] = "显示正常的细节级别",
 					["br"] = nil,
 					["es"] = nil,
 				},
@@ -3651,13 +3651,13 @@ STRINGS = {
 			[1] = {
 				description = {
 					"Advanced detail",
-					["zh"] = nil,
+					["zh"] = "高级",
 					["br"] = nil,
 					["es"] = nil,
 				},
 				hover = {
 					"Specific numbers about weather conditions are visible.",
-					["zh"] = nil,
+					["zh"] = "显示有关天气状况的具体数字",
 					["br"] = nil,
 					["es"] = nil,
 				},
