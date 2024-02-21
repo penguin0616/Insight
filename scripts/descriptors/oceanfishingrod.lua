@@ -104,7 +104,7 @@ local function SERVER_UpdateInterestedFish(player)
 			interest_levels[count] = (interest - interest % 0.01)
 		end
 
-		if #fish >= 48 then
+		if #interested_fish >= 48 then
 			-- RPC limit
 			break
 		end
