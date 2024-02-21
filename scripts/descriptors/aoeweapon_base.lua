@@ -35,12 +35,15 @@ local function DescribeDamage(self, context, format, combat)
 	local stimuli_data = combatHelper.GetStimuliData(self.stimuli)
 
 	local damage = self.damage
+	if damage then
+		if stimuli_data.default_damage_modifier then
+			damage = damage * stimuli_data.default_damage_modifier
+		end
 
-	if stimuli_data.default_damage_modifier then
-		damage = damage * stimuli_data.default_damage_modifier
+		damage = damage * combatHelper.GetOutgoingDamageModifier(combat)
+	else
+		damage = "nil"
 	end
-
-	damage = damage * combatHelper.GetOutgoingDamageModifier(combat)
 
 	return {
 		name = "aoeweapon_base_DescribeDamage",
