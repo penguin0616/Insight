@@ -118,7 +118,7 @@ local function DescribeNone(self, context)
 		local time_left = moisture_needed / delta
 
 		local base_string = advanced and (
-			"%s: %s (<color=" .. WHITE:Lerp(RAIN_COLOR, current_moisture / target_moisture):ToHex() .. ">%.1f</color> / <color=WET>%.1f</color>)"
+			"%s: %s (<color=" .. WHITE:Lerp(RAIN_COLOR, math.clamp(current_moisture / target_moisture, 0, 1)):ToHex() .. ">%.1f</color> / <color=WET>%.1f</color>)"
 		) or "%s: %s"
 
 		rain_progress_string = string.format(
@@ -143,7 +143,7 @@ local function DescribeNone(self, context)
 		local time_left = amount_left / delta
 
 		local base_string = advanced and (
-			"%s: %s (<color=" .. WHITE:Lerp(HAIL_COLOR, current_hail_level / LUNAR_HAIL_CEIL):ToHex() .. ">%.2f</color> / <color=LUNAR_ALIGNED>%.1f</color>)"
+			"%s: %s (<color=" .. WHITE:Lerp(HAIL_COLOR, math.clamp(current_hail_level / LUNAR_HAIL_CEIL, 0, 1)):ToHex() .. ">%.2f</color> / <color=LUNAR_ALIGNED>%.1f</color>)"
 		) or "%s: %s"
 
 		hail_progress_string = string.format(
@@ -181,7 +181,7 @@ local function DescribeRain(self, context)
 	local time_left = difference / delta
 
 	local base_string = advanced and (
-		"%s: %s (%.1f / <color=" .. WHITE:Lerp(RAIN_COLOR, current_moisture / _moistureceil:value()):ToHex() .. ">%.1f</color> / <color=WET>%.1f</color>)"
+		"%s: %s (%.1f / <color=" .. WHITE:Lerp(RAIN_COLOR, math.clamp(current_moisture / _moistureceil:value(), 0, 1)):ToHex() .. ">%.1f</color> / <color=WET>%.1f</color>)"
 	) or "%s: %s"
 
 	rain_progress_string = string.format(
@@ -223,7 +223,7 @@ local function DescribeHail(self, context)
 	local time_left = amount_left / delta
 
 	local base_string = advanced and (
-		"%s: %s (%.1f / <color=" .. WHITE:Lerp(HAIL_COLOR, current_hail_level / LUNAR_HAIL_CEIL):ToHex() .. ">%.2f</color> / <color=LUNAR_ALIGNED>%.1f</color>)"
+		"%s: %s (%.1f / <color=" .. WHITE:Lerp(HAIL_COLOR, math.clamp(current_hail_level / LUNAR_HAIL_CEIL, 0, 1)):ToHex() .. ">%.2f</color> / <color=LUNAR_ALIGNED>%.1f</color>)"
 	) or "%s: %s"
 
 	local hail_progress_string = string.format(
