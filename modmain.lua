@@ -1882,6 +1882,15 @@ end
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 util = import("util")
 language = import("language/language")
+
+if IS_DST and false then
+	local debugging = import("debugging")
+
+	debugging.StartNetvarDebugging()
+end
+
+
+
 if IS_DST then 
 	local image = { atlas="images/Insight_Announcement.xml", texture="Insight_Announcement.tex" }
 	ANNOUNCEMENT_ICONS.insight = image
