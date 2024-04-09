@@ -176,6 +176,11 @@ return {
 		bearger_attack = "<prefab=bearger>会在%s后攻击"
 	},
 
+	-- beef_bell.lua [Prefab]
+	beef_bell = {
+		beefalo_name = "名称: %s",
+	},
+
 	-- beequeenhive.lua [Prefab]
 	beequeenhive = {
 		time_to_respawn = "<prefab=beequeen>会重生于%s后",
