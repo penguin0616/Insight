@@ -400,6 +400,7 @@ local COMMON_STRINGS = {
 			["zh"] = "否",
 			["br"] = "Não",
 			["es"] = "Desactivado",
+			["ru"] = "Нет",
 		},
 	},
 	YES = {
@@ -408,6 +409,7 @@ local COMMON_STRINGS = {
 			["zh"] = "是",
 			["br"] = "Sim",
 			["es"] = "Activado",
+			["ru"] = "Да",
 		},
 	}
 }
@@ -418,13 +420,15 @@ example = {
 		"Example", 
 		["zh"] = nil, 
 		["br"] = nil, 
-		["es"] = nil
+		["es"] = nil,
+		["ru"] = nil
 	},
 	hover = {
 		"Description", 
 		["zh"] = nil, 
 		["br"] = nil, 
-		["es"] = nil
+		["es"] = nil,
+		["ru"] = nil
 	},
 	options = {
 		[false] = {
@@ -434,6 +438,7 @@ example = {
 				["zh"] = nil,
 				["br"] = nil,
 				["es"] = nil,
+				["ru"] = nil,
 			},
 		},
 		[true] = {
@@ -443,6 +448,7 @@ example = {
 				["zh"] = nil,
 				["br"] = nil,
 				["es"] = nil,
+				["ru"] = nil,
 			},
 		},
 	},
@@ -459,66 +465,77 @@ STRINGS = {
 		["zh"] = nil,
 		["br"] = "O mod deve estar ativado para o funcionamento do modinfo",
 		["es"] = "El mod debe estar habilitado para que funcione el modinfo.",
+		["ru"] = "Для работы modinfo мод должен быть включен",
 	},
 	update_info = {
 		"Added information for the From Beyond updates and other stuff. See Steam changelog for more info.",
 		["zh"] = nil,
 		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
+		["ru"] = "Добавлена информация об обновлениях From Beyond и других вещах. Смотрите список изменений Steam для получения дополнительной информации.",
 	},
 	update_info_ds = {
 		"A *ton* of stuff. You should **really** check the Steam Change Notes.",
 		["zh"] = nil,
 		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
+		["ru"] = "*Куча* всего. Вам **действительно** стоит ознакомиться с Steam Change Notes."
 	},
 	crashreporter_info = {
 		"Insight has a crash reporter you can enable in the client & server config",
 		["zh"] = "添加了崩溃报告器, 你可以在客户端或服务器设置界面来开启它。",
 		["br"] = "O Insight tem um relatório de falhas que você pode ativar na configuração do cliente e do servidor",
 		["es"] = "Insight tiene un informe de fallos que puedes activar en la configuración del cliente y del servidor.",
+		["ru"] = "В Insight есть функция отслеживания сбоев, которую вы можете включить в конфигурации клиента и сервера",
 	},
 	mod_explanation = {
 		"Basically Show Me but with more features.",
 		["zh"] = "以 Show Me 为基础，但功能更全面",
 		["br"] = "Basicamente o Show Me, mas com mais recursos.",
 		["es"] = "Básicamente Show Me pero con más funciones.",
+		["ru"] = "В основном Show Me, но с большим количеством функций.",
 	},
 	config_paths = {
 		"Server Configuration: Main Menu -> Host Game -> Mods -> Server Mods -> Insight -> Configure Mod\n-------------------------\nClient Configuration: Main Menu -> Mods -> Server Mods -> Insight -> Configure Mod",
 		["zh"] = "服务器设置方法: 主界面 -> 创建世界-> 模组 -> 服务器模组 -> Insight -> 模组设置\n-------------------------\n客户端设置方法: 主界面 -> 模组 -> 服务器模组 -> Insight -> 模组设置",
 		["br"] = "Configuração do Servidor: Main Menu -> Host Game -> Mods -> Server Mods -> Insight -> Configure Mod\n-------------------------\nConfiguração do Client: Main Menu -> Mods -> Server Mods -> Insight -> Configure Mod",
 		["es"] = "Configuración de servidor: Menú principal -> Crear partida -> Mods -> Mods servidor -> Insight -> Configurar mod\n-------------------------\nConfiguración del cliente: Menú principal -> Mods -> Mods servidor -> Insight -> Configurar mod",
+		["ru"] = "Конфигурация сервера: Главное меню -> Создать игру -> Моды -> Моды сервера -> Insight -> Настроить мод\n-------------------------\nКонфигурация клиента: Главное меню -> Моды -> Моды сервера -> Insight -> Настроить мод",
 	},
 	config_disclaimer = {
 		"Make sure to check out the configuration options.",
 		["zh"] = "请确认你设置的各个选项, 尤其是设置好显示的和设置不再显示的信息，需要格外注意。",
 		["br"] = "Certifique-se de verificar as opções de configuração.",
 		["es"] = "Asegúrese de comprobar las opciones de configuración.",
+		["ru"] = "Убедитесь, что проверили параметры конфигурации.",
 	},
 	version = {
 		"Version",
 		["zh"] = "版本",
 		["br"] = "Versão",
 		["es"] = "Versión",
+		["ru"] = "Версия",
 	},
 	latest_update = {
 		"Latest update",
 		["zh"] = "最新更新",
 		["br"] = "Última atualização",
 		["es"] = "Última actualización",
+		["ru"] = "Последнее обновление",
 	},
 	undefined = {
 		"Undefined",
 		["zh"] = "默认",
 		["br"] = "Indefinido",
 		["es"] = "Indefinido",
+		["ru"] = "Неопределено",
 	},
 	undefined_description = {
 		"Defaults to: ",
 		["zh"] = "默认为：",
 		["br"] = "Padrões para: ",
 		["es"] = "Por defecto es: ",
+		["ru"] = "По умолчанию: ",
 	},
 	--==========================================================================================
 	--[[ Section Titles ]]
@@ -528,42 +545,49 @@ STRINGS = {
 		["zh"] = "格式",
 		["br"] = "Formações",
 		["es"] = "Formato",
+		["ru"] = "Форматирование",
 	},
 	sectiontitle_indicators = {
 		"Indicators",
 		["zh"] = "指示器",
 		["br"] = "Indicadores",
 		["es"] = "Indicadores",
+		["ru"] = "Форматирование",
 	},
 	sectiontitle_foodrelated = {
 		"Food Related",
 		["zh"] = "食物相关",
 		["br"] = "Relacionado a comidas",
 		["es"] = "Alimentos",
+		["ru"] = "Связанные с едой",
 	},
 	sectiontitle_informationcontrol = {
 		"Information Control",
 		["zh"] = "信息控制",
 		["br"] = "Informações de controle",
 		["es"] = "Información",
+		["ru"] = "Управление информацией",
 	},
 	sectiontitle_miscellaneous = {
 		"Miscellaneous",
 		["zh"] = "杂项",
 		["br"] = "Diversos",
 		["es"] = "Varios",
+		["ru"] = "Разное",
 	},
 	sectiontitle_debugging = {
 		"Debugging",
 		["zh"] = "调试",
 		["br"] = "Debugging",
 		["es"] = "Depuración",
+		["ru"] = "Отладка",
 	},
 	sectiontitle_complexconfiguration = {
 		"Special Configuration",
 		["zh"] = "特殊配置",
 		["br"] = "Configuração Especial",
-		["es"] = nil
+		["es"] = nil,
+		["ru"] = "Особая конфигурация",
 	},
 	--==========================================================================================
 	--[[ Complex Configuration Options ]]
@@ -574,12 +598,14 @@ STRINGS = {
 			["zh"] = "Boss 指示器预设", 
 			["br"] = "Prefabs de Indicadores de Chefões", 
 			["es"] = nil,
+			["ru"] = "Префабы индикаторов боссов",
 		},
 		hover = {
 			"Enabled boss indicator prefabs.", 
 			["zh"] = "启用 Boss 指示器的生物。", 
 			["br"] = "Prefabs de Indicadores de Chefões ativados", 
 			["es"] = nil,
+			["ru"] = "Включены префабы индикаторов боссов.",
 		},
 		options = function(config)
 			local t = {} 
@@ -598,12 +624,14 @@ STRINGS = {
 			["zh"] = "小 Boss 指示器预设", 
 			["br"] = "Prefabs de Indicadores de Mini-Chefões", 
 			["es"] = nil,
+			["ru"] = "Префабы индикаторов мини-боссов",
 		},
 		hover = {
 			"Enabled miniboss indicator prefabs.", 
 			["zh"] = "启用小 Boss 指示器的生物。", 
 			["br"] = "Prefabs de Indicadores de Mini-Chefões ativados", 
 			["es"] = nil,
+			["ru"] = "Включены префабы индикаторов мини-боссов.",
 		},
 		options = function(config)
 			local t = {} 
@@ -622,12 +650,14 @@ STRINGS = {
 			["zh"] = "其他物品指示器预设", 
 			["br"] = "Prefabs de Indicadores Notáveis", 
 			["es"] = nil,
+			["ru"] = "Префабы примечательных индикаторов",
 		},
 		hover = {
 			"Enabled notable indicator prefabs.", 
 			["zh"] = "启用指示器的其他物品。", 
 			["br"] = "Prefabs de Indicadores Notáveis ativados", 
 			["es"] = nil,
+			["ru"] = "Включены префабы примечательных индикаторов.",
 		},
 		options = function(config)
 			local t = {} 
@@ -645,13 +675,15 @@ STRINGS = {
 			"Unique Information", 
 			["zh"] = "特定信息", 
 			["br"] = "Informações Únicas", 
-			["es"] = "Información única"
+			["es"] = "Información única",
+			["ru"] = "Уникальная информация",
 		},
 		hover = {
 			"Whether to display unique information for certain entities.", 
 			["zh"] = "是否显示特定实体的特定信息。", 
 			["br"] = "Se vai exibir informações exclusivas para determinadas entidades.", 
-			["es"] = "Configura si se muestra información única de ciertas entidades."
+			["es"] = "Configura si se muestra información única de ciertas entidades.",
+			["ru"] = "Отображать ли уникальную информацию для определенных сущностей.",
 		},
 		options = function(config)
 			local t = {} 
@@ -675,13 +707,15 @@ STRINGS = {
 			"Language", 
 			["zh"] = "语言", 
 			["br"] = "Idioma", 
-			["es"] = "Idioma"
+			["es"] = "Idioma",
+			["ru"] = "Язык",
 		},
 		hover = {
 			"The language you want information to display in.", 
 			["zh"] = "你希望以哪种语言显示信息", 
 			["br"] = "O idioma em que você deseja que as informações sejam exibidas.", 
-			["es"] = "El idioma en el que se muestra la información."
+			["es"] = "El idioma en el que se muestra la información.",
+			["ru"] = "Язык, на котором вы хотите отображать информацию.",
 		},
 		options = {
 			["automatic"] = {
@@ -690,12 +724,14 @@ STRINGS = {
 					["zh"] = "自动",
 					["br"] = "Automático",
 					["es"] = "Automático",
+					["ru"] = "Автоматически",
 				},
 				hover = {
 					"Uses your current language settings.",
 					["zh"] = "使用游戏当前的语言设定",
 					["br"] = "Usa suas configurações de idioma atuais.",
 					["es"] = "Utiliza tu configuración de idioma actual.",
+					["ru"] = "Использует текущие настройки языка.",
 				},
 			},
 			["en"] = {
@@ -704,12 +740,14 @@ STRINGS = {
 					["zh"] = "英语",
 					["br"] = "English",
 					["es"] = "Inglés",
+					["ru"] = "Английский",
 				},
 				hover = {
 					"English",
 					["zh"] = "英语",
 					["br"] = "Inglês",
 					["es"] = "Inglés",
+					["ru"] = "Английский",
 				},
 			},
 			["zh"] = {
@@ -718,12 +756,14 @@ STRINGS = {
 					["zh"] = "中文",
 					["br"] = "Chinese",
 					["es"] = "Chino",
+					["ru"] = "Китайский",
 				},
 				hover = {
 					"Chinese",
 					["zh"] = "中文",
 					["br"] = "Chinês",
 					["es"] = "Chino",
+					["ru"] = "Китайский",
 				},
 			},
 			["br"] = {
@@ -732,12 +772,14 @@ STRINGS = {
 					["zh"] = "Portuguese",
 					["br"] = "Português",
 					["es"] = "Portugués",
+					["ru"] = "Португальский",
 				},
 				hover = {
 					"Portuguese",
 					["zh"] = "Portuguese",
 					["br"] = "Português",
 					["es"] = "Portugués",
+					["ru"] = "Португальский",
 				},
 			},
 			["es"] = {
@@ -746,12 +788,30 @@ STRINGS = {
 					["zh"] = "Spanish",
 					["br"] = "Spanish",
 					["es"] = "Español",
+					["ru"] = "Испанский",
 				},
 				hover = {
 					"Spanish",
 					["zh"] = "Spanish",
 					["br"] = "Spanish",
 					["es"] = "Español",
+					["ru"] = "Испанский",
+				},
+			},			
+			["ru"] = {
+				description = {
+					"Русский",
+					["zh"] = "Russian",
+					["br"] = "Russian",
+					["es"] = "Ruso",
+					["ru"] = "Русский",
+				},
+				hover = {
+					"Русский",
+					["zh"] = "Russian",
+					["br"] = "Russian",
+					["es"] = "Ruso",
+					["ru"] = "Русский",
 				},
 			},
 		},
@@ -761,13 +821,15 @@ STRINGS = {
 			"Display style", 
 			["zh"] = "信息类型", 
 			["br"] = "Estilo de exibição", 
-			["es"] = "Estilo de información"
+			["es"] = "Estilo de información",
+			["ru"] = "Стиль отображения",
 		},
 		hover = {
 			"Whether you want to use icons or text.", 
 			["zh"] = "选择图标模式还是文字模式。", 
 			["br"] = "Se você deseja usar ícones ou texto.", 
-			["es"] = "Configura el uso de texto o iconos en la información."
+			["es"] = "Configura el uso de texto o iconos en la información.",
+			["ru"] = "Хотите использовать иконки или текст.",
 		},
 		options = {
 			["text"] = {
@@ -776,12 +838,14 @@ STRINGS = {
 					["zh"] = "文字",
 					["br"] = "Texto",
 					["es"] = "Texto",
+					["ru"] = "Текст",
 				},
 				hover = {
 					"Text will be used",
 					["zh"] = "显示纯文字",
 					["br"] = "Texto será usado",
 					["es"] = "Solo se utiliza texto.",
+					["ru"] = "Будет использоваться текст.",
 				},
 			},
 			["icon"] = {
@@ -790,12 +854,14 @@ STRINGS = {
 					["zh"] = "图标",
 					["br"] = "Ícone",
 					["es"] = "Iconos",
+					["ru"] = "Иконка",
 				},
 				hover = {
 					"Icons will be used over text where possible.",
 					["zh"] = "显示图标替代文字",
 					["br"] = "Os ícones são usados sobre o texto sempre que possível.",
 					["es"] = "Se usan iconos cuando sea posible.",
+					["ru"] = "Иконки будут использоваться вместо текста, где это возможно.",
 				},
 			},
 		},
@@ -805,13 +871,15 @@ STRINGS = {
 			"Text Coloring", 
 			["zh"] = "文字着色", 
 			["br"] = "Colorir Texto", 
-			["es"] = "Coloreado de textos"
+			["es"] = "Coloreado de textos",
+			["ru"] = "Окраска текста",
 		},
 		hover = {
 			"Whether text coloring is enabled.", 
 			["zh"] = "是否启用文字着色。", 
 			["br"] = "Se a coloração do texto está habilitada.", 
-			["es"] = "Configura el uso de coloreado de texto."
+			["es"] = "Configura el uso de coloreado de texto.",
+			["ru"] = "Включение окраски текста.",
 		},
 		options = {
 			[false] = {
@@ -820,12 +888,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Text coloring will not be used. :(",
 					["zh"] = "禁用文字着色 :(",
 					["br"] = "A coloração do texto não será usada.",
 					["es"] = "No se utiliza el coloreado de texto. :(",
+					["ru"] = "Окраска текста не будет использоваться. :(",
 				},
 			},
 			[true] = {
@@ -834,12 +904,14 @@ STRINGS = {
 					["zh"] = "启用",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Text coloring will be used.",
 					["zh"] = "启用文字着色",
 					["br"] = "A coloração do texto será usada.",
 					["es"] = "Se utiliza el coloreado de texto.",
+					["ru"] = "Окраска текста будет использоваться.",
 				},
 			},
 		},
@@ -849,13 +921,15 @@ STRINGS = {
 			"Font",
 			["zh"] = "字体",
 			["br"] = nil,
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Шрифт",
 		},
 		hover = {
 			"Which font Insight uses for its text",
 			["zh"] = "使用哪种字体来显示 Insight 的文本",
 			["br"] = nil,
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Какой шрифт используется Insight для своего текста",
 		},
 		options = GenerateOptionsFromList(false, FONTS, function(i,v) return {("Insight will use the game font '%s'"):format(v)} end),
 	},
@@ -864,13 +938,15 @@ STRINGS = {
 			"Mouse Hover Text Size",
 			["zh"] = "鼠标悬停文本大小", 
 			["br"] = "Tamanho do Texto ao Passar o Mouse", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Размер текста при наведении мыши",
 		},
 		hover = {
 			"The font size of Insight's hover text when using a mouse.",
 			["zh"] = "使用鼠标悬停时 Insight 的文本字体大小。", 
 			["br"] = "O tamanho da fonte do texto flutuante do Insight ao usar um mouse.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Размер шрифта текста при наведении мыши в Insight.",
 		},
 		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.HOVERER),
 	},
@@ -879,13 +955,15 @@ STRINGS = {
 			"Controller Inv. Text Size",
 			["zh"] = "控制器物品栏文本大小", 
 			["br"] = "Tamanho do Texto do Controlador do Inv. ", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Размер текста инвентаря при использовании контроллера",
 		},
 		hover = {
 			"The font size of Insight's inventory text when using a controller.",
 			["zh"] = "使用控制器时 Insight 的物品栏文本字体大小。", 
 			["br"] = "O tamanho da fonte do texto do inventário do Insight ao usar um controlador.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Размер шрифта текста инвентаря в Insight при использовании контроллера.",
 		},
 		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.INVENTORYBAR),
 	},
@@ -894,13 +972,15 @@ STRINGS = {
 			"Controller Follow Text Size",
 			["zh"] = "控制器跟随文本大小", 
 			["br"] = "Tamanho do Texto do Controlador Seguidor", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Размер текста при использовании контроллера для следования",
 		},
 		hover = {
 			"The font size of Insight's Follow text when using a controller.",
 			["zh"] = "使用控制器时 Insight 的跟随文本字体大小。", 
 			["br"] = "O tamanho da fonte do texto Seguir do Insight ao usar um controlador.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Размер шрифта текста следования в Insight при использовании контроллера.",
 		},
 		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.FOLLOWTEXT),
 	},
@@ -909,13 +989,15 @@ STRINGS = {
 			"Inspect Only", 
 			["zh"] = "仅在检查时显示", 
 			["br"] = "Somente Inspecionar", 
-			["es"] = "Solo inspeccionar"
+			["es"] = "Solo inspeccionar",
+			["ru"] = "Только при осмотре",
 		},
 		hover = {
 			"Whether Insight will only show information when you hold Left Alt.", 
 			["zh"] = "是否仅当按住 Alt 键时显示信息", 
 			["br"] = "Se o Insight só mostrará informações quando você segurar Alt esquerdo.", 
-			["es"] = "Insight sólo muestra información cuando mantengas pulsado Alt izq."
+			["es"] = "Insight sólo muestra información cuando mantengas pulsado Alt izq.",
+			["ru"] = "Будет ли Insight показывать информацию только при удерживании левого Alt.",
 		},
 		options = {
 			[false] = {
@@ -924,12 +1006,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Information is displayed normally.",
 					["zh"] = "信息正常显示",
 					["br"] = "As informações são exibidas normalmente.",
 					["es"] = "La información se muestra normalmente.",
+					["ru"] = "Информация отображается как обычно.",
 				},
 			},
 			[true] = {
@@ -938,12 +1022,14 @@ STRINGS = {
 					["zh"] = "启用",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Information only displays on inspection.",
 					["zh"] = "仅当按住 Alt 键时显示信息",
 					["br"] = "As informações são exibidas apenas na inspeção.",
 					["es"] = "Sólo se muestra en la inspección.",
+					["ru"] = "Информация отображается только при осмотре.",
 				},
 			},
 		},
@@ -953,13 +1039,15 @@ STRINGS = {
 			"Inv Slot Info", 
 			["zh"] = "库存物品栏信息", 
 			["br"] = "Informações do inventário", 
-			["es"] = "Información de ranuras"
+			["es"] = "Información de ranuras",
+			["ru"] = "Информация в слоте инвентаря",
 		},
 		hover = {
 			"What kind of information shows instead of percentages on item slots.", 
 			["zh"] = "物品栏信息显示的类型", 
 			["br"] = "Que tipo de informação é exibida em vez de porcentagens nos slots de itens.", 
-			["es"] = "Configura qué tipo de información se muestra en lugar de porcentajes en las ranuras de tu inventario."
+			["es"] = "Configura qué tipo de información se muestra en lugar de porcentajes en las ranuras de tu inventario.",
+			["ru"] = "Какая информация отображается вместо процентов на слотах предметов.",
 		},
 		options = {
 			["none"] = {
@@ -968,12 +1056,14 @@ STRINGS = {
 					["zh"] = "无",
 					["br"] = "Nenhuma",
 					["es"] = "Ninguno",
+					["ru"] = "Нет",
 				},
 				hover = {
 					"Will not provide ANY information on item slots.",
 					["zh"] = "不显示任何信息",
 					["br"] = "Não fornecerá NENHUMA informação sobre slots de itens.",
 					["es"] = "No muestra ninguna información sobre las ranuras de inventario.",
+					["ru"] = "Не будет отображать НИКАКУЮ информацию о слотах предметов.",
 				},
 			},
 			["numbers"] = {
@@ -982,12 +1072,14 @@ STRINGS = {
 					["zh"] = "数字",
 					["br"] = "Números",
 					["es"] = "Números",
+					["ru"] = "Цифры",
 				},
 				hover = {
 					"Will provide durability numbers on item slots.",
 					["zh"] = "显示具体次数",
 					["br"] = "Fornecerá números de durabilidade nos slots de itens.",
 					["es"] = "Utiliza números de durabilidad en las ranuras de inventario.",
+					["ru"] = "Будет отображать числа прочности на слотах предметов.",
 				},
 			},
 			["percentages"] = {
@@ -996,12 +1088,14 @@ STRINGS = {
 					["zh"] = "百分比",
 					["br"] = "Porcentagens",
 					["es"] = "Porcentajes",
+					["ru"] = "Проценты",
 				},
 				hover = {
 					"Will provide use default percentages on item slots.",
 					["zh"] = "显示默认百分比",
 					["br"] = "Fornecerá porcentagens padrão de uso em slots de itens.",
 					["es"] = "Utiliza porcentajes por defecto en las ranuras de inventario.",
+					["ru"] = "Будет использовать стандартные проценты на слотах предметов.",
 				},
 			},
 			["mixed"] = {
@@ -1010,12 +1104,14 @@ STRINGS = {
 					["zh"] = "兼用",
 					["br"] = "Misto",
 					["es"] = "Mixto",
+					["ru"] = "Смешанный",
 				},
 				hover = {
 					"Will provide use default percentages on refuelables, numbers for everything else.",
 					["zh"] = "可恢复耐久的物品显示默认百分比, 其他显示具体次数",
 					["br"] = "Fornecerá porcentagens padrão de uso em reabastecimentos, números para todo o resto.",
 					["es"] = "Utiliza porcentajes por defecto en items recargables, números para todo lo demás.",
+					["ru"] = "Будет использовать стандартные проценты на подкачиваемых предметах, числа для всего остального.",
 				},
 			},
 		},
@@ -1025,13 +1121,15 @@ STRINGS = {
 			"Time style", 
 			["zh"] = "时间样式", 
 			["br"] = "Estilo de tempo", 
-			["es"] = "Estilo del tiempo"
+			["es"] = "Estilo del tiempo",
+			["ru"] = "Стиль времени",
 		},
 		hover = {
 			"How to display time information.", 
 			["zh"] = "如何显示时间信息", 
 			["br"] = "Como exibir informações de tempo.", 
-			["es"] = "Configura como mostrar información de la hora."
+			["es"] = "Configura como mostrar información de la hora.",
+			["ru"] = "Как отображать информацию о времени.",
 		},
 		options = {
 			["gametime"] = {
@@ -1040,12 +1138,14 @@ STRINGS = {
 					["zh"] = "游戏时间",
 					["br"] = "Tempo do jogo",
 					["es"] = "Tiempo de juego",
+					["ru"] = "Внутриигровое время",
 				},
 				hover = {
 					"Displays time information based on game time: days, segments.",
 					["zh"] = "以游戏内时间为基础显示时间信息：天数，时间小段",
 					["br"] = "Exibe informações de tempo com base no tempo do jogo: dias, segmentos.",
 					["es"] = "Muestra información del tiempo basada en el tiempo de juego: días, segmentos",
+					["ru"] = "Отображает информацию о времени на основе внутриигрового времени: дни, сегменты.",
 				},
 			},
 			["realtime"] = {
@@ -1054,12 +1154,14 @@ STRINGS = {
 					["zh"] = "现实时间",
 					["br"] = "Tempo real",
 					["es"] = "Tiempo real",
+					["ru"] = "Реальное время",
 				},
 				hover = {
 					"Displays time information based on real time: hours, minutes, seconds.",
 					["zh"] = "以现实时间为基础显示时间信息：时，分，秒",
 					["br"] = "Exibe informações de tempo com base no tempo real: horas, minutos, segundos.",
 					["es"] = "Muestra información del tiempo basada en el tiempo real: horas, minutos, segundos.",
+					["ru"] = "Отображает информацию о времени на основе реального времени: часы, минуты, секунды.",
 				},
 			},
 			["both"] = {
@@ -1068,12 +1170,14 @@ STRINGS = {
 					["zh"] = "兼用两种模式",
 					["br"] = "Ambos",
 					["es"] = "Ambos",
+					["ru"] = "Оба",
 				},
 				hover = {
 					"Use both time styles: days, segments (hours, minutes, seconds)",
 					["zh"] = "使用两种显示形式：天，时间小段（时，分，秒）",
 					["br"] = "Use ambos os estilos de tempo: dias, segmentos (horas, minutos, segundos)",
 					["es"] = "Utiliza ambos estilos de tiempo: días, segmentos (horas, minutos, segundos)",
+					["ru"] = "Использует оба стиля времени: дни, сегменты (часы, минуты, секунды).",
 				},
 			},
 			["gametime_short"] = {
@@ -1082,12 +1186,14 @@ STRINGS = {
 					["zh"] = "游戏时间（精简）",
 					["br"] = "Tempo do jogo (Curto)",
 					["es"] = "Tiempo de juego (corto)",
+					["ru"] = "Внутриигровое время (Сокращенное)",
 				},
 				hover = {
 					"Displays shortened time information based on game time.",
 					["zh"] = "简化版的以游戏内时间为基础显示时间信息",
 					["br"] = "Exibe informações de tempo reduzido com base no tempo do jogo.",
 					["es"] = "Muestra información de tiempo reducido basado en el tiempo de juego",
+					["ru"] = "Отображает сокращенную информацию о времени на основе внутриигрового времени.",
 				},
 			},
 			["realtime_short"] = {
@@ -1096,12 +1202,14 @@ STRINGS = {
 					["zh"] = "现实时间（精简）",
 					["br"] = "Tempo real (Curto)",
 					["es"] = "Tiempo real (corto)",
+					["ru"] = "Реальное время (Сокращенное)",
 				},
 				hover = {
 					"Displays shortened time information based on real time: hours:minutes:seconds.",
 					["zh"] = "简化版的以现实时间为基础显示时间信息",
 					["br"] = "Exibe informações de tempo reduzido com base no tempo real: horas:minutos:segundos.",
 					["es"] = "Muestra información de tiempo reducido basada en el tiempo real: horas:minutos:segundos.",
+					["ru"] = "Отображает сокращенную информацию о времени на основе реального времени: часы:минуты:секунды.",
 				},
 			},
 			["both_short"] = {
@@ -1110,12 +1218,14 @@ STRINGS = {
 					["zh"] = "兼用两种模式（精简）",
 					["br"] = "Ambos (Curto)",
 					["es"] = "Both (Short)",
+					["ru"] = "Оба (Сокращенное)",
 				},
 				hover = {
 					"Use both time styles and shorten: x.y days (hours:minutes:seconds).",
 					["zh"] = "简化版的双模式显示",
 					["br"] = "Use ambos os estilos de tempo e abrevie: x.y dias (horas:minutos:segundos).",
 					["es"] = "Utiliza ambos estilos reducidos: x.y días (horas:minutos:segundos).",
+					["ru"] = "Использует оба стиля времени и сокращает: x.y дней (часы:минуты:секунды).",
 				},
 			},
 		},
@@ -1125,13 +1235,15 @@ STRINGS = {
 			"Temperature units", 
 			["zh"] = "温度单位", 
 			["br"] = "Unidades de temperatura", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Единицы температуры",
 		},
 		hover = {
 			"How to display temperature", 
 			["zh"] = "如何显示温度", 
 			["br"] = "Como exibir a temperatura", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Как отображать температуру",
 		},
 		options = {
 			["game"] = {
@@ -1140,12 +1252,14 @@ STRINGS = {
 					["zh"] = "游戏温度",
 					["br"] = "Jogo",
 					["es"] = nil,
+					["ru"] = "Игровая",
 				},
 				hover = {
 					"Freeze: 0, Overheat: 70",
 					["zh"] = "结冰: 0, 过热: 70",
 					["br"] = "Congelar: 0º, Superaquecer: 70º",
 					["es"] = nil,
+					["ru"] = "Замерзание: 0, Перегрев: 70",
 				},
 			},
 			["celsius"] = {
@@ -1154,12 +1268,14 @@ STRINGS = {
 					["zh"] = "摄氏度",
 					["br"] = "Celsius",
 					["es"] = nil,
+					["ru"] = "Цельсий",
 				},
 				hover = {
 					"Freeze: 0, Overheat: 35",
 					["zh"] = "结冰: 0, 过热: 35",
 					["br"] = "Congelar: 0º, Superaquecer: 35º",
 					["es"] = nil,
+					["ru"] = "Замерзание: 0, Перегрев: 35",
 				},
 			},
 			["fahrenheit"] = {
@@ -1168,12 +1284,14 @@ STRINGS = {
 					["zh"] = "华氏度",
 					["br"] = "Fahrenheit",
 					["es"] = nil,
+					["ru"] = "Фаренгейт",
 				},
 				hover = {
 					"Freeze: 32, Overheat: 158",
 					["zh"] = "结冰: 32, 过热: 158",
 					["br"] = "Congelar: 32 F, Superaquecer: 158 F",
 					["es"] = nil,
+					["ru"] = "Замерзание: 32, Перегрев: 158",
 				},
 			},
 		},
@@ -1183,13 +1301,15 @@ STRINGS = {
 			"Highlighting", 
 			["zh"] = "高亮显示", 
 			["br"] = "Destacar item", 
-			["es"] = "Resaltado"
+			["es"] = "Resaltado",
+			["ru"] = "Выделение",
 		},
 		hover = {
 			"Whether item highlighting is enabled. (\"Finder\")", 
 			["zh"] = "是否启用箱子/物品的高亮显示 (\"物品查找器\")", 
 			["br"] = "Se o destaque do item está ativado. (\"Finder\")", 
-			["es"] = "Configura si se activa el resaltado de objetos. (\"Buscador\")"
+			["es"] = "Configura si se activa el resaltado de objetos. (\"Buscador\")",
+			["ru"] = "Включено ли выделение предметов. (\"Поиск\")",
 		},
 		options = {
 			[false] = {
@@ -1199,6 +1319,7 @@ STRINGS = {
 					["zh"] = "箱子/物品不会高亮显示",
 					["br"] = "Nenhum báu/item será destacado.",
 					["es"] = "No se resaltarán objetos.",
+					["ru"] = "Выделение предметов отключено.",
 				},
 			},
 			[true] = {
@@ -1208,6 +1329,7 @@ STRINGS = {
 					["zh"] = "箱子/物品会高亮显示",
 					["br"] = "Baús/itens são destacados.",
 					["es"] = "Los cofres y objetos se resaltarán.",
+					["ru"] = "Выделение предметов включено.",
 				},
 			},
 		},
@@ -1218,12 +1340,14 @@ STRINGS = {
 			["zh"] = "实验性高亮显示",
 			["br"] = "Realce Experimental",
 			["es"] = nil,
+			["ru"] = "Экспериментальное выделение",
 		},
 		hover = {
 			"When enabled, highlighting will perform better in very dense areas at the cost of being potentially unstable. Please let me know if you get issues with this.", 
 			["zh"] = "如果启用，高亮显示将在非常密集的区域表现更好，但可能存在不稳定性。如果有任何问题请告知。",
 			["br"] = "Quando ativado, o realce terá um desempenho melhor em áreas muito densas, ao custo de ser potencialmente instável. Por favor, deixe-me saber se você tiver problemas com isso.",
 			["es"] = nil,
+			["ru"] = "При включении экспериментального выделения выделение будет работать лучше в очень плотных областях за счет возможной нестабильности. Пожалуйста, сообщите мне, если у вас возникнут проблемы с этим.",
 		},
 		options = {
 			[false] = {
@@ -1233,6 +1357,7 @@ STRINGS = {
 					["zh"] = "使用正常高亮显示。",
 					["br"] = "O realce normal será usado.",
 					["es"] = nil,
+					["ru"] = "Будет использоваться обычное выделение.",
 				},
 			},
 			[true] = {
@@ -1242,6 +1367,7 @@ STRINGS = {
 					["zh"] = "使用实验性高亮显示。",
 					["br"] = "Destaque experimental será usado.",
 					["es"] = nil,
+					["ru"] = "Будет использоваться экспериментальное выделение.",
 				},
 			},
 		},
@@ -1251,13 +1377,15 @@ STRINGS = {
 			"Highlighting Color", 
 			["zh"] = "高亮颜色", 
 			["br"] = "Cor de realce", 
-			["es"] = "Color de resaltado"
+			["es"] = "Color de resaltado",
+			["ru"] = "Цвет выделения",
 		},
 		hover = {
 			"The color to use for highlighting.", 
 			["zh"] = "高亮显示时的颜色。", 
 			["br"] = "A cor a ser usada para destacar.", 
-			["es"] = "Configura el color a utilizar para resaltar."
+			["es"] = "Configura el color a utilizar para resaltar.",
+			["ru"] = "Цвет, используемый для выделения.",
 		},
 		options = {
 			["RED"] = {
@@ -1266,12 +1394,14 @@ STRINGS = {
 					["zh"] = "红色",
 					["br"] = "Vermelho",
 					["es"] = "Rojo",
+					["ru"] = "Красный",
 				},
 				hover = {
 					"Red",
 					["zh"] = "红色",
 					["br"] = "Vermelho",
 					["es"] = "Rojo",
+					["ru"] = "Красный",
 				},
 			},
 			["GREEN"] = {
@@ -1280,12 +1410,14 @@ STRINGS = {
 					["zh"] = "绿色",
 					["br"] = "Verde",
 					["es"] = "Verde",
+					["ru"] = "Зеленый",
 				},
 				hover = {
 					"Green",
 					["zh"] = "绿色",
 					["br"] = "Verde",
 					["es"] = "Verde",
+					["ru"] = "Зеленый",
 				},
 			},
 			["BLUE"] = {
@@ -1294,12 +1426,14 @@ STRINGS = {
 					["zh"] = "蓝色",
 					["br"] = "Azul",
 					["es"] = "Azul",
+					["ru"] = "Синий",
 				},
 				hover = {
 					"Blue",
 					["zh"] = "蓝色",
 					["br"] = "Azul",
 					["es"] = "Azul",
+					["ru"] = "Синий",
 				},
 			},
 			["LIGHT_BLUE"] = {
@@ -1308,12 +1442,14 @@ STRINGS = {
 					["zh"] = "亮蓝色",
 					["br"] = "Azul Claro",
 					["es"] = "Azul claro",
+					["ru"] = "Голубой",
 				},
 				hover = {
 					"Light Blue",
 					["zh"] = "亮蓝色",
 					["br"] = "Azul Claro",
 					["es"] = "Azul claro",
+					["ru"] = "Голубой",
 				},
 			},
 			["PURPLE"] = {
@@ -1322,12 +1458,14 @@ STRINGS = {
 					["zh"] = "紫色",
 					["br"] = "Roxo",
 					["es"] = "Púrpura",
+					["ru"] = "Фиолетовый",
 				},
 				hover = {
 					"Purple",
 					["zh"] = "紫色",
 					["br"] = "Roxo",
 					["es"] = "Púrpura",
+					["ru"] = "Фиолетовый",
 				},
 			},
 			["YELLOW"] = {
@@ -1336,12 +1474,14 @@ STRINGS = {
 					["zh"] = "黄色",
 					["br"] = "Amarelo",
 					["es"] = "Amarillo",
+					["ru"] = "Желтый",
 				},
 				hover = {
 					"Yellow",
 					["zh"] = "黄色",
 					["br"] = "Amarelp",
 					["es"] = "Amarillo",
+					["ru"] = "Желтый",
 				},
 			},
 			["WHITE"] = {
@@ -1350,12 +1490,14 @@ STRINGS = {
 					["zh"] = "白色",
 					["br"] = "Branco",
 					["es"] = "Blanco",
+					["ru"] = "Белый",
 				},
 				hover = {
 					"White",
 					["zh"] = "白色",
 					["br"] = "Branco",
 					["es"] = "Blanco",
+					["ru"] = "Белый",
 				},
 			},
 			["ORANGE"] = {
@@ -1364,12 +1506,14 @@ STRINGS = {
 					["zh"] = "橙色",
 					["br"] = "Laranja",
 					["es"] = "Naranja",
+					["ru"] = "Оранжевый",
 				},
 				hover = {
 					"Orange",
 					["zh"] = "橙色",
 					["br"] = "Laranja",
 					["es"] = "Naranja",
+					["ru"] = "Оранжевый",
 				},
 			},
 			["PINK"] = {
@@ -1378,12 +1522,14 @@ STRINGS = {
 					["zh"] = "粉色",
 					["br"] = "Rosa",
 					["es"] = "Rosa",
+					["ru"] = "Розовый",
 				},
 				hover = {
 					"Pink",
 					["zh"] = "粉色",
 					["br"] = "Rosa",
 					["es"] = "Rosa",
+					["ru"] = "Розовый",
 				},
 			},
 		},
@@ -1393,13 +1539,15 @@ STRINGS = {
 			"Fuel Highlighting", 
 			["zh"] = "燃料高亮显示", 
 			["br"] = "Realce de Combustível", 
-			["es"] = "Resaltado del combustible"
+			["es"] = "Resaltado del combustible",
+			["ru"] = "Выделение топлива",
 		},
 		hover = {
 			"Whether fuel highlighting is enabled.", 
 			["zh"] = "是否开启燃料高亮显示", 
 			["br"] = "Se o realce de combustível está ativado.", 
-			["es"] = "Configura el resaltado del combustible."
+			["es"] = "Configura el resaltado del combustible.",
+			["ru"] = "Включено ли выделение топлива.",
 		},
 		options = {
 			[false] = {
@@ -1409,6 +1557,7 @@ STRINGS = {
 					["zh"] = "禁用燃料高亮显示",
 					["br"] = "Entidades de combustível não são destacadas.",
 					["es"] = "No se resaltan objetos de combustible.",
+					["ru"] = "Объекты топлива не будут выделены.",
 				},
 			},
 			[true] = {
@@ -1418,6 +1567,7 @@ STRINGS = {
 					["zh"] = "启用燃料高亮显示",
 					["br"] = "Entidades de combustível são destacadas.",
 					["es"] = "Los objetos de combustible serán resaltadas.",
+					["ru"] = "Объекты топлива будут выделены.",
 				},
 			},
 		},
@@ -1427,13 +1577,15 @@ STRINGS = {
 			"Fuel Highlighting Color", 
 			["zh"] = "燃料高亮颜色", 
 			["br"] = "Cor de Destaque de Combustível", 
-			["es"] = "Color de resaltado del combustible"
+			["es"] = "Color de resaltado del combustible",
+			["ru"] = "Цвет выделения топлива",
 		},
 		hover = {
 			"The color to use for fuel highlighting.", 
 			["zh"] = "燃料高亮显示时的颜色", 
 			["br"] = "A cor a ser usada para realce de combustível.", 
-			["es"] = "Configura el color a utilizar para resaltar el combustible."
+			["es"] = "Configura el color a utilizar para resaltar el combustible.",
+			["ru"] = "Цвет, используемый для выделения топлива.",
 		},
 		options = {
 			["RED"] = {
@@ -1442,12 +1594,14 @@ STRINGS = {
 					["zh"] = "红色",
 					["br"] = "Vermelho",
 					["es"] = "Rojo",
+					["ru"] = "Красный",
 				},
 				hover = {
 					"Red",
 					["zh"] = "红色",
 					["br"] = "Vermelho",
 					["es"] = "Rojo",
+					["ru"] = "Красный",
 				},
 			},
 			["GREEN"] = {
@@ -1456,12 +1610,14 @@ STRINGS = {
 					["zh"] = "绿色",
 					["br"] = "Verde",
 					["es"] = "Verde",
+					["ru"] = "Зеленый",
 				},
 				hover = {
 					"Green",
 					["zh"] = "绿色",
 					["br"] = "Verde",
 					["es"] = "Verde",
+					["ru"] = "Зеленый",
 				},
 			},
 			["BLUE"] = {
@@ -1470,12 +1626,14 @@ STRINGS = {
 					["zh"] = "蓝色",
 					["br"] = "Azul",
 					["es"] = "Azul",
+					["ru"] = "Синий",
 				},
 				hover = {
 					"Blue",
 					["zh"] = "蓝色",
 					["br"] = "Azul",
 					["es"] = "Azul",
+					["ru"] = "Синий",
 				},
 			},
 			["LIGHT_BLUE"] = {
@@ -1484,12 +1642,14 @@ STRINGS = {
 					["zh"] = "亮蓝色",
 					["br"] = "Azul Claro",
 					["es"] = "Azul claro",
+					["ru"] = "Голубой",
 				},
 				hover = {
 					"Light Blue",
 					["zh"] = "亮蓝色",
 					["br"] = "Azul Claro",
 					["es"] = "Azul claro",
+					["ru"] = "Голубой",
 				},
 			},
 			["PURPLE"] = {
@@ -1498,12 +1658,14 @@ STRINGS = {
 					["zh"] = "紫色",
 					["br"] = "Roxo",
 					["es"] = "Púrpura",
+					["ru"] = "Фиолетовый",
 				},
 				hover = {
 					"Purple",
 					["zh"] = "紫色",
 					["br"] = "Roxo",
 					["es"] = "Púrpura",
+					["ru"] = "Фиолетовый",
 				},
 			},
 			["YELLOW"] = {
@@ -1512,12 +1674,14 @@ STRINGS = {
 					["zh"] = "黄色",
 					["br"] = "Amarelo",
 					["es"] = "Amarillo",
+					["ru"] = "Желтый",
 				},
 				hover = {
 					"Yellow",
 					["zh"] = "黄色",
 					["br"] = "Amarelo",
 					["es"] = "Amarillo",
+					["ru"] = "Желтый",
 				},
 			},
 			["WHITE"] = {
@@ -1526,12 +1690,14 @@ STRINGS = {
 					["zh"] = "白色",
 					["br"] = "Branco",
 					["es"] = "Blanco",
+					["ru"] = "Белый",
 				},
 				hover = {
 					"White",
 					["zh"] = "白色",
 					["br"] = "Branco",
 					["es"] = "Blanco",
+					["ru"] = "Белый",
 				},
 			},
 			["ORANGE"] = {
@@ -1540,12 +1706,14 @@ STRINGS = {
 					["zh"] = "橙色",
 					["br"] = "Laranja",
 					["es"] = "Naranja",
+					["ru"] = "Оранжевый",
 				},
 				hover = {
 					"Orange",
 					["zh"] = "橙色",
 					["br"] = "Laranja",
 					["es"] = "Naranja",
+					["ru"] = "Оранжевый",
 				},
 			},
 			["PINK"] = {
@@ -1554,12 +1722,14 @@ STRINGS = {
 					["zh"] = "粉色",
 					["br"] = "Rosa",
 					["es"] = "Rosa",
+					["ru"] = "Розовый",
 				},
 				hover = {
 					"Pink",
 					["zh"] = "粉色",
 					["br"] = "Rosa",
 					["es"] = "Rosa",
+					["ru"] = "Розовый",
 				},
 			},
 		},
@@ -1572,13 +1742,15 @@ STRINGS = {
 			"Attack Ranges", 
 			["zh"] = "攻击范围", 
 			["br"] = "Alcance de Ataque", 
-			["es"] = "Rango de ataque"
+			["es"] = "Rango de ataque",
+			["ru"] = "Диапазоны атаки",
 		},
 		hover = {
 			"Whether attack ranges are shown.", 
 			["zh"] = "是否显示攻击范围", 
 			["br"] = "Se os alcances de ataque são mostrados.", 
-			["es"] = "Configura si se muestra los rangos de ataque."
+			["es"] = "Configura si se muestra los rangos de ataque.",
+			["ru"] = "Показывать ли диапазоны атаки",
 		},
 		options = {
 			[false] = {
@@ -1588,6 +1760,7 @@ STRINGS = {
 					["zh"] = "不显示攻击范围",
 					["br"] = "Os alcances de ataque não são mostrados.",
 					["es"] = "No se muestra los rangos de ataque.",
+					["ru"] = "Диапазоны атаки не показываются",
 				},
 			},
 			[true] = {
@@ -1597,6 +1770,7 @@ STRINGS = {
 					["zh"] = "显示攻击范围",
 					["br"] = "Os alcances de ataque são mostrados.",
 					["es"] = "Se muestra los rangos de ataque.",
+					["ru"] = "Диапазоны атаки показываются",
 				},
 			},
 		},
@@ -1606,13 +1780,15 @@ STRINGS = {
 			"Attack Range Type", 
 			["zh"] = "攻击范围类型", 
 			["br"] = "Tipo de Alcance de Ataque", 
-			["es"] = "Tipo de rango de ataque"
+			["es"] = "Tipo de rango de ataque",
+			["ru"] = "Тип диапазона атаки",
 		},
 		hover = {
 			"Type of attack range to be displayed.", 
 			["zh"] = "显示攻击范围的类型", 
 			["br"] = "Tipo de alcance de ataque a ser exibido.", 
-			["es"] = "Tipo de rango de ataque a mostrar."
+			["es"] = "Tipo de rango de ataque a mostrar.",
+			["ru"] = "Тип отображаемого диапазона атаки",
 		},
 		options = {
 			["hit"] = {
@@ -1621,12 +1797,14 @@ STRINGS = {
 					["zh"] = "敲击",
 					["br"] = "Acerto",
 					["es"] = "Golpe",
+					["ru"] = "Попадание",
 				},
 				hover = {
 					"Hit range is shown.",
 					["zh"] = "显示敲击范围",
 					["br"] = "Alcance de acertos é mostrado.",
 					["es"] = "Se muestra el rango de golpe.",
+					["ru"] = "Показывается диапазон попадания",
 				},
 			},
 			["attack"] = {
@@ -1635,12 +1813,14 @@ STRINGS = {
 					["zh"] = "攻击",
 					["br"] = "Ataque",
 					["es"] = "Ataque",
+					["ru"] = "Атака",
 				},
 				hover = {
 					"Attack range is shown.",
 					["zh"] = "显示攻击范围",
 					["br"] = "Alcance de ataque é mostrado.",
 					["es"] = "Se muestra el rango de ataque.",
+					["ru"] = "Показывается диапазон атаки",
 				},
 			},
 			["both"] = {
@@ -1649,12 +1829,14 @@ STRINGS = {
 					["zh"] = "兼用",
 					["br"] = "Ambos",
 					["es"] = "Ambos",
+					["ru"] = "Оба",
 				},
 				hover = {
 					"Both hit and attack range are shown.",
 					["zh"] = "同时显示敲击和攻击范围",
 					["br"] = "Tanto o alcance de acerto quanto o de ataque são mostrados.",
 					["es"] = "Se muestra tanto el rango de golpe como el de ataque.",
+					["ru"] = "Показываются диапазоны попадания и атаки",
 				},
 			},
 		},
@@ -1664,13 +1846,15 @@ STRINGS = {
 			"Item Range Hover", 
 			["zh"] = "物品范围", 
 			["br"] = "Passar o mouse para mostrar alcance", 
-			["es"] = "Rango de objeto"
+			["es"] = "Rango de objeto",
+			["ru"] = "Диапазон предмета при наведении",
 		},
 		hover = {
 			"Whether an item's range is shown upon hovering.", 
 			["zh"] = "是否显示鼠标悬停物品的生效范围。", 
 			["br"] = "Se o alcance de um item é mostrado ao passar o mouse sobre ele.", 
-			["es"] = "Configura si el rango de un objeto se muestra al pasar el ratón por encima."
+			["es"] = "Configura si el rango de un objeto se muestra al pasar el ratón por encima.",
+			["ru"] = "Показывать ли диапазон предмета при наведении.",
 		},
 		options = {
 			[false] = {
@@ -1680,6 +1864,7 @@ STRINGS = {
 					["zh"] = "不显示物品范围。",
 					["br"] = "Alcance não é mostrado.",
 					["es"] = "No se muestra el rango.",
+					["ru"] = "Диапазон не показывается.",
 				},
 			},
 			[true] = {
@@ -1689,6 +1874,7 @@ STRINGS = {
 					["zh"] = "显示物品范围。",
 					["br"] = "Alcance é mostrado.",
 					["es"] = "Se muestra el rango.",
+					["ru"] = "Диапазон показывается.",
 				},
 			},
 		},
@@ -1698,13 +1884,15 @@ STRINGS = {
 			"Boss Indicators", 
 			["zh"] = "Boss 指示器", 
 			["br"] = "Indicador de Chefões", 
-			["es"] = "Indicador de jefes"
+			["es"] = "Indicador de jefes",
+			["ru"] = "Индикаторы боссов",
 		},
 		hover = {
 			"Whether boss indicators are shown.", 
 			["zh"] = "是否显示 Boss 指示器。", 
 			["br"] = "Se os indicadores do chefe são mostrados.", 
-			["es"] = "Configura si se muestra los indicadores de jefes."
+			["es"] = "Configura si se muestra los indicadores de jefes.",
+			["ru"] = "Показывать ли индикаторы боссов.",
 		},
 		options = {
 			[false] = {
@@ -1714,6 +1902,7 @@ STRINGS = {
 					["zh"] = "不显示 Boss 指示器。",
 					["br"] = "Indicadores de chefões não são mostrados.",
 					["es"] = "No se muestra los indicadores de jefes.",
+					["ru"] = "Индикаторы боссов не показываются.",
 				},
 			},
 			[true] = {
@@ -1723,6 +1912,7 @@ STRINGS = {
 					["zh"] = "显示 Boss 指示器。",
 					["br"] = "Indicadores de chefões são mostrados.",
 					["es"] = "Se muestra los indicadores del jefes.",
+					["ru"] = "Индикаторы боссов показываются.",
 				},
 			},
 		},
@@ -1733,12 +1923,14 @@ STRINGS = {
 			["zh"] = "小 Boss 指示器", 
 			["br"] = "Indicadores de Mini-Chefões", 
 			["es"] = nil,
+			["ru"] = "Индикаторы минибоссов",
 		},
 		hover = {
 			"Whether miniboss indicators are shown.", 
 			["zh"] = "是否显示小 Boss 指示器。", 
 			["br"] = "Se os indicadores de Mini-Chefões são mostrados.", 
 			["es"] = nil,
+			["ru"] = "Показывать ли индикаторы минибоссов боссов.",
 		},
 		options = {
 			[false] = {
@@ -1748,6 +1940,7 @@ STRINGS = {
 					["zh"] = "不显示小 Boss 指示器。", 
 					["br"] = "Indicadores de Mini-Chefões não aparecem.", 
 					["es"] = nil,
+					["ru"] = "Индикаторы минибоссов не показываются.",
 				},
 			},
 			[true] = {
@@ -1757,6 +1950,7 @@ STRINGS = {
 					["zh"] = "显示小 Boss 指示器。", 
 					["br"] = "Indicadores de Mini-Chefões são mostrados.", 
 					["es"] = nil,
+					["ru"] = "Индикаторы минибоссов показываются.",
 				},
 			},
 		},
@@ -1766,13 +1960,15 @@ STRINGS = {
 			"Notable Indicators", 
 			["zh"] = "其他物品指示器", 
 			["br"] = "Indicador Notável", 
-			["es"] = "Indicador notable"
+			["es"] = "Indicador notable",
+			["ru"] = "Выдающиеся индикаторы",
 		},
 		hover = {
 			"Whether the notable (chester, hutch, etc) indicators are shown.", 
 			["zh"] = "是否显示其他物品（切斯特，哈奇等等）的指示器", 
 			["br"] = "Se os indicadores notáveis (chester, hutch, etc) são mostrados.", 
-			["es"] = "Configura si se muestra los indicadores notables (Chester, Hutch, etc.)"
+			["es"] = "Configura si se muestra los indicadores notables (Chester, Hutch, etc.)",
+			["ru"] = "Показывать ли выдающиеся индикаторы (честер, хатч и т. д.)",
 		},
 		options = {
 			[false] = {
@@ -1782,6 +1978,7 @@ STRINGS = {
 					["zh"] = "不显示指示器。",
 					["br"] = "Indicadores notáveis não são mostrados.",
 					["es"] = "No se muestra los indicadores notables.",
+					["ru"] = "Выдающиеся индикаторы не показываются.",
 				},
 			},
 			[true] = {
@@ -1791,6 +1988,7 @@ STRINGS = {
 					["zh"] = "显示指示器。",
 					["br"] = "Indicadores notáveis são mostrados.",
 					["es"] = "Se muestra los indicadores notables.",
+					["ru"] = "Выдающиеся индикаторы показываются.",
 				},
 			},
 		},
@@ -1800,13 +1998,15 @@ STRINGS = {
 			"Pipspook toy indicators", 
 			["zh"] = "小惊吓玩具指示器", 
 			["br"] = "Indicadores de brinquedos Pipspook", 
-			["es"] = "Indicadores de juguetes Pipspook"
+			["es"] = "Indicadores de juguetes Pipspook",
+			["ru"] = "Индикаторы игрушек пищащего призрака",
 		},
 		hover = {
 			"Whether pipspook toy indicators are shown.", 
 			["zh"] = "是否显示小惊吓玩具的指示器。", 
 			["br"] = "Se os indicadores de brinquedo pipspook são mostrados.", 
-			["es"] = "Configura si se muestra los indicadores de juguetes Pipspook."
+			["es"] = "Configura si se muestra los indicadores de juguetes Pipspook.",
+			["ru"] = "Показывать ли индикаторы игрушек пищащего призрака.",
 		},
 		options = {
 			[false] = {
@@ -1816,6 +2016,7 @@ STRINGS = {
 					["zh"] = "不显示小惊吓玩具指示器。",
 					["br"] = "Indicadores de brinquedos Pipspook não são mostrados.",
 					["es"] = "No se muestra los indicadores de juguetes Pipspook.",
+					["ru"] = "Индикаторы игрушек пищащего призрака не показываются.",
 				},
 			},
 			[true] = {
@@ -1825,6 +2026,7 @@ STRINGS = {
 					["zh"] = "显示小惊吓玩具指示器。",
 					["br"] = "Indicadores de brinquedos Pipspook são mostrados.",
 					["es"] = "Se muestra los indicadores de juguetes Pipspook.",
+					["ru"] = "Индикаторы игрушек пищащего призрака показываются.",
 				},
 			},
 		},
@@ -1834,13 +2036,15 @@ STRINGS = {
 			"Bottle Indicator", 
 			["zh"] = "漂流瓶指示器", 
 			["br"] = "Indicadores de Garrafa", 
-			["es"] = "Indicador de botella"
+			["es"] = "Indicador de botella",
+			["ru"] = "Индикаторы бутылок",
 		},
 		hover = {
 			"Whether message bottle indicators are shown.", 
 			["zh"] = "是否显示漂流瓶指示器。", 
 			["br"] = "Se os indicadores de garrafa de mensagem são mostrados.", 
-			["es"] = "Configura si se muestra los indicadores de botellas de mensajes."
+			["es"] = "Configura si se muestra los indicadores de botellas de mensajes.",
+			["ru"] = "Показывать ли индикаторы бутылок.",
 		},
 		options = {
 			[false] = {
@@ -1850,6 +2054,7 @@ STRINGS = {
 					["zh"] = "不显示漂流瓶指示器。",
 					["br"] = "Indicadores de garrafas não são mostrados.",
 					["es"] = "No se muestra los indicadores de mensajes.",
+					["ru"] = "Индикаторы бутылок не показываются.",
 				},
 			},
 			[true] = {
@@ -1859,6 +2064,7 @@ STRINGS = {
 					["zh"] = "显示漂流瓶指示器。",
 					["br"] = "Indicadores de garrafas são mostrados.",
 					["es"] = "Se muestra los indicadores de mensajes.",
+					["ru"] = "Индикаторы бутылок показываются.",
 				},
 			},
 		},
@@ -1868,13 +2074,15 @@ STRINGS = {
 			"Suspicious Marble Indicator", 
 			["zh"] = "可疑的大理石指示器", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Индикаторы подозрительного мрамора",
 		},
 		hover = {
 			"Whether indicators to pieces of suspicious marble are shown.", 
 			["zh"] = "是否显示可疑的大理石指示器", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли индикаторы кусков подозрительного мрамора",
 		},
 		options = {
 			[false] = {
@@ -1884,6 +2092,7 @@ STRINGS = {
 					["zh"] = "不显示可疑的大理石指示器",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Индикаторы мрамора не показываются",
 				},
 			},
 			[true] = {
@@ -1893,6 +2102,7 @@ STRINGS = {
 					["zh"] = "显示可疑的大理石指示器",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Индикаторы мрамора показываются",
 				},
 			},
 		},
@@ -1902,13 +2112,15 @@ STRINGS = {
 			"Death Indicators", 
 			["zh"] = "死亡指示器", 
 			["br"] = "Indicadores de Morte", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Индикаторы смерти",
 		},
 		hover = {
 			"Whether to show an indicator to your death locations.", 
 			["zh"] = "是否显示指示你死亡地点的指示器。", 
 			["br"] = "Se deve mostrar um indicador para seus locais de morte.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли индикаторы мест смерти.",
 		},
 		options = {
 			[false] = {
@@ -1918,6 +2130,7 @@ STRINGS = {
 					["zh"] = "不显示指示器。",
 					["br"] = "Indicadores não são exibidos.",
 					["es"] = nil,
+					["ru"] = "Индикаторы не показываются.",
 				},
 			},
 			[true] = {
@@ -1927,6 +2140,7 @@ STRINGS = {
 					["zh"] = "显示指示器。",
 					["br"] = "Indicadores são exibidos.",
 					["es"] = nil,
+					["ru"] = "Индикаторы показываются.",
 				},
 			},
 		},
@@ -1936,13 +2150,15 @@ STRINGS = {
 			"Hunt Indicator", 
 			["zh"] = "动物脚印指示器", 
 			["br"] = "Indicadores de Caça", 
-			["es"] = "Indicador de caza"
+			["es"] = "Indicador de caza",
+			["ru"] = "Индикаторы охоты",
 		},
 		hover = {
 			"Whether hunt indicators are shown.", 
 			["zh"] = "是否显示脚印指示器。", 
 			["br"] = "Se os indicadores de caça (rastros, pegadas) são mostrados.", 
-			["es"] = "Configura si se muestra los indicadores de caza."
+			["es"] = "Configura si se muestra los indicadores de caza.",
+			["ru"] = "Показывать ли индикаторы охоты.",
 		},
 		options = {
 			[false] = {
@@ -1952,6 +2168,7 @@ STRINGS = {
 					["zh"] = "不显示脚印指示器。",
 					["br"] = "Indicadores de caça não são mostrados.",
 					["es"] = "No se muestra los indicadores de caza.",
+					["ru"] = "Индикаторы охоты не показываются.",
 				},
 			},
 			[true] = {
@@ -1961,6 +2178,7 @@ STRINGS = {
 					["zh"] = "显示脚印指示器。",
 					["br"] = "Indicadores de caça são mostrados.",
 					["es"] = "Se muestra los indicadores de caza.",
+					["ru"] = "Индикаторы охоты показываются.",
 				},
 			},
 		},
@@ -1970,13 +2188,15 @@ STRINGS = {
 			"Archive Puzzle Helper", 
 			["zh"] = "远古迷宫", 
 			["br"] = "Ajudante de Quebra-Cabeça dos Arquivos", 
-			["es"] = "Ayuda en puzle de Archivos"
+			["es"] = "Ayuda en puzle de Archivos",
+			["ru"] = "Помощник в головоломке Архива",
 		},
 		hover = {
 			"Whether the solution to the puzzle is displayed or not.", 
 			["zh"] = "是否显示远古迷宫的答案。", 
 			["br"] = "Se a solução do quebra-cabeça (Archive Puzzle) é exibida ou não.", 
-			["es"] = "Configura si la solución del puzle se muestra."
+			["es"] = "Configura si la solución del puzle se muestra.",
+			["ru"] = "Показывать ли решение головоломки или нет.",
 		},
 		options = {
 			[false] = {
@@ -1986,6 +2206,7 @@ STRINGS = {
 					["zh"] = "不显示答案。",
 					["br"] = "A solução não é exibida.",
 					["es"] = "No se muestra la solución.",
+					["ru"] = "Решение не показывается.",
 				},
 			},
 			[true] = {
@@ -1995,6 +2216,7 @@ STRINGS = {
 					["zh"] = "显示答案。",
 					["br"] = "A solução é exibida..",
 					["es"] = "Se muestra la solución.",
+					["ru"] = "Решение показывается.",
 				},
 			},
 		},
@@ -2004,13 +2226,15 @@ STRINGS = {
 			"Tumbleweed indicator", 
 			["zh"] = "风滚草指示器", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Индикатор перекати-поле",
 		},
 		hover = {
 			"Whether tumbleweeds are color-coded to indicate their contents.", 
 			["zh"] = "是否高亮着色拥有特殊物品的风滚草", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Цветовая кодировка перекати-поле для обозначения их содержимого",
 		},
 		options = {
 			[false] = {
@@ -2020,6 +2244,7 @@ STRINGS = {
 					["zh"] = "不显示风滚草指示器",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о перекати-поле не показывается",
 				},
 			},
 			[true] = {
@@ -2029,6 +2254,7 @@ STRINGS = {
 					["zh"] = "显示风滚草指示器",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о перекати-поле показывается",
 				},
 			},
 		},
@@ -2038,13 +2264,15 @@ STRINGS = {
 			"Lightningrod range", 
 			["zh"] = "避雷针范围", 
 			["br"] = "Alcance do para-raios", 
-			["es"] = "Rango del pararrayos"
+			["es"] = "Rango del pararrayos",
+			["ru"] = "Диапазон молниеотвода",
 		},
 		hover = {
 			"How lightningrod range is displayed.", 
 			["zh"] = "避雷针生效范围的显示方式。", 
 			["br"] = "Como o alcance do para-raios é exibido.", 
-			["es"] = "Configura como se muestra el alcance del pararrayos."
+			["es"] = "Configura como se muestra el alcance del pararrayos.",
+			["ru"] = "Как отображается диапазон молниеотвода.",
 		},
 		options = {
 			[0] = {
@@ -2053,12 +2281,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desligado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Do not show lightning rod range.",
 					["zh"] = "不显示避雷针的生效范围。",
 					["br"] = "Não mostra o alcance do para-raios.",
 					["es"] = "No mostrar el alcance del pararrayos.",
+					["ru"] = "Не показывать диапазон молниеотвода.",
 				},
 			},
 			[1] = {
@@ -2067,12 +2297,14 @@ STRINGS = {
 					["zh"] = "策略性地显示",
 					["br"] = "Estratégico",
 					["es"] = "Estratégico",
+					["ru"] = "Стратегически",
 				},
 				hover = {
 					"Only show during placements / pitchforking (just like a flingo).",
 					["zh"] = "只在放置避雷针时、使用草叉时、种植时显示生效范围。",
 					["br"] = "Mostrar apenas durante as colocações / pitchforking (como uma flingo).",
 					["es"] = "Mostrar sólo al construir estructuras.",
+					["ru"] = "Показывать только во время размещения / использования вилы (как флинго).",
 				},
 			},
 			[2] = {
@@ -2081,12 +2313,14 @@ STRINGS = {
 					["zh"] = "总是",
 					["br"] = "Sempre",
 					["es"] = "Siempre",
+					["ru"] = "Всегда",
 				},
 				hover = {
 					"Always show lightning rod range.",
 					["zh"] = "总是显示避雷针的生效范围。",
 					["br"] = "Sempre mostrar o alcance do para-raios.",
 					["es"] = "Mostrar siempre el alcance del pararrayos.",
+					["ru"] = "Всегда показывать диапазон молниеотвода.",
 				},
 			},
 		},
@@ -2096,13 +2330,15 @@ STRINGS = {
 			"Blink range", 
 			["zh"] = "瞬移范围", 
 			["br"] = "Intervalo de piscar", 
-			["es"] = "Rango de teletransporte"
+			["es"] = "Rango de teletransporte",
+			["ru"] = "Диапазон телепортации",
 		},
 		hover = {
 			"Whether you can see your blink range.", 
 			["zh"] = "是否显示你的瞬移的范围，如灵魂跳跃，橙色法杖等。", 
 			["br"] = "Se você pode ver seu intervalo de piscar.", 
-			["es"] = "Configura si se muestra el rango de teletransporte (Explorador Perezoso, almas de Wortox)."
+			["es"] = "Configura si se muestra el rango de teletransporte (Explorador Perezoso, almas de Wortox).",
+			["ru"] = "Показывать ли диапазон телепортации.",
 		},
 		options = {
 			[false] = {
@@ -2112,6 +2348,7 @@ STRINGS = {
 					["zh"] = "不显示瞬移范围。",
 					["br"] = "Intervalo de piscar não é mostrado.",
 					["es"] = "No se muestra el rango de teletransporte.",
+					["ru"] = "Диапазон телепортации не показывается.",
 				},
 			},
 			[true] = {
@@ -2121,6 +2358,7 @@ STRINGS = {
 					["zh"] = "显示瞬移范围。",
 					["br"] = "Intervalo de piscar é mostrado.",
 					["es"] = "Se muestra el rango de teletransporte.",
+					["ru"] = "Диапазон телепортации показывается.",
 				},
 			},
 		},
@@ -2130,13 +2368,15 @@ STRINGS = {
 			"Wortox Soul range", 
 			["zh"] = "沃拓克斯灵魂范围", 
 			["br"] = "Alcance de almas do Wortox", 
-			["es"] = "Rango de almas de Wortox"
+			["es"] = "Rango de almas de Wortox",
+			["ru"] = "Диапазон душ Вортокса",
 		},
 		hover = {
 			"Whether you can see the pickup range Wortox has for his souls.", 
 			["zh"] = "是否显示沃拓克斯拾取灵魂的范围和灵魂治疗范围。", 
 			["br"] = "Se você pode ver o alcance de captação que Wortox tem para suas almas.", 
-			["es"] = "Configura si se muestra el rango de recogida de Wortox para sus almas."
+			["es"] = "Configura si se muestra el rango de recogida de Wortox para sus almas.",
+			["ru"] = "Показывать ли диапазон подбора Вортоксом его душ.",
 		},
 		options = {
 			[false] = {
@@ -2146,6 +2386,7 @@ STRINGS = {
 					["zh"] = "不显示灵魂范围功能。",
 					["br"] = "Faixas de coleta de almas não são mostradas.",
 					["es"] = "No se muestra los rangos de recogida de almas.",
+					["ru"] = "Диапазоны подбора душ не показываются.",
 				},
 			},
 			[true] = {
@@ -2155,6 +2396,7 @@ STRINGS = {
 					["zh"] = "显示灵魂范围功能。",
 					["br"] = "Faixas de coleta de almas são mostradas.",
 					["es"] = "Se muestra los rangos de recogida de almas.",
+					["ru"] = "Диапазоны подбора душ показываются.",
 				},
 			},
 		},
@@ -2164,13 +2406,15 @@ STRINGS = {
 			"Battle song range", 
 			["zh"] = "战歌生效范围", 
 			["br"] = "Alcance de Músicas de Batalha", 
-			["es"] = "Rango de canciones de batalla"
+			["es"] = "Rango de canciones de batalla",
+			["ru"] = "Диапазон боевой песни",
 		},
 		hover = {
 			"How battle song ranges are displayed.", 
 			["zh"] = "如何显示战歌的生效范围。", 
 			["br"] = "Como os alcances das músicas de batalha (Wigfrid) são exibidos.", 
-			["es"] = "Configura como se muestra los rangos de canciones de batalla."
+			["es"] = "Configura como se muestra los rangos de canciones de batalla.",
+			["ru"] = "Как отображаются диапазоны боевой песни.",
 		},
 		options = {
 			["none"] = {
@@ -2179,12 +2423,14 @@ STRINGS = {
 					["zh"] = "无",
 					["br"] = "Nenhum",
 					["es"] = "Ninguno",
+					["ru"] = "Нет",
 				},
 				hover = {
 					"Do not show battle song ranges.",
 					["zh"] = "不显示战歌生效范围。",
 					["br"] = "Não mostrar alcances de músicas de batalha.",
 					["es"] = "No se muestra rangos de canciones de batalla.",
+					["ru"] = "Не показывать диапазоны боевой песни.",
 				},
 			},
 			["detach"] = {
@@ -2193,12 +2439,14 @@ STRINGS = {
 					["zh"] = "脱离",
 					["br"] = "Desanexar",
 					["es"] = "Desprendimiento",
+					["ru"] = "Отсоединить",
 				},
 				hover = {
 					"Song detachment range shown.",
 					["zh"] = "显示你脱离战歌生效的范围。",
 					["br"] = "Alcance de separação de música é mostrado.",
 					["es"] = "Se muestra el rango de desprendimiento de la canción.",
+					["ru"] = "Показывается диапазон отсоединения песни.",
 				},
 			},
 			["attach"] = {
@@ -2207,12 +2455,14 @@ STRINGS = {
 					["zh"] = "生效",
 					["br"] = "Anexar",
 					["es"] = "Fijación",
+					["ru"] = "Присоединить",
 				},
 				hover = {
 					"Song attachment range shown.",
 					["zh"] = "显示你被战歌鼓舞的生效范围。",
 					["br"] = "Alcance de anexo de música é mostrado.",
 					["es"] = "Se muestra el rango de fijación de la canción.",
+					["ru"] = "Показывается диапазон присоединения песни.",
 				},
 			},
 			["both"] = {
@@ -2221,12 +2471,14 @@ STRINGS = {
 					["zh"] = "兼用",
 					["br"] = "Ambos",
 					["es"] = "Ambos",
+					["ru"] = "Оба",
 				},
 				hover = {
 					"Both ranges are shown.",
 					["zh"] = "同时显示脱离战歌和被战歌鼓舞的生效范围",
 					["br"] = "Ambas os alcances são mostradas.",
 					["es"] = "Se muestra ambos rangos.",
+					["ru"] = "Показываются оба диапазона.",
 				},
 			},
 		},
@@ -2236,13 +2488,15 @@ STRINGS = {
 			"Loot Stash Markers", 
 			["zh"] = "克劳斯袋子标记", 
 			["br"] = "Marcadores do Klaus", 
-			["es"] = "Indicador de Saco de Klaus"
+			["es"] = "Indicador de Saco de Klaus",
+			["ru"] = "Маркеры мешков Клауса",
 		},
 		hover = {
 			"Whether Loot Stash spawning locations are marked.", 
 			["zh"] = "是否标记克劳斯袋子的位置 *该选项仅服务器有效*", 
 			["br"] = "Se os locais onde o Klaus (Loot Stash) aparece estão marcados.", 
-			["es"] = "Configura si se marcan las ubicaciones de aparición del Saco de Klaus."
+			["es"] = "Configura si se marcan las ubicaciones de aparición del Saco de Klaus.",
+			["ru"] = "Показывать ли места появления мешков Клауса.",
 		},
 		options = {
 			[false] = {
@@ -2252,6 +2506,7 @@ STRINGS = {
 					["zh"] = "不显示标记",
 					["br"] = "Sacos do Klaus não são marcados.",
 					["es"] = "Se muestra los marcadores del Saco de Klaus.",
+					["ru"] = "Маркеры мешков Клауса не показываются.",
 				},
 			},
 			[true] = {
@@ -2261,6 +2516,7 @@ STRINGS = {
 					["zh"] = "显示标记",
 					["br"] = "Sacos do Klaus são marcados.",
 					["es"] = "No se muestra los marcadores del Saco de Klaus.",
+					["ru"] = "Маркеры мешков Клауса показываются.",
 				},
 			},
 		},
@@ -2270,13 +2526,15 @@ STRINGS = {
 			"Sinkhole Marks", 
 			["zh"] = "洞穴标记", 
 			["br"] = "Marcações de Buraco", 
-			["es"] = "Indicador de sumidero"
+			["es"] = "Indicador de sumidero",
+			["ru"] = "Метки карстовая воронка",
 		},
 		hover = {
 			"How sinkhole marking is applied.", 
 			["zh"] = "如何显示洞穴的着色标记。", 
 			["br"] = "Como a marcação de buracos (entrada para as cavernas) é aplicada.", 
-			["es"] = "Configura como se muestra los indicadores de sumideros"
+			["es"] = "Configura como se muestra los indicadores de sumideros",
+			["ru"] = "Как применяется маркировка карстовых воронок.",
 		},
 		options = {
 			[0] = {
@@ -2285,12 +2543,14 @@ STRINGS = {
 					["zh"] = "无",
 					["br"] = "Nenhuma",
 					["es"] = "Ninguno",
+					["ru"] = "Нет",
 				},
 				hover = {
 					"Do not do any sinkhole coloring.",
 					["zh"] = "不着色标记任何洞穴洞口。",
 					["br"] = "Não faça nenhum buraco colorido.",
 					["es"] = "No se muestra ningún indicador.",
+					["ru"] = "Не применять никакого цвета карстовым воронкам.",
 				},
 			},
 			[1] = {
@@ -2299,12 +2559,14 @@ STRINGS = {
 					["zh"] = "仅地图模式",
 					["br"] = "Apenas Mapa",
 					["es"] = "Sólo mapa",
+					["ru"] = "Только на карте",
 				},
 				hover = {
 					"Only apply to map icons.",
 					["zh"] = "仅着色标记地图图标。",
 					["br"] = "Aplica-se apenas a ícones do mapa.",
 					["es"] = "Sólo se colorea iconos del mapa.",
+					["ru"] = "Применять только к иконкам на карте.",
 				},
 			},
 			[2] = {
@@ -2313,12 +2575,14 @@ STRINGS = {
 					["zh"] = "兼用",
 					["br"] = "Buracos & Mapa",
 					["es"] = "Sumidero/mapa",
+					["ru"] = "Карстовые воронки и карта",
 				},
 				hover = {
 					"Apply to both map icons & sinkholes.",
 					["zh"] = "同时着色标记地图图标和洞穴洞口。",
 					["br"] = "Aplicar a ícones de mapa e buracos.",
 					["es"] = "Colorear tanto a iconos del mapa como a los sumideros",
+					["ru"] = "Применять к иконкам на карте и карстовым воронкам.",
 				},
 			},
 		},
@@ -2331,13 +2595,15 @@ STRINGS = {
 			"Food Information", 
 			["zh"] = "食物信息", 
 			["br"] = "Informações da Comida", 
-			["es"] = "Información de alimentos"
+			["es"] = "Información de alimentos",
+			["ru"] = "Информация о еде",
 		},
 		hover = {
 			"Whether food information is shown.", 
 			["zh"] = "是否显示食物信息。", 
 			["br"] = "Se as informações de alimentos são mostradas.", 
-			["es"] = "Configura si se muestra la información de los alimentos."
+			["es"] = "Configura si se muestra la información de los alimentos.",
+			["ru"] = "Показывать ли информацию о еде.",
 		},
 		options = {
 			[false] = {
@@ -2347,6 +2613,7 @@ STRINGS = {
 					["zh"] = "不显示食物信息。",
 					["br"] = "Informações de alimentos não são mostradas.",
 					["es"] = "No se muestra la información de alimentos.",
+					["ru"] = "Информация о еде не показывается.",
 				},
 			},
 			[true] = {
@@ -2356,6 +2623,7 @@ STRINGS = {
 					["zh"] = "显示食物信息。",
 					["br"] = "As informações sobre os alimentos são mostradas.",
 					["es"] = "Se muestra la información de alimentos.",
+					["ru"] = "Информация о еде показывается.",
 				},
 			},
 		},
@@ -2365,13 +2633,15 @@ STRINGS = {
 			"Food style", 
 			["zh"] = "食物属性格式", 
 			["br"] = "Estilos de Comida", 
-			["es"] = "Estilo de comida"
+			["es"] = "Estilo de comida",
+			["ru"] = "Стиль еды",
 		},
 		hover = {
 			"How food information is displayed.", 
 			["zh"] = "如何显示食物属性信息。", 
 			["br"] = "Como as informações de alimentos são exibidas.", 
-			["es"] = "Configura como se muestra la información de los alimentos."
+			["es"] = "Configura como se muestra la información de los alimentos.",
+			["ru"] = "Как отображается информация о еде.",
 		},
 		options = {
 			["short"] = {
@@ -2380,12 +2650,14 @@ STRINGS = {
 					["zh"] = "精简",
 					["br"] = "Curta",
 					["es"] = "Reducida",
+					["ru"] = "Кратко",
 				},
 				hover = { -- No Translation Needed   
 					"+X / -X / +X",
 					["zh"] = nil,
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = nil,
 				},
 			},
 			["long"] = {
@@ -2394,12 +2666,14 @@ STRINGS = {
 					["zh"] = "详细",
 					["br"] = "Longa",
 					["es"] = "Larga",
+					["ru"] = "Подробно",
 				},
 				hover = {
 					"Hunger: +X / Sanity: -X / Health: +X",
 					["zh"] = "饥饿：+X / 理智：-X / 生命：+X",
 					["br"] = "Fome: +X / Sanidade: -X / Vida: +X",
 					["es"] = "Hambre: +X / Cordura: -X / Salud: +X",
+					["ru"] = "Голод: +X / Рассудок: -X / Здоровье: +X",
 				},
 			},
 		},
@@ -2409,13 +2683,15 @@ STRINGS = {
 			"Food order", 
 			["zh"] = "食物属性显示顺序", 
 			["br"] = "Ordem da Comida", 
-			["es"] = "Orden de comida"
+			["es"] = "Orden de comida",
+			["ru"] = "Порядок еды",
 		},
 		hover = {
 			"What order food stats are displayed in (if you choose Wiki you're dead to me)", 
 			["zh"] = "食物属性以何种顺序显示。", 
 			["br"] = "Em que ordem as estatísticas de comida são exibidas (se você escolher Wiki, você está morto para mim)", 
-			["es"] = "Configura en qué orden se muestra las estadísticas de los alimentos (si eliges Wiki estás muerto para mí)."
+			["es"] = "Configura en qué orden se muestra las estadísticas de los alimentos (si eliges Wiki estás muerto para mí).",
+			["ru"] = "В каком порядке отображаются характеристики еды (если вы выберете Вики, вы мертвы для меня)",
 		},
 		options = {
 			["interface"] = {
@@ -2424,12 +2700,14 @@ STRINGS = {
 					["zh"] = "界面",
 					["br"] = "Interface",
 					["es"] = "Interfaz",
+					["ru"] = "Интерфейс",
 				},
 				hover = {
 					"Hunger / Sanity / Health",
 					["zh"] = "饥饿 / 理智 / 生命",
 					["br"] = "Fome / Sanidade / Vida",
 					["es"] = "Hambre / Cordura / Salud",
+					["ru"] = "Голод / Рассудок / Здоровье",
 				},
 			},
 			["wiki"] = {
@@ -2438,12 +2716,14 @@ STRINGS = {
 					["zh"] = "维基",
 					["br"] = "Wiki",
 					["es"] = "Wiki",
+					["ru"] = "Вики",
 				},
 				hover = {
 					"Health / Hunger / Sanity",
 					["zh"] = "生命 / 饥饿 / 理智",
 					["br"] = "Vida/ Fome / Sanidade",
 					["es"] = "Salud / Hambre / Cordura",
+					["ru"] = "Здоровье / Голод / Рассудок",
 				},
 			},
 		},
@@ -2453,13 +2733,15 @@ STRINGS = {
 			"Display food units", 
 			["zh"] = "食物系数", 
 			["br"] = "Exibir unidades de alimentos", 
-			["es"] = "Expositor de comida"
+			["es"] = "Expositor de comida",
+			["ru"] = "Показывать единицы еды",
 		},
 		hover = {
 			"Whether food units are displayed.", 
 			["zh"] = "是否显示食物的系数（果、菜、蛋度等等）。", 
 			["br"] = "Se as unidades de alimentos são exibidas.", 
-			["es"] = "Configura si se muestra las unidades de la comida."
+			["es"] = "Configura si se muestra las unidades de la comida.",
+			["ru"] = "Показывать ли единицы еды (фрукты, овощи, яйца и т. д.)",
 		},
 		options = {
 			[false] = {
@@ -2469,6 +2751,7 @@ STRINGS = {
 					["zh"] = "不显示食物度。",
 					["br"] = "Unidades de alimentos não são exibidas.",
 					["es"] = "No se muestra unidades de comida.",
+					["ru"] = "Единицы еды не показываются.",
 				},
 			},
 			[true] = {
@@ -2478,6 +2761,7 @@ STRINGS = {
 					["zh"] = "显示食物度。",
 					["br"] = "Unidades de alimentos SÃO exibidas.",
 					["es"] = "Se muestra unidades de comida.",
+					["ru"] = "Единицы еды показываются.",
 				},
 			},
 		},
@@ -2487,13 +2771,15 @@ STRINGS = {
 			"Food Effects", 
 			["zh"] = "食物加成属性", 
 			["br"] = "Efeitos dos Alimentos", 
-			["es"] = "Efectos de comida"
+			["es"] = "Efectos de comida",
+			["ru"] = "Эффекты еды",
 		},
 		hover = {
 			"Whether special food effects show or not.", 
 			["zh"] = "是否显示食物的特殊加成属性。", 
 			["br"] = "Se os efeitos especiais de comida aparecem ou não.", 
-			["es"] = "Configura si se muestra los efectos especiales de la comida."
+			["es"] = "Configura si se muestra los efectos especiales de la comida.",
+			["ru"] = "Показывать ли специальные эффекты еды.",
 		},
 		options = {
 			[false] = {
@@ -2503,6 +2789,7 @@ STRINGS = {
 					["zh"] = "不显示特殊的食物属性。",
 					["br"] = "Efeitos de alimentos especiais não são exibidos.",
 					["es"] = "No se muestra los efectos especiales de la comida.",
+					["ru"] = "Специальные эффекты еды не показываются.",
 				},
 			},
 			[true] = {
@@ -2512,6 +2799,7 @@ STRINGS = {
 					["zh"] = "显示特殊的食物属性。",
 					["br"] = "Efeitos de alimentos especiais são exibidos.",
 					["es"] = "Se muestra los efectos especiales de la comida.",
+					["ru"] = "Специальные эффекты еды показываются.",
 				},
 			},
 		},
@@ -2521,13 +2809,15 @@ STRINGS = {
 			"Chef Identifiers", 
 			["zh"] = "烹饪厨师显示", 
 			["br"] = "Identificadores de Chef", 
-			["es"] = "Identificador de chef"
+			["es"] = "Identificador de chef",
+			["ru"] = "Идентификатор повара",
 		},
 		hover = {
 			"Whether the chef of a recipe is shown.", 
 			["zh"] = "是否显示料理的制作人。", 
 			["br"] = "Se quem fez uma receita na panela é mostrado na mesma.", 
-			["es"] = "Configura si se muestra el chef de una receta."
+			["es"] = "Configura si se muestra el chef de una receta.",
+			["ru"] = "Показывать ли повара рецепта.",
 		},
 		options = {
 			[false] = {
@@ -2537,6 +2827,7 @@ STRINGS = {
 					["zh"] = "不显示料理的制作人。",
 					["br"] = "Quem preparou não será mostrado.",
 					["es"] = "El chef no se muestra.",
+					["ru"] = "Повар не показывается.",
 				},
 			},
 			[true] = {
@@ -2546,6 +2837,7 @@ STRINGS = {
 					["zh"] = "显示料理的制作人。",
 					["br"] = "Quem preparou será mostrado.",
 					["es"] = "Se muestra al chef.",
+					["ru"] = "Повар показывается.",
 				},
 			},
 		},
@@ -2555,13 +2847,15 @@ STRINGS = {
 			"Food Memory", 
 			["zh"] = "瓦力大厨的食物计时", 
 			["br"] = "Memória Alimentar", 
-			["es"] = "Memoria de comida"
+			["es"] = "Memoria de comida",
+			["ru"] = "Память о еде",
 		},
 		hover = {
 			"Whether your food memory is shown.", 
 			["zh"] = "是否显示瓦力大厨的食物计时。", 
 			["br"] = "Se sua memória alimentar é mostrada.", 
-			["es"] = "Configura si se muestra la memoria de comida (Warly)."
+			["es"] = "Configura si se muestra la memoria de comida (Warly).",
+			["ru"] = "Показывать ли вашу память о еде.",
 		},
 		options = {
 			[false] = {
@@ -2571,6 +2865,7 @@ STRINGS = {
 					["zh"] = "不显示食物计时。",
 					["br"] = "Sua memória alimentar não será exibida.",
 					["es"] = "La memoria de alimentos no se muestra.",
+					["ru"] = "Ваша память о еде не показывается.",
 				},
 			},
 			[true] = {
@@ -2580,6 +2875,7 @@ STRINGS = {
 					["zh"] = "显示食物计时。",
 					["br"] = "Sua memória alimentar será exibida.",
 					["es"] = "Se muestra su memoria de alimentos.",
+					["ru"] = "Ваша память о еде показывается.",
 				},
 			},
 		},
@@ -2589,13 +2885,15 @@ STRINGS = {
 			"Perishing", 
 			["zh"] = "腐烂信息", 
 			["br"] = "Perecíveis", 
-			["es"] = "Putrefacción"
+			["es"] = "Putrefacción",
+			["ru"] = "Информация о порче",
 		},
 		hover = {
 			"Whether perishable information is displayed.", 
 			["zh"] = "是否显示腐烂信息", 
 			["br"] = "Se informações de perecíveis são exibidas.", 
-			["es"] = "Configura si se muestra información de la putrefacción."
+			["es"] = "Configura si se muestra información de la putrefacción.",
+			["ru"] = "Показывать ли информацию о порче",
 		},
 		options = {
 			[false] = {
@@ -2605,6 +2903,7 @@ STRINGS = {
 					["zh"] = "不显示腐烂信息",
 					["br"] = "Informações de perecíveis não são mostradas.",
 					["es"] = "No se muestra la información de putrefacción.",
+					["ru"] = "Информация о порче не показывается.",
 				},
 			},
 			[true] = {
@@ -2614,6 +2913,7 @@ STRINGS = {
 					["zh"] = "显示腐烂信息",
 					["br"] = "Informações de perecíveis são mostradas.",
 					["es"] = "Se muestra la información de putrefacción.",
+					["ru"] = "Информация о порче показывается.",
 				},
 			},
 		},
@@ -2626,13 +2926,15 @@ STRINGS = {
 			"Cawnival Information", 
 			["zh"] = "鸦年华信息", 
 			["br"] = "Informações do Carnaval", 
-			["es"] = "Información de Cawnvival"
+			["es"] = "Información de Cawnvival",
+			["ru"] = "Информация о карнавале",
 		},
 		hover = {
 			"Whether Midsummer Cawnvival information is shown.", 
 			["zh"] = "是否显示盛夏鸦年华信息", 
 			["br"] = "Se as informações do Midsummer Cawnvival são mostradas.", 
-			["es"] = "Configura si se muestra la información de Midsummer Cawnvival."
+			["es"] = "Configura si se muestra la información de Midsummer Cawnvival.",
+			["ru"] = "Показывать ли информацию о карнавале",
 		},
 		options = {
 			[false] = {
@@ -2642,6 +2944,7 @@ STRINGS = {
 					["zh"] = "不显示鸦年华信息",
 					["br"] = "Informações do Cawnival não são mostradas.",
 					["es"] = "No se muestra la información de cawnvival.",
+					["ru"] = "Информация о карнавале не показывается.",
 				},
 			},
 			[true] = {
@@ -2651,6 +2954,7 @@ STRINGS = {
 					["zh"] = "显示鸦年华信息",
 					["br"] = "Informações do Cawnival são mostradas.",
 					["es"] = "Se muestra la información de cawnival.",
+					["ru"] = "Информация о карнавале показывается.",
 				},
 			},
 		},
@@ -2660,13 +2964,15 @@ STRINGS = {
 			"Pageant Winners [YOTB]", 
 			["zh"] = "选美大赛冠军 [\"皮弗娄牛之年\" 更新]", 
 			["br"] = "Vencedores do Concurso [YOTB]", 
-			["es"] = "Ganadores de concurso [YOTB]"
+			["es"] = "Ganadores de concurso [YOTB]",
+			["ru"] = "Победители конкурса [YOTB]",
 		},
 		hover = {
 			"Whether Pageant winners are shown.", 
 			["zh"] = "是否显示选美大赛冠军", 
 			["br"] = "Se os vencedores do concurso são mostrados.", 
-			["es"] = "Configura si se muestran los ganadores del concurso."
+			["es"] = "Configura si se muestran los ganadores del concurso.",
+			["ru"] = "Показывать ли победителей конкурса",
 		},
 		options = {
 			[false] = {
@@ -2676,6 +2982,7 @@ STRINGS = {
 					["zh"] = "不显示选美大赛冠军",
 					["br"] = "Os vencedores do concurso não são mostrados.",
 					["es"] = "Los ganadores del concurso no se muestra.",
+					["ru"] = "Победители конкурса не показываются.",
 				},
 			},
 			[true] = {
@@ -2685,6 +2992,7 @@ STRINGS = {
 					["zh"] = "显示选美大赛冠军",
 					["br"] = "Os vencedores do concurso são mostrados.",
 					["es"] = "Se muestra los ganadores del concurso.",
+					["ru"] = "Победители конкурса показываются.",
 				},
 			},
 		},
@@ -2694,13 +3002,15 @@ STRINGS = {
 			"Appraisal Values [YOTB]", 
 			["zh"] = "评价值 [\"皮弗娄牛之年\" 更新]", 
 			["br"] = "Valores de avaliação [YOTB]", 
-			["es"] = "Valores de tasación [YOTB]"
+			["es"] = "Valores de tasación [YOTB]",
+			["ru"] = "Оценочные значения [YOTB]",
 		},
 		hover = {
 			"Whether appraisal values are shown.", 
 			["zh"] = "是否显示评价值", 
 			["br"] = "Se os valores de avaliação são mostrados.", 
-			["es"] = "Configura si se muestran los valores de tasación."
+			["es"] = "Configura si se muestran los valores de tasación.",
+			["ru"] = "Показывать ли оценочные значения",
 		},
 		options = {
 			[false] = {
@@ -2710,6 +3020,7 @@ STRINGS = {
 					["zh"] = "不显示评价值",
 					["br"] = "Os valores de avaliação não são mostrados.",
 					["es"] = "Los valores de tasación no se muestran.",
+					["ru"] = "Оценочные значения не показываются.",
 				},
 			},
 			[true] = {
@@ -2719,6 +3030,7 @@ STRINGS = {
 					["zh"] = "显示评价值",
 					["br"] = "Os valores de avaliação são mostrados.",
 					["es"] = "Se muestran los valores de tasación.",
+					["ru"] = "Оценочные значения показываются.",
 				},
 			},
 		},
@@ -2728,13 +3040,15 @@ STRINGS = {
 			"Playerlist Stats", 
 			["zh"] = "玩家列表中的数据", 
 			["br"] = "Estatísticas dos jogadores", 
-			["es"] = "Estadísticas de jugadores"
+			["es"] = "Estadísticas de jugadores",
+			["ru"] = "Статистика игроков",
 		},
 		hover = {
 			"Whether the stats of other players in the server are shown in the playerlist.", 
 			["zh"] = "是否在玩家列表中显示服务器中其他玩家的数据", 
 			["br"] = "Se as estatísticas de outros jogadores no servidor são mostradas na lista de jogadores (tecla TAB).", 
-			["es"] = "Configura si se muestran en la lista las estadísticas de jugadores en el servidor."
+			["es"] = "Configura si se muestran en la lista las estadísticas de jugadores en el servidor.",
+			["ru"] = "Показывать ли статистику других игроков на сервере в списке игроков.",
 		},
 		options = {
 			[false] = {
@@ -2744,6 +3058,7 @@ STRINGS = {
 					["zh"] = "不显示数据",
 					["br"] = "As estatísticas não são mostradas.",
 					["es"] = "Las estadísticas no se muestran.",
+					["ru"] = "Статистика не показывается.",
 				},
 			},
 			[true] = {
@@ -2753,6 +3068,7 @@ STRINGS = {
 					["zh"] = "显示数据",
 					["br"] = "As estatísticas são mostradas.",
 					["es"] = "Se muestran las estadísticas.",
+					["ru"] = "Статистика показывается.",
 				},
 			},
 		},
@@ -2762,13 +3078,15 @@ STRINGS = {
 			"Portal information", 
 			["zh"] = "传送信息", 
 			["br"] = "Informações do Portal", 
-			["es"] = "Información de portal"
+			["es"] = "Información de portal",
+			["ru"] = "Информация о портале",
 		},
 		hover = {
 			"Whether portal (sinkhole) information is shown.", 
 			["zh"] = "是否显示传送信息 (洞穴)", 
 			["br"] = "Se as informações do portal (sinkhole) são mostradas.", 
-			["es"] = "Configura si se muestra la información del portal (sumidero)."
+			["es"] = "Configura si se muestra la información del portal (sumidero).",
+			["ru"] = "Показывать ли информацию о портале (карстовая воронка)",
 		},
 		options = {
 			[false] = {
@@ -2778,6 +3096,7 @@ STRINGS = {
 					["zh"] = "不显示传送信息",
 					["br"] = "As informações do portal não são mostradas.",
 					["es"] = "La información de portal no se muestra.",
+					["ru"] = "Информация о портале не показывается.",
 				},
 			},
 			[true] = {
@@ -2787,6 +3106,7 @@ STRINGS = {
 					["zh"] = "显示传送信息",
 					["br"] = "As informações do portal são mostradas.",
 					["es"] = "Se muestra la información de portal.",
+					["ru"] = "Информация о портале показывается.",
 				},
 			},
 		},
@@ -2796,13 +3116,15 @@ STRINGS = {
 			"Bundle information", 
 			["zh"] = "打包信息", 
 			["br"] = "Informações do Pacote", 
-			["es"] = "Información de paquete"
+			["es"] = "Información de paquete",
+			["ru"] = "Информация о пакете",
 		},
 		hover = {
 			"Whether bundle information is shown.", 
 			["zh"] = "是否显示打包信息", 
 			["br"] = "Se as informações de pacotes, embrulhos ou presentes são mostradas.", 
-			["es"] = "Configura si se muestra la información de paquete."
+			["es"] = "Configura si se muestra la información de paquete.",
+			["ru"] = "Показывать ли информацию о пакете",
 		},
 		options = {
 			[false] = {
@@ -2812,6 +3134,7 @@ STRINGS = {
 					["zh"] = "不显示打包信息",
 					["br"] = "As informações do pacote não são mostradas.",
 					["es"] = "La información de paquete no se muestra.",
+					["ru"] = "Информация о пакете не показывается.",
 				},
 			},
 			[true] = {
@@ -2821,6 +3144,7 @@ STRINGS = {
 					["zh"] = "显示打包信息",
 					["br"] = "As informações do pacote são mostradas.",
 					["es"] = "Se muestra la información de paquete.",
+					["ru"] = "Информация о пакете показывается.",
 				},
 			},
 		},
@@ -2830,13 +3154,15 @@ STRINGS = {
 			"Freshwater fishing information", 
 			["zh"] = "淡水垂钓信息", 
 			--["br"] = "Informações de pesca", 
-			--["es"] = "Información de pesca"
+			--["es"] = "Información de pesca",
+			["ru"] = "Информация о пресноводной рыбалке",
 		},
 		hover = {
 			"Whether freshwater fishing information is shown.", 
 			["zh"] = "是否显示淡水垂钓信息", 
 			--["br"] = "Se as informações de pesca são mostradas.", 
-			--["es"] = "Configura si se muestra la información de pesca."
+			--["es"] = "Configura si se muestra la información de pesca.",
+			["ru"] = "Показывать ли информацию о пресноводной рыбалке",
 		},
 		options = {
 			[false] = {
@@ -2846,6 +3172,7 @@ STRINGS = {
 					["zh"] = "不显示淡水垂钓信息",
 					--["br"] = "Informações de pesca não são mostradas.",
 					--["es"] = "La información de pesca no se muestra.",
+					["ru"] = "Информация о пресноводной рыбалке не показывается.",
 				},
 			},
 			[true] = {
@@ -2855,6 +3182,7 @@ STRINGS = {
 					["zh"] = "显示淡水垂钓信息",
 					--["br"] = "Informações de pesca são mostradas.",
 					--["es"] = "Se muestra la información de pesca.",
+					["ru"] = "Информация о пресноводной рыбалке показывается.",
 				},
 			},
 		},
@@ -2865,12 +3193,14 @@ STRINGS = {
 			["zh"] = "海洋垂钓信息", 
 			--["br"] = "Informações de pesca", 
 			--["es"] = "Información de pesca"
+			["ru"] = "Информация о глубоководной рыбалке",
 		},
 		hover = {
 			"Whether ocean fishing information is shown.", 
 			["zh"] = "是否显示海洋垂钓信息", 
 			--["br"] = "Se as informações de pesca são mostradas.", 
-			--["es"] = "Configura si se muestra la información de pesca."
+			--["es"] = "Configura si se muestra la información de pesca.",
+			["ru"] = "Показывать ли информацию о глубоководной рыбалке",
 		},
 		options = {
 			[false] = {
@@ -2880,6 +3210,7 @@ STRINGS = {
 					["zh"] = "不显示海洋垂钓信息",
 					--["br"] = "Informações de pesca não são mostradas.",
 					--["es"] = "La información de pesca no se muestra.",
+					["ru"] = "Информация о глубоководной рыбалке не показывается.",
 				},
 			},
 			[true] = {
@@ -2889,6 +3220,7 @@ STRINGS = {
 					["zh"] = "显示海洋垂钓信息",
 					--["br"] = "Informações de pesca são mostradas.",
 					--["es"] = "Se muestra la información de pesca.",
+					["ru"] = "Информация о глубоководной рыбалке показывается.",
 				},
 			},
 		},
@@ -2898,13 +3230,15 @@ STRINGS = {
 			"Tackle information", 
 			["zh"] = "渔具信息", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Информация о снастях",
 		},
 		hover = {
 			"Whether to show information about floats and lures.", 
 			["zh"] = "是否显示关于浮标和鱼饵的信息", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли информацию о поплавках и приманках",
 		},
 		options = {
 			[false] = {
@@ -2914,6 +3248,7 @@ STRINGS = {
 					["zh"] = "不显示渔具信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о снастях не показывается",
 				},
 			},
 			[true] = {
@@ -2923,6 +3258,7 @@ STRINGS = {
 					["zh"] = "显示渔具信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о снастях показывается",
 				},
 			},
 		},
@@ -2932,13 +3268,15 @@ STRINGS = {
 			"Spawner information", 
 			["zh"] = "生物生成计时器", 
 			["br"] = "Informações de geração", 
-			["es"] = "Información de spawner"
+			["es"] = "Información de spawner",
+			["ru"] = "Информация о спаунерах",
 		},
 		hover = {
 			"Whether creature spawners have information shown.", 
 			["zh"] = "是否显示生物生成计时信息（猪人、兔人等）。", 
 			["br"] = "Se os geradores (spawner) de criaturas têm informações mostradas.", 
-			["es"] = "Configura si se muestra la información de spawners"
+			["es"] = "Configura si se muestra la información de spawners",
+			["ru"] = "Показывать ли информацию о спаунерах (свиней, кроликов и т. д.)",
 		},
 		options = {
 			[false] = {
@@ -2948,6 +3286,7 @@ STRINGS = {
 					["zh"] = "不显示生物生成计时信息。",
 					["br"] = "A informação do spawner não é mostrada.",
 					["es"] = "La información de spawners no se muestra.",
+					["ru"] = "Информация о спаунерах не показывается.",
 				},
 			},
 			[true] = {
@@ -2957,6 +3296,7 @@ STRINGS = {
 					["zh"] = "显示生物生成计时信息。",
 					["br"] = "A informação do spawner é mostrada.",
 					["es"] = "Se muestra la información de spawners.",
+					["ru"] = "Информация о спаунерах показывается.",
 				},
 			},
 		},
@@ -2966,13 +3306,15 @@ STRINGS = {
 			"Weapon Damage", 
 			["zh"] = "武器伤害值", 
 			["br"] = "Dano da Arma", 
-			["es"] = "Daño de arma"
+			["es"] = "Daño de arma",
+			["ru"] = "Урон оружия",
 		},
 		hover = {
 			"Whether weapon damage is shown.", 
 			["zh"] = "是否显示武器的伤害值。", 
 			["br"] = "Se o dano da arma é mostrado.", 
-			["es"] = "Configura si se muestra el daño del arma."
+			["es"] = "Configura si se muestra el daño del arma.",
+			["ru"] = "Показывать ли урон оружия",
 		},
 		options = {
 			[false] = {
@@ -2982,6 +3324,7 @@ STRINGS = {
 					["zh"] = "不显示武器的伤害值。",
 					["br"] = "Dano da arma não é mostrado.",
 					["es"] = "El daño de arma no se muestra.",
+					["ru"] = "Урон оружия не показывается.",
 				},
 			},
 			[true] = {
@@ -2991,6 +3334,7 @@ STRINGS = {
 					["zh"] = "显示武器的伤害值。",
 					["br"] = "Dano da arma é mostrado.",
 					["es"] = "Se muestra el daño de arma.",
+					["ru"] = "Урон оружия показывается.",
 				},
 			},
 		},
@@ -3000,13 +3344,15 @@ STRINGS = {
 			"Armor", 
 			["zh"] = "护甲", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Броня",
 		},
 		hover = {
 			"Whether defensive information from armor is shown.", 
 			["zh"] = "是否显示护甲的防御信息", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли информацию о защите брони",
 		},
 		options = {
 			[false] = {
@@ -3016,6 +3362,7 @@ STRINGS = {
 					["zh"] = "不显示防御信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о защите брони не показывается",
 				},
 			},
 			[true] = {
@@ -3025,6 +3372,7 @@ STRINGS = {
 					["zh"] = "显示防御信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о защите брони показывается",
 				},
 			},
 		},
@@ -3034,13 +3382,15 @@ STRINGS = {
 			"Repair Values", 
 			["zh"] = "修补数值", 
 			["br"] = "Valores de Reparo", 
-			["es"] = "Valor de reparación"
+			["es"] = "Valor de reparación",
+			["ru"] = "Значения ремонта",
 		},
 		hover = {
 			"Whether repair information is displayed (on inspection).", 
 			["zh"] = "是否显示物品的修复信息（需要检查）。", 
 			["br"] = "Se as informações de reparo são exibidas (na inspeção).", 
-			["es"] = "Configura si se muestra la información de reparación (en inspección)."
+			["es"] = "Configura si se muestra la información de reparación (en inspección).",
+			["ru"] = "Показывать ли информацию о ремонте (при осмотре).",
 		},
 		options = {
 			[false] = {
@@ -3050,6 +3400,7 @@ STRINGS = {
 					["zh"] = "不显示物品的修复信息",
 					["br"] = "Informações de reparo não são mostradas.",
 					["es"] = "El valor de reparación se muestra.",
+					["ru"] = "Информация о ремонте не показывается",
 				},
 			},
 			[true] = {
@@ -3059,6 +3410,7 @@ STRINGS = {
 					["zh"] = "显示物品的修复信息。",
 					["br"] = "Informações de reparo são mostradas.",
 					["es"] = "No se muestra el valor de reparación.",
+					["ru"] = "Информация о ремонте показывается",
 				},
 			},
 		},
@@ -3068,13 +3420,15 @@ STRINGS = {
 			"Loot Stash Info", 
 			["zh"] = "赃物袋信息", 
 			["br"] = "Informações do Saco do Klaus", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Информация о мешке Клауса",
 		},
 		hover = {
 			"Whether the contents of the Loot Stash are visible.", 
 			["zh"] = "是否显示赃物袋内容信息。", 
 			["br"] = "Se os conteúdos do Saco do Klaus estarão visíveis.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли содержимое мешка Клауса",
 		},
 		options = {
 			[false] = {
@@ -3084,6 +3438,7 @@ STRINGS = {
 					["zh"] = "不显示赃物袋内容。",
 					["br"] = "Conteúdos do Saco do Klaus NÃO estarão visíveis.",
 					["es"] = nil,
+					["ru"] = "Содержимое мешка Клауса не показывается.",
 				},
 			},
 			[true] = {
@@ -3093,6 +3448,7 @@ STRINGS = {
 					["zh"] = "显示赃物袋内容。",
 					["br"] = "Conteúdos do Saco do Klaus estarão visíveis.",
 					["es"] = nil,
+					["ru"] = "Содержимое мешка Клауса показывается.",
 				},
 			},
 		},
@@ -3102,13 +3458,15 @@ STRINGS = {
 			"Soil Moisture", 
 			["zh"] = "土壤潮湿度", 
 			["br"] = "Umidade do solo", 
-			["es"] = "Humedad del suelo"
+			["es"] = "Humedad del suelo",
+			["ru"] = "Влажность почвы",
 		},
 		hover = {
 			"How soil/plant moisture is displayed.", 
 			["zh"] = "如何显示土壤/植物的潮湿度。", 
 			["br"] = "Como a umidade do solo/planta é exibida.", 
-			["es"] = "Configura como se muestra la humedad del suelo/de las plantas."
+			["es"] = "Configura como se muestra la humedad del suelo/de las plantas.",
+			["ru"] = "Как показывается влажность почвы/растений",
 		},
 		options = {
 			[0] = {
@@ -3117,12 +3475,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desligado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Soil moisture is not shown.",
 					["zh"] = "不显示土壤潮湿度。",
 					["br"] = "A umidade do solo não é mostrada.",
 					["es"] = "No se muestra la humedad del suelo.",
+					["ru"] = "Влажность почвы не показывается",
 				},
 			},
 			[1] = {
@@ -3131,12 +3491,14 @@ STRINGS = {
 					["zh"] = "仅土壤",
 					["br"] = "Solo",
 					["es"] = "Suelo",
+					["ru"] = "Только почва",
 				},
 				hover = {
 					"Only soil moisture is shown.",
 					["zh"] = "仅显示土壤的潮湿度。",
 					["br"] = "Apenas a umidade do solo é mostrada.",
 					["es"] = "Solo se muestra la humedad del suelo.",
+					["ru"] = "Показывается только влажность почвы",
 				},
 			},
 			[2] = {
@@ -3145,12 +3507,14 @@ STRINGS = {
 					["zh"] = "土壤/植株",
 					["br"] = "Solo / Planta",
 					["es"] = "Suelo / Planta",
+					["ru"] = "Почва / Растение",
 				},
 				hover = {
 					"Soil moisture and the plant consumption rate is shown.",
 					["zh"] = "显示土壤潮湿度和植株耗水率。",
 					["br"] = "A umidade do solo e a taxa de consumo da planta são mostradas.",
 					["es"] = "Se muestra la humedad del suelo y la tasa de consumo de la planta.",
+					["ru"] = "Показывается влажность почвы и скорость потребления растения",
 				},
 			},
 			[3] = {
@@ -3159,12 +3523,14 @@ STRINGS = {
 					["zh"] = "土壤，植株，耕地",
 					["br"] = "Solo, Planta, Ladrilho",
 					["es"] = "Suelo, planta y baldosa",
+					["ru"] = "Почва, Растение, Плитка",
 				},
 				hover = {
 					"Soil moisture, plant consumption, and the tile moisture rate is shown.",
 					["zh"] = "显示土壤潮湿度，植株耗水率，耕地潮湿度。",
 					["br"] = "A umidade do solo, o consumo da planta e a taxa de umidade do ladrilho são mostrados.",
 					["es"] = "Se muestra la humedad del suelo, el consumo de las plantas y la tasa de humedad de las baldosas.",
+					["ru"] = "Показывается влажность почвы, скорость потребления растения и скорость влажности тайла",
 				},
 			},
 			[4] = {
@@ -3173,12 +3539,14 @@ STRINGS = {
 					["zh"] = "全部",
 					["br"] = "Tudo",
 					["es"] = "Todo",
+					["ru"] = "Все",
 				},
 				hover = {
 					"Soil moisture, plant consumption, and the **NET** tile moisture rate is shown.",
 					["zh"] = "显示土壤潮湿度，植株耗水率，总耕地潮湿度。",
 					["br"] = "A umidade do solo, o consumo da planta e a taxa de umidade do ladrilho **NET** são mostrados.",
 					["es"] = "Humedad del suelo, consumo de las plantas, y se muestra la tasa de humedad de la baldosa **RED**.",
+					["ru"] = "Показывается влажность почвы, скорость потребления растения и **NET** скорость влажности тайла",
 				},
 			},
 		},
@@ -3188,13 +3556,15 @@ STRINGS = {
 			"Soil Nutrients", 
 			["zh"] = "土壤养分值", 
 			["br"] = "Nutrientes do solo", 
-			["es"] = "Nutrientes del suelo"
+			["es"] = "Nutrientes del suelo",
+			["ru"] = "Питательные вещества почвы",
 		},
 		hover = {
 			"How soil/plant nutrients are displayed.", 
 			["zh"] = "如何显示土壤/植株的养分值。", 
 			["br"] = "Como os nutrientes do solo/planta são exibidos.", 
-			["es"] = "Configura como se muestran los nutrientes del suelo/de las plantas."
+			["es"] = "Configura como se muestran los nutrientes del suelo/de las plantas.",
+			["ru"] = "Как показываются питательные вещества почвы/растений",
 		},
 		options = {
 			--[[
@@ -3204,12 +3574,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desligado",
 					["es"] = "Desactivado",
+					["ru"] = nil,
 				},
 				hover = {
 					"Soil nutrients are not shown.",
 					["zh"] = "不显示土壤养分值。",
 					["br"] = "Os nutrientes do solo não são mostrados.",
 					["es"] = "No se muestra los nutrientes.",
+					["ru"] = nil,
 				},
 			},
 			--]]
@@ -3219,12 +3591,14 @@ STRINGS = {
 					["zh"] = "仅土壤",
 					["br"] = "Solo",
 					["es"] = "Suelo",
+					["ru"] = "Только почва",
 				},
 				hover = {
 					"Only soil nutrients are shown.",
 					["zh"] = "仅显示土壤养分值。",
 					["br"] = "Apenas os nutrientes do solo são mostrados.",
 					["es"] = "Solo se muestra los nutrientes del suelo.",
+					["ru"] = "Показывается только питательные вещества почвы",
 				},
 			},
 			[2] = {
@@ -3233,12 +3607,14 @@ STRINGS = {
 					["zh"] = "土壤/植株",
 					["br"] = "Solo / Planta",
 					["es"] = "Suelo / Planta",
+					["ru"] = "Почва / Растение",
 				},
 				hover = {
 					"Soil nutrients and the plant consumption rate are shown.",
 					["zh"] = "显示土壤养分值和植株耗肥率。",
 					["br"] = "Os nutrientes do solo e a taxa de consumo da planta são mostrados.",
 					["es"] = "Se muestra los nutrientes del suelo y la tasa de consumo de las plantas.",
+					["ru"] = "Показывается питательные вещества почвы и скорость потребления растения",
 				},
 			},
 			[3] = {
@@ -3247,12 +3623,14 @@ STRINGS = {
 					["zh"] = "土壤，植株，耕地",
 					["br"] = "Solo, Planta, Ladrilho",
 					["es"] = "Suelo, planta y baldosa",
+					["ru"] = "Почва, Растение, Тайл",
 				},
 				hover = {
 					"Soil nutrients, plant consumption, and the tile nutrients rate are all shown.",
 					["zh"] = "显示土壤养分值，植株耗肥率，耕地养分值。",
 					["br"] = "Os nutrientes do solo, o consumo de plantas e a taxa de nutrientes do ladrilho são mostrados.",
 					["es"] = "Se muestra los nutrientes del suelo, el consumo de las plantas y la tasa de nutrientes de las baldosas.",
+					["ru"] = "Показывается питательные вещества почвы, скорость потребления растения и скорость питательных веществ тайла",
 				},
 			},
 		},
@@ -3262,13 +3640,15 @@ STRINGS = {
 			"Display soil nutrients", 
 			["zh"] = "土壤养分值显示", 
 			["br"] = "Exibir nutrientes do solo", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать питательные вещества почвы",
 		},
 		hover = {
 			"When to display soil/plant nutrients.", 
 			["zh"] = "何时显示土壤/植株的养分值。", 
 			["br"] = "Quando exibir nutrientes do solo/plantas.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Когда показывать питательные вещества почвы/растений",
 		},
 		options = {
 			["off"] = {
@@ -3277,12 +3657,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desligado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Soil nutrients are only shown with the hat.",
 					["zh"] = "仅当佩戴高级耕作先驱帽时显示土壤养分值。",
 					["br"] = "Nutrientes do solo são mostrados apenas com o chapéu.",
 					["es"] = nil,
+					["ru"] = "Питательные вещества почвы показываются только с шляпой",
 				},
 			},
 			["hatonly"] = {
@@ -3291,12 +3673,14 @@ STRINGS = {
 					["zh"] = "高级耕作先驱帽",
 					["br"] = "Chapéu Premier do Jardineiro",
 					["es"] = nil,
+					["ru"] = "Шляпа Профессионального Садовника",
 				},
 				hover = {
 					"Soil nutrients are only shown with the hat.",
 					["zh"] = "仅当佩戴此帽时显示土壤养分值。",
 					["br"] = "Nutrientes do solo são mostrados apenas com o chapéu.",
 					["es"] = nil,
+					["ru"] = "Питательные вещества почвы показываются только с шляпой",
 				},
 			},
 			["always"] = {
@@ -3305,12 +3689,14 @@ STRINGS = {
 					["zh"] = "总是",
 					["br"] = "Sempre",
 					["es"] = "Siempre",
+					["ru"] = "Всегда",
 				},
 				hover = {
 					"Soil nutrients are always shown.",
 					["zh"] = "总是显示土壤养分值。",
 					["br"] = "Nutrientes do solo sempre são mostrados.",
 					["es"] = nil,
+					["ru"] = "Питательные вещества почвы всегда показываются",
 				},
 			},
 		},
@@ -3320,13 +3706,15 @@ STRINGS = {
 			"Plant stress", 
 			["zh"] = "植物压力", 
 			["br"] = "Estresse da planta", 
-			["es"] = "Estrés de planta"
+			["es"] = "Estrés de planta",
+			["ru"] = "Стресс растений",
 		},
 		hover = {
 			"Determines whether plant stress is shown.", 
 			["zh"] = "是否显示植物的压力。", 
 			["br"] = "Determina se o estresse da planta é mostrado.", 
-			["es"] = "Configura si se muestra el estrés de las plantas."
+			["es"] = "Configura si se muestra el estrés de las plantas.",
+			["ru"] = "Показывать ли стресс растений",
 		},
 		options = {
 			[0] = {
@@ -3336,6 +3724,7 @@ STRINGS = {
 					["zh"] = "不显示植物的压力。",
 					["br"] = "O estresse da planta não é mostrado.",
 					["es"] = "No se muestra el estrés.",
+					["ru"] = "Стресс растений не показывается",
 				},
 			},
 			[1] = {
@@ -3344,12 +3733,14 @@ STRINGS = {
 					["zh"] = "佩戴高级耕作先驱帽",
 					["br"] = "Com chapéu",
 					["es"] = "Con sombrero",
+					["ru"] = "С шляпой",
 				},
 				hover = {
 					"Plant stress will be shown if you have the Premier Gardeneer Hat.",
 					["zh"] = "如果你身上有，或戴上高级耕作先驱帽时，显示植物的压力",
 					["br"] = "O estresse da planta será mostrado se você tiver o Chapéu Premier Gardeneer.",
 					["es"] = "El estrés se mostrará si se tiene un Gardeneer Hat.",
+					["ru"] = "Стресс растений будет показан, если у вас есть Шляпа Профессионального Садовника",
 				},
 			},
 			[2] = {
@@ -3358,12 +3749,14 @@ STRINGS = {
 					["zh"] = "总是",
 					["br"] = "Sempre",
 					["es"] = "Siempre",
+					["ru"] = "Всегда",
 				},
 				hover = {
 					"Plant stress is always shown.",
 					["zh"] = "总是显示植物的压力。",
 					["br"] = "O estresse da planta é sempre mostrado.",
 					["es"] = "Se muestra siempre el estrés de la planta.",
+					["ru"] = "Стресс растений всегда показывается",
 				},
 			},
 		},
@@ -3373,13 +3766,15 @@ STRINGS = {
 			"Fertilizer", 
 			["zh"] = "肥料", 
 			["br"] = "Fertilizante", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Удобрения",
 		},
 		hover = {
 			"Determines whether fertilizer nutrients are shown.", 
 			["zh"] = "决定是否显示肥料养分值", 
 			["br"] = "Determina se os nutrientes fertilizantes são mostrados.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли удобрения",
 		},
 		options = {
 			[false] = {
@@ -3389,6 +3784,7 @@ STRINGS = {
 					["zh"] = "不显示肥料养分值",
 					["br"] = "Nutrientes fertilizantes não são mostrados.",
 					["es"] = nil,
+					["ru"] = "Удобрения не показываются",
 				},
 			},
 			[true] = {
@@ -3398,6 +3794,7 @@ STRINGS = {
 					["zh"] = "显示肥料养分值",
 					["br"] = "Nutrientes fertilizantes são mostrados.",
 					["es"] = nil,
+					["ru"] = "Удобрения показываются",
 				},
 			},
 		},
@@ -3407,13 +3804,15 @@ STRINGS = {
 			"Compost Value", 
 			["zh"] = "堆肥值", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Значение компоста",
 		},
 		hover = {
 			"Whether compost values are shown.", 
 			["zh"] = "是否显示堆肥值", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли значения компоста",
 		},
 		options = {
 			[false] = {
@@ -3423,6 +3822,7 @@ STRINGS = {
 					["zh"] = "不显示堆肥值",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Значения компоста не показываются",
 				},
 			},
 			[true] = {
@@ -3432,6 +3832,7 @@ STRINGS = {
 					["zh"] = "显示堆肥值",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Значения компоста показываются",
 				},
 			},
 		},
@@ -3441,13 +3842,15 @@ STRINGS = {
 			"Item Weight", 
 			["zh"] = "物品重量", 
 			["br"] = "Peso do item", 
-			["es"] = "Peso de artículo"
+			["es"] = "Peso de artículo",
+			["ru"] = "Вес предмета",
 		},
 		hover = {
 			"Determines whether item weight is shown.", 
 			["zh"] = "是否显示物品的重量", 
 			["br"] = "Determina se o peso do item é mostrado.", 
-			["es"] = "Configura si se muestra el peso de artículos."
+			["es"] = "Configura si se muestra el peso de artículos.",
+			["ru"] = "Показывать ли вес предмета",
 		},
 		options = {
 			[false] = {
@@ -3457,6 +3860,7 @@ STRINGS = {
 					["zh"] = "不显示物品的重量值",
 					["br"] = "O peso do item não é mostrado.",
 					["es"] = "No se muestra el peso.",
+					["ru"] = "Вес предмета не показывается",
 				},
 			},
 			[true] = {
@@ -3466,6 +3870,7 @@ STRINGS = {
 					["zh"] = "显示物品的重量值",
 					["br"] = "O peso do item é mostrado.",
 					["es"] = "Se muestra el peso.",
+					["ru"] = "Вес предмета показывается",
 				},
 			},
 		},
@@ -3475,13 +3880,15 @@ STRINGS = {
 			"Gym Info", 
 			["zh"] = "健身房信息", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Информация о спортзале",
 		},
 		hover = {
 			"Whether information about gym-related stuff is shown.", 
 			["zh"] = "是否显示与健身房有关的物品信息", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли информацию о спортзале",
 		},
 		options = {
 			[false] = {
@@ -3491,6 +3898,7 @@ STRINGS = {
 					["zh"] = "不显示与健身房有关的信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о спортзале не показывается",
 				},
 			},
 			[true] = {
@@ -3500,6 +3908,7 @@ STRINGS = {
 					["zh"] = "显示与健身房有关的信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация о спортзале показывается",
 				},
 			},
 		},
@@ -3509,13 +3918,15 @@ STRINGS = {
 			"Show World Data", 
 			["zh"] = "世界事件", 
 			["br"] = "Mostrar dados do Mundo", 
-			["es"] = "Eventos del mundo"
+			["es"] = "Eventos del mundo",
+			["ru"] = "Показывать данные мира",
 		},
 		hover = {
 			"Determines whether world data is shown.\nExamples: Hounds/Worms, Bosses, Earthquakes, etc.", 
 			["zh"] = "是否显示世界事件。世界事件有：猎犬/蠕虫，Boss，地震和其他事件。", -- Nonstandard commas
 			["br"] = "Determina se os dados do mundo são mostrados.\nExemplos: Hounds/Worms, Bosses, Earthquakes, etc.", 
-			["es"] = "Configura si se muestra los eventos del mundo (sabuesos/gusanos, jefes, terremotos, etc.)"
+			["es"] = "Configura si se muestra los eventos del mundo (sabuesos/gusanos, jefes, terremotos, etc.)",
+			["ru"] = "Показывать ли данные мира.\nПримеры: Охотники/Черви, Боссы, Землетрясения и т.д.",
 		},
 		options = {
 			[false] = {
@@ -3525,6 +3936,7 @@ STRINGS = {
 					["zh"] = "不显示世界事件。",
 					["br"] = "Os dados do mundo não são mostrados.",
 					["es"] = "No se muestran los eventos.",
+					["ru"] = "Данные мира не показываются",
 				},
 			},
 			[true] = {
@@ -3534,6 +3946,7 @@ STRINGS = {
 					["zh"] = "显示世界事件。",
 					["br"] = "Os dados do mundo são mostrados.",
 					["es"] = "Se muestran los eventos.",
+					["ru"] = "Данные мира показываются",
 				},
 			},
 		},
@@ -3543,13 +3956,15 @@ STRINGS = {
 			"Danger Announcements", 
 			["zh"] = "危险宣告", 
 			["br"] = "Anúncios de Perigo", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Оповещения о опасности",
 		},
 		hover = {
 			"Announcements that show in chat when a dangerous event is happening soon.", 
 			["zh"] = "当危险事件将要发生时在聊天栏进行宣告。", 
 			["br"] = "Anúncios que aparecem no chat quando um evento perigoso está acontecendo em breve.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Оповещения, которые появляются в чате, когда скоро произойдет опасное событие.",
 		},
 		options = {
 			[false] = {
@@ -3559,6 +3974,7 @@ STRINGS = {
 					["zh"] = "禁用危险宣告。",
 					["br"] = "Os anúncios de perigo não estão ativados.",
 					["es"] = nil,
+					["ru"] = "Оповещения о опасности не включены",
 				},
 			},
 			[true] = {
@@ -3568,6 +3984,7 @@ STRINGS = {
 					["zh"] = "启用危险宣告。",
 					["br"] = "Os anúncios de perigo estão ativados.",
 					["es"] = nil,
+					["ru"] = "Оповещения о опасности включены",
 				},
 			},
 		},
@@ -3577,13 +3994,15 @@ STRINGS = {
 			"Weather information", 
 			["zh"] = "天气信息", 
 			["br"] = "Mostrar informações meteorológicas", 
-			["es"] = "Información meteorológica"
+			["es"] = "Información meteorológica",
+			["ru"] = "Информация о погоде",
 		},
 		hover = {
 			"Determines whether weather information is shown.", 
 			["zh"] = "是否显示天气信息。", 
 			["br"] = "Determina se as informações meteorológicas são mostradas.", 
-			["es"] = "Configura si se muestra la información meteorológica."
+			["es"] = "Configura si se muestra la información meteorológica.",
+			["ru"] = "Показывать ли информацию о погоде",
 		},
 		options = {
 			[0] = {
@@ -3593,6 +4012,7 @@ STRINGS = {
 					["zh"] = "不显示天气信息",
 					["br"] = "O clima não é mostrado",
 					["es"] = "El clima no se muestra.",
+					["ru"] = "Погода не показывается",
 				},
 			},
 			[1] = {
@@ -3601,12 +4021,14 @@ STRINGS = {
 					["zh"] = "存在雨量计",
 					["br"] = "Com Pluviômetro",
 					["es"] = nil,
+					["ru"] = "С дождемером",
 				},
 				hover = {
 					"Weather is shown if a Rainometer is in the world.",
 					["zh"] = "如果世界中存在雨量计时显示天气信息。",
 					["br"] = "O tempo é mostrado se um Pluviômetro estiver no mundo.",
 					["es"] = nil,
+					["ru"] = "Погода показывается, если в мире есть дождемер",
 				},
 			},
 			[2] = {
@@ -3616,6 +4038,7 @@ STRINGS = {
 					["zh"] = "显示天气信息",
 					["br"] = "O clima é mostrado.",
 					["es"] = "Se muestra el clima.",
+					["ru"] = "Погода показывается",
 				},
 			},
 		},
@@ -3625,13 +4048,15 @@ STRINGS = {
 			"Weather Detail", 
 			["zh"] = "天气明细", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Детали погоды",
 		},
 		hover = {
 			"How detailed the weather information is.", 
 			["zh"] = "天气信息有多详细", 
 			["br"] = nil, 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "На сколько подробная информация о погоде",
 		},
 		options = {
 			[0] = {
@@ -3640,12 +4065,14 @@ STRINGS = {
 					["zh"] = "标准",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Стандартная детализация",
 				},
 				hover = {
 					"The normal level of detail is shown.",
 					["zh"] = "显示正常的细节级别",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Показывается обычный уровень детализации",
 				},
 			},
 			[1] = {
@@ -3654,12 +4081,14 @@ STRINGS = {
 					["zh"] = "高级",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Расширенная детализация",
 				},
 				hover = {
 					"Specific numbers about weather conditions are visible.",
 					["zh"] = "显示有关天气状况的具体数字",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Видны конкретные числа о погодных условиях",
 				},
 			},
 		},	
@@ -3669,13 +4098,15 @@ STRINGS = {
 			"Nightmare Phases", 
 			["zh"] = "洞穴暴动阶段", 
 			["br"] = "Fases de Pesadelo", 
-			["es"] = "Ciclo pesadilla"
+			["es"] = "Ciclo pesadilla",
+			["ru"] = "Фазы кошмара",
 		},
 		hover = {
 			"Controls when users receive information about the Nightmare Phases.", 
 			["zh"] = "是否显示洞穴暴动的具体阶段。", 
 			["br"] = "Controla quando os usuários recebem informações sobre as Fases de Pesadelo (Ruins).", 
-			["es"] = "Configura cuando los usuarios reciben información sobre los ciclos pesadilla."
+			["es"] = "Configura cuando los usuarios reciben información sobre los ciclos pesadilla.",
+			["ru"] = "Контролирует, когда пользователи получают информацию о фазах кошмара",
 		},
 		options = {
 			[0] = {
@@ -3684,12 +4115,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desligado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"No nightmare phase information is shown.",
 					["zh"] = "不显示洞穴暴动的阶段信息。",
 					["br"] = "Nenhuma informação da fase de pesadelo é mostrada.",
 					["es"] = "No se muestra información del ciclo pesadilla.",
+					["ru"] = "Информация о фазах кошмара не показывается",
 				},
 			},
 			[1] = {
@@ -3698,12 +4131,14 @@ STRINGS = {
 					["zh"] = "拥有铥矿勋章",
 					["br"] = "Precisa do Medalhão",
 					["es"] = "Medallón necesario",
+					["ru"] = "Требуется медальон",
 				},
 				hover = {
 					"Nightmare phase information is shown if a Thulecite Medallion is present.",
 					["zh"] = "拥有铥矿勋章时显示。",
 					["br"] = "Informações da fase de pesadelo são mostradas se um Thulecite Medallion estiver presente.",
 					["es"] = "Se muestra información si se tiene un medallón de tulecita.",
+					["ru"] = "Информация о фазах кошмара показывается, если есть медальон из тулецита",
 				},
 			},
 			[2] = {
@@ -3712,12 +4147,14 @@ STRINGS = {
 					["zh"] = "启用",
 					["br"] = "Ligado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Nightmare phase information is always shown.",
 					["zh"] = "总是显示暴动阶段的信息。",
 					["br"] = "Informações da fase de pesadelo são sempre mostradas.",
 					["es"] = "Se muestra siempre la información del ciclo pesadilla.",
+					["ru"] = "Информация о фазах кошмара всегда показывается",
 				},
 			},
 		},
@@ -3728,12 +4165,14 @@ STRINGS = {
 			["zh"] = "WX-78 扫描信息",
 			["br"] = nil,
 			["es"] = nil,
+			["ru"] = "Информация от сканера WX-78",
 		},
 		hover = {
 			"Whether scanning information from WX-78's scanner is shown.", 
 			["zh"] = "是否显示来自 WX-78 的扫描分析仪的扫描信息", 
 			["br"] = nil,
 			["es"] = nil,
+			["ru"] = "Показывать ли информацию от сканера WX-78",
 		},
 		options = {
 			[false] = {
@@ -3743,6 +4182,7 @@ STRINGS = {
 					["zh"] = "不显示扫描信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация от сканера не показывается",
 				},
 			},
 			[true] = {
@@ -3752,6 +4192,7 @@ STRINGS = {
 					["zh"] = "显示扫描信息",
 					["br"] = nil,
 					["es"] = nil,
+					["ru"] = "Информация от сканера показывается",
 				},
 			},
 		},
@@ -3761,13 +4202,15 @@ STRINGS = {
 			"Health", 
 			["zh"] = "生命值", 
 			["br"] = "Vida", 
-			["es"] = "Salud"
+			["es"] = "Salud",
+			["ru"] = "Здоровье",
 		},
 		hover = {
 			"Whether health information should be shown.", 
 			["zh"] = "是否显示生命值的信息。", 
 			["br"] = "Se as informações de saúde devem ser mostradas.", 
-			["es"] = "Configura si muestra información de salud."
+			["es"] = "Configura si muestra información de salud.",
+			["ru"] = "Показывать ли информацию о здоровье",
 		},
 		options = {
 			[false] = {
@@ -3777,6 +4220,7 @@ STRINGS = {
 					["zh"] = "不显示生命值信息。",
 					["br"] = "Informações de saúde não são mostradas.",
 					["es"] = "No se muestra información de salud.",
+					["ru"] = "Информация о здоровье не показывается",
 				},
 			},
 			[true] = {
@@ -3786,6 +4230,7 @@ STRINGS = {
 					["zh"] = "显示生命值信息。",
 					["br"] = "Informações de saúde são mostradas.",
 					["es"] = "Se muestra la información de salud.",
+					["ru"] = "Информация о здоровье показывается",
 				},
 			},
 		},
@@ -3795,13 +4240,15 @@ STRINGS = {
 			"Hunger", 
 			["zh"] = "饥饿值", 
 			["br"] = "Fome", 
-			["es"] = "Hambre"
+			["es"] = "Hambre",
+			["ru"] = "Голод",
 		},
 		hover = {
 			"How much hunger detail is shown.", 
 			["zh"] = "如何显示物品的饥饿值。", 
 			["br"] = "Quantos detalhes de fome são mostrados.", 
-			["es"] = "Configura cuántos detalles de hambre se muestra."
+			["es"] = "Configura cuántos detalles de hambre se muestra.",
+			["ru"] = "Сколько деталей голода показывается",
 		},
 		options = {
 			[0] = {
@@ -3811,6 +4258,7 @@ STRINGS = {
 					["zh"] = "不显示饥饿值。",
 					["br"] = "Não exibirá fome.",
 					["es"] = "No muestra el hambre.",
+					["ru"] = "Голод не показывается",
 				},
 			},
 			[1] = {
@@ -3819,12 +4267,14 @@ STRINGS = {
 					["zh"] = "标准",
 					["br"] = "Padrão",
 					["es"] = "Standard",
+					["ru"] = "Стандарт",
 				},
 				hover = {
 					"Will display standard hunger information.",
 					["zh"] = "显示标准的饥饿值。",
 					["br"] = "Mostrará informações padrão de fome.",
 					["es"] = "Muestra la información estándar del hambre.",
+					["ru"] = "Показывается стандартная информация о голоде",
 				},
 			},
 			[2] = {
@@ -3833,12 +4283,14 @@ STRINGS = {
 					["zh"] = "完整",
 					["br"] = "Tudo",
 					["es"] = "All",
+					["ru"] = "Все",
 				},
 				hover = {
 					"Will display all hunger information.",
 					["zh"] = "显示完整物品的饥饿值。",
 					["br"] = "Mostrará todas as informações de fome.",
 					["es"] = "Muestra toda la información del hambre.",
+					["ru"] = "Показывается вся информация о голоде",
 				},
 			},
 		},
@@ -3848,13 +4300,15 @@ STRINGS = {
 			"Sanity", 
 			["zh"] = "理智", 
 			["br"] = "Sanidade", 
-			["es"] = "Cordura"
+			["es"] = "Cordura",
+			["ru"] = "Рассудок",
 		},
 		hover = {
 			"Whether sanity information is shown.", 
 			["zh"] = "是否显示理智信息", 
 			["br"] = "Se as informações de sanidade são mostradas.", 
-			["es"] = "Configura se muestra la información de cordura."
+			["es"] = "Configura se muestra la información de cordura.",
+			["ru"] = "Показывать ли информацию о рассудке",
 		},
 		options = {
 			[false] = {
@@ -3863,12 +4317,14 @@ STRINGS = {
 					["zh"] = "否",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Will not display sanity information.",
 					["zh"] = "不显示理智信息",
 					["br"] = "Não exibirá informações de sanidade.",
 					["es"] = "No se muestra información de cordura.",
+					["ru"] = "Информация о рассудке не показывается",
 				},
 			},
 			[true] = {
@@ -3877,12 +4333,14 @@ STRINGS = {
 					["zh"] = "是",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Will display sanity information.",
 					["zh"] = "显示理智信息",
 					["br"] = "Exibirá informações de sanidade.",
 					["es"] = "Se muestra información de cordura.",
+					["ru"] = "Информация о рассудке показывается",
 				},
 			},
 		},
@@ -3892,13 +4350,15 @@ STRINGS = {
 			"Sanity Auras", 
 			["zh"] = "理智光环", 
 			["br"] = "Auras de Sanidade", 
-			["es"] = "Auras de cordura"
+			["es"] = "Auras de cordura",
+			["ru"] = "Ауры рассудка",
 		},
 		hover = {
 			"Whether sanity auras are shown.", 
 			["zh"] = "是否显示理智光环。", 
 			["br"] = "Se as auras de sanidade são mostradas.", 
-			["es"] = "Configura si se muestra las auras de cordura."
+			["es"] = "Configura si se muestra las auras de cordura.",
+			["ru"] = "Показывать ли ауры рассудка",
 		},
 		options = {
 			[false] = {
@@ -3907,12 +4367,14 @@ STRINGS = {
 					["zh"] = "否",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Will not display sanity auras.",
 					["zh"] = "不显示理智光环。",
 					["br"] = "Não exibirá auras de sanidade.",
 					["es"] = "No se muestra auras de cordura.",
+					["ru"] = "Ауры рассудка не показываются",
 				},
 			},
 			[true] = {
@@ -3921,12 +4383,14 @@ STRINGS = {
 					["zh"] = "是",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Will display sanity auras.",
 					["zh"] = "显示理智光环。",
 					["br"] = "Exibirá auras de sanidade.",
 					["es"] = "Se muestra auras de cordura.",
+					["ru"] = "Ауры рассудка показываются",
 				},
 			},
 		},
@@ -3936,13 +4400,15 @@ STRINGS = {
 			"Sanity Interactions", 
 			["zh"] = "影响理智交互显示", 
 			["br"] = "Interações de Sanidade", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Взаимодействия с рассудком",
 		},
 		hover = {
 			"Whether interactions that affect sanity are shown.", 
 			["zh"] = "是否显示影响理智的交互行为。", 
 			["br"] = "Se as interações que afetam a sanidade são mostradas.", 
-			["es"] = nil
+			["es"] = nil,
+			["ru"] = "Показывать ли взаимодействия, влияющие на рассудок",
 		},
 		options = {
 			[false] = {
@@ -3951,12 +4417,14 @@ STRINGS = {
 					["zh"] = "否",
 					["br"] = "Desabilitado",
 					["es"] = nil,
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Will not display sanity interactions.",
 					["zh"] = "不显示影响理智的交互。",
 					["br"] = "Não exibirá interações de sanidade.",
 					["es"] = nil,
+					["ru"] = "Взаимодействия с рассудком не показываются",
 				},
 			},
 			[true] = {
@@ -3965,12 +4433,14 @@ STRINGS = {
 					["zh"] = "是",
 					["br"] = "Ativado",
 					["es"] = nil,
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Will display sanity interactions.",
 					["zh"] = "显示影响理智的交互。",
 					["br"] = "Irá exibir interações de sanidade.",
 					["es"] = nil,
+					["ru"] = "Взаимодействия с рассудком показываются",
 				},
 			},
 		},
@@ -3980,13 +4450,15 @@ STRINGS = {
 			"Mob Attack Damage", 
 			["zh"] = "怪物攻击范围", 
 			["br"] = "Dano de Ataque de Mobs", 
-			["es"] = "Daño de ataque de mobs"
+			["es"] = "Daño de ataque de mobs",
+			["ru"] = "Урон атаки мобов",
 		},
 		hover = {
 			"Whether mob attack damage is shown.", 
 			["zh"] = "是否显示怪物的攻击范围。", 
 			["br"] = "Se o dano de ataque de mobs é mostrado.", 
-			["es"] = "Configura si se muestra el daño de ataque de mobs."
+			["es"] = "Configura si se muestra el daño de ataque de mobs.",
+			["ru"] = "Показывать ли урон атаки мобов",
 		},
 		options = {
 			[false] = {
@@ -3996,6 +4468,7 @@ STRINGS = {
 					["zh"] = "不显示怪物的攻击范围。",
 					["br"] = "Dano de ataque dos mobs não é mostrado.",
 					["es"] = "No se muestra el daño de ataque de mobs.",
+					["ru"] = "Урон атаки мобов не показывается",
 				},
 			},
 			[true] = {
@@ -4005,6 +4478,7 @@ STRINGS = {
 					["zh"] = "显示怪物的攻击范围。",
 					["br"] = "Dano de ataque dos mobs é mostrado.",
 					["es"] = "Se muestra el daño de ataque de mobs.",
+					["ru"] = "Урон атаки мобов показывается",
 				},
 			},
 		},
@@ -4014,13 +4488,15 @@ STRINGS = {
 			"Growth Verbosity", 
 			["zh"] = "植物生长阶段", 
 			["br"] = "Verbosidade do Crescimento", 
-			["es"] = "Verbosidad de crecimiento"
+			["es"] = "Verbosidad de crecimiento",
+			["ru"] = "Детализация роста",
 		},
 		hover = {
 			"How detailed growth information should be.", 
 			["zh"] = "显示植物生长的具体信息。", 
 			["br"] = "Como as informações de crescimento detalhadas devem ser exibidas.", 
-			["es"] = "Configura cómo de detallada es la información sobre el crecimiento de entidades."
+			["es"] = "Configura cómo de detallada es la información sobre el crecimiento de entidades.",
+			["ru"] = "Как детально должна быть информация о росте",
 		},
 		options = {
 			[0] = {
@@ -4029,12 +4505,14 @@ STRINGS = {
 					["zh"] = "无",
 					["br"] = "Nenhuma",
 					["es"] = "Nula",
+					["ru"] = "Нет",
 				},
 				hover = {
 					"Displays nothing about growable entities.",
 					["zh"] = "不显示会生长的物品的信息。",
 					["br"] = "Não exibe nada sobre entidades cultiváveis.",
 					["es"] = "No muestra nada sobre las entidades que pueden crecer.",
+					["ru"] = "Не показывает ничего о растущих объектах",
 				},
 			},
 			[1] = {
@@ -4043,12 +4521,14 @@ STRINGS = {
 					["zh"] = "简短",
 					["br"] = "Mínima",
 					["es"] = "Mínima",
+					["ru"] = "Минимальная",
 				},
 				hover = {
 					"Displays time until next stage.",
 					["zh"] = "仅显示生长到下一阶段所需的时间。",
 					["br"] = "Exibe o tempo até o próximo estágio.",
 					["es"] = "Muestra el tiempo hasta la siguiente etapa.",
+					["ru"] = "Показывает время до следующей стадии",
 				},
 			},
 			[2] = {
@@ -4057,12 +4537,14 @@ STRINGS = {
 					["zh"] = "详细",
 					["br"] = "Tudo",
 					["es"] = "Completa",
+					["ru"] = "Полная",
 				},
 				hover = {
 					"Displays current stage name, number of stages, and time until next stage.",
 					["zh"] = "显示当前阶段名称，阶段的数字，长到下一阶段所需的时间。",
 					["br"] = "Exibe o nome do estágio atual, número de estágios e tempo até o próximo estágio.",
 					["es"] = "Muestra el nombre de la etapa actual, el número de etapas y el tiempo hasta la siguiente etapa.",
+					["ru"] = "Показывает название текущей стадии, количество стадий и время до следующей стадии",
 				},
 			},
 		},
@@ -4072,13 +4554,15 @@ STRINGS = {
 			"Pickable Information", 
 			["zh"] = "可采集信息", 
 			["br"] = "Informações selecionáveis", 
-			["es"] = "Información de recolección"
+			["es"] = "Información de recolección",
+			["ru"] = "Информация о сборе",
 		},
 		hover = {
 			"Whether pickable information should be shown (ex: Berry Bushes)", 
 			["zh"] = "是否显示可采集信息 (如：浆果丛)", 
 			["br"] = "Se as informações selecionáveis devem ser mostradas (ex: Berry Bushes).", 
-			["es"] = "Configura si se muestra la información seleccionable (por ej., arbustos de bayas)"
+			["es"] = "Configura si se muestra la información seleccionable (por ej., arbustos de bayas)",
+			["ru"] = "Показывать ли информацию о сборе (например, кусты ягод)",
 		},
 		options = {
 			[false] = {
@@ -4088,6 +4572,7 @@ STRINGS = {
 					["zh"] = "不显示可采集信息。",
 					["br"] = "Informações selecionáveis não são exibidas.",
 					["es"] = "No se muestra la información de recolección.",
+					["ru"] = "Информация о сборе не показывается",
 				},
 			},
 			[true] = {
@@ -4097,6 +4582,7 @@ STRINGS = {
 					["zh"] = "显示可采集信息。",
 					["br"] = "Informações selecionáveis são exibidas.",
 					["es"] = "Se muestra la información seleccionable.",
+					["ru"] = "Информация о сборе показывается",
 				},
 			},
 		},
@@ -4106,13 +4592,15 @@ STRINGS = {
 			"Harvestable Information", 
 			["zh"] = "可收获信息", 
 			["br"] = "Informações de colheitas", 
-			["es"] = "Información de cosecha"
+			["es"] = "Información de cosecha",
+			["ru"] = "Информация о сборе",
 		},
 		hover = {
 			"Whether harvestable information should be shown (ex: Bee Boxes)", 
 			["zh"] = "是否显示可收获信息 (如：蜂箱)", 
 			["br"] = "Se as informações de colheita devem ser mostradas (ex: Bee Boxes).", 
-			["es"] = "Configura si se muestra la información cosechable (por ej., cajas de abejas)"
+			["es"] = "Configura si se muestra la información cosechable (por ej., cajas de abejas)",
+			["ru"] = "Показывать ли информацию о сборе (например, пчелиные ульи)",
 		},
 		options = {
 			[false] = {
@@ -4122,6 +4610,7 @@ STRINGS = {
 					["zh"] = "不显示可收获信息。",
 					["br"] = "Informações de colheitas não são exibidas.",
 					["es"] = "No se muestra la información de cosecha.",
+					["ru"] = "Информация о сборе не показывается",
 				},
 			},
 			[true] = {
@@ -4131,6 +4620,7 @@ STRINGS = {
 					["zh"] = "显示可收获信息。",
 					["br"] = "Informações de colheitas são exibidas.",
 					["es"] = "Se muestra la información de cosecha.",
+					["ru"] = "Информация о сборе показывается",
 				},
 			},
 		},
@@ -4140,13 +4630,15 @@ STRINGS = {
 			"Tool Durability", 
 			["zh"] = "工具耐久度", 
 			["br"] = "Durabilidade da Ferramenta", 
-			["es"] = "Durabilidad de herramientas"
+			["es"] = "Durabilidad de herramientas",
+			["ru"] = "Прочность инструментов",
 		},
 		hover = {
 			"Whether tool durability is displayed.", 
 			["zh"] = "是否显示工具的耐久度。", 
 			["br"] = "Se a durabilidade da ferramenta é exibida.", 
-			["es"] = "Configura si se muestra la durabilidad de herramientas."
+			["es"] = "Configura si se muestra la durabilidad de herramientas.",
+			["ru"] = "Показывать ли прочность инструментов",
 		},
 		options = {
 			[false] = {
@@ -4156,6 +4648,7 @@ STRINGS = {
 					["zh"] = "不显示工具的耐久度。",
 					["br"] = "A durabilidade da ferramenta não será exibida.",
 					["es"] = "No se muestra la durabilidad de las herramientas.",
+					["ru"] = "Прочность инструментов не показывается",
 				},
 			},
 			[true] = {
@@ -4165,6 +4658,7 @@ STRINGS = {
 					["zh"] = "显示工具的耐久度。",
 					["br"] = "A durabilidade da ferramenta será exibida.",
 					["es"] = "Se muestra la durabilidad de las herramientas.",
+					["ru"] = "Прочность инструментов показывается",
 				},
 			},
 		},
@@ -4174,13 +4668,15 @@ STRINGS = {
 			"Timers", 
 			["zh"] = "计时器", 
 			["br"] = "Temporizadores", 
-			["es"] = "Temporizadores"
+			["es"] = "Temporizadores",
+			["ru"] = "Таймеры",
 		},
 		hover = {
 			"Whether timer information is displayed.", 
 			["zh"] = "是否开启计时器。", 
 			["br"] = "Se as informações do temporizador são exibidas.", 
-			["es"] = "Configura si se muestra temporizadores de eventos."
+			["es"] = "Configura si se muestra temporizadores de eventos.",
+			["ru"] = "Показывать ли информацию о таймерах",
 		},
 		options = {
 			[false] = {
@@ -4190,6 +4686,7 @@ STRINGS = {
 					["zh"] = "关闭计时器。",
 					["br"] = "Temporizadores não são exibidos.",
 					["es"] = "No se muestra temporizadores.",
+					["ru"] = "Таймеры не показываются",
 				},
 			},
 			[true] = {
@@ -4199,6 +4696,7 @@ STRINGS = {
 					["zh"] = "开启计时器。",
 					["br"] = "Temporizadores são exibidos.",
 					["es"] = "Se muestra temporizadores.",
+					["ru"] = "Таймеры показываются",
 				},
 			},
 		},
@@ -4208,13 +4706,15 @@ STRINGS = {
 			"Upgradeables", 
 			["zh"] = "可升级物品显示", 
 			["br"] = "Atualizáveis", 
-			["es"] = "Etapas"
+			["es"] = "Etapas",
+			["ru"] = "Обновляемые",
 		},
 		hover = {
 			"Whether upgradeable information is displayed.", 
 			["zh"] = "是否显示可升级物品信息。", 
 			["br"] = "Se as informações de atualizáveis são exibidas.", 
-			["es"] = "Configura si se muestra la información de etapas en estructuras (árboles, nidos de araña, etc.)"
+			["es"] = "Configura si se muestra la información de etapas en estructuras (árboles, nidos de araña, etc.)",
+			["ru"] = "Показывать ли информацию об обновляемых объектах",
 		},
 		options = {
 			[false] = {
@@ -4224,6 +4724,7 @@ STRINGS = {
 					["zh"] = "不显示可升级的建筑等物品的信息。",
 					["br"] = "Não exibe informações de estruturas atualizáveis",
 					["es"] = "No muestra información de etapas.",
+					["ru"] = "Информация об обновляемых объектах не показывается",
 				},
 			},
 			[true] = {
@@ -4233,6 +4734,7 @@ STRINGS = {
 					["zh"] = "显示可升级的物品的信息，如蜘蛛巢等。",
 					["br"] = "Exibe informações de estruturas atualizáveis, como ninhos de aranhas.",
 					["es"] = "Muestra información de etapas.",
+					["ru"] = "Показывает информацию об обновляемых объектах, таких как паучьи гнезда",
 				},
 			},
 		},
@@ -4242,13 +4744,15 @@ STRINGS = {
 			"Naughtiness verbosity", 
 			["zh"] = "淘气值", 
 			["br"] = "Verbalidade das travessuras", 
-			["es"] = "Verbosidad de maldad"
+			["es"] = "Verbosidad de maldad",
+			["ru"] = "Детализация непослушности",
 		},
 		hover = {
 			"How verbose the naughtiness information should be. Combined Status takes precedence for player naughtiness.", 
 			["zh"] = "如何显示淘气值。Combined Status 模组的淘气值显示优先于本模组。", 
 			["br"] = "Quão verbosa deve ser a informação de travessuras. O Combined Status tem precedência para as travessuras do jogador.", 
-			["es"] = "Elige como es de detallada la información de maldad. Combined Status tiene prioridad sobre Insight."
+			["es"] = "Elige como es de detallada la información de maldad. Combined Status tiene prioridad sobre Insight.",
+			["ru"] = "Как подробно должна быть информация о непослушности. Combined Status имеет приоритет для непослушности игрока.",
 		},
 		options = {
 			[0] = {
@@ -4257,12 +4761,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Most naughtiness values will not display.",
 					["zh"] = "不显示淘气值。",
 					["br"] = "A maioria dos valores de travessuras não são exibidos.",
 					["es"] = "La mayoría de valores de maldad no se mostrarán.",
+					["ru"] = "Большинство значений непослушности не показываются",
 				},
 			},
 			[1] = {
@@ -4271,12 +4777,14 @@ STRINGS = {
 					["zh"] = "生物的淘气值",
 					["br"] = "Criatura",
 					["es"] = "Criatura",
+					["ru"] = "Существо",
 				},
 				hover = {
 					"Creature naughtiness values will display.",
 					["zh"] = "显示击杀生物的淘气值。",
 					["br"] = "Os valores de travessuras da criatura são exibidos.",
 					["es"] = "Se mostrarán los valores de maldad de los mobs.",
+					["ru"] = "Показываются значения непослушности существ",
 				},
 			},
 			[2] = {
@@ -4285,12 +4793,14 @@ STRINGS = {
 					["zh"] = "玩家/生物的淘气值",
 					["br"] = "Plr/Criatura",
 					["es"] = "Jgd/Criatura",
+					["ru"] = "Игрок/Существо",
 				},
 				hover = {
 					"Player and creature naughtiness values will display.",
 					["zh"] = "同时显示玩家已有的淘气值和击杀生物的淘气值。",
 					["br"] = "Os valores de travessuras do jogador e da criatura são exibidos.",
 					["es"] = "Se mostrarán los valores de maldad de jugadores y mobs.",
+					["ru"] = "Показываются значения непослушности игрока и существ",
 				},
 			},
 		},
@@ -4300,13 +4810,15 @@ STRINGS = {
 			"Followers", 
 			["zh"] = "随从信息", 
 			["br"] = "Seguidores", 
-			["es"] = "Seguidores"
+			["es"] = "Seguidores",
+			["ru"] = "Следователи",
 		},
 		hover = {
 			"Whether follower information is displayed.", 
 			["zh"] = "是否显示你的跟随者的信息。", 
 			["br"] = "Se as informações dos seguidores são exibidas.", 
-			["es"] = "Configura si se muestra la información de seguidores (Chester, Gloomer, etc.)"
+			["es"] = "Configura si se muestra la información de seguidores (Chester, Gloomer, etc.)",
+			["ru"] = "Показывать ли информацию о следователях (Честер, Глумер и т. д.)",
 		},
 		options = {
 			[false] = {
@@ -4315,12 +4827,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Will not display follower information.",
 					["zh"] = "不显示跟随者的信息。",
 					["br"] = "Não exibirá informações de seguidores.",
 					["es"] = "No mostrará información de los seguidores.",
+					["ru"] = "Информация о следователях не показывается",
 				},
 			},
 			[true] = {
@@ -4329,12 +4843,14 @@ STRINGS = {
 					["zh"] = "启用",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Will display follower information.",
 					["zh"] = "显示跟随者的信息。",
 					["br"] = "Mostrará informações de seguidores.",
 					["es"] = "Muestra información de los seguidores.",
+					["ru"] = "Информация о следователях показывается",
 				},
 			},
 		},
@@ -4344,13 +4860,15 @@ STRINGS = {
 			"Herds", 
 			["zh"] = "兽群信息", 
 			["br"] = "Rebanhos", 
-			["es"] = "Manadas"
+			["es"] = "Manadas",
+			["ru"] = "Стада",
 		},
 		hover = {
 			"Whether herd information is displayed.", 
 			["zh"] = "是否显示兽群的信息。", 
 			["br"] = "Se as informações de rebanhos são exibidas.", 
-			["es"] = "Configura si se muestra información de la manada."
+			["es"] = "Configura si se muestra información de la manada.",
+			["ru"] = "Показывать ли информацию о стадах",
 		},
 		options = {
 			[false] = {
@@ -4359,12 +4877,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Will not display herd information.",
 					["zh"] = "不显示兽群的信息。",
 					["br"] = "Não exibirá informações dos rebanhos.",
 					["es"] = "No muestra información de la manada.",
+					["ru"] = "Информация о стадах не показывается",
 				},
 			},
 			[true] = {
@@ -4373,12 +4893,14 @@ STRINGS = {
 					["zh"] = "启用",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Will display herd information.",
 					["zh"] = "显示兽群的信息。",
 					["br"] = "Mostrará informações de rebanhos.",
 					["es"] = "Muestra información de la manada.",
+					["ru"] = "Информация о стадах показывается",
 				},
 			},
 		},
@@ -4388,13 +4910,15 @@ STRINGS = {
 			"Domestication", 
 			["zh"] = "牛驯服度", 
 			["br"] = "Domesticação", 
-			["es"] = "Domesticación"
+			["es"] = "Domesticación",
+			["ru"] = "Одомашнивание",
 		},
 		hover = {
 			"Whether domestication information is displayed.", 
 			["zh"] = "是否显示牛的驯服度。", 
 			["br"] = "Se as informações de domesticação são exibidas.", 
-			["es"] = "Configura si muestra información de domesticación."
+			["es"] = "Configura si muestra información de domesticación.",
+			["ru"] = "Показывать ли информацию об одомашнивании",
 		},
 		options = {
 			[false] = {
@@ -4403,12 +4927,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Will not display domestication information.",
 					["zh"] = "不显示牛的驯服度信息。",
 					["br"] = "Não exibirá informações de domesticação.",
 					["es"] = "No muestra información de domesticación.",
+					["ru"] = "Информация об одомашнивании не показывается",
 				},
 			},
 			[true] = {
@@ -4417,12 +4943,14 @@ STRINGS = {
 					["zh"] = "启用",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Will display domestication information.",
 					["zh"] = "显示牛的驯服度信息。",
 					["br"] = "Mostrará informações de domesticação.",
 					["es"] = "Muestra información sobre la domesticación.",
+					["ru"] = "Информация об одомашнивании показывается",
 				},
 			},
 		},
@@ -4432,13 +4960,15 @@ STRINGS = {
 			"Pollination", 
 			["zh"] = "授粉信息", 
 			["br"] = "Polinização", 
-			["es"] = "Polinización"
+			["es"] = "Polinización",
+			["ru"] = "Опыление",
 		},
 		hover = {
 			"Whether pollination information is displayed.", 
 			["zh"] = "是否显示蜜蜂、蝴蝶的授粉信息。", 
 			["br"] = "Se as informações de polinização são exibidas.", 
-			["es"] = "Configura si se muestra información de polinización."
+			["es"] = "Configura si se muestra información de polinización.",
+			["ru"] = "Показывать ли информацию об опылении",
 		},
 		options = {
 			[false] = {
@@ -4447,12 +4977,14 @@ STRINGS = {
 					["zh"] = "禁用",
 					["br"] = "Desabilitado",
 					["es"] = "Desactivado",
+					["ru"] = "Отключено",
 				},
 				hover = {
 					"Will not display pollination information.",
 					["zh"] = "不显示授粉信息。",
 					["br"] = "Não exibirá informações de polinização.",
 					["es"] = "No muestra información sobre la polinización.",
+					["ru"] = "Информация об опылении не показывается",
 				},
 			},
 			[true] = {
@@ -4461,12 +4993,14 @@ STRINGS = {
 					["zh"] = "启用",
 					["br"] = "Habilitado",
 					["es"] = "Activado",
+					["ru"] = "Включено",
 				},
 				hover = {
 					"Will display pollination information.",
 					["zh"] = "显示授粉信息。",
 					["br"] = "Mostrará informações de polinização.",
 					["es"] = "Muestra información sobre la polinización.",
+					["ru"] = "Информация об опылении показывается",
 				},
 			},
 		},
@@ -4476,13 +5010,15 @@ STRINGS = {
 			"Display item worth", 
 			["zh"] = "物品价值", 
 			["br"] = "Exibir o valor do item", 
-			["es"] = "Valor de objeto"
+			["es"] = "Valor de objeto",
+			["ru"] = "Показывать стоимость предмета",
 		},
 		hover = {
 			"Whether item worth is displayed.", 
 			["zh"] = "是否会显示物品的黄金或金币价值。", 
 			["br"] = "Se o valor de itens que valem ouro/dubloon é exibido.", 
-			["es"] = "Configura si muestra el valor de un objeto (oro y doblones)."
+			["es"] = "Configura si muestra el valor de un objeto (oro y doblones).",
+			["ru"] = "Показывать ли стоимость предмета",
 		},
 		options = {
 			[false] = {
@@ -4492,6 +5028,7 @@ STRINGS = {
 					["zh"] = "不显示物品的价值。",
 					["br"] = "Não exibirá o valor de ouro ou dubloon.",
 					["es"] = "No mostrará ningún valor.",
+					["ru"] = "Стоимость предмета не показывается",
 				},
 			},
 			[true] = {
@@ -4501,6 +5038,7 @@ STRINGS = {
 					["zh"] = "显示物品值的价值。",
 					["br"] = "Mostrará o valor do ouro e do dubloon.",
 					["es"] = "Mostrará el valor en oro y doblones.",
+					["ru"] = "Показывает стоимость в золоте и дублонах",
 				},
 			},
 		},
@@ -4510,13 +5048,15 @@ STRINGS = {
 			"Display Appeasement", 
 			["zh"] = "蚁狮", 
 			["br"] = "Exibir Apaziguamento", 
-			["es"] = "Valor de apaciguamiento"
+			["es"] = "Valor de apaciguamiento",
+			["ru"] = "Показывать умиротворение",
 		},
 		hover = {
 			"Whether appeasement worth is displayed.", 
 			["zh"] = "是否显示蚁狮献祭时间和作乱的信息。", 
 			["br"] = "Se o valor do apaziguamento é exibido.", 
-			["es"] = "Configura si se muestra el valor de apaciguamiento."
+			["es"] = "Configura si se muestra el valor de apaciguamiento.",
+			["ru"] = "Показывать ли умиротворение",
 		},
 		options = {
 			[false] = {
@@ -4526,6 +5066,7 @@ STRINGS = {
 					["zh"] = "不显示蚁狮的信息。",
 					["br"] = "Não exibirá valor de apaziguamento.",
 					["es"] = "No se muestra ningún valor.",
+					["ru"] = "Умиротворение не показывается",
 				},
 			},
 			[true] = {
@@ -4535,6 +5076,7 @@ STRINGS = {
 					["zh"] = "显示蚁狮的信息。",
 					["br"] = "Mostrará o valor de apaziguamento.",
 					["es"] = "Muestra el valor de apaciguamiento.",
+					["ru"] = "Умиротворение показывается",
 				},
 			},
 		},
@@ -4544,13 +5086,15 @@ STRINGS = {
 			"Fuel Verbosity", 
 			["zh"] = "燃料", 
 			["br"] = "Verbosidade do Combustível", 
-			["es"] = "Verbosidad del combustible"
+			["es"] = "Verbosidad del combustible",
+			["ru"] = "Детализация топлива",
 		},
 		hover = {
 			"How verbose fuel information is.", 
 			["zh"] = "如何显示燃料的信息。", 
 			["br"] = "Quão detalhadas são as informações de combustível.", 
-			["es"] = "Configura como es de extensa es la información sobre el combustible."
+			["es"] = "Configura como es de extensa es la información sobre el combustible.",
+			["ru"] = "Как подробно должна быть информация о топливе",
 		},
 		options = {
 			[0] = {
@@ -4559,12 +5103,14 @@ STRINGS = {
 					["zh"] = "无",
 					["br"] = "Nenhuma",
 					["es"] = "Ninguno",
+					["ru"] = "Нет",
 				},
 				hover = {
 					"No fuel information will show.",
 					["zh"] = "不显示燃料信息。",
 					["br"] = "Nenhuma informação de combustível será exibida.",
 					["es"] = "No se muestra ninguna información sobre el combustible.",
+					["ru"] = "Информация о топливе не показывается",
 				},
 			},
 			[1] = {
@@ -4573,12 +5119,14 @@ STRINGS = {
 					["zh"] = "标准",
 					["br"] = "Padrão",
 					["es"] = "Estándar",
+					["ru"] = "Стандарт",
 				},
 				hover = {
 					"Standard fuel information will show.",
 					["zh"] = "显示标准的燃料信息。",
 					["br"] = "Informações padrão de combustível são exibidas.",
 					["es"] = "Se muestra información estándar del combustible.",
+					["ru"] = "Показывается стандартная информация о топливе",
 				},
 			},
 			[2] = {
@@ -4587,12 +5135,14 @@ STRINGS = {
 					["zh"] = "全面",
 					["br"] = "Tudo",
 					["es"] = "Todo",
+					["ru"] = "Полная",
 				},
 				hover = {
 					"All fuel information will show.",
 					["zh"] = "显示全面的燃料信息。",
 					["br"] = "Todas as informações de combustível são exibidas.",
 					["es"] = "Se muestra toda la información sobre el combustible.",
+					["ru"] = "Показывается полная информация о топливе",
 				},
 			},
 		},
@@ -4602,13 +5152,15 @@ STRINGS = {
 			"Shelter Information", 
 			["zh"] = "遮蔽处信息", 
 			["br"] = "Informações do Abrigo", 
-			["es"] = "Información del refugio"
+			["es"] = "Información del refugio",
+			["ru"] = "Информация о укрытии",
 		},
 		hover = {
 			"Whether to display shelter information.", 
 			["zh"] = "是否显示遮蔽处信息。", 
 			["br"] = "Se exibe informações do abrigo.", 
-			["es"] = "Configura si se muestra información del refugio."
+			["es"] = "Configura si se muestra información del refugio.",
+			["ru"] = "Показывать ли информацию о укрытии",
 		},
 		options = {
 			[false] = {
@@ -4618,6 +5170,7 @@ STRINGS = {
 					["zh"] = "不显示遮蔽处信息。",
 					["br"] = "As informações do abrigo não são mostradas.",
 					["es"] = "No se muestra información del refugio.",
+					["ru"] = "Информация о укрытии не показывается",
 				},
 			},
 			[true] = {
@@ -4627,6 +5180,7 @@ STRINGS = {
 					["zh"] = "显示遮蔽处信息。",
 					["br"] = "As informações do abrigo são mostradas.",
 					["es"] = "Se muestra información del refugio.",
+					["ru"] = "Информация о укрытии показывается",
 				},
 			},
 		},
@@ -4637,13 +5191,15 @@ STRINGS = {
 			"Unique Information", 
 			["zh"] = "特定信息", 
 			["br"] = "Informações Únicas", 
-			["es"] = "Información única"
+			["es"] = "Información única",
+			["ru"] = "Уникальная информация",
 		},
 		hover = {
 			"Whether to display unique information for certain entities.", 
 			["zh"] = "是否显示特定实体的特定信息。", 
 			["br"] = "Se vai exibir informações exclusivas para determinadas entidades.", 
-			["es"] = "Configura si se muestra información única de ciertas entidades."
+			["es"] = "Configura si se muestra información única de ciertas entidades.",
+			["ru"] = "Показывать ли уникальную информацию для определенных объектов",
 		},
 		options = {
 			[0] = {
@@ -4653,6 +5209,7 @@ STRINGS = {
 					["zh"] = "不显示特定信息。",
 					["br"] = "Nenhuma informação exclusiva é mostrada",
 					["es"] = "No se muestra ninguna información única.",
+					["ru"] = "Уникальная информация не показывается",
 				},
 			},
 			[1] = {
@@ -4662,6 +5219,7 @@ STRINGS = {
 					["zh"] = "显示特定信息。",
 					["br"] = "Informações exclusivas são mostradas.",
 					["es"] = "Se muestra información única.",
+					["ru"] = "Уникальная информация показывается",
 				},
 			},
 		},
@@ -4675,13 +5233,15 @@ STRINGS = {
 			"Crafting Lookup Button", 
 			["zh"] = "建造查看按钮", 
 			["br"] = "Botão de pesquisa no Crafting", 
-			["es"] = "Botón de búsqueda"
+			["es"] = "Botón de búsqueda",
+			["ru"] = "Кнопка поиска рецептов",
 		},
 		hover = {
 			"Whether the crafting lookup button is displayed or not.", 
 			["zh"] = "是否显示建造查看按钮", 
 			["br"] = "Se o botão de pesquisa na aba de criação é exibido ou não.", 
-			["es"] = "Configura si se muestra un botón de búsqueda (de creación)."
+			["es"] = "Configura si se muestra un botón de búsqueda (de creación).",
+			["ru"] = "Показывать ли кнопку поиска рецептов",
 		},
 		options = {
 			[false] = {
@@ -4691,6 +5251,7 @@ STRINGS = {
 					["zh"] = "不显示按钮",
 					["br"] = "O botão não é exibido.",
 					["es"] = "El botón no se muestra.",
+					["ru"] = "Кнопка не показывается",
 				},
 			},
 			[true] = {
@@ -4700,6 +5261,7 @@ STRINGS = {
 					["zh"] = "显示按钮",
 					["br"] = "O botão é exibido.",
 					["es"] = "Se muestra el botón.",
+					["ru"] = "Кнопка показывается",
 				},
 			},
 		},
@@ -4709,13 +5271,15 @@ STRINGS = {
 			"Insight Menu Button", 
 			["zh"] = "Insight 目录按钮", 
 			["br"] = "Botão do Menu Insight", 
-			["es"] = "Botón menú de Insight"
+			["es"] = "Botón menú de Insight",
+			["ru"] = "Кнопка меню Insight",
 		},
 		hover = {
 			"Whether the insight menu button is displayed or not.", 
 			["zh"] = "是否显示 Insight 目录按钮", 
 			["br"] = "Se o botão do menu Insight é exibido ou não.", 
-			["es"] = "Configura si se muestra el botón del menú de Insight."
+			["es"] = "Configura si se muestra el botón del menú de Insight.",
+			["ru"] = "Показывать ли кнопку меню Insight",
 		},
 		options = {
 			[false] = {
@@ -4725,6 +5289,7 @@ STRINGS = {
 					["zh"] = "不显示按钮",
 					["br"] = "O botão não é exibido.",
 					["es"] = "The button is not shown.",
+					["ru"] = "Кнопка не показывается",
 				},
 			},
 			[true] = {
@@ -4734,6 +5299,7 @@ STRINGS = {
 					["zh"] = "显示按钮",
 					["br"] = "O botão é exibido.",
 					["es"] = "The button is shown.",
+					["ru"] = "Кнопка показывается",
 				},
 			},
 		},
@@ -4743,13 +5309,15 @@ STRINGS = {
 			"More Information Hint", 
 			["zh"] = "更多信息提示", 
 			["br"] = "Dica de Mais Informações", 
-			["es"] = "Indicador de información extra"
+			["es"] = "Indicador de información extra",
+			["ru"] = "Подсказка о дополнительной информации",
 		},
 		hover = {
 			"Whether an asterisk is present for entities with more information.", 
 			["zh"] = "是否在有更多信息的实体上显示星号", 
 			["br"] = "Se um asterisco está presente para entidades com mais informações.", 
-			["es"] = "Muestra un asterisco sobre entidades con más información disponible."
+			["es"] = "Muestra un asterisco sobre entidades con más información disponible.",
+			["ru"] = "Показывать ли звездочку для объектов с дополнительной информацией",
 		},
 		options = {
 			[false] = {
@@ -4759,6 +5327,7 @@ STRINGS = {
 					["zh"] = "不显示星号",
 					["br"] = "O indicador não é mostrado.",
 					["es"] = "El indicador no se muestra.",
+					["ru"] = "Звездочка не показывается",
 				},
 			},
 			[true] = {
@@ -4768,6 +5337,7 @@ STRINGS = {
 					["zh"] = "显示星号",
 					["br"] = "O indicador é mostrado.",
 					["es"] = "Se muestra el indicador.",
+					["ru"] = "Звездочка показывается",
 				},
 			},
 		},
@@ -4777,13 +5347,15 @@ STRINGS = {
 			"Information preloading", 
 			["zh"] = "信息预载", 
 			["br"] = "Pré-carregamento de informações", 
-			["es"] = "Precarga de información"
+			["es"] = "Precarga de información",
+			["ru"] = "Предварительная загрузка информации",
 		},
 		hover = {
 			"Whether information is preloaded when entities become visible. Trades network usage for faster performance. Recommended to use \"All\".", 
 			["zh"] = "是否预先加载可见范围内所有实体的信息。消耗更多网络以获取更好的表现。推荐使用 \"所有\"。", 
 			["br"] = "Se as informações são pré-carregadas quando as entidades se tornam visíveis. Troca o uso da rede para um desempenho mais rápido. Recomendado usar \"Todos\".", 
-			["es"] = "Precarga información solo cuando las entidades son visibles. Intercambia el uso de la red mejorar el rendimiento."
+			["es"] = "Precarga información solo cuando las entidades son visibles. Intercambia el uso de la red mejorar el rendimiento.",
+			["ru"] = "Предварительная загрузка информации, когда объекты становятся видимыми. Торгует использование сети на более быстрое выполнение. Рекомендуется использовать \"Все\".",
 		},
 		options = {
 			[0] = {
@@ -4792,12 +5364,14 @@ STRINGS = {
 					["zh"] = "否",
 					["br"] = "Nenhuma",
 					["es"] = "Desactivado",
+					["ru"] = "Нет",
 				},
 				hover = {
 					"CAN CAUSE SEVERE FPS DROPS. NOT RECOMMENDED.",
 					["zh"] = "严重帧数降低，不推荐",
 					["br"] = "PODE CAUSAR QUEDAS DE FPS GRAVES. NÃO RECOMENDADO.",
 					["es"] = "PUEDE CAUSAR GRAVES CAÍDAS DE FPS. NO SE RECOMIENDA.",
+					["ru"] = "МОЖЕТ ПРИВЕСТИ К СЕРЬЕЗНЫМ ПАДЕНИЯМ FPS. НЕ РЕКОМЕНДУЕТСЯ.",
 				},
 			},
 			[1] = {
@@ -4806,12 +5380,14 @@ STRINGS = {
 					["zh"] = "容器",
 					["br"] = "Contêineres",
 					["es"] = "En bloques",
+					["ru"] = "Контейнеры",
 				},
 				hover = {
 					"POSSIBLE FPS DROP. NOT RECOMMENDED. CAN USE FOR SMALL, CLEAN BASES.",
 					["zh"] = "小幅帧数降低，不推荐。可用于小型简单的基地。",
 					["br"] = "POSSÍVEL QUEDA DE FPS. NÃO RECOMENDADO. PODE SER USADO PARA BASES PEQUENAS E LIMPAS.",
 					["es"] = "Posible caída de FPS. No se recomienda. Puede usarse para bases pequeñas y limpias.",
+					["ru"] = "ВОЗМОЖНОЕ ПАДЕНИЕ FPS. НЕ РЕКОМЕНДУЕТСЯ. МОЖЕТ БЫТЬ ИСПОЛЬЗОВАНО ДЛЯ МАЛЕНЬКИХ, ЧИСТЫХ БАЗ.",
 				},
 			},
 			[2] = {
@@ -4820,12 +5396,14 @@ STRINGS = {
 					["zh"] = "所有",
 					["br"] = "Tudo",
 					["es"] = "Activado",
+					["ru"] = "Все",
 				},
 				hover = {
 					"FASTEST. RECOMMENDED.",
 					["zh"] = "最高帧率，推荐。",
 					["br"] = "O MAIS RÁPIDO. RECOMENDADO.",
 					["es"] = "Lo más rápido. Recomendado.",
+					["ru"] = "САМЫЙ БЫСТРЫЙ. РЕКОМЕНДУЕТСЯ.",
 				},
 			},
 		},
@@ -4835,13 +5413,15 @@ STRINGS = {
 			"Refresh delay", 
 			["zh"] = "信息刷新延时", 
 			["br"] = "Atraso de atualização", 
-			["es"] = "Retardo de actualización"
+			["es"] = "Retardo de actualización",
+			["ru"] = "Задержка обновления",
 		},
 		hover = {
 			"How often you can re-request information for the same item.", 
 			["zh"] = "多久更新物品的信息。", 
 			["br"] = "Com que frequência você pode solicitar novamente informações para o mesmo item.", 
-			["es"] = "La frecuencia con la que puede volver a solicitar información para el mismo elemento."
+			["es"] = "La frecuencia con la que puede volver a solicitar información para el mismo elemento.",
+			["ru"] = "Как часто вы можете повторно запросить информацию для одного и того же элемента.",
 		},
 		options = {
 			[true] = {
@@ -4850,12 +5430,14 @@ STRINGS = {
 					["zh"] = "自动设定",
 					["br"] = "Automático",
 					["es"] = "Automático",
+					["ru"] = "Автоматический",
 				},
 				hover = {
 					"Dynamicly chosen based on current performance stats.",
 					["zh"] = "基于玩家和游戏性能，动态更新。",
 					["br"] = "Escolhido dinamicamente com base nas estatísticas de desempenho atuais.",
 					["es"] = "Cambia dinámicamente en función de las estadísticas de rendimiento actuales.",
+					["ru"] = "Динамически выбирается на основе текущей производительности.",
 				},
 			},
 			[0] = {
@@ -4864,12 +5446,14 @@ STRINGS = {
 					["zh"] = "实时",
 					["br"] = "Nenhuma",
 					["es"] = "None",
+					["ru"] = "Нет",
 				},
 				hover = {
 					"Information is live.",
 					["zh"] = "信息实时更新。",
 					["br"] = "A informação é atualizada ao vivo.",
 					["es"] = "La información está en vivo.",
+					["ru"] = "Информация в реальном времени.",
 				},
 			},
 			[0.25] = {
@@ -4878,12 +5462,14 @@ STRINGS = {
 					["zh"] = "0.25秒",
 					["br"] = "0.25s",
 					["es"] = "0.25s",
+					["ru"] = "0.25с",
 				},
 				hover = {
 					"Information updates every 0.25 seconds.",
 					["zh"] = "信息每0.25秒更新。",
 					["br"] = "As informações são atualizadas a cada 0,25 segundos.",
 					["es"] = "La información se actualiza cada 0,25 segundos.",
+					["ru"] = "Информация обновляется каждые 0.25 секунды.",
 				},
 			},
 			[0.5] = {
@@ -4892,12 +5478,14 @@ STRINGS = {
 					["zh"] = "0.5秒",
 					["br"] = "0.5s",
 					["es"] = "0.5s",
+					["ru"] = "0.5с",
 				},
 				hover = {
 					"Information updates every 0.5 seconds.",
 					["zh"] = "信息每0.5秒更新。",
 					["br"] = "As informações são atualizadas a cada 0,5 segundos.",
 					["es"] = "La información se actualiza cada 0,5 segundos.",
+					["ru"] = "Информация обновляется каждые 0.5 секунды.",
 				},
 			},
 			[1] = {
@@ -4906,12 +5494,14 @@ STRINGS = {
 					["zh"] = "1秒",
 					["br"] = "1s",
 					["es"] = "1s",
+					["ru"] = "1с",
 				},
 				hover = {
 					"Information updates every 1 second.",
 					["zh"] = "信息每1秒更新。",
 					["br"] = "As informações são atualizadas a cada 1 segundo.",
 					["es"] = "La información se actualiza cada 1 segundo.",
+					["ru"] = "Информация обновляется каждую секунду.",
 				},
 			},
 			[3] = {
@@ -4920,12 +5510,14 @@ STRINGS = {
 					["zh"] = "3秒",
 					["br"] = "3s",
 					["es"] = "3s",
+					["ru"] = "3с",
 				},
 				hover = {
 					"Information updates every 3 seconds.",
 					["zh"] = "信息每3秒更新。",
 					["br"] = "As informações são atualizadas a cada 3 segundos.",
 					["es"] = "La información se actualiza cada 3 segundos.",
+					["ru"] = "Информация обновляется каждые 3 секунды.",
 				},
 			},
 		},
@@ -4938,13 +5530,15 @@ STRINGS = {
 			"Crash Reporter", 
 			["zh"] = "崩溃报告器", 
 			["br"] = "Crash Reporter", 
-			["es"] = "Reporte de fallos"
+			["es"] = "Reporte de fallos",
+			["ru"] = "Отчет об ошибках",
 		},
 		hover = {
 			"**Attempts** to report your crashes (debug, mods, world info) automatically to my server.", 
 			["zh"] = "**尝试**自动上报你的崩溃（调试情况，模组，世界信息）至我的服务器。", 
 			["br"] = "**Tentativas** de relatar suas falhas (depuração, mods, informações do mundo) automaticamente para meu servidor.", 
-			["es"] = "**Intenta** reportar los crasheos (depuración, mods, información del mundo) automáticamente."
+			["es"] = "**Intenta** reportar los crasheos (depuración, mods, información del mundo) automáticamente.",
+			["ru"] = "**Пытается** автоматически отправить отчеты о ваших ошибках (отладка, моды, информация о мире) на мой сервер.",
 		},
 		options = {
 			[false] = {
@@ -4954,6 +5548,7 @@ STRINGS = {
 					["zh"] = "关闭崩溃报告器。",
 					["br"] = "O relator de falhas está desabilitado.",
 					["es"] = "Reporte de fallos desactivado.",
+					["ru"] = "Отчет об ошибках отключен.",
 				},
 			},
 			[true] = {
@@ -4963,6 +5558,7 @@ STRINGS = {
 					["zh"] = "开启崩溃报告器。",
 					["br"] = "O relator de falhas está ativado.",
 					["es"] = "Reporte de fallos activado.",
+					["ru"] = "Отчет об ошибках включен.",
 				},
 			},
 		},
@@ -4972,13 +5568,15 @@ STRINGS = {
 			"DEBUG_SHOW_NOTIMPLEMENTED", 
 			["zh"] = "执行调试显示信息", 
 			["br"] = "DEBUG_SHOW_NOTIMPLEMENTED", 
-			["es"] = "DEBUG_SHOW_NOTIMPLEMENTED"
+			["es"] = "DEBUG_SHOW_NOTIMPLEMENTED",
+			["ru"] = "DEBUG_SHOW_NOTIMPLEMENTED",
 		},
 		hover = {
 			"Displays a warning if a component is not accounted for, and the origin if it is from a mod.", 
 			["zh"] = "如果游戏内元件来源未明，错误自于某个模组时，发出警告并显示其来源。", 
 			["br"] = "Exibe um aviso se um componente não for contabilizado, e a origem se for de um mod.", 
-			["es"] = "Muestra una advertencia si algún componente no fue registrado, y si el origen es de un mod."
+			["es"] = "Muestra una advertencia si algún componente no fue registrado, y si el origen es de un mod.",
+			["ru"] = "Показывает предупреждение, если компонент не учтен, и его происхождение, если он из мода.",
 		},
 		options = {
 			[false] = {
@@ -4988,6 +5586,7 @@ STRINGS = {
 					["zh"] = "未找出错误原因时，不发出警告。",
 					["br"] = "Não avisará se houver algum componente não contabilizado",
 					["es"] = "No muestra una advertencia si hay algún componente no registrado.",
+					["ru"] = "Не предупреждает, если есть компоненты, которые не учтены.",
 				},
 			},
 			[true] = {
@@ -4997,6 +5596,7 @@ STRINGS = {
 					["zh"] = "未找出错误原因时，发出警告。",
 					["br"] = "Irá avisá-lo se houver algum componente não contabilizado.",
 					["es"] = "Muestra una advertencia si hay algún componente no registrado.",
+					["ru"] = "Предупреждает, если есть компоненты, которые не учтены.",
 				},
 			},
 		},
@@ -5006,13 +5606,15 @@ STRINGS = {
 			"DEBUG_SHOW_DISABLED", 
 			["zh"] = "禁用调试显示", 
 			["br"] = "DEBUG_SHOW_DISABLED", 
-			["es"] = "DEBUG_SHOW_DISABLED"
+			["es"] = "DEBUG_SHOW_DISABLED",
+			["ru"] = "DEBUG_SHOW_DISABLED",
 		},
 		hover = {
 			"Shows warnings for components I have manually disabled.", 
 			["zh"] = "发出警告，显示我手动禁用的组件。", 
 			["br"] = "Mostra avisos para componentes que desativei manualmente.", 
-			["es"] = "Muestra una advertencia de los componentes que se desactivaron manualmente."
+			["es"] = "Muestra una advertencia de los componentes que se desactivaron manualmente.",
+			["ru"] = "Показывает предупреждения для компонентов, которые я вручную отключил.",
 		},
 		options = {
 			[false] = {
@@ -5022,6 +5624,7 @@ STRINGS = {
 					["zh"] = "不显示已禁用的描述符的信息。",
 					["br"] = "Não exibirá informações para descritores desabilitados.",
 					["es"] = "No muestra información de componentes deshabilitados.",
+					["ru"] = "Не показывает информацию для отключенных дескрипторов.",
 				},
 			},
 			[true] = {
@@ -5031,6 +5634,7 @@ STRINGS = {
 					["zh"] = "显示已禁用的描述符的信息。",
 					["br"] = "Exibirá informações para descritores desabilitados.",
 					["es"] = "Muestra información de componentes deshabilitados.",
+					["ru"] = "Показывает информацию для отключенных дескрипторов.",
 				},
 			},
 		},
@@ -5040,13 +5644,15 @@ STRINGS = {
 			"DEBUG_SHOW_PREFAB", 
 			["zh"] = "预设调试显示", 
 			["br"] = "DEBUG_SHOW_PREFAB", 
-			["es"] = "DEBUG_SHOW_PREFAB"
+			["es"] = "DEBUG_SHOW_PREFAB",
+			["ru"] = "DEBUG_SHOW_PREFAB",
 		},
 		hover = {
 			"Displays prefab name on entities.", 
 			["zh"] = "在物品上显示实体的预设名称。", 
 			["br"] = "Exibe o nome do prefab nas entidades.", 
-			["es"] = "Muestra el nombre de prefab en las entidades."
+			["es"] = "Muestra el nombre de prefab en las entidades.",
+			["ru"] = "Показывает имя префаба на объектах.",
 		},
 		options = {
 			[false] = {
@@ -5056,6 +5662,7 @@ STRINGS = {
 					["zh"] = "不显示物品的预设名称。",
 					["br"] = "Não exibirá prefabs nas entidades.",
 					["es"] = "No muestra el prefab (código) en la entidad.",
+					["ru"] = "Не показывает префабы на объектах.",
 				},
 			},
 			[true] = {
@@ -5065,6 +5672,7 @@ STRINGS = {
 					["zh"] = "显示物品的预设名称。",
 					["br"] = "Mostrará prefabs nas entidades.",
 					["es"] = "Muestra el prefab (código) en la entidad.",
+					["ru"] = "Показывает префабы на объектах.",
 				},
 			},
 		},
@@ -5074,13 +5682,15 @@ STRINGS = {
 			"DEBUG_ENABLED", 
 			["zh"] = "开启调试功能", 
 			["br"] = "DEBUG_ENABLED", 
-			["es"] = "DEBUG_ENABLED"
+			["es"] = "DEBUG_ENABLED",
+			["ru"] = "DEBUG_ENABLED",
 		},
 		hover = {
 			"Puts you in Insight's Debug Mode.", 
 			["zh"] = "打开你的 Insight 调试功能。", 
 			["br"] = "Coloca você no modo de depuração do Insight.", 
-			["es"] = "Configura el modo de depuración de Insight."
+			["es"] = "Configura el modo de depuración de Insight.",
+			["ru"] = "Включает режим отладки Insight.",
 		},
 		options = {
 			[false] = {
@@ -5090,6 +5700,7 @@ STRINGS = {
 					["zh"] = "不显示调试信息",
 					["br"] = "O Insight não mostrará informações de depuração.",
 					["es"] = "Insight no muestra información de depuración.",
+					["ru"] = "Insight не покажет отладочную информацию",
 				},
 			},
 			[true] = {
@@ -5099,6 +5710,7 @@ STRINGS = {
 					["zh"] = "显示调试信息",
 					["br"] = "O Insight mostrará informações de depuração.",
 					["es"] = "Insight muestra información de depuración.",
+					["ru"] = "Insight покажет отладочную информацию",
 				},
 			},
 		},
