@@ -53,7 +53,7 @@ end
 --- [DST] Returns naughtiness value of a creature.
 ---@param inst EntityScript The living creature.
 ---@return number
-local function DST_GetCreatureNaughtiness(inst)
+local function DST_GetCreatureNaughtiness(inst, context)
 	if not TheWorld.ismastersim then
 		error("[Insight]: DST_GetCreatureNaughtiness called on client")
 	end
@@ -65,6 +65,16 @@ local function DST_GetCreatureNaughtiness(inst)
 
 	local res = Insight.kramped.values[inst.prefab]
 
+	local fn_data = {
+		victim = inst
+	}
+
+	-- I sure hope no one is doing anything funny like using this as a hook for OnKilledOther, 
+	-- doing definitive things that shouldn't be happening for a simple query of naughtiness value! 
+	-- Fix requested by Hornet, probably for IA or something
+	res = FunctionOrValue(res, context.player, fn_data)
+
+	--[[
 	if type(res) == "function" then
 		-- their doydoys have naughtiness as a function, which is supported by gemcore. https://gitlab.com/IslandAdventures/IslandAdventures/-/blob/master/modmain.lua (September 19, 2020)
 		res = res()
@@ -73,6 +83,7 @@ local function DST_GetCreatureNaughtiness(inst)
 	if type(res) == "number" then
 		return res
 	end
+	--]]
 	
 	return 0
 end
@@ -80,9 +91,9 @@ end
 --- [DS] Returns naughtiness value of a creature.
 ---@param inst EntityScript The living creature.
 ---@return number
-local function GetCreatureNaughtiness(inst)
+local function GetCreatureNaughtiness(inst, context)
 	if IS_DST then
-		return DST_GetCreatureNaughtiness(inst)
+		return DST_GetCreatureNaughtiness(inst, context)
 	end
 
 	local name = inst.prefab
@@ -124,7 +135,7 @@ local function Describe(self, context)
 		naughtiness = GetPlayerNaughtiness(inst, context)
 		--dprint'player naughtiness'
 	elseif inst.components.health then
-		naughtiness = GetCreatureNaughtiness(inst)
+		naughtiness = GetCreatureNaughtiness(inst, context)
 		--dprint'critter naughtiness'
 	end
 
