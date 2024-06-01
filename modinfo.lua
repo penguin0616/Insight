@@ -5754,6 +5754,7 @@ configuration_options = {
 			{data = "zh"},
 			{data = "br"},
 			{data = "es"},
+			{data = "ru"},
 		}, 
 		default = "automatic",
 		client = true,
