@@ -323,11 +323,8 @@ local function IsPlayerClientLoaded(player)
 end
 
 local function AddDeployHelper(inst)
-	if IS_DST then
-		inst:AddComponent("deployhelper")
-	else
-		inst:AddComponent("dst_deployhelper")
-	end
+	-- Courtesy of Hornet 🗿
+	inst:AddComponent(IS_DST and "deployhelper" or "dst_deployhelper")
 end
 
 local function GetDeployHelper(inst)
