@@ -46,7 +46,7 @@ end
 
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.5.2" -- dst is 4.5.2, ds is 4.4.5
+version = "4.6.0" -- dst is 4.5.2, ds is 4.4.5
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -468,7 +468,7 @@ STRINGS = {
 		["ru"] = "Для работы modinfo мод должен быть включен",
 	},
 	update_info = {
-		"Added information for the From Beyond updates and other stuff. See Steam changelog for more info.",
+		"See Steam changelog for more info.",
 		["zh"] = nil,
 		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
