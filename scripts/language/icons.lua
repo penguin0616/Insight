@@ -787,7 +787,8 @@ return {
 
 	-- inventory.lua
 	inventory = {
-		hat_describe = "[Hat]: ",
+		--head_describe = "[Hat]: ",
+		--hands_describe = "[Tool]: ",
 	},
 
 	-- kitcoonden.lua

@@ -60,11 +60,34 @@ local function GetInventory(self)
 	end
 end
 
-local function DescribeFollowerHat(self, context)
+
+local function GetEquipItemDetails(item, context)
+	local components_to_check = {"perishable", "armor", "fueled", "finiteuses"}
+
+	-- This is going to get a little funky. 
+	-- I'm turning this from a list into a dictionary mid-iteration.
+	-- Feels weird!
+	for i = 1, #components_to_check do
+		local cmpName = components_to_check[i]
+		components_to_check[i] = nil
+
+		local component = item.components[cmpName]
+		local descriptor = Insight.descriptors[cmpName]
+
+		if component and descriptor and descriptor.Describe then
+			components_to_check[cmpName] = descriptor.Describe(component, context)
+		end
+	end
+
+	return components_to_check
+end
+
+local function DescribeEquipSlot(self, context, equip_slot)
 	local alt_description
 
-	local priority = 0
-	local head_item = self:GetEquippedItem(EQUIPSLOTS.HEAD)
+	local highestPriority = 0
+	local head_item = self:GetEquippedItem(equip_slot)
+
 	if head_item then
 		-- hm..
 		--[[
@@ -72,49 +95,36 @@ local function DescribeFollowerHat(self, context)
 		return data
 		--]]
 
-		
-		-- only things i really care about
-		local perishable = (head_item.components.perishable and Insight.descriptors.perishable and Insight.descriptors.perishable.Describe(head_item.components.perishable, context))
-		local armor = (head_item.components.armor and Insight.descriptors.armor and Insight.descriptors.armor.Describe(head_item.components.armor, context))
-		local fueled = (head_item.components.fueled and Insight.descriptors.fueled and Insight.descriptors.fueled.Describe(head_item.components.fueled, context))
-
-		if not perishable and not armor and not fueled then
-			return
-		end
-
-		
+		local slotString = context.lstr.inventory[equip_slot .. "_describe"]
+		local item_describes = GetEquipItemDetails(head_item, context)
 		local list = {}
-		if perishable then
-			priority = perishable.priority > priority and perishable.priority or priority
-			list[#list+1] = {perishable.priority, context.lstr.inventory.hat_describe .. (perishable.description or "")}
-		end
-		if armor then
-			priority = armor.priority > priority and armor.priority or priority
-			list[#list+1] = {armor.priority, context.lstr.inventory.hat_describe .. (armor.description or "")}
-		end
-		if fueled then
-			priority = fueled.priority > priority and fueled.priority or priority
-			list[#list+1] = {fueled.priority, context.lstr.inventory.hat_describe .. (fueled.description or "")}
+
+		for cmpName, described in pairs(item_describes) do
+			highestPriority = math.max(highestPriority, described.priority)
+			list[#list+1] = {described.priority, slotString .. (described.description or "")}
 		end
 
 		table.sort(list, SortDescriptors)
 
-		alt_description = CombineLines(
-			list[1] and list[1][2] or nil, 
-			list[2] and list[2][2] or nil, 
-			list[3] and list[3][2] or nil
-		)
+		for i = 1, #list do
+			alt_description = (alt_description or "") .. list[i][2] .. (i < #list and "\n" or "")
+		end
+	end
+
+	if not alt_description then
+		return
 	end
 
 	return {
-		priority = priority,
+		name = "inventory.DescribeEquipSlot(" .. equip_slot .. ")",
+		priority = highestPriority,
 		alt_description = alt_description
 	}
 end
 
 local function Describe(self, context)
 	if self.inst.components.follower then
-		return DescribeFollowerHat(self, context)
+		return DescribeEquipSlot(self, context, EQUIPSLOTS.HEAD), DescribeEquipSlot(self, context, EQUIPSLOTS.HANDS)
 	else
 		-- TODO: Figure out when to show inventory and fix other things that might be dependent on similar calls.
 		-- TODO: Finish this

@@ -770,7 +770,8 @@ return {
 
 	-- inventory.lua
 	inventory = {
-		hat_describe = "[帽子]: ",
+		head_describe = "[帽子]: ",
+		hands_describe = "[Tool]: ",
 	},
 
 	-- kitcoonden.lua
