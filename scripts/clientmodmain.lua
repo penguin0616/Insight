@@ -638,9 +638,15 @@ local function LocalPlayerDeactivated(src)
 	ClientCoreEventer:PushEvent("force_insightui_exit")
 
 	local insight = GetLocalInsight(localPlayer)
-	insight.context = nil
-	insight:Shutdown()
-	localPlayer = nil
+
+	-- I can't think of a case where this would happen normally.
+	-- The few crash reports I saw had DSA enabled though, which could be related.
+	if insight then
+		insight.context = nil
+		insight:Shutdown()
+		localPlayer = nil
+	end
+	
 	--[[
 	local x = 0
 	--mprint(x, #onLocalPlayerRemove)
