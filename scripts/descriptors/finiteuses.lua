@@ -22,7 +22,7 @@ directory. If not, please refer to
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
 local function FormatUses(uses, context)
-	return string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.USES_PLAIN, uses)
+	return string.format(context.lstr.lang.action_uses, context.lstr.lang.actions.USES_PLAIN, uses or "<ERROR>")
 end
 
 local function SortActions(a, b)
