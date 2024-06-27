@@ -20,6 +20,8 @@ directory. If not, please refer to
 
 setfenv(1, _G.Insight.env)
 
+require "prefabutil"
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -32,7 +34,7 @@ local function fn()
 	inst:AddTag("NOCLICK")
 	inst:AddTag("CLASSIFIED")
 
-	if not TheWorld.ismastersim then
+	if TheWorld ~= nil and not TheWorld.ismastersim then
 		return inst
 	end
 
@@ -41,4 +43,10 @@ local function fn()
    	return inst
 end
 
-return Prefab("insight_prefab", fn, {}) 
+local function placer_fn(inst)
+	inst:AddTag("NOCLICK")
+end
+
+return Prefab("insight_prefab", fn, {}), 
+	-- name, bank, build, anim, onground, snap, metersnap, scale, fixedcameraoffset, facing, postinit_fn, offset, onfailedplacement	
+	MakePlacer("insight_prefab_placer", nil, nil, nil, nil, nil, nil, nil, nil, nil, placer_fn)

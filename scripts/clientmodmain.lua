@@ -335,8 +335,6 @@ local function GetDeployHelper(inst)
 	end
 end
 
-
-
 function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 	-- Somehow people are hovering something without a prefab that also fails IsPrefab on the server
 	local old_desc = old and old.prefab and Insight.prefab_descriptors[old.prefab] or nil
@@ -444,8 +442,12 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 			new.insight_hover_range:SetVisible(true)
 		end
 	elseif GetDeployHelper(new) then
+		-- Why have I been forsaken?
+		if localPlayer.TearsInTheRain == nil then
+			localPlayer.TearsInTheRain = SpawnPrefab("insight_prefab_placer")
+		end
 		local cmp = GetDeployHelper(new)
-		cmp:StartHelper(nil, nil)
+		cmp:StartHelper(nil, localPlayer.TearsInTheRain)
 		cmp.delay = math.huge -- Prevent it from disappearing instantly, since it's kept open by (what I assume) is TriggerDeployHelpers running over and over?
 	end
 end

@@ -1952,7 +1952,7 @@ if IS_DST then -- server + dedi check
 	end
 end
 
-PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_entitytext"}
+PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_entitytext", "insight_prefab"}
 if IS_DST then
 	table.insert(PrefabFiles, "insight_ghost_klaus_sack")
 	table.insert(PrefabFiles, "insight_classified")
