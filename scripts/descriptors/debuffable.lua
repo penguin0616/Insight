@@ -78,35 +78,43 @@ setmetatable(definitions, {
 })
 --]]
 
-local function Describe(self, context)
-	local description = nil
+--- Retrives our information for an entity.
+---@param debuffInst EntityScript The actual debuff instance.
+---@return string @Not guaranteed to be an actual time.
+local function GetDebuffRemainingTime(debuffInst)
+	-- This blob of whatever is responsible for getting the remaining time of the debuff.
+	-- I'm taking a gamble that each buff has a single timer only.
+	local remaining_time
 
-	local list = nil
-
-	if self.inst ~= context.player then
-		return
+	-- Ink timer is missing for some reason, so check for timer component.
+	if debuffInst.components.timer then 
+		local name, value = next(debuffInst.components.timer.timers)
+		if next(debuffInst.components.timer.timers, name) == nil then
+			local t = debuffInst.components.timer:GetTimeLeft(name)
+			remaining_time = t and context.time:SimpleProcess(t, "realtime_short") or "Missing time?"
+		else
+			-- doesnt have a single timer
+			remaining_time = "Buff has multiple timers?"
+		end
+	else
+		remaining_time = "No timer specified"
 	end
 
+	return remaining_time
+end
+
+
+local function DescribeLocalPlayer(self, context)
+	local description = nil
+	local list = nil
+
 	for debuffName, v in pairs(self.debuffs) do
+		-- v = { inst=inst, onremove=fn }
 		local debuffInst = v.inst
 		if debuffInst then -- this is checked for in debuffable, inst is the actual debuff entity
 			local prefab = debuffHelper.GetRealDebuffPrefab(debuffInst.prefab)
 
-			-- This blob of whatever is responsible for getting the remaining time of the debuff.
-			-- taking a gamble that each buff has a single timer
-			local remaining_time
-			if debuffInst.components.timer then -- ink timer missing
-				local name, value = next(debuffInst.components.timer.timers)
-				if next(debuffInst.components.timer.timers, name) == nil then
-					local t = debuffInst.components.timer:GetTimeLeft(name)
-					remaining_time = t and context.time:SimpleProcess(t, "realtime_short") or "Missing time?"
-				else
-					-- doesnt have a single timer
-					remaining_time = "Buff has multiple timers?"
-				end
-			else
-				remaining_time = "No timer specified"
-			end
+			local remaining_time = GetDebuffRemainingTime(debuffInst)
 
 			local known_debuff = debuffHelper.IsKnownDebuff(prefab) --context.lstr.debuffs[prefab] ~= nil
 
@@ -132,6 +140,39 @@ local function Describe(self, context)
 			list[#list+1] = {name = debuffName, prefab=prefab, text=text, icon=icon}
 		end
 	end
+
+	return {
+		priority = 0,
+		description = description,
+		debuffs = list
+	}
+end
+
+local function Describe(self, context)
+	if self.inst == context.player then
+		return DescribeLocalPlayer(self, context)
+	end
+
+	-- This seems to repeat infinitely. Oh well.
+	--[[
+	local description = ""
+	if context.etc.DEBUG_ENABLED then
+		for debuffName, v in pairs(self.debuffs) do
+			local this
+			
+			local debuffInst = v.inst
+			if debuffInst then
+				local prefab = debuffHelper.GetRealDebuffPrefab(debuffInst.prefab)
+
+				this = string.format("%q\n(<color=#cccccc>%q</color>)", debuffName, prefab)
+			else
+				this = string.format("no debuff inst: %q", debuffName)
+			end
+
+			description = description .. "\n" .. this
+		end
+	end
+	--]]
 
 	return {
 		priority = 0,
