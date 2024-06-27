@@ -81,7 +81,7 @@ setmetatable(definitions, {
 --- Retrives our information for an entity.
 ---@param debuffInst EntityScript The actual debuff instance.
 ---@return string @Not guaranteed to be an actual time.
-local function GetDebuffRemainingTime(debuffInst)
+local function GetDebuffRemainingTime(debuffInst, context)
 	-- This blob of whatever is responsible for getting the remaining time of the debuff.
 	-- I'm taking a gamble that each buff has a single timer only.
 	local remaining_time
@@ -114,7 +114,7 @@ local function DescribeLocalPlayer(self, context)
 		if debuffInst then -- this is checked for in debuffable, inst is the actual debuff entity
 			local prefab = debuffHelper.GetRealDebuffPrefab(debuffInst.prefab)
 
-			local remaining_time = GetDebuffRemainingTime(debuffInst)
+			local remaining_time = GetDebuffRemainingTime(debuffInst, context)
 
 			local known_debuff = debuffHelper.IsKnownDebuff(prefab) --context.lstr.debuffs[prefab] ~= nil
 
