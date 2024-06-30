@@ -46,7 +46,7 @@ end
 
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.6.1" -- dst is 4.5.2, ds is 4.4.5
+version = "4.6.2" -- dst is 4.5.2, ds is 4.4.5
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"

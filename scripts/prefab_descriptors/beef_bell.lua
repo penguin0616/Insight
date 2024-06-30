@@ -24,7 +24,7 @@ local function Describe(inst, context)
 
 	local beefalo = inst:GetBeefalo()
 	if beefalo then
-		description = string.format(context.lstr.beef_bell.beefalo_name, beefalo.components.writeable:GetText())
+		description = string.format(context.lstr.beef_bell.beefalo_name, beefalo.components.writeable:GetText() or "?ERROR?")
 	end
 
 	return {
