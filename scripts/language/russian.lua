@@ -849,6 +849,9 @@ return {
 	-- mermcandidate.lua
 	mermcandidate = "Калории: %s / %s",
 
+	-- messagebottlemanager.lua
+	messagebottlemanager = "Treasures to grab: %d / %d",
+
 	-- mightiness.lua
 	mightiness = "<color=MIGHTINESS>Мощь</color>: <color=MIGHTINESS>%s</color> / <color=MIGHTINESS>%s</color> - <color=MIGHTINESS>%s</color>",
 
