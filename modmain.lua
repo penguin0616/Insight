@@ -280,8 +280,8 @@ local descriptors_ignore = {
 	"regrowthmanager", "townportalregistry", "hallucinations", "dsp", "dynamicmusic",
 
 	-- Forest
-	"squidspawner", "moosespawner", "birdspawner", "worldwind", "retrofitforestmap_anr", "deerherdspawner", "deerherding", "wildfires", "flotsamgenerator", "brightmarespawner", 
-	"sandstorms", "messagebottlemanager", "forestpetrification", "penguinspawner", "sharklistener", "frograin", "waterphysics", "butterflyspawner", "worldmeteorshower",
+	"squidspawner", "moosespawner", "birdspawner", "worldwind", "retrofitforestmap_anr", "deerherdspawner", "deerherding", "wildfires", "brightmarespawner", 
+	"sandstorms", "forestpetrification", "penguinspawner", "sharklistener", "frograin", "waterphysics", "butterflyspawner", "worldmeteorshower",
 	"worlddeciduoustreeupdater", "schoolspawner", "specialeventsetup", "playerspawner", "walkableplatformmanager", "lureplantspawner", "wavemanager",
 
 	-- Caves
