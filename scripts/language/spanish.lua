@@ -1388,4 +1388,16 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "Terminará de coser en: %s",
+
+	-- inspectacleshat.lua
+	inspectacleshat = {
+		ready_to_use = "Ready to inspect",
+		cooldown = "Cooldown: %s",
+	},
+
+	-- roseglasseshat.lua
+	roseglasseshat = {
+		ready_to_use = "Ready to inspect",
+		cooldown = "Cooldown for fuel: %s",
+	}
 }
