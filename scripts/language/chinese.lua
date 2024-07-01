@@ -1397,4 +1397,16 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "缝制将完成于%s",
+
+	-- inspectacleshat.lua
+	inspectacleshat = {
+		ready_to_use = "寻宝冷却完毕",
+		cooldown = "寻宝冷却: %s",
+	},
+
+	-- roseglasseshat.lua
+	roseglasseshat = {
+		ready_to_use = "寻觅冷却完毕",
+		cooldown = "寻觅冷却: %s",
+	}
 }
