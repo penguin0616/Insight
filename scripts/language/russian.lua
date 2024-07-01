@@ -612,7 +612,11 @@ return {
 
 	-- fishingrod.lua
 	fishingrod_waittimes = "Время ожидания: <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
-	fishingrod_loserodtime = "Максимальное время ловли: <color=SHALLOWS>%s</color>",	
+
+	-- flotsamgenerator.lua
+	flotsamgenerator = {
+		messagebottle_cooldown = "Next <prefab=messagebottle> spawn after %s",
+	},
 
 	-- follower.lua
 	leader = "Лидер: %s",
