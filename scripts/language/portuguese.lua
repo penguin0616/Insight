@@ -1402,4 +1402,14 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "Vai terminar de costurar em: %s",
+
+	-- inspectacleshat.lua
+	inspectacleshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
+	-- roseglasseshat.lua
+	roseglasseshat = {
+		ready_to_use = "Ready to inspect",
+	}
 }
