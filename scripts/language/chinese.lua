@@ -612,6 +612,11 @@ return {
 	fishingrod_waittimes = "等待时间: <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
 	fishingrod_loserodtime = "最大缠绕时间: <color=SHALLOWS>%s</color>",
 
+	-- flotsamgenerator.lua
+	flotsamgenerator = {
+		messagebottle_cooldown = "%s 的下一个 <prefab=messagebottle> 将于 %s 后刷新",
+	},
+
 	-- follower.lua
 	leader = "主人: %s", -- "主人" should mean "master" here by free translation, "领导者" is literal translation and not precise?
 	loyalty_duration = "忠诚持续时间: %s",
@@ -842,6 +847,9 @@ return {
 
 	-- mermcandidate.lua
 	mermcandidate = "卡路里: %s / %s",
+
+	-- messagebottlemanager.lua
+	messagebottlemanager = "待打捞宝藏数量: %d / %d",
 
 	-- mightiness.lua
 	mightiness = "<color=MIGHTINESS>力量值</color>: <color=MIGHTINESS>%s</color> / <color=MIGHTINESS>%s</color>",

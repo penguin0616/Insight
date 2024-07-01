@@ -614,6 +614,11 @@ return {
 	fishingrod_waittimes = "Wait time: <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
 	fishingrod_loserodtime = "Max wrangle time: <color=SHALLOWS>%s</color>",
 
+	-- flotsamgenerator.lua
+	flotsamgenerator = {
+		messagebottle_cooldown = "%s 's next <prefab=messagebottle> spawn after %s",
+	},
+
 	-- follower.lua
 	leader = "Leader: %s",
 	loyalty_duration = "Loyalty duration: %s",
@@ -844,6 +849,9 @@ return {
 
 	-- mermcandidate.lua
 	mermcandidate = "Calories: %s / %s",
+
+	-- messagebottlemanager.lua
+	messagebottlemanager = "Treasures to grab: %d / %d",
 
 	-- mightiness.lua
 	mightiness = "<color=MIGHTINESS>Mightiness</color>: <color=MIGHTINESS>%s</color> / <color=MIGHTINESS>%s</color> - <color=MIGHTINESS>%s</color>",
