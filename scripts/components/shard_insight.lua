@@ -89,6 +89,7 @@ local Shard_Insight = Class(function(self, inst)
 		"beargerspawner",
 		"crabkingspawner",
 		"deerclopsspawner",
+		"twisterspawner",
 		"klaussackspawner",
 		"malbatrossspawner",
 		"toadstoolspawner",

@@ -97,7 +97,7 @@ return {
 	damage_types = {
 		-- Normal
 		explosive = "爆炸",
-		
+
 		-- Planar
 		lunar_aligned = "月亮阵营",
 		shadow_aligned = "暗影阵营",
@@ -310,10 +310,10 @@ return {
 			knockback = "<color=VEGGIE>击退</color>: <color=VEGGIE>%s</color> (<color=VEGGIE>x%.1f%%</color>)",
 			--knockback_multiplier = "Knockback Multiplier: %s",
 			laglength = "<color=VEGGIE>冷却</color>: %s",
-			
+
 			--@@ Armor
 			defense_amount = "<color=VEGGIE>防守</color>: %s",
-			
+
 			--@@ Both
 			prize_value = "奖励值: %s",
 		},
@@ -414,7 +414,7 @@ return {
 			name = "<color=HUNGER><prefab=batnosehat>加成</color>",
 			description = "{duration} 秒内回复 <color=HUNGER>{amount} 饥饿</color>",
 		},
-		
+
 		["halloweenpotion_health_buff"] = {
 			name = "<color=HEALTH>生命回复</color>",
 			description = nil
@@ -437,6 +437,13 @@ return {
 		incoming_deerclops_targeted = "<color=%s>目标: %s</color> -> %s",
 		announce_deerclops_target = "<prefab=deerclops>会生成在%s(<prefab=%s>)周围于%s后",
 		deerclops_attack = "<prefab=deerclops>会在%s后攻击",
+	},
+
+	-- twisterspawner.lua
+	twisterspawner = {
+		incoming_twister_targeted = "<color=%s>目标: %s</color> -> %s",
+		announce_twister_target = "<prefab=twister>会生成在%s(<prefab=%s>)周围于%s后",
+		twister_attack = "<prefab=twister>会在%s后攻击",
 	},
 
 	-- diseaseable.lua
@@ -758,7 +765,7 @@ return {
 	-- hutch_fishbowl.lua [Prefab]
 	hutch_respawn = "<color=MOB_SPAWN><prefab=hutch></color>会重生于%s后",
 	announce_hutch_respawn = "我的<prefab=hutch>会重生于%s后",
-	
+
 	-- inspectable.lua
 	wagstaff_tool = "这个工具的名字是: <color=ENLIGHTENMENT><prefab=%s></color>",
 	gym_weight_value = "健身房重量数值: %s",
@@ -807,7 +814,7 @@ return {
 		next_crystal = "下一波<color=#4093B2><prefab=lunarrift_crystal_big></color>生成于%s后",
 		close = "<prefab=LUNARRIFT_PORTAL>大约会关闭于%s后",
 	},
-	
+
 	-- lunarthrall_plantspawner.lua
 	lunarthrall_plantspawner = {
 		infested_count = "已寄生 %d 株",
@@ -919,7 +926,7 @@ return {
 			distance = "距离: %.1f<sub>捕获</sub> / <color=%s>%.1f<sub>当前</sub></color> / %.1f<sub>逃脱</sub>",
 		},
 	},
-	
+
 	-- oceanfishingtackle.lua
 	oceanfishingtackle = {
 		casting = {
@@ -936,7 +943,7 @@ return {
 
 	-- oceantree.lua [Prefab]
 	oceantree_supertall_growth_progress = "疙瘩树生长进度: %s / %s",
-	
+
 	-- oldager.lua
 	oldager = {
 		age_change = "<color=AGE>年龄</color>: <color=714E85>%+d</color>",

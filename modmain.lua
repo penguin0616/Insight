@@ -2604,6 +2604,9 @@ if IS_DST then
 			self.components.shard_insight:RegisterWorldDataFetcher("deerclopsspawner", function()
 				return TheWorld.components.deerclopsspawner and Insight.descriptors.deerclopsspawner and Insight.descriptors.deerclopsspawner.GetDeerclopsData(TheWorld.components.deerclopsspawner) or nil
 			end)
+			self.components.shard_insight:RegisterWorldDataFetcher("twisterspawner", function()
+				return TheWorld.components.twisterspawner and Insight.descriptors.twisterspawner and Insight.descriptors.twisterspawner.GetTwisterData(TheWorld.components.twisterspawner) or nil
+			end)
 			self.components.shard_insight:RegisterWorldDataFetcher("klaussackspawner", function()
 				return TheWorld.components.klaussackspawner and Insight.descriptors.klaussackspawner and Insight.descriptors.klaussackspawner.GetKlausSackData(TheWorld.components.klaussackspawner) or nil
 			end)

@@ -23,7 +23,7 @@ directory. If not, please refer to
 return {
 	-- insightservercrash.lua
 	server_crash = "This server has crashed.",
-	
+
 	-- modmain.lua
 	dragonfly_ready = "Ready to fight.",
 
@@ -97,14 +97,14 @@ return {
 	damage_types = {
 		-- Normal
 		explosive = "Explosive",
-		
+
 		-- Planar
 		lunar_aligned = "Lunar Aligned",
 		shadow_aligned = "Shadow Aligned",
 	},
 
 	-------------------------------------------------------------------------------------------------------------------------
-	
+
 	-- alterguardianhat.lua [Prefab]
 	alterguardianhat = {
 		minimum_sanity = "Minimum <color=SANITY>sanity</color> for light: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
@@ -126,7 +126,7 @@ return {
 	aoeweapon_lunge = {
 		lunge_damage = "Lunge {damageType}: <color=HEALTH>{damage}</color>",
 	},
-	
+
 
 	-- appeasement.lua
 	appease_good = "Delays eruption by %s segment(s).",
@@ -158,7 +158,7 @@ return {
 	attunable = {
 		linked = "Linked to: %s",
 		offline_linked = "Offline links: %s",
-		player = "<color=%s>%s</color> (<prefab=%s>)",	
+		player = "<color=%s>%s</color> (<prefab=%s>)",
 	},
 
 	-- batbat.lua [Prefab]
@@ -311,10 +311,10 @@ return {
 			knockback = "<color=VEGGIE>Knockback</color>: <color=VEGGIE>%s</color> (<color=VEGGIE>x%.1f%%</color>)",
 			--knockback_multiplier = "Knockback Multiplier: %s",
 			laglength = "<color=VEGGIE>Cooldown</color>: %s",
-			
+
 			--@@ Armor
 			defense_amount = "<color=VEGGIE>Defense</color>: %s",
-			
+
 			--@@ Both
 			prize_value = "Prize value: %s",
 		},
@@ -322,7 +322,7 @@ return {
 
 	-- container.lua
 	container = {
-		
+
 	},
 
 	-- cooldown.lua
@@ -380,7 +380,7 @@ return {
 			name = "<color=SWEETENER>Work efficiency</color>",
 			description = "Your work is <color=#DED15E>{percent}%</color> more effective for {duration}(s).",
 		},
-		
+
 		["buff_moistureimmunity"] = {
 			name = "<color=WET>Moisture immunity</color>",
 			description = "You are immune to <color=WET>wetness</color> for {duration}(s).",
@@ -393,7 +393,7 @@ return {
 			name = "<color=MONSTER>Sleep resistance</color>",
 			description = "You resist <color=MONSTER>sleep</color> for {duration}(s).",
 		},
-		
+
 		["tillweedsalve_buff"] = {
 			name = "<color=HEALTH>Health regeneration</color>",
 			description = "Regenerates <color=HEALTH>{amount} health</color> over {duration}(s).",
@@ -415,7 +415,7 @@ return {
 			name = "<color=HUNGER><prefab=batnosehat> Buff</color>",
 			description = "Regenerates <color=HUNGER>{amount} hunger</color> over {duration}(s).",
 		},
-		
+
 		["halloweenpotion_health_buff"] = {
 			name = "<color=HEALTH>Health regeneration</color>",
 			description = nil
@@ -440,6 +440,12 @@ return {
 		deerclops_attack = "<prefab=deerclops> will attack in %s.",
 	},
 
+	-- twisterspawner.lua
+	twisterspawner = {
+		incoming_twister_targeted = "<color=%s>Target: %s</color> -> %s",
+		announce_twister_target = "<prefab=twister> will spawn on %s (<prefab=%s>) in %s.",
+		twister_attack = "<prefab=twister> will attack in %s.",
+	},
 	-- diseaseable.lua
 	disease_in = "Will become diseased in: %s",
 	disease_spread = "Will spread disease in: %s",
@@ -481,7 +487,7 @@ return {
 	},
 
 	-- edible.lua
-	food_unit = "<color=%s>%s</color> unit(s) of <color=%s>%s</color>", 
+	food_unit = "<color=%s>%s</color> unit(s) of <color=%s>%s</color>",
 	edible_interface = "<color=HUNGER>Hunger</color>: <color=HUNGER>%s</color> / <color=SANITY>Sanity</color>: <color=SANITY>%s</color> / <color=HEALTH>Health</color>: <color=HEALTH>%s</color>",
 	edible_wiki = "<color=HEALTH>Health</color>: <color=HEALTH>%s</color> / <color=HUNGER>Hunger</color>: <color=HUNGER>%s</color> / <color=SANITY>Sanity</color>: <color=SANITY>%s</color>",
 	edible_foodtype = {
@@ -999,7 +1005,7 @@ return {
 	poisonable = {
 		remaining_time = "<color=NATURE>Poison</color> expires in %s",
 	},
-	
+
 	-- pollinator.lua
 	pollination = "Flowers pollinated: (%s) / %s",
 
@@ -1210,7 +1216,7 @@ return {
 	-- stagehand.lua [Prefab]
 	stagehand = {
 		hits_remaining = "<color=#aaaaee>Hits</color> remaining: <color=#aaaaee>%s</color>",
-		time_to_reset = "Will reset in %s." 
+		time_to_reset = "Will reset in %s."
 	},
 
 	-- stewer.lua
@@ -1293,7 +1299,7 @@ return {
 
 	-- waterproofer.lua
 	waterproofness = "<color=WET>Waterproofness</color>: <color=WET>%s%%</color>",
-	
+
 	-- watersource.lua
 	watersource = "This is a source of water.",
 
@@ -1306,7 +1312,7 @@ return {
 	wathgrithr_shield = {
 		parry_duration_complex = "Parry duration: <color=%s>%.1f<sub>normal</sub></color> | <color=%s>%.1f<sub>skill</sub></color>",
 	},
-	
+
 	-- weapon.lua
 	weapon_damage_type = {
 		normal = "<color=HEALTH>Damage</color>",
@@ -1324,7 +1330,7 @@ return {
 
 		progress_to_hail = "Progress to <color=LUNAR_ALIGNED>hail</color>", -- Numbers appended by code
 		remaining_hail = "<color=LUNAR_ALIGNED>Remaining hail</color>", -- Numbers appended by code
-	
+
 		progress_to_acid_rain = "Progress to <color=SHADOW_ALIGNED>acid <color=WET>rain</color></color>", -- Numbers appended by code
 		remaining_acid_rain = "<color=SHADOW_ALIGNED>Remaining acid <color=WET>rain</color></color>", -- Numbers appended by code
 	},
