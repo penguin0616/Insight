@@ -68,6 +68,19 @@ local function Describe(self, context)
 		end
 	end
 
+	if self.rate < 0 then
+		local current_percent = self:GetPercent()
+		local recharge_time = (self.maxfuel - self.currentfuel) / -self.rate
+		local recharge_time_string = context.time:SimpleProcess(recharge_time)
+
+		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(current_percent * 100, 0), recharge_time_string)
+		if fuel_verbosity == 2 then
+			time_string = time_string_verbose
+		elseif fuel_verbosity == 1 then
+			time_string = string.format(context.lstr.fueled.time, Round(current_percent * 100, 0), recharge_time_string)
+		end
+	end
+
 	-- efficiency
 	if efficiency and efficiency ~= 1 and fuel_verbosity == 2 then
 		efficiency_string = string.format(context.lstr.fueled.efficiency, efficiency * 100)

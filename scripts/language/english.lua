@@ -1400,4 +1400,14 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "Will finish sewing in: %s",
+
+	-- inspectacleshat.lua
+	inspectacleshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
+	-- roseglasseshat.lua
+	roseglasseshat = {
+		ready_to_use = "Ready to inspect",
+	}
 }
