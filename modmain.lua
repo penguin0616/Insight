@@ -267,7 +267,7 @@ local descriptors_ignore = {
 	"markable_proxy", "saved_scale", "gingerbreadhunter", "bedazzlement", "bedazzler", "anchor", "distancefade", "pocketwatch_dismantler", "carnivalevent", "heavyobstacleusetarget", -- don't care
 	"cattoy", "updatelooper", "upgrademoduleremover", "hudindicatablemanager", "moonstormlightningmanager", "playerhearing", "walkableplatformplayer", "hudindicatorwatcher", "seamlessplayerswapper", -- don't care
 	"boatcannonuser", "stageactor", "boatdrifter", "boatphysics", "boatring", "boatringdata", "healthsyncer", "hull", "hullhealth", "walkableplatform", "teleportedoverride", -- don't care
-	"npc_talker", "simplemagicgrower", "moonaltarlink", "farmtiller", "aoespell", "aoetargeting",
+	"npc_talker", "simplemagicgrower", "moonaltarlink", "farmtiller", "aoespell", "aoetargeting", "closeinspector", 
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",

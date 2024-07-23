@@ -18,36 +18,22 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- inspectacleshat.lua [Prefab]
+-- circuitnode.lua
 local function Describe(self, context)
-	local player = context.player
-	if not player or
-		player.prefab ~= "winona" or
-		not player.components.skilltreeupdater or
-		not player.components.skilltreeupdater:IsActivated("winona_wagstaff_1") or
-		not player.components.inspectaclesparticipant
-	then
-		return nil
-	end
+	local description = nil
 
-	local description
-
-	if not player.components.inspectaclesparticipant.cooldowntask then
-		-- Thinking on this now, we know it's ready by lack of cooldown.
-		--description = context.lstr.inspectacleshat.ready_to_use
-	else
-		description = string.format(context.lstr.cooldown,
-			context.time:SimpleProcess(GetTaskRemaining(player.components.inspectaclesparticipant.cooldowntask))
-		)
+	if context.etc.DEBUG_ENABLED then
+		description = string.format("[circuitnode] range: %d, numnodes: %d", self.range, self.numnodes)
 	end
 
 	return {
 		priority = 0,
-		--name = "inspectacleshat",
 		description = description
 	}
 end
 
-return { 
+
+
+return {
 	Describe = Describe
 }

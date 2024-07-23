@@ -30,16 +30,19 @@ local function Describe(self, context)
 		return nil
 	end
 
-	local description = ""
+	local description
+	
 	if not player.components.roseinspectableuser.cooldowntask then
-		description = context.lstr.roseglasseshat.ready_to_use
+		-- Thinking on this now, we know it's ready by lack of cooldown.
+		--description = context.lstr.roseglasseshat.ready_to_use
 	else
 		description = string.format(context.lstr.cooldown,
 			context.time:SimpleProcess(GetTaskRemaining(player.components.roseinspectableuser.cooldowntask)))
 	end
+
 	return {
 		priority = 0,
-		name = "roseglasseshat",
+		--name = "roseglasseshat",
 		description = description,
 	}
 end
