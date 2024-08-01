@@ -615,7 +615,7 @@ return {
 
 	-- flotsamgenerator.lua
 	flotsamgenerator = {
-		messagebottle_cooldown = "%s 's next <prefab=messagebottle> spawn after %s",
+		messagebottle_cooldown = "Next <prefab=messagebottle> spawn after %s",
 	},
 
 	-- follower.lua

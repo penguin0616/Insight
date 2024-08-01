@@ -5,7 +5,7 @@ local function Describe(self, context)
 		count = count + 1
 	end
 
-	local description = string.format(context.lstr.messagebottlemanager, count, 10)
+	local description = string.format(context.lstr.messagebottlemanager, count, TUNING.MAX_ACTIVE_TREASURE_HUNTS)
 	return {
 		priority = 0,
 		name = "treasure",

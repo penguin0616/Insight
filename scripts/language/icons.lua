@@ -625,6 +625,11 @@ return {
 	fishingrod_waittimes = "<icon=pocket_scale> <color=SHALLOWS>%s</color> - <color=SHALLOWS>%s</color>",
 	--fishingrod_loserodtime = "Max wrangle time: <color=SHALLOWS>%s</color>",
 
+	-- flotsamgenerator.lua
+	flotsamgenerator = {
+		--messagebottle_cooldown = "Next <prefab=messagebottle> spawn after %s",
+	},
+
 	-- follower.lua
 	leader = "<icon=pigcrownhat> %s",
 	loyalty_duration = "<icon=pigcrownhat><icon=pocket_scale> %s",

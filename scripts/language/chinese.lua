@@ -614,7 +614,7 @@ return {
 
 	-- flotsamgenerator.lua
 	flotsamgenerator = {
-		messagebottle_cooldown = "%s 的下一个 <prefab=messagebottle> 将于 %s 后刷新",
+		messagebottle_cooldown = "下一个 <prefab=messagebottle> 将于 %s 后刷新",
 	},
 
 	-- follower.lua
