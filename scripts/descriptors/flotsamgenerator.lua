@@ -60,7 +60,7 @@ local function Describe(self, context)
 	for v, task in pairs(tasks) do
 		-- guaranteed_presets
 		if v.prefabs[1] == "messagebottle" then
-			table.insert(descriptions, DescribeMessageBottle(context, player, task))
+			table.insert(descriptions, DescribeMessageBottle(context, context.player, task))
 		end
 	end
 
