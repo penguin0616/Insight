@@ -38,8 +38,14 @@ local known_atlases = {
 if IS_DS then -- prevent TheSim:AtlasContains throwing a warning instead of an error from the engine
 	table.insert(known_atlases, "images/inventoryimages_2.xml") -- DS
 else
-	table.insert(known_atlases, "images/inventoryimages1.xml") -- DST
-	table.insert(known_atlases, "images/inventoryimages2.xml") -- DST
+	for i = 1, math.huge do -- future proofing! :)
+		local atlas = string.format("images/inventoryimages%d.xml", i)
+		if softresolvefilepath(atlas) then
+			table.insert(known_atlases, atlas) -- DST
+		else
+			break
+		end
+	end
 end
 
 local atlas_lookups = {}
