@@ -409,7 +409,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 				if componentData.worldly == true then
 					if componentData.playerly == true then
 						player_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
-						player_page[componentName] = nil
+						player_keys[componentName] = nil
 					else
 						world_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
 						world_keys[componentName] = nil
