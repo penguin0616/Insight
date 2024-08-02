@@ -439,11 +439,11 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 					local name, text, icon = v.name, v.text, v.icon
 					name = name .. "debuffable_"
 					player_page:AddItem(name, { text=text, icon=icon })
-					player_page[name] = nil
+					player_keys[name] = nil
 				end
 			elseif info.special_data.debuffable._error then -- info.special_data.debuffable._error
 				player_page:AddItem("debuffable_error", { text=info.raw_information.debuffable })
-				player_page["debuffable_error"] = nil
+				player_keys["debuffable_error"] = nil
 			end
 		end
 		
@@ -452,7 +452,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 				local componentData = info.special_data[componentName]
 				if componentData.playerly == true then
 					player_page:AddItem(componentName, { text=desc, icon=componentData.icon, componentName=componentName, componentData=componentData })
-					player_page[componentName] = nil
+					player_keys[componentName] = nil
 				end
 			end
 		else
