@@ -386,15 +386,14 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 			--]]
 		else
 			--world_tab:Enable()
-			for component, desc in pairs(world_data.raw_information) do
-				if world_data.special_data[component].worldly == true then
-					--mprint(component, desc)
-					desc = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", world_data.special_data[component].from or "cmp", component) .. desc) or desc
-					if world_page:GetItem(component) == nil then
-						--mprint("adding insightmenu segment for:", component)
-						world_page:AddItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component, real_component=world_data.special_data[component].real_component })
+			for componentName, description in pairs(world_data.raw_information) do
+				local componentData = world_data.special_data[componentName]
+				description = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", componentData.from or "cmp", componentName) .. description) or description
+				if componentData.worldly == true then
+					if componentData.playerly == true then
+						player_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
 					else
-						world_page:EditItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component, real_component=world_data.special_data[component].real_component })
+						world_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
 					end
 				end
 			end
@@ -420,11 +419,8 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 					name = name .. "debuffable_"
 					did[name] = true
 					
-					if player_page:GetItem(name) == nil then
-						player_page:AddItem(name, { text=text, icon=icon })
-					else
-						player_page:EditItem(name, { text=text, icon=icon })
-					end
+					
+					player_page:AddItem(name, { text=text, icon=icon })
 				end
 			elseif info.special_data.debuffable._error then -- info.special_data.debuffable._error
 				did["debuffable_error"] = true
@@ -435,15 +431,12 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 		end
 		
 		if info.raw_information then
-			for component, desc in pairs(info.raw_information) do
-				if info.special_data[component].playerly == true then
-					did[component] = true
+			for componentName, desc in pairs(info.raw_information) do
+				local componentData = info.special_data[componentName]
+				if componentData.playerly == true then
+					did[componentName] = true
 					
-					if player_page:GetItem(component) == nil then
-						player_page:AddItem(component, { text=desc, icon=info.special_data[component].icon })
-					else
-						player_page:EditItem(component, { text=desc, icon=info.special_data[component].icon })
-					end
+					player_page:AddItem(componentName, { text=desc, icon=componentData.icon, componentName=componentName, componentData=componentData })
 				end
 			end
 		else

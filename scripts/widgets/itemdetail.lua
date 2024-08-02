@@ -37,7 +37,7 @@ local ItemDetail = Class(Widget, function(self, info)
 	assert(info.width, "info.width must be specified")
 	assert(info.height, "info.height must be specified")
 
-	self.component = nil
+	self.componentName = nil
 
 	
 	self.yep = self:AddChild(Image(DEBUG_IMAGE()))
@@ -104,15 +104,13 @@ function ItemDetail:Kill()
 end
 
 function ItemDetail:OnControl(control, down)
-	-- Check input
-	if self.component and control == CONTROL_ACCEPT and down and TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
+	-- Check input and component name
+	local cmp = (self.componentData and self.componentData.source_descriptor) or self.componentName
+	if cmp and control == CONTROL_ACCEPT and down and TheInput:IsControlPressed(CONTROL_FORCE_INSPECT) then
 		-- Check localplayer status
 		if localPlayer and localPlayer.HUD._StatusAnnouncer then
-			local cmp = self.real_component or self.component
-
-			-- Check component status
-			-- Using self.component so that we can use the special data from the named data.
-			local special_data = localPlayer.replica.insight.world_data.special_data[self.component]
+			-- Using self.componentName so that we can use the special data from the named data.
+			local special_data = localPlayer.replica.insight.world_data.special_data[self.componentName]
 
 			local describer = special_data and (
 				(special_data.prefably and Insight.prefab_descriptors[cmp] and Insight.prefab_descriptors[cmp].StatusAnnoucementsDescribe) or
@@ -122,8 +120,8 @@ function ItemDetail:OnControl(control, down)
 			if describer then
 				local data = describer(special_data, GetPlayerContext(localPlayer), TheWorld)
 				if data and data.description then
-					-- Using self.component here so that the cooldown is unique per individual data, not for the entire descriptor.
-					localPlayer.HUD._StatusAnnouncer:Announce(data.description, self.component) 
+					-- Using self.componentName here so that the cooldown is unique per individual describe from a descriptor, not for the entire descriptor.
+					localPlayer.HUD._StatusAnnouncer:Announce(data.description, self.componentName) 
 				end
 			end
 		end
