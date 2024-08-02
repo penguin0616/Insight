@@ -366,8 +366,9 @@ function InsightMenu:GetHelpText()
 	return table.concat(tips, "  ")
 end
 
+-- Used if page.items is a list rather than a dictionary
 local function PurgeFn(t, i, j, corresponding_tbl_with_keys)
-	local key = t[i].key
+	local key = t[i].key -- Added by ItemDetail:AddItem
 	return corresponding_tbl_with_keys[key] ~= nil
 end
 
@@ -375,6 +376,22 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 	local world_tab = self:GetTabByName("world")
 	local world_page = self:GetPageByName("world")
 	local player_page = self:GetPageByName("player")
+
+	-- Collect all data keys
+	local world_keys = {}
+	
+	if world_page then
+		for key in pairs(world_page:GetItems()) do
+			world_keys[key] = true
+		end
+	end
+
+	local player_keys = {}
+	if player_page then
+		for key in pairs(player_page:GetItems()) do
+			player_keys[key] = true
+		end
+	end
 
 	if world_page and world_data then
 		if world_data.disabled then
@@ -386,15 +403,16 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 			--]]
 		else
 			--world_tab:Enable()
-			for component, desc in pairs(world_data.raw_information) do
-				if world_data.special_data[component].worldly == true then
-					--mprint(component, desc)
-					desc = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", world_data.special_data[component].from or "cmp", component) .. desc) or desc
-					if world_page:GetItem(component) == nil then
-						--mprint("adding insightmenu segment for:", component)
-						world_page:AddItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component, real_component=world_data.special_data[component].real_component })
+			for componentName, description in pairs(world_data.raw_information) do
+				local componentData = world_data.special_data[componentName]
+				description = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", componentData.from or "cmp", componentName) .. description) or description
+				if componentData.worldly == true then
+					if componentData.playerly == true then
+						player_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
+						player_page[componentName] = nil
 					else
-						world_page:EditItem(component, { text=desc, icon=world_data.special_data[component].icon, component=component, real_component=world_data.special_data[component].real_component })
+						world_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
+						world_keys[componentName] = nil
 					end
 				end
 			end
@@ -404,12 +422,14 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 	end
 
 	if world_page then
-		ArrayPurge(world_page:GetItems(), PurgeFn, (world_data and world_data.raw_information) or {})
+		for key in pairs(world_keys) do
+			world_page:RemoveItem(key)
+		end
+		--ArrayPurge(world_page:GetItems(), PurgeFn, (world_data and world_data.raw_information) or {})
 		world_page:Refresh()
 	end
 
 	-- player page
-	local did = {}
 	if player_page and player_data then
 		local info = player_data
 		
@@ -418,32 +438,21 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 				for i,v in pairs(info.special_data.debuffable.debuffs) do
 					local name, text, icon = v.name, v.text, v.icon
 					name = name .. "debuffable_"
-					did[name] = true
-					
-					if player_page:GetItem(name) == nil then
-						player_page:AddItem(name, { text=text, icon=icon })
-					else
-						player_page:EditItem(name, { text=text, icon=icon })
-					end
+					player_page:AddItem(name, { text=text, icon=icon })
+					player_page[name] = nil
 				end
 			elseif info.special_data.debuffable._error then -- info.special_data.debuffable._error
-				did["debuffable_error"] = true
-				if player_page:GetItem("debuffable_error") == nil then
-					player_page:AddItem("debuffable_error", { text=info.raw_information.debuffable })
-				end
+				player_page:AddItem("debuffable_error", { text=info.raw_information.debuffable })
+				player_page["debuffable_error"] = nil
 			end
 		end
 		
 		if info.raw_information then
-			for component, desc in pairs(info.raw_information) do
-				if info.special_data[component].playerly == true then
-					did[component] = true
-					
-					if player_page:GetItem(component) == nil then
-						player_page:AddItem(component, { text=desc, icon=info.special_data[component].icon })
-					else
-						player_page:EditItem(component, { text=desc, icon=info.special_data[component].icon })
-					end
+			for componentName, desc in pairs(info.raw_information) do
+				local componentData = info.special_data[componentName]
+				if componentData.playerly == true then
+					player_page:AddItem(componentName, { text=desc, icon=componentData.icon, componentName=componentName, componentData=componentData })
+					player_page[componentName] = nil
 				end
 			end
 		else
@@ -469,7 +478,10 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 	end
 
 	if player_page then
-		ArrayPurge(player_page:GetItems(), PurgeFn, did)
+		for key in pairs(player_keys) do
+			player_page:RemoveItem(key)
+		end
+		--ArrayPurge(player_page:GetItems(), PurgeFn, did)
 		player_page:Refresh()
 	end
 end

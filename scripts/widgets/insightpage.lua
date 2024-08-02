@@ -32,6 +32,17 @@ local item_height = 64
 local padding_between_rows = 10 + 16
 --]]
 
+-- Copied from SortDescriptors
+local function SortItems(a, b)
+	local p1, p2 = (a.componentData and a.componentData.priority) or 0, (b.componentData and b.componentData.priority) or 0
+
+	if p1 == p2 and a.text and b.text then
+		return a.text < b.text -- key code means letters further down the alphabet have a higher value, so we need smaller of them to sort alphabetically
+	else
+		return p1 > p2 -- we need higher value priority
+	end
+end
+
 
 local function item_ctor_fn(context, index)
 	return ItemDetail({width = context.item_width, height = context.item_height})
@@ -52,13 +63,13 @@ local function apply_fn(context, widget, data, index)
 		end
 		
 		widget:SetText(data.text)
-		widget.component = data.component
-		widget.real_component = data.real_component
+		widget.componentName = data.componentName
+		widget.componentData = data.componentData
 	else
 		widget:SetText(nil)
 		widget:SetIcon(nil, nil)
-		widget.component = nil
-		widget.real_component = nil
+		widget.componentName = nil
+		widget.componentData = nil
 	end
 end
 
@@ -178,11 +189,14 @@ function InsightPage:GetItems()
 end
 
 function InsightPage:GetItem(key)
+	return self.items[key]
+	--[[
 	for _, item in pairs(self.items) do
 		if item.key == key then
 			return item
 		end
 	end
+	--]]
 end
 
 function InsightPage:AddItem(key, data)
@@ -193,16 +207,30 @@ function InsightPage:AddItem(key, data)
 		error("data expected to be a table")
 	end
 	
-	if self:GetItem(key) ~= nil then
+	--[[
+	if self.items[key] ~= nil then
 		error("key is a duplicate")
 	end
-
+	--]]
 	data.key = key
 
-	self.items[#self.items+1] = data
+	local item = self.items[key]
+
+	if item ~= nil then
+		item.text = data.text -- in case they are nil
+		item.icon = data.icon -- in case they are nil
+
+		for i,v in pairs(data) do
+			item[i] = v
+		end
+	else
+		self.items[key] = data
+	end
+	
 	self:Refresh()
 end
 
+--[[
 function InsightPage:EditItem(key, data)
 	local key = key
 	if type(key) ~= "string" or type(data) ~= "table" then
@@ -223,19 +251,36 @@ function InsightPage:EditItem(key, data)
 
 	error("attempt to edit an item that does not exist")
 end
+--]]
 
 function InsightPage:RemoveItem(key)
+	if self.items[key] ~= nil then
+		self.items[key] = nil
+	end
+	--[[
 	for index, item in pairs(self.items) do
 		if item.key == key then
 			table.remove(self.items, index)
 			break
 		end
 	end
+	--]]
 	self:Refresh()
+	
 end
 
 function InsightPage:Refresh()
-	self.list:SetItemsData(self.items)
+	local sorted_items = {}
+
+	local n = 1
+	for key, data in pairs(self.items) do
+		sorted_items[n] = data
+		n = n + 1
+	end
+
+	table.sort(sorted_items, SortItems)
+
+	self.list:SetItemsData(sorted_items)
 end
 
 return InsightPage

@@ -70,6 +70,7 @@ local function DescribeRiftSpawn(self, context)
 	
 		return {
 			name = "riftspawner_riftspawn",
+			source_descriptor = "riftspawner",
 			priority = 0,
 			description = time_to_spawn,
 			next_rift_spawn = time,
@@ -99,8 +100,8 @@ local function DescribeRiftsOfAffinity(self, context, affinity)
 
 				if described then
 					described.name = "riftspawner_" .. rift.prefab .. "_" .. rift.GUID
+					described.source_descriptor = rift.prefab
 					described.worldly = true
-					described.real_component = rift.prefab
 
 					rift_descriptions[#rift_descriptions+1] = described
 				end

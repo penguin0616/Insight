@@ -1014,7 +1014,7 @@ end
 local function GetSpecialData(describe_data)
 	local special_data = {}
 	for j, k in pairs(describe_data) do
-		if j ~= 'name' and j ~= 'description' and j ~= 'priority' then
+		if j ~= 'name' and j ~= 'description' then
 			special_data[j] = k
 		end
 	end
@@ -1038,8 +1038,8 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 			end
 
 			d.name = d.name or name -- chosen name or default component name
-			if d.name ~= name and d.real_component == nil then
-				d.real_component = name
+			if d.name ~= name and d.source_descriptor == nil then
+				d.source_descriptor = name
 			end
 
 			if d.description ~= nil and type(d.description) ~= "string" then
