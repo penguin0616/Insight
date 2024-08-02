@@ -1013,6 +1013,17 @@ if not table.reverselookup then
 	end
 end
 
+if not table.getkeys then
+	-- Return an array table of the keys of the input table.
+	function table.getkeys(t)
+		local keys = {}
+		for key,val in pairs(t) do
+			table.insert(keys, key)
+		end
+		return keys
+	end
+end
+
 -- Sourced from https://web.archive.org/web/20131225070434/http://snippets.luacode.org/snippets/Deep_Comparison_of_Two_Values_3
 function deepcompare(t1, t2, ignore_mt)
 	local ty1 = type(t1)

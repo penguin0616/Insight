@@ -34,7 +34,7 @@ local padding_between_rows = 10 + 16
 
 -- Copied from SortDescriptors
 local function SortItems(a, b)
-	local p1, p2 = a.componentData.priority or 0, b.componentData.priority or 0
+	local p1, p2 = (a.componentData and a.componentData.priority) or 0, (b.componentData and b.componentData.priority) or 0
 
 	if p1 == p2 and a.text and b.text then
 		return a.text < b.text -- key code means letters further down the alphabet have a higher value, so we need smaller of them to sort alphabetically
