@@ -406,7 +406,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 			for componentName, description in pairs(world_data.raw_information) do
 				local componentData = world_data.special_data[componentName]
 				description = (false and string.format("<color=#DDA305>[(%s) %s]</color> ", componentData.from or "cmp", componentName) .. description) or description
-				if componentData.worldly == true then
+				if componentData.worldly == true or componentData._error then
 					if componentData.playerly == true then
 						player_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
 						player_keys[componentName] = nil
@@ -433,6 +433,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 	if player_page and player_data then
 		local info = player_data
 		
+		--[[
 		if info.special_data.debuffable then
 			if info.special_data.debuffable.debuffs then
 				for i,v in pairs(info.special_data.debuffable.debuffs) do
@@ -446,11 +447,12 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 				player_keys["debuffable_error"] = nil
 			end
 		end
+		--]]
 		
 		if info.raw_information then
 			for componentName, desc in pairs(info.raw_information) do
 				local componentData = info.special_data[componentName]
-				if componentData.playerly == true then
+				if componentData.playerly == true or componentData._error then
 					player_page:AddItem(componentName, { text=desc, icon=componentData.icon, componentName=componentName, componentData=componentData })
 					player_keys[componentName] = nil
 				end

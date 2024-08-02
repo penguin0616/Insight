@@ -105,8 +105,7 @@ end
 
 
 local function DescribeLocalPlayer(self, context)
-	local description = nil
-	local list = nil
+	local returns = {}
 
 	for debuffName, v in pairs(self.debuffs) do
 		-- v = { inst=inst, onremove=fn }
@@ -136,16 +135,18 @@ local function DescribeLocalPlayer(self, context)
 
 			local icon = debuff_to_prefab[prefab] and ResolvePrefabToImageTable(debuff_to_prefab[prefab]) or nil
 
-			if not list then list = {} end
-			list[#list+1] = {name = debuffName, prefab=prefab, text=text, icon=icon}
+			
+			returns[#returns+1] = {
+				name = "debuffable-" .. debuffName .. "-" .. prefab,
+				priority = 5,
+				description = text, 
+				icon = icon,
+				playerly = true,
+			}
 		end
 	end
 
-	return {
-		priority = 0,
-		description = description,
-		debuffs = list
-	}
+	return unpack(returns)
 end
 
 local function Describe(self, context)
@@ -176,8 +177,7 @@ local function Describe(self, context)
 
 	return {
 		priority = 0,
-		description = description,
-		debuffs = list
+		description = description
 	}
 end
 
