@@ -90,6 +90,7 @@ local function GetFoodEffects(self)
 		}
 	end
 
+	-- SW/Hamlet
 	if self.autodrydelta and self.autodryduration and self.autodrydelta ~= 0 and self.autodryduration ~= 0 then
 		--eater.components.locomotor:AddSpeedModifier_Additive("AUTODRY", self.autodrydelta, self.autodryduration)
 		bonuses.autodry = {
@@ -98,7 +99,7 @@ local function GetFoodEffects(self)
 		}
 	end
 
-	-- immediate cooling
+	-- Immediate cooling in SW/Hamlet
 	if self.autocooldelta and self.autocooldelta ~= 0 then
 		bonuses.instant_temperature = {
 			delta = self.autocooldelta, 

@@ -63,9 +63,59 @@ local function GetTemperatureThresholds(temp, ambient)
 	return min, max, level
 end
 
+local function DescribePlayerTemperature(self, context)
+	local description
+
+	local temperature_delta, remaining_time
+
+	if world_type == -1 then
+		if not (self.bellytemperaturedelta and self.bellytime and self.bellytask) then
+			return
+		end
+
+		temperature_delta = self.bellytemperaturedelta
+		remaining_time = GetTaskRemaining(self.bellytask)
+		
+	elseif world_type > 0 then
+		if not (self.inst.recent_temperatured_food and self.inst.food_temp_task) then
+			return
+		end
+
+		temperature_delta = self.inst.recent_temperatured_food
+		remaining_time = GetTaskRemaining(self.inst.food_temp_task) 
+	end
+	
+	-- DS does not clear the task, so we need to check to make sure the time is valid.
+	if temperature_delta and remaining_time and remaining_time >= 0 then
+		--description = string.format("Temperature Modifier: <color=%s>%+d</color>\nRemaining time: %s", 
+		description = string.format(context.lstr.edible_foodeffect.temperature,
+			ApplyColor(
+				FormatDecimal(temperature_delta, 1), 
+				temperature_delta > 0 and colors[#colors] or colors[1]
+			), 
+			context.time:SimpleProcess(remaining_time, "realtime_short")
+		)
+	end
+
+	return {
+		name = "temperature-localPlayer",
+		priority = 0,
+		description = description,
+		icon = {
+			atlas = GetAtlasForTex("winterometer.tex"),
+			tex = "winterometer.tex"
+		},
+		playerly = true,
+	}
+end
+
 local function Describe(self, context)
 	if self.inst.prefab == "heatrock" then
 		return
+	end
+
+	if self.inst == context.player then
+		return DescribePlayerTemperature(self, context)
 	end
 
 	local description, alt_description
@@ -99,6 +149,7 @@ local function Describe(self, context)
 	--]]
 
 	return {
+		name = "temperature",
 		priority = 0,
 		description = description,
 		alt_description = alt_description,
@@ -109,5 +160,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	TemperatureColors = colors
 }
