@@ -63,8 +63,30 @@ local function GetPlayerServerDeaths(context, amount)
 end
 
 local function PlayerDescribe(self, context)
-	local inst = self.inst
 	local stuff = {}
+	if self.inst.wormlight then
+		local spell = self.inst.wormlight.components.spell
+		if spell and spell.spellname == "wormlight" and Insight.descriptors.debuffable then
+			local time_left = spell.duration - spell.lifetime
+			local d = Insight.descriptors.debuffable.DescribeDebuff(
+				spell.inst.prefab, 
+				spell.inst.prefab, 
+				context.time:SimpleProcess(time_left, "realtime_short"), 
+				context
+			)
+
+			local tex = (spell.inst.prefab == "wormlight_light_greater" and "glowberrymousse") or spell.inst.prefab:gsub("_light", "")
+			tex = tex .. ".tex"
+			local atlas = GetAtlasForTex(tex)
+			if atlas then
+				d.icon = { atlas=atlas, tex=tex }
+			end
+			stuff[#stuff+1] = d
+		end
+	end
+
+	--[[
+	local inst = self.inst
 
 	if false and (DEBUG_ENABLED or inst ~= context.player) and inst.userid ~= "" then
 		local their_context = GetPlayerContext(inst)
@@ -72,8 +94,10 @@ local function PlayerDescribe(self, context)
 			table.insert(stuff, GetPlayerServerDeaths(context, #their_context.etc.server_deaths))
 		end
 	end
+	--]]
 
 	return unpack(stuff)
+	
 end
 
 local function HasRange(inst)
@@ -202,6 +226,11 @@ local function Describe(self, context)
 		return PlayerDescribe(self, context)
 	end
 	--]]
+
+	if self.inst == context.player then
+		return PlayerDescribe(self, context)
+	end
+	
 
 	--mprint("checking range", HasRange(inst))
 	if not inst.components.spellcaster and HasRange(inst) then

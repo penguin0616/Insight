@@ -66,7 +66,8 @@ local function Describe(self, context)
 			burn_rate = GetBurnRate(self)
 
 			if not burn_rate then
-				error("you moused over a: " .. self.inst:GetDisplayName() .. ", please report this to penguin (PLEASE ATTACH MOD LOG!).")
+				--error("you moused over a: " .. self.inst:GetDisplayName() .. ", please report this to penguin (PLEASE ATTACH MOD LOG!).")
+				return
 			end
 		end
 

@@ -405,6 +405,13 @@ return {
 			name = "<color=SANITY>理智回复</color>",
 			description = "{duration} 秒内回复 <color=SANITY>{amount} 理智</color>",
 		},
+		["wormlight_light"] = {
+			name = "<color=#6AD1EF><prefab=wormlight> light</color>",
+			--description = "Provides light for {duration}(s).",
+		},
+		["wormlight_light_lesser"] = function(parent) return deepcopy(parent.wormlight_light) end,
+		["wormlight_light_greater"] = function(parent) return deepcopy(parent.wormlight_light) end,
+
 
 		["wintersfeastbuff"] = {
 			name = "<color=FROZEN>冬季盛宴加成</color>",

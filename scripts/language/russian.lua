@@ -20,6 +20,8 @@ directory. If not, please refer to
 
 -- Translated by: https://steamcommunity.com/id/lehasex/
 
+-- TheNet:GetLanguageCode() == "probably russian" & LOC.GetLocaleCode() == "ru"
+
 return {
 	-- insightservercrash.lua
 	server_crash = "Этот сервер упал.",
@@ -406,6 +408,13 @@ return {
 			name = "<color=SANITY>Регенерация рассудка</color>",
 			description = "Восстанавливает <color=SANITY>{amount} рассудка</color> за {duration}(с).",
 		},
+		["wormlight_light"] = {
+			name = "<color=#6AD1EF><prefab=wormlight> light</color>",
+			--description = "Provides light for {duration}(s).",
+		},
+		["wormlight_light_lesser"] = function(parent) return deepcopy(parent.wormlight_light) end,
+		["wormlight_light_greater"] = function(parent) return deepcopy(parent.wormlight_light) end,
+
 
 		["wintersfeastbuff"] = {
 			name = "<color=FROZEN>Бонус Зимнего Праздника</color>",

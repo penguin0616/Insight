@@ -103,6 +103,36 @@ local function GetDebuffRemainingTime(debuffInst, context)
 	return remaining_time
 end
 
+local function DescribeDebuff(debuffName, prefab, remaining_time, context)
+	local known_debuff = debuffHelper.IsKnownDebuff(prefab) --context.lstr.debuffs[prefab] ~= nil
+
+	-- Make sure name exists, modded prefabs don't have one registered with us.
+	local name
+	if known_debuff and context.lstr.debuffs[prefab] and context.lstr.debuffs[prefab].name and context.lstr.debuffs[prefab].name ~= "" then
+		name = context.lstr.debuffs[prefab].name
+	else
+		local clr = known_debuff and "#00ff00" or "#cccccc"
+		name = string.format("%q\n(<color=%s>%q</color>)", debuffName, clr, prefab)
+	end
+
+	local primary_info = string.format(context.lstr.buff_text, name, remaining_time)
+	local description = nil
+	if known_debuff and context.lstr.debuffs[prefab] and context.lstr.debuffs[prefab].description then
+		description = debuffHelper.GetDebuffEffects(prefab, context)
+	end
+	local text = CombineLines(primary_info, description)
+
+	local icon = debuff_to_prefab[prefab] and ResolvePrefabToImageTable(debuff_to_prefab[prefab]) or nil
+
+	return {
+		name = "debuffable-" .. debuffName .. "-" .. prefab,
+		priority = 5,
+		description = text, 
+		icon = icon,
+		playerly = true,
+	}
+end
+
 
 local function DescribeLocalPlayer(self, context)
 	local returns = {}
@@ -115,34 +145,7 @@ local function DescribeLocalPlayer(self, context)
 
 			local remaining_time = GetDebuffRemainingTime(debuffInst, context)
 
-			local known_debuff = debuffHelper.IsKnownDebuff(prefab) --context.lstr.debuffs[prefab] ~= nil
-
-			-- Make sure name exists, modded prefabs don't have one registered with us.
-			local name
-			if known_debuff and context.lstr.debuffs[prefab] and context.lstr.debuffs[prefab].name and context.lstr.debuffs[prefab].name ~= "" then
-				name = context.lstr.debuffs[prefab].name
-			else
-				local clr = known_debuff and "#00ff00" or "#cccccc"
-				name = string.format("%q\n(<color=%s>%q</color>)", debuffName, clr, prefab)
-			end
-
-			local primary_info = string.format(context.lstr.buff_text, name, remaining_time)
-			local desc = nil
-			if known_debuff and context.lstr.debuffs[prefab] and context.lstr.debuffs[prefab].description then
-				desc = debuffHelper.GetDebuffEffects(prefab, context)
-			end
-			local text = CombineLines(primary_info, desc)
-
-			local icon = debuff_to_prefab[prefab] and ResolvePrefabToImageTable(debuff_to_prefab[prefab]) or nil
-
-			
-			returns[#returns+1] = {
-				name = "debuffable-" .. debuffName .. "-" .. prefab,
-				priority = 5,
-				description = text, 
-				icon = icon,
-				playerly = true,
-			}
+			returns[#returns+1] = DescribeDebuff(debuffName, prefab, remaining_time, context)
 		end
 	end
 
@@ -185,4 +188,5 @@ end
 
 return {
 	Describe = Describe,
+	DescribeDebuff = DescribeDebuff
 }

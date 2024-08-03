@@ -411,6 +411,13 @@ return {
 			name = nil,
 			description = "Regenera <color=SANITY>{amount} sanidade</color> durante {duration}(s).",
 		},
+		["wormlight_light"] = {
+			name = "<color=#6AD1EF><prefab=wormlight> light</color>",
+			--description = "Provides light for {duration}(s).",
+		},
+		["wormlight_light_lesser"] = function(parent) return deepcopy(parent.wormlight_light) end,
+		["wormlight_light_greater"] = function(parent) return deepcopy(parent.wormlight_light) end,
+
 
 		["wintersfeastbuff"] = {
 			name = "<color=FROZEN>Buff do Festival de Inverno</color>",

@@ -258,6 +258,40 @@ debuff_definitions["sweettea_buff"] = {
 	tick_value = TUNING.SWEETTEA_SANITY_DELTA,
 }
 
+--[[
+for i,v in pairs({
+	["wormlight_light"] = "DURATION_MULT",
+	["wormlight_light_lesser"] = "LESSER_DURATION_MULT", 
+	["wormlight_light_greater"] = "GREATER_DURATION_MULT",
+}) do
+	if _G.Prefabs[v] then
+		debuff_definitions[v] = {
+			duration = TUNING.TOTAL_DAY_TIME * .5,
+		}
+	end
+end
+--]]
+do
+	-- I'm not happy about this and I don't even understand why I'm doing this.
+	-- Meh.
+	local DURATION_MULT = 1
+	local LESSER_DURATION_MULT = .25
+	local GREATER_DURATION_MULT = 4
+
+	local map = {DURATION_MULT=DURATION_MULT, LESSER_DURATION_MULT=LESSER_DURATION_MULT, GREATER_DURATION_MULT=GREATER_DURATION_MULT}
+
+	for prefab, upvalue in pairs({
+		["wormlight_light"] = "DURATION_MULT",
+		["wormlight_light_lesser"] = "LESSER_DURATION_MULT", 
+		["wormlight_light_greater"] = "GREATER_DURATION_MULT",
+	}) do
+		debuff_definitions[prefab] = {
+			duration = TUNING.TOTAL_DAY_TIME * map[upvalue],
+		}
+	end
+end
+
+
 -- Misc buffs
 debuff_definitions["wintersfeastbuff"] = {
 	blank = true
