@@ -232,7 +232,6 @@ local function Describe(self, context)
 	local description, alt_description = nil, nil
 
 	local owner = context.player --GetPlayer()
-	local foodmemory = owner.components.foodmemory
 	local stats = context.stats
 	local alt_description = nil
 
@@ -285,6 +284,7 @@ local function Describe(self, context)
 		end
 	end
 
+	local foodmemory = owner.components.foodmemory
 	local foodmemory_data = nil
 	if context.config["food_memory"] then
 		local mem = foodmemory and foodmemory.foods[foodmemory:GetBaseFood(self.inst.prefab)]
@@ -293,7 +293,11 @@ local function Describe(self, context)
 			foodmemory_data = {
 				name = "edible_foodmemory",
 				priority = 0.1,
-				description = string.format(context.lstr.foodmemory, recently_eaten, #foodmemory.mults, context.time:SimpleProcess(time_to_forget))
+				description = string.format(context.lstr.foodmemory, 
+					recently_eaten, 
+					(foodmemory.mults and #foodmemory.mults) or "?", 
+					context.time:SimpleProcess(time_to_forget)
+				)
 			}
 		end
 	end
