@@ -405,7 +405,11 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 			--world_tab:Enable()
 			for componentName, description in pairs(world_data.raw_information) do
 				local componentData = world_data.special_data[componentName]
-				description = (DEBUG_OPTIONS.INSIGHT_MENU_DATA_ORIGIN and string.format("<color=#DDA305>[(%s) %s]</color> ", componentData.from or "cmp", componentName) .. description) or description
+
+				description = (
+					DEBUG_OPTIONS.INSIGHT_MENU_DATA_ORIGIN and string.format("<color=#DDA305>[(%s) %s]</color> ", componentData.from or "cmp", componentName) .. description
+				) or description
+
 				if componentData.worldly == true or componentData._error then
 					if componentData.playerly == true then
 						player_page:AddItem(componentName, { text=description, icon=componentData.icon, componentName=componentName, componentData=componentData })
