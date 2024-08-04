@@ -800,11 +800,6 @@ return {
 		ready_to_use = "Ready to inspect",
 	},
 
-	-- roseglasseshat.lua [Prefab]
-	roseglasseshat = {
-		ready_to_use = "Ready to inspect",
-	},
-
 	-- insulator.lua
 	insulation_winter = "<icon=beargervest> <color=FROZEN>%s</color>",
 	insulation_summer = "<icon=icehat> <color=FROZEN>%s</color>",
@@ -1115,6 +1110,11 @@ return {
 	-- rocmanager.lua
 	rocmanager = {
 		--cant_spawn = "Unable to spawn."
+	},
+
+	-- roseglasseshat.lua [Prefab]
+	roseglasseshat = {
+		--ready_to_use = "Ready to inspect",
 	},
 
 	-- saddler.lua

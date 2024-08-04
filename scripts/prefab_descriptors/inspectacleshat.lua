@@ -42,9 +42,10 @@ local function Describe(self, context)
 	end
 
 	return {
-		priority = 0,
 		--name = "inspectacleshat",
-		description = description
+		priority = 0,
+		description = description,
+		prefably = true,
 	}
 end
 

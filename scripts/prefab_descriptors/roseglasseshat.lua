@@ -41,10 +41,13 @@ local function Describe(self, context)
 	end
 
 	return {
-		priority = 0,
 		--name = "roseglasseshat",
+		priority = 0,
 		description = description,
+		prefably = true,
 	}
 end
 
-return { Describe = Describe }
+return { 
+	Describe = Describe
+}

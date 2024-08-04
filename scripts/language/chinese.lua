@@ -783,11 +783,6 @@ return {
 		ready_to_use = "寻宝冷却完毕",
 	},
 
-	-- roseglasseshat.lua [Prefab]
-	roseglasseshat = {
-		ready_to_use = "寻觅冷却完毕",
-	},
-
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>隔热效果</color>: <color=FROZEN>%s</color>",
@@ -1112,6 +1107,11 @@ return {
 	-- rocmanager.lua
 	rocmanager = {
 		cant_spawn = "无法生成",
+	},
+
+	-- roseglasseshat.lua [Prefab]
+	roseglasseshat = {
+		ready_to_use = "寻觅冷却完毕",
 	},
 
 	-- saddler.lua
