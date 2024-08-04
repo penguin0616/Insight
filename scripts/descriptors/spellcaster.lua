@@ -19,9 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- spellcaster.lua
-local function Describe(self, context)
-	local description = nil
-
+local function DescribeSpellcastRange(self, context)
 	local distance = ACTIONS.CASTSPELL.distance
 	distance = distance and distance or nil
 
@@ -35,6 +33,18 @@ local function Describe(self, context)
 		color = Insight.COLORS.HEALTH,
 		attach_player = true
 	}
+end
+
+local function Describe(self, context)
+	local returns = {}
+
+	--[[
+	if self.inst.prefab == "wurt_swampitem_shadow" or self.inst.prefab == "wurt_swampitem_lunar" then
+		
+	end
+	--]]
+
+	returns[#returns+1] = DescribeSpellcastRange(self, context)
 end
 
 
