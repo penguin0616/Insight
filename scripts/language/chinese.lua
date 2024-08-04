@@ -20,6 +20,8 @@ directory. If not, please refer to
 
 -- Translated by: https://steamcommunity.com/id/interesting28/ and https://steamcommunity.com/id/cloudyyoung and (Placeholder) https://github.com/penguin0616/Insight/pull/29
 
+-- TheNet:GetLanguageCode() == "chinese" & LOC.GetLocaleCode() == "zh" -- maybe?
+
 return {
 	-- insightservercrash.lua
 	server_crash = "服务器崩溃",

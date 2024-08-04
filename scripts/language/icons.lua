@@ -20,6 +20,8 @@ directory. If not, please refer to
 
 -- me
 
+-- TheNet:GetLanguageCode() == "?" & LOC.GetLocaleCode() == "?"
+
 return {
 	-- insightservercrash.lua
 	--server_crash = "This server has crashed. ",
