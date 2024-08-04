@@ -1111,12 +1111,6 @@ local function GetEntityInformation(entity, player, params)
 	player_context.params = params
 
 	local chunks = {}
-
-	local prefab_descriptor = Insight.prefab_descriptors[entity.prefab]
-	if prefab_descriptor and prefab_descriptor.Describe then
-		local datas = {prefab_descriptor.Describe(entity, player_context)}
-		ValidateDescribeResponse(chunks, entity.prefab, datas, params)
-	end
 	
 	for name, component in pairs(entity.components) do		
 		local descriptor = Insight.descriptors[name]
@@ -1153,6 +1147,12 @@ local function GetEntityInformation(entity, player, params)
 				chunks[#chunks+1] = {priority = -10, name = name, description = description};
 			end
 		end
+	end
+	
+	local prefab_descriptor = Insight.prefab_descriptors[entity.prefab]
+	if prefab_descriptor and prefab_descriptor.Describe then
+		local datas = {prefab_descriptor.Describe(entity, player_context)}
+		ValidateDescribeResponse(chunks, entity.prefab, datas, params)
 	end
 
 	-- sort by priority

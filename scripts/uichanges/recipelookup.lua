@@ -256,6 +256,7 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 		return
 	end
 	
+	local _, modded = GetRecipeURL(self.data.recipe)
 
 	local top = -5
 	local width = self.panel_width / 2

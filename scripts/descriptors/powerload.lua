@@ -23,7 +23,7 @@ local function Describe(self, context)
 	local description = nil
 
 	if context.etc.DEBUG_ENABLED then
-		description = string.format("[powerload] load: %d, isidle: %s", self.load, tostring(self.isidle))
+		description = string.format("[powerload] lo@d: %.2f, isidle: %s", self.load, tostring(self.isidle))
 	end
 
 	return {
