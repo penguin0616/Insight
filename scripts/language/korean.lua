@@ -114,6 +114,13 @@ return {
 		summoned_gestalt_damage = "소환된 <color=ENLIGHTENMENT>게슈탈트</color>의 데미지: <color=HEALTH>%s</color>",
 	},
 
+	-- ancienttree_seed.lua [Prefab]
+	ancienttree_seed = {
+		type = "Type: <color=%s><prefab=%s></color>",
+		fruit_regen_time = "Fruit time: %s",
+		fruit_regen_time_bounded = "Fruit time: %s <= %s <= %s",
+	},
+
 	-- aoeweapon_base.lua
 	aoeweapon_base = {
 		--weapon_damage = "광역공격 %s: <color=HEALTH>{damage}</color>",

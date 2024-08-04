@@ -113,6 +113,13 @@ return {
 		summoned_gestalt_damage = "Os <color=ENLIGHTENMENT>Espíritos da Lua</color> invocados causam <color=HEALTH>%s</color> de dano.",
 	},
 
+	-- ancienttree_seed.lua [Prefab]
+	ancienttree_seed = {
+		type = "Type: <color=%s><prefab=%s></color>",
+		fruit_regen_time = "Fruit time: %s",
+		fruit_regen_time_bounded = "Fruit time: %s <= %s <= %s",
+	},
+
 	-- aoeweapon_base.lua
 	aoeweapon_base = {
 		--weapon_damage = "AoE %s: <color=HEALTH>{damage}</color>",
@@ -785,7 +792,7 @@ return {
 	inspectacleshat = {
 		ready_to_use = "Ready to inspect",
 	},
-	
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>Proteção (Inverno)</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>Proteção (Verão)</color>: <color=FROZEN>%s</color>",

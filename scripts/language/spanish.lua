@@ -110,6 +110,13 @@ return {
 		summoned_gestalt_damage = "Invoca <color=ENLIGHTENMENT>Gestalts</color> con <color=HEALTH>%s</color> de <color=HEALTH>daño</color>",
 	},
 
+	-- ancienttree_seed.lua [Prefab]
+	ancienttree_seed = {
+		type = "Type: <color=%s><prefab=%s></color>",
+		fruit_regen_time = "Fruit time: %s",
+		fruit_regen_time_bounded = "Fruit time: %s <= %s <= %s",
+	},
+
 	-- aoeweapon_base.lua
 	aoeweapon_base = {
 		weapon_damage = "AoE %s: <color=HEALTH>{damage}</color>",
@@ -773,7 +780,7 @@ return {
 	inspectacleshat = {
 		ready_to_use = "Ready to inspect",
 	},
-	
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>Aislamiento (Invierno)</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>Aislamiento (Verano)</color>: <color=FROZEN>%s</color>",

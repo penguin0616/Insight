@@ -114,6 +114,13 @@ return {
 		--summoned_gestalt_damage = "Summoned <color=ENLIGHTENMENT>gestalts</color> deal <color=HEALTH>%s</color> damage.",
 	},
 
+	-- ancienttree_seed.lua [Prefab]
+	ancienttree_seed = {
+		--type = "Type: <color=%s><prefab=%s></color>",
+		--fruit_regen_time = "Fruit time: %s",
+		--fruit_regen_time_bounded = "Fruit time: %s <= %s <= %s",
+	},
+
 	-- aoeweapon_base.lua
 	aoeweapon_base = {
 		--weapon_damage = "AoE %s: <color=HEALTH>{damage}</color>",
