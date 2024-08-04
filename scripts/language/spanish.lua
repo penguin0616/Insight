@@ -769,6 +769,16 @@ return {
 	gym_weight_value = "Valor en pesas de gimnasio: %s",
 	ruins_statue_gem = "Contiene una <color=%s><prefab=%s></color>.",
 
+	-- inspectacleshat.lua [Prefab]
+	inspectacleshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
+	-- roseglasseshat.lua [Prefab]
+	roseglasseshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>Aislamiento (Invierno)</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>Aislamiento (Verano)</color>: <color=FROZEN>%s</color>",
@@ -1403,14 +1413,4 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "Terminará de coser en: %s",
-
-	-- inspectacleshat.lua
-	inspectacleshat = {
-		ready_to_use = "Ready to inspect",
-	},
-
-	-- roseglasseshat.lua
-	roseglasseshat = {
-		ready_to_use = "Ready to inspect",
-	}
 }

@@ -778,6 +778,16 @@ return {
 	gym_weight_value = "健身房重量数值: %s",
 	ruins_statue_gem = "包含一个<color=%s><prefab=%s></color>",
 
+	-- inspectacleshat.lua [Prefab]
+	inspectacleshat = {
+		ready_to_use = "寻宝冷却完毕",
+	},
+
+	-- roseglasseshat.lua [Prefab]
+	roseglasseshat = {
+		ready_to_use = "寻觅冷却完毕",
+	},
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>隔热效果</color>: <color=FROZEN>%s</color>",
@@ -1414,14 +1424,4 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "缝制将完成于%s",
-
-	-- inspectacleshat.lua
-	inspectacleshat = {
-		ready_to_use = "寻宝冷却完毕",
-	},
-
-	-- roseglasseshat.lua
-	roseglasseshat = {
-		ready_to_use = "寻觅冷却完毕",
-	}
 }

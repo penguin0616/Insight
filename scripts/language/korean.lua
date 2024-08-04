@@ -780,6 +780,16 @@ return {
 	gym_weight_value = "체육관 무게추 무게: %s",
 	ruins_statue_gem = "<color=%s><prefab=%s></color> 포함.",
 
+	-- inspectacleshat.lua [Prefab]
+	inspectacleshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
+	-- roseglasseshat.lua [Prefab]
+	roseglasseshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>단열 (겨울)</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>단열 (여름)</color>: <color=FROZEN>%s</color>",
@@ -1417,14 +1427,4 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "봉제 완료 시간: %s",
-
-	-- inspectacleshat.lua
-	inspectacleshat = {
-		ready_to_use = "Ready to inspect",
-	},
-
-	-- roseglasseshat.lua
-	roseglasseshat = {
-		ready_to_use = "Ready to inspect",
-	}
 }
