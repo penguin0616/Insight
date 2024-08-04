@@ -178,6 +178,10 @@ DEBUG_ENABLED = (
 	)
 	or GetModConfigData("DEBUG_ENABLED", true) or false 
 
+DEBUG_OPTIONS = {
+	INSIGHT_MENU_DATA_ORIGIN = false,
+}
+
 ALLOW_SERVER_DEBUGGING = DEBUG_ENABLED -- todo make a more accessible for standard users with mod compatibility issues?
 if DEBUG_ENABLED then
 	_G.ENCODE_SAVES = false
