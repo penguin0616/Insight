@@ -1031,10 +1031,6 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 	--for i = 1, #datas do -- doesn't account for nils
 		--local d = datas[i]
 		if d and ((not params.IGNORE_WORLDLY) or (params.IGNORE_WORLDLY == true and not d.worldly)) then
-			if type(d.priority) ~= "number" then
-				error("Invalid priority for:" .. name)
-			end
-
 			if d.name ~= nil and type(d.name) ~= "string" then
 				error(string.format("Invalid name '%s' (%s) for component descriptor '%s'.", d.name, type(d.name), name))
 			elseif d.name == nil and #datas > 1 then
@@ -1044,6 +1040,10 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 			d.name = d.name or name -- chosen name or default component name
 			if d.name ~= name and d.source_descriptor == nil then
 				d.source_descriptor = name
+			end
+
+			if type(d.priority) ~= "number" then
+				errorf("Invalid priority for component descriptor '%s'; value=[%s], type=[%s]", name, d.priority, type(d.priority))
 			end
 
 			if d.description ~= nil and type(d.description) ~= "string" then
@@ -1148,7 +1148,7 @@ local function GetEntityInformation(entity, player, params)
 			end
 		end
 	end
-	
+
 	local prefab_descriptor = Insight.prefab_descriptors[entity.prefab]
 	if prefab_descriptor and prefab_descriptor.Describe then
 		local datas = {prefab_descriptor.Describe(entity, player_context)}
