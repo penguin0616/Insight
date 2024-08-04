@@ -26,7 +26,11 @@ local function Describe(self, context)
 		count = count + 1
 	end
 
-	local description = string.format(context.lstr.messagebottlemanager, count, TUNING.MAX_ACTIVE_TREASURE_HUNTS)
+	local description
+	
+	if count > 0 then
+		description = string.format(context.lstr.messagebottlemanager, count, TUNING.MAX_ACTIVE_TREASURE_HUNTS)
+	end
 
 	return {
 		priority = 0,
