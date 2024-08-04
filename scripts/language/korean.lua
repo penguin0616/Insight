@@ -18,7 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- me
+-- Translated by: https://steamcommunity.com/profiles/76561199503229520
+
+-- TheNet:GetLanguageCode() == "korean" & LOC.GetLocaleCode() == "ko"
 
 return {
 	-- insightservercrash.lua
