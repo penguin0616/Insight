@@ -114,6 +114,13 @@ return {
 		summoned_gestalt_damage = "Призванные <color=ENLIGHTENMENT>гештальты</color> наносят <color=HEALTH>%s</color> урона.",
 	},
 
+	-- ancienttree_seed.lua [Prefab]
+	ancienttree_seed = {
+		type = "Type: <color=%s><prefab=%s></color>",
+		fruit_regen_time = "Fruit time: %s",
+		fruit_regen_time_bounded = "Fruit time: %s <= %s <= %s",
+	},
+
 	-- aoeweapon_base.lua
 	aoeweapon_base = {
 		--weapon_damage = "AoE %s: <color=HEALTH>{damage}</color>",
@@ -779,6 +786,11 @@ return {
 	gym_weight_value = "Ценность гантели: %s",
 	ruins_statue_gem = "Содержит <color=%s><prefab=%s></color>.",
 
+	-- inspectacleshat.lua [Prefab]
+	inspectacleshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>Теплоизоляция (Зима)</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>Теплоизоляция (Лето)</color>: <color=FROZEN>%s</color>",
@@ -1106,6 +1118,11 @@ return {
 		cant_spawn = "Невозможно вызвать."
 	},
 
+	-- roseglasseshat.lua [Prefab]
+	roseglasseshat = {
+		ready_to_use = "Ready to inspect",
+	},
+
 	-- saddler.lua
 	saddler = {
 		bonus_damage = "<color=HEALTH>Дополнительный урон</color>: <color=HEALTH>%s</color>",
@@ -1416,14 +1433,4 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "Завершит шитье через: %s",
-
-	-- inspectacleshat.lua
-	inspectacleshat = {
-		ready_to_use = "Ready to inspect",
-	},
-
-	-- roseglasseshat.lua
-	roseglasseshat = {
-		ready_to_use = "Ready to inspect",
-	}
 }

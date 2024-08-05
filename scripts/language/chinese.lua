@@ -20,6 +20,8 @@ directory. If not, please refer to
 
 -- Translated by: https://steamcommunity.com/id/interesting28/ and https://steamcommunity.com/id/cloudyyoung and (Placeholder) https://github.com/penguin0616/Insight/pull/29
 
+-- TheNet:GetLanguageCode() == "chinese" & LOC.GetLocaleCode() == "zh" -- maybe?
+
 return {
 	-- insightservercrash.lua
 	server_crash = "服务器崩溃",
@@ -110,6 +112,13 @@ return {
 		minimum_sanity = "照明最低<color=SANITY>理智</color>: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_sanity = "你的<color=SANITY>理智</color>: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		summoned_gestalt_damage = "召唤<color=ENLIGHTENMENT>月灵</color>造成<color=HEALTH>%s</color>伤害",
+	},
+
+	-- ancienttree_seed.lua [Prefab]
+	ancienttree_seed = {
+		type = "Type: <color=%s><prefab=%s></color>",
+		fruit_regen_time = "Fruit time: %s",
+		fruit_regen_time_bounded = "Fruit time: %s <= %s <= %s",
 	},
 
 	-- aoeweapon_base.lua
@@ -776,6 +785,11 @@ return {
 	gym_weight_value = "健身房重量数值: %s",
 	ruins_statue_gem = "包含一个<color=%s><prefab=%s></color>",
 
+	-- inspectacleshat.lua [Prefab]
+	inspectacleshat = {
+		ready_to_use = "寻宝冷却完毕",
+	},
+
 	-- insulator.lua
 	insulation_winter = "<color=FROZEN>保暖效果</color>: <color=FROZEN>%s</color>",
 	insulation_summer = "<color=FROZEN>隔热效果</color>: <color=FROZEN>%s</color>",
@@ -1102,6 +1116,11 @@ return {
 		cant_spawn = "无法生成",
 	},
 
+	-- roseglasseshat.lua [Prefab]
+	roseglasseshat = {
+		ready_to_use = "寻觅冷却完毕",
+	},
+
 	-- saddler.lua
 	saddler = {
 		bonus_damage = "<color=HEALTH>额外伤害</color>: <color=HEALTH>%s</color>",
@@ -1412,14 +1431,4 @@ return {
 
 	-- yotb_sewer.lua
 	yotb_sewer = "缝制将完成于%s",
-
-	-- inspectacleshat.lua
-	inspectacleshat = {
-		ready_to_use = "寻宝冷却完毕",
-	},
-
-	-- roseglasseshat.lua
-	roseglasseshat = {
-		ready_to_use = "寻觅冷却完毕",
-	}
 }

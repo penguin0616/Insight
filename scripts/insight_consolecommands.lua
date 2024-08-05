@@ -39,6 +39,38 @@ DST_CONSOLE_COMMANDS.i_accelerate_rift = function(crystals)
 		end
 	end
 end
+DST_CONSOLE_COMMANDS.i_complete_plantregistry = function()
+	assert(not TheWorld.ismastersim, "need to be client")
+	reg = ThePlayer.components.plantregistryupdater.plantregistry;
+
+	local PLANT_DEFS = require("prefabs/farm_plant_defs").PLANT_DEFS;
+	for plant, data in pairs(PLANT_DEFS) do 
+		if not data.is_randomseed and not data.modded then 
+			for i in pairs(data.plantregistryinfo) do 
+				reg:LearnPlantStage(plant, i);
+			end;
+		end;
+	end;
+	print("learned plants");
+
+	local WEED_DEFS = require("prefabs/weed_defs").WEED_DEFS;
+	for weed, data in pairs(WEED_DEFS) do 
+		if not data.modded then 
+			for i in pairs(data.plantregistryinfo) do 
+				reg:LearnPlantStage(weed, i);
+			end;
+		end;
+	end;
+	print("learned weeds");
+
+	local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS;
+	for fertilizer, data in pairs(FERTILIZER_DEFS) do 
+		if not data.modded then
+			reg:LearnFertilizer(fertilizer)
+		end;
+	end;
+	print("learned fertilizers");
+end
 
 -- 0xa7, 0xa7
 -- 0x4a, 0x4a

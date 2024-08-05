@@ -27,7 +27,8 @@ local languages = {
 	zh = "chinese", --ch = "chinese",
 	es = "spanish", --mex = "spanish",
 	br = "portuguese",
-	ru = "russian"
+	ru = "russian",
+	ko = "korean"
 }
 
 local languageTables = {} -- Populated in initialize
