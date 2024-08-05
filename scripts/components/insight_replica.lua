@@ -950,6 +950,7 @@ function Insight:ContainerHas(container, inst, isSearchingForFoodTag)
 		--		We can just return nil here and call it a day. In the future though, option #2+#1 seems like a pretty good idea but I don't have time for that right now.
 
 
+		-- This also seems to happen with sunken chests?
 		mprint("!!!!!!!!!!!!!!!!!!!!! DUMPING CONTAINER")
 		dumptable(container_info)
 

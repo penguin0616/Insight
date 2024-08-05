@@ -165,7 +165,12 @@ local function Describe(self, context)
 			description = context.lstr.scenariorunner.opened_already
 		else
 			description = Insight.descriptors.scenariorunner.RuinsChest(self, context)
-		end	
+		end
+	end
+
+	-- These are created by messagebottletreasures
+	if false and self.inst.prefab == "sunkenchest" then
+		return unpack(DescribeItemAndStackable(self, context))
 	end
 
 	return {
