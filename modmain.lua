@@ -1893,7 +1893,23 @@ if IS_DST and false then
 	debugging.StartNetvarDebugging()
 end
 
+if IS_DST and KnownModIndex:IsModEnabled("workshop-1378549454") then
+	mprint("Gemcore active")
+	-- gemcore replaces in tools/dynamictilemanager.lua
+	local real_error = util.getupvalue(error, "_error")
+	if not real_error then
+		error("[insight]: failed to get real error from gemcore [1]")
+		return
+	end
 
+	if pcall(string.dump, real_error) then
+		error("[insight]: failed to get real error from gemcore [2]")
+		return
+	end
+
+	Insight.env.error = real_error
+	mprint("Got real error from Gemcore")
+end
 
 if IS_DST then 
 	local image = { atlas="images/Insight_Announcement.xml", texture="Insight_Announcement.tex" }
@@ -3753,25 +3769,6 @@ if KnownModIndex:IsModEnabled("workshop-842702425") then
 	else
 		mprint("RunInEnvironment has not been modified")
 	end
-end
-
-
-if KnownModIndex:IsModEnabled("workshop-1378549454") then
-	mprint("Gemcore active")
-	-- gemcore replaces in tools/dynamictilemanager.lua
-	local real_error = util.getupvalue(error, "_error")
-	if not real_error then
-		error("[insight]: failed to get real error from gemcore [1]")
-		return
-	end
-
-	if pcall(string.dump, real_error) then
-		error("[insight]: failed to get real error from gemcore [2]")
-		return
-	end
-
-	error = real_error
-	mprint("Got real error from Gemcore")
 end
 
 

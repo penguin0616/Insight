@@ -19,6 +19,9 @@ directory. If not, please refer to
 ]]
 
 -- Translated by: https://steamcommunity.com/profiles/76561199503229520
+-- Some of the tags were cut during translation: so something that should be <sub>최소</sub> ends up as <sub>최소/sub>
+-- Pattern: ([^\u0000-\u007F]+)/
+-- Fix: $1</
 
 -- TheNet:GetLanguageCode() == "korean" & LOC.GetLocaleCode() == "ko"
 
@@ -466,7 +469,7 @@ return {
 		domestication = "길들임: %s%%",
 		obedience = "충성도: %s%%",
 		--obedience_extended = "충성도: %s%% (%s%%<sub>안장</sub>, <%s%%<sub>안장 벗음</sub>, %s%%<sub>탑승</sub>)",
-		obedience_extended = "충성도: %s%% (<%s%%<sub>안장 벗음</sub>, %s%%<sub>최소/sub>)",
+		obedience_extended = "충성도: %s%% (<%s%%<sub>안장 벗음</sub>, %s%%<sub>최소</sub>)",
 		tendency = "성향: %s",
 		tendencies = {
 			["NONE"] = "없음",
@@ -775,7 +778,7 @@ return {
 	hunter = {
 		hunt_progress = "추적: %s / %s",
 		impending_ambush = "다음 발자국에 무언가가 기다리는 중.",
-		alternate_beast_chance = "<color=#b51212>%s%% 확률/color>로 <color=MOB_SPAWN>바르그</color> 또는 <color=MOB_SPAWN>점액양</color> 등장.",
+		alternate_beast_chance = "<color=#b51212>%s%% 확률</color>로 <color=MOB_SPAWN>바르그</color> 또는 <color=MOB_SPAWN>점액양</color> 등장.",
 	},
 
 	-- hutch_fishbowl.lua [Prefab]
@@ -962,7 +965,7 @@ return {
 			charm = "매력: <color=#66CC00>%.1f<sub>기본</sub></color> + <color=#5B63D2>%.1f<sub>줄 감기</sub></color>",
 			stamina_drain = "보너스 스태미너 소모: %.1f",
 			time_of_day_modifier = "시간대 효율: <color=DAY_BRIGHT>%d%%<sub>낮</sub></color> / <color=DUSK_BRIGHT>%d%%<sub>저녁</sub></color> / <color=NIGHT_BRIGHT>%d%%<sub>밤</sub></color>",
-			weather_modifier = "날씨 효율: <color=#bbbbbb>%d%%<sub>맑음/sub></color> / <color=#7BA3F2>%d%%<sub>비</sub></color> / <color=FROZEN>%d%%<sub>눈</sub></color>",
+			weather_modifier = "날씨 효율: <color=#bbbbbb>%d%%<sub>맑음</sub></color> / <color=#7BA3F2>%d%%<sub>비</sub></color> / <color=FROZEN>%d%%<sub>눈</sub></color>",
 		},
 	},
 

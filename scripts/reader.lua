@@ -37,7 +37,7 @@ local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, s
 local skip_closing = {icon=true, prefab=true, string=true, temperature=true}
 
 local function GenerateErrorString(rdr, desc)
-	return "parsing error" .. "\noriginal: " .. rdr.original .. "\nbuffer (#" .. #rdr.buffer .. "): " .. rdr.buffer .. "\nerror: " .. (desc or "not specified")
+	return "parsing error" .. "\n\noriginal: " .. rdr.original .. "\n\nbuffer (#" .. #rdr.buffer .. "): " .. rdr.buffer .. "\n\nerror: " .. (desc or "not specified")
 end
 
 local function SameContents(a, b)
