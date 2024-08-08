@@ -54,17 +54,22 @@ local function Describe(inst, context)
 			tree_prefab
 		)
 	
-		local regen_time_simple = string.format(context.lstr.ancienttree_seed.fruit_regen_time, 
-			context.time:SimpleProcess(inst._plantdata.fruit_regen)
-		)
-		local regen_time_advanced = string.format(context.lstr.ancienttree_seed.fruit_regen_time_bounded, 
-			ApplyColour(context.time:SimpleProcess(PLANT_DATA.fruit_regen.min, "gametime_short"), bottom),
-			ApplyColour(
-				context.time:SimpleProcess(inst._plantdata.fruit_regen), 
-				bottom:Lerp(top, Remap(inst._plantdata.fruit_regen, PLANT_DATA.fruit_regen.min, PLANT_DATA.fruit_regen.max, 0, 1) )
-			),
-			ApplyColour(context.time:SimpleProcess(PLANT_DATA.fruit_regen.max, "gametime_short"), top)
-		)
+		local regen_time_simple
+		local regen_time_advanced
+
+		if inst._plantdata then
+			regen_time_simple = string.format(context.lstr.ancienttree_seed.fruit_regen_time, 
+				context.time:SimpleProcess(inst._plantdata.fruit_regen)
+			)
+			regen_time_advanced = string.format(context.lstr.ancienttree_seed.fruit_regen_time_bounded, 
+				ApplyColour(context.time:SimpleProcess(PLANT_DATA.fruit_regen.min, "gametime_short"), bottom),
+				ApplyColour(
+					context.time:SimpleProcess(inst._plantdata.fruit_regen), 
+					bottom:Lerp(top, Remap(inst._plantdata.fruit_regen, PLANT_DATA.fruit_regen.min, PLANT_DATA.fruit_regen.max, 0, 1) )
+				),
+				ApplyColour(context.time:SimpleProcess(PLANT_DATA.fruit_regen.max, "gametime_short"), top)
+			)
+		end
 
 		description = CombineLines(seed_type_string, regen_time_simple)
 		alt_description = CombineLines(seed_type_string, regen_time_advanced)
