@@ -118,7 +118,7 @@ local function RemoteDescribe(data, context)
 	}
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	if not special_data.time_to_attack then
 		return
 	end
@@ -177,6 +177,6 @@ end
 return {
 	RemoteDescribe = RemoteDescribe,
 	GetBeargerData = GetBeargerData,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe,
 	DangerAnnouncementDescribe = DangerAnnouncementDescribe,
 }

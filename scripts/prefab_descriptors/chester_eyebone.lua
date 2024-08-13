@@ -35,7 +35,7 @@ local function Describe(inst, context)
 	}
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	if not special_data.respawn_time then
 		return
 	end
@@ -53,5 +53,5 @@ end
 
 return {
 	Describe = Describe,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe
 }

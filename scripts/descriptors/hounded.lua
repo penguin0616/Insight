@@ -66,7 +66,7 @@ local function Describe(self, context)
 	}
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	if not special_data.time_to_attack then
 		-- Not like we can do anything...
 		return
@@ -117,6 +117,6 @@ end
 
 return {
 	Describe = Describe,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe,
 	DangerAnnouncementDescribe = DangerAnnouncementDescribe
 }

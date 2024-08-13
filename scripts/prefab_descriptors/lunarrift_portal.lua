@@ -193,7 +193,7 @@ return {
 
 	Describe = Describe,
 
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe
 }
 
 

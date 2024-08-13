@@ -80,7 +80,7 @@ local function RemoteDescribe(data, context)
 	}
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	local description = nil
 
 	if special_data.despawn_day then
@@ -106,5 +106,5 @@ end
 return {
 	RemoteDescribe = RemoteDescribe,
 	GetKlausSackData = GetKlausSackData,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe,
 }

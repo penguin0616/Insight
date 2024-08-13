@@ -50,7 +50,7 @@ local function RemoteDescribe(data, context)
 	}
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	if not special_data.time_to_respawn then
 		return
 	end
@@ -69,5 +69,5 @@ end
 return {
 	RemoteDescribe = RemoteDescribe,
 	GetCrabKingData = GetCrabKingData,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe
 }

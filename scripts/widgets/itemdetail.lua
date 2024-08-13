@@ -113,8 +113,8 @@ function ItemDetail:OnControl(control, down)
 			local special_data = localPlayer.replica.insight.world_data.special_data[self.componentName]
 
 			local describer = special_data and (
-				(special_data.prefably and Insight.prefab_descriptors[cmp] and Insight.prefab_descriptors[cmp].StatusAnnoucementsDescribe) or
-				(Insight.descriptors[cmp] and Insight.descriptors[cmp].StatusAnnoucementsDescribe)
+				(special_data.prefably and Insight.prefab_descriptors[cmp] and Insight.prefab_descriptors[cmp].StatusAnnouncementsDescribe) or
+				(Insight.descriptors[cmp] and Insight.descriptors[cmp].StatusAnnouncementsDescribe)
 			)
 
 			if describer then

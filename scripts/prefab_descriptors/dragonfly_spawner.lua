@@ -56,7 +56,7 @@ local function RemoteDescribe(data, context)
 	return nil
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	if not special_data.time_to_respawn then
 		return
 	end
@@ -76,5 +76,5 @@ return {
 	GetRespawnTime = GetRespawnTime,
 
 	RemoteDescribe = RemoteDescribe,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe
 }

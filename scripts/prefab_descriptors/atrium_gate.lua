@@ -53,7 +53,7 @@ local function RemoteDescribe(data, context)
 	return nil
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	if not special_data.cooldown then
 		-- Not like we can do anything...
 		return
@@ -74,5 +74,5 @@ return {
 	GetRemainingCooldown = GetRemainingCooldown,
 
 	RemoteDescribe = RemoteDescribe,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe
 }

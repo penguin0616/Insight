@@ -139,7 +139,7 @@ local function Describe(self, context)
 	return unpack(combined)
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	local description = nil
 
 	if special_data.next_rift_spawn then
@@ -156,5 +156,5 @@ end
 
 return {
 	Describe = Describe,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe,
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe,
 }

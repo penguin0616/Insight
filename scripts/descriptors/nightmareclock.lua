@@ -138,7 +138,7 @@ local function Describe(self, context)
 	}
 end
 
-local function StatusAnnoucementsDescribe(special_data, context)
+local function StatusAnnouncementsDescribe(special_data, context)
 	local description
 
 	if special_data.locked_phase then
@@ -161,5 +161,5 @@ end
 
 return {
 	Describe = Describe,
-	StatusAnnoucementsDescribe = StatusAnnoucementsDescribe
+	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe
 }
