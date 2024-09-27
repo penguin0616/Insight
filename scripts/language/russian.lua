@@ -236,7 +236,7 @@ return {
 	breeder_fish4 = "<color=#DED15E>Рыба-пьеро</color>",
 	breeder_fish5 = "<color=#9ADFDE>Налобная рыба</color>",
 	breeder_fishstring = "%s: %s / %s",
-	breeder_nextfishtime = "Следующий %s через <color=FISH>%s</color>",
+	breeder_nextfishtime = "Additional fish in: %s", --"Следующий %s через <color=FISH>%s</color>", -- This incorrectly has two string formatters for some reason.
 
 	-- brushable.lua
 	brushable = {
