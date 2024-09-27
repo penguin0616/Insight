@@ -336,11 +336,11 @@ local function CLIENT_UpdateFishingBattleState(player, data)
 	local context = GetPlayerContext(player)
 
 	-- Tension
-	local tension_color = GREEN:Lerp(RED, data.tension.current / data.tension.max):ToHex()
+	local tension_color = GREEN:Lerp(RED, math.min(data.tension.current / data.tension.max, 1)):ToHex()
 	local tension_str = string.format(context.lstr.oceanfishingrod.battle.tension, tension_color, data.tension.current * 100, data.tension.max * 100)
 
 	-- Slack
-	local slack_color = GREEN:Lerp(RED, data.slack.current / data.slack.max):ToHex()
+	local slack_color = GREEN:Lerp(RED, math.min(data.slack.current / data.slack.max, 1)):ToHex()
 	local slack_str = string.format(context.lstr.oceanfishingrod.battle.slack, slack_color, data.slack.current * 100, data.slack.max * 100)
 
 	-- Distance
