@@ -43,6 +43,11 @@ local function Describe(self, context)
 	local inst = self.inst
 	local description, alt_description = nil, nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
 
+	-- I shouldn't have to do this, but my hand has been forced.
+	if type(self.current) ~= "number" or type(self.total) ~= "number" then
+		return
+	end
+
 	local uses = self:GetUses()
 	local constant_consumption = nil
 	if context.finiteuses_forced or context.config["display_finiteuses"] then
