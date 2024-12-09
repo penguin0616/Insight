@@ -1502,6 +1502,48 @@ STRINGS = {
 			},
 		},
 	},
+	highlighting_night = {
+		label = {
+			"Highlighting items in darkness", 
+			["zh"] = "高亮黑暗中的物品",
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"When disabled, items in darkness would not be highlighted", 
+			["zh"] = "如果关闭，黑暗中的物品不会被高亮标出",
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Highlighting would not apply in darkness",
+					["zh"] = "黑暗中不使用高亮显示。",
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Highlighting would apply in darkness",
+					["zh"] = "黑暗中使用高亮显示。",
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
 	highlighting_color = {
 		label = {
 			"Highlighting Color", 
@@ -6505,6 +6547,15 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
+	{
+		name = "highlighting_night",
+		options = {
+			{data = false},
+			{data = true},
+		},
+		default = true,
+		client = true,
+		tags = {},
 	{
 		name = "highlighting_color",
 		options = {
