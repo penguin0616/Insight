@@ -1202,8 +1202,8 @@ return {
 			battlesong_sanitygain = "Atingir inimigos restaura  <color=SANITY>%s de sanidade</color>.",
 			battlesong_sanityaura = "As <color=SANITY>auras de sanidade</color> negativas são <color=SANITY>%s%%</color> menos eficazes.",
 			battlesong_fireresistance = "Recebe <color=HEALTH>%s%% menos dano</color> de <color=LIGHT>fogo</color>.",
-			battlesong_lunaraligned = "Receba <color=HEALTH>%s%% menos dano</color> de <color=LUNAR_ALIGNED>inimigos lunares</color>.\nCause <color=HEALTH>%s%% mais dano</color> a <color= SHADOW_ALIGNED>inimigos das sombras</color>.",
-			battlesong_shadowaligned = "Receba <color=HEALTH>%s%% menos dano</color> de <color=SHADOW_ALIGNED>inimigos das sombras</color>.\nCause <color=HEALTH>%s%% mais dano</color> a <color= LUNAR_ALIGNED>inimigos lunares</color>.",
+			battlesong_lunaraligned = "Receba <color=HEALTH>%s%% menos dano</color> de <color=LUNAR_ALIGNED>inimigos lunares</color>.\nCause <color=HEALTH>%s%% mais dano</color> a <color=SHADOW_ALIGNED>inimigos das sombras</color>.",
+			battlesong_shadowaligned = "Receba <color=HEALTH>%s%% menos dano</color> de <color=SHADOW_ALIGNED>inimigos das sombras</color>.\nCause <color=HEALTH>%s%% mais dano</color> a <color=LUNAR_ALIGNED>inimigos lunares</color>.",
 
 			battlesong_instant_taunt = "Provoca todos os inimigos próximos dentro do raio da música.",
 			battlesong_instant_panic = "Apavora inimigos assombráveis próximos durante %s segundo(s).",
