@@ -6556,6 +6556,7 @@ configuration_options = {
 		default = true,
 		client = true,
 		tags = {},
+	},
 	{
 		name = "highlighting_color",
 		options = {
