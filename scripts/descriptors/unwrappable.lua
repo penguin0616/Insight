@@ -109,6 +109,36 @@ local function GetItems(self, context)
 	return items
 end
 
+local function GetBundledItemDescription(item)
+	local description, alt_description = "", ""
+
+	local perishable = item.perishable and (item.perishable .. " ") or ""
+	local amount = item.amount
+	local name = item.name or item.display_name or ("uh oh...." .. item.prefab)
+	local bonus = {}
+
+	--[[
+	table.insert(items_string, string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable))
+	if uses then
+		table.insert(bonus[i], uses)
+	end
+	--]]
+	
+	local basic = string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable)
+	description = description .. basic
+	alt_description = alt_description .. basic
+
+	if item.uses then bonus[#bonus+1] = item.uses end
+	if item.fuel then bonus[#bonus+1] = item.fuel end
+	if item.condition then bonus[#bonus+1] = item.condition end
+
+	if #bonus > 0 then
+		alt_description = alt_description .. "- " .. table.concat(bonus, ", ")
+	end
+
+	return description, alt_description
+end
+
 local function MakeDescription(items, context)
 	if #items == 0 then
 		return
@@ -117,34 +147,13 @@ local function MakeDescription(items, context)
 	local description, alt_description = "", ""
 	for i = 1, #items do
 		local item = items[i]
-		
-		local perishable = item.perishable and (item.perishable .. " ") or ""
-		local amount = item.amount
-		local name = item.name or item.display_name or ("uh oh...." .. item.prefab)
-		local bonus = {}
 
-		--[[
-		table.insert(items_string, string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable))
-		if uses then
-			table.insert(bonus[i], uses)
-		end
-		--]]
-		
-		local basic = string.format("<color=%s>%s</color>(<color=DECORATION>%d</color>) %s", "#eeeeee", name, amount, perishable)
-		description = description .. basic
-		alt_description = alt_description .. basic
+		-- I guess someone is using a mod that does items out of order?
+		if item ~= nil then
+			local des, alt = GetBundledItemDescription(item)
 
-		if item.uses then bonus[#bonus+1] = item.uses end
-		if item.fuel then bonus[#bonus+1] = item.fuel end
-		if item.condition then bonus[#bonus+1] = item.condition end
-
-		if #bonus > 0 then
-			alt_description = alt_description .. "- " .. table.concat(bonus, ", ")
-		end
-
-		if i < #items then
-			description = description .. "\n"
-			alt_description = alt_description .. "\n"
+			description = CombineLines(description, des)
+			alt_description = CombineLines(alt_description, alt)
 		end
 	end
 
