@@ -1,4 +1,11 @@
 DST_CONSOLE_COMMANDS = {}
+
+DST_CONSOLE_COMMANDS.i_gearup = function()
+	c_give("orangestaff", 1)
+	c_give("multitool_axe_pickaxe", 1)
+	c_give("minerhat", 1)
+end
+
 -- TheSkillTree.skillxp.wathgrithr = 0; TheSkillTree:UpdateSaveState("wathgrithr")
 DST_CONSOLE_COMMANDS.i_revealmap = function()
 	-- Thanks to CarlZalph for his permission to include this very useful and mathematically superior map-reveal code!
