@@ -43,60 +43,30 @@ local function GetFuelValue(self, item, doer)
 	return item.components.fuel.fuelvalue * self.bonusmult * wetness_mult * mastery_mult
 end
 
-local function Describe(self, context)
+local function DescribeEfficiency(self, context)
 	local description, alt_description = nil, nil
 
 	local fuel_verbosity = context.config["fuel_verbosity"]
-	local primary_fuel_type = context.lstr.fuel.types[self.fueltype] or "Fuel"
-	local _currentfuel = self.currentfuel -- this is to just get it to show up in crash logs
-	local _rate = self.rate -- same as above
-	local remaining_time = self.currentfuel / self.rate
-	local time_string, time_string_verbose
 	local efficiency = self.bonusmult
-	local efficiency_string = nil
-	
-	-- remaining fuel
-	if self.rate > 0 and not isbadnumber(remaining_time) then
-		local current_percent = self:GetPercent()
-		local fuel_time = context.time:SimpleProcess(remaining_time)
-		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(current_percent * 100, 0), fuel_time)
 
+	if type(efficiency) == "number" and efficiency ~= 1 then
+		alt_description = string.format(context.lstr.fueled.efficiency, efficiency * 100)
 		if fuel_verbosity == 2 then
-			time_string = time_string_verbose
-		elseif fuel_verbosity == 1 then
-			time_string = string.format(context.lstr.fueled.time, Round(current_percent * 100, 0), fuel_time)
+			description = alt_description
 		end
 	end
 
-	if self.rate < 0 then
-		local current_percent = self:GetPercent()
-		local recharge_time = (self.maxfuel - self.currentfuel) / -self.rate
-		local recharge_time_string = context.time:SimpleProcess(recharge_time)
+	return {
+		name = "fueled_efficiency",
+		priority = 0.999,
+		description = description,
+		alt_description = alt_description
+	}
+end
 
-		time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, Round(current_percent * 100, 0), recharge_time_string)
-		if fuel_verbosity == 2 then
-			time_string = time_string_verbose
-		elseif fuel_verbosity == 1 then
-			time_string = string.format(context.lstr.fueled.time, Round(current_percent * 100, 0), recharge_time_string)
-		end
-	end
+local function DescribeHeldItemRefuelingCapability(self, context)
+	local description
 
-	-- efficiency
-	if efficiency and efficiency ~= 1 and fuel_verbosity == 2 then
-		efficiency_string = string.format(context.lstr.fueled.efficiency, efficiency * 100)
-	end
-
-	-- fuel type
-	--[[
-	local fuel_type_string = self.fueltype
-	if self.secondaryfueltype then
-		fuel_type_string = fuel_type_string .. " & " .. self.secondaryfueltype
-	end
-	fuel_type_string = string.format(context.lstr.fuel.type, fuel_type_string)
-	--]]
-
-	-- held item?
-	local refuel_string
 	local held_item = context.player.components.inventory and context.player.components.inventory:GetActiveItem()
 	if held_item and held_item.components.fuel then
 		if self:CanAcceptFuelItem(held_item) then
@@ -114,7 +84,7 @@ local function Describe(self, context)
 				percent_restore = SanitizeNumber(fuel_value / self.maxfuel, 0)
 			end
 
-			refuel_string = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))
+			description = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))
 		end
 	elseif held_item and held_item.components.sewing then
 		local USAGE_FUELTYPE = world_type == -1 and FUELTYPE.USAGE or "USAGE"
@@ -122,28 +92,112 @@ local function Describe(self, context)
 			-- can sew
 			local percent_restore = held_item.components.sewing.repair_value / self.maxfuel
 
-			refuel_string = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))
+			description = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))
 		end
 	end
 
-	-- combine
-	description = CombineLines(time_string, efficiency_string, refuel_string)
-	alt_description = CombineLines(time_string_verbose, efficiency_string, refuel_string)
+	return {
+		name = "fueled_helditemrefuelcapability",
+		priority = 0.998,
+		description = description,
+	}
+end
+
+local function Describe(self, context)
+	local description, alt_description = nil, nil
+
+	local fuel_verbosity = context.config["fuel_verbosity"]
+	local primary_fuel_type = context.lstr.fuel.types[self.fueltype] or "Fuel"
+
+	local _currentfuel = self.currentfuel -- this is to just get it to show up in crash logs
+	local rate = self.rate -- same as above
+	if self.rate_modifiers then
+		rate = rate * self.rate_modifiers:Get()
+	end
+
+	local current_percent = self:GetPercent()
+	local pretty_percent = Round(current_percent * 100, 0)
+
+	local time_string, time_string_verbose
+	
+	local remaining_time
+
+	-- If the rate is greater than zero, we are currently consuming this item.
+	if rate > 0 then
+		remaining_time = self.currentfuel / rate
+	end
+
+	-- If the rate is less than zero, we are restoring it. One example is the voidcloth_umbrella.
+	-- What to do in this case? We can either show the remaining time, or show how long it will take to restore the item.
+	-- This block was originally added in #64 (https://github.com/penguin0616/Insight/commit/9d25d67c804717e382a5a8d57dcf4323a9c3fe44)
+	-- ...For Winona's robot, which just so happens to have a powerload component.
+	-- We'll show the time to recharge if it has powerload; otherwise, continue to default behaviour.
+	if rate < 0 then
+		if self.inst.components.powerload then
+			local recharge_time = (self.maxfuel - self.currentfuel) / -rate
+			local recharge_time_string = context.time:SimpleProcess(recharge_time)
+			
+			-- I'll just piggyback off rechargeable.
+			time_string = string.format(context.lstr.rechargeable.charged_in, recharge_time_string)
+
+			--[[
+			time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, pretty_percent, recharge_time_string)
+			if fuel_verbosity == 2 then
+				time_string = time_string_verbose
+			elseif fuel_verbosity == 1 then
+				time_string = string.format(context.lstr.fueled.time, pretty_percent, recharge_time_string)
+			end
+			--]]
+		else
+			remaining_time = self.currentfuel / math.abs(rate)
+		end
+	end
+
+
+	if remaining_time then
+		if isbadnumber(remaining_time) then
+			time_string = string.format(context.lstr.fueled.time, pretty_percent, "???")
+		else
+			local fuel_time = context.time:SimpleProcess(remaining_time)
+			time_string_verbose = string.format(context.lstr.fueled.time_verbose, primary_fuel_type, pretty_percent, fuel_time)
+
+			if fuel_verbosity == 2 then
+				time_string = time_string_verbose
+			elseif fuel_verbosity == 1 then
+				time_string = string.format(context.lstr.fueled.time, pretty_percent, fuel_time)
+			end
+		end
+	end
+
+	-- fuel type
+	--[[
+	local fuel_type_string = self.fueltype
+	if self.secondaryfueltype then
+		fuel_type_string = fuel_type_string .. " & " .. self.secondaryfueltype
+	end
+	fuel_type_string = string.format(context.lstr.fuel.type, fuel_type_string)
+	--]]
+	
+	description = time_string
+	alt_description = time_string_verbose
 
 	return {
+		name = "fueled",
 		priority = 1,
 		description = description,
 		alt_description = alt_description,
-		remaining_time = context.time:SimpleProcess(remaining_time, "realtime_short"),
+		remaining_time = remaining_time and context.time:SimpleProcess(remaining_time, "realtime_short") or "?",
 		accepting = self.accepting,
 		fueltype = self.fueltype,
 		secondaryfueltype = self.secondaryfueltype
-	}
+	}, DescribeEfficiency(self, context), DescribeHeldItemRefuelingCapability(self, context)
 end
 
 
 
 return {
 	Describe = Describe,
+	DescribeEfficiency = DescribeEfficiency,
+	DescribeHeldItemRefuelingCapability = DescribeHeldItemRefuelingCapability,
 	FormatFuel = FormatFuel
 }
