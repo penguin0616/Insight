@@ -332,6 +332,12 @@ return {
 		},
 	},
 
+	-- compostingbin.lua
+	compostingbin = {
+		contents_amount = "Material: %s / %s",
+		detailed_contents_amount = "Material: <color=NATURE>%s<sub>Green</sub></color> + <color=INEDIBLE>%s<sub>Brown</sub></color> / %s",
+	},
+
 	-- container.lua
 	container = {
 		
@@ -766,7 +772,6 @@ return {
 	-- hounded.lua
 	hounded = {
 		time_until_hounds = "<prefab=hound>이(가) %s 후에 공격합니다.",
-		time_until_worms = "<prefab=worm>이(가) %s 후에 공격합니다.",
 		time_until_worms = "<prefab=worm>이(가) %s 후에 공격합니다.",
 		time_until_worm_boss = "<prefab=worm_boss>이(가) %s 후에 공격합니다.",
 		time_until_crocodog = "<prefab=crocodog>이(가) %s 후에 공격합니다.",

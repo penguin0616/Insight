@@ -323,6 +323,11 @@ return {
 		},
 	},
 	
+	-- compostingbin.lua
+	compostingbin = {
+		contents_amount = "Material: %s / %s",
+		detailed_contents_amount = "Material: <color=NATURE>%s<sub>Green</sub></color> + <color=INEDIBLE>%s<sub>Brown</sub></color> / %s",
+	},
 
 	-- container.lua
 	container = {
