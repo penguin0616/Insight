@@ -24,8 +24,9 @@ local function Describe(inst, context)
 
 	if inst.emergetime then
 		local time_remaining = inst.emergetime - GetTime()
-		local time_string = time_remaining >= 0 and context.time:SimpleProcess(time_remaining) or time_remaining
-		description = string.format(context.lstr.tentacle_pillar_hole.immunity_time, time_string)
+		if time_remaining >= 0 then
+			description = string.format(context.lstr.tentacle_pillar_hole.immunity_time, context.time:SimpleProcess(time_remaining))
+		end
 	end
 	
 	return {
