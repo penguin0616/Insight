@@ -160,14 +160,6 @@ local function Describe(self, context)
 	local description
 	local items = GetContainerContents(self, context)
 
-	if context.FROM_INSPECTION and self.inst.prefab == "pandoraschest" then
-		if self.inst.components.scenariorunner == nil then
-			description = context.lstr.scenariorunner.opened_already
-		else
-			description = Insight.descriptors.scenariorunner.RuinsChest(self, context)
-		end
-	end
-
 	-- These are created by messagebottletreasures
 	if false and self.inst.prefab == "sunkenchest" then
 		return unpack(DescribeItemAndStackable(self, context))

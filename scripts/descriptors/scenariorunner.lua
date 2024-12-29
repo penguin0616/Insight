@@ -64,6 +64,6 @@ end
 
 
 return {
-	Describe = Describe,
+	--Describe = Describe,
 	RuinsChest = RuinsChest
 }
