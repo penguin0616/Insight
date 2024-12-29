@@ -778,7 +778,11 @@ return {
 
 	-- hounded.lua
 	hounded = {
-		time_until_hounds = "Hounds will attack in %s.",
+		--time_until_hounds = "<prefab=hound> attack in %s",
+		--time_until_worms = "<prefab=worm> attack in %s",
+		--time_until_worm_boss = "<prefab=worm_boss> attack in %s",
+		--time_until_crocodog = "<prefab=crocodog> attack in %s",
+		--worm_boss_chance = "<prefab=worm_boss> chance: %.1f%%",
 	},
 
 	-- hunger.lua

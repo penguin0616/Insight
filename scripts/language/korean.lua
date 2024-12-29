@@ -767,6 +767,10 @@ return {
 	hounded = {
 		time_until_hounds = "<prefab=hound>이(가) %s 후에 공격합니다.",
 		time_until_worms = "<prefab=worm>이(가) %s 후에 공격합니다.",
+		time_until_worms = "<prefab=worm>이(가) %s 후에 공격합니다.",
+		time_until_worm_boss = "<prefab=worm_boss>이(가) %s 후에 공격합니다.",
+		time_until_crocodog = "<prefab=crocodog>이(가) %s 후에 공격합니다.",
+		worm_boss_chance = "<prefab=worm_boss> chance: %.1f%%",
 	},
 
 	-- hunger.lua
