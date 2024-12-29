@@ -945,6 +945,30 @@ local function GetComponentDescriptor(name)
 	end
 end
 
+--- Unloads a loaded prefab descriptor and clears the import cache for the file.
+---@param name string
+function UnloadPrefabDescriptor(name)
+	local path = "prefab_descriptors/" .. name
+	if import.HasLoaded(path) then
+		import.Clear(path)
+		mprintf("PREFAB DESCRIPTOR '%s' IMPORT CLEARED", name)
+	else
+		mprintf("PREFAB DESCRIPTOR '%s' WAS NOT IN IMPORT CACHE", name)
+	end
+	
+	if rawget(Insight.prefab_descriptors, name) ~= nil then
+		if Insight.prefab_descriptors[name] and Insight.prefab_descriptors[name].OnUnload then
+			Insight.prefab_descriptors[name].OnUnload()
+		end
+		Insight.prefab_descriptors[name] = nil
+		mprintf("PREFAB DESCRIPTOR '%s' CACHE CLEARED", name)
+	else
+		mprintf("PREFAB DESCRIPTOR '%s' WAS NOT IN DESCRIPTOR CACHE", name)
+	end
+end
+
+_G.UnloadPrefabDescriptor = UnloadPrefabDescriptor
+
 --- Loads and returns a prefab descriptor. 
 ---@param name string Prefab name.
 ---@return table|false @Returned table from the prefab descriptor, or false if the prefab descriptor failed to load.
