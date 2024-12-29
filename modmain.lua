@@ -257,7 +257,7 @@ local descriptors_ignore = {
 	
 	-- now for DST stuff
 	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "constructionsite", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
-	"grogginess", "workmultiplier", "aura", "writeable", "shaveable", "spidermutator", -- may be interesting looking into
+	"grogginess", "workmultiplier", "aura", "writeable", "shaveable", "spidermutator", "raindome", -- may be interesting looking into
 	"resistance", -- for the armor blocking of bone armor
 
 	"playerinspectable", "playeractionpicker", "playervision", "pinnable", "playercontroller", "playervoter", "singingshelltrigger", "tackler", "sleepingbaguser", "skinner", "playermetrics",-- from mousing over player
@@ -272,6 +272,7 @@ local descriptors_ignore = {
 	"cattoy", "updatelooper", "upgrademoduleremover", "hudindicatablemanager", "moonstormlightningmanager", "playerhearing", "walkableplatformplayer", "hudindicatorwatcher", "seamlessplayerswapper", -- don't care
 	"boatcannonuser", "stageactor", "boatdrifter", "boatphysics", "boatring", "boatringdata", "healthsyncer", "hull", "hullhealth", "walkableplatform", "teleportedoverride", -- don't care
 	"npc_talker", "simplemagicgrower", "moonaltarlink", "farmtiller", "aoespell", "aoetargeting", "closeinspector", "waxable", "rainimmunity", "snowmandecor", -- don't care
+	"forgerepairable", "boatpatch", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
