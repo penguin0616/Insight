@@ -1281,6 +1281,11 @@ return {
 	-- temperature.lua
 	temperature = "온도: <temperature=%s>",
 
+	-- tentacle_pillar_hole.lua [Prefab]
+	tentacle_pillar_hole = {
+		immunity_time = "<prefab=tentacle> immunity time: %s",
+	},
+
 	-- terrarium.lua [Prefab]
 	terrarium = {
 		day_recovery = "테라리움 비활성화 시 하루에 <color=HEALTH>%s</color> 체력 회복.",

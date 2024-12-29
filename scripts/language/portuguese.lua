@@ -1279,6 +1279,11 @@ return {
 	-- temperature.lua
 	temperature = "Temperatura: <temperature=%s>",
 
+	-- tentacle_pillar_hole.lua [Prefab]
+	tentacle_pillar_hole = {
+		immunity_time = "<prefab=tentacle> immunity time: %s",
+	},
+
 	-- terrarium.lua [Prefab]
 	terrarium = {
 		day_recovery = "Recupera <color=HEALTH>%s</color> de vida por dia sem lutar.",
