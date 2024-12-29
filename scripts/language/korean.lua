@@ -1173,6 +1173,13 @@ return {
 		total_shadow_level = "<color=BLACK>그림자 레벨 총합</color>: %s",
 	},
 
+	-- shadow_battleaxe.lua [Prefab]
+	shadow_battleaxe = {
+		level = "Level: %s / %s",
+		boss_progress = "Defeated Bosses: %s / %s",
+		lifesteal = "<color=HEALTH>Life Steal</color>: <color=HEALTH>%.2f</color> (<color=SANITY>%.2f</color>)",
+	},
+
 	-- shadowrift_portal.lua [Prefab]
 	shadowrift_portal = {
 		close = "<prefab=SHADOWRIFT_PORTAL>이(가) %s 후 닫힘.",
