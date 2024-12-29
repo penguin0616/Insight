@@ -3366,6 +3366,7 @@ if IS_DST then -- not in UI overrides because server needs access too
 	end
 
 	local function SendReport(widget, from, log)
+		mprint("SendReport called")
 		local report = {}
 		-- basic stuff
 		report.user = {
@@ -3408,12 +3409,15 @@ if IS_DST then -- not in UI overrides because server needs access too
 			report.log = "LOG TRIMMED: ORIGINAL SIZE = " .. #report.log .. "\n" .. report.log:sub(#report.log - LOG_LIMIT + 1, #report.log)
 		end
 
+
+		mprint("Compressing log")
 		-- game seems to have a problem encoding some characters with the messed up json implementation they have
 		-- but it'll handle b64 alright, so i'll just compress it and handle stuff properly on my end
 		--print("#log before:", #report.log) -- 137261
 		--local old = report.log
 		report.log = TheSim:ZipAndEncodeString(report.log) -- DS: TheSim:SetPersistentString(path, data, ENCODE_SAVES) (ENCODE_SAVES=true)
-		
+		mprint("Compressed log")
+
 		--[[
 		print'\tasd1'
 		local f1 = io.open("before.txt", "w")
@@ -3436,7 +3440,13 @@ if IS_DST then -- not in UI overrides because server needs access too
 		--]]
 
 		--print("#log after:", #report.log) -- 23408
+		--report.log = TheSim:ZipAndEncodeString("welcome to the citadel")
 		report = json.encode_compliant(report)
+		
+		--file = io.open("report.json", "w") 
+		--file:write(report)
+		--file:close()
+
 		--print"wagh"
 		
 		--[[
@@ -3446,19 +3456,19 @@ if IS_DST then -- not in UI overrides because server needs access too
 		end
 		--]]
 		TheSim:QueryServer(
-			"https://dst.penguin0616.com/crashreporter/reportcrash",
+			"https://dst.penguin0616.dev/crashreporter/reportcrash",
 			function(res, isSuccessful, statusCode)
-				mprint("Report:", res, isSuccessful, statusCode)
+				mprintf("Report: Success = %s, Status = %s, \n%s", isSuccessful, statusCode, res)
 
 				if no_logs and #log_buffer == 0 then
 					isSuccessful = false
+					mprint("Can't find logs for crash report")
 				end
 
 				local state = 0
 				local status = "???"
 				
 				if not isSuccessful then
-					print("Can't find logs.")
 					status = "Failed to report crash."
 					state = 1
 				elseif isSuccessful then
@@ -3515,18 +3525,18 @@ if IS_DST then -- not in UI overrides because server needs access too
 			if IsClient() then
 				if is_server_owner then
 					if not report_client and not report_server then
-						ShowStatus(self, { state=0, status="Crash reporter disabled [Multishard Client Owner]." })
+						ShowStatus(self, { state=0, status="Crash reporter not enabled [Multishard Client Owner]." })
 						return
 					end
 				else
 					if not report_client then
-						ShowStatus(self, { state=0, status="Crash reporter disabled [Client]." })
+						ShowStatus(self, { state=0, status="Crash reporter not enabled [Client]." })
 						return
 					end
 				end
 			elseif IsClientHost() then
 				if not report_client and not report_server then
-					ShowStatus(self, { state=0, status="Crash reporter disabled [ClientHost (Owner)]." })
+					ShowStatus(self, { state=0, status="Crash reporter not enabled [ClientHost (Owner)]." })
 					return
 				end
 			end
@@ -3548,7 +3558,7 @@ if IS_DST then -- not in UI overrides because server needs access too
 			dprint("report_client:", report_client)
 
 			if not report_server and not SERVER_OWNER_HAS_OPTED_IN then
-				ShowStatus(self, { state=0, status="Crash reporter disabled [Server]." })
+				ShowStatus(self, { state=0, status="Crash reporter not enabled [Server]." })
 				return
 			end
 
