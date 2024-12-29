@@ -820,8 +820,12 @@ insightSaveData:Load()
 -- Also a good indicator that the file exists.
 if insightSaveData:Get("last_version") then
 	-- Technically both versions should go through TrimString(str):lower()
-	local is_newer = modinfo.version:match("%d+.%d+.%d+") > insightSaveData:Get("last_version")
+	dprint("Insight version: [%s] | Match: [%s]", modinfo.version, tostring(modinfo.version:match("%d+%.%d+%.%d+")))
+	local is_newer = modinfo.version:match("%d+%.%d+%.%d+") > insightSaveData:Get("last_version")
 	NEW_INSIGHT_VERSION = is_newer
+
+	-- Update saved version
+	--insightSaveData:Set("last_version", modinfo.version)
 
 	-- Retrofitting
 	if insightSaveData:Get("keybinds") == nil then

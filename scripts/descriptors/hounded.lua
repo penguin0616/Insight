@@ -111,7 +111,7 @@ local function Describe(self, context)
 		if we roll < wave_override_chance, set override chance to zero and say pre_upgraded is "available"
 		otherwise, return nil and wave override chance += 0.05, up to 50%
 	
-	add who the boss is targeting
+	add who the boss is targeting - maybe not
 	--]]
 
 	local can_wormbosses_spawn = TUNING.WORM_BOSS_DAYS ~= nil and TheWorld.state.cycles > TUNING.WORM_BOSS_DAYS
