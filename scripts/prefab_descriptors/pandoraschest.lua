@@ -24,6 +24,8 @@ local function Describe(inst, context)
 
 	-- These chests have a scenariorunner component when there is a possible effect.
 	-- scenariorunner manages the action, which is why the logic for it is there.
+	-- Also, I want to be able to indicate that the chest has been opened already.
+	-- When it's been opened, scenariorunner gets removed so Describe there wouldn't work.
 
 	if context.FROM_INSPECTION then
 		if inst.components.scenariorunner == nil then
