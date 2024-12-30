@@ -3690,6 +3690,80 @@ STRINGS = {
 			},
 		},
 	},
+	display_itemmimic_information = {
+		label = {
+			"Item Mimic Information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to display item mimic information.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[0] = {
+				description = {
+					"None",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Do not show any item mimic information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[1] = {
+				description = {
+					"Worldly",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Show only general item mimic information (such as how many are in the world)",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[2] = {
+				description = {
+					"All",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Show all item mimic information (includes what items are mimics).",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
 	weapon_damage = {
 		label = {
 			"Weapon Damage", 
@@ -6960,6 +7034,16 @@ configuration_options = {
 			{data = true},
 		},
 		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_itemmimic_information",
+		options = {
+			{data = 0},
+			{data = 1},
+			{data = 2},
+		},
+		default = 0,
 		tags = {"undefined"},
 	},
 	{

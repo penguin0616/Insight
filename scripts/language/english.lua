@@ -810,6 +810,11 @@ return {
 		hands_describe = "[Tool]: ",
 	},
 
+	-- itemmimic.lua
+	itemmimic = {
+		time_to_reveal = "<string=ITEMMIMIC_REVEALED> reveal in: %s",
+	},
+
 	-- kitcoonden.lua
 	kitcoonden = {
 		number_of_kitcoons = "Number of kitcoons: %s"
@@ -1188,6 +1193,11 @@ return {
 			sanity_reward = "<color=SANITY>Sanity</color> reward: <color=SANITY>%s</color>",
 			sanity_reward_split = "<color=SANITY>Sanity</color> reward: <color=SANITY>%s</color> / <color=SANITY>%s</color>",
 		},
+	},
+
+	-- shadowthrall_mimics.lua
+	shadowthrall_mimics = {
+		mimic_count = "<string=UI.CUSTOMIZATIONSCREEN.ITEMMIMICS>: %s / %s",
 	},
 
 	-- shadowthrallmanager.lua

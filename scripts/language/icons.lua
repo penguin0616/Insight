@@ -826,6 +826,11 @@ return {
 		--hands_describe = "[Tool]: ",
 	},
 
+	-- itemmimic.lua
+	itemmimic = {
+		time_to_reveal = "<string=ITEMMIMIC_REVEALED> reveal in: %s",
+	},
+
 	-- kitcoonden.lua
 	kitcoonden = {
 		--number_of_kitcoons = "Number of kitcoons: %s"
@@ -1191,12 +1196,17 @@ return {
 		},
 	},
 
+	-- shadowthrall_mimics.lua
+	shadowthrall_mimics = {
+		--mimic_count = "<string=UI.CUSTOMIZATIONSCREEN.ITEMMIMICS>: %s / %s",
+	},
+
 	-- shadowthrallmanager.lua
 	shadowthrallmanager = {
-		fissure_cooldown = "Next fissure will be ready for takeover in %s",
-		waiting_for_players = "Waiting for a player to come near",
-		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
-		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> will regenerate in %s",
+		--fissure_cooldown = "Next fissure will be ready for takeover in %s",
+		--waiting_for_players = "Waiting for a player to come near",
+		--thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
+		--dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> will regenerate in %s",
 	},
 
 	-- sharkboi.lua [Prefab]

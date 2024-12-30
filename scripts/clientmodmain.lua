@@ -820,7 +820,7 @@ insightSaveData:Load()
 -- Also a good indicator that the file exists.
 if insightSaveData:Get("last_version") then
 	-- Technically both versions should go through TrimString(str):lower()
-	dprint("Insight version: [%s] | Match: [%s]", modinfo.version, tostring(modinfo.version:match("%d+%.%d+%.%d+")))
+	dprintf("Insight version: [%s] | Match: [%s]", modinfo.version, tostring(modinfo.version:match("%d+%.%d+%.%d+")))
 	local is_newer = modinfo.version:match("%d+%.%d+%.%d+") > insightSaveData:Get("last_version")
 	NEW_INSIGHT_VERSION = is_newer
 

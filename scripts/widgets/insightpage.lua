@@ -56,8 +56,15 @@ local function apply_fn(context, widget, data, index)
 		--widget.text:SetString(data.text)
 		-- "images/Volcano.xml", "Volcano.tex"
 
-		if data.icon and data.icon.atlas and data.icon.tex then
-			widget:SetIcon(data.icon.atlas, data.icon.tex)
+		if data.icon then
+			if data.icon.atlas and data.icon.tex then
+				widget:SetIcon(data.icon.atlas, data.icon.tex)
+			else
+				if data.icon.atlas then
+					dprintf("An atlas [%s] was passed in but 'tex' is missing?", data.icon.atlas)
+				end
+				widget:SetIcon(nil, nil)
+			end
 		else
 			widget:SetIcon(nil, nil)
 		end

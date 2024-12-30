@@ -1,0 +1,6 @@
+<Atlas>
+    <Texture filename="Mimicreep.tex"/>
+    <Elements>
+        <Element name="Mimicreep.tex" u1="0.00390625" u2="0.99609375" v1="0.00390625" v2="0.99609375"/>
+    </Elements>
+</Atlas>

@@ -814,6 +814,11 @@ return {
 		hands_describe = "[도구]: ",
 	},
 
+	-- itemmimic.lua
+	itemmimic = {
+		time_to_reveal = "<string=ITEMMIMIC_REVEALED> reveal in: %s",
+	},
+
 	-- kitcoonden.lua
 	kitcoonden = {
 		number_of_kitcoons = "킷쿤 수: %s"
@@ -1192,6 +1197,11 @@ return {
 			sanity_reward = "<color=SANITY>정신력</color> 보상: <color=SANITY>%s</color>",
 			sanity_reward_split = "<color=SANITY>정신력</color> 보상: <color=SANITY>%s</color> / <color=SANITY>%s</color>",
 		},
+	},
+
+	-- shadowthrall_mimics.lua
+	shadowthrall_mimics = {
+		mimic_count = "<string=UI.CUSTOMIZATIONSCREEN.ITEMMIMICS>: %s / %s",
 	},
 
 	-- shadowthrallmanager.lua
