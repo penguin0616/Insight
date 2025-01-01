@@ -1,5 +1,11 @@
 DST_CONSOLE_COMMANDS = {}
 
+DST_CONSOLE_COMMANDS.i_removecaveflowers = function()
+	c_removeall'flower_cave'
+	c_removeall'flower_cave_double'
+	c_removeall'flower_cave_triple'
+end
+
 DST_CONSOLE_COMMANDS.i_gearup = function()
 	c_give("orangestaff", 1)
 	c_give("multitool_axe_pickaxe", 1)

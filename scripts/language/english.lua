@@ -817,7 +817,7 @@ return {
 
 	-- itemmimic.lua
 	itemmimic = {
-		time_to_reveal = "<string=ITEMMIMIC_REVEALED> reveal in: %s",
+		time_to_reveal = "<prefab=itemmimic_revealed> reveal in: %s",
 	},
 
 	-- kitcoonden.lua
@@ -1203,6 +1203,7 @@ return {
 	-- shadowthrall_mimics.lua
 	shadowthrall_mimics = {
 		mimic_count = "<string=UI.CUSTOMIZATIONSCREEN.ITEMMIMICS>: %s / %s",
+		next_spawn = "<prefab=itemmimic_revealed> will try to spawn in %s",
 	},
 
 	-- shadowthrallmanager.lua

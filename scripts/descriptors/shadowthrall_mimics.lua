@@ -37,6 +37,23 @@ local function OnServerInit()
 	end
 end
 
+local function DescribeMimicSpawn(self, context, task)
+	local time_to_attempted_spawn = GetTaskRemaining(task)
+	local description = string.format(context.lstr.shadowthrall_mimics.next_spawn, context.time:SimpleProcess(time_to_attempted_spawn))
+
+	return {
+		name = "shadowthrall_mimics.spawning." .. context.player.userid,
+		priority = 0,
+		worldly = true,
+		playerly = true,
+		icon = {
+			atlas = "images/Mimicreep.xml",
+			tex = "Mimicreep.tex",
+		},
+		description = description
+	}
+end
+
 local function Describe(self, context)
 	local description = nil
 
@@ -50,23 +67,23 @@ local function Describe(self, context)
 
 	description = string.format(context.lstr.shadowthrall_mimics.mimic_count, GetTableSize(_activemimics), TUNING.ITEMMIMIC_CAP)
 
-	--description = self:GetDebugString() .. "\nnight: " .. tostring(self.inst.state.iscavenight)
-
-	local yes = {}
-
-	for player, task in pairs(_scheduled_spawn_attempts) do
-		yes[#yes+1] = {
-			name = "shadowthrall_mimics.spawning." .. player.userid,
-			priority = 0,
-			worldly = true,
-			playerly = true,
-			icon = {
-				atlas = "images/Mimicreep.xml",
-				tex = "Mimicreep.tex",
-			},
-			description = tostring(GetTaskRemaining(task))
-		}
+	if context.etc.DEBUG_ENABLED then
+		description = description .. "\nnight: " .. tostring(self.inst.state.iscavenight)
 	end
+
+	local returns = {}
+
+
+	local my_spawn_task = _scheduled_spawn_attempts[context.player]
+	if my_spawn_task then
+		returns[#returns+1] = DescribeMimicSpawn(self, context, my_spawn_task)
+	end
+
+	--[[
+	for player, task in pairs(_scheduled_spawn_attempts) do
+		returns[#returns+1] = { name="asddddd", priority=0, description="asddddd" }
+	end
+	--]]
 
 
 	return {
@@ -78,7 +95,7 @@ local function Describe(self, context)
 			tex = "Mimicreep.tex",
 		},
 		description = description,
-	}, unpack(yes)
+	}, unpack(returns)
 end
 
 
