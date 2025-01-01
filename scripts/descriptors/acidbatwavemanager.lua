@@ -145,6 +145,7 @@ local function Describe(self, context)
 		returns[#returns+1] = DescribeBatWaveData(self, context, my_watcher_data)
 	end
 
+	--[[
 	for player, data in pairs(self.watching) do
 		x=tostring(player) .. "--"; table.foreach(data, function(i,v) x = x .. tostring(i) .. " = " .. tostring(v) .. "\n" end)
 
@@ -162,7 +163,10 @@ local function Describe(self, context)
 		priority = 0,
 		worldly = true,
 		description = description,
-	}, unpack(returns)
+	}, 
+	--]]
+	
+	return unpack(returns)
 end
 
 return {
