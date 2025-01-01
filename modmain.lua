@@ -256,7 +256,7 @@ local descriptors_ignore = {
 	
 	
 	-- now for DST stuff
-	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "constructionsite", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
+	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
 	"grogginess", "workmultiplier", "aura", "writeable", "shaveable", "spidermutator", "raindome", -- may be interesting looking into
 	"resistance", -- for the armor blocking of bone armor
 
@@ -272,7 +272,7 @@ local descriptors_ignore = {
 	"cattoy", "updatelooper", "upgrademoduleremover", "hudindicatablemanager", "moonstormlightningmanager", "playerhearing", "walkableplatformplayer", "hudindicatorwatcher", "seamlessplayerswapper", -- don't care
 	"boatcannonuser", "stageactor", "boatdrifter", "boatphysics", "boatring", "boatringdata", "healthsyncer", "hull", "hullhealth", "walkableplatform", "teleportedoverride", -- don't care
 	"npc_talker", "simplemagicgrower", "moonaltarlink", "farmtiller", "aoespell", "aoetargeting", "closeinspector", "waxable", "rainimmunity", "snowmandecor", -- don't care
-	"forgerepairable", "boatpatch", "submersible", "erasablepaper", -- don't care
+	"forgerepairable", "boatpatch", "submersible", "erasablepaper", "lunarplant_tentacle_weapon", -- don't care
 
 	-- NEW:
 	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
@@ -936,7 +936,16 @@ local function GetComponentDescriptor(name)
 			-- Failed to load itself since it couldn't find itself
 		else
 			mprint("Failed to load descriptor", name, "|", res)
-			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, _error=true} end }
+			return { 
+				Describe = function() 
+					return {
+						name = name .. "_component_insighterror",
+						priority = -0.5, 
+						description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, 
+						_error = true,
+					} 
+				end 
+			}
 		end
 
 		
@@ -1021,7 +1030,16 @@ local function GetPrefabDescriptor(name)
 			-- Failed to load itself since it couldn't find itself
 		else
 			mprint("Failed to load prefab descriptor", name, "|", res)
-			return { Describe = function() return {priority = -0.5, description = "<color=#ff0000>ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, _error=true } end }
+			return { 
+				Describe = function() 
+					return {
+						name = name .. "_prefab_insighterror",
+						priority = -0.5, 
+						description = "<color=#ff0000>ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, 
+						_error = true,
+					}
+				end 
+			}
 		end
 
 		return false
@@ -1059,6 +1077,7 @@ local function ValidateDescribeResponse(chunks, name, datas, params)
 			if d.name ~= nil and type(d.name) ~= "string" then
 				error(string.format("Invalid name '%s' (%s) for component descriptor '%s'.", d.name, type(d.name), name))
 			elseif d.name == nil and #datas > 1 then
+				dumptable(datas)
 				error(string.format("Missing name for multiple-return descriptor '%s'.", name)) -- when returning multiple tables, need to manually specify the names
 			end
 

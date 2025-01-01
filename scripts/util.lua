@@ -236,6 +236,19 @@ function UnescapeRichText(str)
 	return str:gsub("&lt;", "<"):gsub("&gt;", ">")
 end
 
+function SetTaskRemaining(task, time)
+	if task == nil then
+		mprint("that task doesn't exist")
+		return
+	end
+
+	if task:NextTime() == nil then
+		mprint("task doesnt have a next time")
+		return
+	end
+
+	task.nexttick = GetTickForTime(GetTime() + time)
+end
 
 function GetReduxListItemPrefix(row_width, row_height)
 	local prefix = "listitem_thick" -- 320 / 90 = 3.6

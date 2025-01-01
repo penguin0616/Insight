@@ -1284,6 +1284,17 @@ return {
 	-- stickable.lua
 	stickable = "<color=FISH>Mussels</color>: %s",
 
+	-- support_pillar.lua [Prefab]
+	support_pillar = {
+		reinforcement = "Reinforcement: %s / %s",
+		durability = "Durability: %s / %s",
+	},
+
+	-- support_pillar_dreadstone.lua [Prefab]
+	support_pillar_dreadstone = {
+		time_until_reinforcement_regen = "Next regeneration: %s",
+	},
+
 	-- temperature.lua
 	temperature = "Temperature: <temperature=%s>",
 
