@@ -407,7 +407,7 @@ function InsightMenu:ApplyInformation(world_data, player_data)
 				local componentData = world_data.special_data[componentName]
 
 				description = (
-					DEBUG_OPTIONS.INSIGHT_MENU_DATA_ORIGIN and string.format("<color=#DDA305>[(%s) %s]</color> ", componentData.from or "cmp", componentName) .. description
+					DEBUG_OPTIONS.INSIGHT_MENU_DATA_ORIGIN and string.format("<color=#DDA305>[(%s) %s]</color>\n", componentData.from or "cmp", componentName) .. description
 				) or description
 
 				if componentData.worldly == true or componentData._error then

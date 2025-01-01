@@ -106,6 +106,11 @@ return {
 	},
 	-------------------------------------------------------------------------------------------------------------------------
 	
+	-- acidbatwavemanager.lua
+	acidbatwavemanager = {
+		next_wave_spawn = "<prefab=bat> raid (%d) arrives in %s"
+	},
+	
 	-- alterguardianhat.lua [Prefab]
 	alterguardianhat = {
 		minimum_sanity = "Mínimo de <color=SANITY>sanidade</color> para a luz: <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
