@@ -33,6 +33,9 @@ local function DescribeBatWaveData(self, context, data)
 	-- last_warn_time = time
 
 
+
+	-- TODO: There's currently a bug where items in backpack or open chests don't count towards the raid.
+	-- Looks like a bug with that inventory method used to count them?
 	local chance_string
 	if data.target_prefab_count and data.odds_to_spawn_wave then
 		local official_chance = data.odds_to_spawn_wave
