@@ -1066,6 +1066,13 @@ return {
 		},
 	},
 
+	-- rabbitkingmanager.lua
+	rabbitkingmanager = {
+		carrots = "<color=VEGGIE>Carrots</color>: <color=VEGGIE>%d</color> / <color=VEGGIE>%d</color>",
+		naughtiness = "Naughtiness: %d / %d",
+		king_status = "%s is alive.", -- Gets a prefab tag inserted with king type.
+	},
+
 	-- rainometer.lua [Prefab]
 	global_wetness = "<color=FROZEN>Humedad global</color>: <color=FROZEN>%s</color>",
 	precipitation_rate = "<color=WET>Índice de precipitación</color>: <color=WET>%s</color>",

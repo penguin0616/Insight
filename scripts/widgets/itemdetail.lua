@@ -150,7 +150,7 @@ function ItemDetail:SetText(str)
 	self.text:SetString(str)
 end
 
-function ItemDetail:SetIcon(atlas, tex)
+function ItemDetail:SetIcon(atlas, tex, scrapbook)
 	-- atlas gets resolved so it doesnt match
 	--local resolved = atlas ~= nil and resolvefilepath(atlas) or nil
 
@@ -171,7 +171,11 @@ function ItemDetail:SetIcon(atlas, tex)
 		if self.icon_holder2 then
 			self.icon_holder2:Show()
 		end
-		self.icon:SetSize(56, 56)
+		if scrapbook then
+			self.icon:SetSize(64, 64) -- 56, 56
+		else
+			self.icon:SetSize(56, 56)
+		end
 	else
 		error("expected atlas and tex in ItemDetail:SetIcon")
 	end

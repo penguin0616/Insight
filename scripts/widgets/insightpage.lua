@@ -58,7 +58,7 @@ local function apply_fn(context, widget, data, index)
 
 		if data.icon then
 			if data.icon.atlas and data.icon.tex then
-				widget:SetIcon(data.icon.atlas, data.icon.tex)
+				widget:SetIcon(data.icon.atlas, data.icon.tex, data.icon.scrapbook)
 			else
 				if data.icon.atlas then
 					dprintf("An atlas [%s] was passed in but 'tex' is missing?", data.icon.atlas)
