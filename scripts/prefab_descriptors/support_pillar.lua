@@ -27,7 +27,7 @@ local reinforcement_weak = Color.fromHex("#777777")
 local reinforcement_strong = Color.fromHex("#88ff88")
 
 local function Describe(inst, context)
-	local description = nil
+	local description, alt_description = nil, nil
 
 	-- Protection radius
 	local protection_radius_string = string.format("Protection radius: %s tiles", TUNING.QUAKE_BLOCKER_RANGE / WALL_STUDS_PER_TILE)

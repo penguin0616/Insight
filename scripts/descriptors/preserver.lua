@@ -63,7 +63,7 @@ local function Describe(self, context)
 	return {
 		priority = 0,
 		description = description,
-		alt_description = alt_description
+		--alt_description = alt_description
 	}
 end
 
