@@ -180,6 +180,7 @@ DEBUG_ENABLED = (
 
 DEBUG_OPTIONS = {
 	INSIGHT_MENU_DATA_ORIGIN = false,
+	SHOW_INFO_ORIGIN = false,
 }
 
 ALLOW_SERVER_DEBUGGING = DEBUG_ENABLED -- todo make a more accessible for standard users with mod compatibility issues?
@@ -208,7 +209,6 @@ attackRangeHelper = import("helpers/attack_range")
 entity_tracker = import("helpers/entitytracker")
 
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
-SHOW_INFO_ORIGIN = false
 DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
 
 -- maybe one day i'll do something 64-bit specific or something
@@ -257,7 +257,7 @@ local descriptors_ignore = {
 	
 	-- now for DST stuff
 	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
-	"grogginess", "workmultiplier", "aura", "writeable", "shaveable", "spidermutator", "raindome", -- may be interesting looking into
+	"grogginess", "workmultiplier", "aura", "writeable", "shaveable", "spidermutator", "raindome", "acidinfusible", -- may be interesting looking into
 	"resistance", -- for the armor blocking of bone armor
 
 	"playerinspectable", "playeractionpicker", "playervision", "pinnable", "playercontroller", "playervoter", "singingshelltrigger", "tackler", "sleepingbaguser", "skinner", "playermetrics",-- from mousing over player
@@ -1242,7 +1242,7 @@ local function GetEntityInformation(entity, player, params)
 
 		-- Collect the description if one was provided.
 		if v.description then -- type(v.description) == "string"
-			assembled.information = assembled.information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description --(eq and eq(aa) or v.description)
+			assembled.information = assembled.information .. (DEBUG_OPTIONS.SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description --(eq and eq(aa) or v.description)
 
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
@@ -1257,7 +1257,7 @@ local function GetEntityInformation(entity, player, params)
 
 		-- Collect the alternate description if one was provided.
 		if v.alt_description then -- type(v.alt_description) == "string"
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.alt_description --(eq and eq(bb) or v.alt_description)
+			assembled.alt_information = assembled.alt_information .. (DEBUG_OPTIONS.SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.alt_description --(eq and eq(bb) or v.alt_description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
@@ -1265,7 +1265,7 @@ local function GetEntityInformation(entity, player, params)
 			--if bb then bb=bb+1 end
 		elseif v.alt_description == nil and v.description ~= nil then
 			-- We don't want to remove a normal description if an alt wasn't provided.
-			assembled.alt_information = assembled.alt_information .. (SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description --(eq and eq(bb) or v.description)
+			assembled.alt_information = assembled.alt_information .. (DEBUG_OPTIONS.SHOW_INFO_ORIGIN and string.format("[%s]: ", v.name) or "") .. v.description --(eq and eq(bb) or v.description)
 			if i < num_chunks then
 				-- Turns out, this isn't accurate because further chunks might not have any information.
 				assembled.alt_information = assembled.alt_information .. "\n"
