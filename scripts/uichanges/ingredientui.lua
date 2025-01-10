@@ -43,6 +43,23 @@ local function IngredientUI_OnLoseFocus(self, ...)
 	end
 end
 
+--[[
+-- Doesn't even get passed in consistently to the IngredientUI constructor all the time in DST,
+-- and never in DS. Ugh.
+local function IngredientUI_SetTooltip(self, ...)
+	local ingredient_recipe = util.getupvalue(debug.getinfo(2).func, "ingredient_recipe")
+	if ingredient_recipe then
+		-- I don't know why Klei doesn't just always always have it THEN do their checks.
+		self._ingredient_recipe = ingredient_recipe
+	end
+
+	if module.oldIngredientUI_SetTooltip then
+		return module.oldIngredientUI_SetTooltip(self, ...)
+	end 
+end
+--]]
+
+
 module.Initialize = function()
 	if module.initialized then
 		errorf("Cannot initialize %s more than once.", debug.getinfo(1, "S").source:match("([%w_]+)%.lua$"))
@@ -51,9 +68,11 @@ module.Initialize = function()
 
 	module.oldIngredientUI_OnGainFocus = IngredientUI.OnGainFocus
 	module.oldIngredientUI_OnLoseFocus = IngredientUI.OnLoseFocus
+	--module.oldIngredientUI_SetTooltip = IngredientUI.SetTooltip
 
 	IngredientUI.OnGainFocus = IngredientUI_OnGainFocus
 	IngredientUI.OnLoseFocus = IngredientUI_OnLoseFocus
+	--IngredientUI.SetTooltip = IngredientUI_SetTooltip
 
 	module.initialized = true
 end
