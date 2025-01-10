@@ -40,7 +40,7 @@ local function Describe(self, context)
 	description = CombineLines(damage_string, absorption_string, speed_string)
 
 	return {
-		priority = 0,
+		priority = 11, -- Just want it higher than finiteuses.
 		description = description
 	}
 end
