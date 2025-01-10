@@ -48,7 +48,7 @@ local function Describe(self, context)
 	if description == "" then description = nil end
 
 	return {
-		priority = combatHelper.DAMAGE_PRIORITY - 500,
+		priority = combatHelper.DAMAGE_PRIORITY - 201,
 		description = description
 	}
 end
