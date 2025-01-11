@@ -702,7 +702,7 @@ return {
 
 	-- gelblobspawner.lua
 	gelblobspawner = {
-		
+
 	},
 
 	-- ghostlybond.lua
@@ -1194,6 +1194,11 @@ return {
 		damage_boost = " (<color=HEALTH>+%s 데미지</color>)",
 		total_shadow_level = "<color=BLACK>그림자 레벨 총합</color>: %s",
 	},
+
+	-- shadowparasitemanager.lua
+	shadowparasitemanager = {
+		num_waves = "Waves: %d",
+	}, 
 
 	-- shadow_battleaxe.lua [Prefab]
 	shadow_battleaxe = {

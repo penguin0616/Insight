@@ -1193,6 +1193,11 @@ return {
 		total_shadow_level = "<color=BLACK>Nível total de sombra</color>: %s",
 	},
 
+	-- shadowparasitemanager.lua
+	shadowparasitemanager = {
+		num_waves = "Waves: %d",
+	}, 
+
 	-- shadow_battleaxe.lua [Prefab]
 	shadow_battleaxe = {
 		level = "Level: %s / %s",
