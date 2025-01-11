@@ -3690,80 +3690,6 @@ STRINGS = {
 			},
 		},
 	},
-	display_itemmimic_information = {
-		label = {
-			"Item Mimic Information", 
-			["zh"] = nil, 
-			["br"] = nil, 
-			["es"] = nil,
-			["ru"] = nil,
-			["ko"] = nil,
-		},
-		hover = {
-			"Whether to display item mimic information.", 
-			["zh"] = nil, 
-			["br"] = nil, 
-			["es"] = nil,
-			["ru"] = nil,
-			["ko"] = nil,
-		},
-		options = {
-			[0] = {
-				description = {
-					"None",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-					["ru"] = nil,
-					["ko"] = nil,
-				},
-				hover = {
-					"Do not show any item mimic information.",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-					["ru"] = nil,
-					["ko"] = nil,
-				},
-			},
-			[1] = {
-				description = {
-					"Worldly",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-					["ru"] = nil,
-					["ko"] = nil,
-				},
-				hover = {
-					"Show only general item mimic information (such as how many are in the world)",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-					["ru"] = nil,
-					["ko"] = nil,
-				},
-			},
-			[2] = {
-				description = {
-					"All",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-					["ru"] = nil,
-					["ko"] = nil,
-				},
-				hover = {
-					"Show all item mimic information (includes what items are mimics).",
-					["zh"] = nil,
-					["br"] = nil,
-					["es"] = nil,
-					["ru"] = nil,
-					["ko"] = nil,
-				},
-			},
-		},
-	},
 	weapon_damage = {
 		label = {
 			"Weapon Damage", 
@@ -4525,6 +4451,122 @@ STRINGS = {
 					["es"] = nil,
 					["ru"] = "Оповещения о опасности включены",
 					["ko"] = "위험 알림을 활성화합니다.",
+				},
+			},
+		},
+	},
+	display_itemmimic_information = {
+		label = {
+			"Item Mimic Information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to display item mimic information.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[0] = {
+				description = {
+					"None",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Do not show any item mimic information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[1] = {
+				description = {
+					"Worldly",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Show only general item mimic information (such as how many are in the world)",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[2] = {
+				description = {
+					"All",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Show all item mimic information (includes what items are mimics).",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
+	display_rabbitking_information = {
+		label = {
+			"Rabbit King information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to show rabbit king information.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Do not show rabbit king information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Show rabbit king information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
 				},
 			},
 		},
@@ -7037,16 +7079,6 @@ configuration_options = {
 		tags = {"undefined"},
 	},
 	{
-		name = "display_itemmimic_information",
-		options = {
-			{data = 0},
-			{data = 1},
-			{data = 2},
-		},
-		default = 0,
-		tags = {"undefined"},
-	},
-	{
 		name = "weapon_damage",
 		options = {
 			{data = false},
@@ -7174,6 +7206,25 @@ configuration_options = {
 	},
 	{
 		name = "danger_announcements",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_itemmimic_information",
+		options = {
+			{data = 0},
+			{data = 1},
+			{data = 2},
+		},
+		default = 0,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_rabbitking_information",
 		options = {
 			{data = false},
 			{data = true},

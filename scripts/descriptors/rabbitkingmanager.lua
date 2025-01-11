@@ -21,7 +21,11 @@ directory. If not, please refer to
 -- rabbitkingmanager.lua
 
 local function DescribeCarrotsFed(self, context)
-	local description
+	local description = nil
+
+	if not context.config["display_rabbitking_information"] then
+		return
+	end
 
 	-- How many carrots have been fed to a rabbit hole
 	if type(self.carrots_fed) == "number" and type(self.carrots_fed_max) == "number" then
@@ -38,6 +42,10 @@ end
 
 local function Describe(self, context)
 	local description = nil --self:GetDebugString():gsub(",","\n")
+
+	if not context.config["display_rabbitking_information"] then
+		return
+	end
 
 	-- If there is a rabbit king and he is currently alive, the other information does not matter.
 	local rabbit_king = self.rabbitkingdata and self.rabbitkingdata.rabbitking
