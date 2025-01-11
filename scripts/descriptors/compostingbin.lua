@@ -22,6 +22,10 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description, alt_description = nil, nil
 
+	if not context.config["display_compostvalue"] then
+		return
+	end
+
 	if type(self.greens) == "number" and type(self.browns) == "number" then
 		description = string.format(context.lstr.compostingbin.contents_amount, self:GetMaterialTotal(), self.max_materials)
 		alt_description = string.format(context.lstr.compostingbin.detailed_contents_amount, self.greens, self.browns, self.max_materials)
