@@ -687,6 +687,11 @@ return {
 		held_refuel = "Echar <color=SWEETENER><prefab=%s></color> repostará <color=LIGHT>%s%%</color>.",
 	},
 
+	-- gelblobspawner.lua
+	gelblobspawner = {
+		
+	},
+
 	-- ghostlybond.lua
 	ghostlybond = {
 		abigail = "<color=%s>Nivel de vínculo</color>: %s/%s",

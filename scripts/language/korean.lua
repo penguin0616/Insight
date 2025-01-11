@@ -700,6 +700,11 @@ return {
 		held_refuel = "<color=SWEETENER><prefab=%s></color> 사용 시 <color=LIGHT>%s%%</color> 연료 보충.",
 	},
 
+	-- gelblobspawner.lua
+	gelblobspawner = {
+		
+	},
+
 	-- ghostlybond.lua
 	ghostlybond = {
 		abigail = "<color=%s>자매의 유대감</color>: %s / %s",

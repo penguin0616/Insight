@@ -257,7 +257,7 @@ local descriptors_ignore = {
 	
 	-- now for DST stuff
 	"wardrobe", "plantregrowth", "bloomer", "drownable", "embarker", "inventoryitemmoisture", "playeravatardata", "petleash", "giftreceiver", -- may be interesting looking into
-	"grogginess", "workmultiplier", "aura", "writeable", "shaveable", "spidermutator", "raindome", "acidinfusible", -- may be interesting looking into
+	"grogginess", "workmultiplier", "aura", "writeable", "shaveable", "spidermutator", "raindome", "acidinfusible", "decoratedgrave_ghostmanager", -- may be interesting looking into
 	"resistance", -- for the armor blocking of bone armor
 
 	"playerinspectable", "playeractionpicker", "playervision", "pinnable", "playercontroller", "playervoter", "singingshelltrigger", "tackler", "sleepingbaguser", "skinner", "playermetrics",-- from mousing over player
@@ -2761,6 +2761,20 @@ if IS_DST then
 		local marker = SpawnPrefab("insight_ghost_klaus_sack")
 		marker.owner = inst
 	end)
+
+	--[[
+	AddPrefabPostInit("gelblobspawningground", function(inst)
+		if not TheWorld.ismastersim then
+			return
+		end
+		
+		local marker = SpawnPrefab("lightning_rod")
+		marker.Transform:SetPosition(inst.Transform:GetWorldPosition())
+		marker:DoPeriodicTask(1, function() marker.Transform:SetPosition(inst.Transform:GetWorldPosition()) end)
+		--local marker = SpawnPrefab("insight_ghost_klaus_sack")
+		--marker.owner = inst
+	end)
+	--]]
 
 	AddPrefabPostInit("klaus_sack", function(inst)
 		--inst.MiniMapEntity:SetPriority(105)

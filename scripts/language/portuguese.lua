@@ -699,6 +699,11 @@ return {
 		held_refuel = "Guardado <color=SWEETENER><prefab=%s></color> irá reabastecer <color=LIGHT>%s%%</color>.",
 	},
 
+	-- gelblobspawner.lua
+	gelblobspawner = {
+		
+	},
+
 	-- ghostlybond.lua
 	ghostlybond = {
 		abigail = "<color=%s>Vínculo de irmã</color>: %s / %s.",
