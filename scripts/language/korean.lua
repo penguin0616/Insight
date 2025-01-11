@@ -1232,6 +1232,7 @@ return {
 		fissure_cooldown = "다음 균열 활성화 준비까지: %s",
 		waiting_for_players = "플레이어가 근처에 올 때까지 기다리는 중.",
 		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
+		thralls_alive = "<color=MOB_SPAWN>Thralls alive (%d)</color>: %s",
 		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> 재생성까지: %s",
 	},
 

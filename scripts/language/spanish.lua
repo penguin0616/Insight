@@ -1217,6 +1217,7 @@ return {
 		fissure_cooldown = "La próxima fisura estará lista para ser tomada en %s",
 		waiting_for_players = "Esperando a que un jugador se acerque",
 		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
+		thralls_alive = "<color=MOB_SPAWN>Thralls alive (%d)</color>: %s",
 		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> regenerará en %s",
 	},
 

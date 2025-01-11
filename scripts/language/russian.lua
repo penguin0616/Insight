@@ -1228,6 +1228,7 @@ return {
 		fissure_cooldown = "Следующая трещина будет готова к захвату через %s",
 		waiting_for_players = "Ожидание приближения игрока",
 		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
+		thralls_alive = "<color=MOB_SPAWN>Thralls alive (%d)</color>: %s",
 		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> восстановится через %s",
 	},
 

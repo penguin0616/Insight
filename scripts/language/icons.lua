@@ -1229,6 +1229,7 @@ return {
 		--fissure_cooldown = "Next fissure will be ready for takeover in %s",
 		--waiting_for_players = "Waiting for a player to come near",
 		--thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
+		--thralls_alive = "<color=MOB_SPAWN>Thralls alive (%d)</color>: %s",
 		--dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color> will regenerate in %s",
 	},
 

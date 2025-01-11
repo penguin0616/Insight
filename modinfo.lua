@@ -4455,6 +4455,80 @@ STRINGS = {
 			},
 		},
 	},
+	display_shadowthrall_information = {
+		label = {
+			"Shadow Thrall Information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to display shadow thrall information.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[0] = {
+				description = {
+					"None",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Do not show any shadow thrall information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[1] = {
+				description = {
+					"Worldly",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Show only general shadow thrall information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[2] = {
+				description = {
+					"All",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+				hover = {
+					"Show all shadow thrall information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
 	display_batwave_information = {
 		label = {
 			"Bat Wave information", 
@@ -7254,6 +7328,16 @@ configuration_options = {
 		}, 
 		default = false,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_shadowthrall_information",
+		options = {
+			{data = 0},
+			{data = 1},
+			{data = 2},
+		},
+		default = 1,
+		tags = {"undefined"},
 	},
 	{
 		name = "display_batwave_information",
