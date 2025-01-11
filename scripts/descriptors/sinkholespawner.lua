@@ -41,7 +41,7 @@ local function RemoteDescribe(data, context)
 		time_to_rage = nil
 	end
 
-	local priority = (type(data.time_to_rage) == "number" and data.time_to_rage < TUNING.TOTAL_DAY_TIME) and 10 or 0
+	local priority = Insight.descriptors.periodicthreat.CalculateThreatPriority(data.time_to_rage)
 
 	return {
 		priority = priority,

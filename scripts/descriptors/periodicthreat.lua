@@ -19,8 +19,36 @@ directory. If not, please refer to
 ]]
 
 -- periodicthreat.lua [Worldly]
+local world_type = GetWorldType()
+
+local function CalculateThreatPriority(time_to_threat, metadata)
+	if not time_to_threat or type(time_to_threat) ~= "number" then
+		return 0
+	end
+
+	metadata = metadata or {}
+
+	-- { ignore_different_shard=true, shard_data=data.shard_data }
+	if metadata.ignore_different_shard and metadata.shard_data then
+		if metadata.shard_data.shard_id ~= TheShard:GetShardId() then
+			return 0
+		end
+	end
+	
+	if time_to_threat <= TUNING.TOTAL_DAY_TIME then
+		return 5
+	end
+	
+	return 0
+end
+
 local function Describe(self, context)
 	-- DS only
+
+	if world_type < 0 then
+		return
+	end
+
 	local inst = self.inst
 	local description = nil
 
@@ -59,5 +87,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	CalculateThreatPriority = CalculateThreatPriority,
 }

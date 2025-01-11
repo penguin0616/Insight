@@ -96,6 +96,8 @@ end
 
 local function RemoteDescribe(data, context)
 	local description = nil
+
+	--cprint('horse', data)
 	if not data then
 		return nil
 	end
@@ -104,7 +106,8 @@ local function RemoteDescribe(data, context)
 		description = ProcessInformation(context, data.time_to_attack, data.target, target_error_string)
 	end
 
-	local priority = (type(data.time_to_attack) == "number" and data.time_to_attack < TUNING.TOTAL_DAY_TIME) and 10 or 0
+	local priority = Insight.descriptors.periodicthreat.CalculateThreatPriority(data.time_to_attack, { ignore_different_shard=true, shard_data=data.shard_data }) - 1
+	--cprint(priority, data.shard_data)
 
 	return {
 		priority = priority,

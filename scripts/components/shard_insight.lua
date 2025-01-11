@@ -107,16 +107,27 @@ end)
 --[[ Class Getters ]]
 --------------------------------------------------------------------------
 function Shard_Insight:UpdateLocalWorldData()
-	local data = {}
+	local local_data = {}
 	--OnWorldDataDirty(TheWorld, nil, data)
+	
+	local shard_data = {
+		shard_id = TheShard:GetShardId(),
+		shard_master = TheShard:IsMaster(),
+		shard_world_prefab = TheWorld.worldprefab,
+	}
 
 	-- print("local_data fetching..")
 	for name, descriptor in pairs(self.shard_data_fetcher) do
-		data[name] = descriptor()
+		local described = descriptor()
+		if described then
+			described.shard_data = shard_data
+			local_data[name] = described
+		end
 	end
+
 	-- printwrap("local_data fetched", data)
-	self.local_data = data
-	return data
+	self.local_data = local_data
+	return local_data
 end
 
 function Shard_Insight:GetWorldDescriptors()

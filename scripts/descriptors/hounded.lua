@@ -146,7 +146,7 @@ local function Describe(self, context)
 		description = CombineLines(description, wormboss_chance_string)
 	end
 
-	local priority = (type(time_to_attack) == "number" and time_to_attack < TUNING.TOTAL_DAY_TIME) and 5 or 0
+	local priority = Insight.descriptors.periodicthreat.CalculateThreatPriority(time_to_attack)
 
 	return {
 		priority = priority,
