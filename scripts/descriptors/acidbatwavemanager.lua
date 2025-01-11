@@ -125,6 +125,10 @@ end
 local function Describe(self, context)
 	local description = nil
 
+	if not context.config["display_batwave_information"] then
+		return
+	end
+
 	local returns = {}
 
 	--[[

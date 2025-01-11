@@ -4455,6 +4455,48 @@ STRINGS = {
 			},
 		},
 	},
+	display_batwave_information = {
+		label = {
+			"Bat Wave information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to show bat wave information.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Do not show bat wave information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Show bat wave information.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
 	display_itemmimic_information = {
 		label = {
 			"Item Mimic Information", 
@@ -7212,6 +7254,15 @@ configuration_options = {
 		}, 
 		default = false,
 		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "display_batwave_information",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"undefined"},
 	},
 	{
 		name = "display_itemmimic_information",

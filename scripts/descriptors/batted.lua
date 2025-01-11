@@ -22,6 +22,10 @@ directory. If not, please refer to
 local function Describe(self, context)
 	local description
 
+	if not context.config["display_batwave_information"] then
+		return
+	end
+
 	if self.timetoattack then
 		description = context.time:SimpleProcess(self.timetoattack)
 	end
