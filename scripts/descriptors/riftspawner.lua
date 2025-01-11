@@ -100,6 +100,7 @@ local function DescribeRiftsOfAffinity(self, context, affinity)
 
 				if described then
 					described.name = "riftspawner_" .. rift.prefab .. "_" .. rift.GUID
+					described.priority = 3
 					described.source_descriptor = rift.prefab
 					described.worldly = true
 
