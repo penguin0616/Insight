@@ -41,8 +41,10 @@ local function RemoteDescribe(data, context)
 		time_to_rage = nil
 	end
 
+	local priority = (type(data.time_to_rage) == "number" and data.time_to_rage < TUNING.TOTAL_DAY_TIME) and 10 or 0
+
 	return {
-		priority = 0,
+		priority = priority,
 		description = description,
 		icon = {
 			atlas = "images/Antlion.xml",

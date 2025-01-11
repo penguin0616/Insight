@@ -105,8 +105,10 @@ local function RemoteDescribe(data, context)
 		description = ProcessInformation(context, data.time_to_attack, data.target, data.target_error_string)
 	end
 
+	local priority = (type(data.time_to_attack) == "number" and data.time_to_attack < TUNING.TOTAL_DAY_TIME) and 10 or 0
+
 	return {
-		priority = 10,
+		priority = priority,
 		description = description,
 		icon = {
 			atlas = "images/Deerclops.xml",
