@@ -33,29 +33,50 @@ local PHASE_NAMES =
 }
 --]]
 
-local icons = {
+-- Phase colors are eyedroppers on the medallions.
+local phases_data = setmetatable({
 	calm = {
 		atlas = true,
 		--atlas = "images/inventoryimages1.xml", -- inventoryimages1.xml but i'll let the code resolve this
 		tex = "nightmare_timepiece.tex",
+		color = "#897559",
+		priority = 0,
 	},
 	warn = {
 		atlas = true,
 		--atlas = "images/inventoryimages1.xml",
 		tex = "nightmare_timepiece_warn.tex",
+		color = "#663235",
+		priority = 1,
 	},
 	wild = {
 		atlas = true,
 		--atlas = "images/inventoryimages1.xml",
 		tex = "nightmare_timepiece_nightmare.tex",
+		color = "#CE3D45",
+		priority = 2,
 	},
 	dawn = {
 		atlas = "images/Nightmare_timepiece_dawn.xml",
 		tex = "Nightmare_timepiece_dawn.tex",
+		color = "#E99A68",
+		priority = 0,
 	}
-}
+}, {
+	__index = function(self, index)
+		local dummy_data = {
+			atlas = nil,
+			tex = nil,
+			color = "#0000ff",
+			priority = 0,
+		}
 
-for i,v in pairs(icons) do
+		rawset(self, index, dummy_data)
+		return rawget(self, index)
+	end
+})
+
+for i,v in pairs(phases_data) do
 	if v.atlas == true then
 		local r = ResolvePrefabToImageTable(v.tex:match("([%s%S]+).tex"))
 		if r.atlas then
@@ -68,23 +89,11 @@ for i,v in pairs(icons) do
 	end
 end
 
-local colors = setmetatable({ -- paint.net eyedropper on the medallions
-	calm = "#897559",
-	warn = "#663235",
-	wild = "#CE3D45",
-	dawn = "#E99A68",
-}, {
-	__index = function(self, index)
-		rawset(self, index, "#0000ff")
-		return rawget(self, index)
-	end
-})
 
 local function Describe(self, context)
 	local description = nil
 	local control = context.config["nightmareclock_display"] 
 	local hasMedallion = false
-	local icon = nil
 
 	if control == 1 then
 		if context.player.components.inventory:Has("nightmare_timepiece", 1) then
@@ -122,19 +131,25 @@ local function Describe(self, context)
 		end
 	end
 
-	local phase = context.lstr.nightmareclock.phases[save_data.phase] or ("\"" .. save_data.phase .. "\"")
+	local phase_metadata = phases_data[save_data.phase]
 
-	description = string.format(context.lstr.nightmareclock.phase_info, colors[save_data.phase], phase, remaining_time)
-	icon = icons[save_data.phase]
+	local phase_string = context.lstr.nightmareclock.phases[save_data.phase] or ("\"" .. save_data.phase .. "\"")
+	description = string.format(context.lstr.nightmareclock.phase_info, phase_metadata.color, phase_string, remaining_time)
+	
+
+	local phase_metadata = phases_data[save_data.phase]
 
 	return {
-		priority = 0,
+		priority = phase_metadata.priority or 0,
 		description = description,
-		icon = icon,
+		icon = {
+			atlas = phase_metadata.atlas or nil,
+			tex = phase_metadata.tex or nil,
+		},
 		worldly = true,
 		locked_phase = save_data.lockedphase,
 		remaining_time_in_phase = save_data.remainingtimeinphase,
-		phase = phase
+		phase = phase_string
 	}
 end
 
