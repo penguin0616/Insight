@@ -32,6 +32,12 @@ local LEVEL_COLORS = setmetatable({
 
 local function AbigailDescribe(self, context)
 	local description = nil
+
+	if type(self.bondlevel) ~= "number" or type(self.maxbondlevel) ~= "number" then
+		-- People once again breaking things.
+		return
+	end
+	
 	local levelup_time = self.bondleveltimer and context.time:SimpleProcess(self.bondlevelmaxtime - self.bondleveltimer)
 
 	if context.usingIcons then 
