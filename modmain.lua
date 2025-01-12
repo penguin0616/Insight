@@ -3092,10 +3092,10 @@ if IS_DST then
 				
 				if player.userid ~= "" then
 					shard_players[player.userid] = {
-						health = player.components.health and Insight.descriptors.health.GetData(player.components.health) or nil,
-						sanity = player.components.sanity and Insight.descriptors.sanity.GetData(player.components.sanity) or nil,
-						hunger = player.components.hunger and Insight.descriptors.hunger.GetData(player.components.hunger) or nil,
-						wereness = player.components.wereness and Insight.descriptors.wereness.GetData(player.components.wereness) or nil,
+						health = player.components.health and Insight.descriptors.health and Insight.descriptors.health.GetData(player.components.health) or nil,
+						sanity = player.components.sanity and Insight.descriptors.sanity and Insight.descriptors.sanity.GetData(player.components.sanity) or nil,
+						hunger = player.components.hunger and Insight.descriptors.hunger and Insight.descriptors.hunger.GetData(player.components.hunger) or nil,
+						wereness = player.components.wereness and Insight.descriptors.wereness and Insight.descriptors.wereness.GetData(player.components.wereness) or nil,
 					}
 				end 
 			end
