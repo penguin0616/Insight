@@ -22,8 +22,10 @@ directory. If not, please refer to
 local function Describe(inst, context)
 	if TheWorld.components.rabbitkingmanager and Insight.descriptors.rabbitkingmanager and Insight.descriptors.rabbitkingmanager.DescribeCarrotsFed then
 		local thing = Insight.descriptors.rabbitkingmanager.DescribeCarrotsFed(TheWorld.components.rabbitkingmanager, context)
-		thing.worldly = nil
-		return thing
+		if thing then
+			thing.worldly = nil
+			return thing
+		end
 	end
 end
 
