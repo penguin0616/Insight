@@ -1386,7 +1386,7 @@ return {
 	upgrademodule = {
 		module_describers = {
 			maxhealth = "<color=HEALTH>최대 체력</color> <color=HEALTH>%d</color> 증가.",
-			maxsanity = "color=SANITY>최대 정신력</color> <color=SANITY>%d</color> 증가.",
+			maxsanity = "<color=SANITY>최대 정신력</color> <color=SANITY>%d</color> 증가.",
 			movespeed = "<color=DAIRY>이동 속도</color> %s 증가.",
 			heat = "<color=#cc0000>최저 체온</color> <color=#cc0000>%d</color> 증가 (동결 면역).",
 			heat_drying = "<color=#cc000>건조 속도</color> <color=#cc0000>%.1f</color> 증가.",
@@ -1394,7 +1394,7 @@ return {
 			taser = "피격 시 적에게 <color=WET>%d</color> %s 반사 (쿨타임: %.1f).",
 			light = "<color=LIGHT>발광 반경</color> <color=LIGHT>%.1f</color> 제공, (2개 장착 시 <color=LIGHT>%.1f</color> 반경 추가)",
 			maxhunger = "<color=HUNGER>최대 허기</color> <color=HUNGER>%d</color> 증가.",
-			music = "color=SANITY>정신력 오라</color> <color=SANITY>%+.1f/분</color> 제공, 범위: <color=SANITY>%.1f</color> 타일.",
+			music = "<color=SANITY>정신력 오라</color> <color=SANITY>%+.1f/분</color> 제공, 범위: <color=SANITY>%.1f</color> 타일.",
 			music_tend = "주변 식물에게 말을 걸어줌, <color=NATURE>%.1f</color> 타일.",
 			bee = "<color=HEALTH>%d 체력 재생/%d초</color> (<color=HEALTH>%d/일</color>).",
 		},
