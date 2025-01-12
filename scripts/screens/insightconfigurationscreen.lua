@@ -371,7 +371,7 @@ local function ConfigOptionCtor(context, index)
 				if (self.data.saved ~= nil and v.data == self.data.saved) or (self.data.saved == nil and v.data == self.data.default) then
 					selected = i
 				end
-				table.insert(spinner_options, { text=v.description, data=v.data })
+				table.insert(spinner_options, { text=tostring(v.description), data=v.data })
 			end
 			
 			self.option_widgets.spinner:SetOptions(spinner_options)

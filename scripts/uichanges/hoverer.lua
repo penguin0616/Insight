@@ -18,6 +18,10 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
+
+
 local Text = require("widgets/text")
 local RichText = import("widgets/RichText")
 local infotext_common = import("uichanges/infotext_common").Initialize()
@@ -53,6 +57,7 @@ local debug_getinfo = debug.getinfo
 local math_clamp = math.clamp
 local string_find = string.find
 local string_sub = string.sub
+local string_split = string.split
 local math_ceil = math.ceil
 local TheInput_IsKeyDown = TheInput.IsKeyDown
 local TheInputProxy_GetLocalizedControl = TheInputProxy.GetLocalizedControl
@@ -111,9 +116,11 @@ local function OnHovererPostInit(hoverer)
 	end
 	-- TheInput:GetScreenPosition()
 
+	-- GetIntegratedBackpack
+
 	if true then
-		local YOFFSETUP = -80
-		local YOFFSETDOWN = -50
+		--local YOFFSETUP = -80
+		--local YOFFSETDOWN = -50
 		
 		local XOFFSET = 10
 		function hoverer:UpdatePosition(x, y)
@@ -173,8 +180,17 @@ local function OnHovererPostInit(hoverer)
 				I thought maybe the 2 line equilibrium was due to the "<EntityDisplayName>\nInspect" but that doesn't seem to be it?
 			]]
 
+			local USE_INTEGRATED_MODIFIER = localPlayer and localPlayer.HUD 
+											and localPlayer.HUD.controls
+											and localPlayer.HUD.controls.inv
+											and localPlayer.HUD.controls.inv.integrated_backpack -- TheInput:ControllerAttached() or Profile:GetIntegratedBackpack()
+			
+			-- Feeling like one of those wizards right now. I experimented with the *2 modifier until I realized the behaviour
+			-- seemed similar to the whole -2 things I have to do for lines. What do you know, it worked!
+			local INTEGRATED_MODIFIER = USE_INTEGRATED_MODIFIER and 2 or 1
+
 			-- Based on the above observation, this formula made sense to use.
-			local corrective_padding = (self.insightText.line_count - 2) * -(self.text.size / 2)
+			local corrective_padding = (self.insightText.line_count - (2*INTEGRATED_MODIFIER)) * -(self.text.size / 2)
 			-- However, alone it's not enough. It's still a little off. That's where we need the scaling.
 			local y_min = base_padding + (corrective_padding * scale.y)
 
@@ -189,10 +205,13 @@ local function OnHovererPostInit(hoverer)
 				down = down - (30 - self.text.size)
 			end
 
-			local y_max = scr_h - down * scale.y
+
+			-- y_min is the bottom of the screen
+			-- y_max is the top of the screen
+
+			local y_max = scr_h - (down * scale.y) 
 			-- I must be going crazy, this is being quite inconsistent.
 
-			-- Clamps could be changed to ternary for an incredibly slight performance gain.
 			self:SetPosition(
 				math_clamp(x, x_min, x_max),
 				math_clamp(y, y_min, y_max),
@@ -249,39 +268,78 @@ local function OnHovererPostInit(hoverer)
 				text = text .. prefab
 			end
 		end
+
+		local MAX_LINES = infotext_common.configs.hoverer_line_truncation
 		
 		if entityInformation then
-			-- control pressed doesn't have the game focus issues (alt+tab keeps the key down) and handles the changed keybinds in control menu. 
+			-- IsControlPressed doesn't have the game focus issues (alt+tab keeps the key down) and handles the changed keybinds in control menu. 
+			-- CONTROL_FORCE_INSPECT is normally Left Alt.
+
 			if TheInput_IsControlPressed(TheInput, CONTROL_FORCE_INSPECT) then
+				-- CONTROL_FORCE_TRADE is normally Left Shift.
+				-- So, if they're holding Alt and Left Shift, then they want to be able to see all of the information.
+				-- If they're only olding alt, and they have the alt-only config option, then we show the normal information
+				-- instead of the alt information.
 				local altOnlyIsVerbose = TheInput_IsControlPressed(TheInput, CONTROL_FORCE_TRADE)
 				if infotext_common.configs.alt_only_information == true and altOnlyIsVerbose == false then
+					-- They're using the config option and not holding shift, so only show the normal information.
 					itemDescription = entityInformation.information
-
-					if entityInformation.information ~= entityInformation.alt_information then
-						local pos = string_find(text, "\n")
-						if pos then
-							text = string_sub(text, 1, pos - 1) .. (canShowExtendedInfoIndicator and "*" or "") .. string_sub(text, pos)
-						else
-							text = text .. "*"
-						end
-					end
-					
 				else
+					-- They're holding their designated "show all information key" (either LShift or LALT) depending on config,
+					-- so We know they absolutely want all the information now, so show that.
 					itemDescription = entityInformation.alt_information
+					MAX_LINES = nil
 				end
 			elseif infotext_common.configs.alt_only_information then
+				-- If alt isn't pressed and they have alt only information, then they don't get any information.
 				itemDescription = nil
 			else
+				-- Standard situation, standard user. 
 				itemDescription = entityInformation.information
-				if entityInformation.information ~= entityInformation.alt_information then
-					local pos = string_find(text, "\n")
-					if pos then
-						text = string_sub(text, 1, pos - 1) .. (canShowExtendedInfoIndicator and "*" or "") .. string_sub(text, pos)
-					else
-						text = text .. (canShowExtendedInfoIndicator and "*" or "")
+			end
+
+			-- I guess I never actually hooked up the configuration? 
+			-- Either that or I accidentally removed the hook at some point.
+			local canShowExtendedInfoIndicator = true 
+
+			-- Okay, we need to do our line truncation before we do the alt_information check.
+			if type(MAX_LINES) == "number" and itemDescription then
+				-- Oh boy, here we go.
+				local trimmed = RichText.TrimNewlines(itemDescription)
+				local lines = string_split(trimmed, "\n")
+				local fixed = ""
+				for i = 1, MAX_LINES do
+					local line = lines[i]
+					if not line then
+						break
+					end
+
+					fixed = fixed .. lines[i]
+					if i < MAX_LINES then
+						fixed = fixed .. "\n"
 					end
 				end
+
+				if MAX_LINES < #lines then
+					--fixed = fixed .. " <color=#888888>.</color><color=#222222>.</color><color=#888888>.</color>"
+					fixed = fixed .. " ....."
+				end
+
+				itemDescription = fixed
 			end
+
+
+			if entityInformation.information ~= entityInformation.alt_information then
+				local pos = string_find(text, "\n")
+				if pos then
+					text = string_sub(text, 1, pos - 1) .. (canShowExtendedInfoIndicator and "*" or "") .. string_sub(text, pos)
+				else
+					--text = text .. "*"
+					text = text .. (canShowExtendedInfoIndicator and "*" or "")
+				end
+			end
+
+
 
 			--[[
 				if altOnlyIsVerbose == true then
@@ -294,6 +352,8 @@ local function OnHovererPostInit(hoverer)
 
 			--itemInfo = (TheInput:IsKeyDown(KEY_LALT) and itemInfo.alt_information) or itemInfo.information or nil
 		end
+
+
 		
 		if infotext_common.configs.hover_range_indicator then
 			if item == nil or entityInformation == nil then
@@ -404,6 +464,7 @@ local function OnHovererPostInit(hoverer)
 
 		SetString(self, text .. textPadding)
 	end
+	
 
 	hoverer.secondarytext.SetString = function(self, text)
 		-- stuff like boats, where the action is far below

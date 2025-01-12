@@ -145,7 +145,7 @@ local function T(tbl, key)
 	if locale and ChooseTranslationTable then
 		return ChooseTranslationTable(tbl, key)
 	else
-		return tbl[1]
+		return tbl["en"] or tbl[1]
 	end
 	--return GetTranslation
 end
@@ -249,6 +249,9 @@ end
 --==========================================================================================
 --[[ Config Primers ]]
 --==========================================================================================
+
+local HOVERER_TRUNCATION_AMOUNTS = { "None", 1, 2, 3, 4, 5 }
+
 --[[ Font Sizes ]]
 local FONT_SIZE = {
 	INSIGHT = {
@@ -262,28 +265,32 @@ local FONT_SIZE = {
 local FONTS = {"UIFONT", "TITLEFONT", "DIALOGFONT", "NUMBERFONT", "BODYTEXTFONT", "TALKINGFONT"}
 
 --- Generates options from a list.
----@param typ boolean False for text, True for options.
-local function GenerateOptionsFromList(typ, list, hoverfn)
+---@param for_config boolean If false, will generate results suitable for the translation table. true generates the option for the configuration option.
+---@param list table The list of stuff to be generating from.
+---@param hoverfn function|nil The hover table.
+local function GenerateOptionsFromList(for_config, list, hoverfn)
 	local t = {}
 	for i = 1, #list do
 		local opt = list[i]
 
-		if typ == false then
+		if for_config == false then
 			local hover = hoverfn and hoverfn(i, opt)
 			t[opt] = { 
 				description = {
-					opt -- English
+					tostring(opt) -- English
 				}, 
 				hover = hover
 			}
-		elseif typ == true then
+		elseif for_config == true then
 			t[#t+1] = { 
 				data = opt
 			}
 		else
-			yahoo()
+			-- Just to get us to trigger an error.
+			unknown_arg_detected()
 		end
 	end
+
 	return t
 end
 
@@ -1012,7 +1019,7 @@ STRINGS = {
 			["ru"] = "Какой шрифт используется Insight для своего текста",
 			["ko"] = "Insight가 텍스트에 사용할 글꼴을 선택합니다.",
 		},
-		options = GenerateOptionsFromList(false, FONTS, function(i,v) return {("Insight will use the game font '%s'"):format(v)} end),
+		options = GenerateOptionsFromList(false, FONTS, function(i,v) return {["en"]=("Insight will use the game font '%s'"):format(v)} end),
 	},
 	hoverer_insight_font_size = {
 		label = {
@@ -1070,6 +1077,31 @@ STRINGS = {
 			["ko"] = "컨트롤러를 사용할 때 Insight의 Follow 텍스트 글꼴 크기를 설정합니다.",
 		},
 		options = GenerateFontSizeTexts(FONT_SIZE.INSIGHT.FOLLOWTEXT),
+	},
+	hoverer_line_truncation = {
+		label = {
+			"Hover Text Truncation",
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to truncate the information shown by Insight on hover. Hold Inspect to disable truncation.",
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = GenerateOptionsFromList(false, HOVERER_TRUNCATION_AMOUNTS, function(i,v) 
+			if v == HOVERER_TRUNCATION_AMOUNTS[1] then
+				return {["en"]=("Text will not be truncated.")}
+			else
+				return {["en"]=("Text will be truncated at '%s' line(s)"):format(v)} 
+			end
+		end),
 	},
 	alt_only_information = {
 		label = {
@@ -6701,6 +6733,13 @@ configuration_options = {
 		name = "followtext_insight_font_size",
 		options = GenerateFontSizeOptions(FONT_SIZE.INSIGHT.FOLLOWTEXT),
 		default = FONT_SIZE.INSIGHT.FOLLOWTEXT[2],
+		client = true,
+		tags = {},
+	},
+	{
+		name = "hoverer_line_truncation",
+		options = GenerateOptionsFromList(true, HOVERER_TRUNCATION_AMOUNTS), 
+		default = HOVERER_TRUNCATION_AMOUNTS[1],
 		client = true,
 		tags = {},
 	},

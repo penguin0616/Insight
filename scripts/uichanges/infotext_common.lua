@@ -20,7 +20,7 @@ directory. If not, please refer to
 
 local configs_to_load = {
 	"DEBUG_SHOW_PREFAB", "insight_font", "hoverer_insight_font_size", "inventorybar_insight_font_size", 
-	"followtext_insight_font_size", "alt_only_information", "hover_range_indicator", "extended_info_indicator"
+	"followtext_insight_font_size", "hoverer_line_truncation", "alt_only_information", "hover_range_indicator", "extended_info_indicator"
 }
 
 local module = {

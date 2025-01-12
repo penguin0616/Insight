@@ -79,7 +79,7 @@ function _LookupIcon(icon) -- took me a minute but i remember that this is here 
 end
 
 function LookupString(str)
-	local fields = string.split(str, ".")
+	local fields = _string.split(str, ".")
 	local current = STRINGS
 	for i,v in ipairs(fields) do
 		current = current[v]
@@ -342,7 +342,7 @@ function RichText:SetString(str, forced)
 			-- Now we need to deal with cases where our chunks have newlines in them.
 			-- When we hit a newline, we need to break off the current one and continue onto a new one.
 			-- The issue is, we need to maintain the tag state when we do so.
-			for segment, newlines in string.gmatch(text, "([^\n]*)(\n*)") do
+			for segment, newlines in _string.gmatch(text, "([^\n]*)(\n*)") do
 				if #segment > 0 then
 					-- We've got text, add it to the line.
 					llen = llen + 1
@@ -491,7 +491,7 @@ function RichText:NewLine(pieces)
 					padding = padding + 2
 				end
 
-				end_spaces = #string.match(prev:GetString(), "(%s*)$")
+				end_spaces = #_string.match(prev:GetString(), "(%s*)$")
 			end
 			
 
@@ -515,12 +515,12 @@ function RichText:NewLine(pieces)
 					--lp = lp - 1.6 -- space width at end
 					--padding = padding + 1.6
 
-					--lp = lp + CalculateSize(string.rep(" ", end_spaces)) - 0.8
-					--padding = padding - CalculateSize(string.rep(" ", end_spaces)) + 0.8
+					--lp = lp + CalculateSize(_string.rep(" ", end_spaces)) - 0.8
+					--padding = padding - CalculateSize(_string.rep(" ", end_spaces)) + 0.8
 
 					-- this solution works for both text and icons, sweet
-					lp = lp + CalculateSize(string.rep(" ", end_spaces)) / 2
-					padding = padding - CalculateSize(string.rep(" ", end_spaces)) / 2
+					lp = lp + CalculateSize(_string.rep(" ", end_spaces)) / 2
+					padding = padding - CalculateSize(_string.rep(" ", end_spaces)) / 2
 				end
 			end
 		end
@@ -602,7 +602,7 @@ function RichText:NewLine(pieces)
 end
 
 function RichText:__tostring()
-	return string.format("%s - %s", self.name, self.raw_text or "<null>")
+	return _string.format("%s - %s", self.name, self.raw_text or "<null>")
 end
 
 
