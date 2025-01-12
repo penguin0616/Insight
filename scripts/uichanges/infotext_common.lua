@@ -45,6 +45,7 @@ module.Initialize = function()
 		module.configs[v] = GetModConfigData(v, true)
 	end
 
+	-- Depended on by itemdetail to update font.
 	module.new_configs_event = ClientCoreEventer:CreateEvent("new_configs")
 
 	OnContextUpdate:AddListener("infotext_common", function(context) 

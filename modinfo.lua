@@ -1505,9 +1505,9 @@ STRINGS = {
 			},
 		},
 	},
-	highlighting_night = {
+	highlighting_darkness = {
 		label = {
-			"Highlighting items in darkness", 
+			"Highlighting in Darkness", 
 			["zh"] = "高亮黑暗中的物品",
 			["br"] = nil,
 			["es"] = nil,
@@ -1515,7 +1515,7 @@ STRINGS = {
 			["ko"] = nil,
 		},
 		hover = {
-			"When disabled, items in darkness would not be highlighted", 
+			"When disabled, items in darkness will not receive a highlighting glow.", 
 			["zh"] = "如果关闭，黑暗中的物品不会被高亮标出",
 			["br"] = nil,
 			["es"] = nil,
@@ -1526,7 +1526,7 @@ STRINGS = {
 			[false] = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
-					"Highlighting would not apply in darkness",
+					"Items in darkness do not get highlighting.",
 					["zh"] = "黑暗中不使用高亮显示。",
 					["br"] = nil,
 					["es"] = nil,
@@ -1537,7 +1537,7 @@ STRINGS = {
 			[true] = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
-					"Highlighting would apply in darkness",
+					"Items in darkness do get highlighting.",
 					["zh"] = "黑暗中使用高亮显示。",
 					["br"] = nil,
 					["es"] = nil,
@@ -6151,6 +6151,7 @@ STRINGS = {
 			},
 		},
 	},
+	--[[
 	extended_info_indicator = {
 		label = {
 			"More Information Hint", 
@@ -6193,6 +6194,7 @@ STRINGS = {
 			},
 		},
 	},
+	--]]
 	info_preload = {
 		label = {
 			"Information preloading", 
@@ -6783,7 +6785,7 @@ configuration_options = {
 		tags = {},
 	},
 	{
-		name = "highlighting_night",
+		name = "highlighting_darkness",
 		options = {
 			{data = false},
 			{data = true},
@@ -7631,6 +7633,7 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
+	--[[
 	{
 		name = "extended_info_indicator",
 		options = {
@@ -7641,6 +7644,7 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
+	--]]
 	--[[
 	{
 		name = "unrandomizer",

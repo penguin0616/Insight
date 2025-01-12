@@ -29,8 +29,9 @@ local cooking = require("cooking")
 
 
 local highlightColorKey = "_insight_highlight"
-local fuel_highlighting = nil
-local highlighting_enabled = nil
+local FUEL_HIGHLIGHTING_ENABLED = nil
+local HIGHLIGHTING_ENABLED = nil
+local DARKNESS_HIGHLIGHTING_ENABLED = nil
 
 local world_type = GetWorldType()
 local is_client_host = IsClientHost()
@@ -185,7 +186,9 @@ local function RemoveHighlight(inst)
 					inst.AnimState:SetMultColour(previous[1], previous[2], previous[3], previous[4])
 				end
 			else
-				inst.AnimState:SetLightOverride(0)
+				if DARKNESS_HIGHLIGHTING_ENABLED then
+					inst.AnimState:SetLightOverride(0)
+				end
 				inst.AnimState:SetAddColour(previous[1], previous[2], previous[3], previous[4])
 			end
 		else
@@ -236,7 +239,9 @@ local function ApplyHighlight(inst, color_key)
 			else
 				inst[highlightColorKey] = inst[highlightColorKey] or {inst.AnimState:GetAddColour()}
 				inst[highlightColorKey][5] = use_mult
-				inst.AnimState:SetLightOverride(.4)
+				if DARKNESS_HIGHLIGHTING_ENABLED then
+					inst.AnimState:SetLightOverride(.4)
+				end
 				inst.AnimState:SetAddColour(color[1], color[2], color[3], color[4])
 			end
 			changed[inst] = true
@@ -264,7 +269,7 @@ local function Comparator(held, inst)
 
 	-- fuel highlighting
 	if isSearchingForFoodTag == false and held.prefab and inst.prefab then -- IsPrefab(held) and IsPrefab(inst)
-		if fuel_highlighting and insight:DoesFuelMatchFueled(held, inst) then
+		if FUEL_HIGHLIGHTING_ENABLED and insight:DoesFuelMatchFueled(held, inst) then
 			return COLOR_TYPES.FUEL
 		end
 	end
@@ -368,7 +373,7 @@ local function EvaluateRelevance(inst, isApplication)
 		return
 	end
 
-	if not highlighting_enabled then
+	if not HIGHLIGHTING_ENABLED then
 	return
 	end
 
@@ -468,7 +473,7 @@ end
 
 local function DoRelevanceChecks(force_apply)
 	--mprint("DoRelevanceChecks ---------------------------------------------------------------------------------------------------------------")
-	if not highlighting_enabled then
+	if not HIGHLIGHTING_ENABLED then
 		return
 	end
 	--push("DoRelevanceChecks")
@@ -670,8 +675,9 @@ highlighting.SetFuelMatchColor = function(key)
 end
 
 highlighting.UpdateSettings = function(context)
-	fuel_highlighting = context.config["fuel_highlighting"]
-	highlighting_enabled = context.config["highlighting"]
+	FUEL_HIGHLIGHTING_ENABLED = context.config["fuel_highlighting"]
+	HIGHLIGHTING_ENABLED = context.config["highlighting"]
+	DARKNESS_HIGHLIGHTING_ENABLED = context.config["highlighting_darkness"]
 
 	highlighting.SetMatchColor(context.config["highlighting_color"])
 	highlighting.SetFuelMatchColor(context.config["fuel_highlighting_color"])
