@@ -842,7 +842,7 @@ return {
 
 	-- itemmimic.lua
 	itemmimic = {
-		time_to_reveal = "<prefab=itemmimic_revealed> reveal in: %s",
+		--time_to_reveal = "<prefab=itemmimic_revealed> reveal in: %s",
 	},
 
 	-- kitcoonden.lua
@@ -863,21 +863,26 @@ return {
 	--followers = "Followers: %s",
 
 	-- lightninggoat.lua
-	lightninggoat_charge = "Will discharge in %s day(s).",
+	--lightninggoat_charge = "Will discharge in %s day(s).",
+
+	-- linkeditem.lua
+	linkeditem = {
+		--owner = "Owner: %s",
+	},
 
 	-- lunarrift_portal.lua [Prefab]
 	lunarrift_portal = {
 		--crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>available</sub> / %d<sub>total</sub> / %d<sub>max</sub>", -- I can't think of a way to word 
 		--next_crystal = "Next <color=#4093B2><prefab=lunarrift_crystal_big></color> spawns in %s",
-		close = "<prefab=LUNARRIFT_PORTAL> will close in approximately %s",
+		--close = "<prefab=LUNARRIFT_PORTAL> will close in approximately %s",
 	},
 	
 	-- lunarthrall_plantspawner.lua
 	lunarthrall_plantspawner = {
-		infested_count = "%d",
-		spawn = "Gestalts spawn in %s",
-		next_wave = "Next wave in %s",
-		remain_waves = "%d waves remaining",
+		--infested_count = "%d",
+		--spawn = "Gestalts spawn in %s",
+		--next_wave = "Next wave in %s",
+		--remain_waves = "%d waves remaining",
 	},
 
 	-- lureplant.lua [Prefab]

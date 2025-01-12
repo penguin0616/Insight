@@ -856,6 +856,11 @@ return {
 	-- lightninggoat.lua
 	lightninggoat_charge = "Разрядится через %s день(дней).",
 
+	-- linkeditem.lua
+	linkeditem = {
+		owner = "Owner: %s",
+	},
+
 	-- lunarrift_portal.lua [Prefab]
 	lunarrift_portal = {
 		crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>доступно</sub> / %d<sub>всего</sub> / %d<sub>макс</sub>",

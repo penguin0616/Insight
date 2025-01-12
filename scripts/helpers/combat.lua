@@ -71,16 +71,26 @@ for i,v in pairs(WEAPON_STIMULI_DEFS) do v.name = i end
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
 
+--for i,v in pairs(_G.Prefabs) do if v.fn and debug.getinfo(v.fn, "S").source == "scripts/prefabs/slingshotammo.lua" and v.name:sub(-5) == "_proj" then horse=v cprint(v) break end end
+
+
 local function LoadSlingAmmoData()
 	SLINGSHOT_AMMO_DATA = {}
 
-	-- load slingshot ammo damages from prefab upvalues
+	local ammo_data_key = CurrentRelease.GreaterOrEqualTo("R36_ST_WENDWALTWORT") and "data" or "v"
+
+	-- Load slingshot ammo damages from prefab upvalues.
+	-- The actual "ammo" table isn't easily accessible, so we'll just do this.
 	for i,v in pairs(_G.Prefabs) do
 		-- skins (glomling_winter) are missing .fn i think
 		if v.fn and debug.getinfo(v.fn, "S").source == "scripts/prefabs/slingshotammo.lua" then
+			--cprint("something", v.name)
 			if v.name:sub(-5) == "_proj" then
-				local ammo_data = util.getupvalue(v.fn, "v")
-				SLINGSHOT_AMMO_DATA[ammo_data.name] = ammo_data
+				local ammo_data = util.getupvalue(v.fn, ammo_data_key)
+				--cprint("\tammo data for", v.name, "=", ammo_data)
+				if type(ammo_data) == "table" then
+					SLINGSHOT_AMMO_DATA[ammo_data.name] = ammo_data
+				end
 			end
 		end
 	end

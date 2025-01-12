@@ -857,6 +857,11 @@ return {
 	-- lightninggoat.lua
 	lightninggoat_charge = "Irá descarregar em %s dia(s).",
 
+	-- linkeditem.lua
+	linkeditem = {
+		owner = "Owner: %s",
+	},
+
 	-- lunarrift_portal.lua [Prefab]
 	lunarrift_portal = {
 		crystals = "<color=#4093B2><prefab=lunarrift_crystal_big></color>: %d<sub>disponível</sub> / %d<sub>total</sub> / %d<sub>max</sub>", -- I can't think of a way to word 

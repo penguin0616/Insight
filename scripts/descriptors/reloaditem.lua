@@ -25,7 +25,7 @@ local function Describe(self, context)
 
 	if self.inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
 		local data = combatHelper.GetSlingshotAmmoData(self.inst.prefab)
-		local damage = data and data.damage or 0
+		local damage = data and data.damage or "0?"
 		description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage)
 	end
 
