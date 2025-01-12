@@ -119,7 +119,8 @@ function Shard_Insight:UpdateLocalWorldData()
 	-- print("local_data fetching..")
 	for name, descriptor in pairs(self.shard_data_fetcher) do
 		local described = descriptor()
-		if described then
+		-- TODO: All these "set" things are returning numbers, typically cooldowns, instead of describeds.
+		if type(described) == "table" then
 			described.shard_data = shard_data
 			local_data[name] = described
 		end
