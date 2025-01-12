@@ -54,7 +54,7 @@ local debuff_to_prefab = {
 	buff_attack = "spice_chili",
 	buff_sleepresistance = "shroomcake",
 
-	
+	healingsalve_acidbuff = "healingsalve_acid",
 	tillweedsalve_buff = "tillweedsalve",
 	healthregenbuff = "jellybean",
 	sweettea_buff = "sweettea",
@@ -96,6 +96,9 @@ local function GetDebuffRemainingTime(debuffInst, context)
 			-- doesnt have a single timer
 			remaining_time = "Buff has multiple timers?"
 		end
+	elseif debuffInst.task and Periodic.is_instance(debuffInst.task) then
+		-- I guess healingsalve_acid does it through a task.
+		remaining_time = context.time:SimpleProcess(GetTaskRemaining(debuffInst.task))
 	else
 		remaining_time = "No timer specified"
 	end

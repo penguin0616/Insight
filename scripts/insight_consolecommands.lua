@@ -239,6 +239,7 @@ DST_CONSOLE_COMMANDS.c_noshadows = function(x)
 	if x then
 		c_removeall "nightmarebeak"
 		c_removeall "crawlingnightmare"
+		c_removeall "ruinsnightmare"
 	end
 end
 DST_CONSOLE_COMMANDS.c_rain = function(bool)

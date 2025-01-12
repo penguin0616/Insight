@@ -1094,6 +1094,15 @@ if IS_DST then
 	end
 end
 
+--[[
+do
+	Task = module.recursive_getupvalue(StartStaticThread, "Task")
+	if not Task then
+		error("Cannot find Task")
+	end
+end
+--]]
+
 
 module.LoadComponent = assert(module.getupvalue(EntityScript.AddComponent, "LoadComponent"), "Failed to retrieve EntityScript -> LoadComponent")
 

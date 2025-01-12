@@ -238,6 +238,10 @@ debuff_definitions["buff_sleepresistance"] = {
 }
 
 -- Other buffs
+debuff_definitions["healingsalve_acidbuff"] = {
+	duration = TUNING.HEALINGSALVE_ACIDBUFF_DURATION,
+}
+
 debuff_definitions["tillweedsalve_buff"] = {
 	duration = TUNING.TILLWEEDSALVE_DURATION,
 	tick_rate = TUNING.TILLWEEDSALVE_TICK_RATE,
@@ -338,6 +342,8 @@ end
 --=================================================================================================================
 --=================================================================================================================
 item_debuffs["batnosehat"] = {"hungerregenbuff"}
+
+item_debuffs["healingsalve_acid"] = {"healingsalve_acidbuff"}
 
 item_debuffs["tillweedsalve"] = {"tillweedsalve_buff"}
 

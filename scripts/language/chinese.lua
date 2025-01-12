@@ -413,6 +413,10 @@ return {
 			description = "抵抗<color=MONSTER>睡眠</color>, 持续 {duration} 秒",
 		},
 
+		["healingsalve_acidbuff"] = {
+			name = "<color=#ded15e>Acid Resistance</color>",
+			description = "Immune to <color=#ded15e>acid rain</color> for {duration}(s)."
+		},
 		["tillweedsalve_buff"] = {
 			name = "<color=HEALTH>生命回复</color>",
 			description = "{duration} 秒内回复 <color=HEALTH>{amount} 生命</color>",

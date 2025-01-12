@@ -417,6 +417,10 @@ return {
 			description = "수면 <color=MONSTER>내성 증가</color>, {duration}(초) 지속.",
 		},
 		
+		["healingsalve_acidbuff"] = {
+			name = "<color=#ded15e>Acid Resistance</color>",
+			description = "Immune to <color=#ded15e>acid rain</color> for {duration}(s)."
+		},
 		["tillweedsalve_buff"] = {
 			name = "<color=HEALTH>체력 재생</color>",
 			description = "<color=HEALTH>{amount} 체력 재생</color>, {duration}(초) 지속.",

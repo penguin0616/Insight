@@ -417,6 +417,10 @@ return {
 			description = "Você está resistente à <color=MONSTER>sonolência</color> por {duration}(s).",
 		},
 		
+		["healingsalve_acidbuff"] = {
+			name = "<color=#ded15e>Acid Resistance</color>",
+			description = "Immune to <color=#ded15e>acid rain</color> for {duration}(s)."
+		},
 		["tillweedsalve_buff"] = {
 			name = nil,
 			description = "Regenera <color=HEALTH>{amount} vida</color> durante {duration}(s).",
