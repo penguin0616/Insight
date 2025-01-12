@@ -108,8 +108,13 @@ local function DescribeNone(self, context)
 
 		local is_acid_rain = AcidRainEnabled()
 
+		local moisture_percent = math.clamp(current_moisture / target_moisture, 0, 1)
+
 		local base_string = advanced and (
-			"%s: %s (<color=" .. WHITE:Lerp((is_acid_rain and ACID_RAIN_COLOR or RAIN_COLOR), current_moisture / _moistureceil:value()):ToHex() .. ">%.1f</color> / <color=" .. (is_acid_rain and "SHADOW_ALIGNED" or "WET") .. ">%.1f</color>)"
+			"%s: %s (<color=" .. WHITE:Lerp(
+				(is_acid_rain and ACID_RAIN_COLOR or RAIN_COLOR), 
+				moisture_percent
+			):ToHex() .. ">%.1f</color> / <color=" .. (is_acid_rain and "SHADOW_ALIGNED" or "WET") .. ">%.1f</color>)"
 		) or "%s: %s"
 
 		local other_string = is_acid_rain and context.lstr.weather.progress_to_acid_rain or context.lstr.weather.progress_to_rain
