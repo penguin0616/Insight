@@ -21,7 +21,7 @@ directory. If not, please refer to
 -- atrium_gate.lua [Prefab]
 local R15_QOL_WORLDSETTINGS = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS")
 
-local function GetRemainingCooldown(inst)
+local function GetCooldownData(inst)
 	local atriumgate_timer
 	-- destabilizing = time before reset
 	-- cooldown = time before can resocket the key
@@ -31,13 +31,19 @@ local function GetRemainingCooldown(inst)
 	else
 		atriumgate_timer = inst.components.timer:GetTimeLeft("cooldown")
 	end
-	return atriumgate_timer
+
+	return {
+		cooldown = atriumgate_timer
+	}
 end
 
 local function RemoteDescribe(data, context)
-	local atrium_gate_cooldown = data or -1
-	if atrium_gate_cooldown >= 0 then
-		local description = context.time:SimpleProcess(atrium_gate_cooldown)
+	if not data or not data.cooldown then
+		return
+	end
+
+	if data.cooldown >= 0 then
+		local description = context.time:SimpleProcess(data.cooldown)
 		return {
 			description = description,
 			icon = {
@@ -47,9 +53,10 @@ local function RemoteDescribe(data, context)
 			worldly = true, -- meeeh
 			prefably = true,
 			from = "prefab",
-			cooldown = atrium_gate_cooldown,
+			cooldown = data.cooldown,
 		}
 	end
+	
 	return nil
 end
 
@@ -71,7 +78,7 @@ local function StatusAnnouncementsDescribe(special_data, context)
 end
 
 return {
-	GetRemainingCooldown = GetRemainingCooldown,
+	GetCooldownData = GetCooldownData,
 
 	RemoteDescribe = RemoteDescribe,
 	StatusAnnouncementsDescribe = StatusAnnouncementsDescribe

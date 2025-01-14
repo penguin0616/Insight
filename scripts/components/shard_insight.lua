@@ -165,7 +165,9 @@ function Shard_Insight:SetAtriumGate(entity)
 	self.atrium_gate = entity
 
 	self:RegisterWorldDataFetcher("atrium_gate", function()
-		return Insight.prefab_descriptors.atrium_gate and Insight.prefab_descriptors.atrium_gate.GetRemainingCooldown and Insight.prefab_descriptors.atrium_gate.GetRemainingCooldown(entity) or nil
+		return Insight.prefab_descriptors.atrium_gate 
+			and Insight.prefab_descriptors.atrium_gate.GetCooldownData 
+			and Insight.prefab_descriptors.atrium_gate.GetCooldownData(entity) or nil
 	end)
 
 
@@ -183,7 +185,9 @@ function Shard_Insight:SetDragonflySpawner(entity)
 	end
 
 	self:RegisterWorldDataFetcher("dragonfly_spawner", function()
-		return Insight.prefab_descriptors.dragonfly_spawner and Insight.prefab_descriptors.dragonfly_spawner.GetRespawnTime and Insight.prefab_descriptors.dragonfly_spawner.GetRespawnTime(entity) or nil
+		return Insight.prefab_descriptors.dragonfly_spawner 
+			and Insight.prefab_descriptors.dragonfly_spawner.GetRespawnData 
+			and Insight.prefab_descriptors.dragonfly_spawner.GetRespawnData(entity) or nil
 	end)
 
 	entity:ListenForEvent("onremove", function()
@@ -199,7 +203,9 @@ function Shard_Insight:SetBeeQueenHive(entity)
 	end
 
 	self:RegisterWorldDataFetcher("beequeenhive", function()
-		return Insight.prefab_descriptors.beequeenhive and Insight.prefab_descriptors.beequeenhive.GetRespawnTime and Insight.prefab_descriptors.beequeenhive.GetRespawnTime(entity) or nil
+		return Insight.prefab_descriptors.beequeenhive 
+			and Insight.prefab_descriptors.beequeenhive.GetRespawnData 
+			and Insight.prefab_descriptors.beequeenhive.GetRespawnData(entity) or nil
 	end)
 
 	entity:ListenForEvent("onremove", function()
@@ -215,7 +221,9 @@ function Shard_Insight:SetTerrarium(entity)
 	end
 
 	self:RegisterWorldDataFetcher("terrarium", function()
-		return Insight.prefab_descriptors.terrarium and Insight.prefab_descriptors.terrarium.GetRemainingCooldown and Insight.prefab_descriptors.terrarium.GetRemainingCooldown(entity) or nil
+		return Insight.prefab_descriptors.terrarium 
+			and Insight.prefab_descriptors.terrarium.GetCooldownData 
+			and Insight.prefab_descriptors.terrarium.GetCooldownData(entity) or nil
 	end)
 
 	entity:ListenForEvent("onremove", function()

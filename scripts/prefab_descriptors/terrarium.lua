@@ -22,23 +22,23 @@ directory. If not, please refer to
 local HEALTH_PER_DAY = TUNING.EYEOFTERROR_HEALTHPCT_PERDAY * TUNING.EYEOFTERROR_HEALTH -- =250
 local MAX_GAIN_DAYS = 1/TUNING.EYEOFTERROR_HEALTHPCT_PERDAY -- =20
 
-local function GetRemainingCooldown(inst)
+local function GetCooldownData(inst)
 	if inst.components.worldsettingstimer then
-		return inst.components.worldsettingstimer:GetTimeLeft("cooldown")
+		return {
+			cooldown = inst.components.worldsettingstimer:GetTimeLeft("cooldown")
+		}
 	end
 end
 
 local function RemoteDescribe(data, context)
-	local cooldown = data or -1
-
-	if cooldown < 0 then
+	if not data or not data.cooldown then
 		return
 	end
 
 	return {
 		name = "terrarium",
 		priority = 0,
-		description = context.time:SimpleProcess(cooldown),
+		description = context.time:SimpleProcess(data.cooldown),
 		icon = {
 			atlas = "images/Terrarium.xml",
 			tex = "Terrarium.tex",
@@ -46,7 +46,7 @@ local function RemoteDescribe(data, context)
 		worldly = true,
 		prefably = true,
 		from = "prefab",
-		cooldown = cooldown,
+		cooldown = data.cooldown,
 	}
 end
 
@@ -150,7 +150,7 @@ local function StatusAnnouncementsDescribe(special_data, context, inventoryinst)
 end
 
 return {
-	GetRemainingCooldown = GetRemainingCooldown,
+	GetCooldownData = GetCooldownData,
 	
 	Describe = Describe,
 	RemoteDescribe = RemoteDescribe,
