@@ -147,6 +147,9 @@ local Insight = {
 		PLANAR = "#b079e8", -- -- darker #b079e8, lighter #c99cf7
 		LUNAR_ALIGNED = "#5ADFAD", -- Got from the bright edge of the lunar rift icon
 		SHADOW_ALIGNED = "#DD2C31", -- This was originally "#9C2C31", but I made it more intense because it looked too similar to HEALTH on wigfrid's lunar/shadow songs.
+	
+		PERCENT_GOOD = "#66cc00",
+		PERCENT_BAD = "#dd5555",
 	},
 
 	ENTITY_INFORMATION_FLAGS = {

@@ -1,5 +1,12 @@
 DST_CONSOLE_COMMANDS = {}
 
+DST_CONSOLE_COMMANDS.i_prepcombat = function()
+	c_setabsorption(.95)
+	c_setdamagemultiplier(5)
+	c_speedmult(2)
+	c_give'hambat'
+end
+
 DST_CONSOLE_COMMANDS.i_removecaveflowers = function()
 	c_removeall'flower_cave'
 	c_removeall'flower_cave_double'

@@ -21,6 +21,26 @@ directory. If not, please refer to
 -- planardamage.lua
 local combatHelper = import("helpers/combat")
 
+local function DescribeByScrapbook(inst, context)
+	local description = nil
+
+	-- Used for cases where it needs to be manually specified, such as houndstooth_blowpipe.
+	if not (inst.scrapbook_planardamage and type(inst.scrapbook_planardamage) == "number") then
+		return
+	end
+
+
+	local planar_damage = inst.scrapbook_planardamage
+	description = string.format(context.lstr.planardamage.planar_damage, Round(planar_damage, 1))
+
+	return {
+		name = "planardamage_scrapbook",
+		priority = combatHelper.DAMAGE_PRIORITY - 100,
+		description = description,
+		alt_description = alt_description
+	}
+end
+
 -- darker #b079e8
 -- lighter #c99cf7
 local function Describe(self, context)
@@ -29,6 +49,7 @@ local function Describe(self, context)
 	-- First time I've ever had a split config check like this.
 	if self.inst.components.weapon ~= nil then
 		if not context.config["weapon_damage"] then return end
+
 	elseif self.inst.components.health then
 		if not context.config["display_mob_attack_damage"] then return end
 	end
@@ -53,6 +74,7 @@ local function Describe(self, context)
 	end
 	
 	return {
+		name = "planardamage",
 		priority = combatHelper.DAMAGE_PRIORITY - 100,
 		description = description,
 		alt_description = alt_description
@@ -62,5 +84,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	DescribeByScrapbook = DescribeByScrapbook,
 }

@@ -21,41 +21,45 @@ directory. If not, please refer to
 -- damagetyperesist.lua
 local combatHelper = import("helpers/combat")
 
-local function Describe(self, context)
+local function DescribeModifiers(modifiers, context)
 	local description = nil
 
-	if self.inst.components.armor ~= nil then
-		if not context.config["armor"] then return end
-	end
-
-	local modifiers = {}
-	for tag, sml in pairs(self.tags) do
-		local percent = (sml:Get() - 1) * 100
-		-- Modifier is generally something like 1.1 or 0.9, where 1 is normal
-
+	local strings = {}
+	for tag, percent in pairs(modifiers) do
 		-- The signs are flipped across damagetypebonus/resist.
-		local percent_color = (percent < 0 and "#66cc00") or (percent > 0 and "#dd5555") or "#ffffff"
+		local percent_color = (percent < 0 and Insight.COLORS.PERCENT_GOOD) or (percent > 0 and Insight.COLORS.PERCENT_BAD) or "#ffffff"
 		
 		local type_color = combatHelper.DAMAGE_TYPE_COLORS[tag] or "#8c8c8c"
 		local name = context.lstr.damage_types[tag] or ("\"" .. tag .. "\"")
 		name = ApplyColor(name, type_color)
 		
-		modifiers[#modifiers+1] = string.format(context.lstr.damagetyperesist.modifier, percent_color, percent, name)
+		strings[#strings+1] = string.format(context.lstr.damagetyperesist.modifier, percent_color, percent, name)
 	end
 
-	description = table.concat(modifiers, "\n")
+	description = table.concat(strings, "\n")
 
 	if description == "" then description = nil end
 
 	return {
+		name = "damagetyperesist",
 		priority = combatHelper.DAMAGE_PRIORITY - 201,
 		description = description
 	}
 end
 
+local function Describe(self, context)
+	if self.inst.components.armor ~= nil then
+		if not context.config["armor"] then return end
+	end
+
+	local modifiers = combatHelper.GetDamageTypeModifiers(self)
+
+	return DescribeModifiers(modifiers, context)
+end
 
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	DescribeModifiers = DescribeModifiers,
 }

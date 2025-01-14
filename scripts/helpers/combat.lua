@@ -100,6 +100,21 @@ end
 --[[ Module Functions ]]
 --------------------------------------------------------------------------
 
+module.GetDamageTypeModifiers = function(component)
+	local modifiers = {}
+	
+	for tag, sml in pairs(component.tags) do
+		local percent = (sml:Get() - 1) * 100
+		-- Modifier is generally something like 1.1 or 0.9, where 1 is normall
+
+		modifiers[tag] = percent
+	end
+
+	return modifiers
+end
+
+
+
 --- Calculates the outgoing damage modifier of a character. 
 --- It likely only considers "standard" combat modifiers (i.e. Wolfgang, Wigfrid, Wendy).
 ---@param combat Component
