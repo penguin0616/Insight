@@ -26,6 +26,10 @@ local end_color = Color.fromHex("#ffffff") --Color.fromHex("#D1FFFF")
 local function Describe(self, context)
 	local description, alt_description = nil, nil
 
+	if not context.config["display_rechargeable"] then
+		return
+	end
+	
 	-- myth words theme has a myth_rechargeable component that screws with this.
 	-- why insight picks up a component with that name as rechargeable, i don't know.
 	-- they probably did something dumb.
@@ -37,8 +41,11 @@ local function Describe(self, context)
 	percent = not isbadnumber(percent) and percent or 0
 
 	local remaining_charge_time = self:GetTimeToCharge()
+	if isbadnumber(remaining_charge_time) then
+		remaining_charge_time = 0
+	end
 
-	if remaining_charge_time >= 0 then
+	if remaining_charge_time > 0 then
 		description = string.format(context.lstr.rechargeable.charged_in, 
 			ApplyColor(context.time:SimpleProcess(remaining_charge_time), start_color:Lerp(end_color, percent))
 		)

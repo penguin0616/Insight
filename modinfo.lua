@@ -5512,6 +5512,48 @@ STRINGS = {
 			},
 		},
 	},
+	display_rechargeable = {
+		label = {
+			"Rechargeable", 
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether rechargeable information is displayed.", 
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Rechargeable information will not be displayed.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Rechargeable information will be displayed.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
 	display_upgradeable = {
 		label = {
 			"Upgradeables", 
@@ -7541,6 +7583,15 @@ configuration_options = {
 	},
 	{
 		name = "display_timers",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = true,
+		tags = {"undefined"},
+	},
+	{
+		name = "display_rechargeable",
 		options = {
 			{data = false},
 			{data = true},
