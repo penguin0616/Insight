@@ -184,6 +184,8 @@ local function OnHovererPostInit(hoverer)
 											and localPlayer.HUD.controls
 											and localPlayer.HUD.controls.inv
 											and localPlayer.HUD.controls.inv.integrated_backpack -- TheInput:ControllerAttached() or Profile:GetIntegratedBackpack()
+											and localPlayer.replica.inventory
+											and localPlayer.replica.inventory:GetOverflowContainer()
 			
 			-- Feeling like one of those wizards right now. I experimented with the *2 modifier until I realized the behaviour
 			-- seemed similar to the whole -2 things I have to do for lines. What do you know, it worked!
