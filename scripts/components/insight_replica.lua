@@ -1218,7 +1218,7 @@ function Insight:StartTrackingEntity(ent, data)
 	if data.tex == nil and data.atlas == nil then
 		local tbl = ent.prefab and ResolvePrefabToImageTable(ent.prefab)
 
-		if tbl then
+		if tbl and tbl.tex and tbl.atlas then
 			data.tex = tbl.tex
 			data.atlas = tbl.atlas
 		end

@@ -369,7 +369,7 @@ function InsightTargetIndicator:GetAvatarAtlas()
 	-- Me
 	if self.config_data.atlas ~= nil then
 		-- Me
-		return self.config_data.atlas or DEFAULT_ATLAS
+		return self.config_data.atlas
 	end
 	
 	if self.is_mod_character and self.target ~= nil and not self.targetIsVector3 then
@@ -387,6 +387,8 @@ function InsightTargetIndicator:GetAvatarAtlas()
 
 		return location..starting..self.target.prefab..ending..".xml"
 	end
+
+	return DEFAULT_ATLAS
 end
 
 function InsightTargetIndicator:GetAvatar()
