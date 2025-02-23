@@ -607,7 +607,7 @@ local InsightConfigurationScreen = Class(Screen, function(self)
 	self.preset_button.move_on_click = false
 	self.preset_button:ForceImageSize(presetw, preseth)
 	self.preset_button:SetPosition(self.header_label:GetPosition() + Vector3(headerw/2 - 60))
-	self.preset_button:SetText("Presets")
+	self.preset_button:SetText(GetLocalInsight(self.owner).context.lstr.preset_button)
 	self.preset_button:SetTextSize(25)
 	self.preset_button:SetFont(UIFONT)
 	self.preset_button:SetTextColour(UICOLOURS.WHITE) -- GOLD_CLICKABLE

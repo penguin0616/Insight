@@ -38,7 +38,7 @@ local InsightPresetScreen = Class(InsightPopupDialog, function(self, context, mo
 	end
 	--options[#options+1] = { text=STRINGS.UI.HELP.BACK, cb=function() self:Close() end }
 
-	InsightPopupDialog._ctor(self, "Configuration Presets", "Select a configuration preset.", options)
+	InsightPopupDialog._ctor(self, context.lstr.presetscreen.title, context.lstr.presetscreen.description, options)
 	self.name = "InsightPresetScreen"
 
 	-- Record context

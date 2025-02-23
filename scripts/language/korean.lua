@@ -48,6 +48,24 @@ return {
 		summer = "<color=#FFCF8C>여름</color>",
 	},
 
+	-- first time using insight
+	first_time_insight = {
+		title = "Welcome to Insight!",
+		description = "This is probably your first time using Insight.\nI recommend checking out the configuration or using one of the presets!",
+		no = "No thanks",
+		configuration = "Configuration",
+		presets = "Presets",
+	},
+
+	-- insightconfigurationscreen.lua
+	preset_button = "Presets",
+
+	-- insightpresetscreen.lua
+	presetscreen = {
+		title = "Configuration Presets",
+		description = "Select a configuration preset.",
+	},
+
 	-- Keybinds
 	unbind = "할당 해제",
 	keybinds = {
@@ -112,6 +130,7 @@ return {
 	
 	-- acidbatwavemanager.lua
 	acidbatwavemanager = {
+		chance = "Chance of bat raid: <color=%s>%.1f%%</color> (estimated=<color=%s>%.1f%%</color>)",
 		next_wave_spawn = "<prefab=bat> raid (%d) arrives in %s"
 	},
 	

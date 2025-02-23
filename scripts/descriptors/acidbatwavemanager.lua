@@ -41,7 +41,7 @@ local function DescribeBatWaveData(self, context, data)
 		local official_chance = data.odds_to_spawn_wave
 		local estimated_chance = easing.inQuad(data.target_prefab_count, 0, 1, self.max_target_prefab)
 
-		chance_string = string.format("Chance of bat raid: <color=%s>%.1f%%</color> (estimated=<color=%s>%.1f%%</color>)", 
+		chance_string = string.format(context.lstr.acidbatwavemanager.chance,
 			low_chance:Lerp(high_chance, official_chance):ToHex(),
 			official_chance * 100,
 			low_chance:Lerp(high_chance, estimated_chance):ToHex(),
