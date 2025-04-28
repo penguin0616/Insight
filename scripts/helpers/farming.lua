@@ -255,7 +255,7 @@ local function GetPlantNutrientModifier(plant_def)
 		--if excess_restore_count is 1, we add it to the nutrient determined by math.random
 		--if excess_restore_count is 2, we add it to all other nutrients except the one determined by math.random
 		--due to our total nutrient count, excess_restore_count will always come to be a valid number
-		local excess_restore_rand = math.random(nutrients_to_restore_count)
+		local excess_restore_rand = math.random(0, nutrients_to_restore_count)
 
 		for n_type = 1, 3 do
 			if restore[n_type] then

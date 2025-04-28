@@ -30,12 +30,17 @@ local function Describe(self, context)
 
 		for name, amount in pairs(loot) do
 			local clr = "#FFFFFF"
-			if name=="krampus_sack" then
-				clr = Insight.COLORS.FRUIT
-			elseif name:sub(-10) == "_blueprint" then
-				clr = "#4A7ECE"--"#396DBD"
+			-- Some mod made name a table for some dumb reason.
+			if type(name) == "string" then
+				if name=="krampus_sack" then
+					clr = Insight.COLORS.FRUIT
+				elseif name:sub(-10) == "_blueprint" then
+					clr = "#4A7ECE"--"#396DBD"
+				end
+				table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, amount))
+			else
+				table.insert(alt_description, "<color=#aaaaaa>???</color>")
 			end
-			table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, amount))
 		end
 		alt_description = table.concat(alt_description, "\n")
 	end
