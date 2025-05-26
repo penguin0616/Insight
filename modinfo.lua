@@ -6484,12 +6484,12 @@ STRINGS = {
 			["ko"] = "충돌 보고",
 		},
 		hover = {
-			"**Attempts** to report your crashes (debug, mods, world info) automatically to my server.", 
-			["zh"] = "**尝试**自动上报你的崩溃（调试情况，模组，世界信息）至我的服务器。", 
-			["br"] = "**Tentativas** de relatar suas falhas (depuração, mods, informações do mundo) automaticamente para meu servidor.", 
-			["es"] = "**Intenta** reportar los crasheos (depuración, mods, información del mundo) automáticamente.",
-			["ru"] = "**Пытается** автоматически отправить отчеты о ваших ошибках (отладка, моды, информация о мире) на мой сервер.",
-			["ko"] = "**시범적** 당신의 충돌(디버그, 모드, 세계 정보)을 자동으로 서버에 보고할지 선택합니다.",
+			"Enables automatic reporting of crashes to the mod author.", 
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
 		},
 		options = {
 			[false] = {
@@ -7789,7 +7789,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		},
-		default = false,
+		default = false, -- Important to be opt-out by default for user privacy.
 		tags = {"independent", "dst_only"},
 	},
 	{

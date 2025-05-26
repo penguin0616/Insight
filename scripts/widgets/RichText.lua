@@ -223,7 +223,12 @@ function RichText:SetColour(clr, ...) -- Text::SetColour
 		self._colour = Color.new(clr, ...)
 		self.default_colour = self._colour:ToHex()
 
-	else
+	elseif type(clr) == "table" then
+		if clr.new ~= Color.new then
+			-- Text supports color tables like this: { 1, 1, 1, 1 }
+			clr = Color.fromScaledRGBA(unpack(clr))
+		end
+
 		self._colour = clr
 		self.default_colour = clr:ToHex()
 	end

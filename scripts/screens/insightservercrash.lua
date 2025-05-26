@@ -21,9 +21,9 @@ directory. If not, please refer to
 local Widget = require "widgets/widget"
 local Screen = require "widgets/screen"
 
-local CrashReportStatus = import("widgets/crashreportstatus")
+local CrashReportStatus = import("widgets/insight_crashreportstatus")
 
-local InsightServerCrash = Class(Screen, function(self, data)
+local InsightServerCrashScreen = Class(Screen, function(self, title)
 	Screen._ctor(self, "InsightServerCrash")
 
 	self.root = self:AddChild(Widget("ROOT"))
@@ -31,30 +31,17 @@ local InsightServerCrash = Class(Screen, function(self, data)
     self.root:SetHAnchor(ANCHOR_MIDDLE)
     self.root:SetPosition(0, 0, 0)
 	self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
-	
-	local colour = { 1, 1, 1, 1 }
-		
-	if data.state == 0 then -- info
-		colour = { 0.6, 0.6, 1, 1}
-	elseif data.state == 1 then -- error
-		colour = { 1, 0.6, 0.6, 1 }
-	elseif data.state == 2 then -- good
-		colour = { 0.6, 1, 0.6, 1 }
-	end 
 
-	data.colour = colour
-
-	local context = (localPlayer and GetPlayerContext(localPlayer)) or nil
-	local headerstring = context and context.lstr.server_crash or "[~STR] This server has crashed. The cause is unknown."
-	data.status = headerstring .. "\n" .. data.status
-
-	local ui = CrashReportStatus(data)
-
-	self.root:AddChild(ui)
-	ui:SetPosition(0, -120)
-
-	mprint("Server Status:", data.status)
-	mprint("Server State:", data.state)
+	self.insight_crashreport_status = self.root:AddChild(CrashReportStatus(title))
+	self.insight_crashreport_status:SetPosition(0, -60)
 end)
 
-return InsightServerCrash
+function InsightServerCrashScreen:SetMessage(message)
+	self.insight_crashreport_status:SetMessage(message)
+end
+
+function InsightServerCrashScreen:SetColor(color)
+	self.insight_crashreport_status:SetColor(color)
+end
+
+return InsightServerCrashScreen

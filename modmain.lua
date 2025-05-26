@@ -218,12 +218,12 @@ DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
 is64bit = #tostring{}:match("(%w+)$") == 16
 is32bit = not is64bit
 
+local CrashReporter -- Initialized later, see comment below
 local player_contexts = {}
 local mod_component_cache = {}
 
 local log_buffer = ""
 local LOG_LIMIT = 0700000 -- 0.7 million
-local SERVER_OWNER_HAS_OPTED_IN = false
 
 local descriptors_ignore = {
 	--"mapiconhandler", -- this is just from a mod i use :^)
@@ -528,8 +528,8 @@ function CreatePlayerContext(player, configs, etc)
 
 	if context.is_server_owner then
 		if context.config["crash_reporter"] then
-			SERVER_OWNER_HAS_OPTED_IN = true
-			SyncSecondaryInsightData({ SERVER_OWNER_HAS_OPTED_IN=true })
+			CrashReporter.server_owner_optin = true
+			SyncSecondaryInsightData({ server_owner_optin=true })
 		end
 	end
 
@@ -2060,7 +2060,6 @@ for i,v in pairs(descriptors_ignore) do
 	Insight.descriptors[v] = false
 end
 
-
 --[[
 AddPrefabPostInit("redgem", function(inst) 
 	if not DEBUG_ENABLED then
@@ -2476,8 +2475,8 @@ if IS_DST then
 	rpcNetwork.AddShardModRPCHandler(modname, "SyncSecondaryData", function(sending_shard_id, data)
 		data = json.decode(data)
 
-		if data.SERVER_OWNER_HAS_OPTED_IN then
-			SERVER_OWNER_HAS_OPTED_IN = true
+		if data.server_owner_optin then
+			CrashReporter.server_owner_optin = true
 		end
 		
 		if data.ALLOW_SERVER_DEBUGGING then
@@ -2553,11 +2552,7 @@ if IS_DST then
 		end
 	end)
 	
-	rpcNetwork.AddClientModRPCHandler(modname, "ServerError", function(data)
-		local InsightServerCrash = import("screens/insightservercrash")
-		InsightServerCrash(json.decode(data))
-	end)
-
+	
 	local function sprint(c)
 		local x = c
 		while #x > 0 do
@@ -3348,295 +3343,7 @@ AddSimPostInit(function()
 	Hunter()
 end)
 
-if IS_DST then -- not in UI overrides because server needs access too
-	local CrashReportStatus = import("widgets/crashreportstatus")
 
-	-- extremely important: has to be opt IN, so this is off by default. warnings and information are displayed in the option to enable it.
-	local function GetPlatform()
-		return PLATFORM
-		--[[
-		return 
-			IsPS4() and "ps4"
-			or IsXB1() and "xbox1"
-			or IsRail() and "win32_rail"
-			or IsLinux() and "linux_steam"
-			or IsSteam() and PLATFORM:lower()
-			or "Unkown Platform"
-		--]]
-	end
-
-	local function GetMods()
-		local server_mods, client_mods = {}, {}
-
-		-- im going to assume no one has more than 5 server mods, but of course that is quite unlikely
-		--[[
-		for _, id in pairs(TheNet:GetServerModNames()) do
-			-- workshop-xyz
-			local data = KnownModIndex:GetModInfo(id)
-			table.insert(server_mods, data)
-		end
-		--]]
-
-		-- on server, gets all the server mods
-		-- on client, gets all the server mods + client mods
-		for _, modname in pairs(ModManager:GetEnabledModNames()) do
-			local data = deepcopy(KnownModIndex:GetModInfo(modname))
-			data.folder_name = modname
-			if data.client_only_mod then
-				table.insert(client_mods, data)
-			else
-				table.insert(server_mods, data)
-			end
-		end
-
-		return { server=server_mods, client=client_mods }
-	end
-
-	local function ShowStatus(widget, data)
-		local colour = { 1, 1, 1, 1 }
-		
-		if data.state == 0 then -- info
-			colour = { 0.6, 0.6, 1, 1}
-		elseif data.state == 1 then -- error
-			colour = { 1, 0.6, 0.6, 1 }
-		elseif data.state == 2 then -- good
-			colour = { 0.6, 1, 0.6, 1 }
-		end 
-
-		data.colour = colour
-
-		data.status = "[Insight]: " .. data.status
-
-		local ui = CrashReportStatus(data)
-
-		widget.title:AddChild(ui)
-		ui:SetPosition(0, 10 + 40*3)
-
-		mprint("Status:", data.status)
-		mprint("State:", data.state)
-
-		if TheNet:GetIsMasterSimulation() then
-			--data.status = status
-			local ids = {}
-			for i,v in pairs(AllPlayers) do
-				if (IsClientHost() and v ~= ThePlayer) or not IsClientHost() then
-					table.insert(ids, v.userid)
-				end
-			end
-			rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "ServerError"), ids, json.encode(data))
-		end
-	end
-
-	local function SendReport(widget, from, log)
-		mprint("SendReport called")
-		local report = {}
-		-- basic stuff
-		report.user = {
-			name = TheSim:GetUsersName() or "nil", -- 317172400@steam
-			steam_id = TheSim:GetSteamIDNumber() or "nil", -- 317172400
-			klei_id = TheNet:GetUserID() or "nil", -- KU_md6wbcj2
-			player_name = TheNet:GetLocalUserName() or "nil", -- penguin0616
-			language = TheNet:GetLanguageCode(), -- english
-			country_code = ((from == "client" or from == "client_host") and TheNet:GetCountryCode()) or "Unavailable", -- US
-			using_controller = TheInput:ControllerAttached(),
-			input_devices = TheInput:GetInputDevices(),
-		}
-		
-		report.steam_branch = TheSim:GetSteamBetaBranchName() -- "Default" "updatebeta"
-		report.bit_version = (is64bit and "64") or (is32bit and "32") or "?"
-		report.game_version = APP_VERSION
-		report.mods = GetMods() -- in case of compatability issues
-		report.platform = GetPlatform() -- please be steam on windows
-		report.log_type = from -- "client" or "server" 
-		report.mastersim = TheNet:GetIsMasterSimulation() -- has authority
-
-		report.server = GetDefaultServerData() -- better?
-		report.server.clients = TheNet:GetClientTable() -- how many people did we possibly just crash?
-		report.server.is_master_shard = TheShard:IsMaster() -- is this the master shard?
-		report.server.shard_id = TheShard:GetShardId() -- caves or not
-		report.server.dedicated = TheNet:IsDedicated() -- is this a dedicated server (probably behind on insight version)
-		report.server.reporter_is_owner = TheNet:GetIsServerOwner() -- did they possibly screw with stuff in console
-		report.server.reporter_is_admin = TheNet:GetIsServerAdmin() -- same as above
-		report.server.other_name = TheNet:GetServerName() -- penguin0616's world
-
-		report.log = log
-
-		local no_logs = false
-		if not log then
-			no_logs = true
-			report.log = (string.rep("!!!!!!!!!!!! FAILURE TO FETCH CORRECT LOGS !!!!!!!!!!!!\n", 3) .. log_buffer)
-		end
-		
-		if #report.log > LOG_LIMIT then
-			report.log = "LOG TRIMMED: ORIGINAL SIZE = " .. #report.log .. "\n" .. report.log:sub(#report.log - LOG_LIMIT + 1, #report.log)
-		end
-
-
-		mprint("Compressing log")
-		-- game seems to have a problem encoding some characters with the messed up json implementation they have
-		-- but it'll handle b64 alright, so i'll just compress it and handle stuff properly on my end
-		--print("#log before:", #report.log) -- 137261
-		--local old = report.log
-		report.log = TheSim:ZipAndEncodeString(report.log) -- DS: TheSim:SetPersistentString(path, data, ENCODE_SAVES) (ENCODE_SAVES=true)
-		mprint("Compressed log")
-
-		--[[
-		print'\tasd1'
-		local f1 = io.open("before.txt", "w")
-		f1:write(old)
-		f1:close()
-
-		print'\tasd2'
-		local f2 = io.open("after.txt", "w")
-		f2:write(report.log)
-		f2:close()
-
-		print'\tasd3'
-
-
-		print("there", #old, "->", #report.log)
-		
-		
-		report.log = TheSim:ZipAndEncodeString("hi")
-		report.mods = {server=report.mods.server, client={}}
-		--]]
-
-		--print("#log after:", #report.log) -- 23408
-		--report.log = TheSim:ZipAndEncodeString("welcome to the citadel")
-		report = json.encode_compliant(report)
-		
-		--file = io.open("report.json", "w") 
-		--file:write(report)
-		--file:close()
-
-		--print"wagh"
-		
-		--[[
-		if not log then
-			ShowStatus(widget, { state=1, status="Unable to complete report." })
-			return
-		end
-		--]]
-		TheSim:QueryServer(
-			"https://dst.penguin0616.dev/crashreporter/reportcrash",
-			function(res, isSuccessful, statusCode)
-				mprintf("Report: Success = %s, Status = %s, \n%s", isSuccessful, statusCode, res)
-
-				if no_logs and #log_buffer == 0 then
-					isSuccessful = false
-					mprint("Can't find logs for crash report")
-				end
-
-				local state = 0
-				local status = "???"
-				
-				if not isSuccessful then
-					status = "Failed to report crash."
-					state = 1
-				elseif isSuccessful then
-					if statusCode == 200 then
-						local safe, data = pcall(json.decode, res) -- isn't a compliant decoder but should be fine for my purposes
-						--status = "Crash reported successfully with code: " .. data.code
-						if safe then
-							status = string.format("Crash reported sucessfully!\nCode: %s", data.code)
-							state = 2
-						else
-							mprint("fail to parse:", safe, data, res)
-							status = string.format("Crash failed to report & response failed to parse. Please tell me (penguin0616) about this.\nDecode Error: %s", data)
-							state = 1
-						end
-					else
-						status = "Crash failed to report with StatusCode: " .. statusCode
-						state = 1
-					end
-				end
-				
-				ShowStatus(widget, { state=state, status=status })
-			end,
-			"POST",
-			report
-		)
-	end
-
-	local triggered = false
-	AddClassPostConstruct("widgets/scripterrorwidget", function(self)
-		mprint("A crash has occured (THIS DOES NOT MEAN IT WAS INSIGHT, THIS IS JUST HERE FOR DEBUGGING PURPOSES)")
-		if self.title then
-			mprint("Title:", self.title:GetString())
-		end
-		if self.text then
-			mprint("Text:", self.text:GetString())
-		end
-		if self.additionaltext then
-			mprint("Additionaltext:", self.additionaltext:GetString())
-		end
-
-		if triggered then
-			mprint("Preventing crash overflow.")
-			return
-		end
-		triggered = true
-
-		-- erroring in a error handler, not a good idea i would think
-		local report_server = GetModConfigData("crash_reporter", false)
-		local report_client = GetModConfigData("crash_reporter", true)
-
-		if IsClientHost() or IsClient() then -- non-cave world host || regular player
-			local is_server_owner = TheNet:GetIsServerOwner() -- GetPlayerContext(ThePlayer).is_server_owner
-
-			if IsClient() then
-				if is_server_owner then
-					if not report_client and not report_server then
-						ShowStatus(self, { state=0, status="Crash reporter not enabled [Multishard Client Owner]." })
-						return
-					end
-				else
-					if not report_client then
-						ShowStatus(self, { state=0, status="Crash reporter not enabled [Client]." })
-						return
-					end
-				end
-			elseif IsClientHost() then
-				if not report_client and not report_server then
-					ShowStatus(self, { state=0, status="Crash reporter not enabled [ClientHost (Owner)]." })
-					return
-				end
-			end
-
-			local handler = function(successful, data)
-				local from = (IsClientHost() and "client_host") or "client"
-				local log = (successful and data) or nil
-				SendReport(self, from, log)
-			end
-
-			if CurrentRelease.GreaterOrEqualTo("R22_PIRATEMONKEYS") then
-				TheSim:GetPersistentString("../../client_log.txt", handler)
-			else
-				TheSim:GetPersistentStringInClusterSlot(1, "../..", "../client_log.txt", handler)
-			end
-		elseif TheNet:GetIsMasterSimulation() == true then -- server by itself
-			mprint("SERVER_OWNER_HAS_OPTED_IN:", SERVER_OWNER_HAS_OPTED_IN)
-			dprint("report_server:", report_server)
-			dprint("report_client:", report_client)
-
-			if not report_server and not SERVER_OWNER_HAS_OPTED_IN then
-				ShowStatus(self, { state=0, status="Crash reporter not enabled [Server]." })
-				return
-			end
-
-			mprint("Finding log")
-			TheSim:GetPersistentString("../server_log.txt", function(successful, data)
-				local from = "server"
-				local log = (successful and data) or nil
-				mprintf("Submitting log (successfully found log: %s)", successful)
-				SendReport(self, from, log)
-			end)
-		else
-			--error("uh oh, uh oh, uh oh")
-			-- this should be impossible
-		end
-	end)
-end
 
 if false and IS_DST then
 	local select = select
@@ -3739,11 +3446,14 @@ if IS_DS or IsClient() or IsClientHost() then
 	import("clientmodmain")
 end
 
-
 -- Further Post Inits
 Insight.prefab_descriptors("wx78_scanner")
 Insight.prefab_descriptors("tumbleweed")
 Insight.descriptors("oceanfishingrod")
+
+-- Needs to be done here so UI dependencies have time to load.
+CrashReporter = import("crashreporter")
+CrashReporter.Initialize()
 
 
 --==========================================================================================================================
