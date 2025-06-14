@@ -67,7 +67,6 @@ hamlet_compatible = true -- DLC0003
 -- DST
 api_version_dst = 10
 dst_compatible = true
-server_only_mod = true
 client_only_mod = false
 all_clients_require_mod = true
 forge_compatible = true
