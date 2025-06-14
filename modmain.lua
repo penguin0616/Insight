@@ -208,7 +208,6 @@ import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
 Color = import("helpers/color")
 rpcNetwork = import("rpcnetwork")
-attackRangeHelper = import("helpers/attack_range")
 entity_tracker = import("helpers/entitytracker")
 
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
@@ -2077,19 +2076,14 @@ AddPrefabPostInit("redgem", function(inst)
 end)
 --]]
 
-AddComponentPostInit("combat", function(self)
-	if IS_DS or (TheWorld.ismastersim) then
-		attackRangeHelper.HookCombat(self)
-	else
-		dprint("oh no")
-	end
-end)
+-- Some components need to be preloaded.
+Insight.descriptors("combat")
+Insight.descriptors("clock")
+Insight.descriptors("oceanfishingrod")
 
-AddComponentPostInit("clock", function(self)
-	if IS_DS or TheWorld.ismastersim then
-		import("helpers/clock").Initialize(self)
-	end
-end)
+
+Insight.prefab_descriptors("wx78_scanner")
+Insight.prefab_descriptors("tumbleweed")
 
 --[[
 AddPrefabPostInit("forest_network", function(inst)
@@ -2150,44 +2144,6 @@ AddPrefabPostInit("cave_exit", function(inst)
 		dprint(string.format("Migrator [%s] activated.", id))
 	end)
 end)
-
-if true then
-	local FakeCombats = {
-		["moonstorm_spark"] = {
-			attack_range = 4,
-			damage = TUNING.LIGHTNING_DAMAGE
-		},
-		["moonstorm_glass"] = {
-			attack_range = 4,
-			damage = 30
-		},
-		["alterguardian_phase3_trap"] = {
-			attack_range = TUNING.ALTERGUARDIAN_PHASE3_TRAP_AOERANGE
-		},
-		["mushroombomb"] = {
-			attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			damage = function(inst)
-				local toadstool = inst.components.entitytracker:GetEntity("toadstool")
-				return (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
-					(inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
-					TUNING.TOADSTOOL_DAMAGE_LVL[0]
-			end
-		}
-	}
-
-	FakeCombats.mushroombomb_dark = FakeCombats.mushroombomb
-
-	for prefab, data in pairs(FakeCombats) do
-		AddPrefabPostInit(prefab, function(inst)
-			if not TheWorld.ismastersim then
-				return
-			end
-
-			attackRangeHelper.RegisterFalseCombat(inst, data)
-		end)
-	end
-end
 
 local function OnItemChange(inst)
 	local players = AllPlayers or {GetPlayer()}
@@ -2629,16 +2585,6 @@ if IS_DST then
 		entity_tracker:TrackPrefab("lunar_grazer")
 		entity_tracker:TrackPrefab("lunarthrall_plant")
 	end
-
-	--[[
-	AddComponentPostInit("clock", function(self)
-		if not (TheWorld and TheWorld.ismastersim) then
-			return
-		end
-
-		import("helpers/clock").Initialize(self)
-	end)
-	--]]
 
 	AddComponentPostInit("grower", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end
@@ -3445,11 +3391,6 @@ if IS_DS or IsClient() or IsClientHost() then
 	entityManager = import("helpers/entitymanager")
 	import("clientmodmain")
 end
-
--- Further Post Inits
-Insight.prefab_descriptors("wx78_scanner")
-Insight.prefab_descriptors("tumbleweed")
-Insight.descriptors("oceanfishingrod")
 
 -- Needs to be done here so UI dependencies have time to load.
 CrashReporter = import("crashreporter")

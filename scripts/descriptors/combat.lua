@@ -20,9 +20,46 @@ directory. If not, please refer to
 
 -- combat.lua
 local combatHelper = import("helpers/combat")
+local attackRangeHelper = import("helpers/attack_range")
+
+local FAKE_COMBATS = {
+	["moonstorm_spark"] = {
+		attack_range = 4,
+		damage = TUNING.LIGHTNING_DAMAGE
+	},
+	["moonstorm_glass"] = {
+		attack_range = 4,
+		damage = 30
+	},
+	["alterguardian_phase3_trap"] = {
+		attack_range = TUNING.ALTERGUARDIAN_PHASE3_TRAP_AOERANGE
+	},
+	["mushroombomb"] = {
+		attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+		hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
+		damage = function(inst)
+			local toadstool = inst.components.entitytracker:GetEntity("toadstool")
+			return (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
+				(inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
+				TUNING.TOADSTOOL_DAMAGE_LVL[0]
+		end
+	}
+}
+
+FAKE_COMBATS.mushroombomb_dark = FAKE_COMBATS.mushroombomb
 
 local ConvertHealthAmountToAge = Insight.descriptors.oldager and Insight.descriptors.oldager.ConvertHealthAmountToAge or function() return 0 end
 local world_type = GetWorldType()
+
+local function OnServerInit()
+	AddComponentPostInit("combat", attackRangeHelper.HookCombat)
+
+	for prefab, data in pairs(FAKE_COMBATS) do
+		AddPrefabPostInit(prefab, function(inst)
+			attackRangeHelper.RegisterFalseCombat(inst, data)
+		end)
+	end
+end
 
 local function GetAttackerDamageData(attacker, target)
 	local damage = attacker.components.combat and attacker.components.combat.defaultdamage or 0
@@ -249,6 +286,7 @@ end
 
 
 return {
+	OnServerInit = OnServerInit,
 	Describe = Describe,
 	GetRealDamage = GetRealDamage,
 	DescribeDamageForPlayer = DescribeDamageForPlayer,

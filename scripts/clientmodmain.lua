@@ -31,6 +31,7 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Variables =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local attackRangeHelper = import("helpers/attack_range")
 insightSaveData = import("helpers/savedata")("mod_config_data/Insight_SaveData" .. (IS_DST and "_CLIENT" or ""));
 controlHelper = import("helpers/control")
 localPlayer = nil
