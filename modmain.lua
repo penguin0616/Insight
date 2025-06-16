@@ -3019,83 +3019,6 @@ AddPlayerPostInit(function(player)
 	end
 end)
 
-local function SortSockets(a, b) 
-	return a.GUID < b.GUID 
-end
-
-local function GetSockets(main) -- ISSUE:PERFORMANCE
-	local x,y,z = main.Transform:GetWorldPosition()   
-	local ents = TheSim:FindEntities(x,y,z, 10, {"resonator_socket"})
-	
-	local sockets = {}
-	for i=#ents,1,-1 do
-		sockets[#sockets+1] = ents[i]
-	end
-	table.sort(sockets, SortSockets)
-
-	return sockets
-end
-
-local function GetCorrectSocket(main, puzzle)
-	local current = main.numcount or 0 -- numcount = nil == its unlocking, or nothing stepped on yet
-	current = current + 1
-
-	local tbl = GetSockets(main)
-
-	for i = 1, #tbl do
-		local v = tbl[i]
-		if puzzle[i] == current then
-			v.insight_active:set(true)
-		else
-			v.insight_active:set(false)
-		end
-	end
-end
-
-AddPrefabPostInit("archive_orchestrina_small", function(inst)
-	inst.insight_active = net_bool(inst.GUID, "insight_active", "insight_active_dirty")
-
-	if TheNet:IsDedicated() then
-		return
-	end
-
-	inst:ListenForEvent("insight_active_dirty", function(inst)
-		local context = localPlayer and GetPlayerContext(localPlayer)
-
-		if not context or not context.config["orchestrina_indicator"] then
-			return
-		end
-		--inst.indicator:SetVisible(inst.insight_active:value())
-		if inst.insight_active:value() then
-			inst.AnimState:SetHighlightColour(152/255, 100/255, 245/255, 1) --indicator was: 152/255, 100/255, 245/255
-		else
-			inst.AnimState:SetHighlightColour(0, 0, 0, 0)
-		end
-	end)
-end)
-
-AddPrefabPostInit("archive_orchestrina_main", function(inst)
-	if not TheWorld.ismastersim then return end
-	local findlockbox = util.getupvalue(inst.testforlockbox, "findlockbox")
-
-	inst:DoPeriodicTask(0.10, function()
-		local lockboxes = findlockbox(inst)
-		local lockbox = lockboxes[1]
-
-		if not inst.busy and lockbox and not lockbox.AnimState:IsCurrentAnimation("activation") then 
-			local puzzle = lockbox.puzzle
-			
-			GetCorrectSocket(inst, puzzle)
-		else
-			local sockets = GetSockets(inst)
-			for i = 1, #sockets do
-				--v.indicator:SetVisible(false)
-				sockets[i].insight_active:set(false)
-			end
-		end
-	end)
-end)
-
 AddSimPostInit(function()
 	local world = TheWorld or GetWorld()
 	local function Hunter()
@@ -3340,7 +3263,7 @@ Insight.prefab_descriptors("wx78_scanner")
 Insight.prefab_descriptors("tumbleweed")
 Insight.prefab_descriptors("cave_entrance")
 Insight.prefab_descriptors("cave_exit")
-
+Insight.prefab_descriptors("archive_orchestrina_main")
 
 --==========================================================================================================================
 --==========================================================================================================================
