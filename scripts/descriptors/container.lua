@@ -213,6 +213,7 @@ end
 
 
 return {
+	OnServerInit = OnServerInit,
 	Describe = Describe,
 	DescribeItemAndPerishable = DescribeItemAndPerishable,
 	DescribeItemAndStackable = DescribeItemAndStackable,
