@@ -75,7 +75,6 @@ local Insight = {
 		values = {},
 		players = {},
 	},
-	active_hunts = {},
 	descriptors = {}, -- 130 descriptors as of April 17, 2021
 	prefab_descriptors = {},  
 
@@ -3019,133 +3018,6 @@ AddPlayerPostInit(function(player)
 	end
 end)
 
-AddSimPostInit(function()
-	local world = TheWorld or GetWorld()
-	local function Hunter()
-		local hunter = world.components.hunter or world.components.whalehunter
-		if world.ismastersim == false then -- nil in DS
-			mprint("Client can't check for hunter component")
-			return
-		end
-
-		if not hunter then 
-			local worldprefab = (IS_DST and world.worldprefab) or world.prefab
-			if worldprefab == "cave" then
-				mprint("Caves does not have a hunter component.")
-			else
-				mprint("No hunter component???")
-			end
-			return 
-		end
-		mprint("Hunter has been hooked")
-
-		local _activehunts = {}
-		if IS_DST then		
-			_activehunts = util.recursive_getupvalue(hunter.OnDirtInvestigated, "_activehunts")
-			assert(_activehunts, "[Insight]: Failed to load '_activehunts' from 'Hunter' component.") -- https://steamcommunity.com/sharedfiles/filedetails/?id=1991746508 overrided OnDirtInvestigated
-			Insight.active_hunts = _activehunts
-		end
-
-		local oldOnDirtInvestigated = hunter.OnDirtInvestigated
-
-		if IS_DST then
-			local SpawnHuntedBeast = util.recursive_getupvalue(oldOnDirtInvestigated, "SpawnHuntedBeast") -- https://steamcommunity.com/sharedfiles/filedetails/?id=1991746508 messed with OnDirtInvestigated, October 20th 2020 (i just noticed the comment above, ironic)
-			local oldEnv = getfenv(SpawnHuntedBeast)
-			local SpawnPrefab = SpawnPrefab
-
-			setfenv(SpawnHuntedBeast, setmetatable({SpawnPrefab = function(...) local ent = SpawnPrefab(...); util.getlocal(2, "hunt").huntedbeast = ent; return ent; end}, {__index = oldEnv, __metatable = "[Insight] The metatable is locked"}))
-		end
-
-		function hunter:OnDirtInvestigated(pt, doer)
-			local hunt = nil
-
-			if IS_DST then
-				-- find the hunt this pile belongs to
-				for i,v in ipairs(_activehunts) do
-					if v.lastdirt ~= nil and v.lastdirt:GetPosition() == pt then
-						hunt = v
-						--hunter.inst:RemoveEventCallback("onremove", v.lastdirt._ondirtremove, v.lastdirt)
-						break
-					end
-				end
-
-				if hunt == nil then
-					-- we should probably do something intelligent here.
-					--print("yikes, no matching hunt found for investigated dirtpile")
-					return
-				end
-			else
-				hunt = {} -- could just set this to self, but i don't want to 
-			end
-
-			oldOnDirtInvestigated(self, pt, doer)
-
-			local activeplayer = doer --hunt.activeplayer
-
-			if IS_DS then
-				hunt = self -- has everything we need.. so......
-				activeplayer = GetPlayer()
-			end
-
-			--mprint(hunt.trackspawned, hunt.numtrackstospawn)
-			if hunt.trackspawned < hunt.numtrackstospawn then
-				--mprint('dirt?')
-				if IS_DS then
-					Insight.active_hunts = {self}
-				end
-			elseif hunt.trackspawned == hunt.numtrackstospawn then
-				--mprint('animal?')
-				if IS_DS then
-					Insight.active_hunts = {}
-				end
-			else
-				mprint("--------- WHAT ----------")
-				table.foreach(hunt, mprint)
-				error("[Insight]: something weird happened during a hunt, please report")
-			end
-
-			local context = activeplayer and GetPlayerContext(activeplayer)
-			if not context or not context.config then
-				mprint("player context is invalid. player:", activeplayer)
-				if context then
-					mprint(DataDumper(context))
-				else
-					mprint("\tcontext is nil")
-				end
-				return
-			end
-
-			if not context.config["hunt_indicator"] then
-				return
-			end
-
-
-			local target = hunt.lastdirt or hunt.huntedbeast
-
-			if not target then
-				--dprint(string.format("Hunter '%s' missing target, aborting.", activeplayer.name))
-				table.foreach(hunt, mprint)
-				return
-			else
-				--dprint("Sending", activeplayer, "on a hunt for:", target, "|", hunt.trackspawned, hunt.numtrackstospawn)
-			end
-
-			if target.prefab == "claywarg" or target.prefab == "warg" or target.prefab == "spat" then
-				mprint("skipped sending on a hunt for special hunt target:", target.prefab)
-				return
-			end
-
-			--mprint"-----------------"
-
-			activeplayer.components.insight:SetHuntTarget(target)
-		end
-	end
-	
-	Hunter()
-end)
-
-
-
 if false and IS_DST then
 	local select = select
 	--local toarray = toarray
@@ -3257,6 +3129,7 @@ Insight.descriptors("combat")
 Insight.descriptors("clock")
 Insight.descriptors("oceanfishingrod")
 Insight.descriptors("container")
+Insight.descriptors("hunter")
 
 
 Insight.prefab_descriptors("wx78_scanner")
