@@ -2076,14 +2076,6 @@ AddPrefabPostInit("redgem", function(inst)
 end)
 --]]
 
--- Some components need to be preloaded.
-Insight.descriptors("combat")
-Insight.descriptors("clock")
-Insight.descriptors("oceanfishingrod")
-
-
-Insight.prefab_descriptors("wx78_scanner")
-Insight.prefab_descriptors("tumbleweed")
 
 --[[
 AddPrefabPostInit("forest_network", function(inst)
@@ -2102,48 +2094,6 @@ AddPrefabPostInit("bat", function(inst)
 	inst:Remove() -- these things annoy me to no end while im testing
 end)
 --]]
-
-AddPrefabPostInit("cave_entrance_open", function(inst)
-	if not FOREST_MIGRATOR_IMAGES then return end
-	if not CAVE_MIGRATOR_IMAGES then return end
-	inst:ListenForEvent("migration_available", function()
-		local id = inst.components.worldmigrator.receivedPortal
-		if not FOREST_MIGRATOR_IMAGES[id] then
-			dprint(string.format("Migrator [%s] does not have anything color bound to it.", id or "nil"))
-			return
-		end
-
-		local marker = SpawnPrefab("insight_map_marker")
-		marker:TrackEntity(inst)
-		marker.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
-		inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1]) -- since marker gets removed when it enters vision, this is used.
-		--marker.MiniMapEntity:SetCanUseCache(false) -- default true
-		--marker.MiniMapEntity:SetIsProxy(false) -- default false
-		inst.marker = marker
-		dprint(string.format("Migrator [%s] activated.", id))
-	end)
-end)
-
-AddPrefabPostInit("cave_exit", function(inst)
-	if not FOREST_MIGRATOR_IMAGES then return end
-	if not CAVE_MIGRATOR_IMAGES then return end
-	inst:ListenForEvent("migration_available", function()
-		local id = inst.components.worldmigrator.receivedPortal
-		if not FOREST_MIGRATOR_IMAGES[id] then
-			dprint(string.format("Migrator [%s] does not have anything color bound to it.", id or "nil"))
-			return
-		end
-
-		local marker = SpawnPrefab("insight_map_marker")
-		marker:TrackEntity(inst)
-		marker.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1])
-		inst.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1]) -- since marker gets removed when it enters vision, this is used.
-		--marker.MiniMapEntity:SetCanUseCache(false) -- default true
-		--marker.MiniMapEntity:SetIsProxy(false) -- default false
-		inst.marker = marker
-		dprint(string.format("Migrator [%s] activated.", id))
-	end)
-end)
 
 local function OnItemChange(inst)
 	local players = AllPlayers or {GetPlayer()}
@@ -3395,6 +3345,18 @@ end
 -- Needs to be done here so UI dependencies have time to load.
 CrashReporter = import("crashreporter")
 CrashReporter.Initialize()
+
+
+-- Some descriptors need to be preloaded because they provide functionality outside of just descriptions.
+Insight.descriptors("combat")
+Insight.descriptors("clock")
+Insight.descriptors("oceanfishingrod")
+
+
+Insight.prefab_descriptors("wx78_scanner")
+Insight.prefab_descriptors("tumbleweed")
+Insight.prefab_descriptors("cave_entrance")
+Insight.prefab_descriptors("cave_exit")
 
 
 --==========================================================================================================================
