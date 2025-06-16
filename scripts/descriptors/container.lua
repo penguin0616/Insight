@@ -46,8 +46,26 @@ function Container:FindItems(fn)
 end
 ]]
 
+local initialized = false
 local containers = setmetatable({}, {__mode = "k"})
 local listeners_hooked = setmetatable({}, {__mode = "kv"})
+
+--- Used to invalidate the container cache on the client side whenever the contents change.
+--- @param inst EntityScript
+local function OnItemChange(inst)
+	local players = AllPlayers or {GetPlayer()}
+
+	for i,v in pairs(players) do
+		local insight = v.components.insight
+		if insight then
+			insight:InvalidateCachedEntity(inst)
+		end
+	end
+end
+
+local function ContainerFindFn(v)
+	return v
+end
 
 local function GetContainerItems(self)
 	if IS_DST then
@@ -59,7 +77,7 @@ local function GetContainerItems(self)
 
 		return self:GetAllItems()
 	else
-		return self:FindItems(function(v) return v end)
+		return self:FindItems(ContainerFindFn)
 	end
 end
 
@@ -154,6 +172,25 @@ local function DescribeItemAndStackable(self, context)
 	return ret
 end
 
+local function OnContainerPostInit(self)
+	self.inst:ListenForEvent("itemget", OnItemChange)
+	self.inst:ListenForEvent("itemlose", OnItemChange)
+	self.inst:ListenForEvent("onclose", OnItemChange)
+end
+
+local function OnServerInit()
+	if initialized then
+		return
+	end
+
+	initialized = true
+
+	if not IS_DST then
+		return
+	end
+	
+	AddComponentPostInit("container", OnContainerPostInit)
+end
 
 
 local function Describe(self, context)

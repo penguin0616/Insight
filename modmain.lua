@@ -2095,24 +2095,6 @@ AddPrefabPostInit("bat", function(inst)
 end)
 --]]
 
-local function OnItemChange(inst)
-	local players = AllPlayers or {GetPlayer()}
-
-	for i,v in pairs(players) do
-		local insight = v.components.insight
-		if insight then
-			insight:InvalidateCachedEntity(inst)
-		end
-	end
-end
-
-AddComponentPostInit("container", function(self)
-	if TheWorld and not TheWorld.ismastersim then return end -- implicit DST check
-	
-	self.inst:ListenForEvent("itemget", OnItemChange)
-	self.inst:ListenForEvent("itemlose", OnItemChange)
-	self.inst:ListenForEvent("onclose", OnItemChange)
-end)
 
 if IS_DST then 
 	-- replicable
@@ -3351,6 +3333,7 @@ CrashReporter.Initialize()
 Insight.descriptors("combat")
 Insight.descriptors("clock")
 Insight.descriptors("oceanfishingrod")
+Insight.descriptors("container")
 
 
 Insight.prefab_descriptors("wx78_scanner")
