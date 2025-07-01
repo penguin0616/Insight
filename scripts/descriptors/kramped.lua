@@ -47,7 +47,7 @@ local function GetPlayerNaughtiness(player)
 		return
 	end
 
-	local data = Insight.kramped.players[player]
+	local data = module.active_players[player]
 
 	if not data or not data.threshold or data.threshold < 0 then 
 		return
@@ -278,8 +278,7 @@ local function OnServerInit()
 	AddComponentPostInit("kramped", OnKrampedPostInit)
 end
 
-local function Describe(self, context)
-	local inst = self
+local function Describe(inst, context)
 	local naughtiness = nil
 
 	if not IsPrefab(inst) then
@@ -312,6 +311,7 @@ local function GetNaughtiness(inst, context)
 	end
 end
 
+-- TODO: This file (mostly the component post init) could use some refactoring I'd say.
 
 return {
 	OnServerInit = OnServerInit,

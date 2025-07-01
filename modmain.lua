@@ -71,10 +71,6 @@ CODEFONT = "ptmono"
 -- Mod table
 local Insight = {
 	env = getfenv(1),
-	kramped = {
-		values = {},
-		players = {},
-	},
 	descriptors = {}, -- 130 descriptors as of April 17, 2021
 	prefab_descriptors = {},  
 
