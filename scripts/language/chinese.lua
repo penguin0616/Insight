@@ -18,7 +18,7 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- Translated by: https://steamcommunity.com/id/interesting28/ and https://steamcommunity.com/id/cloudyyoung and (Placeholder) https://github.com/penguin0616/Insight/pull/29
+-- Translated by: https://steamcommunity.com/id/BBGoat and https://steamcommunity.com/id/interesting28/ and https://steamcommunity.com/id/cloudyyoung and (Placeholder) https://github.com/penguin0616/Insight/pull/29
 
 -- TheNet:GetLanguageCode() == "chinese" & LOC.GetLocaleCode() == "zh" -- maybe?
 
@@ -43,6 +43,24 @@ return {
 		winter = "冬天",
 		spring = "春天",
 		summer = "夏天",
+	},
+
+	-- first time using insight
+	first_time_insight = {
+		title = "欢迎使用Insight",
+		description = "这可能是您第一次使用Insight\n我建议您检查配置或使用其中一个预设！",
+		no = "不，谢谢",
+		configuration = "配置",
+		presets = "预设",
+	},
+
+	-- insightconfigurationscreen.lua
+	preset_button = "预设",
+
+	-- insightpresetscreen.lua
+	presetscreen = {
+		title = "配置预设",
+		description = "选择配置预设。",
 	},
 
 	-- Keybinds
@@ -86,8 +104,8 @@ return {
 	-- Insight Menu
 	insightmenu = {
 		tabs = {
-			--world = "World",
-			--player = "Player",
+			world = "世界",
+			player = "玩家",
 		},
 	},
 
@@ -109,7 +127,8 @@ return {
 	
 	-- acidbatwavemanager.lua
 	acidbatwavemanager = {
-		next_wave_spawn = "<prefab=bat> raid (%d) arrives in %s"
+		chance = "蝙蝠袭击概率: <color=%s>%.1f%%</color> (预计=<color=%s>%.1f%%</color>)",
+		next_wave_spawn = "<prefab=bat>袭击(%d)于%s后"
 	},
 
 	-- alterguardianhat.lua [Prefab]
@@ -121,9 +140,9 @@ return {
 
 	-- ancienttree_seed.lua [Prefab]
 	ancienttree_seed = {
-		type = "Type: <color=%s><prefab=%s></color>",
-		fruit_regen_time = "Fruit time: %s",
-		fruit_regen_time_bounded = "Fruit time: %s <= %s <= %s",
+		type = "类型: <color=%s><prefab=%s></color>",
+		fruit_regen_time = "结果时间: %s",
+		fruit_regen_time_bounded = "结果时间: %s <= %s <= %s",
 	},
 
 	-- aoeweapon_base.lua
@@ -192,7 +211,7 @@ return {
 
 	-- beef_bell.lua [Prefab]
 	beef_bell = {
-		beefalo_name = "Name: %s",
+		beefalo_name = "名字: %s",
 	},
 
 	-- beequeenhive.lua [Prefab]
@@ -335,8 +354,8 @@ return {
 
 	-- compostingbin.lua
 	compostingbin = {
-		contents_amount = "Material: %s / %s",
-		detailed_contents_amount = "Material: <color=NATURE>%s<sub>Green</sub></color> + <color=INEDIBLE>%s<sub>Brown</sub></color> / %s",
+		contents_amount = "材料: %s / %s",
+		detailed_contents_amount = "材料: <color=NATURE>%s<sub>Green</sub></color> + <color=INEDIBLE>%s<sub>Brown</sub></color> / %s",
 	},
 
 	-- container.lua
@@ -405,7 +424,7 @@ return {
 			description = "免疫<color=WET>潮湿</color>, 持续 {duration} 秒",
 		},
 		["buff_electricattack"] = {
-			"<color=WET>电击</color>",
+			name = "<color=WET>电击</color>"	,
 			description = "攻击<color=WET>带电</color>, 持续 {duration} 秒",
 		},
 		["buff_sleepresistance"] = {
@@ -414,8 +433,8 @@ return {
 		},
 
 		["healingsalve_acidbuff"] = {
-			name = "<color=#ded15e>Acid Resistance</color>",
-			description = "Immune to <color=#ded15e>acid rain</color> for {duration}(s)."
+			name = "<color=#ded15e>耐酸性</color>",
+			description = "免疫<color=#ded15e>酸雨</color>, 持续 {duration} 秒"
 		},
 		["tillweedsalve_buff"] = {
 			name = "<color=HEALTH>生命回复</color>",
@@ -701,7 +720,7 @@ return {
 
 	-- gelblobspawner.lua
 	gelblobspawner = {
-		
+
 	},
 
 	-- ghostlybond.lua
@@ -784,7 +803,7 @@ return {
 		time_until_worms = "<prefab=worm>会在%s后攻击",
 		time_until_worm_boss = "<prefab=worm_boss>会在%s后攻击",
 		time_until_crocodog = "<prefab=crocodog>会在%s后攻击",
-		worm_boss_chance = "<prefab=worm_boss> chance: %.1f%%",
+		worm_boss_chance = "<prefab=worm_boss> 概率: %.1f%%",
 	},
 
 	-- hunger.lua
@@ -820,12 +839,12 @@ return {
 	-- inventory.lua
 	inventory = {
 		head_describe = "[帽子]: ",
-		hands_describe = "[Tool]: ",
+		hands_describe = "[工具]: ",
 	},
 
 	-- itemmimic.lua
 	itemmimic = {
-		time_to_reveal = "<prefab=itemmimic_revealed> reveal in: %s",
+		time_to_reveal = "<prefab=itemmimic_revealed> 暴露于: %s后。",
 	},
 
 	-- kitcoonden.lua
@@ -857,7 +876,7 @@ return {
 
 	-- linkeditem.lua
 	linkeditem = {
-		owner = "Owner: %s",
+		owner = "主人: %s",
 	},
 
 	-- lunarrift_portal.lua [Prefab]
@@ -949,7 +968,7 @@ return {
 			time_for_next_tool = "%s后需要另一个工具",
 			experiment_time = "%s后实验完成",
 		},
-		storm_move = "%s%% 几率于第 %d 天月球风暴",
+		storm_move = "%s%% 几率于第 %d 天移动月球风暴位置",
 	},
 
 	-- nightmareclock.lua
@@ -1091,9 +1110,9 @@ return {
 
 	-- rabbitkingmanager.lua
 	rabbitkingmanager = {
-		carrots = "<color=VEGGIE>Carrots</color>: <color=VEGGIE>%d</color> / <color=VEGGIE>%d</color>",
-		naughtiness = "Naughtiness: %d / %d",
-		king_status = "%s is alive.", -- Gets a prefab tag inserted with king type.
+		carrots = "<color=VEGGIE>胡萝卜</color>: <color=VEGGIE>%d</color> / <color=VEGGIE>%d</color>",
+		naughtiness = "淘气值: %d / %d",
+		king_status = "%s还活着。", -- Gets a prefab tag inserted with king type.
 	},
 
 	-- rainometer.lua [Prefab]
@@ -1200,14 +1219,14 @@ return {
 
 	-- shadowparasitemanager.lua
 	shadowparasitemanager = {
-		num_waves = "Waves: %d",
+		num_waves = "波数: %d",
 	}, 
 
 	-- shadow_battleaxe.lua [Prefab]
 	shadow_battleaxe = {
-		level = "Level: %s / %s",
-		boss_progress = "Defeated Bosses: %s / %s",
-		lifesteal = "<color=HEALTH>Life Steal</color>: <color=HEALTH>%.2f</color> (<color=SANITY>%.2f</color>)",
+		level = "等级: %s / %s",
+		boss_progress = "击败BOSS: %s / %s",
+		lifesteal = "<color=HEALTH>吸血</color>: <color=HEALTH>%.2f</color> (<color=SANITY>%.2f</color>)",
 	},
 
 	-- shadowrift_portal.lua [Prefab]
@@ -1227,7 +1246,7 @@ return {
 	-- shadowthrall_mimics.lua
 	shadowthrall_mimics = {
 		mimic_count = "<string=UI.CUSTOMIZATIONSCREEN.ITEMMIMICS>: %s / %s",
-		next_spawn = "<prefab=itemmimic_revealed> will try to spawn in %s",
+		next_spawn = "<prefab=itemmimic_revealed> 尝试刷新于%s后",
 	},
 
 	-- shadowthrallmanager.lua
@@ -1235,7 +1254,7 @@ return {
 		fissure_cooldown = "下一裂隙可控制于%s后",
 		waiting_for_players = "等待一个玩家接近",
 		thrall_count = "<color=MOB_SPAWN><prefab=SHADOWTHRALL_HANDS></color>: %d",
-		thralls_alive = "<color=MOB_SPAWN>Thralls alive (%d)</color>: %s",
+		thralls_alive = "<color=MOB_SPAWN>活着的奴隶 (%d)</color>: %s",
 		dreadstone_regen = "<color=#942429><prefab=DREADSTONE></color>会再生于%s后",
 	},
 
@@ -1317,13 +1336,13 @@ return {
 
 	-- support_pillar.lua [Prefab]
 	support_pillar = {
-		reinforcement = "Reinforcement: %s / %s",
-		durability = "Durability: %s / %s",
+		reinforcement = "加固: %s / %s",
+		durability = "耐久: %s / %s",
 	},
 
 	-- support_pillar_dreadstone.lua [Prefab]
 	support_pillar_dreadstone = {
-		time_until_reinforcement_regen = "Next regeneration: %s",
+		time_until_reinforcement_regen = "下一次回复: %s后",
 	},
 
 	-- temperature.lua

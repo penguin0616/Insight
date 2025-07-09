@@ -736,22 +736,26 @@ function NEW_VERSION_INFO_FN(button)
 	local InsightPopupDialog = import("screens/insightpopupdialog")
 	local InsightConfigurationScreen = import("screens/insightconfigurationscreen")
 	local InsightPresetScreen = import("screens/insightpresetscreen")
+	local title = GetLocalInsight(localPlayer).context.lstr.first_time_insight.title
+	local description = GetLocalInsight(localPlayer).context.lstr.first_time_insight.description
+	local no_thanks = GetLocalInsight(localPlayer).context.lstr.first_time_insight.no
+	local configuration = GetLocalInsight(localPlayer).context.lstr.first_time_insight.configuration
+	local presets = GetLocalInsight(localPlayer).context.lstr.first_time_insight.presets
 
 	if FIRST_TIME_INSIGHT then
 		local popup; popup = InsightPopupDialog(
-			"Welcome to Insight!", 
-[[This is probably your first time using Insight.
-I recommend checking out the configuration or using one of the presets!]],
+			title,
+			description,
 			{
-				{ text="No thanks", cb=function() 
+				{ text=no_thanks, cb=function() 
 					popup:Close() 
 				end },
-				{ text="Configuration", cb=function() 
+				{ text=configuration, cb=function() 
 					popup:Close() 
 					local scr = InsightConfigurationScreen() 
 					TheFrontEnd:PushScreen(scr)
 				end },
-				{ text="Presets", cb=function() 
+				{ text=presets, cb=function() 
 					popup:Close()
 					local scr = InsightPresetScreen(GetPlayerContext(localPlayer), modname)
 					TheFrontEnd:PushScreen(scr)
