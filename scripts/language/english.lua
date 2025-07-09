@@ -36,7 +36,6 @@ return {
 		},
 	},
 	
-	
 	-- modmain.lua
 	dragonfly_ready = "Ready to fight.",
 

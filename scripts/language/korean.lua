@@ -27,7 +27,17 @@ directory. If not, please refer to
 
 return {
 	-- insightservercrash.lua
-	server_crash = "서버가 충돌했습니다.",
+	crash_reporter = {
+		title = "[Insight Crash Reporter]",
+		crashed = "서버가 충돌했습니다.",
+		report_status = {
+			unknown = "Unknown",
+			disabled = "The crash reporter is <color=#666666>disabled</color>: <color=#666666>%s</color>",
+			sending = "Sending crash report",
+			success = "Crash reported to Insight. <u>This does NOT mean that Insight caused the issue!</u>",
+			failure = "Crash report failed to send (%s): %s",
+		},
+	},
 	
 	-- modmain.lua
 	dragonfly_ready = "전투 준비 완료.",
