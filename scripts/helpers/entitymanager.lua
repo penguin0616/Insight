@@ -88,7 +88,7 @@ function EntityManager.Manage(inst)
 
 	if not inst.Transform or not inst.AnimState then
 		--[[
-		print(string.format("DENIED: %s | FX: %s, %s | DECOR: %s | CLASSIFIED: %s", 
+		mprint(string.format("DENIED: %s | FX: %s, %s | DECOR: %s | CLASSIFIED: %s", 
 			tostring(inst), 
 			tostring(inst:HasTag("fx")), 
 			tostring(inst:HasTag("FX")), -- case doesn't matter

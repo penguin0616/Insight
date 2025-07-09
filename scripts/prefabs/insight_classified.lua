@@ -34,7 +34,7 @@ local function OnWorldDataDirty(inst)
 		inst._parent.replica.insight.world_data = data
 	else
 		mprint("Missing Insight Replica", inst._parent)
-		print(debugstack())
+		mprint(debugstack())
 	end
 end
 
@@ -56,7 +56,7 @@ local function OnNaughtinessDirty(inst)
 		inst._parent.replica.insight:OnNaughtinessDirty({ actions = actions, threshold = threshold })
 	else
 		mprint("Missing Insight Replica", inst._parent)
-		print(debugstack())
+		mprint(debugstack())
 	end
 end
 
@@ -67,7 +67,7 @@ local function OnInvalidateDirty(inst)
 			inst._parent.replica.insight:OnInvalidateCachedEntity(ent)
 		else
 			mprint("Missing Insight Replica", inst._parent)
-			print(debugstack())
+			mprint(debugstack())
 		end
 	end
 end
@@ -78,7 +78,7 @@ local function OnHuntTargetDirty(inst)
 		inst._parent.replica.insight:OnHuntTargetDirty(target)
 	else
 		mprint("Missing Insight Replica", inst._parent)
-		print(debugstack())
+		mprint(debugstack())
 	end
 end
 
@@ -88,7 +88,7 @@ local function OnHungerRateDirty(inst)
 		inst._parent.replica.insight:OnHungerRateDirty(rate)
 	else
 		mprint("Missing Insight Replica", inst._parent)
-		print(debugstack())
+		mprint(debugstack())
 	end
 end
 
@@ -98,7 +98,7 @@ local function OnSanityRateDirty(inst)
 		inst._parent.replica.insight:OnSanityRateDirty(rate)
 	else
 		mprint("Missing Insight Replica", inst._parent)
-		print(debugstack())
+		mprint(debugstack())
 	end
 end
 
@@ -108,7 +108,7 @@ local function OnMoistureRateDirty(inst)
 		inst._parent.replica.insight:OnMoistureRateDirty(rate)
 	else
 		mprint("Missing Insight Replica", inst._parent)
-		print(debugstack())
+		mprint(debugstack())
 	end
 end
 

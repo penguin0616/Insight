@@ -121,7 +121,7 @@ local function UpdateScytheSelection(doer)
 end
 
 local function OnScytheTargetSelected(inst, target, doer)
-	--print('SELECTED', target, inst, doer)
+	--mprint('SELECTED', target, inst, doer)
 	scything[doer] = {
 		scythe = inst,
 		target = target,
@@ -143,7 +143,7 @@ end
 
 local function OnScytheTargetUnselected(doer)
 	--target.AnimState:SetAddColour(0, 0, 0, 0)
-	--print('UNSELECTED', target, doer)
+	--mprint('UNSELECTED', target, doer)
 
 	local state = scything[doer]
 	if not state then

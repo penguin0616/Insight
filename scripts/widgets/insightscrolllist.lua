@@ -128,7 +128,7 @@ local InsightScrollList = Class(Widget, function(self, data)
 	-- Works fine for loading in from a screen, but not gaining/losing focus.
 	self.focus_forward_fn = function()
 		-- Triggers every focus move.
-		print("!!!!!!!!!!!!!!!!!!!!!!!!!! self.focus", self.focus)
+		mprint("!!!!!!!!!!!!!!!!!!!!!!!!!! self.focus", self.focus)
 
 		-- When a controller is active (aka tracking_mouse == false, the default focus of the parent screen gets set twice.)
 		-- Otherwise, the default focus gets set once.
@@ -273,17 +273,17 @@ function InsightScrollList:BuildScrollBar()
 
 	--[[
 	self.position_marker.OnGainFocus = function()
-		print("ongainfocus")
+		mprint("ongainfocus")
 		--do nothing OnGainFocus
 	end
 	--]]
 	self.position_marker.OnLoseFocus = function()
-		--print("onlosefocus")
+		--mprint("onlosefocus")
 		--do nothing OnLoseFocus
 	end
 	
 	self.position_marker:SetOnClick(function()
-		--print("onclick")
+		--mprint("onclick")
 		self.drag_state = nil -- Unused
 		self.saved_scroll_pos = nil
 		TheFrontEnd:LockFocus(false)
@@ -428,7 +428,7 @@ function InsightScrollList:RefreshView()
 		end
 	end
 
-	--print(self.num_items, self.end_scroll_pos, self:CanScroll())
+	--mprint(self.num_items, self.end_scroll_pos, self:CanScroll())
 	if self:CanScroll() then
 		if self.scroll_bar_container then
 			self.scroll_bar_container:Show()
@@ -700,14 +700,14 @@ function InsightScrollList:OnControl(control, down)
 
 			local moved = false
 			if controls:IsAcceptedControl("scroll_up", control) then
-				--print("Scrolling up.")
+				--mprint("Scrolling up.")
 				local amt = -self.scroll_per_click
 				if TheInput:ControllerAttached() then amt = amt / 2 end
 				moved = self:Scroll(amt)
 
 				accepted = true
 			elseif controls:IsAcceptedControl("scroll_down", control) then
-				--print("Scrolling down.")
+				--mprint("Scrolling down.")
 				local amt = self.scroll_per_click
 				if TheInput:ControllerAttached() then amt = amt / 2 end
 				moved = self:Scroll(amt)

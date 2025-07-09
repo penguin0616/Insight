@@ -908,7 +908,7 @@ local function GetComponentDescriptor(name)
 				local src = f:read("*a")
 
 				mprint("==================== FILE SOURCE ====================")
-				print("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
+				mprint("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
 
 				mprint("==================== HEX DUMP =======================")
 				local file_fn = import._init_cache[import.ResolvePath("descriptors/" .. name)]
@@ -1617,7 +1617,7 @@ end
 local function sprint(c)
 	local x = c
 	while #x > 0 do
-		print(x:sub(1, 500))
+		mprint(x:sub(1, 500))
 		x = x:sub(501)
 	end
 end
@@ -2425,15 +2425,6 @@ if IS_DST then
 		end
 	end)
 	
-	
-	local function sprint(c)
-		local x = c
-		while #x > 0 do
-			TheSim:LuaPrint(x:sub(1, 500))
-			x = x:sub(501)
-		end
-	end
-	
 	rpcNetwork.AddClientModRPCHandler(modname, "Print", function(str, ...)
 		print(str)
 		--mprint("LENGTH:", #str)
@@ -3090,25 +3081,25 @@ end
 --==========================================================================================================================
 --==========================================================================================================================
 _G.check = function(client_config)
-	print("checking with client_config =", client_config)
+	mprint("checking with client_config =", client_config)
 	local modname = "workshop-2189004162";
 	local key = "follower_info"
 
-	print("GetModConfigData:", GetModConfigData(key, client_config))
+	mprint("GetModConfigData:", GetModConfigData(key, client_config))
 
 	local filename = KnownModIndex:GetModConfigurationPath(modname, client_config);
 
 	TheSim:GetPersistentString(filename, function(safe, res)
-		if not safe then return print('GetPersistentString fails in world server X') end;
+		if not safe then return mprint('GetPersistentString fails in world server X') end;
 		local axd, data = RunInSandboxSafe(res); 
-		if not axd then return print('GetPersistentString fails in world server Y') end;
+		if not axd then return mprint('GetPersistentString fails in world server Y') end;
 		for i,v in pairs(data) do 
 			if v.name == key then 
-				print("GetPersistentString:", v.label, ":", v.saved)
+				mprint("GetPersistentString:", v.label, ":", v.saved)
 			end;
 		end;
 	end);
-	print'-------------------------------'
+	mprint'-------------------------------'
 end
 
 _G.tst = function()

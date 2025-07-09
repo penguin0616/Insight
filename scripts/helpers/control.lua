@@ -35,18 +35,18 @@ local ignore = {"CONTROL_CUSTOM_START"};
 for i,v in pairs(getfenv(0)) do 
 	if i:sub(1, #("CONTROL_")) == "CONTROL_" then 
 		TheGlobalInstance:DoTaskInTime(c*0.5, function() 
-			print(i, v);
+			mprint(i, v);
 			if table.contains(ignore, i) then 
-				print("\tignoring this garbage");
+				mprint("\tignoring this garbage");
 			else
-				print("\t", TheInput:GetLocalizedControl(TheInput:GetControllerID(), v, true))
+				mprint("\t", TheInput:GetLocalizedControl(TheInput:GetControllerID(), v, true))
 			end
 		end);
 		c=c+1
 	end;
 end;
 
-print("dingy:", c)
+mprint("dingy:", c)
 ]]
 
 --[[
@@ -75,13 +75,13 @@ setmetatable(KNOWN_CONTROLS, {
 })
 --]]
 
--- print(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_DEBUG_MENU))
+-- mprint(TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_OPEN_DEBUG_MENU))
 
 --------------------------------------------------------------------------
 --[[ Private Functions ]]
 --------------------------------------------------------------------------
 local function OnControlMapped(deviceId, controlId, inputId, hasChanged)
-	print("CTRL CHANGE:", deviceId, controlId, inputId, hasChanged) -- does this ever actually happen?
+	mprint("CTRL CHANGE:", deviceId, controlId, inputId, hasChanged) -- does this ever actually happen?
 end
 
 local function OnControl() end

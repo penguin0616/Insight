@@ -494,7 +494,7 @@ end
 
 --[[
 function InsightMenu:OnRawKey(...)
-	print(...)
+	mprint(...)
 
 end
 --]]

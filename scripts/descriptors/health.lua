@@ -89,7 +89,7 @@ local function Describe(self, context)
 				elseif player_naughtiness ~= nil then
 					mprintf("Player naughtiness information is invalid: %s (%s)", tostring(player_naughtiness), type(player_naughtiness))
 					player_naughtiness = string.format("[Invalid Naughtiness Data] %s (%s)", tostring(player_naughtiness), type(player_naughtiness))
-					print(debugstack())
+					mprint(debugstack())
 				end
 			end
 			
