@@ -141,7 +141,9 @@ local function tostring(arg)
 end
 
 local function T(tbl, key)
-	if locale and ChooseTranslationTable then
+	if locale == "zht" then
+		return tbl["zh"] or tbl[1]
+	elseif locale and ChooseTranslationTable then
 		return ChooseTranslationTable(tbl, key)
 	else
 		return tbl["en"] or tbl[1]
