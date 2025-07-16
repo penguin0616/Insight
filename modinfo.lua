@@ -487,7 +487,7 @@ STRINGS = {
 	},
 	update_info = {
 		"See Steam changelog for more info.",
-		["zh"] = nil,
+		["zh"] = "查看Steam创意工坊页面的更新日志以了解更多信息。",
 		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
 		["ru"] = "Добавлена информация об обновлениях From Beyond и других вещах. Смотрите список изменений Steam для получения дополнительной информации.",
@@ -6486,7 +6486,7 @@ STRINGS = {
 		},
 		hover = {
 			"Enables automatic reporting of crashes to the mod author.", 
-			["zh"] = nil,
+			["zh"] = "启用自动将崩溃报告发送给模组作者。",
 			["br"] = nil,
 			["es"] = nil,
 			["ru"] = nil,

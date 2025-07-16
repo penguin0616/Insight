@@ -25,14 +25,14 @@ directory. If not, please refer to
 return {
 	-- insightservercrash.lua
 	crash_reporter = {
-		title = "[Insight Crash Reporter]",
+		title = "[Insight 崩溃报告器]",
 		crashed = "服务器崩溃",
 		report_status = {
-			unknown = "Unknown",
-			disabled = "The crash reporter is <color=#666666>disabled</color>: <color=#666666>%s</color>",
-			sending = "Sending crash report",
-			success = "Crash reported to Insight. <u>This does NOT mean that Insight caused the issue!</u>",
-			failure = "Crash report failed to send (%s): %s",
+			unknown = "未知",
+			disabled = "崩溃报告器已<color=#666666>禁用</color>：<color=#666666>%s</color>",
+			sending = "正在发送崩溃报告",
+			success = "崩溃已报告给 Insight <u>这并不意味着 Insight 导致了问题！</u>",
+			failure = "崩溃报告发送失败（%s）：%s",
 		},
 	},
 
