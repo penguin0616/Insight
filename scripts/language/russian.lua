@@ -43,7 +43,7 @@ return {
 	time_segments = "%s сегмент(ов)",
 	time_days = "%s день(дней), ",
 	time_days_short = "%s день(дней)",
-	time_seconds = "%s день(дней)",
+	time_seconds = "%s секунд(а)",
 	time_minutes = "%s минут(а), ",
 	time_hours = "%s час(ов), ",
 
