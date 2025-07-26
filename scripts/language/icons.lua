@@ -34,7 +34,7 @@ return {
 			--sending = "Sending crash report",
 			--success = "Crash reported to Insight. <u>This does NOT mean that Insight caused the issue!</u>",
 			--failure = "Crash report failed to send (%s): %s",
-		},
+		--},
 	},
 
 	-- modmain.lua
