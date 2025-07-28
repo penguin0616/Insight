@@ -46,7 +46,7 @@ local function OnNaughtinessDirty(inst)
 	local actions, threshold = str:match("(%d+)|(%d+)")
 
 	if not actions or not threshold then
-		mprint(actions, threshold)
+		mprintf("Failed to parse naughtiness information from classified: %s, %s", actions, threshold)
 		return error("Actions or threshold is missing?")
 	end
 

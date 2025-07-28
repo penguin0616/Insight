@@ -25,9 +25,11 @@ local module = {
 	naughtiness_values = {},
 }
 
+--- Returns the naughtiness values for the player.
+--- @param player EntityScript
+--- @return table @{ actions=int, threshold=int }
 local function GetPlayerNaughtiness(player)
 	if IS_DS then
-		-- <3
 		local kramped = player.components.kramped
 		if kramped then
 			if not kramped.actions or not kramped.threshold then
@@ -40,10 +42,13 @@ local function GetPlayerNaughtiness(player)
 
 			return { actions=kramped.actions, threshold=kramped.threshold }
 		end
-	end
 
+		return
+	end
+	
 	if not TheWorld.ismastersim then
-		error("[Insight]: GetPlayerNaughtiness called on client")
+		--error("[Insight]: GetPlayerNaughtiness called on client")
+		mprint("GetPlayerNaughtiness called on client")
 		return
 	end
 
@@ -142,6 +147,7 @@ local function OnKrampedPostInit(self)
 		--]]
 	end
 
+	-- We're grabbing the list of active players directly from the component to use for ours.
 	local _activeplayers = util.getupvalue(self.GetDebugString, "_activeplayers")
 	if not _activeplayers then
 		local d = debug.getinfo(self.GetDebugString, "Sl")
@@ -150,7 +156,6 @@ local function OnKrampedPostInit(self)
 	end
 
 	module.active_players = _activeplayers
-	local oldOnNaughtyAction
 	local firstLoad = true
 
 	-- i can't begin to describe how much this hurt me (Basements) https://steamcommunity.com/sharedfiles/filedetails/?id=1349799880 
@@ -171,6 +176,8 @@ local function OnKrampedPostInit(self)
 	for i,v in pairs(TheWorld.event_listening.ms_playerjoined[TheWorld]) do 
 		if debug.getinfo(v, "S").source == "scripts/components/kramped.lua" then 
 			module.OnPlayerJoined = v;
+			module.OnKilledOther = util.recursive_getupvalue(v, "OnKilledOther")
+
 			TheWorld.event_listening.ms_playerjoined[TheWorld][i] = function(...)
 				return module.OnPlayerJoined(...)
 			end
@@ -178,12 +185,40 @@ local function OnKrampedPostInit(self)
 		end 
 	end
 
+	if module.OnKilledOther then
+		-- Zarklord's GemCore (https://steamcommunity.com/sharedfiles/filedetails/?id=1378549454) fiddles with OnKilledOther [September 6, 2020]
+		module.oldOnNaughtyAction = util.recursive_getupvalue(module.OnKilledOther, "OnNaughtyAction")
+	end
+
+	for i,v in pairs({"OnPlayerLeft", "OnPlayerJoined", "OnKilledOther", "oldOnNaughtyAction"}) do
+		if type(module[v]) ~= "function" then
+			mprintf("Kramped failed to load -- could not find %s (got %s)", v, type(module[v]))
+			return
+		end
+	end
+
+	util.replaceupvalue(module.OnKilledOther, "OnNaughtyAction", function(how_naughty, playerdata)
+		--dprint("onnaughtyaction", how_naughty, playerdata, playerdata.player)
+		--mprint("ON NAUGHTY ACTION BEFORE", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
+		module.oldOnNaughtyAction(how_naughty, playerdata)
+		--mprint("ON NAUGHTY ACTION AFTER", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
+		--mprint(playerdata.actions, playerdata.threshold)
+		-- while i could just pass in the playerdata........ i dont feel like it
+		if playerdata.player.components.insight then
+			playerdata.player.components.insight:SendNaughtiness()
+		end
+	end)
+
+	-- Load naughtiness values
+	if tonumber(APP_VERSION) > 435626 then -- zark
+		module.naughtiness_values = NAUGHTY_VALUE
+	elseif module.OnKilledOther then
+		module.naughtiness_values = util.getupvalue(module.OnKilledOther, "NAUGHTY_VALUE")
+	end
+
 	setmetatable(module.active_players, {
 		__newindex = function(self, player, playerdata)
-			--dprint("newindex player", player, playerdata)
-			-- Load OnKilledOther
-			-- debug.getinfo(2).func's upvalues {_activeplayers [tbl], self [tbl], OnKilledOther [fn]}
-
+			--[[
 			-- Hacky upvalue search, yay.
 			if not module.OnKilledOther then
 				-- this isn't annoying at all!
@@ -205,24 +240,14 @@ local function OnKrampedPostInit(self)
 					end
 				end
 			end
-
-			-- Load naughtiness values
-			if tonumber(APP_VERSION) > 435626 then -- zark
-				module.naughtiness_values = NAUGHTY_VALUE
-			elseif module.OnKilledOther then
-				module.naughtiness_values = util.getupvalue(module.OnKilledOther, "NAUGHTY_VALUE")
-			end
-
-			--assert(module.naughtiness_values, "[Insight]: Kramped failed to load naughtiness values")
-
-			-- Load oldOnNaughtyAction
-			module.oldOnNaughtyAction = module.oldOnNaughtyAction or util.recursive_getupvalue(module.OnKilledOther, "OnNaughtyAction") -- zarklord's gemcore (https://steamcommunity.com/sharedfiles/filedetails/?id=1378549454) fiddles with OnKilledOther [September 6, 2020]
-			--assert(oldOnNaughtyAction, "[Insight]: Kramped failed to load OnNaughtyAction [recursive]")
+			--]]
 
 			-- Insert the player and the data.
 			rawset(self, player, playerdata)
 
 			-- Register player's naughtiness threshold.
+			-- We need to check to make sure kramped isn't disabled -- if it is and we trigger this, 
+			-- then the player will get the noise each time they kill something. 
 			if TUNING.KRAMPUS_THRESHOLD ~= -1 then
 				module.OnKilledOther(player, {
 					-- fake a victim
@@ -244,22 +269,6 @@ local function OnKrampedPostInit(self)
 			else
 				mprint("Unable to send initial naughtiness to:", player)
 			end
-
-			if firstLoad then
-				util.replaceupvalue(module.OnKilledOther, "OnNaughtyAction", function(how_naughty, playerdata)
-					--dprint("onnaughtyaction", how_naughty, playerdata, playerdata.player)
-					--mprint("ON NAUGHTY ACTION BEFORE", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
-					module.oldOnNaughtyAction(how_naughty, playerdata)
-					--mprint("ON NAUGHTY ACTION AFTER", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
-					--mprint(playerdata.actions, playerdata.threshold)
-					-- while i could just pass in the playerdata........ i dont feel like it
-					if playerdata.player.components.insight then
-						playerdata.player.components.insight:SendNaughtiness()
-					end
-				end)
-			end
-
-			firstLoad = false
 		end,
 		__metatable = "[Insight] The metatable is locked"
 	})
@@ -301,21 +310,8 @@ local function Describe(inst, context)
 	}
 end
 
---- Returns the naughtiness description for the specified player.
---- @param inst EntityScript player
---- @param context table
---- @return number|nil @Current naughtiness value.
-local function GetNaughtiness(inst, context)
-	local data = Describe(inst, context)
-	if data then 
-		return data.naughtiness 
-	end
-end
-
--- TODO: This file (mostly the component post init) could use some refactoring I'd say.
-
 return {
 	OnServerInit = OnServerInit,
 	Describe = Describe,
-	GetNaughtiness = GetNaughtiness,
+	GetPlayerNaughtiness = GetPlayerNaughtiness,
 }
