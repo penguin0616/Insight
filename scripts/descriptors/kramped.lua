@@ -228,6 +228,7 @@ local function OnKrampedPostInit(self)
 					-- fake a victim
 					victim = {
 						prefab = "glommer",
+						HasTag = function(...) return false end,
 					},
 					stackmult = 0, -- no naughtiness gained since it multiplies naughtiness by this value
 				})
