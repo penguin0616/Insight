@@ -455,7 +455,10 @@ return {
 			name = nil,
 			description = "Regenerates <color=SANITY>{amount} sanity</color> over {duration}(s).",
 		},
-
+		["nightvision_buff"] = {
+			name = "<color=#258cd3>Night vision</color>",
+			description = "Provides <color=#258cd3>night vision</color> for {duration}(s).",
+		},
 		["wormlight_light"] = {
 			name = "<color=#6AD1EF><prefab=wormlight> light</color>",
 			--description = "Provides light for {duration}(s).",

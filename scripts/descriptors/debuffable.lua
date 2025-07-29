@@ -58,6 +58,7 @@ local debuff_to_prefab = {
 	tillweedsalve_buff = "tillweedsalve",
 	healthregenbuff = "jellybean",
 	sweettea_buff = "sweettea",
+	nightvision_buff = "ancientfruit_nightvision",
 
 	wintersfeastbuff = "table_winters_feast",
 
