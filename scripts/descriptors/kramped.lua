@@ -37,7 +37,9 @@ local function GetPlayerNaughtiness(player)
 			end
 
 			if not (kramped.actions and kramped.threshold) then
-				error("[Insight]: Kramped stats missing after initialization?")
+				-- It is possible for this to happen if Krampus is disabled (see #61).
+				--error("[Insight]: Kramped stats missing after initialization?")
+				return
 			end
 
 			return { actions=kramped.actions, threshold=kramped.threshold }
