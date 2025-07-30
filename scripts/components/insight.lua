@@ -220,21 +220,23 @@ end
 
 --- Sends the client's naughtiness.
 function Insight:SendNaughtiness()
-	-- GetNaughtiness normally requires a context for the second arg, 
-	-- but as of right now it doesn't seem like the context gets checked for anything at the moment.
-	local tbl = _G.Insight.descriptors.kramped 
-		and _G.Insight.descriptors.kramped.GetNaughtiness(self.inst, GetPlayerContext(self.inst))
+	local naughtyFn = _G.Insight.descriptors.kramped and _G.Insight.descriptors.kramped.GetPlayerNaughtiness
+	if not naughtyFn then
+		mprintf("Insight:SendNaughtiness() failed for [%s], bad naughtyFn: %s", self, naughtyFn)
+		return
+	end
 
+	local data = naughtyFn(self.inst, GetPlayerContext(self.inst))
 	-- This will fail intially in client hosted since it'll get called before the player shows up in kramped data.
-	if type(tbl) ~= "table" or type(tbl.actions) ~= "number" or type(tbl.threshold) ~= "number" then
-		mprint("GetNaughtiness failed:", tbl)
+	if type(data) ~= "table" or type(data.actions) ~= "number" or type(data.threshold) ~= "number" then
+		mprint("Insight:SendNaughtiness() -> GetPlayerNaughtiness failed:", tbl)
 		return
 	end
 
 	if self.is_local_host then
-		self.inst.replica.insight:OnNaughtinessDirty(tbl)
+		self.inst.replica.insight:OnNaughtinessDirty(data)
 	else
-		self.inst.replica.insight:SetNaughtiness(tbl.actions .. "|" .. tbl.threshold)
+		self.inst.replica.insight:SetNaughtiness(data.actions .. "|" .. data.threshold)
 	end
 end
 

@@ -68,7 +68,11 @@ local function DescribeHeldItemRefuelingCapability(self, context)
 	local description
 
 	local held_item = context.player.components.inventory and context.player.components.inventory:GetActiveItem()
-	if held_item and held_item.components.fuel then
+	if not held_item then
+		return
+	end
+
+	if held_item.components.fuel then
 		if self:CanAcceptFuelItem(held_item) then
 			local fuel_value = GetFuelValue(self, held_item, context.player)
 			local percent_restore = 0
@@ -86,7 +90,7 @@ local function DescribeHeldItemRefuelingCapability(self, context)
 
 			description = string.format(context.lstr.fueled.held_refuel, held_item.prefab, Round(percent_restore * 100, 0))
 		end
-	elseif held_item and held_item.components.sewing then
+	elseif held_item.components.sewing then
 		local USAGE_FUELTYPE = world_type == -1 and FUELTYPE.USAGE or "USAGE"
 		if self.fueltype == USAGE_FUELTYPE or self.secondaryfueltype == USAGE_FUELTYPE then
 			-- can sew

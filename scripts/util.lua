@@ -913,6 +913,11 @@ function module.getupvalue_chain(func, ...)
 end
 
 function module.recursive_getupvalue(func, name)
+	if type(func) ~= "function" then
+		errorf("[Insight]: recursive_getupvalue called with %s, expected 'function'", type(func))
+		return
+	end
+
 	local checked = {}
 
 	local function scan(fn)

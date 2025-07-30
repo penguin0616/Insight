@@ -459,6 +459,10 @@ return {
 			name = "<color=SANITY>Регенерация рассудка</color>",
 			description = "Восстанавливает <color=SANITY>{amount} рассудка</color> за {duration}(с).",
 		},
+		["nightvision_buff"] = {
+			name = "<color=#258cd3>Night vision</color>",
+			description = "Provides <color=#258cd3>night vision</color> for {duration}(s).",
+		},
 		["wormlight_light"] = {
 			name = "<color=#6AD1EF><prefab=wormlight> light</color>",
 			--description = "Provides light for {duration}(s).",

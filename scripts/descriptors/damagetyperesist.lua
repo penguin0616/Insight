@@ -26,6 +26,7 @@ local function DescribeModifiers(modifiers, context)
 
 	local strings = {}
 	for tag, percent in pairs(modifiers) do
+		percent = (percent - 1) * 100
 		-- The signs are flipped across damagetypebonus/resist.
 		local percent_color = (percent < 0 and Insight.COLORS.PERCENT_GOOD) or (percent > 0 and Insight.COLORS.PERCENT_BAD) or "#ffffff"
 		
