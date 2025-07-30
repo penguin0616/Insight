@@ -40,50 +40,30 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- lureplant.lua [Prefab]
-local inventory_cache = setmetatable({}, {__mode="kv"})
-local listeners_hooked = setmetatable({}, {__mode="kv"})
-
-local function Uncache(inst)
-	inventory_cache[inst] = nil
-end
-
+-- catcoonden.lua [Prefab]
 local function SummarizeInventory(inst)
 	if not inst.components.inventory then
 		-- Doesn't have inventory in DS or DLCs
 		return
 	end
 
-	local items = inventory_cache[inst]
-	if not items then
-		items = {}
-		for k = 1, inst.components.inventory.maxslots do
-			local item = inst.components.inventory.itemslots[k]
-			if item ~= nil then
-				local stacksize = item.components.stackable and item.components.stackable:StackSize() or 1
-				items[#items+1] = {item.prefab, stacksize, item.components.perishable}
-			end
-		end
-		inventory_cache[inst] = items
+	local inventoryData = Insight.descriptors.inventory and Insight.descriptors.inventory.GetInventoryData(inst.components.inventory)
 
-		if not listeners_hooked[inst] then
-			listeners_hooked[inst] = true
-			inst:ListenForEvent("itemlose", Uncache)
-			inst:ListenForEvent("itemget", Uncache)
-		end
+	if not inventoryData then
+		return
 	end
 
 	local inventory_string
-	for i = 1, #items do
-		local item = items[i]
+	for i = 1, #inventoryData.items do
+		local item = inventoryData.items[i]
 		local perish_percent = ""
-		if item[3] and Insight.descriptors.perishable and Insight.descriptors.perishable.GetPerishData then
-			local data = Insight.descriptors.perishable.GetPerishData(item[3])
+		if item.inst.components.perishable and Insight.descriptors.perishable and Insight.descriptors.perishable.GetPerishData then
+			local data = Insight.descriptors.perishable.GetPerishData(item.inst.components.perishable)
 			perish_percent = data and data.percent and ("<color=MONSTER>" .. Round(data.percent * 100, 1) .. "%</color>") or ""
 		end
-		local str = string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>) %s", "#eeeeee", item[1], item[2], perish_percent)
+		local str = string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>) %s", "#eeeeee", item.inst.prefab, item.stackSize, perish_percent)
 		inventory_string = (inventory_string or "") .. str
-		if i < #items then
+		if i < #inventoryData.items then
 			inventory_string = inventory_string .. "\n"
 		end
 	end

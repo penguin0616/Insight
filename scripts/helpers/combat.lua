@@ -104,7 +104,9 @@ module.GetDamageTypeModifiers = function(component)
 	local modifiers = {}
 	
 	for tag, sml in pairs(component.tags) do
-		local percent = (sml:Get() - 1) * 100
+		--local percent = (sml:Get() - 1) * 100
+		local percent = sml:Get() -- Doing the math in the describer.
+		
 		-- Modifier is generally something like 1.1 or 0.9, where 1 is normall
 
 		modifiers[tag] = percent

@@ -19,36 +19,15 @@ directory. If not, please refer to
 ]]
 
 -- molehill.lua [Prefab]
-local inventory_cache = setmetatable({}, {__mode="kv"})
-local listeners_hooked = setmetatable({}, {__mode="kv"})
-
-local function Uncache(inst)
-	inventory_cache[inst] = nil
-end
-
 local function SummarizeInventory(inst)
-	local items = inventory_cache[inst]
-	if not items then
-		items = {}
-		for k = 1, inst.components.inventory.maxslots do
-			local item = inst.components.inventory.itemslots[k]
-			if item ~= nil then
-				local stacksize = item.components.stackable and item.components.stackable:StackSize() or 1
-				items[item.prefab] = (items[item.prefab] or 0) + stacksize
-			end
-		end
-		inventory_cache[inst] = items
+	local inventoryData = Insight.descriptors.inventory and Insight.descriptors.inventory.GetInventoryData(inst.components.inventory)
 
-		if not listeners_hooked[inst] then
-			listeners_hooked[inst] = true
-			inst:ListenForEvent("itemlose", Uncache)
-			inst:ListenForEvent("itemget", Uncache)
-		end
+	if not inventoryData then
+		return
 	end
-
+	
 	local inventory_string = {}
-	for prefab, amt in pairs(items) do
-		local perish_percent = ""
+	for prefab, amt in pairs(inventoryData.prefabCounts) do
 		local str = string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", "#eeeeee", prefab, amt)
 		inventory_string[#inventory_string+1] = str
 	end
@@ -59,11 +38,7 @@ local function SummarizeInventory(inst)
 end
 
 local function Describe(inst, context)
-	local description = nil
-
-	-- inventory
-	local inventory_string = SummarizeInventory(inst)
-	description = inventory_string
+	local description = SummarizeInventory(inst)
 	
 	return {
 		priority = 0,

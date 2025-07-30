@@ -23,13 +23,22 @@ local combatHelper = import("helpers/combat")
 local function Describe(self, context)
 	local description = nil
 
-	if self.inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter") then
-		local data = combatHelper.GetSlingshotAmmoData(self.inst.prefab)
-		local damage = data and data.damage or "0?"
-		description = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damage)
+	if not (self.inst:HasTag("slingshotammo") and context.player:HasTag("slingshot_sharpshooter")) then
+		return
 	end
 
+	local data = combatHelper.GetSlingshotAmmoData(self.inst.prefab)
+	local damageString = data and data.damage or 0 -- Some ammo types do not do damage.
+	local planarDamageString = data and data.planar
 
+	local damageTypeModifiersString = Insight.descriptors.damagetypebonus and Insight.descriptors.damagetypebonus.DescribeModifiers(data.damagetypebonus or {}, context)
+
+	
+	damageString = damageString and string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type.normal, damageString) or nil
+	planarDamageString = planarDamageString and string.format(context.lstr.planardamage.planar_damage, planarDamageString) or nil
+	damageTypeModifiersString = damageTypeModifiersString and damageTypeModifiersString.description or nil
+
+	description = CombineLines(damageString, planarDamageString, damageTypeModifiersString)
 
 	return {
 		priority = 49,
