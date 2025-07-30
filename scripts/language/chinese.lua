@@ -459,8 +459,8 @@ return {
 			description = "{duration} 秒内回复 <color=SANITY>{amount} 理智</color>",
 		},
 		["nightvision_buff"] = {
-			name = "<color=#258cd3>Night vision</color>",
-			description = "Provides <color=#258cd3>night vision</color> for {duration}(s).",
+			name = "<color=#258cd3>夜视</color>",
+			description = "提供<color=#258cd3>夜视</color>, 持续 {duration} 秒",
 		},
 		["wormlight_light"] = {
 			name = "<color=#6AD1EF><prefab=wormlight> light</color>",
