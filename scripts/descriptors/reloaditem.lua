@@ -28,6 +28,11 @@ local function Describe(self, context)
 	end
 
 	local data = combatHelper.GetSlingshotAmmoData(self.inst.prefab)
+	if not data then
+		return
+	end
+
+
 	local damageString = data and data.damage or 0 -- Some ammo types do not do damage.
 	local planarDamageString = data and data.planar
 
