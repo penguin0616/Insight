@@ -18,37 +18,35 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- molehill.lua [Prefab]
-local function SummarizeInventory(inst)
-	local inventoryData = Insight.descriptors.inventory and Insight.descriptors.inventory.GetInventoryData(inst.components.inventory)
+local Widget = require("widgets/widget")
+local RichText = import("widgets/RichText") --FIXED_TEXT
 
-	if not inventoryData then
-		return
+local InsightCrashReportStatus = Class(Widget, function(self, title)
+	Widget._ctor(self, "InsightCrashReportStatus")
+
+	self.title = self:AddChild(RichText(UIFONT, 40, title))
+	self.message = self:AddChild(RichText(UIFONT, 32))
+	--self.message:SetPosition(0, -(40/2 + 32/2 + 5))
+
+	if message then
+		self:SetMessage(message)
 	end
 	
-	local inventory_string = {}
-	for prefab, amt in pairs(inventoryData.prefabCounts) do
-		local str = string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", "#eeeeee", prefab, amt)
-		inventory_string[#inventory_string+1] = str
+	if color then
+		self:SetColor(color)
 	end
+end)
 
-	if #inventory_string > 0 then
-		return table.concat(inventory_string, "\n")
-	end
+function InsightCrashReportStatus:SetMessage(msg)
+	self.message:SetString(msg)
+	local w, h = self.title:GetRegionSize()
+	local x, y = self.message:GetRegionSize()
+	self.message:SetPosition(0, -(h/2 + y/2 + 5))
 end
 
-local function Describe(inst, context)
-	local description = SummarizeInventory(inst)
-	
-	return {
-		priority = 0,
-		description = description
-	}
+function InsightCrashReportStatus:SetColor(color)
+	self.title:SetColour(color)
+	self.message:SetColour(color)
 end
 
-
-
-return {
-	Describe = Describe,
-	SummarizeInventory = SummarizeInventory
-}
+return InsightCrashReportStatus

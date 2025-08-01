@@ -45,12 +45,16 @@ directory. If not, please refer to
 
 -- volcanomanager.lua [Worldly]
 local world_type = GetWorldType()
-local clock = import("helpers/clock")
+local clock = Insight.descriptors.clock
 local function Describe(self, context)
 	if not (world_type == -1 or world_type >= 3) then
 		return
 	end 
 	
+	if not clock then
+		return
+	end
+
 	-- SW only
 	local description = nil
 

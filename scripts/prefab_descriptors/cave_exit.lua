@@ -18,16 +18,6 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local Widget = require "widgets/widget"
-local Text = require("widgets/text") --FIXED_TEXT
+-- cave_exit.lua [Prefab]
 
-local CrashReportStatus = Class(Widget, function(self, data)
-	Widget._ctor(self, "Tab")
-	self.text = self:AddChild(Text(UIFONT, 40, data.status))
-	if data.colour then
-		self.text:SetColour(data.colour)
-	end
-end)
-
-
-return CrashReportStatus
+return Insight.prefab_descriptors.cave_entrance

@@ -64,7 +64,7 @@ local function GetLootType(prefab)
 end
 
 local function ProcessLoot(inst)
-	--print(table.concat(inst.insight_loot, ", "))
+	--mprint(table.concat(inst.insight_loot, ", "))
 	local loot = inst.insight_loot
 
 	local info = { blueprint=false, mob=false, gears=false, valuable=false, trinket=false }

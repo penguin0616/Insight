@@ -35,26 +35,26 @@ math.random() * 12 <= 1
 -- but how much less...?
 -- perhaps i could argue that its 12 times less often
 
-	> x=0; for i = 1, 10000 do local r = math.random() if r <= .1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r <= .1 then x = x + 1 end end; mprint(x);
 	987
 
 	we'll call this 1.0
 
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	824
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	824
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	835
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	827
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	808
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	805
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	857
-	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; print(x);
+	> x=0; for i = 1, 10000 do local r = math.random() if r*12 <= 1 then x = x + 1 end end; mprint(x);
 	836
 
 	-- we'll call it 0.8333

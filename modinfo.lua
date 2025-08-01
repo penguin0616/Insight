@@ -46,7 +46,7 @@ end
 
 name = "Insight"
 -- Major.Minor.Patch
-version = "4.8.4" -- dst is 4.6.2, ds is 4.5.0
+version = "5.0.0" -- dst is 4.6.2, ds is 4.5.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -67,7 +67,6 @@ hamlet_compatible = true -- DLC0003
 -- DST
 api_version_dst = 10
 dst_compatible = true
-server_only_mod = true
 client_only_mod = false
 all_clients_require_mod = true
 forge_compatible = true
@@ -1019,7 +1018,7 @@ STRINGS = {
 			["ru"] = "Какой шрифт используется Insight для своего текста",
 			["ko"] = "Insight가 텍스트에 사용할 글꼴을 선택합니다.",
 		},
-		options = GenerateOptionsFromList(false, FONTS, function(i,v) return {["en"]=("Insight will use the game font '%s'"):format(v)} end),
+		options = GenerateOptionsFromList(false, FONTS, function(i,v) return {["en"]=("Insight will use the game font '%s'"):format(v),["zh"]=("Insight将使用'%s'字体"):format(v)} end),
 	},
 	hoverer_insight_font_size = {
 		label = {
@@ -1081,7 +1080,7 @@ STRINGS = {
 	hoverer_line_truncation = {
 		label = {
 			"Hover Text Truncation",
-			["zh"] = nil,
+			["zh"] = "悬停文本截断",
 			["br"] = nil,
 			["es"] = nil,
 			["ru"] = nil,
@@ -1089,7 +1088,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to truncate the information shown by Insight on hover. Hold Inspect to disable truncation.",
-			["zh"] = nil,
+			["zh"] = "是否在查看悬停文本时截断Insight显示的信息。按住Inspect以禁用截断。",
 			["br"] = nil,
 			["es"] = nil,
 			["ru"] = nil,
@@ -1097,9 +1096,9 @@ STRINGS = {
 		},
 		options = GenerateOptionsFromList(false, HOVERER_TRUNCATION_AMOUNTS, function(i,v) 
 			if v == HOVERER_TRUNCATION_AMOUNTS[1] then
-				return {["en"]=("Text will not be truncated.")}
+				return {["en"]=("Text will not be truncated."),["zh"]=("文本不会被截断。")}
 			else
-				return {["en"]=("Text will be truncated at '%s' line(s)"):format(v)} 
+				return {["en"]=("Text will be truncated at '%s' line(s)"):format(v),["zh"]=("文本将在第 %s 行被截断"):format(v)}
 			end
 		end),
 	},
@@ -4490,7 +4489,7 @@ STRINGS = {
 	display_shadowthrall_information = {
 		label = {
 			"Shadow Thrall Information", 
-			["zh"] = nil, 
+			["zh"] = "墨荒信息",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4498,7 +4497,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to display shadow thrall information.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示墨荒信息。",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4508,7 +4507,7 @@ STRINGS = {
 			[0] = {
 				description = {
 					"None",
-					["zh"] = nil,
+					["zh"] = "无",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4516,7 +4515,7 @@ STRINGS = {
 				},
 				hover = {
 					"Do not show any shadow thrall information.",
-					["zh"] = nil,
+					["zh"] = "不显示任何墨荒信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4526,7 +4525,7 @@ STRINGS = {
 			[1] = {
 				description = {
 					"Worldly",
-					["zh"] = nil,
+					["zh"] = "世界级",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4534,7 +4533,7 @@ STRINGS = {
 				},
 				hover = {
 					"Show only general shadow thrall information.",
-					["zh"] = nil,
+					["zh"] = "仅显示常规墨荒信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4544,7 +4543,7 @@ STRINGS = {
 			[2] = {
 				description = {
 					"All",
-					["zh"] = nil,
+					["zh"] = "全部",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4552,7 +4551,7 @@ STRINGS = {
 				},
 				hover = {
 					"Show all shadow thrall information.",
-					["zh"] = nil,
+					["zh"] = "显示所有墨荒信息",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4564,7 +4563,7 @@ STRINGS = {
 	display_batwave_information = {
 		label = {
 			"Bat Wave information", 
-			["zh"] = nil, 
+			["zh"] = "蝙蝠袭击信息",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4572,7 +4571,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to show bat wave information.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示蝙蝠袭击信息。",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4583,7 +4582,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Do not show bat wave information.",
-					["zh"] = nil,
+					["zh"] = "不显示蝙蝠袭击信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4594,7 +4593,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Show bat wave information.",
-					["zh"] = nil,
+					["zh"] = "显示蝙蝠袭击信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4606,7 +4605,7 @@ STRINGS = {
 	display_itemmimic_information = {
 		label = {
 			"Item Mimic Information", 
-			["zh"] = nil, 
+			["zh"] = "模拟物品信息",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4614,7 +4613,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to display item mimic information.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示模拟物品信息。",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4624,7 +4623,7 @@ STRINGS = {
 			[0] = {
 				description = {
 					"None",
-					["zh"] = nil,
+					["zh"] = "无",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4632,7 +4631,7 @@ STRINGS = {
 				},
 				hover = {
 					"Do not show any item mimic information.",
-					["zh"] = nil,
+					["zh"] = "不显示任何模拟物品信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4642,7 +4641,7 @@ STRINGS = {
 			[1] = {
 				description = {
 					"Worldly",
-					["zh"] = nil,
+					["zh"] = "世界级",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4650,7 +4649,7 @@ STRINGS = {
 				},
 				hover = {
 					"Show only general item mimic information (such as how many are in the world)",
-					["zh"] = nil,
+					["zh"] = "仅显示模拟物品常规信息（例如世界上有多少个）",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4660,7 +4659,7 @@ STRINGS = {
 			[2] = {
 				description = {
 					"All",
-					["zh"] = nil,
+					["zh"] = "全部",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4668,7 +4667,7 @@ STRINGS = {
 				},
 				hover = {
 					"Show all item mimic information (includes what items are mimics).",
-					["zh"] = nil,
+					["zh"] = "显示所有模拟物品信息（包括哪些物品是模拟的）。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4680,7 +4679,7 @@ STRINGS = {
 	display_rabbitking_information = {
 		label = {
 			"Rabbit King information", 
-			["zh"] = nil, 
+			["zh"] = "兔王信息",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4688,7 +4687,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to show rabbit king information.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示兔王信息。",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4699,7 +4698,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Do not show rabbit king information.",
-					["zh"] = nil,
+					["zh"] = "不显示兔王信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4710,7 +4709,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Show rabbit king information.",
-					["zh"] = nil,
+					["zh"] = "显示兔王信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -5515,7 +5514,7 @@ STRINGS = {
 	display_rechargeable = {
 		label = {
 			"Rechargeable", 
-			["zh"] = nil,
+			["zh"] = "充能信息显示",
 			["br"] = nil,
 			["es"] = nil,
 			["ru"] = nil,
@@ -5523,7 +5522,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether rechargeable information is displayed.", 
-			["zh"] = nil,
+			["zh"] = "是否显示充能信息。",
 			["br"] = nil,
 			["es"] = nil,
 			["ru"] = nil,
@@ -5534,7 +5533,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Rechargeable information will not be displayed.",
-					["zh"] = nil,
+					["zh"] = "不显示充能信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -5545,7 +5544,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Rechargeable information will be displayed.",
-					["zh"] = nil,
+					["zh"] = "显示充能信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -6484,12 +6483,12 @@ STRINGS = {
 			["ko"] = "충돌 보고",
 		},
 		hover = {
-			"**Attempts** to report your crashes (debug, mods, world info) automatically to my server.", 
-			["zh"] = "**尝试**自动上报你的崩溃（调试情况，模组，世界信息）至我的服务器。", 
-			["br"] = "**Tentativas** de relatar suas falhas (depuração, mods, informações do mundo) automaticamente para meu servidor.", 
-			["es"] = "**Intenta** reportar los crasheos (depuración, mods, información del mundo) automáticamente.",
-			["ru"] = "**Пытается** автоматически отправить отчеты о ваших ошибках (отладка, моды, информация о мире) на мой сервер.",
-			["ko"] = "**시범적** 당신의 충돌(디버그, 모드, 세계 정보)을 자동으로 서버에 보고할지 선택합니다.",
+			"Enables automatic reporting of crashes to the mod author.", 
+			["zh"] = nil,
+			["br"] = nil,
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
 		},
 		options = {
 			[false] = {
@@ -7789,7 +7788,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		},
-		default = false,
+		default = false, -- Important to be opt-out by default for user privacy.
 		tags = {"independent", "dst_only"},
 	},
 	{

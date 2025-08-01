@@ -167,6 +167,10 @@ function Color.fromRGBA(r, g, b, a)
 	return Color.new(r, g, b, a)
 end
 
+function Color.fromScaledRGBA(r, g, b, a)
+	return Color.fromRGBA(r * 255, g * 255, b * 255, a * 255)
+end
+
 --- Creates a new Color 'object' from RGB.
 --- Uses values between 0 and 255.
 -- @int r Red (defaults to 0).
@@ -176,6 +180,11 @@ end
 function Color.fromRGB(r, g, b)
 	return Color.fromRGBA(r, g, b, 255)
 end
+
+function Color.fromScaledRGB(r, g, b)
+	return Color.fromRGB(r * 255, g * 255, b * 255)
+end
+
 
 function Color:Lerp(target, percent)
 	-- lerp(a, b, x) == a + (b - a) * x;

@@ -19,40 +19,40 @@ directory. If not, please refer to
 ]]
 
 -- clock.lua
-local module = {
-	initialized = false,
-	netvars = {}
-}
+local netvars = {}
 
-module.GetMoonPhaseCycle = function(self)
+local function Initialize(cmp)
+	netvars.cycles = util.getupvalue(cmp.OnSave, "_cycles")
+	netvars.phase = util.getupvalue(cmp.OnSave, "_phase")
+	netvars.mooomphasecycle = util.getupvalue(cmp.OnSave, "_mooomphasecycle")
+	netvars.totaltimeinphase = util.getupvalue(cmp.OnSave, "_totaltimeinphase")
+	netvars.remainingtimeinphase = util.getupvalue(cmp.OnSave, "_remainingtimeinphase")
+end
+
+local function OnServerInit()
+	AddComponentPostInit("clock", Initialize)
+end
+
+local function GetMoonPhaseCycle()
 	if IS_DST then
-		return self.netvars.mooomphasecycle:value()
+		return netvars.mooomphasecycle:value()
 	else
 		return error("Not added in DS.") 
 	end
 end
 
-module.GetTimeLeftInSegment = function(self)
+local function GetTimeLeftInSegment()
 	if IS_DST then
-		if module.netvars.remainingtimeinphase then
-			return self.netvars.remainingtimeinphase:value() % 30
+		if netvars.remainingtimeinphase then
+			return netvars.remainingtimeinphase:value() % 30
 		end
 	else
 		return GetClock().timeLeftInEra % 30
 	end
 end
 
-module.Initialize = function(clock)
-	if module.initialized then
-		return
-	end
-	module.initialized = true
-	
-	module.netvars.cycles = util.getupvalue(clock.OnSave, "_cycles")
-	module.netvars.phase = util.getupvalue(clock.OnSave, "_phase")
-	module.netvars.mooomphasecycle = util.getupvalue(clock.OnSave, "_mooomphasecycle")
-	module.netvars.totaltimeinphase = util.getupvalue(clock.OnSave, "_totaltimeinphase")
-	module.netvars.remainingtimeinphase = util.getupvalue(clock.OnSave, "_remainingtimeinphase")
-end
-
-return module
+return {
+	OnServerInit = OnServerInit,
+	GetMoonPhaseCycle = GetMoonPhaseCycle,
+	GetTimeLeftInSegment = GetTimeLeftInSegment
+}

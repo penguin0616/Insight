@@ -37,20 +37,32 @@ local function Uncache(inst)
 end
 
 
-local function GetInventory(self)
+local function GetInventoryData(self)
 	local inst = self.inst
 	
-	local items = inventory_cache[inst]
-	if not items then
-		items = {}
+	-- Caching the inventory logic for convenience.
+	local inventoryData = inventory_cache[inst]
+	if not inventoryData then
+		inventoryData = {
+			prefabCounts = {}, -- [prefab = int],
+			items = {}
+		}
+
 		for k = 1, inst.components.inventory.maxslots do
 			local item = inst.components.inventory.itemslots[k]
 			if item ~= nil then
-				local stacksize = item.components.stackable and item.components.stackable:StackSize() or 1
-				items[#items+1] = {item.prefab, stacksize, item.components.perishable}
+				local stackSize = item.components.stackable and item.components.stackable:StackSize() or 1
+				if item.prefab then
+					inventoryData.prefabCounts[item.prefab] = (inventoryData.prefabCounts[item.prefab] or 0) + stackSize
+				end
+				inventoryData.items[#inventoryData.items+1] = {
+					inst = item,
+					itemSlotIndex = k,
+					stackSize = stackSize,
+				}
 			end
 		end
-		inventory_cache[inst] = items
+		inventory_cache[inst] = inventoryData
 
 		if not listeners_hooked[inst] then
 			listeners_hooked[inst] = true
@@ -58,6 +70,8 @@ local function GetInventory(self)
 			inst:ListenForEvent("itemget", Uncache)
 		end
 	end
+
+	return inventoryData
 end
 
 
@@ -135,5 +149,6 @@ end
 
 
 return {
-	Describe = Describe
+	Describe = Describe,
+	GetInventoryData = GetInventoryData
 }

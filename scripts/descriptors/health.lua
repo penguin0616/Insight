@@ -75,21 +75,21 @@ local function Describe(self, context)
 	local naughtiness_table = nil
 
 	if (type(context.config["naughtiness_verbosity"]) == "number" and context.config["naughtiness_verbosity"] > 0) and not inst:HasTag("player") then
-		local naughtiness = GetNaughtiness(inst, context)
+		local naughtiness = Insight.descriptors.kramped and Insight.descriptors.kramped.GetPlayerNaughtiness(inst, context)
 		if naughtiness and naughtiness ~= 0 then
 			naughtiness_table = { name="naughtiness", priority=0 }
 			naughtiness = string.format(context.lstr.naughtiness, naughtiness)
 
 			local player_naughtiness
 			if ShouldShowPlayerNaughtiness(context) then
-				player_naughtiness = GetNaughtiness(context.player, context)
+				player_naughtiness = Insight.descriptors.kramped.GetPlayerNaughtiness(context.player, context)
 
 				if type(player_naughtiness) == "table" then
 					player_naughtiness = string.format(context.lstr.player_naughtiness, player_naughtiness.actions, player_naughtiness.threshold) or nil
 				elseif player_naughtiness ~= nil then
 					mprintf("Player naughtiness information is invalid: %s (%s)", tostring(player_naughtiness), type(player_naughtiness))
 					player_naughtiness = string.format("[Invalid Naughtiness Data] %s (%s)", tostring(player_naughtiness), type(player_naughtiness))
-					print(debugstack())
+					mprint(debugstack())
 				end
 			end
 			

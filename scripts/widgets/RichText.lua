@@ -223,7 +223,12 @@ function RichText:SetColour(clr, ...) -- Text::SetColour
 		self._colour = Color.new(clr, ...)
 		self.default_colour = self._colour:ToHex()
 
-	else
+	elseif type(clr) == "table" then
+		if clr.new ~= Color.new then
+			-- Text supports color tables like this: { 1, 1, 1, 1 }
+			clr = Color.fromScaledRGBA(unpack(clr))
+		end
+
 		self._colour = clr
 		self.default_colour = clr:ToHex()
 	end
@@ -367,21 +372,21 @@ function RichText:SetString(str, forced)
 	
 	--[[
 	-- Remove trailing newlines.
-	--print("LOOP BEGIN", #lines)
+	--mprint("LOOP BEGIN", #lines)
 	for i = #lines, 1, -1 do
 		if #lines[i] == 0 then
 			lines[i] = nil
-			--print(i, "Removed a trailing newline.")
+			--mprint(i, "Removed a trailing newline.")
 		else
-			--print("------", i, #lines[i])
+			--mprint("------", i, #lines[i])
 			break
 		end
 	end
-	--print("LOOP END")
+	--mprint("LOOP END")
 	
 	-- Remove the first preceeding newline (done here to potentially make the operation faster)
 	if lines[1] and #lines[1] == 0 then
-		--print("Removed a preceeding newline.")
+		--mprint("Removed a preceeding newline.")
 		table.remove(lines, 1)
 	end
 	--]]
@@ -586,12 +591,12 @@ function RichText:NewLine(pieces)
 
 	--[[
 	local a, b = CalculateSize(self:GetString())
-	print("COMPARISON", self:GetString(), "-> width: ", width, "|wax:", wax, "| diff:", wax-padding/2, "Watson:", a, "| fat:", fat)
+	mprint("COMPARISON", self:GetString(), "-> width: ", width, "|wax:", wax, "| diff:", wax-padding/2, "Watson:", a, "| fat:", fat)
 	--]]
 
 
 
-	--print(fat, width, math.abs(width) * 2)
+	--mprint(fat, width, math.abs(width) * 2)
 	
 	-- size me up
 	--container:SetSize(width, 30)

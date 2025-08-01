@@ -99,7 +99,7 @@ DST_CONSOLE_COMMANDS.i_complete_plantregistry = function()
 			end;
 		end;
 	end;
-	print("learned plants");
+	mprint("learned plants");
 
 	local WEED_DEFS = require("prefabs/weed_defs").WEED_DEFS;
 	for weed, data in pairs(WEED_DEFS) do 
@@ -109,7 +109,7 @@ DST_CONSOLE_COMMANDS.i_complete_plantregistry = function()
 			end;
 		end;
 	end;
-	print("learned weeds");
+	mprint("learned weeds");
 
 	local FERTILIZER_DEFS = require("prefabs/fertilizer_nutrient_defs").FERTILIZER_DEFS;
 	for fertilizer, data in pairs(FERTILIZER_DEFS) do 
@@ -117,7 +117,7 @@ DST_CONSOLE_COMMANDS.i_complete_plantregistry = function()
 			reg:LearnFertilizer(fertilizer)
 		end;
 	end;
-	print("learned fertilizers");
+	mprint("learned fertilizers");
 end
 
 -- 0xa7, 0xa7
@@ -281,9 +281,9 @@ DST_CONSOLE_COMMANDS.c_kill = function(inst)
 	assert(TheWorld.ismastersim, "need to be mastersim")
 	if inst and inst.components.health then
 		inst.components.health:Kill()
-		print "killed"
+		mprint "killed"
 	else
-		print("Failed to kill:", inst)
+		mprint("Failed to kill:", inst)
 	end
 end
 DST_CONSOLE_COMMANDS.c_makevisible = function()
@@ -329,7 +329,7 @@ DST_CONSOLE_COMMANDS.c_insight_countactives = function()
 	if TheWorld.ismastersim then
 		TheNet:Announce(str)
 	else
-		print(str)
+		mprint(str)
 	end
 end
 DST_CONSOLE_COMMANDS.c_pickupgems = function()
@@ -386,7 +386,7 @@ DST_CONSOLE_COMMANDS.c_pickup = function(inst)
 	if inst.components.inventoryitem and not inst.components.inventoryitem:GetGrandOwner() then
 		InsightCommandPlayer().components.inventory:GiveItem(inst)
 	else
-		print(inst, "is not able to be held")
+		mprint(inst, "is not able to be held")
 	end
 end
 
@@ -436,7 +436,7 @@ DST_CONSOLE_COMMANDS.c_prefabring = function(prefab)
 		end
 		radius = radius + radius_step_distance
 	end
-	print("Made: " .. numspawned .. " items")
+	mprint("Made: " .. numspawned .. " items")
 	return true
 end
 
@@ -477,7 +477,7 @@ DST_CONSOLE_COMMANDS.c_flowerring = function()
 		end
 		radius = radius + radius_step_distance
 	end
-	print("Made: " .. numspawned .. " items")
+	mprint("Made: " .. numspawned .. " items")
 	return true
 end
 
@@ -523,7 +523,7 @@ DST_CONSOLE_COMMANDS.c_chestring = function(prefabs)
 		end
 		radius = radius + radius_step_distance
 	end
-	print("Made: " .. numspawned .. " items")
+	mprint("Made: " .. numspawned .. " items")
 	return true
 end
 
@@ -580,11 +580,11 @@ DST_CONSOLE_COMMANDS.c_formcircle = function(list, params)
 	end
 
 	if params.radius then
-		print("Using params.radius =", params.radius)
+		mprint("Using params.radius =", params.radius)
 	end
 
 	if params.center then
-		print("Using params.center =", params.center)
+		mprint("Using params.center =", params.center)
 	end
 
 	local max = PI * 2
@@ -725,11 +725,11 @@ DS_CONSOLE_COMMANDS.c_formcircle = function(list, params)
 	end
 
 	if params.radius then
-		print("Using params.radius =", params.radius)
+		mprint("Using params.radius =", params.radius)
 	end
 
 	if params.center then
-		print("Using params.center =", params.center)
+		mprint("Using params.center =", params.center)
 	end
 
 	local max = PI * 2

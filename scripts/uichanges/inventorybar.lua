@@ -61,7 +61,7 @@ local function UpdateInsightTextVisibility(txt)
 	local should_be_shown = infotext_common.ShouldShowInsightText(module.last_inspect_time)
 	if txt.shown ~= should_be_shown then
 		local m = should_be_shown and "Show" or "Hide"
-		--print("Showing InsightText")
+		--mprint("Showing InsightText")
 		txt[m](txt)
 	end
 end

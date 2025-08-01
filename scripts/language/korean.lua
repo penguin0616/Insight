@@ -27,7 +27,17 @@ directory. If not, please refer to
 
 return {
 	-- insightservercrash.lua
-	server_crash = "서버가 충돌했습니다.",
+	crash_reporter = {
+		title = "[Insight Crash Reporter]",
+		crashed = "서버가 충돌했습니다.",
+		report_status = {
+			unknown = "Unknown",
+			disabled = "The crash reporter is <color=#666666>disabled</color>: <color=#666666>%s</color>",
+			sending = "Sending crash report",
+			success = "Crash reported to Insight. <u>This does NOT mean that Insight caused the issue!</u>",
+			failure = "Crash report failed to send (%s): %s",
+		},
+	},
 	
 	-- modmain.lua
 	dragonfly_ready = "전투 준비 완료.",
@@ -46,6 +56,24 @@ return {
 		winter = "<color=#95C2F4>겨울</color>",
 		spring = "<color=#7FC954>봄</color>",
 		summer = "<color=#FFCF8C>여름</color>",
+	},
+
+	-- first time using insight
+	first_time_insight = {
+		title = "Welcome to Insight!",
+		description = "This is probably your first time using Insight.\nI recommend checking out the configuration or using one of the presets!",
+		no = "No thanks",
+		configuration = "Configuration",
+		presets = "Presets",
+	},
+
+	-- insightconfigurationscreen.lua
+	preset_button = "Presets",
+
+	-- insightpresetscreen.lua
+	presetscreen = {
+		title = "Configuration Presets",
+		description = "Select a configuration preset.",
 	},
 
 	-- Keybinds
@@ -112,6 +140,7 @@ return {
 	
 	-- acidbatwavemanager.lua
 	acidbatwavemanager = {
+		chance = "Chance of bat raid: <color=%s>%.1f%%</color> (estimated=<color=%s>%.1f%%</color>)",
 		next_wave_spawn = "<prefab=bat> raid (%d) arrives in %s"
 	},
 	
@@ -432,6 +461,10 @@ return {
 		["sweettea_buff"] = {
 			name = "<color=SANITY>정신력 재생</color>",
 			description = "<color=SANITY>{amount} 정신력 재생</color>, {duration}(초) 지속.",
+		},
+		["nightvision_buff"] = {
+			name = "<color=#258cd3>Night vision</color>",
+			description = "Provides <color=#258cd3>night vision</color> for {duration}(s).",
 		},
 		["wormlight_light"] = {
 			name = "<color=#6AD1EF><prefab=wormlight> light</color>",

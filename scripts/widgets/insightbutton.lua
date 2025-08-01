@@ -200,7 +200,7 @@ function InsightButton:OnControl(control, down)
 				self:BeginDrag()
 			end
 		else
-			--print(self:HasMoved())
+			--mprint(self:HasMoved())
 			if not self:HasMoved() then
 				if self.onclick then
 					self.onclick()

@@ -71,11 +71,6 @@ CODEFONT = "ptmono"
 -- Mod table
 local Insight = {
 	env = getfenv(1),
-	kramped = {
-		values = {},
-		players = {},
-	},
-	active_hunts = {},
 	descriptors = {}, -- 130 descriptors as of April 17, 2021
 	prefab_descriptors = {},  
 
@@ -208,7 +203,6 @@ import = kleiloadlua(MODROOT .. "scripts/import.lua")()
 Time = import("time")
 Color = import("helpers/color")
 rpcNetwork = import("rpcnetwork")
-attackRangeHelper = import("helpers/attack_range")
 entity_tracker = import("helpers/entitytracker")
 
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
@@ -218,12 +212,12 @@ DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
 is64bit = #tostring{}:match("(%w+)$") == 16
 is32bit = not is64bit
 
+local CrashReporter -- Initialized later, see comment below
 local player_contexts = {}
 local mod_component_cache = {}
 
 local log_buffer = ""
 local LOG_LIMIT = 0700000 -- 0.7 million
-local SERVER_OWNER_HAS_OPTED_IN = false
 
 local descriptors_ignore = {
 	--"mapiconhandler", -- this is just from a mod i use :^)
@@ -528,8 +522,8 @@ function CreatePlayerContext(player, configs, etc)
 
 	if context.is_server_owner then
 		if context.config["crash_reporter"] then
-			SERVER_OWNER_HAS_OPTED_IN = true
-			SyncSecondaryInsightData({ SERVER_OWNER_HAS_OPTED_IN=true })
+			CrashReporter.server_owner_optin = true
+			SyncSecondaryInsightData({ server_owner_optin=true })
 		end
 	end
 
@@ -914,7 +908,7 @@ local function GetComponentDescriptor(name)
 				local src = f:read("*a")
 
 				mprint("==================== FILE SOURCE ====================")
-				print("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
+				mprint("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
 
 				mprint("==================== HEX DUMP =======================")
 				local file_fn = import._init_cache[import.ResolvePath("descriptors/" .. name)]
@@ -1509,16 +1503,6 @@ function GetWorldInformation(player) -- refactor?
 	return data
 end
 
-function GetNaughtiness(inst, context)
-	local kramped = Insight.descriptors.kramped
-	if kramped then
-		local data = kramped.Describe(inst, context)
-		if data then return data.naughtiness end
-	else
-		mprint("GetNaughtiness failed due to broken descriptor")
-	end
-end
-
 function GetMoonCycle()
 	if not (TheWorld.net and TheWorld.net.components.clock) then
 		return
@@ -1633,7 +1617,7 @@ end
 local function sprint(c)
 	local x = c
 	while #x > 0 do
-		print(x:sub(1, 500))
+		mprint(x:sub(1, 500))
 		x = x:sub(501)
 	end
 end
@@ -2060,7 +2044,6 @@ for i,v in pairs(descriptors_ignore) do
 	Insight.descriptors[v] = false
 end
 
-
 --[[
 AddPrefabPostInit("redgem", function(inst) 
 	if not DEBUG_ENABLED then
@@ -2078,19 +2061,6 @@ AddPrefabPostInit("redgem", function(inst)
 end)
 --]]
 
-AddComponentPostInit("combat", function(self)
-	if IS_DS or (TheWorld.ismastersim) then
-		attackRangeHelper.HookCombat(self)
-	else
-		dprint("oh no")
-	end
-end)
-
-AddComponentPostInit("clock", function(self)
-	if IS_DS or TheWorld.ismastersim then
-		import("helpers/clock").Initialize(self)
-	end
-end)
 
 --[[
 AddPrefabPostInit("forest_network", function(inst)
@@ -2110,104 +2080,6 @@ AddPrefabPostInit("bat", function(inst)
 end)
 --]]
 
-AddPrefabPostInit("cave_entrance_open", function(inst)
-	if not FOREST_MIGRATOR_IMAGES then return end
-	if not CAVE_MIGRATOR_IMAGES then return end
-	inst:ListenForEvent("migration_available", function()
-		local id = inst.components.worldmigrator.receivedPortal
-		if not FOREST_MIGRATOR_IMAGES[id] then
-			dprint(string.format("Migrator [%s] does not have anything color bound to it.", id or "nil"))
-			return
-		end
-
-		local marker = SpawnPrefab("insight_map_marker")
-		marker:TrackEntity(inst)
-		marker.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
-		inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1]) -- since marker gets removed when it enters vision, this is used.
-		--marker.MiniMapEntity:SetCanUseCache(false) -- default true
-		--marker.MiniMapEntity:SetIsProxy(false) -- default false
-		inst.marker = marker
-		dprint(string.format("Migrator [%s] activated.", id))
-	end)
-end)
-
-AddPrefabPostInit("cave_exit", function(inst)
-	if not FOREST_MIGRATOR_IMAGES then return end
-	if not CAVE_MIGRATOR_IMAGES then return end
-	inst:ListenForEvent("migration_available", function()
-		local id = inst.components.worldmigrator.receivedPortal
-		if not FOREST_MIGRATOR_IMAGES[id] then
-			dprint(string.format("Migrator [%s] does not have anything color bound to it.", id or "nil"))
-			return
-		end
-
-		local marker = SpawnPrefab("insight_map_marker")
-		marker:TrackEntity(inst)
-		marker.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1])
-		inst.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1]) -- since marker gets removed when it enters vision, this is used.
-		--marker.MiniMapEntity:SetCanUseCache(false) -- default true
-		--marker.MiniMapEntity:SetIsProxy(false) -- default false
-		inst.marker = marker
-		dprint(string.format("Migrator [%s] activated.", id))
-	end)
-end)
-
-if true then
-	local FakeCombats = {
-		["moonstorm_spark"] = {
-			attack_range = 4,
-			damage = TUNING.LIGHTNING_DAMAGE
-		},
-		["moonstorm_glass"] = {
-			attack_range = 4,
-			damage = 30
-		},
-		["alterguardian_phase3_trap"] = {
-			attack_range = TUNING.ALTERGUARDIAN_PHASE3_TRAP_AOERANGE
-		},
-		["mushroombomb"] = {
-			attack_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			hit_range = TUNING.TOADSTOOL_MUSHROOMBOMB_RADIUS,
-			damage = function(inst)
-				local toadstool = inst.components.entitytracker:GetEntity("toadstool")
-				return (toadstool ~= nil and toadstool.components.combat ~= nil and toadstool.components.combat.defaultdamage) or
-					(inst.prefab ~= "mushroombomb" and TUNING.TOADSTOOL_DARK_DAMAGE_LVL[0]) or
-					TUNING.TOADSTOOL_DAMAGE_LVL[0]
-			end
-		}
-	}
-
-	FakeCombats.mushroombomb_dark = FakeCombats.mushroombomb
-
-	for prefab, data in pairs(FakeCombats) do
-		AddPrefabPostInit(prefab, function(inst)
-			if not TheWorld.ismastersim then
-				return
-			end
-
-			attackRangeHelper.RegisterFalseCombat(inst, data)
-		end)
-	end
-end
-
-local function OnItemChange(inst)
-	local players = AllPlayers or {GetPlayer()}
-
-	for i,v in pairs(players) do
-		local insight = v.components.insight
-		if insight then
-			insight:InvalidateCachedEntity(inst)
-		end
-	end
-end
-
-AddComponentPostInit("container", function(self)
-	if TheWorld and not TheWorld.ismastersim then return end -- implicit DST check
-	
-	self.inst:ListenForEvent("itemget", OnItemChange)
-	self.inst:ListenForEvent("itemlose", OnItemChange)
-	self.inst:ListenForEvent("onclose", OnItemChange)
-end)
 
 if IS_DST then 
 	-- replicable
@@ -2476,8 +2348,8 @@ if IS_DST then
 	rpcNetwork.AddShardModRPCHandler(modname, "SyncSecondaryData", function(sending_shard_id, data)
 		data = json.decode(data)
 
-		if data.SERVER_OWNER_HAS_OPTED_IN then
-			SERVER_OWNER_HAS_OPTED_IN = true
+		if data.server_owner_optin then
+			CrashReporter.server_owner_optin = true
 		end
 		
 		if data.ALLOW_SERVER_DEBUGGING then
@@ -2553,19 +2425,6 @@ if IS_DST then
 		end
 	end)
 	
-	rpcNetwork.AddClientModRPCHandler(modname, "ServerError", function(data)
-		local InsightServerCrash = import("screens/insightservercrash")
-		InsightServerCrash(json.decode(data))
-	end)
-
-	local function sprint(c)
-		local x = c
-		while #x > 0 do
-			TheSim:LuaPrint(x:sub(1, 500))
-			x = x:sub(501)
-		end
-	end
-	
 	rpcNetwork.AddClientModRPCHandler(modname, "Print", function(str, ...)
 		print(str)
 		--mprint("LENGTH:", #str)
@@ -2634,16 +2493,6 @@ if IS_DST then
 		entity_tracker:TrackPrefab("lunar_grazer")
 		entity_tracker:TrackPrefab("lunarthrall_plant")
 	end
-
-	--[[
-	AddComponentPostInit("clock", function(self)
-		if not (TheWorld and TheWorld.ismastersim) then
-			return
-		end
-
-		import("helpers/clock").Initialize(self)
-	end)
-	--]]
 
 	AddComponentPostInit("grower", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end
@@ -2899,151 +2748,7 @@ if IS_DST then
 			mprintf("Player %s (userid: %s) left, removing context", player, player.userid)
 			player_contexts[player] = nil
 		end)
-
-		local function Kramped()
-			local kramped = TheWorld.components.kramped
-			if not kramped then
-				mprint("Failed to load Kramped")
-				return
-			end
-			mprint("Kramped has been hooked")
-
-			if not kramped.GetDebugString then
-				mprint("Unable to find GetDebugString from kramped. Exiting naughtiness early.")
-				return
-			--[[elseif debug.getinfo(kramped.GetDebugString, "S").source ~= "scripts/components/kramped.lua" then
-				mprint("Unable to setup kramped with non-vanilla kramped file.")
-				return
-				--]]
-			end
-
-			local _activeplayers = util.getupvalue(kramped.GetDebugString, "_activeplayers")
-			if not _activeplayers then
-				local d = debug.getinfo(kramped.GetDebugString, "Sl")
-				mprint("Kramped::GetDebugString ->", d.source, d.linedefined)
-			end
-
-			assert(_activeplayers, "[Insight]: Kramped failed to load _activeplayers, are you using mods that affect krampii?")
-			Insight.kramped.players = _activeplayers
-			local OnKilledOther, oldOnNaughtyAction
-			local firstLoad = true
-
-			-- i can't begin to describe how much this hurt me (Basements) https://steamcommunity.com/sharedfiles/filedetails/?id=1349799880 
-			-- they call ms_playerjoined and ms_playerleft manually on functions that have an _activeplayers upvalue. 
-			-- i shouldnt have to do this for a variety of reasons, but here we are...
-			-- note: because of how this works, entering/leaving one of those basements no longer resets your naughtiness.
-			
-			local OnPlayerLeft, OnPlayerJoined
-			for i,v in pairs(TheWorld.event_listening.ms_playerleft[TheWorld]) do 
-				if debug.getinfo(v, "S").source == "scripts/components/kramped.lua" then 
-					OnPlayerLeft = v;
-					TheWorld.event_listening.ms_playerleft[TheWorld][i] = function(...)
-						return OnPlayerLeft(...)
-					end
-					break;
-				end 
-			end 
-			
-			for i,v in pairs(TheWorld.event_listening.ms_playerjoined[TheWorld]) do 
-				if debug.getinfo(v, "S").source == "scripts/components/kramped.lua" then 
-					OnPlayerJoined = v;
-					TheWorld.event_listening.ms_playerjoined[TheWorld][i] = function(...)
-						return OnPlayerJoined(...)
-					end
-					break;
-				end 
-			end
-
-			setmetatable(_activeplayers, {
-				__newindex = function(self, player, playerdata)
-					--dprint("newindex player", player, playerdata)
-					-- Load OnKilledOther
-					-- debug.getinfo(2).func's upvalues {_activeplayers [tbl], self [tbl], OnKilledOther [fn]}
-
-					-- Hacky upvalue search, yay.
-					--assert(OnKilledOther, "[Insight]: Kramped failed to load OnKilledOther")
-					if not OnKilledOther then
-						-- this isn't annoying at all!
-						local i = 2
-						while true do
-							local info = debug.getinfo(i)
-
-							if not info then
-								break
-							end
-
-							local func = util.getupvalue(info.func, "OnKilledOther")
-							if type(func) == "function" then
-								OnKilledOther = func
-								if i > 2 then
-									mprint("Got OnKilledOther at a level greater than two.")
-								end
-								break
-							end
-						end
-					end
-
-					-- Load naughtiness values
-					if tonumber(APP_VERSION) > 435626 then -- zark
-						Insight.kramped.values = NAUGHTY_VALUE
-					else
-						Insight.kramped.values = util.getupvalue(OnKilledOther, "NAUGHTY_VALUE")
-					end
-
-					assert(Insight.kramped.values, "[Insight]: Kramped failed to load naughtiness values")
-
-					-- Load oldOnNaughtyAction
-					oldOnNaughtyAction = oldOnNaughtyAction or util.recursive_getupvalue(OnKilledOther, "OnNaughtyAction") -- zarklord's gemcore (https://steamcommunity.com/sharedfiles/filedetails/?id=1378549454) fiddles with OnKilledOther [September 6, 2020]
-					assert(oldOnNaughtyAction, "[Insight]: Kramped failed to load OnNaughtyAction [recursive]")
-
-					-- insert player
-					rawset(self, player, playerdata)
-
-					-- register threshold
-					if TUNING.KRAMPUS_THRESHOLD ~= -1 then
-						OnKilledOther(player, {
-							-- fake a victim
-							victim = {
-								prefab = "glommer",
-							},
-							stackmult = 0, -- no naughtiness gained since it multiplies naughtiness by this value
-						})
-					else
-						Insight.kramped.players[player].threshold = 0
-					end
-
-					if player.components.insight then
-						--dprint'attempt to send naughtiness'
-						-- Client initialized sends it now. Why did I do that again?
-						--player.components.insight:SendNaughtiness()
-						--dprint'attempt finished'
-					else
-						mprint("Unable to send initial naughtiness to:", player)
-					end
-
-					if firstLoad then
-						util.replaceupvalue(OnKilledOther, "OnNaughtyAction", function(how_naughty, playerdata)
-							--dprint("onnaughtyaction", how_naughty, playerdata, playerdata.player)
-							--mprint("ON NAUGHTY ACTION BEFORE", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
-							oldOnNaughtyAction(how_naughty, playerdata)
-							--mprint("ON NAUGHTY ACTION AFTER", playerdata.player, GetNaughtiness(playerdata.player).actions, GetNaughtiness(playerdata.player).threshold)
-							--mprint(playerdata.actions, playerdata.threshold)
-							-- while i could just pass in the playerdata........ i dont feel like it
-							if playerdata.player.components.insight then
-								playerdata.player.components.insight:SendNaughtiness()
-							end
-						end)
-					end
-
-					firstLoad = false
-				end,
-				__metatable = "locked"
-			})
-		end
-		Kramped()
 		
-		-- [both] player is nil in DST, exists in DS
-
 		TheWorld:ListenForEvent("ms_cyclecomplete", function(inst)
 			inst:DoTaskInTime(0, DoNetworkMoonCycle)
 		end)
@@ -3146,498 +2851,6 @@ AddPlayerPostInit(function(player)
 	end
 end)
 
-local function SortSockets(a, b) 
-	return a.GUID < b.GUID 
-end
-
-local function GetSockets(main) -- ISSUE:PERFORMANCE
-	local x,y,z = main.Transform:GetWorldPosition()   
-	local ents = TheSim:FindEntities(x,y,z, 10, {"resonator_socket"})
-	
-	local sockets = {}
-	for i=#ents,1,-1 do
-		sockets[#sockets+1] = ents[i]
-	end
-	table.sort(sockets, SortSockets)
-
-	return sockets
-end
-
-local function GetCorrectSocket(main, puzzle)
-	local current = main.numcount or 0 -- numcount = nil == its unlocking, or nothing stepped on yet
-	current = current + 1
-
-	local tbl = GetSockets(main)
-
-	for i = 1, #tbl do
-		local v = tbl[i]
-		if puzzle[i] == current then
-			v.insight_active:set(true)
-		else
-			v.insight_active:set(false)
-		end
-	end
-end
-
-AddPrefabPostInit("archive_orchestrina_small", function(inst)
-	inst.insight_active = net_bool(inst.GUID, "insight_active", "insight_active_dirty")
-
-	if TheNet:IsDedicated() then
-		return
-	end
-
-	inst:ListenForEvent("insight_active_dirty", function(inst)
-		local context = localPlayer and GetPlayerContext(localPlayer)
-
-		if not context or not context.config["orchestrina_indicator"] then
-			return
-		end
-		--inst.indicator:SetVisible(inst.insight_active:value())
-		if inst.insight_active:value() then
-			inst.AnimState:SetHighlightColour(152/255, 100/255, 245/255, 1) --indicator was: 152/255, 100/255, 245/255
-		else
-			inst.AnimState:SetHighlightColour(0, 0, 0, 0)
-		end
-	end)
-end)
-
-AddPrefabPostInit("archive_orchestrina_main", function(inst)
-	if not TheWorld.ismastersim then return end
-	local findlockbox = util.getupvalue(inst.testforlockbox, "findlockbox")
-
-	inst:DoPeriodicTask(0.10, function()
-		local lockboxes = findlockbox(inst)
-		local lockbox = lockboxes[1]
-
-		if not inst.busy and lockbox and not lockbox.AnimState:IsCurrentAnimation("activation") then 
-			local puzzle = lockbox.puzzle
-			
-			GetCorrectSocket(inst, puzzle)
-		else
-			local sockets = GetSockets(inst)
-			for i = 1, #sockets do
-				--v.indicator:SetVisible(false)
-				sockets[i].insight_active:set(false)
-			end
-		end
-	end)
-end)
-
-AddSimPostInit(function()
-	local world = TheWorld or GetWorld()
-	local function Hunter()
-		local hunter = world.components.hunter or world.components.whalehunter
-		if world.ismastersim == false then -- nil in DS
-			mprint("Client can't check for hunter component")
-			return
-		end
-
-		if not hunter then 
-			local worldprefab = (IS_DST and world.worldprefab) or world.prefab
-			if worldprefab == "cave" then
-				mprint("Caves does not have a hunter component.")
-			else
-				mprint("No hunter component???")
-			end
-			return 
-		end
-		mprint("Hunter has been hooked")
-
-		local _activehunts = {}
-		if IS_DST then		
-			_activehunts = util.recursive_getupvalue(hunter.OnDirtInvestigated, "_activehunts")
-			assert(_activehunts, "[Insight]: Failed to load '_activehunts' from 'Hunter' component.") -- https://steamcommunity.com/sharedfiles/filedetails/?id=1991746508 overrided OnDirtInvestigated
-			Insight.active_hunts = _activehunts
-		end
-
-		local oldOnDirtInvestigated = hunter.OnDirtInvestigated
-
-		if IS_DST then
-			local SpawnHuntedBeast = util.recursive_getupvalue(oldOnDirtInvestigated, "SpawnHuntedBeast") -- https://steamcommunity.com/sharedfiles/filedetails/?id=1991746508 messed with OnDirtInvestigated, October 20th 2020 (i just noticed the comment above, ironic)
-			local oldEnv = getfenv(SpawnHuntedBeast)
-			local SpawnPrefab = SpawnPrefab
-
-			setfenv(SpawnHuntedBeast, setmetatable({SpawnPrefab = function(...) local ent = SpawnPrefab(...); util.getlocal(2, "hunt").huntedbeast = ent; return ent; end}, {__index = oldEnv, __metatable = "[Insight] The metatable is locked"}))
-		end
-
-		function hunter:OnDirtInvestigated(pt, doer)
-			local hunt = nil
-
-			if IS_DST then
-				-- find the hunt this pile belongs to
-				for i,v in ipairs(_activehunts) do
-					if v.lastdirt ~= nil and v.lastdirt:GetPosition() == pt then
-						hunt = v
-						--hunter.inst:RemoveEventCallback("onremove", v.lastdirt._ondirtremove, v.lastdirt)
-						break
-					end
-				end
-
-				if hunt == nil then
-					-- we should probably do something intelligent here.
-					--print("yikes, no matching hunt found for investigated dirtpile")
-					return
-				end
-			else
-				hunt = {} -- could just set this to self, but i don't want to 
-			end
-
-			oldOnDirtInvestigated(self, pt, doer)
-
-			local activeplayer = doer --hunt.activeplayer
-
-			if IS_DS then
-				hunt = self -- has everything we need.. so......
-				activeplayer = GetPlayer()
-			end
-
-			--mprint(hunt.trackspawned, hunt.numtrackstospawn)
-			if hunt.trackspawned < hunt.numtrackstospawn then
-				--mprint('dirt?')
-				if IS_DS then
-					Insight.active_hunts = {self}
-				end
-			elseif hunt.trackspawned == hunt.numtrackstospawn then
-				--mprint('animal?')
-				if IS_DS then
-					Insight.active_hunts = {}
-				end
-			else
-				mprint("--------- WHAT ----------")
-				table.foreach(hunt, mprint)
-				error("[Insight]: something weird happened during a hunt, please report")
-			end
-
-			local context = activeplayer and GetPlayerContext(activeplayer)
-			if not context or not context.config then
-				mprint("player context is invalid. player:", activeplayer)
-				if context then
-					mprint(DataDumper(context))
-				else
-					mprint("\tcontext is nil")
-				end
-				return
-			end
-
-			if not context.config["hunt_indicator"] then
-				return
-			end
-
-
-			local target = hunt.lastdirt or hunt.huntedbeast
-
-			if not target then
-				--dprint(string.format("Hunter '%s' missing target, aborting.", activeplayer.name))
-				table.foreach(hunt, mprint)
-				return
-			else
-				--dprint("Sending", activeplayer, "on a hunt for:", target, "|", hunt.trackspawned, hunt.numtrackstospawn)
-			end
-
-			if target.prefab == "claywarg" or target.prefab == "warg" or target.prefab == "spat" then
-				mprint("skipped sending on a hunt for special hunt target:", target.prefab)
-				return
-			end
-
-			--mprint"-----------------"
-
-			activeplayer.components.insight:SetHuntTarget(target)
-		end
-	end
-	
-	Hunter()
-end)
-
-if IS_DST then -- not in UI overrides because server needs access too
-	local CrashReportStatus = import("widgets/crashreportstatus")
-
-	-- extremely important: has to be opt IN, so this is off by default. warnings and information are displayed in the option to enable it.
-	local function GetPlatform()
-		return PLATFORM
-		--[[
-		return 
-			IsPS4() and "ps4"
-			or IsXB1() and "xbox1"
-			or IsRail() and "win32_rail"
-			or IsLinux() and "linux_steam"
-			or IsSteam() and PLATFORM:lower()
-			or "Unkown Platform"
-		--]]
-	end
-
-	local function GetMods()
-		local server_mods, client_mods = {}, {}
-
-		-- im going to assume no one has more than 5 server mods, but of course that is quite unlikely
-		--[[
-		for _, id in pairs(TheNet:GetServerModNames()) do
-			-- workshop-xyz
-			local data = KnownModIndex:GetModInfo(id)
-			table.insert(server_mods, data)
-		end
-		--]]
-
-		-- on server, gets all the server mods
-		-- on client, gets all the server mods + client mods
-		for _, modname in pairs(ModManager:GetEnabledModNames()) do
-			local data = deepcopy(KnownModIndex:GetModInfo(modname))
-			data.folder_name = modname
-			if data.client_only_mod then
-				table.insert(client_mods, data)
-			else
-				table.insert(server_mods, data)
-			end
-		end
-
-		return { server=server_mods, client=client_mods }
-	end
-
-	local function ShowStatus(widget, data)
-		local colour = { 1, 1, 1, 1 }
-		
-		if data.state == 0 then -- info
-			colour = { 0.6, 0.6, 1, 1}
-		elseif data.state == 1 then -- error
-			colour = { 1, 0.6, 0.6, 1 }
-		elseif data.state == 2 then -- good
-			colour = { 0.6, 1, 0.6, 1 }
-		end 
-
-		data.colour = colour
-
-		data.status = "[Insight]: " .. data.status
-
-		local ui = CrashReportStatus(data)
-
-		widget.title:AddChild(ui)
-		ui:SetPosition(0, 10 + 40*3)
-
-		mprint("Status:", data.status)
-		mprint("State:", data.state)
-
-		if TheNet:GetIsMasterSimulation() then
-			--data.status = status
-			local ids = {}
-			for i,v in pairs(AllPlayers) do
-				if (IsClientHost() and v ~= ThePlayer) or not IsClientHost() then
-					table.insert(ids, v.userid)
-				end
-			end
-			rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "ServerError"), ids, json.encode(data))
-		end
-	end
-
-	local function SendReport(widget, from, log)
-		mprint("SendReport called")
-		local report = {}
-		-- basic stuff
-		report.user = {
-			name = TheSim:GetUsersName() or "nil", -- 317172400@steam
-			steam_id = TheSim:GetSteamIDNumber() or "nil", -- 317172400
-			klei_id = TheNet:GetUserID() or "nil", -- KU_md6wbcj2
-			player_name = TheNet:GetLocalUserName() or "nil", -- penguin0616
-			language = TheNet:GetLanguageCode(), -- english
-			country_code = ((from == "client" or from == "client_host") and TheNet:GetCountryCode()) or "Unavailable", -- US
-			using_controller = TheInput:ControllerAttached(),
-			input_devices = TheInput:GetInputDevices(),
-		}
-		
-		report.steam_branch = TheSim:GetSteamBetaBranchName() -- "Default" "updatebeta"
-		report.bit_version = (is64bit and "64") or (is32bit and "32") or "?"
-		report.game_version = APP_VERSION
-		report.mods = GetMods() -- in case of compatability issues
-		report.platform = GetPlatform() -- please be steam on windows
-		report.log_type = from -- "client" or "server" 
-		report.mastersim = TheNet:GetIsMasterSimulation() -- has authority
-
-		report.server = GetDefaultServerData() -- better?
-		report.server.clients = TheNet:GetClientTable() -- how many people did we possibly just crash?
-		report.server.is_master_shard = TheShard:IsMaster() -- is this the master shard?
-		report.server.shard_id = TheShard:GetShardId() -- caves or not
-		report.server.dedicated = TheNet:IsDedicated() -- is this a dedicated server (probably behind on insight version)
-		report.server.reporter_is_owner = TheNet:GetIsServerOwner() -- did they possibly screw with stuff in console
-		report.server.reporter_is_admin = TheNet:GetIsServerAdmin() -- same as above
-		report.server.other_name = TheNet:GetServerName() -- penguin0616's world
-
-		report.log = log
-
-		local no_logs = false
-		if not log then
-			no_logs = true
-			report.log = (string.rep("!!!!!!!!!!!! FAILURE TO FETCH CORRECT LOGS !!!!!!!!!!!!\n", 3) .. log_buffer)
-		end
-		
-		if #report.log > LOG_LIMIT then
-			report.log = "LOG TRIMMED: ORIGINAL SIZE = " .. #report.log .. "\n" .. report.log:sub(#report.log - LOG_LIMIT + 1, #report.log)
-		end
-
-
-		mprint("Compressing log")
-		-- game seems to have a problem encoding some characters with the messed up json implementation they have
-		-- but it'll handle b64 alright, so i'll just compress it and handle stuff properly on my end
-		--print("#log before:", #report.log) -- 137261
-		--local old = report.log
-		report.log = TheSim:ZipAndEncodeString(report.log) -- DS: TheSim:SetPersistentString(path, data, ENCODE_SAVES) (ENCODE_SAVES=true)
-		mprint("Compressed log")
-
-		--[[
-		print'\tasd1'
-		local f1 = io.open("before.txt", "w")
-		f1:write(old)
-		f1:close()
-
-		print'\tasd2'
-		local f2 = io.open("after.txt", "w")
-		f2:write(report.log)
-		f2:close()
-
-		print'\tasd3'
-
-
-		print("there", #old, "->", #report.log)
-		
-		
-		report.log = TheSim:ZipAndEncodeString("hi")
-		report.mods = {server=report.mods.server, client={}}
-		--]]
-
-		--print("#log after:", #report.log) -- 23408
-		--report.log = TheSim:ZipAndEncodeString("welcome to the citadel")
-		report = json.encode_compliant(report)
-		
-		--file = io.open("report.json", "w") 
-		--file:write(report)
-		--file:close()
-
-		--print"wagh"
-		
-		--[[
-		if not log then
-			ShowStatus(widget, { state=1, status="Unable to complete report." })
-			return
-		end
-		--]]
-		TheSim:QueryServer(
-			"https://dst.penguin0616.dev/crashreporter/reportcrash",
-			function(res, isSuccessful, statusCode)
-				mprintf("Report: Success = %s, Status = %s, \n%s", isSuccessful, statusCode, res)
-
-				if no_logs and #log_buffer == 0 then
-					isSuccessful = false
-					mprint("Can't find logs for crash report")
-				end
-
-				local state = 0
-				local status = "???"
-				
-				if not isSuccessful then
-					status = "Failed to report crash."
-					state = 1
-				elseif isSuccessful then
-					if statusCode == 200 then
-						local safe, data = pcall(json.decode, res) -- isn't a compliant decoder but should be fine for my purposes
-						--status = "Crash reported successfully with code: " .. data.code
-						if safe then
-							status = string.format("Crash reported sucessfully!\nCode: %s", data.code)
-							state = 2
-						else
-							mprint("fail to parse:", safe, data, res)
-							status = string.format("Crash failed to report & response failed to parse. Please tell me (penguin0616) about this.\nDecode Error: %s", data)
-							state = 1
-						end
-					else
-						status = "Crash failed to report with StatusCode: " .. statusCode
-						state = 1
-					end
-				end
-				
-				ShowStatus(widget, { state=state, status=status })
-			end,
-			"POST",
-			report
-		)
-	end
-
-	local triggered = false
-	AddClassPostConstruct("widgets/scripterrorwidget", function(self)
-		mprint("A crash has occured (THIS DOES NOT MEAN IT WAS INSIGHT, THIS IS JUST HERE FOR DEBUGGING PURPOSES)")
-		if self.title then
-			mprint("Title:", self.title:GetString())
-		end
-		if self.text then
-			mprint("Text:", self.text:GetString())
-		end
-		if self.additionaltext then
-			mprint("Additionaltext:", self.additionaltext:GetString())
-		end
-
-		if triggered then
-			mprint("Preventing crash overflow.")
-			return
-		end
-		triggered = true
-
-		-- erroring in a error handler, not a good idea i would think
-		local report_server = GetModConfigData("crash_reporter", false)
-		local report_client = GetModConfigData("crash_reporter", true)
-
-		if IsClientHost() or IsClient() then -- non-cave world host || regular player
-			local is_server_owner = TheNet:GetIsServerOwner() -- GetPlayerContext(ThePlayer).is_server_owner
-
-			if IsClient() then
-				if is_server_owner then
-					if not report_client and not report_server then
-						ShowStatus(self, { state=0, status="Crash reporter not enabled [Multishard Client Owner]." })
-						return
-					end
-				else
-					if not report_client then
-						ShowStatus(self, { state=0, status="Crash reporter not enabled [Client]." })
-						return
-					end
-				end
-			elseif IsClientHost() then
-				if not report_client and not report_server then
-					ShowStatus(self, { state=0, status="Crash reporter not enabled [ClientHost (Owner)]." })
-					return
-				end
-			end
-
-			local handler = function(successful, data)
-				local from = (IsClientHost() and "client_host") or "client"
-				local log = (successful and data) or nil
-				SendReport(self, from, log)
-			end
-
-			if CurrentRelease.GreaterOrEqualTo("R22_PIRATEMONKEYS") then
-				TheSim:GetPersistentString("../../client_log.txt", handler)
-			else
-				TheSim:GetPersistentStringInClusterSlot(1, "../..", "../client_log.txt", handler)
-			end
-		elseif TheNet:GetIsMasterSimulation() == true then -- server by itself
-			mprint("SERVER_OWNER_HAS_OPTED_IN:", SERVER_OWNER_HAS_OPTED_IN)
-			dprint("report_server:", report_server)
-			dprint("report_client:", report_client)
-
-			if not report_server and not SERVER_OWNER_HAS_OPTED_IN then
-				ShowStatus(self, { state=0, status="Crash reporter not enabled [Server]." })
-				return
-			end
-
-			mprint("Finding log")
-			TheSim:GetPersistentString("../server_log.txt", function(successful, data)
-				local from = "server"
-				local log = (successful and data) or nil
-				mprintf("Submitting log (successfully found log: %s)", successful)
-				SendReport(self, from, log)
-			end)
-		else
-			--error("uh oh, uh oh, uh oh")
-			-- this should be impossible
-		end
-	end)
-end
-
 if false and IS_DST then
 	local select = select
 	--local toarray = toarray
@@ -3739,12 +2952,25 @@ if IS_DS or IsClient() or IsClientHost() then
 	import("clientmodmain")
 end
 
+-- Needs to be done here so UI dependencies have time to load.
+CrashReporter = import("crashreporter")
+CrashReporter.Initialize()
 
--- Further Post Inits
+
+-- Some descriptors need to be preloaded because they provide functionality outside of just descriptions.
+Insight.descriptors("combat")
+Insight.descriptors("clock")
+Insight.descriptors("oceanfishingrod")
+Insight.descriptors("container")
+Insight.descriptors("hunter")
+Insight.descriptors("kramped")
+
+
 Insight.prefab_descriptors("wx78_scanner")
 Insight.prefab_descriptors("tumbleweed")
-Insight.descriptors("oceanfishingrod")
-
+Insight.prefab_descriptors("cave_entrance")
+Insight.prefab_descriptors("cave_exit")
+Insight.prefab_descriptors("archive_orchestrina_main")
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -3856,25 +3082,25 @@ end
 --==========================================================================================================================
 --==========================================================================================================================
 _G.check = function(client_config)
-	print("checking with client_config =", client_config)
+	mprint("checking with client_config =", client_config)
 	local modname = "workshop-2189004162";
 	local key = "follower_info"
 
-	print("GetModConfigData:", GetModConfigData(key, client_config))
+	mprint("GetModConfigData:", GetModConfigData(key, client_config))
 
 	local filename = KnownModIndex:GetModConfigurationPath(modname, client_config);
 
 	TheSim:GetPersistentString(filename, function(safe, res)
-		if not safe then return print('GetPersistentString fails in world server X') end;
+		if not safe then return mprint('GetPersistentString fails in world server X') end;
 		local axd, data = RunInSandboxSafe(res); 
-		if not axd then return print('GetPersistentString fails in world server Y') end;
+		if not axd then return mprint('GetPersistentString fails in world server Y') end;
 		for i,v in pairs(data) do 
 			if v.name == key then 
-				print("GetPersistentString:", v.label, ":", v.saved)
+				mprint("GetPersistentString:", v.label, ":", v.saved)
 			end;
 		end;
 	end);
-	print'-------------------------------'
+	mprint'-------------------------------'
 end
 
 _G.tst = function()

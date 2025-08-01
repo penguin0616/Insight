@@ -68,7 +68,7 @@ local function UpdateFollowText(self, ...)
 		--if not self.primaryInsightText.shown then
 		if self.primaryInsightText.shown ~= module.should_be_shown then
 			local m = should_be_shown and "Show" or "Hide"
-			--print("Showing InsightText")
+			--mprint("Showing InsightText")
 			self.primaryInsightText[m](self.primaryInsightText)
 			if self.primaryInsightText2 then
 				self.primaryInsightText2[m](self.primaryInsightText2)
@@ -164,7 +164,7 @@ local function UpdateFollowText(self, ...)
 		
 	else
 		if self.primaryInsightText.shown then
-			--print("Hiding InsightText")
+			--mprint("Hiding InsightText")
 			self.primaryInsightText:Hide()
 			if self.primaryInsightText2 then
 				self.primaryInsightText2:Hide()

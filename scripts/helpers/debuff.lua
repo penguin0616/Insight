@@ -248,19 +248,24 @@ debuff_definitions["tillweedsalve_buff"] = {
 	tick_value = TUNING.TILLWEEDSALVE_HEALTH_DELTA,
 }
 
-
 debuff_definitions["healthregenbuff"] = {
 	duration = TUNING.JELLYBEAN_DURATION,
 	tick_rate = TUNING.JELLYBEAN_TICK_RATE,
 	tick_value = TUNING.JELLYBEAN_TICK_VALUE,
 }
 
-
 debuff_definitions["sweettea_buff"] = {
 	duration = TUNING.SWEETTEA_DURATION,
 	tick_rate = TUNING.SWEETTEA_TICK_RATE,
 	tick_value = TUNING.SWEETTEA_SANITY_DELTA,
 }
+
+debuff_definitions["nightvision_buff"] = {
+	duration = TUNING.ANCIENTTREE_NIGHTVISION_FRUIT_BUFF_DURATION,
+}
+
+
+
 
 --[[
 for i,v in pairs({
@@ -341,6 +346,8 @@ end
 --=================================================================================================================
 --=================================================================================================================
 --=================================================================================================================
+-- item_debuffs is a table used to manually define the debuffs that an item provides.
+
 item_debuffs["batnosehat"] = {"hungerregenbuff"}
 
 item_debuffs["healingsalve_acid"] = {"healingsalve_acidbuff"}
@@ -356,6 +363,9 @@ item_debuffs["frogfishbowl"] = {"buff_moistureimmunity"}
 item_debuffs["voltgoatjelly"] = {"buff_electricattack"}
 
 item_debuffs["shroomcake"] = {"buff_sleepresistance"}
+
+item_debuffs["ancientfruit_nightvision"] = {"nightvision_buff"}
+item_debuffs["ancientfruit_nightvision_cooked"] = item_debuffs["ancientfruit_nightvision"]
 
 --=================================================================================================================
 --=================================================================================================================

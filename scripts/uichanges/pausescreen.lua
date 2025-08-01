@@ -21,7 +21,7 @@ directory. If not, please refer to
 local module = {}
 
 local function OnPauseScreenPostConstructDST(self)
-	print(self, self.BuildMenu)
+	mprint(self, self.BuildMenu)
 end
 
 local function PostButtons(screen, buttons)
