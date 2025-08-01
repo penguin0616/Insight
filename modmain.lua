@@ -366,6 +366,12 @@ function IsClient()
 	return IS_DST and TheNet:GetIsClient()
 end
 
+--- Checks whether the mod is running on the server.
+---@return boolean
+function IsServer()
+	return IS_DST and TheNet:GetIsServer()
+end
+
 IS_CLIENT = IsClient()
 
 --- Checks whether the mod is running on a dedicated server
@@ -2953,9 +2959,10 @@ if IS_DS or IsClient() or IsClientHost() then
 end
 
 -- Needs to be done here so UI dependencies have time to load.
-CrashReporter = import("crashreporter")
-CrashReporter.Initialize()
-
+if IS_DST then
+	CrashReporter = import("crashreporter")
+	CrashReporter.Initialize()
+end
 
 -- Some descriptors need to be preloaded because they provide functionality outside of just descriptions.
 Insight.descriptors("combat")
@@ -2963,7 +2970,6 @@ Insight.descriptors("clock")
 Insight.descriptors("oceanfishingrod")
 Insight.descriptors("container")
 Insight.descriptors("hunter")
-Insight.descriptors("kramped")
 
 
 Insight.prefab_descriptors("wx78_scanner")
