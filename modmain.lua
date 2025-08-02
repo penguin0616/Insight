@@ -2970,6 +2970,7 @@ Insight.descriptors("clock")
 Insight.descriptors("oceanfishingrod")
 Insight.descriptors("container")
 Insight.descriptors("hunter")
+Insight.descriptors("kramped")
 
 
 Insight.prefab_descriptors("wx78_scanner")
