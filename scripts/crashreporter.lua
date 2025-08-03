@@ -156,7 +156,9 @@ local function UpdateStatus(widget, data)
 		for i,v in pairs(AllPlayers) do
 			local client_data = TheNet:GetClientTableForUser(v.userid)
 
-			if not IsClientHost() or (IsClientHost() and v ~= ThePlayer) then
+			-- It is possible for client data to be missing when IsClientHost()
+			-- if you crash during the player spawning process.
+			if client_data and (not IsClientHost() or (IsClientHost() and v ~= ThePlayer)) then
 				if client_data.admin then
 					-- Admins receive more information.
 					rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "ServerError"), v.userid, json.encode(data))
