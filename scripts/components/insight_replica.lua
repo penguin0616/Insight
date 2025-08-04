@@ -858,6 +858,12 @@ function Insight:BundleHasPrefab(inst, prefab, isSearchingForFoodTag)
 		return nil
 	end
 
+	-- Only time this will ever be nil is if there's a netvar desync.
+	if not info.special_data["unwrappable"] then
+		mprintf("Missing unwrappable information for [%s]", inst)
+		return false
+	end
+
 	local contents = info.special_data["unwrappable"].contents
 	for i = 1, #contents do
 		local v = contents[i]
