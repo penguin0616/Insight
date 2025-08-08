@@ -65,7 +65,7 @@ local function Describe(inst, context)
 				ApplyColour(context.time:SimpleProcess(PLANT_DATA.fruit_regen.min, "gametime_short"), bottom),
 				ApplyColour(
 					context.time:SimpleProcess(inst._plantdata.fruit_regen), 
-					bottom:Lerp(top, Remap(inst._plantdata.fruit_regen, PLANT_DATA.fruit_regen.min, PLANT_DATA.fruit_regen.max, 0, 1) )
+					bottom:Lerp(top, math.min(Remap(inst._plantdata.fruit_regen, PLANT_DATA.fruit_regen.min, PLANT_DATA.fruit_regen.max, 0, 1), 1))
 				),
 				ApplyColour(context.time:SimpleProcess(PLANT_DATA.fruit_regen.max, "gametime_short"), top)
 			)
