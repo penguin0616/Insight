@@ -72,6 +72,11 @@ local function FlowerDescribe(self, context)
 	local description = nil
 	local levelup_time = self.bondleveltimer and context.time:SimpleProcess(self.bondlevelmaxtime - self.bondleveltimer)
 
+	if type(self.bondlevel) ~= "number" or type(self.maxbondlevel) ~= "number" then
+		-- People once again breaking things.
+		return
+	end
+
 	if context.usingIcons then 
 		description = string.format(context.lstr.ghostlybond.flower, 
 			ApplyColor(self.bondlevel, LEVEL_COLORS[self.bondlevel]), 
