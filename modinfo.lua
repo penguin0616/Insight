@@ -142,8 +142,10 @@ end
 
 local function T(tbl, key)
 	if locale == "zht" then
-		return tbl["zh"] or tbl[1]
-	elseif locale and ChooseTranslationTable then
+		locale = "zh"
+	end
+	
+	if locale and ChooseTranslationTable then
 		return ChooseTranslationTable(tbl, key)
 	else
 		return tbl["en"] or tbl[1]
