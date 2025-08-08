@@ -60,7 +60,7 @@ local function SummarizeInventory(inst)
 end
 
 local function Describe(inst, context)
-	local description = nil
+	local description, alt_description 
 
 	-- become active
 	local active_string = nil
@@ -75,11 +75,13 @@ local function Describe(inst, context)
 		inventory_string = SummarizeInventory(inst)
 	end
 
-	description = CombineLines(active_string, inventory_string)
+	description = active_string
+	alt_description = CombineLines(active_string, inventory_string)
 
 	return {
 		priority = 0,
-		description = description
+		description = description,
+		alt_description = alt_description
 	}
 end
 

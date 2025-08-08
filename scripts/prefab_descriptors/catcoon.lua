@@ -20,11 +20,11 @@ directory. If not, please refer to
 
 -- catcoon.lua [Prefab]
 local function Describe(inst, context)
-	local description = Insight.prefab_descriptors.lureplant.SummarizeInventory(inst)
+	local alt_description = Insight.prefab_descriptors.lureplant.SummarizeInventory(inst)
 
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 end
 

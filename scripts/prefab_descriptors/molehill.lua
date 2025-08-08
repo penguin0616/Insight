@@ -38,11 +38,11 @@ local function SummarizeInventory(inst)
 end
 
 local function Describe(inst, context)
-	local description = SummarizeInventory(inst)
+	local alt_description = SummarizeInventory(inst)
 	
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 end
 
