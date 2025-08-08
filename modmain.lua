@@ -270,10 +270,10 @@ local descriptors_ignore = {
 	"boatcannonuser", "stageactor", "boatdrifter", "boatphysics", "boatring", "boatringdata", "healthsyncer", "hull", "hullhealth", "walkableplatform", "teleportedoverride", -- don't care
 	"npc_talker", "simplemagicgrower", "moonaltarlink", "farmtiller", "aoespell", "aoetargeting", "closeinspector", "waxable", "rainimmunity", "snowmandecor", -- don't care
 	"forgerepairable", "boatpatch", "submersible", "erasablepaper", "lunarplant_tentacle_weapon", "nightlightmanager", "clientpickupsoundsuppressor", -- don't care
-	"linkeditemmanager", "nightlightmanager", -- don't care
+	"linkeditemmanager", "nightlightmanager", "searchable", "treegrowthsolution", -- don't care
 
 	-- NEW:
-	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
+	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager", "lunarhailbuildup", 
 
 	-- TheWorld
 	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor", "sisturnregistry", "singingshellmanager",
