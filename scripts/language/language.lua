@@ -25,6 +25,7 @@ local languages = {
 	icons = "icons",
 	en = "english",
 	zh = "chinese", --ch = "chinese",
+	zht = "chinese",
 	es = "spanish", --mex = "spanish",
 	br = "portuguese",
 	ru = "russian",
@@ -45,7 +46,7 @@ local function PostImportLanguage(tbl)
 			local ret = v(tbl)
 			if type(ret) ~= "string" and type(ret) ~= "table" then
 				local info = debug.getinfo(v)
-				local src = (info.source or "?") .. ":" .. (info.linedefined or "?") 
+				local src = (info.source or "?") .. ":" .. (info.linedefined or "?")
 				mprint(type(ret))
 				mprint(ret)
 				errorf("Invalid post load fn for [%s]", src)
@@ -68,7 +69,7 @@ local function LoadLanguage(lang)
 	-- make sure none of the function returns in the langs directly return a reference to another table.
 	-- It's deceiving in that the deepcopy makes it seem like this should be fine, but you're setting a meta
 	-- On the same table twice from a single loaded language instance.
-	
+
 	local ret = deepcopy(tbl) -- Don't want to taint the import.
 
 	return ret
@@ -80,8 +81,8 @@ local function LoadLanguage(lang)
 end
 --]]
 
-local function __newindex(self) 
-	error(tostring(self) .. " is readonly") 
+local function __newindex(self)
+	error(tostring(self) .. " is readonly")
 end
 
 local function LinkTables(tbl, fallback)
@@ -134,7 +135,7 @@ local function main(config, locale)
 		-- However, I'm keeping this still to maintain load consistency across languages for testing purposes.
 
 		primary = LoadLanguage(languages[selected])
-		
+
 		LinkTables(primary, fallback)
 		rawset(primary, "lang", primary)
 		rawset(fallback, "lang", fallback)
