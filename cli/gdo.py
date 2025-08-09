@@ -42,7 +42,7 @@ def main(args: argparse.Namespace):
 
 	allfiles = component_descriptor_names + prefab_descriptor_names
 	allfiles.sort()
-	
+
 	for i in range(len(allfiles)):
 		v = allfiles[i]
 		
@@ -50,7 +50,7 @@ def main(args: argparse.Namespace):
 			for offset in range(-2, 3):
 				idx = i + offset
 				if idx > 0 and idx < len(allfiles):
-					logger.info(f"[{offset:>2}]: {allfiles[idx]}")
+					logger.info("[{0:+>2}]: {1} {2}".format(offset, allfiles[idx], "<" * int(offset==0) * 15))
 			break
 
 
