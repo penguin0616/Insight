@@ -1509,6 +1509,11 @@ return {
 		paused = "หยุดอยู่",
 	},
 
+	-- wortox.lua [Prefab]
+	wortox = {
+		time_untl_panflute_inspiration = "Wortox will get a free <prefab=panflute> use in %s",
+	},
+
 	-- wx78.lua [Prefab]
 	wx78 = {
 		remaining_charge_time = "ชาร์จคงเหลือ: %s",

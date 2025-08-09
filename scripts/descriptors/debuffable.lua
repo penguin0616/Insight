@@ -61,6 +61,7 @@ local debuff_to_prefab = {
 	nightvision_buff = "ancientfruit_nightvision",
 
 	wintersfeastbuff = "table_winters_feast",
+	wortox_panflute_buff = "panflute",
 
 	halloweenpotion_health_buff = "halloweenpotion_health_small",
 	halloweenpotion_sanity_buff = "halloweenpotion_sanity_small",
@@ -192,5 +193,6 @@ end
 
 return {
 	Describe = Describe,
-	DescribeDebuff = DescribeDebuff
+	DescribeDebuff = DescribeDebuff,
+	debuff_to_prefab = debuff_to_prefab,
 }

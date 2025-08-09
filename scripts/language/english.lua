@@ -474,6 +474,10 @@ return {
 			name = "<color=FROZEN>Winter's Feast Buff</color>",
 			description = "Restores <color=HUNGER>Hunger</color>, <color=SANITY>Sanity</color>, and <color=HEALTH>Health</color>."
 		},
+		["wortox_panflute_buff"] = {
+			name = "<color=FROZEN>Flute Inspiration</color>",
+			description = "Wortox has a free use of a <prefab=panflute>."
+		},
 		["hungerregenbuff"] = {
 			name = "<color=HUNGER><prefab=batnosehat> Buff</color>",
 			description = "Regenerates <color=HUNGER>{amount} hunger</color> over {duration}(s).",
@@ -1525,6 +1529,11 @@ return {
 	worldsettingstimer = {
 		label = "WSTimer <color=#8c8c8c>'%s'</color>: %s",
 		paused = "Paused",
+	},
+
+	-- wortox.lua [Prefab]
+	wortox = {
+		time_untl_panflute_inspiration = "Wortox will get a free <prefab=panflute> use in %s",
 	},
 
 	-- wx78.lua [Prefab]
