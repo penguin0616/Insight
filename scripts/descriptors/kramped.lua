@@ -279,14 +279,21 @@ local function OnKrampedPostInit(self)
 end
 
 local function OnServerInit()
+	mprint("Kramped OnServerInit")
 	if module.initialized then
 		return
 	end
 
+	mprint("Kramped initialized")
 	module.initialized = true
 
 	if not IS_DST then
+		mprint("Kramped not DST")
 		return
+	end
+
+	if TheWorld and TheWorld.components.kramped then
+		mprint("!!! KRAMPED CALLED LATE?")
 	end
 
 	AddComponentPostInit("kramped", OnKrampedPostInit)
