@@ -434,10 +434,9 @@ end
 -- https://forums.kleientertainment.com/forums/topic/28820-profiling-your-mod/
 -- https://forums.kleientertainment.com/forums/topic/50823-profiling-your-server/
 
-
 function ProfilerPush(marker_name)
 	if DEBUG_OPTIONS.ENABLE_PROFILER then
-		TheSim:ProfilerPush(marker_name)
+		TheSim:ProfilerPush("Insight_" .. marker_name)
 	end
 end
 
@@ -1339,7 +1338,6 @@ local function GetEntityInformation(entity, player, params)
 	return assembled
 end
 
-local waog = GetEntityInformation
 GetEntityInformation = ProfilerWrap(GetEntityInformation, "GetEntityInformation")
 
 --- Middleman between GetEntityInformation's server side and the client, really only important for DST
