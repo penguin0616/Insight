@@ -4448,6 +4448,48 @@ STRINGS = {
 			},
 		},
 	},
+	show_map_info = {
+		label = {
+			"Map Information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to show information relating to the world map.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Information relating to the world map is not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Information relating to the world map is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
 	danger_announcements = {
 		label = {
 			"Danger Announcements", 
@@ -7404,6 +7446,15 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "show_map_info",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
 		tags = {"dst_only", "undefined"},
 	},
 	{
