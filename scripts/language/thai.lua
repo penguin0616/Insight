@@ -115,6 +115,10 @@ return {
 		shadow_aligned = "ประเภทเงา",
 	},
 
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- acidbatwavemanager.lua

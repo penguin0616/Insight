@@ -129,6 +129,11 @@ return {
 		lunar_aligned = "Alineado Lunar",
 		shadow_aligned = "Alineado de Sombras",
 	},
+
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- acidbatwavemanager.lua

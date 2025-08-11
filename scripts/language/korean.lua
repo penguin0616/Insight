@@ -136,6 +136,10 @@ return {
 		shadow_aligned = "그림자 진영",
 	},
 
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- acidbatwavemanager.lua

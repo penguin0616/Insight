@@ -1087,6 +1087,31 @@ local function GetPrefabDescriptor(name)
 	end
 end
 
+function ReloadInsightModule(path)
+	if not import.HasLoaded(path) then
+		mprintf("MODULE '%s' WAS NOT IN IMPORT CACHE", path)
+		return
+	end
+
+	local module = import(path)
+	
+	if not module.Shutdown then
+		mprint("CANNOT UNLOAD MODULE, DOES NOT HAVE A SHUTDOWN METHOD")
+		return
+	end
+
+	module.Shutdown()
+	mprintf("MODULE '%s' WAS SHUT DOWN", path)
+
+	import.Clear(path)
+	mprintf("MODULE '%s' IMPORT CLEARED", path)
+
+	module = import(path)
+	module.Initialize()
+	mprintf("MODULE '%s' INITIALIZED", path)
+end
+_G.ReloadInsightModule = ReloadInsightModule
+
 --- Picks out a specific data from a describe call.
 ---@param name string The name of the desired data. 
 ---@vararg DescribeCallResults The datas returned from the describe call.
@@ -1967,9 +1992,50 @@ function AddDescriptorPostDescribe(modname, descriptor, callback)
 	table.insert(posts, callback)
 end
 
+function RemoveClassPostConstruct(package, postfn)
+	local classdef = require(package)
+
+	--[[
+	We have two options:
+		1. Go through the construct chain, find the one that calls us, and pull it out, linking the above call and the below call.
+		2. Go through the construct chain, find the one that calls us, and just replace our method with a dummy one.
+
+	For the purposes of time, we'll go with #2. 
+	It's not a perfect cleanup like #1 is, but good enough for our purposes.
+	--]]
+
+	-- Need to find where we are in the ctor chain.
+	local current_ctor = classdef._ctor
+	local entrypoint = nil
+
+	while current_ctor ~= nil and entrypoint == nil do
+		local upvalues = util.getupvalues(current_ctor)
+		local next_ctor = nil
+		for i, data in ipairs(upvalues) do
+			if data.name == "postfn" and data.value == postfn then
+				entrypoint = current_ctor
+			elseif data.name == "constructor" then
+				next_ctor = data.value
+			end
+		end
+
+		if entrypoint then
+			mprintf("Removed class post construct from [%s] originating from [%s]", package, debug.getinfo(postfn, "S").source:match("([%w_]+)%.lua$"))
+			util.replaceupvalue(current_ctor, "postfn", function() end)
+			return
+		else
+			current_ctor = next_ctor
+		end
+	end
+
+	mprintf("No post construct found for [%s]", package)
+	-- At this point, the current_ctor is the function containing our postfn.
+end
+
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
+
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 util = import("util")
 language = import("language/language")

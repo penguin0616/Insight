@@ -133,6 +133,11 @@ return {
 		shadow_aligned = "Shadow Aligned",
 	},
 
+	-- mapscreen and related
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- acidbatwavemanager.lua

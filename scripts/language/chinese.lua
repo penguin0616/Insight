@@ -133,6 +133,10 @@ return {
 		shadow_aligned = "暗影阵营",
 	},
 
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- acidbatwavemanager.lua
