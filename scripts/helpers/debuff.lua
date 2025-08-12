@@ -306,6 +306,10 @@ debuff_definitions["wintersfeastbuff"] = {
 	blank = true
 }
 
+debuff_definitions["wortox_panflute_buff"] = {
+	blank = true
+}
+
 debuff_definitions["hungerregenbuff"] = {
 	duration = TUNING.BATNOSEHAT_PERISHTIME,
 	tick_rate = TUNING.HUNGERREGEN_TICK_RATE,

@@ -472,14 +472,10 @@ local function relevance_iterator_ctor(tbl)
 end
 
 local function DoRelevanceChecks(force_apply)
-	--mprint("DoRelevanceChecks ---------------------------------------------------------------------------------------------------------------")
+	ProfilerPush("DoRelevanceChecks")
 	if not HIGHLIGHTING_ENABLED then
 		return
 	end
-	--push("DoRelevanceChecks")
-
-	local a = os.clock()
-	--print('relevance_check_start')
 
 	if highlighting.relevance_state then
 		highlighting:ClearRelevanceState()
@@ -508,7 +504,7 @@ local function DoRelevanceChecks(force_apply)
 	end
 
 	--highlighting.OnUpdate(0)
-	--pop()
+	ProfilerPop()
 end
 
 local function OnUpdate(dt)

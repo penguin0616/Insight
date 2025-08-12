@@ -140,6 +140,7 @@ end
 --- yep
 --- @param self kramped
 local function OnKrampedPostInit(self)
+	mprintf("Setting up kramped hooks for '%s'", self)
 	if not self.GetDebugString then
 		mprint("Unable to find GetDebugString from kramped. Exiting naughtiness early.")
 		return
@@ -158,7 +159,6 @@ local function OnKrampedPostInit(self)
 	end
 
 	module.active_players = _activeplayers
-	local firstLoad = true
 
 	-- i can't begin to describe how much this hurt me (Basements) https://steamcommunity.com/sharedfiles/filedetails/?id=1349799880 
 	-- they call ms_playerjoined and ms_playerleft manually on functions that have an _activeplayers upvalue. 
@@ -274,17 +274,26 @@ local function OnKrampedPostInit(self)
 		end,
 		__metatable = "[Insight] The metatable is locked"
 	})
+
+	mprintf("Kramped hook setup is complete for '%s'", self)
 end
 
 local function OnServerInit()
+	mprint("Kramped OnServerInit")
 	if module.initialized then
 		return
 	end
 
+	mprint("Kramped initialized")
 	module.initialized = true
 
 	if not IS_DST then
+		mprint("Kramped not DST")
 		return
+	end
+
+	if TheWorld and TheWorld.components.kramped then
+		mprint("!!! KRAMPED CALLED LATE?")
 	end
 
 	AddComponentPostInit("kramped", OnKrampedPostInit)

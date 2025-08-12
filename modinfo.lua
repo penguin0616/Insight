@@ -46,7 +46,7 @@ end
 
 name = "Insight"
 -- Major.Minor.Patch
-version = "5.0.1" -- dst is 4.6.2, ds is 4.5.0
+version = "5.1.0" -- dst is 4.6.2, ds is 4.5.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -141,6 +141,10 @@ local function tostring(arg)
 end
 
 local function T(tbl, key)
+	if locale == "zht" then
+		locale = "zh"
+	end
+	
 	if locale and ChooseTranslationTable then
 		return ChooseTranslationTable(tbl, key)
 	else
@@ -485,7 +489,7 @@ STRINGS = {
 	},
 	update_info = {
 		"See Steam changelog for more info.",
-		["zh"] = nil,
+		["zh"] = "查看Steam创意工坊页面的更新日志以了解更多信息。",
 		["br"] = "Uma *tonelada* de coisas. Você deve **realmente** verificar as Notas de Alterações do Steam.",
 		["es"] = nil,
 		["ru"] = "Добавлена информация об обновлениях From Beyond и других вещах. Смотрите список изменений Steam для получения дополнительной информации.",
@@ -4444,6 +4448,48 @@ STRINGS = {
 			},
 		},
 	},
+	show_map_info = {
+		label = {
+			"Map Information", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		hover = {
+			"Whether to show information relating to the world map.", 
+			["zh"] = nil, 
+			["br"] = nil, 
+			["es"] = nil,
+			["ru"] = nil,
+			["ko"] = nil,
+		},
+		options = {
+			[false] = {
+				description = COMMON_STRINGS.NO.DESCRIPTION,
+				hover = {
+					"Information relating to the world map is not shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+			[true] = {
+				description = COMMON_STRINGS.YES.DESCRIPTION,
+				hover = {
+					"Information relating to the world map is shown.",
+					["zh"] = nil,
+					["br"] = nil,
+					["es"] = nil,
+					["ru"] = nil,
+					["ko"] = nil,
+				},
+			},
+		},
+	},
 	danger_announcements = {
 		label = {
 			"Danger Announcements", 
@@ -6484,7 +6530,7 @@ STRINGS = {
 		},
 		hover = {
 			"Enables automatic reporting of crashes to the mod author.", 
-			["zh"] = nil,
+			["zh"] = "启用自动将崩溃报告发送给模组作者。",
 			["br"] = nil,
 			["es"] = nil,
 			["ru"] = nil,
@@ -7400,6 +7446,15 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
+		tags = {"dst_only", "undefined"},
+	},
+	{
+		name = "show_map_info",
+		options = {
+			{data = false},
+			{data = true},
+		}, 
+		default = false,
 		tags = {"dst_only", "undefined"},
 	},
 	{

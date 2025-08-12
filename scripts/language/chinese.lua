@@ -25,14 +25,14 @@ directory. If not, please refer to
 return {
 	-- insightservercrash.lua
 	crash_reporter = {
-		title = "[Insight Crash Reporter]",
+		title = "[Insight 崩溃报告器]",
 		crashed = "服务器崩溃",
 		report_status = {
-			unknown = "Unknown",
-			disabled = "The crash reporter is <color=#666666>disabled</color>: <color=#666666>%s</color>",
-			sending = "Sending crash report",
-			success = "Crash reported to Insight. <u>This does NOT mean that Insight caused the issue!</u>",
-			failure = "Crash report failed to send (%s): %s",
+			unknown = "未知",
+			disabled = "崩溃报告器已<color=#666666>禁用</color>：<color=#666666>%s</color>",
+			sending = "正在发送崩溃报告",
+			success = "崩溃已报告给 Insight <u>这并不意味着 Insight 导致了问题！</u>",
+			failure = "崩溃报告发送失败（%s）：%s",
 		},
 	},
 
@@ -131,6 +131,10 @@ return {
 		-- Planar
 		lunar_aligned = "月亮阵营",
 		shadow_aligned = "暗影阵营",
+	},
+
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
 	},
 
 	-------------------------------------------------------------------------------------------------------------------------
@@ -459,8 +463,8 @@ return {
 			description = "{duration} 秒内回复 <color=SANITY>{amount} 理智</color>",
 		},
 		["nightvision_buff"] = {
-			name = "<color=#258cd3>Night vision</color>",
-			description = "Provides <color=#258cd3>night vision</color> for {duration}(s).",
+			name = "<color=#258cd3>夜视</color>",
+			description = "提供<color=#258cd3>夜视</color>, 持续 {duration} 秒",
 		},
 		["wormlight_light"] = {
 			name = "<color=#6AD1EF><prefab=wormlight> light</color>",
@@ -1523,6 +1527,11 @@ return {
 	worldsettingstimer = {
 		label = "世界计时器<color=#8c8c8c>'%s'</color>: %s",
 		paused = "已暂停",
+	},
+
+	-- wortox.lua [Prefab]
+	wortox = {
+		time_untl_panflute_inspiration = "Wortox will get a free <prefab=panflute> use in %s",
 	},
 
 	-- wx78.lua [Prefab]

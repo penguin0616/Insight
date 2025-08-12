@@ -136,6 +136,10 @@ return {
 		shadow_aligned = "그림자 진영",
 	},
 
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- acidbatwavemanager.lua
@@ -1529,6 +1533,11 @@ return {
 	worldsettingstimer = {
 		label = "월드 설정 타이머 <color=#8c8c8c>'%s'</color>: %s",
 		paused = "일시 중지됨.",
+	},
+
+	-- wortox.lua [Prefab]
+	wortox = {
+		time_untl_panflute_inspiration = "Wortox will get a free <prefab=panflute> use in %s",
 	},
 
 	-- wx78.lua [Prefab]

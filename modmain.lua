@@ -179,6 +179,7 @@ DEBUG_ENABLED = (
 DEBUG_OPTIONS = {
 	INSIGHT_MENU_DATA_ORIGIN = false,
 	SHOW_INFO_ORIGIN = false,
+	ENABLE_PROFILER = false,
 }
 
 ALLOW_SERVER_DEBUGGING = DEBUG_ENABLED -- todo make a more accessible for standard users with mod compatibility issues?
@@ -270,10 +271,11 @@ local descriptors_ignore = {
 	"boatcannonuser", "stageactor", "boatdrifter", "boatphysics", "boatring", "boatringdata", "healthsyncer", "hull", "hullhealth", "walkableplatform", "teleportedoverride", -- don't care
 	"npc_talker", "simplemagicgrower", "moonaltarlink", "farmtiller", "aoespell", "aoetargeting", "closeinspector", "waxable", "rainimmunity", "snowmandecor", -- don't care
 	"forgerepairable", "boatpatch", "submersible", "erasablepaper", "lunarplant_tentacle_weapon", "nightlightmanager", "clientpickupsoundsuppressor", -- don't care
-	"linkeditemmanager", "nightlightmanager", -- don't care
+	"linkeditemmanager", "nightlightmanager", "searchable", "treegrowthsolution", "hermitcrab_relocation_manager", "lunaralterguardianspawner", -- don't care
+	"snowballmanager", "vinebridgemanager", "wagboss_tracker", "wagpunk_arena_manager", -- don't care
 
 	-- NEW:
-	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager",
+	"farmplanttendable", "plantresearchable", "fertilizerresearchable", "yotb_stagemanager", "lunarhailbuildup", 
 
 	-- TheWorld
 	"worldstate", "groundcreep", "skeletonsweeper", "uniqueprefabids", "ocean", "oceancolor", "sisturnregistry", "singingshellmanager",
@@ -312,8 +314,15 @@ local descriptors_ignore = {
 	"clock", -- clock
 	"autosaver", -- autosaver
 	"worldvoter", -- idc to look enough into
-
 }
+
+do
+	local x = shallowcopy(descriptors_ignore)
+	for i, name in pairs(x) do
+		descriptors_ignore[i] = nil
+		descriptors_ignore[name] = true
+	end
+end
 
 -- i don't want datadumper saving the metatable
 --[[
@@ -420,6 +429,34 @@ end
 ---@return boolean
 function IsPrefab(arg)
 	return type(arg) == 'table' and arg.GUID and arg.prefab and true
+end
+
+-- https://forums.kleientertainment.com/forums/topic/28820-profiling-your-mod/
+-- https://forums.kleientertainment.com/forums/topic/50823-profiling-your-server/
+
+function ProfilerPush(marker_name)
+	if DEBUG_OPTIONS.ENABLE_PROFILER then
+		TheSim:ProfilerPush("Insight_" .. marker_name)
+	end
+end
+
+function ProfilerPop()
+	if DEBUG_OPTIONS.ENABLE_PROFILER then
+		TheSim:ProfilerPop()
+	end
+end
+
+function ProfilerWrap(fn, name)
+	if type(name) ~= "string" or type(fn) ~= "function" then
+		error("bad call to ProfilerWrap")
+	end
+
+	return function(...)
+		ProfilerPush(name)
+		local res = pack(fn(...))
+		ProfilerPop()
+		return vararg(res)
+	end
 end
 
 --- Return player's Insight component or replica, depending on what side we're running on.
@@ -1050,6 +1087,31 @@ local function GetPrefabDescriptor(name)
 	end
 end
 
+function ReloadInsightModule(path)
+	if not import.HasLoaded(path) then
+		mprintf("MODULE '%s' WAS NOT IN IMPORT CACHE", path)
+		return
+	end
+
+	local module = import(path)
+	
+	if not module.Shutdown then
+		mprint("CANNOT UNLOAD MODULE, DOES NOT HAVE A SHUTDOWN METHOD")
+		return
+	end
+
+	module.Shutdown()
+	mprintf("MODULE '%s' WAS SHUT DOWN", path)
+
+	import.Clear(path)
+	mprintf("MODULE '%s' IMPORT CLEARED", path)
+
+	module = import(path)
+	module.Initialize()
+	mprintf("MODULE '%s' INITIALIZED", path)
+end
+_G.ReloadInsightModule = ReloadInsightModule
+
 --- Picks out a specific data from a describe call.
 ---@param name string The name of the desired data. 
 ---@vararg DescribeCallResults The datas returned from the describe call.
@@ -1160,10 +1222,13 @@ local function GetEntityInformation(entity, player, params)
 
 	local chunks = {}
 	
+	ProfilerPush("ComponentInformation")
 	for name, component in pairs(entity.components) do		
+		ProfilerPush("Component_" .. name)
 		local descriptor = Insight.descriptors[name]
 
 		if descriptor and descriptor.Describe then
+			ProfilerPush("Describe_" .. name)
 			local datas = {descriptor.Describe(component, player_context)}
 
 			local postFns = Insight.post_inits.describe[name]
@@ -1175,11 +1240,12 @@ local function GetEntityInformation(entity, player, params)
 			end
 
 			ValidateDescribeResponse(chunks, name, datas, params)
+			ProfilerPop()
 			
-		elseif player_context.config["DEBUG_SHOW_DISABLED"] and table.contains(descriptors_ignore, name) then
+		elseif player_context.config["DEBUG_SHOW_DISABLED"] and descriptors_ignore[name] then
 			chunks[#chunks+1] = {priority = -20, name = name, description = "Disabled descriptor: " .. name};
 
-		elseif not descriptor and player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not table.contains(descriptors_ignore, name) then
+		elseif not descriptor and player_context.config["DEBUG_SHOW_NOTIMPLEMENTED"] and not descriptors_ignore[name] then
 			local description = "No information for: " .. name
 			local origin = GetComponentOrigin(name)
 
@@ -1192,15 +1258,19 @@ local function GetEntityInformation(entity, player, params)
 			end
 
 			if description then
-				chunks[#chunks+1] = {priority = -10, name = name, description = description};
+				chunks[#chunks+1] = {priority = -10, name = name, description = description}
 			end
 		end
+		ProfilerPop()
 	end
+	ProfilerPop()
 
 	local prefab_descriptor = Insight.prefab_descriptors[entity.prefab]
 	if prefab_descriptor and prefab_descriptor.Describe then
+		ProfilerPush("prefab_" .. entity.prefab)
 		local datas = {prefab_descriptor.Describe(entity, player_context)}
 		ValidateDescribeResponse(chunks, entity.prefab, datas, params)
+		ProfilerPop()
 	end
 
 	-- sort by priority
@@ -1237,6 +1307,7 @@ local function GetEntityInformation(entity, player, params)
 	end
 	--]]
 
+	ProfilerPush("PostProcessing")
 	for i = 1, num_chunks do
 	--for i,v in pairs(chunks) do
 		local v = chunks[i]
@@ -1277,6 +1348,7 @@ local function GetEntityInformation(entity, player, params)
 			--if bb then bb=bb+1 end
 		end
 	end
+	ProfilerPop()
 
 	-- Stripping out the ending newline here would be a bit odd since it's not guaranteed the newline is actually a mistake.
 	-- I guess I'll let RichText handle it, since it strips out trailing newlines (see reasoning over there).
@@ -1290,6 +1362,8 @@ local function GetEntityInformation(entity, player, params)
 
 	return assembled
 end
+
+GetEntityInformation = ProfilerWrap(GetEntityInformation, "GetEntityInformation")
 
 --- Middleman between GetEntityInformation's server side and the client, really only important for DST
 function RequestEntityInformation(entity, player, params)
@@ -1918,9 +1992,66 @@ function AddDescriptorPostDescribe(modname, descriptor, callback)
 	table.insert(posts, callback)
 end
 
+function RemoveClassPostConstruct(package, postfn)
+	local classdef = require(package)
+
+	--[[
+	We have two options:
+		1. Go through the construct chain, find the one that calls us, and pull it out, linking the above call and the below call.
+		2. Go through the construct chain, find the one that calls us, and just replace our method with a dummy one.
+
+	For the purposes of time, we'll go with #2. 
+	It's not a perfect cleanup like #1 is, but good enough for our purposes.
+	--]]
+
+	-- Need to find where we are in the ctor chain.
+	local current_ctor = classdef._ctor
+	local entrypoint = nil
+
+	while current_ctor ~= nil and entrypoint == nil do
+		local upvalues = util.getupvalues(current_ctor)
+		local next_ctor = nil
+		for i, data in ipairs(upvalues) do
+			if data.name == "postfn" and data.value == postfn then
+				entrypoint = current_ctor
+			elseif data.name == "constructor" then
+				next_ctor = data.value
+			end
+		end
+
+		if entrypoint then
+			mprintf("Removed class post construct from [%s] originating from [%s]", package, debug.getinfo(postfn, "S").source:match("([%w_]+)%.lua$"))
+			util.replaceupvalue(current_ctor, "postfn", function() end)
+			return
+		else
+			current_ctor = next_ctor
+		end
+	end
+
+	mprintf("No post construct found for [%s]", package)
+	-- At this point, the current_ctor is the function containing our postfn.
+end
+
 --================================================================================================================================================================--
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
+
+-- Check settings
+if IS_DST then -- server + dedi check
+	if TheNet:IsDedicated() then
+		--RepairInsightConfig(false)
+	elseif IsClientHost() then
+		--RepairInsightConfig(false)
+		RepairInsightConfig(true)
+	elseif IsClient() then
+		RepairInsightConfig(true)
+	else
+		mprint("Unable to determine network side. Disabling Insight.")
+		return
+		--error("Unable to determine network side")
+	end
+end
+
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 util = import("util")
 language = import("language/language")
@@ -1948,6 +2079,7 @@ if IS_DST and KnownModIndex:IsModEnabled("workshop-1378549454") then
 	Insight.env.error = real_error
 	mprint("Got real error from Gemcore")
 end
+
 
 if IS_DST then 
 	local image = { atlas="images/Insight_Announcement.xml", texture="Insight_Announcement.tex" }
@@ -1996,19 +2128,6 @@ for i,v in pairs(patcher._to_load) do
 	end
 end
 
--- Check settings
-if IS_DST then -- server + dedi check
-	if TheNet:IsDedicated() then
-		--RepairInsightConfig(false)
-	elseif IsClientHost() then
-		--RepairInsightConfig(false)
-		RepairInsightConfig(true)
-	elseif IsClient() then
-		RepairInsightConfig(true)
-	else
-		error("Unable to determine network side")
-	end
-end
 
 PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_entitytext", "insight_prefab"}
 if IS_DST then
@@ -2046,8 +2165,8 @@ setmetatable(Insight.prefab_descriptors, {
 
 
 -- ignore selected descriptors
-for i,v in pairs(descriptors_ignore) do
-	Insight.descriptors[v] = false
+for name in pairs(descriptors_ignore) do
+	Insight.descriptors[name] = false
 end
 
 --[[
@@ -2970,6 +3089,7 @@ Insight.descriptors("clock")
 Insight.descriptors("oceanfishingrod")
 Insight.descriptors("container")
 Insight.descriptors("hunter")
+Insight.descriptors("kramped")
 
 
 Insight.prefab_descriptors("wx78_scanner")

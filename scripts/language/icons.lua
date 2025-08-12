@@ -134,6 +134,10 @@ return {
 		shadow_aligned = "Shadow Aligned",
 	},
 
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 
 	-- acidbatwavemanager.lua
@@ -1526,6 +1530,11 @@ return {
 	worldsettingstimer = {
 		--label = "WSTimer <color=#8c8c8c>'%s'</color>: %s",
 		--paused = "Paused",
+	},
+
+	-- wortox.lua [Prefab]
+	wortox = {
+		time_untl_panflute_inspiration = "Wortox will get a free <prefab=panflute> use in %s",
 	},
 
 	-- wx78.lua [Prefab]

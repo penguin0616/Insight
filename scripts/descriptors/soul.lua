@@ -19,44 +19,81 @@ directory. If not, please refer to
 ]]
 
 -- soul.lua
-local function Describe(self, context)
-	local inst = self.inst
-	local description = nil
+local function CalculateSoulNutrition(wortox)
+	-- prefabs/wortox.lua -> OnEatSoul
+	local hungervalue = TUNING.CALORIES_MED
+	local sanityvalue = -TUNING.SANITY_TINY
+	local healthvalue = 0
 
-	if context.player.components.souleater and inst.prefab == "wortox_soul" then
-		local edible_description
-		local descriptor = Insight.descriptors.edible
-		if descriptor then
-			-- prefabs/wortox.lua -> OnEatSoul
-			local stats = {
-				fixed = true,
-				hunger = TUNING.CALORIES_MED,
-				sanity = -TUNING.SANITY_TINY,
-				health = 0,
-			}
-			context.stats = stats -- ISSUE: REFACTOR TO descriptor.SOMETHING
-			edible_description = descriptor.Describe(self, context).description
-		end
-
-		local heal_string = string.format(context.lstr.wortox_soul_heal, TUNING.WORTOX_SOULHEAL_MINIMUM_HEAL, TUNING.HEALING_MED)
-		local heal_range = string.format(context.lstr.wortox_soul_heal_range, TUNING.WORTOX_SOULHEAL_RANGE / WALL_STUDS_PER_TILE)
-
-		description = CombineLines(edible_description, heal_string, heal_range)
+	if wortox.wortox_inclination == "nice" then
+		sanityvalue = -TUNING.SANITY_TINY * 2
+	elseif wortox.wortox_inclination == "naughty" then
+		sanityvalue = 0
 	end
 
 	return {
-		name = "soul",
-		priority = 0,
-		description = description,
-		priority = 5 -- from edible
-	}, {
-		name = "insight_ranged",
-		priority = 0,
-		description = nil,
-		range = TUNING.WORTOX_SOULHEAL_RANGE,
-		color = Insight.COLORS.HEALTH,
-		attach_player = true
+		hungervalue = hungervalue,
+		sanityvalue = sanityvalue,
+		healthvalue = healthvalue
 	}
+end
+
+local function Describe(self, context)
+	local description = nil
+
+	if not context.player then
+		return
+	end
+
+	if self.inst.prefab ~= "wortox_soul" then
+		return
+	end
+
+	-- Range data
+	local soul_heal_range = TUNING.WORTOX_SOULHEAL_RANGE
+	local skilltreeupdater = context.player.components.skilltreeupdater
+	if skilltreeupdater then
+		if skilltreeupdater:IsActivated("wortox_soulprotector_1") then
+			soul_heal_range = soul_heal_range + TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_1_RANGE
+		end
+
+		if skilltreeupdater:IsActivated("wortox_soulprotector_2") then
+			soul_heal_range = soul_heal_range + TUNING.SKILLS.WORTOX.WORTOX_SOULPROTECTOR_2_RANGE
+		end
+	end
+
+	-- Edible data
+	local edible_data = nil
+	if context.player.components.souleater then
+		local descriptor = Insight.descriptors.edible
+		if descriptor then
+			local stats = CalculateSoulNutrition(context.player)
+			edible_data = descriptor.DescribeFoodStats(stats, context)
+		end
+	end
+
+	-- Healing data
+	local heal_string = string.format(context.lstr.wortox_soul_heal, TUNING.WORTOX_SOULHEAL_MINIMUM_HEAL, TUNING.HEALING_MED)
+	local heal_range = string.format(context.lstr.wortox_soul_heal_range, soul_heal_range / WALL_STUDS_PER_TILE)
+
+	description = CombineLines(heal_string, heal_range)
+
+	return 
+		{
+			name = "soul",
+			priority = 0,
+			description = description,
+			priority = 5
+		}, 
+		edible_data, 
+		{
+			name = "insight_ranged",
+			priority = 0,
+			description = nil,
+			range = soul_heal_range,
+			color = Insight.COLORS.HEALTH,
+			attach_player = true
+		}
 end
 
 

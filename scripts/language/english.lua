@@ -133,6 +133,11 @@ return {
 		shadow_aligned = "Shadow Aligned",
 	},
 
+	-- mapscreen and related
+	map = {
+		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+	},
+
 	-------------------------------------------------------------------------------------------------------------------------
 	
 	-- acidbatwavemanager.lua
@@ -473,6 +478,10 @@ return {
 		["wintersfeastbuff"] = {
 			name = "<color=FROZEN>Winter's Feast Buff</color>",
 			description = "Restores <color=HUNGER>Hunger</color>, <color=SANITY>Sanity</color>, and <color=HEALTH>Health</color>."
+		},
+		["wortox_panflute_buff"] = {
+			name = "<color=FROZEN>Flute Inspiration</color>",
+			description = "Wortox has a free use of a <prefab=panflute>."
 		},
 		["hungerregenbuff"] = {
 			name = "<color=HUNGER><prefab=batnosehat> Buff</color>",
@@ -1525,6 +1534,11 @@ return {
 	worldsettingstimer = {
 		label = "WSTimer <color=#8c8c8c>'%s'</color>: %s",
 		paused = "Paused",
+	},
+
+	-- wortox.lua [Prefab]
+	wortox = {
+		time_untl_panflute_inspiration = "Wortox will get a free <prefab=panflute> use in %s",
 	},
 
 	-- wx78.lua [Prefab]

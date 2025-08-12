@@ -19,129 +19,12 @@ directory. If not, please refer to
 ]]
 
 -- edible.lua
+local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
+
 local uncompromising = KnownModIndex:IsModEnabled("workshop-2039181790")
 local debuffHelper = import("helpers/debuff")
 local cooking = require("cooking")
 local world_type = GetWorldType()
-
-
-local function GetWereEaterData(inst, context)
-	local wereeater = context.player.components.wereeater
-	if not wereeater then
-		return
-	end
-
-	if not inst:HasTag("monstermeat") then
-		return
-	end
-
-	if wereeater.monster_count == 0 then
-		return
-	end
-
-	local forget_time = wereeater.forget_task and GetTaskRemaining(wereeater.forget_task)
-
-	if forget_time then
-		forget_time = context.time:SimpleProcess(forget_time)
-	else
-		forget_time = "?"
-	end
-
-	return string.format(context.lstr.wereeater, wereeater.monster_count, 2, forget_time)
-end
-
-local function GetFoodUnits(inst, context)
-	local ing = cooking.ingredients[inst.prefab]
-
-	local units = {}
-
-	if ing then
-		for name, value in pairs(ing.tags) do
-			local color = Insight.COLORS[name:upper()] and name:upper() or "FEATHER"
-			local unit = context.lstr.edible_foodtype[name:lower()] or name .. "*"
-			
-			if context.usingIcons and PrefabHasIcon(unit) then
-				units[#units+1] = string.format(context.lstr.food_unit, color, value, unit)
-			else
-				units[#units+1] = string.format(context.lstr.lang.food_unit, color, value, color, unit)
-			end
-			--[[
-			local clr = name:upper()
-			if Insight.COLORS[clr] == nil then
-				clr = "FEATHER"
-				-- you heard me. all unregistered food is now FEATHER. accept defeat.
-			end
-
-			local unit = context.lstr["edible_" .. name:lower()] or name
-			table.insert(units, string.format(context.lstr.food_unit, clr, val, clr, unit))
-			--]]
-		end
-	end
-
-	if #units == 0 then
-		return nil
-	end
-
-	return table.concat(units, ", ")
-end
-
-local function FormatFoodStats(hunger, sanity, health, context)
-	-- for handling different styles
-	local style = context.config["food_style"]
-	local order = context.config["food_order"] -- interface (default), wiki
-
-	local long = nil
-	local short = nil
-
-	local data = nil
-
-	if order == "interface" then
-		--long = "<color=HUNGER>Hunger</color>: <color=HUNGER>%s</color> / <color=SANITY>Sanity</color>: <color=SANITY>%s</color> / <color=HEALTH>Health</color>: <color=HEALTH>%s</color>"
-		long = context.lstr.edible_interface --string.format("%s <color=HUNGER>%%s</color> / %s <color=SANITY>%%s</color> / %s <color=HEALTH>%%s</color>", hunger_str, sanity_str, health_str)
-		data = {hunger, sanity, health}
-		short = "<color=HUNGER>%s</color> / <color=SANITY>%s</color> / <color=HEALTH>%s</color>"
-	elseif order == "wiki" then
-		--long = "<color=HEALTH>Health</color>: <color=HEALTH>%s</color> / <color=HUNGER>Hunger</color>: <color=HUNGER>%s</color> / <color=SANITY>Sanity</color>: <color=SANITY>%s</color>"
-		long = context.lstr.edible_wiki --string.format("%s <color=HEALTH>%%s</color> / %s <color=HUNGER>%%s</color> / %s <color=SANITY>%%s</color>", health_str, hunger_str, sanity_str)
-		data = {health, hunger, sanity}
-		short = "<color=HEALTH>%s</color> / <color=HUNGER>%s</color> / <color=SANITY>%s</color>"
-	else
-		error("unexpected order in food_order: " .. tostring(order))
-	end
-
-	if style == "short" then
-		return string.format(short, data[1], data[2], data[3])
-	elseif style == "long" then
-		--local DEBUG_STR = "<color=SHALLOWS>hey there jimbo</color>\nhey there jimbo\n"
-		return string.format(long, data[1], data[2], data[3])
-	else
-		return string.format(long, data[1], data[2], data[3]) .. string.format(" [%s]", tostring(style)) 
-		--error("unexpected style in food_style: " .. tostring(style))
-	end
-end
-
-local function IsEdible(owner, inst)
-	if not owner then
-		return false
-	end
-	
-	if owner.components.eater then
-		-- base game does not have :IsValidFood()
-		if owner.components.eater.IsValidFood and owner.components.eater:IsValidFood(inst) then
-			if owner.components.eater:AbleToEat(inst) then
-				return true
-			end
-		elseif owner.components.eater:CanEat(inst) then
-			return true
-		end
-	end
-
-	if owner.components.souleater and inst.components.soul then
-		return true
-	end
-
-	return false
-end
 
 local SPECIAL_FOODS = {
 	["petals_evil"] = {
@@ -149,21 +32,100 @@ local SPECIAL_FOODS = {
 	}
 }
 
+--------------------------------------------------------------------------------
+--- Helper functions
+--------------------------------------------------------------------------------
+
+--- Takes in food stats and formats them into the correct output string.
+--- @param hunger number
+--- @param sanity number
+--- @param health number
+--- @param context table
+--- @return string
+local function FormatFoodStats(hunger, sanity, health, context)
+	hunger = hunger and ((tonumber(hunger) > 0 and "+" or "") .. hunger) or "?"
+	sanity = sanity and ((tonumber(sanity) > 0 and "+" or "") .. sanity) or "?"
+	health = health and ((tonumber(health) > 0 and "+" or "") .. health) or "?"
+
+	-- Prepare the ordering for the string format.
+	local order = context.config["food_order"] -- interface (default), wiki
+	local food_data = nil
+	local long_display_format = nil
+	local short_display_format = nil
+	
+	if order == "interface" then
+		long_display_format = context.lstr.edible_interface
+		food_data = {hunger, sanity, health}
+		short_display_format = "<color=HUNGER>%s</color> / <color=SANITY>%s</color> / <color=HEALTH>%s</color>"
+	elseif order == "wiki" then
+		long_display_format = context.lstr.edible_wiki
+		food_data = {health, hunger, sanity}
+		short_display_format = "<color=HEALTH>%s</color> / <color=HUNGER>%s</color> / <color=SANITY>%s</color>"
+	else
+		return string.format("[ERROR] BAD FOOD ORDER CONFIG [%s]", tostring(order))
+	end
+	
+	-- Okay, the order of the food stats is prepared. Now we just have to choose what style to use.
+	local style = context.config["food_style"]
+
+	if style == "short" then
+		return string.format(short_display_format, food_data[1], food_data[2], food_data[3])
+	elseif style == "long" then
+		return string.format(long_display_format, food_data[1], food_data[2], food_data[3])
+	else
+		return string.format("[ERROR] BAD FOOD STYLE CONFIG [%s]", tostring(style))
+	end
+end
+
+--- Checks if the specified entity can actually eat the food item.
+--- @param entity EntityScript The entity in question
+--- @param inst The food item
+--- @return boolean
+local function CanEntityEatItem(entity, inst)
+	if not entity then
+		return false
+	end
+	
+	if entity.components.eater then
+		-- base game does not have :IsValidFood()
+		if entity.components.eater.IsValidFood and entity.components.eater:IsValidFood(inst) then
+			if entity.components.eater:AbleToEat(inst) then
+				return true
+			end
+		elseif entity.components.eater:CanEat(inst) then
+			return true
+		end
+	end
+
+	if entity.components.souleater and inst.components.soul then
+		return true
+	end
+
+	return false
+end
+
+
+--- Calculates the food stats of an item as if it was eaten by the specified entity.
+--- @param self Edible The edible entity.
+--- @param eating_entity EntityScript The entity that wants to eat the food.
+--- @param feeder EntityScript The entity feeding the eating entity the food. Can be the entity itself.
+--- @param account_eatable boolean Whether to account for whether the food is actually edible by the entity.
 local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatable)
 	feeder = feeder or eating_entity
 
 	if account_eatable then
-		if not IsEdible(eating_entity, self.inst) then
+		if not CanEntityEatItem(eating_entity, self.inst) then
 			return nil
 		end
 	end
 
-	-- get hunger values
-	local hunger, sanity, health = self:GetHunger(eating_entity) or 0, self:GetSanity(eating_entity) or 0, self:GetHealth(eating_entity) or 0 -- DST's food affinity is included in all 3
+	-- DST's food affinity (player favorite foods) is included in these for us.
+	local hunger, sanity, health = self:GetHunger(eating_entity) or 0, self:GetSanity(eating_entity) or 0, self:GetHealth(eating_entity) or 0 
 	local eater = eating_entity.components.eater
 
-	-- food effects
-	if eater and world_type ~= 0 then -- accounting for strong stomach in anywhere except base game since no one cares there
+	-- Some food can have negative effects, so this checks for that.
+	-- Accounts for things like strong stomach (in anywhere except base game since no one cares there).
+	if eater and world_type ~= 0 then
 		local do_effects = eater:DoFoodEffects(self.inst)
 		
 		if sanity < 0 and do_effects == false then
@@ -174,25 +136,24 @@ local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatabl
 		end
 	end
 
+	-- In Hamlet, this tag prevents Wormwood from getting any health impact from food.
 	if world_type == 3 and eating_entity:HasTag("donthealfromfood") then
-		-- In Hamlet, this tag prevents Wormwood from getting any health impact from food.
 		health = 0
 	end
 
+	-- Food multipliers. Only includes Warly in vanilla.
+	local base_food_mult = eating_entity.components.foodmemory ~= nil and eating_entity.components.foodmemory:GetFoodMultiplier(self.inst.prefab) or 1 
 
-	-- food multipliers
-	local base_mult = eating_entity.components.foodmemory ~= nil and eating_entity.components.foodmemory:GetFoodMultiplier(self.inst.prefab) or 1 -- warly? added while was doing food stat modifiers
-	if not stats or (type(stats) == 'table' and not stats.fixed) then
-		-- uncompromising mode sets absorptions to 0 on first eat event and stores the original as a variable in the player.
-		-- \init\init_food\init_foodregen.lua in local function oneat, August 17, 2021.
-		-- Variable change necessary according to Atoba, Dec 16 2022
-		-- Do I want to do something with custom logic for uncomp absorption??
-		hunger = hunger * base_mult * (uncompromising and eating_entity.modded_hungerabsorption or eater.hungerabsorption)
-		sanity = sanity * base_mult * (uncompromising and eating_entity.modded_sanityabsorption or eater.sanityabsorption)
-		health = health * base_mult * (uncompromising and eating_entity.modded_healthabsorption or eater.healthabsorption)
-	end
+	-- uncompromising mode sets absorptions to 0 on first eat event and stores the original as a variable in the player.
+	-- \init\init_food\init_foodregen.lua in local function oneat, August 17, 2021.
+	-- Variable change necessary according to Atoba, Dec 16 2022
+	-- Do I want to do something with custom logic for uncomp absorption??
+	hunger = hunger * base_food_mult * (uncompromising and eating_entity.modded_hungerabsorption or eater.hungerabsorption)
+	sanity = sanity * base_food_mult * (uncompromising and eating_entity.modded_sanityabsorption or eater.sanityabsorption)
+	health = health * base_food_mult * (uncompromising and eating_entity.modded_healthabsorption or eater.healthabsorption)
 
-	-- new very helpful function by klei
+	-- Klei added this function for custom modification of incoming food stats without having to override the getters.
+	-- More mods should make use of this, honestly.
 	if eater and eater.custom_stats_mod_fn then
 		health, hunger, sanity = eater.custom_stats_mod_fn(eating_entity, health, hunger, sanity, self.inst, feeder)
 	end
@@ -224,118 +185,203 @@ local function GetFoodStatsForEntity(self, eating_entity, feeder, account_eatabl
 	return hunger, sanity, health
 end
 
-local function Describe(self, context)
-	if not context.player.components.eater then
+
+
+--------------------------------------------------------------------------------
+
+--- Creates the description table for food stats.
+--- @param self Edible|table The edible component, or a table with food stats in it (similar structure to the component)
+--- @param context table Insight player context.
+--- @return table @Insight description table.
+local function DescribeFoodStats(self, context)
+	local description, alt_description = nil, nil
+
+	if not context.config["display_food"] then
 		return
 	end
 
-	local description, alt_description = nil, nil
+	-- I don't expect this would ever not be a table, but might as well check.
+	if type(self) ~= "table" then
+		return
+	end
 
-	local owner = context.player --GetPlayer()
-	local stats = context.stats
-	local alt_description = nil
+	-- First, we'll try to get the base stat values -- the stuff that isn't affected by who the eater is.
+	local hunger = self.GetHunger and self:GetHunger() or self.hungervalue or nil
+	local sanity = self.GetSanity and self:GetSanity() or self.sanityvalue or nil
+	local health = self.GetHealth and self:GetHealth() or self.healthvalue or nil
 
-	local safe_food = true
+	-- If any of the food values are nil, or something else is off, 
+	-- we can probably assume this is one of those funky modded foods, 
+	-- so we won't bother trying to get super accurate.
+	local is_safe_food = self.inst and (hunger and sanity and health)
 
-	if context.config["display_food"] then
-		local hunger, sanity, health
-		if type(stats) == 'table' then
-			hunger, sanity, health = stats.hunger, stats.sanity, stats.health
-		else
-			hunger, sanity, health = self:GetHunger(), self:GetSanity(), self:GetHealth() 
-		end
+	-- The alt description is meant to serve as the base representation of the stats, 
+	-- regardless of edibility or player modifiers.
+	alt_description = FormatFoodStats(hunger, sanity, health, context)
 
-		if hunger then hunger = (hunger > 0 and "+" or "") .. hunger else safe_food = false hunger = "?" end
-		if sanity then sanity = (sanity > 0 and "+" or "") .. sanity else safe_food = false sanity = "?" end
-		if health then health = (health > 0 and "+" or "") .. health else safe_food = false health = "?" end
-		alt_description = FormatFoodStats(hunger, sanity, health, context)
-
-		if not safe_food then
-			description = alt_description -- .. " ! Missing stats due to a broken mod !" -- won't be processed by advanced food stat calculations
-		end
+	if not is_safe_food then
+		description = alt_description
 	end
 	
-	if safe_food and IsEdible(owner, self.inst) and context.config["display_food"] then -- i think this filters out wurt's meat stats.
-		local eater = owner.components.eater
-
-		local hunger, sanity, health
-		if type(stats) == 'table' then
-			hunger, sanity, health = stats.hunger, stats.sanity, stats.health
-		else
-			hunger, sanity, health = GetFoodStatsForEntity(self, context.player, nil, false)
-		end
+	if is_safe_food and context.player and CanEntityEatItem(context.player, self.inst) then
+		hunger, sanity, health = GetFoodStatsForEntity(self, context.player, nil, false)
 		
 		hunger = (hunger ~= 0 and FormatDecimal(hunger, hunger%1==0 and 0 or 1)) or hunger
 		sanity = (sanity ~= 0 and FormatDecimal(sanity, sanity%1==0 and 0 or 1)) or sanity
 		health = (health ~= 0 and FormatDecimal(health, health%1==0 and 0 or 1)) or health
 		
-		description = FormatFoodStats(hunger, sanity, health, context) -- .. "\nHunger: +25 / Sanity: +15 / Health: +20\nHunger: +25 / Sanity: +15 / Health: +20"
+		description = FormatFoodStats(hunger, sanity, health, context)
 	end
 
-	local foodunit_data = nil
-	if context.config["food_units"] then
-		local foodunits = GetFoodUnits(self.inst, context)
-		if foodunits then
-			foodunit_data = {
-				name = "edible_foodunit",
-				priority = 4,
-				description = foodunits
-			}
+	return {
+		name = "edible",
+		priority = 10,
+		description = description,
+		alt_description = alt_description,
+	}
+end
+
+local function DescribeFoodUnits(self, context)
+	if not context.config["food_units"] then
+		return
+	end
+
+	if not self.inst then
+		return
+	end
+
+	local ing = cooking.ingredients[self.inst.prefab]
+
+	if not ing then
+		return
+	end
+
+	local units = {}
+
+	for name, value in pairs(ing.tags) do
+		local color = Insight.COLORS[name:upper()] and name:upper() or "FEATHER"
+		local unit = context.lstr.edible_foodtype[name:lower()] or name .. "*"
+		
+		if context.usingIcons and PrefabHasIcon(unit) then
+			units[#units+1] = string.format(context.lstr.food_unit, color, value, unit)
+		else
+			units[#units+1] = string.format(context.lstr.lang.food_unit, color, value, color, unit)
 		end
 	end
 
-	local foodmemory = owner.components.foodmemory
-	local foodmemory_data = nil
-	if context.config["food_memory"] then
-		local mem = foodmemory and foodmemory.foods[foodmemory:GetBaseFood(self.inst.prefab)]
-		if mem then
-			local recently_eaten, time_to_forget = mem.count, GetTaskRemaining(mem.task)
-			foodmemory_data = {
-				name = "edible_foodmemory",
-				priority = 0.1,
-				description = string.format(context.lstr.foodmemory, 
-					recently_eaten, 
-					(foodmemory.mults and #foodmemory.mults) or "?", 
-					context.time:SimpleProcess(time_to_forget)
-				)
-			}
-		end
+	if #units == 0 then
+		return
 	end
 
-	local wereeater_data = context.player.components.wereeater and GetWereEaterData(self.inst, context)
-	if wereeater_data then
-		wereeater_data = {
-			name = "edible_wereeater",
-			priority = 0.1,
-			description = wereeater_data
-		}
+	return {
+		name = "edible_foodunit",
+		priority = 4,
+		description = table.concat(units, ", ")
+	}
+end
+
+local function DescribeFoodMemory(self, context)
+	local description = nil
+
+	if not context.config["food_memory"] then
+		return
+	end
+
+	if not context.player then
+		return
+	end
+
+	local foodmemory = context.player.components.foodmemory
+	if not foodmemory then
+		return
+	end
+
+	local mem = foodmemory.foods[foodmemory:GetBaseFood(self.inst.prefab)]
+	if not mem then
+		return
+	end
+
+	local recently_eaten = mem.count
+	local time_to_forget = GetTaskRemaining(mem.task)
+
+	description = string.format(context.lstr.foodmemory, 
+		recently_eaten, 
+		(foodmemory.mults and #foodmemory.mults) or "?", 
+		context.time:SimpleProcess(time_to_forget)
+	)
+
+	return {
+		name = "edible_foodmemory",
+		priority = 0.1,
+		description = description
+	}
+end
+
+
+--- Describes the player's wereeater status if it is relevant to the food item.
+--- @param inst EntityScript The edible food item.
+--- @param context table Insight player context.
+--- @return string 
+local function DescribeWereeaterData(self, context)
+	local wereeater = context.player and context.player.components.wereeater
+	if not wereeater then
+		return
+	end
+
+	if not (self.inst and self.inst:HasTag("monstermeat")) then
+		return
+	end
+
+	if wereeater.monster_count == 0 then
+		return
+	end
+
+	local forget_time = wereeater.forget_task and GetTaskRemaining(wereeater.forget_task) 
+
+	if forget_time then
+		forget_time = context.time:SimpleProcess(forget_time)
+	else
+		forget_time = "?"
+	end
+
+	return {
+		name = "edible_wereeater",
+		priority = 0.1,
+		description = string.format(context.lstr.wereeater, wereeater.monster_count, 2, forget_time)
+	}
+end
+
+local function DescribeFoodEffects(self, context)
+	if not context.config["food_effects"] then
+		return
 	end
 
 	local effect_table = nil
 	local advanced_effect_table = nil
-	if context.config["food_effects"] then
-		local effects = debuffHelper.GetFoodEffects(self)
-		local effect_description = {}
 
-		for name, data in pairs(effects) do
-			effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], 
-				data.delta and FormatDecimal(data.delta, 1) or ("MISSING DELTA FOR [" .. name .. "]"), 
-				data.duration and context.time:SimpleProcess(data.duration, "realtime_short") or "[YOU SHOULDN'T SEE THIS]"
-			)
-		end
+	-- Prepare normal effects (stuff like temperature deltas, antihistamine, etc.)
+	local effects = debuffHelper.GetFoodEffects(self)
+	local effect_description = {}
 
-		if #effect_description > 0 then
-			effect_table = {
-				name = "edible_foodeffects",
-				priority = 1.9, 
-				description = table.concat(effect_description, "\n")
-			}
-		end
+	for name, data in pairs(effects) do
+		effect_description[#effect_description + 1] = string.format(context.lstr.edible_foodeffect[name], 
+			data.delta and FormatDecimal(data.delta, 1) or ("MISSING DELTA FOR [" .. name .. "]"), 
+			data.duration and context.time:SimpleProcess(data.duration, "realtime_short") or "[YOU SHOULDN'T SEE THIS]"
+		)
+	end
 
+	if #effect_description > 0 then
+		effect_table = {
+			name = "edible_foodeffects",
+			priority = 1.9, 
+			description = table.concat(effect_description, "\n")
+		}
+	end
+
+	-- Prepare advanced effects (warly buffs, etc.)
+	if self.inst then
 		local advanced_effects = debuffHelper.GetItemEffects(self.inst, context)
-		--mprint(advanced_effects, advanced_effects and #advanced_effects)
 		if advanced_effects and #advanced_effects > 0 then
-			--mprint'its returned'
 			advanced_effect_table = {
 				name = "edible_advancedfoodeffects",
 				priority = 1.8, 
@@ -344,18 +390,31 @@ local function Describe(self, context)
 		end
 	end
 
-	return {
-		name = "edible",
-		priority = 5,
-		description = description,
-		alt_description = alt_description,
-	}, foodunit_data, effect_table, advanced_effect_table, foodmemory_data, wereeater_data
+	return effect_table, advanced_effect_table
+end
+
+
+local function Describe(self, context)
+
+	return 
+		DescribeFoodStats(self, context), 
+		DescribeFoodUnits(self, context), 
+		DescribeFoodMemory(self, context),
+		DescribeWereeaterData(self, context),
+		DescribeFoodEffects(self, context)
+
 end
 
 
 
 return {
 	Describe = Describe,
+	DescribeFoodStats = DescribeFoodStats,
+	DescribeFoodUnits = DescribeFoodUnits,
+	DescribeFoodMemory = DescribeFoodMemory,
+	DescribeWereeaterData = DescribeWereeaterData,
+	DescribeFoodEffects = DescribeFoodEffects,
+
 	GetFoodStatsForEntity = GetFoodStatsForEntity,
 	FormatFoodStats = FormatFoodStats
 }

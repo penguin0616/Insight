@@ -20,19 +20,19 @@ directory. If not, please refer to
 
 -- eyeplant.lua [Prefab]
 local function Describe(inst, context)
-	local description = nil
+	local alt_description = nil
 
 	if not context.complex_config["unique_info_prefabs"]["lureplant"] then
 		return
 	end
 
 	if Insight.prefab_descriptors.lureplant and Insight.prefab_descriptors.lureplant.SummarizeInventory then
-		description = Insight.prefab_descriptors.lureplant.SummarizeInventory(inst)
+		alt_description = Insight.prefab_descriptors.lureplant.SummarizeInventory(inst)
 	end
 	
 	return {
 		priority = 0,
-		description = description
+		alt_description = alt_description
 	}
 end
 

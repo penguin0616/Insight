@@ -18,23 +18,34 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- molehill.lua [Prefab]
+-- otterden.lua [Prefab]
 local function SummarizeInventory(inst)
+	if not inst.components.inventory then
+		return
+	end
+
 	local inventoryData = Insight.descriptors.inventory and Insight.descriptors.inventory.GetInventoryData(inst.components.inventory)
 
 	if not inventoryData then
 		return
 	end
-	
-	local inventory_string = {}
-	for prefab, amt in pairs(inventoryData.prefabCounts) do
-		local str = string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", "#eeeeee", prefab, amt)
-		inventory_string[#inventory_string+1] = str
+
+	local inventory_string
+	for i = 1, #inventoryData.items do
+		local item = inventoryData.items[i]
+		local perish_percent = ""
+		if item.inst.components.perishable and Insight.descriptors.perishable and Insight.descriptors.perishable.GetPerishData then
+			local data = Insight.descriptors.perishable.GetPerishData(item.inst.components.perishable)
+			perish_percent = data and data.percent and ("<color=MONSTER>" .. Round(data.percent * 100, 1) .. "%</color>") or ""
+		end
+		local str = string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>) %s", "#eeeeee", item.inst.prefab, item.stackSize, perish_percent)
+		inventory_string = (inventory_string or "") .. str
+		if i < #inventoryData.items then
+			inventory_string = inventory_string .. "\n"
+		end
 	end
 
-	if #inventory_string > 0 then
-		return table.concat(inventory_string, "\n")
-	end
+	return inventory_string
 end
 
 local function Describe(inst, context)
@@ -42,13 +53,13 @@ local function Describe(inst, context)
 	
 	return {
 		priority = 0,
-		alt_description = alt_description
+		alt_description = alt_description,
+		prefably = true
 	}
 end
 
 
 
 return {
-	Describe = Describe,
-	SummarizeInventory = SummarizeInventory
+	Describe = Describe
 }
