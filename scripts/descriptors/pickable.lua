@@ -52,7 +52,8 @@ local function Describe(self, context)
 		end
 	end
 
-	if self.cycles_left and self.max_cycles and self.transplanted then -- self.transplanted needed for DS
+	-- Some mods are setting cycles_left to a bool, so checking both.
+	if type(self.cycles_left) == "number" and type(self.max_cycles) == "number" and self.transplanted then -- self.transplanted needed for DS
 		remaining_harvests = string.format(context.lstr.pickable.cycles, self.cycles_left, self.max_cycles)
 	end
 
