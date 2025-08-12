@@ -2036,6 +2036,22 @@ end
 --= INITIALIZATION ===============================================================================================================================================--
 --================================================================================================================================================================--
 
+-- Check settings
+if IS_DST then -- server + dedi check
+	if TheNet:IsDedicated() then
+		--RepairInsightConfig(false)
+	elseif IsClientHost() then
+		--RepairInsightConfig(false)
+		RepairInsightConfig(true)
+	elseif IsClient() then
+		RepairInsightConfig(true)
+	else
+		mprint("Unable to determine network side. Disabling Insight.")
+		return
+		--error("Unable to determine network side")
+	end
+end
+
 SIM_DEV = not(modname=="workshop-2189004162" or modname=="workshop-2081254154")
 util = import("util")
 language = import("language/language")
@@ -2063,6 +2079,7 @@ if IS_DST and KnownModIndex:IsModEnabled("workshop-1378549454") then
 	Insight.env.error = real_error
 	mprint("Got real error from Gemcore")
 end
+
 
 if IS_DST then 
 	local image = { atlas="images/Insight_Announcement.xml", texture="Insight_Announcement.tex" }
@@ -2111,19 +2128,6 @@ for i,v in pairs(patcher._to_load) do
 	end
 end
 
--- Check settings
-if IS_DST then -- server + dedi check
-	if TheNet:IsDedicated() then
-		--RepairInsightConfig(false)
-	elseif IsClientHost() then
-		--RepairInsightConfig(false)
-		RepairInsightConfig(true)
-	elseif IsClient() then
-		RepairInsightConfig(true)
-	else
-		error("Unable to determine network side")
-	end
-end
 
 PrefabFiles = {"insight_range_indicator", "insight_map_marker", "insight_entitytext", "insight_prefab"}
 if IS_DST then
