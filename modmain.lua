@@ -179,7 +179,7 @@ DEBUG_ENABLED = (
 DEBUG_OPTIONS = {
 	INSIGHT_MENU_DATA_ORIGIN = false,
 	SHOW_INFO_ORIGIN = false,
-	ENABLE_PROFILER = false,
+	ENABLE_PROFILER = true,
 }
 
 ALLOW_SERVER_DEBUGGING = DEBUG_ENABLED -- todo make a more accessible for standard users with mod compatibility issues?
@@ -636,14 +636,19 @@ local function GetComponentOrigin(componentname)
 		return false
 	end
 
+	--mprint("1", componentname)
+
 	if mod_component_cache[componentname] == false then
 		return nil
 	elseif mod_component_cache[componentname] ~= nil then
 		return mod_component_cache[componentname]
 	end
 
+	--mprint("2", componentname)
+
 	local found, cmp = pcall(require, "components/" .. componentname)
 	if not found or not cmp then
+		mprint("3", componentname, found, cmp)
 		mod_component_cache[componentname] = false
 		return GetComponentOrigin(componentname)
 	end
@@ -654,19 +659,32 @@ local function GetComponentOrigin(componentname)
 	local mod_folder_name = parent and string.match(parent, "mods%/([^/]+)%/")
 	--mprint("hey:", recipe.product, info.source, parent, mod_folder_name)
 
+	--mprint("4", componentname, info.source, parent, mod_folder_name)
+
 	if parent == "" then
 		-- vanilla
 		mod_component_cache[componentname] = false
 		return GetComponentOrigin(componentname)
 	end
 
-	-- modded
+	--mprint("5", componentname, info.source, parent, mod_folder_name)
+
+	-- Modded
+	-- Some of the Chinese mods like to try and get "fancy" with their loading. Need to catch this case.
+	if parent == nil then
+		mod_component_cache[componentname] = false
+		return GetComponentOrigin(componentname)
+	end
+
 	for _, modname in pairs(ModManager:GetEnabledModNames()) do
 		if modname == mod_folder_name then
 			mod_component_cache[componentname] = KnownModIndex:GetModInfo(modname).name or false
 			return GetComponentOrigin(componentname)
 		end
 	end
+
+	--mprint("6", componentname, info.source, parent, mod_folder_name)
+
 	--[[
 	for i,mod in pairs(ModManager.mods) do
 		-- mod is the env
@@ -1582,6 +1600,8 @@ function GetWorldInformation(player) -- refactor?
 
 	return data
 end
+
+GetWorldInformation = ProfilerWrap(GetWorldInformation, "GetWorldInformation")
 
 function GetMoonCycle()
 	if not (TheWorld.net and TheWorld.net.components.clock) then
