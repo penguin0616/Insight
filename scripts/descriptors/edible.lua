@@ -43,10 +43,6 @@ local SPECIAL_FOODS = {
 --- @param context table
 --- @return string
 local function FormatFoodStats(hunger, sanity, health, context)
-	hunger = hunger and ((tonumber(hunger) > 0 and "+" or "") .. hunger) or "?"
-	sanity = sanity and ((tonumber(sanity) > 0 and "+" or "") .. sanity) or "?"
-	health = health and ((tonumber(health) > 0 and "+" or "") .. health) or "?"
-
 	-- Prepare the ordering for the string format.
 	local order = context.config["food_order"] -- interface (default), wiki
 	local food_data = nil
@@ -64,6 +60,16 @@ local function FormatFoodStats(hunger, sanity, health, context)
 	else
 		return string.format("[ERROR] BAD FOOD ORDER CONFIG [%s]", tostring(order))
 	end
+
+	for i, value in pairs(food_data) do
+		if type(value) == "number" and value ~= 0 then
+			-- If it's an integer, then I don't want any decimal places.
+			-- Otherwise, we'll do 1 decimal place.
+			local decimal_places = value%1==0 and 0 or 1
+			food_data[i] = FormatDecimal(value, decimal_places)
+		end
+	end
+
 	
 	-- Okay, the order of the food stats is prepared. Now we just have to choose what style to use.
 	local style = context.config["food_style"]
@@ -225,10 +231,6 @@ local function DescribeFoodStats(self, context)
 	
 	if is_safe_food and context.player and CanEntityEatItem(context.player, self.inst) then
 		hunger, sanity, health = GetFoodStatsForEntity(self, context.player, nil, false)
-		
-		hunger = (hunger ~= 0 and FormatDecimal(hunger, hunger%1==0 and 0 or 1)) or hunger
-		sanity = (sanity ~= 0 and FormatDecimal(sanity, sanity%1==0 and 0 or 1)) or sanity
-		health = (health ~= 0 and FormatDecimal(health, health%1==0 and 0 or 1)) or health
 		
 		description = FormatFoodStats(hunger, sanity, health, context)
 	end
