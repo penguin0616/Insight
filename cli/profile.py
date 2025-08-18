@@ -1,5 +1,5 @@
 """
-Used for fixing up Klei's profiler output.
+Used for doing stuff with Klei's profiler output.
 """
 
 import argparse
@@ -25,27 +25,34 @@ logger.addHandler(console_handler)
 
 ################################################################################
 
+# Docs:
+# https://forums.kleientertainment.com/forums/topic/28820-profiling-your-mod/
+# https://forums.kleientertainment.com/forums/topic/50823-profiling-your-server/
+# Trace Event Format documentation: https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/edit?tab=t.0
+
 def read_profile(filepath: str) -> dict:
+	"""
+	Reads a Klei profile file, doing fixups as needed.
+
+	:param filepath: Path to file
+	:return: Profiling data
+	"""
+
 	with open(filepath) as f:
 		raw_json = f.read()
-		raw_json = re.sub(r",[\r\n\s]+\]\}", "]}", raw_json) # Last entry has an extra comma.
+		# Last event entry when running on the client has an extra comma.
+		raw_json = re.sub(r",[\r\n\s]+\]\}", "]}", raw_json) 
 		main_data = json.loads(raw_json)
 		return main_data
 
-def calculate_trace_timestamp_offset(event: dict, timestamps: dict):
-	thread_id = str(event["tid"])
-
-	if thread_id not in timestamps:
-		return 0
-	
-	return timestamps[thread_id]
-
-
 def merge_profiles(profiles: list[str]) -> dict|None:
-	# Trace Event Format documentation
-	# https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/edit?tab=t.0
+	"""
+	Merges multiple profiles into a single one.
 
-
+	:param profiles: A list of filepaths of profiles to merge.
+	:return: Merged profiles.
+	"""
+	
 	# Stores the highest clock timestamps for each thread.
 	trace_clock_offset = {}
 
@@ -116,6 +123,7 @@ def cli_clean_profiles(args: argparse.Namespace):
 		logger.info("Removing file \"%s\"", filepath)
 		if not args.dry:
 			os.remove(filepath)
+			logger.info("File \"%s\" removed", filepath)
 		else:
 			logger.info("(Simulated removal)")
 
@@ -123,7 +131,7 @@ def cli_clean_profiles(args: argparse.Namespace):
 ################################################################################
 
 parser = argparse.ArgumentParser(
-	description="Tool for fixing up Klei's profiler output."
+	description="Tool for doing stuff with Klei's profiler output."
 )
 parser.set_defaults(func=lambda x: parser.print_help())
 subparsers = parser.add_subparsers()
