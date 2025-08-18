@@ -45,6 +45,8 @@ local function SetEntitySleep(inst)
 	manager:PushEvent("sleep", inst)
 end
 
+--SetEntitySleep = ProfilerWrap(SetEntitySleep, "SetEntitySleep")
+
 local function SetEntityAwake(inst)
 	if manager.active_entities[inst] then
 		return
@@ -68,6 +70,8 @@ local function SetEntityAwake(inst)
 
 	manager:PushEvent("awake", inst)
 end
+
+--SetEntitySleep = ProfilerWrap(SetEntitySleep, "SetEntityAwake")
 
 --------------------------------------------------------------------------
 --[[ EntityManager ]]
@@ -112,6 +116,8 @@ function EntityManager.Manage(inst)
 		SetEntityAwake(inst)
 	end
 end
+
+--EntityManager.Manage = ProfilerWrap(EntityManager.Manage, "EntityManager.Manage")
 
 
 function EntityManager:Count()
