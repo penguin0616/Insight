@@ -817,8 +817,6 @@ return {
 	health = "<icon=health> <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 	--health_regeneration = " (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>)",
 	absorption = " : <icon=armorsnurtleshell> %s%%",
-	naughtiness = "<icon=krampus> %s",
-	--player_naughtiness = "Your naughtiness: %s / %s", -- "Random" from character select?
 
 	-- heatrock.lua [Prefab]
 	heatrock_temperature = "<icon=winterometer> %s < %s < %s",
@@ -894,6 +892,12 @@ return {
 	klaussackspawner = {
 		--klaussack_spawnsin = "%s",
 		--klaussack_despawn = "Despawns on day: %s",
+	},
+
+	-- kramped.lua
+	kramped = {
+		naughtiness = "<icon=krampus> %s",
+		--localplayer_naughtiness = "Your naughtiness: %s / %s", -- "Random" from character select?
 	},
 
 	-- leader.lua

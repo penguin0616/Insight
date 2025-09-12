@@ -995,7 +995,8 @@ local function GetComponentDescriptor(name)
 			-- Failed to load itself since it couldn't find itself
 		else
 			mprint("Failed to load descriptor", name, "|", res)
-			return { 
+			return {
+				FailedToLoad = true, 
 				Describe = function() 
 					return {
 						name = name .. "_component_insighterror",

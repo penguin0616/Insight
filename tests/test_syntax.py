@@ -44,4 +44,5 @@ def test_lua_syntax():
 
 
 if __name__ == "__main__":
+	test_lua_syntax()
 	pass

@@ -805,8 +805,6 @@ return {
 	health = "<color=HEALTH>체력</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 	health_regeneration = " (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>)",
 	absorption = " : 데미지 %s%% 흡수.",
-	naughtiness = "악행 점수: %s",
-	player_naughtiness = "당신의 악행 점수: %s / %s",
 
 	-- heatrock.lua [Prefab]
 	heatrock_temperature = "온도: %s < %s < %s",
@@ -884,6 +882,12 @@ return {
 		klaussack_despawn = "디스폰 날짜: %s",
 		announce_despawn = "<prefab=klaus_sack>이(가) %s 후에 디스폰됩니다.",
 		announce_spawn = "<prefab=klaus_sack>이(가) %s 후에 생성됩니다.",
+	},
+
+	-- kramped.lua
+	kramped = {
+		naughtiness = "악행 점수: %s",
+		localplayer_naughtiness = "당신의 악행 점수: %s / %s",
 	},
 
 	-- leader.lua

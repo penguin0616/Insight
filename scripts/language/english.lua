@@ -379,6 +379,17 @@ return {
 		
 	},
 
+	-- containerinstallableitem.lua
+	containerinstallableitem = {
+		slingshot_band = {
+			range = "Increases range by <color=FRUIT>%s</color>",
+			speed = "Increases projectile speed by <color=FRUIT>%.0f%%</color>"
+		},
+		slingshot_handle = {
+			firing_rate = "Firing rate: %s attacks/second",
+		}
+	},
+
 	-- cooldown.lua
 	cooldown = "Cooldown: %s",
 
@@ -806,8 +817,6 @@ return {
 	health = "<color=HEALTH>Health</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 	health_regeneration = " (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>)",
 	absorption = " : Absorbing %s%% of damage.",
-	naughtiness = "Naughtiness: %s",
-	player_naughtiness = "Your naughtiness: %s / %s",
 
 	-- heatrock.lua [Prefab]
 	heatrock_temperature = "Temperature: %s < %s < %s",
@@ -885,6 +894,12 @@ return {
 		klaussack_despawn = "Despawns on day: %s",
 		announce_despawn = "<prefab=klaus_sack> will despawn on day %s.",
 		announce_spawn = "<prefab=klaus_sack> will spawn in %s.",
+	},
+
+	-- kramped.lua
+	kramped = {
+		naughtiness = "Naughtiness: %s",
+		localplayer_naughtiness = "Your naughtiness: %s / %s",
 	},
 
 	-- leader.lua

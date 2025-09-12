@@ -783,8 +783,6 @@ return {
 	health = "<color=HEALTH>พลังชีวิต</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 	health_regeneration = " (<color=HEALTH>+%s</color> / <color=HEALTH>%s วินาที</color>)",
 	absorption = " : กันดาเมจอยู่ %s%%",
-	naughtiness = "ค่ากรรม: %s",
-	player_naughtiness = "ค่ากรรมของคุณ: %s / %s",
 
 	-- heatrock.lua [Prefab]
 	heatrock_temperature = "อุณหภูมิ: %s < %s < %s",
@@ -862,6 +860,12 @@ return {
 		klaussack_despawn = "จะหายวันที่ %s",
 		announce_despawn = "<prefab=klaus_sack>จะหายไปวันที่ %s",
 		announce_spawn = "<prefab=klaus_sack>จะเกิดตอนวันที่ %s",
+	},
+
+	-- kramped.lua
+	kramped = {
+		naughtiness = "ค่ากรรม: %s",
+		localplayer_naughtiness = "ค่ากรรมของคุณ: %s / %s",
 	},
 
 	-- leader.lua

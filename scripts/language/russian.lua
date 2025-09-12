@@ -801,8 +801,6 @@ return {
 	health = "<color=HEALTH>Здоровье</color>: <<color=HEALTH>%s</color> / <color=HEALTH>%s</color>>",
 	health_regeneration = " (<color=HEALTH>+%s</color> / <color=HEALTH>%ss</color>)",
 	absorption = " : Поглощает %s%% урона.",
-	naughtiness = "Непослушание: %s",
-	player_naughtiness = "Ваше непослушание: %s / %s",
 
 	-- heatrock.lua [Prefab]
 	heatrock_temperature = "Температура: %s < %s < %s",
@@ -880,6 +878,12 @@ return {
 		klaussack_despawn = "Исчезнет в день: %s",
 		announce_despawn = "<prefab=klaus_sack> исчезнет в день %s.",
 		announce_spawn = "<prefab=klaus_sack> появится через %s.",
+	},
+
+	-- kramped.lua
+	kramped = {
+		naughtiness = "Непослушание: %s",
+		localplayer_naughtiness = "Ваше непослушание: %s / %s",
 	},
 
 	-- leader.lua
