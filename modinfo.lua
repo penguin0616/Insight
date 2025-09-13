@@ -6270,7 +6270,6 @@ STRINGS = {
 			},
 		},
 	},
-	--[[
 	extended_info_indicator = {
 		label = {
 			"More Information Hint", 
@@ -6313,7 +6312,6 @@ STRINGS = {
 			},
 		},
 	},
-	--]]
 	info_preload = {
 		label = {
 			"Information preloading", 
@@ -7777,18 +7775,16 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
-	--[[
 	{
 		name = "extended_info_indicator",
 		options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		client = true,
 		tags = {},
 	},
-	--]]
 	--[[
 	{
 		name = "unrandomizer",

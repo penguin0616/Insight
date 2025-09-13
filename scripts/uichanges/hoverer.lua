@@ -271,6 +271,7 @@ local function OnHovererPostInit(hoverer)
 			end
 		end
 
+		local canShowExtendedInfoIndicator = infotext_common.configs.extended_info_indicator 
 		local MAX_LINES = infotext_common.configs.hoverer_line_truncation
 		
 		if entityInformation then
@@ -290,6 +291,7 @@ local function OnHovererPostInit(hoverer)
 					-- They're holding their designated "show all information key" (either LShift or LALT) depending on config,
 					-- so We know they absolutely want all the information now, so show that.
 					itemDescription = entityInformation.alt_information
+					canShowExtendedInfoIndicator = false
 					MAX_LINES = nil
 				end
 			elseif infotext_common.configs.alt_only_information then
@@ -299,10 +301,6 @@ local function OnHovererPostInit(hoverer)
 				-- Standard situation, standard user. 
 				itemDescription = entityInformation.information
 			end
-
-			-- I guess I never actually hooked up the configuration? 
-			-- Either that or I accidentally removed the hook at some point.
-			local canShowExtendedInfoIndicator = true 
 
 			-- Okay, we need to do our line truncation before we do the alt_information check.
 			if type(MAX_LINES) == "number" and itemDescription then
