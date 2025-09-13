@@ -43,6 +43,12 @@ local function Describe(self, context)
 	local inst = self.inst
 	local description, alt_description = nil, nil --string.format(context.lstr.uses, math.ceil(self:GetUses()), math.ceil(self.total))
 
+	-- This was added for the wortox soul jar specifically,
+	-- but this seems reasonable overall?
+	if self.inst.components.container then
+		return
+	end
+
 	-- I shouldn't have to do this, but my hand has been forced.
 	if type(self.current) ~= "number" or type(self.total) ~= "number" then
 		return

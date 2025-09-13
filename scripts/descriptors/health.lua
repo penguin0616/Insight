@@ -21,7 +21,7 @@ directory. If not, please refer to
 -- health.lua
 -- naughtiness is also handled here because anything with naughtiness is bound to have a health component as wello
 -- its just logic right?
-local function ShouldShowPlayerNaughtiness(context)
+local function ShouldShowLocalPlayerNaughtiness(context)
 	--[[
 	if IS_DST then
 		return context.config["naughtiness_verbosity"] == 2
@@ -72,37 +72,26 @@ local function Describe(self, context)
 		end
 	end
 
-	local naughtiness_table = nil
+	-- Piggybacking off of health (since all things with naughtiness are living things) to display naughtiness value.
+	local naughtiness_value_info = nil
+	local player_naughtiness_info = nil
 
-	if (type(context.config["naughtiness_verbosity"]) == "number" and context.config["naughtiness_verbosity"] > 0) and not inst:HasTag("player") then
-		local naughtiness = Insight.descriptors.kramped and Insight.descriptors.kramped.GetPlayerNaughtiness(inst, context)
-		if naughtiness and naughtiness ~= 0 then
-			naughtiness_table = { name="naughtiness", priority=0 }
-			naughtiness = string.format(context.lstr.naughtiness, naughtiness)
-
-			local player_naughtiness
-			if ShouldShowPlayerNaughtiness(context) then
-				player_naughtiness = Insight.descriptors.kramped.GetPlayerNaughtiness(context.player, context)
-
-				if type(player_naughtiness) == "table" then
-					player_naughtiness = string.format(context.lstr.player_naughtiness, player_naughtiness.actions, player_naughtiness.threshold) or nil
-				elseif player_naughtiness ~= nil then
-					mprintf("Player naughtiness information is invalid: %s (%s)", tostring(player_naughtiness), type(player_naughtiness))
-					player_naughtiness = string.format("[Invalid Naughtiness Data] %s (%s)", tostring(player_naughtiness), type(player_naughtiness))
-					mprint(debugstack())
-				end
+	if type(context.config["naughtiness_verbosity"]) == "number" and context.config["naughtiness_verbosity"] > 0 then
+		if inst:HasTag("player") then
+			if inst ~= context.player and context.config["naughtiness_verbosity"] == 2 then
+				naughtiness_value_info = Insight.descriptors.kramped 
+										and Insight.descriptors.kramped.DescribePlayer 
+										and Insight.descriptors.kramped.DescribePlayer(inst, context)
 			end
-			
-			--[[
-			local player_naughtiness = context.config["naughtiness_verbosity"] == 2 and GetNaughtiness(context.player, context)
-
-			if player_naughtiness then
-				
+		else
+			naughtiness_value_info = Insight.descriptors.kramped 
+									and Insight.descriptors.kramped.DescribeCreature 
+									and Insight.descriptors.kramped.DescribeCreature(inst, context)
+			if ShouldShowLocalPlayerNaughtiness(context) then
+				player_naughtiness_info = Insight.descriptors.kramped 
+										and Insight.descriptors.kramped.DescribePlayer 
+										and Insight.descriptors.kramped.DescribePlayer(context.player, context)
 			end
-			--]]
-
-			--description = CombineLines(description, naughtiness, player_naughtiness)
-			naughtiness_table.description = CombineLines(naughtiness, player_naughtiness)
 		end
 	end
 
@@ -112,7 +101,7 @@ local function Describe(self, context)
 		forge_enabled = true,
 		description = description,
 		alt_description = alt_description,
-	}, naughtiness_table
+	}, naughtiness_value_info, player_naughtiness_info
 end 
 
 return {

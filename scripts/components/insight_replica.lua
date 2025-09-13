@@ -156,6 +156,8 @@ local function GotEntityInformation(inst, data)
 	--]]
 end
 
+GotEntityInformation = ProfilerWrap(GotEntityInformation, "GotEntityInformation")
+
 -- Dirty functions
 local function OnEntityNetworkActive(ent, self)
 	--[[
@@ -575,6 +577,7 @@ function Insight:BeginUpdateLoop()
 		local num_server_mods = #ModManager:GetEnabledServerModNames()
 		local delay = FRAMES * 2 -- 0.1 == 1/10
 		self.request_task = self.inst:DoPeriodicTask(delay, function()
+			ProfilerPush("InformationRequestTask")
 			local idx = 1
 			local array = {}
 			local params_array = {}
@@ -622,6 +625,8 @@ function Insight:BeginUpdateLoop()
 				--mprint("\t\tunpack", unpack(array))
 				rpcNetwork.SendModRPCToServer(GetModRPC(modname, "RequestEntityInformation"), unpack(array))
 			end
+			
+			ProfilerPop()
 		end)
 	end
 end

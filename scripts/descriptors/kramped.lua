@@ -28,7 +28,7 @@ local module = {
 --- Returns the naughtiness values for the player.
 --- @param player EntityScript
 --- @return table @{ actions=int, threshold=int }
-local function GetPlayerNaughtiness(player)
+local function GetPlayerNaughtinessData(player)
 	if IS_DS then
 		local kramped = player.components.kramped
 		if kramped then
@@ -49,8 +49,8 @@ local function GetPlayerNaughtiness(player)
 	end
 	
 	if not TheWorld.ismastersim then
-		--error("[Insight]: GetPlayerNaughtiness called on client")
-		mprint("GetPlayerNaughtiness called on client")
+		--error("[Insight]: GetPlayerNaughtinessData called on client")
+		mprint("GetPlayerNaughtinessData called on client")
 		return
 	end
 
@@ -66,9 +66,9 @@ end
 --- [DST] Returns naughtiness value of a creature.
 ---@param inst EntityScript The living creature.
 ---@return number
-local function DST_GetCreatureNaughtiness(inst, context)
+local function DST_GetCreatureNaughtinessValue(inst, context)
 	if not TheWorld.ismastersim then
-		error("[Insight]: DST_GetCreatureNaughtiness called on client")
+		error("[Insight]: DST_GetCreatureNaughtinessValue called on client")
 	end
 
 	if inst.components.werebeast ~= nil and inst.components.werebeast:IsInWereState() then
@@ -87,6 +87,10 @@ local function DST_GetCreatureNaughtiness(inst, context)
 	-- Fix requested by Hornet, probably for IA or something
 	res = FunctionOrValue(res, context.player, fn_data)
 
+	if type(res) == "number" then
+		return res
+	end
+
 	--[[
 	if type(res) == "function" then
 		-- their doydoys have naughtiness as a function, which is supported by gemcore. https://gitlab.com/IslandAdventures/IslandAdventures/-/blob/master/modmain.lua (September 19, 2020)
@@ -104,9 +108,9 @@ end
 --- [DS] Returns naughtiness value of a creature.
 ---@param inst EntityScript The living creature.
 ---@return number
-local function GetCreatureNaughtiness(inst, context)
+local function GetCreatureNaughtinessValue(inst, context)
 	if IS_DST then
-		return DST_GetCreatureNaughtiness(inst, context)
+		return DST_GetCreatureNaughtinessValue(inst, context)
 	end
 
 	local name = inst.prefab
@@ -220,6 +224,7 @@ local function OnKrampedPostInit(self)
 
 	setmetatable(module.active_players, {
 		__newindex = function(self, player, playerdata)
+			mprintf("Kramped initialized player '%s'", player)
 			--[[
 			-- Hacky upvalue search, yay.
 			if not module.OnKilledOther then
@@ -299,30 +304,65 @@ local function OnServerInit()
 	AddComponentPostInit("kramped", OnKrampedPostInit)
 end
 
-local function Describe(inst, context)
-	local naughtiness = nil
+local function DescribePlayer(inst, context)
+	local description, naughtiness
 
 	if not IsPrefab(inst) then
-		return nil
+		return
 	end
-	
-	if inst:HasTag("player") then
-		naughtiness = GetPlayerNaughtiness(inst, context)
-		--dprint'player naughtiness'
-	elseif inst.components.health then
-		naughtiness = GetCreatureNaughtiness(inst, context)
-		--dprint'critter naughtiness'
+
+	if not inst:HasTag("player") then
+		return
+	end
+
+	naughtiness = GetPlayerNaughtinessData(inst, context)
+
+	if type(naughtiness) == "table" then
+		local fmt_string = context.lstr.kramped.localplayer_naughtiness
+		if inst ~= context.player then
+			fmt_string = context.lstr.kramped.naughtiness .. " / %s" -- Too lazy to add a separate string atm.
+		end
+
+		description = string.format(fmt_string, naughtiness.actions, naughtiness.threshold)
 	end
 
 	return {
+		name = "kramped_playernaughtiness",
 		priority = 0,
-		description = nil,
-		naughtiness = naughtiness
+		description = description,
+		--naughtiness = naughtiness
+	}
+end
+
+local function DescribeCreature(inst, context)
+	local description, naughtiness
+
+	if not IsPrefab(inst) then
+		return
+	end
+
+	if not inst.components.health then
+		return
+	end
+	
+	naughtiness = GetCreatureNaughtinessValue(inst, context)
+
+	if type(naughtiness) == "number" and naughtiness ~= 0 then
+		description = string.format(context.lstr.kramped.naughtiness, naughtiness)
+	end
+
+	return {
+		name = "kramped_creaturenaughtiness",
+		priority = 0,
+		description = description,
+		--naughtiness = naughtiness
 	}
 end
 
 return {
 	OnServerInit = OnServerInit,
-	Describe = Describe,
-	GetPlayerNaughtiness = GetPlayerNaughtiness,
+	DescribePlayer = DescribePlayer,
+	DescribeCreature = DescribeCreature,
+	GetPlayerNaughtinessData = GetPlayerNaughtinessData,
+	--GetCreatureNaughtinessValue = GetCreatureNaughtinessValue
 }

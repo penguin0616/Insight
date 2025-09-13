@@ -220,7 +220,7 @@ end
 
 --- Sends the client's naughtiness.
 function Insight:SendNaughtiness()
-	local naughtyFn = _G.Insight.descriptors.kramped and _G.Insight.descriptors.kramped.GetPlayerNaughtiness
+	local naughtyFn = _G.Insight.descriptors.kramped and _G.Insight.descriptors.kramped.GetPlayerNaughtinessData
 	if not naughtyFn then
 		mprintf("Insight:SendNaughtiness() failed for [%s], bad naughtyFn: %s", self, naughtyFn)
 		return
@@ -229,7 +229,7 @@ function Insight:SendNaughtiness()
 	local data = naughtyFn(self.inst, GetPlayerContext(self.inst))
 	-- This will fail intially in client hosted since it'll get called before the player shows up in kramped data.
 	if type(data) ~= "table" or type(data.actions) ~= "number" or type(data.threshold) ~= "number" then
-		mprint("Insight:SendNaughtiness() -> GetPlayerNaughtiness failed:", tbl)
+		mprint("Insight:SendNaughtiness() -> GetPlayerNaughtinessData failed:", tbl)
 		return
 	end
 

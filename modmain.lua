@@ -995,7 +995,8 @@ local function GetComponentDescriptor(name)
 			-- Failed to load itself since it couldn't find itself
 		else
 			mprint("Failed to load descriptor", name, "|", res)
-			return { 
+			return {
+				FailedToLoad = true, 
 				Describe = function() 
 					return {
 						name = name .. "_component_insighterror",
@@ -1576,7 +1577,7 @@ function GetWorldInformation(player) -- refactor?
 			if data.special_data[i] ~= nil then
 				if DEBUG_ENABLED then
 					dumptable(data.special_data[i]) -- commonly seems to be an empty table for key "timer"
-					error("[Insight]: attempt to overwrite special_data: " .. tostring(i))
+					errorf("[Insight Debug Mode]: attempt to overwrite special_data: %s", i)
 					return
 				end
 			else
@@ -1589,7 +1590,7 @@ function GetWorldInformation(player) -- refactor?
 			if data.raw_information[i] ~= nil then
 				if DEBUG_ENABLED then
 					dumptable(data.special_data[i])
-					error("[Insight]: attempt to overwrite raw_information: " .. tostring(i))
+					errorf("[Insight Debug Mode]: attempt to overwrite raw_information: %s", i)
 					return
 				end
 			else

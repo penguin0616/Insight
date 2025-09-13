@@ -793,8 +793,6 @@ return {
 	health = "<color=HEALTH>Salud</color>: <<color=HEALTH>%s</color>/<color=HEALTH>%s</color>>",
 	health_regeneration = " (<color=HEALTH>+%s</color>/<color=HEALTH>%ss</color>)",
 	absorption = " : Absorción de %s%% del daño",
-	naughtiness = "Maldad: %s",
-	player_naughtiness = "Tu maldad: %s/%s",
 
 	-- heatrock.lua [Prefab]
 	heatrock_temperature = "Temperatura: %s < %s < %s",
@@ -870,6 +868,12 @@ return {
 	klaussackspawner = {
 		klaussack_spawnsin = "%s",
 		klaussack_despawn = "Desaparece en el día: %s",
+	},
+
+	-- kramped.lua
+	kramped = {
+		naughtiness = "Maldad: %s",
+		localplayer_naughtiness = "Tu maldad: %s/%s",
 	},
 
 	-- leader.lua

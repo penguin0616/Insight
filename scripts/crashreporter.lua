@@ -91,6 +91,8 @@ local function CanWeSendReport()
 	local report_client = GetModConfigData("crash_reporter", true)
 	local is_server_owner = TheNet:GetIsServerOwner()
 
+	mprintf("report_server: %s, report_client: %s", report_server, report_client)
+
 	-- If this is a server crash,
 	if TheNet:GetIsMasterSimulation() then
 		if report_server then

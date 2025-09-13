@@ -1,5 +1,5 @@
 """
-Used for fixing up Klei's profiler output.
+Used for doing stuff with Klei's profiler output.
 """
 
 import argparse
@@ -25,27 +25,34 @@ logger.addHandler(console_handler)
 
 ################################################################################
 
+# Docs:
+# https://forums.kleientertainment.com/forums/topic/28820-profiling-your-mod/
+# https://forums.kleientertainment.com/forums/topic/50823-profiling-your-server/
+# Trace Event Format documentation: https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/edit?tab=t.0
+
 def read_profile(filepath: str) -> dict:
+	"""
+	Reads a Klei profile file, doing fixups as needed.
+
+	:param filepath: Path to file
+	:return: Profiling data
+	"""
+
 	with open(filepath) as f:
 		raw_json = f.read()
-		raw_json = re.sub(r",[\r\n\s]+\]\}", "]}", raw_json) # Last entry has an extra comma.
+		# Last event entry when running on the client has an extra comma.
+		raw_json = re.sub(r",[\r\n\s]+\]\}", "]}", raw_json) 
 		main_data = json.loads(raw_json)
 		return main_data
 
-def calculate_trace_timestamp_offset(event: dict, timestamps: dict):
-	thread_id = str(event["tid"])
-
-	if thread_id not in timestamps:
-		return 0
-	
-	return timestamps[thread_id]
-
-
 def merge_profiles(profiles: list[str]) -> dict|None:
-	# Trace Event Format documentation
-	# https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/edit?tab=t.0
+	"""
+	Merges multiple profiles into a single one.
 
-
+	:param profiles: A list of filepaths of profiles to merge.
+	:return: Merged profiles.
+	"""
+	
 	# Stores the highest clock timestamps for each thread.
 	trace_clock_offset = {}
 
@@ -53,7 +60,7 @@ def merge_profiles(profiles: list[str]) -> dict|None:
 
 	for profile_path in profiles:
 		profile_data = read_profile(profile_path)
-		logger.info("Pulled [%d] events from \"%s\"", len(profile_data["traceEvents"]), profile_path)
+		logger.info("Pulled [{:,}] events from \"{}\"".format(len(profile_data["traceEvents"]), profile_path))
 
 		# First, we'll go through the events in this profile and increment them 
 		# by the current offset for the thread if we have one.
@@ -81,6 +88,7 @@ def merge_profiles(profiles: list[str]) -> dict|None:
 		logger.warning("Did not aggregate any event data?")
 		return
 
+	logger.info("Accumulated [{:,}] events in total".format(len(aggregate_data["traceEvents"])))
 	return aggregate_data
 
 
@@ -104,19 +112,38 @@ def cli_merge_profiles(args: argparse.Namespace):
 		logger.info("Wrote output to \"%s\"", os.path.abspath(output_file))
 
 
+def cli_clean_profiles(args: argparse.Namespace):
+	root_dir = os.path.abspath(os.path.expanduser("~/.klei/DoNotStarveTogether/"))
+	profiles = glob.glob("profile_*.json", root_dir=root_dir)
+	profiles.sort()
+	profiles.insert(0, "profile.json")
+	profiles = list(map(lambda x: os.path.join(root_dir, x), profiles))
+
+	for filepath in profiles:
+		logger.info("Removing file \"%s\"", filepath)
+		if not args.dry:
+			os.remove(filepath)
+			logger.info("File \"%s\" removed", filepath)
+		else:
+			logger.info("(Simulated removal)")
+
 
 ################################################################################
 
 parser = argparse.ArgumentParser(
-	description="Tool for fixing up Klei's profiler output."
+	description="Tool for doing stuff with Klei's profiler output."
 )
 parser.set_defaults(func=lambda x: parser.print_help())
 subparsers = parser.add_subparsers()
 
 merge_subparser = subparsers.add_parser("merge")
 merge_subparser.set_defaults(func=cli_merge_profiles)
-#parser.add_argument("root_dir", type=str, help="Example: ~/.klei/DoNotStarveTogether/")
-parser.add_argument("--output", "-o", type=str)
+#merge_subparser.add_argument("root_dir", type=str, help="Example: ~/.klei/DoNotStarveTogether/")
+merge_subparser.add_argument("--output", "-o", type=str)
+
+clean_subparser = subparsers.add_parser("clean")
+clean_subparser.set_defaults(func=cli_clean_profiles)
+clean_subparser.add_argument("--dry", action="store_true")
 
 if __name__ == "__main__":
 	args = parser.parse_args()

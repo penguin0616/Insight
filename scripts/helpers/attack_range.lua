@@ -37,6 +37,7 @@ local NET_STATES = { -- 0-7
 local HAS_AUTHORITY = TheSim:GetGameID() == "DS" or TheNet:GetIsMasterSimulation() == true
 
 local combat = HAS_AUTHORITY and require("components/combat")
+--[[
 local oldSetTarget = combat and combat.SetTarget
 --local oldTryRetarget = combat and combat.TryRetarget
 --local oldCanHitTarget = combat and combat.CanHitTarget
@@ -48,6 +49,7 @@ local oldTryAttack = combat and combat.TryAttack
 local oldGiveUp = combat and combat.GiveUp
 local oldSetRange = combat and combat.SetRange
 local oldSetAreaDamage = combat and combat.SetAreaDamage
+--]]
 
 --[[
 local inventory = HAS_AUTHORITY and require("components/inventory")
@@ -161,12 +163,12 @@ local function SetTarget(self, target, ...)
 		AdjustIndicatorState(self.inst, NET_STATES.TARGETTING)
 	end
 
-	return oldSetTarget(self, target, ...)
+	return self._insightOldSetTarget(self, target, ...)
 end
 
 --[[
 local function TryRetarget(self, ...)
-	return oldTryRetarget(self, ...)
+	return self._insightOldTryRetarget(self, ...)
 end
 --]]
 
@@ -179,7 +181,7 @@ local function CanHitTarget(self, target, weapon, ...)
 	self.inst.combat_range_indicator:SetColour(Color.fromHex("#00FFFF")) -- cyan
 
 
-	return oldCanHitTarget(self, target, weapon, ...)
+	return self._insightOldCanHitTarget(self, target, weapon, ...)
 end
 --]]
 
@@ -199,7 +201,7 @@ local function CanAttack(self, target, ...)
 	-- is it more practical to store the result of the call and return that, or to call twice?
 	-- i'll go with former, since a case where the order of the returned arguments matters exists. and if it does, still would be screwed.
 	-- plus, less function calls.
-	local res = pack(oldCanAttack(self, target, ...))
+	local res = pack(self._insightOldCanAttack(self, target, ...))
 
 	if res[1] and target:HasTag("player") then
 		--mprint('\tsafe attack')
@@ -216,7 +218,7 @@ end
 local function StartAttack(self, ...)
 	
 
-	return oldStartAttack(self, ...)
+	return self._insightOldStartAttack(self, ...)
 end
 --]]
 
@@ -226,7 +228,7 @@ local function DoAttack(self, target, ...)
 	--AdjustIndicator(self.inst, Color.fromHex("#b0593a"), true)
 	AdjustIndicatorState(self.inst, NET_STATES.ATTACK_END)
 
-	return oldDoAttack(self, target, ...)
+	return self._insightOldDoAttack(self, target, ...)
 end
 
 
@@ -242,7 +244,7 @@ local function TryAttack(self, target, ...)
 	--mprint('tryattack', self.inst, target)
 	--AdjustIndicator(self.inst, Color.fromHex(Insight.COLORS.VEGGIE), true)
 
-	return oldTryAttack(self, target, ...)
+	return self._insightOldTryAttack(self, target, ...)
 end
 
 --[[
@@ -258,7 +260,7 @@ local function GiveUp(self, ...)
 	--AdjustIndicator(self.inst, Color.fromHex("#ffffff"), false)
 	AdjustIndicatorState(self.inst, NET_STATES.NOTHING)
 
-	return oldGiveUp(self, ...)
+	return self._insightOldGiveUp(self, ...)
 end
 
 
@@ -277,7 +279,7 @@ end
 ]]
 local function SetRange(self, attack, hit, ...)
 	--mprint("setrange", attack, hit, ...)
-	oldSetRange(self, attack, hit, ...)
+	self._insightOldSetRange(self, attack, hit, ...)
 	PushNewIndicatorRange(self.inst)
 end
 
@@ -286,7 +288,7 @@ end
 		i'll just cross that bridge when it comes to that
 ]]
 local function SetAreaDamage(self, range, percent, areahitcheck, ...)
-	oldSetAreaDamage(self, range, percent, areahitcheck, ...)
+	self._insightOldSetAreaDamage(self, range, percent, areahitcheck, ...)
 
 	if self.inst.insight_combat_range_indicator then
 		--self.inst.insight_combat_range_indicator:SetHitRange(self.areahitrange or (self.hitrange + self.inst:GetPhysicsRadius(0)))
@@ -333,6 +335,18 @@ local function HookCombat(self)
 
 	--mprint("hooked combat for:", self.inst, self.inst.prefab)
 	--self.inst:DoTaskInTime(0, function() mprint(self.inst, self.inst.prefab) end)
+
+	self._insightOldSetTarget = self.SetTarget
+	--self._insightOldTryRetarget = self.TryRetarget
+	--self._insightOldCanHitTarget = self.CanHitTarget
+	self._insightOldCanAttack = self.CanAttack
+	--self._insightOldStartAttack = self.StartAttack
+	self._insightOldDoAttack = self.DoAttack
+	self._insightOldTryAttack = self.TryAttack
+	--self._insightOldDropTarget = self.DropTarget
+	self._insightOldGiveUp = self.GiveUp
+	self._insightOldSetRange = self.SetRange
+	self._insightOldSetAreaDamage = self.SetAreaDamage
 
 	self.SetTarget = SetTarget
 	--self.TryRetarget = TryRetarget
