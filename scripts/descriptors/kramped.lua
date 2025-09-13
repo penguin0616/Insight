@@ -346,7 +346,6 @@ local function DescribeCreature(inst, context)
 	end
 	
 	naughtiness = GetCreatureNaughtinessValue(inst, context)
-	cprint("naughty", naughtiness)
 
 	if type(naughtiness) == "number" and naughtiness ~= 0 then
 		description = string.format(context.lstr.kramped.naughtiness, naughtiness)
