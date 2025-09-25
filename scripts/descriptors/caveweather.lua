@@ -260,11 +260,11 @@ local function Describe(self, context)
 		return
 	end
 
-	local description = nil
-
 	if not _preciptype then
 		return
 	end
+
+	local description = nil
 
 	-- None of the descriptors will run if any upvalues are missing, because they won't get added to the table.
 	local describeFn = PRECIP_TYPE_DESCRIPTORS[_preciptype:value()]
