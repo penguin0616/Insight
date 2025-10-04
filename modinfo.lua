@@ -7740,7 +7740,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		tags = {"undefined"},
 	},
 	--[[
