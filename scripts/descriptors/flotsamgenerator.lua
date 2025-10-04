@@ -22,7 +22,7 @@ directory. If not, please refer to
 
 local _guaranteed_spawn_tasks
 
-local function OnServerInit()
+local function OnServerLoad()
 	if TheWorld.components.flotsamgenerator and TheWorld.components.flotsamgenerator.ScheduleGuaranteedSpawn then
 		_guaranteed_spawn_tasks = util.getupvalue(TheWorld.components.flotsamgenerator.ScheduleGuaranteedSpawn, "_guaranteed_spawn_tasks")
 	end
@@ -84,5 +84,5 @@ end
 
 return { 
 	Describe = Describe,
-	OnServerInit = OnServerInit
+	OnServerLoad = OnServerLoad
 }

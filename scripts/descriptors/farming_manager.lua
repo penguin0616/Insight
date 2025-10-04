@@ -21,7 +21,7 @@ directory. If not, please refer to
 -- farming_manager.lua [Worldly]
 local LORDFRUITFLY_TIMERNAME
 
-local function OnServerInit()
+local function OnServerLoad()
 	if not IS_DST then return end
 	LORDFRUITFLY_TIMERNAME = CurrentRelease.GreaterOrEqualTo("R15_QOL_WORLDSETTINGS") and assert(util.recursive_getupvalue(TheWorld.components.farming_manager.GetDebugString, "LORDFRUITFLY_TIMERNAME"), "Unable to find \"LORDFRUITFLY_TIMERNAME\"") --"bearger_timetospawn"
 end
@@ -74,7 +74,7 @@ local function Describe(self, context)
 end
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 
 	Describe = Describe
 }

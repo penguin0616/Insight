@@ -31,7 +31,7 @@ local TERRAFORM_DELAY -- = TUNING.RIFT_LUNAR1_STAGEUP_BASE_TIME / 3
 local TIME_UNIT = TUNING.SEG_TIME*8
 local PERIODIC_TIME = TUNING.TOTAL_DAY_TIME *2
 
-local function OnServerInit()
+local function OnServerLoad()
 	-- The power of recursive-ness.
 	MAX_CRYSTAL_RING_COUNT_BY_STAGE = util.recursive_getupvalue(_G.Prefabs.lunarrift_portal.fn, "MAX_CRYSTAL_RING_COUNT_BY_STAGE")
 	CRYSTALS_PER_RING = util.recursive_getupvalue(_G.Prefabs.lunarrift_portal.fn, "CRYSTALS_PER_RING")
@@ -189,7 +189,7 @@ local function Describe(inst, context)
 end
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 
 	Describe = Describe,
 

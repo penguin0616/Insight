@@ -26,7 +26,7 @@ local HARVEST_CANTTAGS  = {"INLIMBO", "FX"}
 local HARVEST_ONEOFTAGS = {"plant", "lichen", "oceanvine", "kelp"}
 
 -- Client gets hitbox reveal for scythe.
-local function OnClientInit()
+local function OnClientLoad()
 
 end
 
@@ -163,7 +163,7 @@ local function OnScytheTargetUnselected(doer)
 end
 
 return {
-	OnClientInit = OnClientInit,
+	OnClientLoad = OnClientLoad,
 	
 	OnScytheTargetSelected = OnScytheTargetSelected,
 	OnScytheTargetUnselected = OnScytheTargetUnselected,

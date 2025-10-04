@@ -915,10 +915,20 @@ function UnloadComponentDescriptor(name)
 		mprintf("DESCRIPTOR '%s' WAS NOT IN IMPORT CACHE", name)
 	end
 	
-	if rawget(Insight.descriptors, name) ~= nil then
-		if Insight.descriptors[name] and Insight.descriptors[name].OnUnload then
-			Insight.descriptors[name].OnUnload()
+	local descriptor = rawget(Insight.descriptors, name)
+	if descriptor ~= nil then
+		if descriptor.OnServerUnload then
+			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+				descriptor.OnServerUnload()
+			end
 		end
+
+		if descriptor.OnClientUnload then
+			if IS_DS or IsClient() or IsClientHost() then
+				descriptor.OnClientUnload()
+			end
+		end
+
 		Insight.descriptors[name] = nil
 		mprintf("DESCRIPTOR '%s' CACHE CLEARED", name)
 	else
@@ -946,20 +956,6 @@ local function GetComponentDescriptor(name)
 			if getmetatable(res) == nil then
 				res.name = res.name or name
 				setmetatable(res, { })
-			end
-			
-			-- DS should activate both..? Can't think of a reason otherwise yet, but it feels off.
-			
-			if res.OnServerInit then
-				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-					res.OnServerInit()
-				end
-			end
-
-			if res.OnClientInit then
-				if IS_DS or IsClient() or IsClientHost() then
-					res.OnClientInit()
-				end
 			end
 
 			return res
@@ -1014,6 +1010,45 @@ local function GetComponentDescriptor(name)
 	end
 end
 
+function AddComponentDescriptor(name, descriptor, metadata)
+	-- Argument validation
+	if type(name) ~= "string" then
+		errorf("bad argument #1 to 'AddComponentDescriptor' (string expected, got %s)", type(name))
+	end
+
+	local descriptor_type = type(descriptor)
+	if descriptor_type ~= "table" and descriptor_type ~= "boolean" then
+		errorf("bad argument #2 to 'AddComponentDescriptor' (expected table or boolean, got %s)", name, modname, descriptor)
+	end
+
+	if type(metadata) ~= "table" then
+		errorf("bad argument #3 to 'AddComponentDescriptor' (table expected, got %s)", type(metadata))
+	end
+
+	-- Other validation
+	if type(metadata.modname) ~= "string" or type(metadata.modname) == "" then
+		errorf("invalid metadata.modname (populated string expected, got %s)", type(metadata.modname))
+	end
+
+
+	Insight.descriptors[name] = descriptor
+	if descriptor_type == "table" then
+		descriptor.metadata = metadata
+	end
+
+	if descriptor.OnServerLoad then
+		if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+			descriptor.OnServerLoad()
+		end
+	end
+
+	if descriptor.OnClientLoad then
+		if IS_DS or IsClient() or IsClientHost() then
+			descriptor.OnClientLoad()
+		end
+	end
+end
+
 --- Unloads a loaded prefab descriptor and clears the import cache for the file.
 ---@param name string
 function UnloadPrefabDescriptor(name)
@@ -1025,10 +1060,20 @@ function UnloadPrefabDescriptor(name)
 		mprintf("PREFAB DESCRIPTOR '%s' WAS NOT IN IMPORT CACHE", name)
 	end
 	
-	if rawget(Insight.prefab_descriptors, name) ~= nil then
-		if Insight.prefab_descriptors[name] and Insight.prefab_descriptors[name].OnUnload then
-			Insight.prefab_descriptors[name].OnUnload()
+	local descriptor = rawget(Insight.prefab_descriptors, name)
+	if descriptor ~= nil then
+		if descriptor.OnServerUnload then
+			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+				descriptor.OnServerUnload()
+			end
 		end
+
+		if descriptor.OnClientUnload then
+			if IS_DS or IsClient() or IsClientHost() then
+				descriptor.OnClientUnload()
+			end
+		end
+
 		Insight.prefab_descriptors[name] = nil
 		mprintf("PREFAB DESCRIPTOR '%s' CACHE CLEARED", name)
 	else
@@ -1059,23 +1104,6 @@ local function GetPrefabDescriptor(name)
 				setmetatable(res, {  })
 			end
 
-			if getmetatable(res) == nil then
-				res.name = res.name or name
-				setmetatable(res, { })
-			end
-			
-			if res.OnServerInit then
-				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-					res.OnServerInit()
-				end
-			end
-
-			if res.OnClientInit then
-				if IS_DS or IsClient() or IsClientHost() then
-					res.OnClientInit()
-				end
-			end
-
 			return res
 		else
 			error(string.format("Attempt to return %s '%s' in prefab descriptor '%s'", type(res), tostring(res), name))
@@ -1103,6 +1131,45 @@ local function GetPrefabDescriptor(name)
 		end
 
 		return false
+	end
+end
+
+function AddPrefabDescriptor(name, descriptor, metadata)
+	-- Argument validation
+	if type(name) ~= "string" then
+		errorf("bad argument #1 to 'AddPrefabDescriptor' (string expected, got %s)", type(name))
+	end
+
+	local descriptor_type = type(descriptor)
+	if descriptor_type ~= "table" and descriptor_type ~= "boolean" then
+		errorf("bad argument #2 to 'AddPrefabDescriptor' (expected table or boolean, got %s)", name, modname, descriptor)
+	end
+
+	if type(metadata) ~= "table" then
+		errorf("bad argument #3 to 'AddPrefabDescriptor' (table expected, got %s)", type(metadata))
+	end
+
+	-- Other validation
+	if type(metadata.modname) ~= "string" or type(metadata.modname) == "" then
+		errorf("invalid metadata.modname (populated string expected, got %s)", type(metadata.modname))
+	end
+
+
+	Insight.prefab_descriptor[name] = descriptor
+	if descriptor_type == "table" then
+		descriptor.metadata = metadata
+	end
+
+	if descriptor.OnServerLoad then
+		if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+			descriptor.OnServerLoad()
+		end
+	end
+
+	if descriptor.OnClientLoad then
+		if IS_DS or IsClient() or IsClientHost() then
+			descriptor.OnClientLoad()
+		end
 	end
 end
 
@@ -2160,7 +2227,7 @@ setmetatable(Insight.descriptors, {
 	__index = function(self, index)
 		-- If we're here, this means that we're requesting an unloaded descriptor.
 		local value = GetComponentDescriptor(index)
-		rawset(self, index, value)
+		AddComponentDescriptor(index, value, { modname=modname })
 		return value
 	end,
 	__call = function(self, index)
@@ -2174,7 +2241,7 @@ setmetatable(Insight.prefab_descriptors, {
 	__index = function(self, index)
 		-- If we're here, this means that we're requesting an unloaded prefab descriptor.
 		local value = GetPrefabDescriptor(index)
-		rawset(self, index, value)
+		AddPrefabDescriptor(index, value, { modname=modname })
 		return value
 	end,
 	__call = function(self, index)

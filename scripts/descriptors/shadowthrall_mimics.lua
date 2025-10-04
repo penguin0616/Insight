@@ -21,7 +21,7 @@ directory. If not, please refer to
 -- shadowthrall_mimics.lua
 local _scheduled_spawn_attempts
 local _activemimics
-local function OnServerInit()
+local function OnServerLoad()
 	target_fn = TheWorld.components.shadowthrall_mimics.Debug_PlayerSpawns
 	if target_fn then
 		_scheduled_spawn_attempts = util.recursive_getupvalue(target_fn, "_scheduled_spawn_attempts")
@@ -101,7 +101,7 @@ end
 
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 
 	Describe = Describe,
 }

@@ -40,11 +40,11 @@ local function OnFireSuppressorSpawned(inst)
 	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	if not IS_DS then return end
 	AddPrefabPostInit("firesuppressor", OnFireSuppressorSpawned)
 end
 
 return {
-	OnClientInit = OnClientInit
+	OnClientLoad = OnClientLoad
 }

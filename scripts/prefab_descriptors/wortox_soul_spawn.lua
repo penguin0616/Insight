@@ -44,12 +44,12 @@ local function OnSoulSpawned(inst)
 end
 
 
-local function OnClientInit()
+local function OnClientLoad()
 	if not IS_DST then return end
 	-- This is for the soul that gets dropped from enemies.
 	AddPrefabPostInit("wortox_soul_spawn", OnSoulSpawned)
 end
 
 return {
-	OnClientInit = OnClientInit
+	OnClientLoad = OnClientLoad
 }

@@ -67,8 +67,8 @@ local function LoadOrnaments()
 end
 
 return {
-	OnServerInit = LoadOrnaments,
-	OnClientInit = LoadOrnaments,
+	OnServerLoad = LoadOrnaments,
+	OnClientLoad = LoadOrnaments,
 
 	ORNAMENT_DATA = ORNAMENT_DATA
 }

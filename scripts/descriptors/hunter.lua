@@ -222,7 +222,7 @@ local function OnHunterPostInit(self)
 end
 
 -- TODO: There may be room to clean up this old hunter logic.
-local function OnServerInit()
+local function OnServerLoad()
 	if module.initialized then
 		return
 	end
@@ -236,6 +236,6 @@ end
 
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 	DescribeTrack = DescribeTrack,
 }

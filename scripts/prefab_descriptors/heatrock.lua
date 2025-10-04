@@ -121,7 +121,7 @@ local function OnHeatrockSpawned(inst)
 	end)
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	if IS_DST then return end
 	AddPrefabPostInit("heatrock", OnHeatrockSpawned)
 end
@@ -129,5 +129,5 @@ end
 return {
 	Describe = Describe,
 
-	OnClientInit = OnClientInit,
+	OnClientLoad = OnClientLoad,
 }

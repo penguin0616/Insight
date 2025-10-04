@@ -42,7 +42,7 @@ local function OnServerSpawn(inst)
 	end
 end
 
-local function OnServerInit()
+local function OnServerLoad()
 	if IS_DS then return end -- Handled by client
 	GetLootColors()
 	AddPrefabPostInit("tumbleweed", OnServerSpawn)
@@ -191,7 +191,7 @@ local function OnClientSpawn(inst)
 	end
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	GetLootColors()
 
 	-- Good enough
@@ -245,8 +245,8 @@ end
 
 
 return {
-	OnServerInit = OnServerInit,
-	OnClientInit = OnClientInit,
+	OnServerLoad = OnServerLoad,
+	OnClientLoad = OnClientLoad,
 
 
 	Describe = Describe

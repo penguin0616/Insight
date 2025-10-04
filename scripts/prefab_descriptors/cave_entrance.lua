@@ -60,17 +60,17 @@ local function Initialize()
 	AddPrefabPostInit("cave_exit", OnMigratorSpawned)
 end
 
-local function OnServerInit()
+local function OnServerLoad()
 	Initialize()
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	Initialize()
 end
 
 
 
 return {
-	OnServerInit = OnServerInit,
-	OnClientInit = OnClientInit
+	OnServerLoad = OnServerLoad,
+	OnClientLoad = OnClientLoad
 }

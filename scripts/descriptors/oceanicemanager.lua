@@ -24,7 +24,7 @@ local upvalues = {
 	create_ice_at_point = nil
 }
 
-local function OnServerInit()
+local function OnServerLoad()
 	oceanicemanager = TheWorld.components.oceanicemanager
 end
 
@@ -42,7 +42,7 @@ end
 
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 
 	Describe = Describe,
 }
