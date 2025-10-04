@@ -917,15 +917,17 @@ function UnloadComponentDescriptor(name)
 	
 	local descriptor = rawget(Insight.descriptors, name)
 	if descriptor ~= nil then
-		if descriptor.OnServerUnload then
-			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-				descriptor.OnServerUnload()
+		if type(descriptor) == "table" then
+			if descriptor.OnServerUnload then
+				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+					descriptor.OnServerUnload()
+				end
 			end
-		end
 
-		if descriptor.OnClientUnload then
-			if IS_DS or IsClient() or IsClientHost() then
-				descriptor.OnClientUnload()
+			if descriptor.OnClientUnload then
+				if IS_DS or IsClient() or IsClientHost() then
+					descriptor.OnClientUnload()
+				end
 			end
 		end
 
@@ -1034,17 +1036,16 @@ function AddComponentDescriptor(name, descriptor, metadata)
 	Insight.descriptors[name] = descriptor
 	if descriptor_type == "table" then
 		descriptor.metadata = metadata
-	end
-
-	if descriptor.OnServerLoad then
-		if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-			descriptor.OnServerLoad()
+		if descriptor.OnServerLoad then
+			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+				descriptor.OnServerLoad()
+			end
 		end
-	end
 
-	if descriptor.OnClientLoad then
-		if IS_DS or IsClient() or IsClientHost() then
-			descriptor.OnClientLoad()
+		if descriptor.OnClientLoad then
+			if IS_DS or IsClient() or IsClientHost() then
+				descriptor.OnClientLoad()
+			end
 		end
 	end
 end
@@ -1062,15 +1063,17 @@ function UnloadPrefabDescriptor(name)
 	
 	local descriptor = rawget(Insight.prefab_descriptors, name)
 	if descriptor ~= nil then
-		if descriptor.OnServerUnload then
-			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-				descriptor.OnServerUnload()
+		if type(descriptor) == "table" then
+			if descriptor.OnServerUnload then
+				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+					descriptor.OnServerUnload()
+				end
 			end
-		end
 
-		if descriptor.OnClientUnload then
-			if IS_DS or IsClient() or IsClientHost() then
-				descriptor.OnClientUnload()
+			if descriptor.OnClientUnload then
+				if IS_DS or IsClient() or IsClientHost() then
+					descriptor.OnClientUnload()
+				end
 			end
 		end
 
@@ -1155,20 +1158,19 @@ function AddPrefabDescriptor(name, descriptor, metadata)
 	end
 
 
-	Insight.prefab_descriptor[name] = descriptor
+	Insight.prefab_descriptors[name] = descriptor
 	if descriptor_type == "table" then
 		descriptor.metadata = metadata
-	end
-
-	if descriptor.OnServerLoad then
-		if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-			descriptor.OnServerLoad()
+		if descriptor.OnServerLoad then
+			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
+				descriptor.OnServerLoad()
+			end
 		end
-	end
 
-	if descriptor.OnClientLoad then
-		if IS_DS or IsClient() or IsClientHost() then
-			descriptor.OnClientLoad()
+		if descriptor.OnClientLoad then
+			if IS_DS or IsClient() or IsClientHost() then
+				descriptor.OnClientLoad()
+			end
 		end
 	end
 end
