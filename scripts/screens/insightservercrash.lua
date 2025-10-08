@@ -20,6 +20,8 @@ directory. If not, please refer to
 
 local Widget = require "widgets/widget"
 local Screen = require "widgets/screen"
+local ImageButton = require("widgets/imagebutton")
+local PopupDialogScreen = require "screens/redux/popupdialog"
 
 local CrashReportStatus = import("widgets/insight_crashreportstatus")
 
@@ -32,16 +34,63 @@ local InsightServerCrashScreen = Class(Screen, function(self, title)
     self.root:SetPosition(0, 0, 0)
 	self.root:SetScaleMode(SCALEMODE_PROPORTIONAL)
 
-	self.insight_crashreport_status = self.root:AddChild(CrashReportStatus(title))
-	self.insight_crashreport_status:SetPosition(0, -60)
+	self.status = self.root:AddChild(CrashReportStatus(title))
+	self.status:SetPosition(0, -30)
+
+	--[[
+	self.manual_report_button = self.root:AddChild(ImageButton("images/dst/frontend_redux.xml",
+		"listitem_thick_normal.tex", -- normal
+		nil, -- focus
+		nil,
+		nil,
+		"listitem_thick_selected.tex" -- selected
+	))
+	--]]
+
+	-- Screens will have OnUpdate triggered if they are the active one by the frontend
+	-- but we want to keep running forever.
+	self:StartUpdating()
 end)
 
 function InsightServerCrashScreen:SetMessage(message)
-	self.insight_crashreport_status:SetMessage(message)
+	self.status:SetMessage(message)
 end
 
 function InsightServerCrashScreen:SetColor(color)
-	self.insight_crashreport_status:SetColor(color)
+	self.status:SetColor(color)
+end
+
+function InsightServerCrashScreen:SetColor(color)
+	self.status:SetColor(color)
+end
+
+function InsightServerCrashScreen:OnUpdate(dt)
+	local active_screen = TheFrontEnd:GetActiveScreen()
+	if not active_screen then return end
+	local parent_screen = self.root:GetParentScreen()
+
+	if active_screen == self then
+		if parent_screen ~= self then
+			self:AddChild(self.root)
+			self.root.parent_screen = nil -- This is cached for some reason.
+			mprint("Reparented status back to screen from (%s)", parent_screen)
+		end
+	else
+		if parent_screen ~= active_screen then
+			active_screen:AddChild(self.root)
+			self.root.parent_screen = nil -- This is cached for some reason.
+			mprintf("Reparented status from (%s) to active screen (%s)", parent_screen, active_screen)
+		end 
+	--[[
+	elseif active_screen._ctor == PopupDialogScreen._ctor then
+		if active_screen.dialog.title and active_screen.dialog.title:GetString() == STRINGS.UI.NETWORKDISCONNECT.TITLE["ID_CONNECTION_LOST"] then
+			if self.root:GetParentScreen() ~= active_screen then
+				active_screen:AddChild(self.root)
+				mprint("Reparented status to popup dialog")
+			end 
+		end
+	--]]
+	end
 end
 
 return InsightServerCrashScreen

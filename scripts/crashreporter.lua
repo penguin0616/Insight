@@ -18,7 +18,7 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
-local module = {
+local CrashReporter = {
 	initialized = false,
 	triggered = false,
 	sending = false,
@@ -33,13 +33,13 @@ local module = {
 }
 
 local status_colors = setmetatable({
-	[module.STATUS.UNDEFINED] = { 1, 1, 1, 1 },
-	[module.STATUS.INFO] = { 0.6, 0.6, 1, 1 },
-	[module.STATUS.SUCCESS] = { 0.6, 1, 0.6, 1 },
-	[module.STATUS.ERROR] = { 1, 0.6, 0.6, 1 },
+	[CrashReporter.STATUS.UNDEFINED] = { 1, 1, 1, 1 },
+	[CrashReporter.STATUS.INFO] = { 0.6, 0.6, 1, 1 },
+	[CrashReporter.STATUS.SUCCESS] = { 0.6, 1, 0.6, 1 },
+	[CrashReporter.STATUS.ERROR] = { 1, 0.6, 0.6, 1 },
 }, {
 	__index = function(self, index)
-		return rawget(self, module.STATUS.UNDEFINED)
+		return rawget(self, CrashReporter.STATUS.UNDEFINED)
 	end
 })
 
@@ -84,9 +84,64 @@ local function GetMods()
 end
 ]==]
 
+_G.asd = function() _G.asd = InsightServerCrashScreen("hii") end
+
+
+--- Triggered when we receive a message from the server that it has crashed.
+--- @param data table
+local function OnRemoteServerError(data)
+	if not CrashReporter.initialized then
+		return
+	end
+
+	if type(data) == "string" then
+		data = json.decode(data)
+	end
+
+	-- If the message is missing, we did not get any privileged information 
+	-- and should just show the default message.
+	if not data.message then
+		data.message = language.AssumeLanguageTable().crash_reporter.crashed
+	end
+
+	local title = language.AssumeLanguageTable().crash_reporter.title
+
+	if not CrashReporter._error_screen then
+		CrashReporter._error_screen = InsightServerCrashScreen(title)
+		-- We are intentionally not pushing the screen.
+		-- This allows it to render without us needing to be concerned with the disconnect screen greying us out.
+		TheFrontEnd:PushScreen(CrashReporter._error_screen)
+	end
+
+	CrashReporter._error_screen:SetMessage(data.message)
+	CrashReporter._error_screen:SetColor(status_colors[data.status])
+	-- ...Turns out that the server can't receive RPCs when it's crashed.
+	-- ...I should have expected that.
+	--[[
+	CrashReporter._error_screen.status:ShowManualReportButton(data.show_report_button)
+	CrashReporter._error_screen.status:SetManualReportCallback(function() 
+		--CrashReporter.TriggerCrashReportFlow(true)
+		mprint("Sending request to trigger flow")
+		rpcNetwork.SendModRPCToServer(GetModRPC(modname, "TriggerCrashReportFlow"))
+	end)
+	--]]
+end
+
+--- Triggered when the server receives a request to trigger the crash report flow.
+local function OnRequestToTriggerCrashReportFlow(player)
+	mprint("Received request to trigger crash report flow")
+	if not CrashReporter.IsPrivilegedUser(player.userid) then
+		mprintf("Received suspicious request for crash report sending from %s", player)
+		return
+	end
+
+	CrashReporter.TriggerCrashReportFlow()
+end
+
+
 --- Checks whether we are allowed to send a crash report or not.
 ---@return bool, string @Whether we can send the report & the reason,
-local function CanWeSendReport()
+CrashReporter.CanWeSendReport = function()
 	local report_server = GetModConfigData("crash_reporter", false)
 	local report_client = GetModConfigData("crash_reporter", true)
 	local is_server_owner = TheNet:GetIsServerOwner()
@@ -99,7 +154,7 @@ local function CanWeSendReport()
 			-- If the server has opted in, then we can report the crash.
 			return true, "server is opted in"
 
-		elseif module.server_owner_optin then
+		elseif CrashReporter.server_owner_optin then
 			-- If the server OWNER has opted in locally, then we can report the crash.
 			return true, "server owner has opted in"
 
@@ -132,23 +187,33 @@ local function CanWeSendReport()
 	return false, "unknown state?"
 end
 
+CrashReporter.IsPrivilegedUser = function(userid)
+	local client_data = TheNet:GetClientTableForUser(userid)
+	if not client_data then
+		return false
+	end
+
+	if client_data.admin then
+		return true
+	end
+
+	return false
+end
+
 --- Displays the status of the crash reporter.
---- @param widget scripterrorwidget The script error widget.
 --- @param data table
-local function UpdateStatus(widget, data)
-	if not module.initialized then
+CrashReporter.UpdateStatus = function(data)
+	if not CrashReporter.initialized then
 		return
 	end
 	
+	local admin_data = deepcopy(data)
+	local user_data = data
+	--user_data.show_report_button = false
+
+	admin_data, user_data = json.encode(admin_data), json.encode(user_data)
+
 	local title = language.AssumeLanguageTable().crash_reporter.title
-
-	local ui = widget.insight_crashreport_status 
-		or widget.title:AddChild(InsightCrashReportStatus(title))
-
-	widget.insight_crashreport_status = ui
-	ui:SetPosition(0, 0 + 40*3)
-	ui:SetMessage(data.message)
-	ui:SetColor(status_colors[data.status])
 
 	-- If we're running on the server, make sure that we notify other clients that the server has crashed.
 	if TheNet:GetIsMasterSimulation() then
@@ -161,7 +226,7 @@ local function UpdateStatus(widget, data)
 			-- It is possible for client data to be missing when IsClientHost()
 			-- if you crash during the player spawning process.
 			if client_data and (not IsClientHost() or (IsClientHost() and v ~= ThePlayer)) then
-				if client_data.admin then
+				if CrashReporter.IsPrivilegedUser(v.userid) then
 					-- Admins receive more information.
 					rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "ServerError"), v.userid, json.encode(data))
 				else
@@ -176,60 +241,45 @@ local function UpdateStatus(widget, data)
 			end
 		end
 	end
-end
 
---- Triggered when we receive a message from the server that it has crashed.
---- @param data table
-local function OnRemoteServerError(data)
-	if not module.initialized then
-		return
+	if IsClient() or IsClientHost() then
+		-- Otherwise, we've encountered a client crash.
+		--OnRemoteServerError(data)
+		local ui = CrashReporter.ScriptErrorWidget.insight_crashreport_status 
+			or CrashReporter.ScriptErrorWidget.title:AddChild(InsightCrashReportStatus(title))
+
+		CrashReporter.ScriptErrorWidget.insight_crashreport_status = ui
+		ui:SetPosition(0, 0 + 40*4)
+		ui:SetMessage(data.message)
+		ui:SetColor(status_colors[data.status])
+		ui:ShowManualReportButton(data.show_report_button)
+		ui:SetManualReportCallback(function() CrashReporter.TriggerCrashReportFlow(true) end)
 	end
-
-	data = json.decode(data)
-
-	-- If the message is missing, we did not get any privileged information 
-	-- and should just show the default message.
-	if not data.message then
-		data.message = language.AssumeLanguageTable().crash_reporter.crashed
-	end
-
-	local title = language.AssumeLanguageTable().crash_reporter.title
-
-	if not module._error_screen then
-		module._error_screen = InsightServerCrashScreen(title)
-		-- We are intentionally not pushing the screen.
-		-- This allows it to render without us needing to be concerned with the disconnect screen taking focus away.
-		--TheFrontEnd:PushScreen(module._error_screen)
-	end
-
-	module._error_screen:SetMessage(data.message)
-	module._error_screen:SetColor(status_colors[data.status])
 end
 
 --- Sends the crash report.
---- @param widget scripterrorwidget
-local function SendReport(widget)
-	module.sending = true
+CrashReporter.SendReport = function()
+	CrashReporter.sending = true
 
 	TheSim:SendCrashReportTo(
 		"https://dst.penguin0616.dev/crashreporter/reportcrash",
 		function(body, is_successful, status_code)
 			mprintf("Report: Success = %s, Status = %s, \n%s", is_successful, status_code, body)
-			module.sending = false
+			CrashReporter.sending = false
 
-			local status = module.STATUS.ERROR
+			local status = CrashReporter.STATUS.ERROR
 			local message = language.AssumeLanguageTable().crash_reporter.report_status.unknown
 
 			if is_successful then
 				if status_code >= 200 and status_code < 300 then
 					-- We got a successful status code. Yay!
-					status = module.STATUS.SUCCESS
+					status = CrashReporter.STATUS.SUCCESS
 					message = language.AssumeLanguageTable().crash_reporter.report_status.success
 				else
 					local safe, response = pcall(json.decode, body)
 					
 					if safe then 
-						status = module.STATUS.ERROR
+						status = CrashReporter.STATUS.ERROR
 						message = string.format(
 							language.AssumeLanguageTable().crash_reporter.report_status.failure, 
 							status_code, 
@@ -237,7 +287,7 @@ local function SendReport(widget)
 						)
 					else
 						mprintf("Failed to parse body: %s", response)
-						status = module.STATUS.ERROR
+						status = CrashReporter.STATUS.ERROR
 						message = string.format(
 							language.AssumeLanguageTable().crash_reporter.report_status.failure, 
 							status_code, 
@@ -246,7 +296,7 @@ local function SendReport(widget)
 					end
 				end
 			else
-				status = module.STATUS.ERROR
+				status = CrashReporter.STATUS.ERROR
 				message = string.format(
 					language.AssumeLanguageTable().crash_reporter.report_status.failure, 
 					status_code, 
@@ -254,23 +304,24 @@ local function SendReport(widget)
 				)
 			end
 
-			if widget.spinner then
-				widget.spinner:Kill()
-				widget.spinner = nil
+			if CrashReporter.ScriptErrorWidget.spinner then
+				CrashReporter.ScriptErrorWidget.spinner:Kill()
+				CrashReporter.ScriptErrorWidget.spinner = nil
 			end
 			
-			return UpdateStatus(widget, { 
+			return CrashReporter.UpdateStatus({ 
 				status = status, 
-				message = message
+				message = message,
+				show_report_button = false
 			})
 		end
 	)
 end
 
 local function ScriptErrorWidget_OnUpdate(self, ...)
-	if module.sending then
-		UpdateStatus(self, {
-			status = module.STATUS.INFO,
+	if CrashReporter.sending then
+		CrashReporter.UpdateStatus({
+			status = CrashReporter.STATUS.INFO,
 			message = string.format("%s\n%s", 
 				language.AssumeLanguageTable().crash_reporter.crashed, 
 				language.AssumeLanguageTable().crash_reporter.report_status.sending .. string.rep(".", GetTimeRealSeconds() % 3 + 1)
@@ -278,11 +329,47 @@ local function ScriptErrorWidget_OnUpdate(self, ...)
 		})
 	end
 
-	return module.ScriptErrorWidget_oldOnUpdate(self, ...)
+	return CrashReporter.ScriptErrorWidget_oldOnUpdate(self, ...)
 end
 
+
+CrashReporter.TriggerCrashReportFlow = function(override)
+	mprint("Checking if we can send a crash report.")
+	local can_report, reason
+	if override then
+		can_report, reason = override, "user manually approved"
+	else
+		can_report, reason = CrashReporter.CanWeSendReport()
+	end
+
+	mprint("CanWeSendReport:", can_report, reason)
+
+	if can_report then
+		CrashReporter.UpdateStatus({
+			status = CrashReporter.STATUS.INFO,
+			message = string.format("%s\n%s", 
+				language.AssumeLanguageTable().crash_reporter.crashed, 
+				language.AssumeLanguageTable().crash_reporter.report_status.sending
+			),
+			show_report_button = false
+		})
+
+		CrashReporter.SendReport()
+	else
+		CrashReporter.UpdateStatus({
+			status = CrashReporter.STATUS.INFO,
+			message = string.format("%s\n%s", 
+				language.AssumeLanguageTable().crash_reporter.crashed, 
+				string.format(language.AssumeLanguageTable().crash_reporter.report_status.disabled, reason)
+			),
+			show_report_button = true
+		})
+	end
+end
+
+
 local function OnScriptErrorWidgetPostInit(self)
-	if not module.initialized then
+	if not CrashReporter.initialized then
 		mprint("Crash reporter module not initialized, exiting.")
 		return
 	end
@@ -301,46 +388,21 @@ local function OnScriptErrorWidgetPostInit(self)
 		mprint("\tAdditionaltext:", self.additionaltext:GetString())
 	end
 
-	if module.triggered then
+	if CrashReporter.triggered then
 		mprint("ScriptErrorWidget created more than once, ignoring.")
 		return
 	end
 	
-	module.triggered = true
+	CrashReporter.triggered = true
+	CrashReporter.ScriptErrorWidget = self
 
 	--self:StartUpdating()
 
-	mprint("Checking if we can send a crash report.")
-	local can_report, reason = CanWeSendReport()
-	mprint("CanWeSendReport:", can_report, reason)
-
-	if can_report then
-		UpdateStatus(self, {
-			status = module.STATUS.INFO,
-			message = string.format("%s\n%s", 
-				language.AssumeLanguageTable().crash_reporter.crashed, 
-				language.AssumeLanguageTable().crash_reporter.report_status.sending
-			)
-		})
-
-		--self.spinner = self.title:AddChild(Image("images/White_Square.xml", "White_Square.tex"))
-		--self.spinner:SetPosition(0, 0 + 40*3)
-
-		SendReport(self)
-	else
-		UpdateStatus(self, {
-			status = module.STATUS.INFO,
-			message = string.format("%s\n%s", 
-				language.AssumeLanguageTable().crash_reporter.crashed, 
-				string.format(language.AssumeLanguageTable().crash_reporter.report_status.disabled, reason)
-			)
-		})
-	end
+	CrashReporter.TriggerCrashReportFlow()
 end
 
-
-module.Initialize = function()
-	if module.initialized then
+CrashReporter.Initialize = function()
+	if CrashReporter.initialized then
 		errorf("Cannot initialize %s more than once.", debug.getinfo(1, "S").source:match("([%w_]+)%.lua$"))
 		return
 	end
@@ -349,13 +411,14 @@ module.Initialize = function()
 		return
 	end
 
-	module.initialized = true
+	CrashReporter.initialized = true
 
 	AddClassPostConstruct("widgets/scripterrorwidget", OnScriptErrorWidgetPostInit)
-	module.ScriptErrorWidget_oldOnUpdate = ScriptErrorWidget.OnUpdate
+	CrashReporter.ScriptErrorWidget_oldOnUpdate = ScriptErrorWidget.OnUpdate
 	ScriptErrorWidget.OnUpdate = ScriptErrorWidget_OnUpdate
 
+	rpcNetwork.AddModRPCHandler(modname, "TriggerCrashReportFlow", OnRequestToTriggerCrashReportFlow)
 	rpcNetwork.AddClientModRPCHandler(modname, "ServerError", OnRemoteServerError)
 end
 
-return module
+return CrashReporter
