@@ -30,7 +30,7 @@ local function OnBaseFanSpawned(inst)
 	inst.components.dst_deployhelper.onenablehelper = OnHelperStateChange
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	if not IS_DS then return end
 	AddPrefabPostInit("basefan", OnSprinklerSpawned)
 end
@@ -52,5 +52,5 @@ end
 return {
 	Describe = Describe,
 
-	OnClientInit = OnClientInit,
+	OnClientLoad = OnClientLoad,
 }

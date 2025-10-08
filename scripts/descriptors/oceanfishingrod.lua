@@ -158,6 +158,12 @@ local function SERVER_UpdateFishingBattleState(player)
 		return
 	end
 
+	if not state.target_fish then
+		-- I think some mods are messing with things.
+		mprintf("[SERVER_UpdateFishingBattleState] Unable to find target_fish")
+		return
+	end
+
 	local tension = {
 		current = state.rod.components.oceanfishingrod.line_tension,
 		--unreeling = TUNING.OCEAN_FISHING.START_UNREELING_TENSION, -- Hmmm.. is this really necessary?
@@ -232,7 +238,7 @@ local function SERVER_OnFishHooked(player, fish)
 	rpcNetwork.SendModRPCToClient(GetClientModRPC(modname, "SetOceanFishingStatus"), player.userid, "fish_hooked", fish, json.encode(fish.fish_def))
 end
 
-local function OnServerInit()
+local function OnServerLoad()
 	if not IS_DST then return end
 
 end
@@ -378,7 +384,7 @@ local function CLIENT_OnFishHooked(player, fish, fish_def)
 	--text_entity:SetText("fishy :)")
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	if not IS_DST then return end
 	
 	OnLocalPlayerPostInit:AddListener("oceanfishingrod_client", function()
@@ -437,6 +443,6 @@ return {
 	SERVER_OnHookLanded = SERVER_OnHookLanded,
 	SERVER_OnFishHooked = SERVER_OnFishHooked,
 
-	OnServerInit = OnServerInit,
-	OnClientInit = OnClientInit,
+	OnServerLoad = OnServerLoad,
+	OnClientLoad = OnClientLoad,
 }

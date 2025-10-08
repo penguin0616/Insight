@@ -46,7 +46,7 @@ end
 
 name = "Insight"
 -- Major.Minor.Patch
-version = "5.1.3" -- dst is 4.6.2, ds is 4.5.0
+version = "5.2.0" -- dst is 4.6.2, ds is 4.5.0
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -6270,7 +6270,6 @@ STRINGS = {
 			},
 		},
 	},
-	--[[
 	extended_info_indicator = {
 		label = {
 			"More Information Hint", 
@@ -6313,7 +6312,6 @@ STRINGS = {
 			},
 		},
 	},
-	--]]
 	info_preload = {
 		label = {
 			"Information preloading", 
@@ -7742,7 +7740,7 @@ configuration_options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		tags = {"undefined"},
 	},
 	--[[
@@ -7777,18 +7775,16 @@ configuration_options = {
 		client = true,
 		tags = {},
 	},
-	--[[
 	{
 		name = "extended_info_indicator",
 		options = {
 			{data = false},
 			{data = true},
 		}, 
-		default = true,
+		default = false,
 		client = true,
 		tags = {},
 	},
-	--]]
 	--[[
 	{
 		name = "unrandomizer",

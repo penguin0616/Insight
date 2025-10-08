@@ -283,8 +283,8 @@ local function OnKrampedPostInit(self)
 	mprintf("Kramped hook setup is complete for '%s'", self)
 end
 
-local function OnServerInit()
-	mprint("Kramped OnServerInit")
+local function OnServerLoad()
+	mprint("Kramped OnServerLoad")
 	if module.initialized then
 		return
 	end
@@ -360,7 +360,7 @@ local function DescribeCreature(inst, context)
 end
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 	DescribePlayer = DescribePlayer,
 	DescribeCreature = DescribeCreature,
 	GetPlayerNaughtinessData = GetPlayerNaughtinessData,

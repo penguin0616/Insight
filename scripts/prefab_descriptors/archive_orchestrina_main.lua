@@ -107,7 +107,7 @@ local function OrchestrinaMainPostInit(inst)
 	end)
 end
 
-local function OnServerInit()
+local function OnServerLoad()
 	if initialized then
 		return
 	end
@@ -122,7 +122,7 @@ local function OnServerInit()
 	AddPrefabPostInit("archive_orchestrina_small", OrchestrinaSmallPostInit)
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	if initialized then
 		return
 	end
@@ -137,6 +137,6 @@ local function OnClientInit()
 end
 
 return {
-	OnServerInit = OnServerInit,
-	OnClientInit = OnClientInit,
+	OnServerLoad = OnServerLoad,
+	OnClientLoad = OnClientLoad,
 }

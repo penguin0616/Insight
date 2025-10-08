@@ -188,10 +188,10 @@ end
 --========================================================================================================================--
 --= Main ============================================================================================================--
 --========================================================================================================================--
-local function OnServerInit()
+local function OnServerLoad()
 	local cmp_name = debug.getinfo(1, "S").source:match("([%w_]+)%.lua$")
 
-	dprintf("%s OnServerInit", cmp_name)
+	dprintf("%s OnServerLoad", cmp_name)
 
 	ThisComponent = TheWorld.net.components[cmp_name]
 	if not ThisComponent then
@@ -260,6 +260,10 @@ local function Describe(self, context)
 		return
 	end
 
+	if not _preciptype then
+		return
+	end
+
 	local description = nil
 
 	-- None of the descriptors will run if any upvalues are missing, because they won't get added to the table.
@@ -280,7 +284,7 @@ local function Describe(self, context)
 end
 
 module = {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 	Describe = Describe,
 
 	PRECIP_TYPE_DESCRIPTORS = PRECIP_TYPE_DESCRIPTORS,

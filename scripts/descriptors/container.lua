@@ -178,7 +178,7 @@ local function OnContainerPostInit(self)
 	self.inst:ListenForEvent("onclose", OnItemChange)
 end
 
-local function OnServerInit()
+local function OnServerLoad()
 	if initialized then
 		return
 	end
@@ -213,7 +213,7 @@ end
 
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 	Describe = Describe,
 	DescribeItemAndPerishable = DescribeItemAndPerishable,
 	DescribeItemAndStackable = DescribeItemAndStackable,

@@ -59,7 +59,7 @@ end
 
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 
 	Describe = Describe,
 }

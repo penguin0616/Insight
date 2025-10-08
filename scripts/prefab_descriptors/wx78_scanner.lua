@@ -53,13 +53,13 @@ local function CLIENT_OnWX78ScannerSpawned(inst)
 	end)
 end
 
-local function OnServerInit()
+local function OnServerLoad()
 	if not IS_DST then return end
 
 	AddPrefabPostInit("wx78_scanner", SERVER_OnWX78ScannerSpawned)
 end
 
-local function OnClientInit()
+local function OnClientLoad()
 	if not IS_DST then return end
 
 	entity_tracker:TrackPrefab("wx78_scanner")
@@ -73,6 +73,6 @@ local function OnClientInit()
 end
 
 return {
-	OnServerInit = OnServerInit,
-	OnClientInit = OnClientInit,
+	OnServerLoad = OnServerLoad,
+	OnClientLoad = OnClientLoad,
 }

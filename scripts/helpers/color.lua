@@ -271,18 +271,25 @@ function Color.new(r, g, b, a)
 		error("bad argument #4 to Color (alpha must be a number)")
 	end
 
+	-- I'll turn these to logs instead of errors, since I am observing these cases over and over.
+	-- Additionally, external mods are beginning to make use of Insight's coloring.
 	if not (r <= 1 and r >= 0) then
-		error("bad argument #1 to Color (red must be between 0 and 1)")
+		mprint("bad argument #1 to Color (red must be between 0 and 1)")
 	end
 	if not (g <= 1 and g >= 0) then
-		error("bad argument #2 to Color (green must be between 0 and 1)")
+		mprint("bad argument #2 to Color (green must be between 0 and 1)")
 	end
 	if not (b <= 1 and b >= 0) then
-		error("bad argument #3 to Color (blue must be between 0 and 1)")
+		mprint("bad argument #3 to Color (blue must be between 0 and 1)")
 	end
 	if not (a <= 1 and r >= 0) then
-		error("bad argument #4 to Color (alpha must be between 0 and 1)")
+		mprint("bad argument #4 to Color (alpha must be between 0 and 1)")
 	end
+
+	r = math.max(math.min(1, r), 0)
+	g = math.max(math.min(1, g), 0)
+	b = math.max(math.min(1, b), 0)
+	a = math.max(math.min(1, a), 0)
 
 	-- numerical
 	self[1] = r

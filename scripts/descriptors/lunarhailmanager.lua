@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- weather->StartLunarHail
-local function OnServerInit()
+local function OnServerLoad()
 
 end
 

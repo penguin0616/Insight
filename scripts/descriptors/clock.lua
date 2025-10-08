@@ -29,7 +29,7 @@ local function Initialize(cmp)
 	netvars.remainingtimeinphase = util.getupvalue(cmp.OnSave, "_remainingtimeinphase")
 end
 
-local function OnServerInit()
+local function OnServerLoad()
 	AddComponentPostInit("clock", Initialize)
 end
 
@@ -52,7 +52,7 @@ local function GetTimeLeftInSegment()
 end
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 	GetMoonPhaseCycle = GetMoonPhaseCycle,
 	GetTimeLeftInSegment = GetTimeLeftInSegment
 }

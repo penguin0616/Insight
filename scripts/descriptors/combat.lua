@@ -51,7 +51,7 @@ FAKE_COMBATS.mushroombomb_dark = FAKE_COMBATS.mushroombomb
 local ConvertHealthAmountToAge = Insight.descriptors.oldager and Insight.descriptors.oldager.ConvertHealthAmountToAge or function() return 0 end
 local world_type = GetWorldType()
 
-local function OnServerInit()
+local function OnServerLoad()
 	AddComponentPostInit("combat", attackRangeHelper.HookCombat)
 
 	for prefab, data in pairs(FAKE_COMBATS) do
@@ -286,7 +286,7 @@ end
 
 
 return {
-	OnServerInit = OnServerInit,
+	OnServerLoad = OnServerLoad,
 	Describe = Describe,
 	GetRealDamage = GetRealDamage,
 	DescribeDamageForPlayer = DescribeDamageForPlayer,
