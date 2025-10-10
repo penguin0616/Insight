@@ -3221,7 +3221,7 @@ STRINGS = {
 	food_memory = {
 		label = {
 			"Food Memory", 
-			["zh"] = "瓦力大厨的食物计时", 
+			["zh"] = "食物记忆", 
 			["br"] = "Memória Alimentar", 
 			["es"] = "Memoria de comida",
 			["ru"] = "Память о еде",
@@ -3229,7 +3229,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether your food memory is shown.", 
-			["zh"] = "是否显示瓦力大厨的食物计时。", 
+			["zh"] = "是否显示你的食物记忆。", 
 			["br"] = "Se sua memória alimentar é mostrada.", 
 			["es"] = "Configura si se muestra la memoria de comida (Warly).",
 			["ru"] = "Показывать ли вашу память о еде.",
@@ -3240,7 +3240,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Your food memory will not be shown.",
-					["zh"] = "不显示食物计时。",
+					["zh"] = "不显示食物记忆。",
 					["br"] = "Sua memória alimentar não será exibida.",
 					["es"] = "La memoria de alimentos no se muestra.",
 					["ru"] = "Ваша память о еде не показывается.",
@@ -3251,7 +3251,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Your food memory will be shown.",
-					["zh"] = "显示食物计时。",
+					["zh"] = "显示食物记忆。",
 					["br"] = "Sua memória alimentar será exibida.",
 					["es"] = "Se muestra su memoria de alimentos.",
 					["ru"] = "Ваша память о еде показывается.",
@@ -4451,7 +4451,7 @@ STRINGS = {
 	show_map_info = {
 		label = {
 			"Map Information", 
-			["zh"] = nil, 
+			["zh"] = "地图信息",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4459,7 +4459,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to show information relating to the world map.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示与世界地图相关的信息。",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4470,7 +4470,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Information relating to the world map is not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示与世界地图相关的信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4481,7 +4481,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Information relating to the world map is shown.",
-					["zh"] = nil,
+					["zh"] = "显示与世界地图相关的信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
