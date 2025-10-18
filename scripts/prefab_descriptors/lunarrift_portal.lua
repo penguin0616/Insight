@@ -74,7 +74,8 @@ local function Describe(inst, context)
 			stage_info = stage_info .. ": " .. string.format(context.lstr.lunarrift_portal.close, context.time:SimpleProcess(rift_close_time))
 	
 		end
-	elseif inst.components.timer:TimerExists(STAGE_GROWTH_TIMER) then
+	elseif inst.components.timer and inst.components.timer:TimerExists(STAGE_GROWTH_TIMER) then
+		-- Mods removing timer.
 		stage_info = stage_info .. ": " .. string.format(context.lstr.growable.next_stage, context.time:SimpleProcess(inst.components.timer:GetTimeLeft(STAGE_GROWTH_TIMER)))
 	end
 
