@@ -353,7 +353,7 @@ local function GetContainerRelevance(container_inst)
 		
 	elseif activeItem then
 		--push("GCR.activeItem")
-		--dprint(ctr.inst, "searching for:", activeItem)
+		--dprint(container_inst, "searching for:", activeItem)
 		local res = insight:ContainerHas(container_inst, activeItem, isSearchingForFoodTag)
 		--dprint("resx:", res)
 		--pop()
