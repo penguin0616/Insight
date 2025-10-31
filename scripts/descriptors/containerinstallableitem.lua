@@ -194,7 +194,6 @@ local function DescribeSlingshotHandle(inst, context)
 
 	for type, data in pairs({ ["primary_"]=attack_speedup_data, ["secondary_"]=special_speedup_data }) do
 		local base_string = context.lstr.containerinstallableitem.slingshot_handle[type .. "fire_rate"]
-		print(type .. "fire_rate")
 		local fire_rate_string
 		local fire_rate_string_complex
 

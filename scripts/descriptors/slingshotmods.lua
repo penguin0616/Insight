@@ -26,6 +26,10 @@ local function Describe(self, context)
 		return
 	end
 
+	if not self.containerinst then
+		return
+	end
+
 	local band = self.containerinst.components.container:GetItemInSlot(1)
 	local frame = self.containerinst.components.container:GetItemInSlot(2)
 	local handle = self.containerinst.components.container:GetItemInSlot(3)
