@@ -36,7 +36,7 @@ local function Describe(self, context)
 	
 	return
 		band and Insight.descriptors.containerinstallableitem.DescribeSlingshotBand(band, context) or nil,
-		frame and Insight.descriptors.containerinstallableitem.DescribeSlingshotBand(frame, context) or nil,
+		frame and Insight.descriptors.containerinstallableitem.DescribeSlingshotFrame(frame, context) or nil,
 		Insight.descriptors.containerinstallableitem.DescribeSlingshotHandle(handle or self.inst, context) or nil
 end
 
