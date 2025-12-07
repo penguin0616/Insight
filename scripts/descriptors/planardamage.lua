@@ -60,6 +60,11 @@ local function Describe(self, context)
 	end
 
 	local base_damage = self:GetBaseDamage()
+	if type(base_damage) ~= "number" then
+		-- Mods are setting base damage to nil for some reason.
+		return
+	end
+
 	local current_damage = self:GetDamage()
 	
 	local bonus_damage = current_damage - base_damage

@@ -404,7 +404,7 @@ local function EvaluateRelevance(inst, isApplication)
 
 	local container
 	if prefab then
-		container = (IS_DST and inst.replica.container) or inst.components.container
+		container = (IS_DST and inst.replica.container) or inst.components.container or nil
 
 		if not container and IS_DST then
 			-- Check to see if we have container data still for what is probably a container_proxy

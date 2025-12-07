@@ -27,7 +27,7 @@ local function GetCooldownData(inst)
 	-- cooldown = time before can resocket the key
 	-- destabilizedelay = time before can pulse on rejoin
 	if R15_QOL_WORLDSETTINGS then
-		atriumgate_timer = inst.components.worldsettingstimer:GetTimeLeft("cooldown")
+		atriumgate_timer = inst.components.worldsettingstimer and inst.components.worldsettingstimer:GetTimeLeft("cooldown") or 0
 	else
 		atriumgate_timer = inst.components.timer:GetTimeLeft("cooldown")
 	end

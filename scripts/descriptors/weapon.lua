@@ -28,6 +28,15 @@ local WEAPON_CACHE = {
 
 local function DescribeYOTRPillowWeapon(self, context)
 	local description, alt_description
+
+	if type(self.inst._strengthmult) ~= "number" then
+		return
+	end
+
+	if type(self.inst._laglength) ~= "number" then
+		return
+	end
+
 	local knockback = string.format(context.lstr.combat.yotr_pillows.knockback, self.inst._knockback, self.inst._strengthmult * 100)
 	local laglength = string.format(context.lstr.combat.yotr_pillows.laglength, string.format(context.lstr.time_seconds, self.inst._laglength))
 	local prize_value = string.format(context.lstr.combat.yotr_pillows.prize_value, self.inst._prize_value or "?")
