@@ -1042,7 +1042,7 @@ do
 	local notable = {
 		"chester_eyebone", "hutch_fishbowl",  -- Both
 		
-		"atrium_key", "klaus_sack", "gingerbreadpig", -- DST
+		"atrium_key", "klaus_sack", "gingerbreadpig", "moonstorm_static_roamer", -- DST
 
 		-- DS
 	}

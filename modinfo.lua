@@ -368,7 +368,7 @@ do
 end
 
 local NOTABLE_INDICATORS = {"chester_eyebone", "hutch_fishbowl"}
-local NOTABLE_INDICATORS_DST = {"atrium_key", "klaus_sack", "gingerbreadpig"}
+local NOTABLE_INDICATORS_DST = {"atrium_key", "klaus_sack", "gingerbreadpig", "moonstorm_static_roamer"}
 local NOTABLE_INDICATORS_DS = {} -- TODO: The carrier things in SW and Hamlet
 local NOTABLE_INDICATORS_ALL = {}
 
