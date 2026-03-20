@@ -1118,7 +1118,7 @@ function UnloadPrefabDescriptor(name)
 	end
 end
 
-Insight.API.V1.AddComponentDescriptor = AddComponentDescriptor
+Insight.API.V1.UnloadPrefabDescriptor = UnloadPrefabDescriptor
 
 function AddPrefabDescriptor(name, descriptor, metadata)
 	-- Argument validation
