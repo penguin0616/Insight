@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- farmsoildrinker.lua
-local farmingHelper = import("helpers/farming")
+local farmingUtility = import("utility/farming")
 
 local function DescribeMoisture(self, context, definition)
 	local description = nil
@@ -29,10 +29,10 @@ local function DescribeMoisture(self, context, definition)
 		return
 	end
 
-	local tile_moisture = farmingHelper.GetTileMoistureAtPoint(self.inst.Transform:GetWorldPosition())
+	local tile_moisture = farmingUtility.GetTileMoistureAtPoint(self.inst.Transform:GetWorldPosition())
 	local plant_delta = self:GetMoistureRate() * 60
-	local tile_delta = farmingHelper.GetTileMoistureDelta(self.inst.Transform:GetWorldPosition()) * 60
-	local world_delta = farmingHelper.GetWorldMoistureDelta() * 60
+	local tile_delta = farmingUtility.GetTileMoistureDelta(self.inst.Transform:GetWorldPosition()) * 60
+	local world_delta = farmingUtility.GetWorldMoistureDelta() * 60
 	local alt_description
 
 	if not tile_moisture then
@@ -98,9 +98,9 @@ local function DescribeNutrients(self, context, definition)
 	end
 
 	local x, y, z = self.inst.Transform:GetWorldPosition() 
-	local tile_nutrients = farmingHelper.GetTileNutrientsAtPoint(x, y, z)
-	local net_nutrients = farmingHelper.GetPlantNutrientModifier(definition)
-	local tile_nutrient_delta = farmingHelper.GetTileNutrientDelta(x, y, z)
+	local tile_nutrients = farmingUtility.GetTileNutrientsAtPoint(x, y, z)
+	local net_nutrients = farmingUtility.GetPlantNutrientModifier(definition)
+	local tile_nutrient_delta = farmingUtility.GetTileNutrientDelta(x, y, z)
 	
 	local alt_description = string.format(context.lstr.farmsoildrinker_nutrients.soil_plant_tile,
 		tile_nutrients.formula, tile_nutrients.compost, tile_nutrients.manure,
@@ -168,7 +168,7 @@ end
 -- local WEED_DEFS = require("prefabs/weed_defs").WEED_DEFS
 
 local function Describe(self, context)
-	if not farmingHelper.IsInitialized() then
+	if not farmingUtility.IsInitialized() then
 		return { priority=0; description = "<color=#ff0000>Farming helper not initialized (farmsoildrinker).</color>"}
 	end
 

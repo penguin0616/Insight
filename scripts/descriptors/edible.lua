@@ -22,7 +22,7 @@ directory. If not, please refer to
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 
 local uncompromising = KnownModIndex:IsModEnabled("workshop-2039181790")
-local debuffHelper = import("helpers/debuff")
+local debuffUtility = import("utility/debuff")
 local cooking = require("cooking")
 local world_type = GetWorldType()
 
@@ -362,7 +362,7 @@ local function DescribeFoodEffects(self, context)
 	local advanced_effect_table = nil
 
 	-- Prepare normal effects (stuff like temperature deltas, antihistamine, etc.)
-	local effects = debuffHelper.GetFoodEffects(self)
+	local effects = debuffUtility.GetFoodEffects(self)
 	local effect_description = {}
 
 	for name, data in pairs(effects) do
@@ -382,7 +382,7 @@ local function DescribeFoodEffects(self, context)
 
 	-- Prepare advanced effects (warly buffs, etc.)
 	if self.inst then
-		local advanced_effects = debuffHelper.GetItemEffects(self.inst, context)
+		local advanced_effects = debuffUtility.GetItemEffects(self.inst, context)
 		if advanced_effects and #advanced_effects > 0 then
 			advanced_effect_table = {
 				name = "edible_advancedfoodeffects",

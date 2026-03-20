@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- reloaditem.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 local function Describe(self, context)
 	local description = nil
 
@@ -27,7 +27,7 @@ local function Describe(self, context)
 		return
 	end
 
-	local data = combatHelper.GetSlingshotAmmoData(self.inst.prefab)
+	local data = combatUtility.GetSlingshotAmmoData(self.inst.prefab)
 	if not data then
 		return
 	end

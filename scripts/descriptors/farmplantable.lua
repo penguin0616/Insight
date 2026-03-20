@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- farmplantable.lua
-local farmingHelper = import("helpers/farming")
+local farmingUtility = import("utility/farming")
 
 local function StringifyPlantGoodSeasons(seasons, context)
 	local str = ""
@@ -48,7 +48,7 @@ end
 	
 
 local function Describe(self, context)
-	if not farmingHelper.IsInitialized() then
+	if not farmingUtility.IsInitialized() then
 		return { priority = 0; description = "<color=#ff0000>Farming helper not initialized (farmplantable).</color>" }
 	end
 
@@ -60,14 +60,14 @@ local function Describe(self, context)
 		return
 	end
 
-	local definition = farmingHelper.GetPlantDefinitionFromSeed(self.plant)
+	local definition = farmingUtility.GetPlantDefinitionFromSeed(self.plant)
 
 	if not definition then
 		return
 	end
 
 	local alt_description = nil
-	local nutrients = farmingHelper.GetPlantNutrientModifier(definition)
+	local nutrients = farmingUtility.GetPlantNutrientModifier(definition)
 
 	local product = definition.product or "???"
 	if context.usingIcons and PrefabHasIcon(product) then

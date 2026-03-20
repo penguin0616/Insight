@@ -26,27 +26,23 @@ local function Describe(self, context)
 
 	if context.config["klaus_sack_info"] then
 		alt_description = {context.lstr.klaussackloot}
-		local loot = Insight.descriptors.klaussackloot.SummarizeImportantLoot()
+		local loot = Insight.descriptors.klaussackloot.SummarizeLoot()
 
-		for name, amount in pairs(loot) do
+		for name, data in pairs(loot) do
 			local clr = "#FFFFFF"
-			-- Some mod made name a table for some dumb reason.
-			if type(name) == "string" then
-				if name=="krampus_sack" then
+			if data.important then
+				if name == "krampus_sack" then
 					clr = Insight.COLORS.FRUIT
 				elseif name:sub(-10) == "_blueprint" then
 					clr = "#4A7ECE"--"#396DBD"
 				end
-				table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, amount))
-			else
-				table.insert(alt_description, "<color=#aaaaaa>???</color>")
+				table.insert(alt_description, string.format("<color=%s><prefab=%s></color>(<color=DECORATION>%d</color>)", clr, name, data.amount))
 			end
 		end
+
 		alt_description = table.concat(alt_description, "\n")
 	end
 	
-	
-
 	return {
 		priority = 0,
 		alt_description = alt_description

@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- containerinstallableitem.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 local SLINGSHOTPART_DEFS = require("prefabs/slingshotpart_defs")
 local BAND_PREFIX = "slingshot_band_"
 
@@ -142,7 +142,7 @@ local function DescribeSlingshotBand(inst, context)
 
 	return {
 		name = "containerinstallableitem_slingshotband",
-		priority = combatHelper.DAMAGE_PRIORITY - 101,
+		priority = combatUtility.DAMAGE_PRIORITY - 101,
 		description = description,
 		alt_description = alt_description
 	}
@@ -153,7 +153,7 @@ local function DescribeSlingshotFrame(inst, context)
 
 	return {
 		name = "containerinstallableitem_slingshotframe",
-		priority = combatHelper.DAMAGE_PRIORITY - 102,
+		priority = combatUtility.DAMAGE_PRIORITY - 102,
 		description = description,
 		alt_description = alt_description
 	}
@@ -230,7 +230,7 @@ local function DescribeSlingshotHandle(inst, context)
 
 	return {
 		name = "containerinstallableitem_slingshothandle",
-		priority = combatHelper.DAMAGE_PRIORITY - 103,
+		priority = combatUtility.DAMAGE_PRIORITY - 103,
 		description = description,
 		alt_description = alt_description
 	}

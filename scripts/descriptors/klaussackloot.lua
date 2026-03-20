@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- klaussackloot.lua
--- cache loot?
+
 --local giant_loot1 = assert(util.getupvalue(TheWorld.components.klaussackloot.RollKlausLoot, "giant_loot1"), "[Insight]: klaussackloot -> missing giant_loot1")
 --[[
 {
@@ -60,76 +60,46 @@ directory. If not, please refer to
 }
 --]]
 
-local function SummarizeImportantLoot(self)
+local function SummarizeLoot(self)
 	self = self or TheWorld.components.klaussackloot
 	
 	local loot = {}
-	-- so while i could just check the i of self.loot to figure out which bundle we are on, i think just checking if its in the loot pool is more mod compatible.
-
+	-- self.loot structure:
 	--[[
 		bundle 1: amulet, goldnugget, X charcoal
 		bundle 2: 50% chance of amulet, goldnugget, X charcoal
 		bundle 3: 10% chance of krampus sack, goldnugget, X charcoal
 		bundle 4: giant loot
 	]]
-
-	if self.loot[3] then
-		for k = 1, #self.loot[3] do
-			local item = self.loot[3][k]
-			if item == "krampus_sack" then
-				loot[item] = (loot[item] or 0) + 1
-			end
-		end
-	end
-
-	if self.loot[4] then
-		for k = 1, #self.loot[4] do
-			local item = self.loot[4][k]
-			loot[item] = (loot[item] or 0) + 1
-		end
-	end
-
-	--[[
-	for i = 1, #self.loot do
-		local bundle = self.loot[i]
-		for k = 1, #bundle do
-			local item = bundle[k]
-			if not loot[item] then
-				loot[item] = 1
-			else
-				loot[item] = loot[item] + 1
-			end
-		end
-	end
 	
 
+	local loot_pools = {self.loot}
 	if IsSpecialEventActive(SPECIAL_EVENTS.WINTERS_FEAST) then
-		for i = 1, #self.wintersfeast_loot do
-			local bundle = self.wintersfeast_loot[i]
-			for k = 1, #bundle do
-				local item = bundle[k]
-				if not loot[item] then
-					loot[item] = 1
-				else
-					loot[item] = loot[item] + 1
+		table.insert(loot_pools, self.wintersfeast_loot)
+	end
+
+	for poolIdx, pool in ipairs(loot_pools) do
+		for bundleIdx, bundle in ipairs(pool) do
+			for itemIdx = 1, #bundle do
+				local prefab = bundle[itemIdx]
+				-- Winterlands stores tables instead of strings sometimes.
+				if type(prefab) == "string" then
+					if not loot[prefab] then
+						loot[prefab] = {
+							amount = 0,
+							important = poolIdx == 1 and (bundleIdx == 3 or bundleIdx == 4),
+						}
+					end
+					loot[prefab].amount = loot[prefab].amount + 1
 				end
 			end
 		end
 	end
-	--]]
+
 
 	return loot
 end
 
-local function Describe(self, context)
-	local description = nil
-
-	return nil
-end
-
-
-
 return {
-	Describe = Describe,
-	SummarizeImportantLoot = SummarizeImportantLoot,
+	SummarizeLoot = SummarizeLoot,
 }

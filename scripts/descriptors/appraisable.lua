@@ -23,7 +23,7 @@ if not IS_DST then
 	return { Describe = function() end }
 end
 
-local yotbHelper = import("helpers/yotb")
+local yotbUtility = import("utility/yotb")
 
 local function Describe(self, context)
 	if not context.config["display_yotb_appraisal"] then
@@ -37,13 +37,13 @@ local function Describe(self, context)
 
 	if not inst.category then
 		description = "This doll does not have a category?"
-	elseif not yotbHelper.set_data.costumes[inst.category] then
+	elseif not yotbUtility.set_data.costumes[inst.category] then
 		description = "This doll has an unknown costume for its category."
 	else -- good to go
 		--local qualities = {
-		local FEARSOME = yotbHelper.set_data.categories[inst.category].FEARSOME * 5 or "?"
-		local FESTIVE = yotbHelper.set_data.categories[inst.category].FESTIVE * 5 or "?"
-		local FORMAL = yotbHelper.set_data.categories[inst.category].FORMAL * 5 or "?"
+		local FEARSOME = yotbUtility.set_data.categories[inst.category].FEARSOME * 5 or "?"
+		local FESTIVE = yotbUtility.set_data.categories[inst.category].FESTIVE * 5 or "?"
+		local FORMAL = yotbUtility.set_data.categories[inst.category].FORMAL * 5 or "?"
 		--}
 
 		-- fear threshold, fear threshold index

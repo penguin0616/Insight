@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- wathgrithr_shield.lua [Prefab]
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local function Describe(inst, context)
 	if not inst.components.parryweapon then
@@ -42,7 +42,7 @@ local function Describe(inst, context)
 	)
 
 	described.name = "wathgrithr_shield_parryweapon"
-	described.priority = combatHelper.DAMAGE_PRIORITY - 105
+	described.priority = combatUtility.DAMAGE_PRIORITY - 105
 
 	described.alt_description = string.format(context.lstr.wathgrithr_shield.parry_duration_complex,
 		parry_skill_active and "#8c8c8c" or "HEALTH",

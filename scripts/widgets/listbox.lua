@@ -414,7 +414,7 @@ end
 function ListBox:OnControl(control, down)
 	if self._base.OnControl(self, control, down) then return true end
 
-	local scheme = controlHelper.GetCurrentScheme()
+	local scheme = controlUtility.GetCurrentScheme()
 	if not down then
 		if self.dropdown.shown and scheme:IsAcceptedControl("exit", control) then
 			self:CloseDropdown()

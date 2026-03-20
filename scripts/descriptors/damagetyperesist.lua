@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- damagetyperesist.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local function DescribeModifiers(modifiers, context)
 	local description = nil
@@ -30,7 +30,7 @@ local function DescribeModifiers(modifiers, context)
 		-- The signs are flipped across damagetypebonus/resist.
 		local percent_color = (percent < 0 and Insight.COLORS.PERCENT_GOOD) or (percent > 0 and Insight.COLORS.PERCENT_BAD) or "#ffffff"
 		
-		local type_color = combatHelper.DAMAGE_TYPE_COLORS[tag] or "#8c8c8c"
+		local type_color = combatUtility.DAMAGE_TYPE_COLORS[tag] or "#8c8c8c"
 		local name = context.lstr.damage_types[tag] or ("\"" .. tag .. "\"")
 		name = ApplyColor(name, type_color)
 		
@@ -43,7 +43,7 @@ local function DescribeModifiers(modifiers, context)
 
 	return {
 		name = "damagetyperesist",
-		priority = combatHelper.DAMAGE_PRIORITY - 201,
+		priority = combatUtility.DAMAGE_PRIORITY - 201,
 		description = description
 	}
 end
@@ -53,7 +53,7 @@ local function Describe(self, context)
 		if not context.config["armor"] then return end
 	end
 
-	local modifiers = combatHelper.GetDamageTypeModifiers(self)
+	local modifiers = combatUtility.GetDamageTypeModifiers(self)
 
 	return DescribeModifiers(modifiers, context)
 end

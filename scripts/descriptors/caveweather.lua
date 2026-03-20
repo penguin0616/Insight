@@ -25,7 +25,7 @@ local WHITE = Color.fromRGB(255, 255, 255)
 local RAIN_COLOR = Color.fromHex(Insight.COLORS.WET)
 local ACID_RAIN_COLOR = Color.fromHex(Insight.COLORS.SHADOW_ALIGNED)
 
-local entity_tracker = import("helpers/entitytracker")
+local entity_tracker = import("utility/entitytracker")
 
 --local world_prefix = ((TheWorld.worldprefab == "forest" and "") or (TheWorld.worldprefab == "cave" and "cave") or TheWorld.worldprefab)
 --local OnUpdate = TheWorld.net.components[world_prefix.."weather"].OnUpdate

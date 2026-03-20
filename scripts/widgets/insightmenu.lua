@@ -339,10 +339,10 @@ function InsightMenu:SetPage(num)
 end
 
 function InsightMenu:OnControl(control, down)
-	--dprint("\tInsightMenu OnControl", controlHelper.Prettify(control), down)
+	--dprint("\tInsightMenu OnControl", controlUtility.Prettify(control), down)
 	--dprint("\t\t", self.tabs[1].focus, self.tabs[2].focus, self.config_button.focus, "|", self.current_page)
 	
-	local scheme = controlHelper.GetCurrentScheme()
+	local scheme = controlUtility.GetCurrentScheme()
 
 	if self.current_page then
 		local a = self.current_page.list:OnControl(control, down) -- TODO: Temporary Workaround
@@ -361,7 +361,7 @@ function InsightMenu:GetHelpText()
 	local controller_id = TheInput:GetControllerID()
 
 	local tips = {}
-	table.insert(tips, TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.previous_value:GetPrimaryControl()) .. "/" .. TheInput:GetLocalizedControl(controller_id, controlHelper.controller_scheme.next_value:GetPrimaryControl()) .. " " .. "Switch Tabs")
+	table.insert(tips, TheInput:GetLocalizedControl(controller_id, controlUtility.controller_scheme.previous_value:GetPrimaryControl()) .. "/" .. TheInput:GetLocalizedControl(controller_id, controlUtility.controller_scheme.next_value:GetPrimaryControl()) .. " " .. "Switch Tabs")
 
 	return table.concat(tips, "  ")
 end

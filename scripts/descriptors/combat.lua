@@ -19,8 +19,8 @@ directory. If not, please refer to
 ]]
 
 -- combat.lua
-local combatHelper = import("helpers/combat")
-local attackRangeHelper = import("helpers/attack_range")
+local combatUtility = import("utility/combat")
+local attackRangeUtility = import("utility/attack_range")
 
 local FAKE_COMBATS = {
 	["moonstorm_spark"] = {
@@ -52,11 +52,11 @@ local ConvertHealthAmountToAge = Insight.descriptors.oldager and Insight.descrip
 local world_type = GetWorldType()
 
 local function OnServerLoad()
-	AddComponentPostInit("combat", attackRangeHelper.HookCombat)
+	AddComponentPostInit("combat", attackRangeUtility.HookCombat)
 
 	for prefab, data in pairs(FAKE_COMBATS) do
 		AddPrefabPostInit(prefab, function(inst)
-			attackRangeHelper.RegisterFalseCombat(inst, data)
+			attackRangeUtility.RegisterFalseCombat(inst, data)
 		end)
 	end
 end
@@ -276,7 +276,7 @@ local function Describe(self, context)
 
 
 	return {
-		priority = combatHelper.DAMAGE_PRIORITY + 100,
+		priority = combatUtility.DAMAGE_PRIORITY + 100,
 		forge_enabled = true,
 		description = description,
 		alt_description = alt_description,

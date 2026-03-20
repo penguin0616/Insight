@@ -19,12 +19,12 @@ directory. If not, please refer to
 ]]
 
 -- healingsalve_acid.lua [Prefab]
-local debuffHelper = import("helpers/debuff")
+local debuffUtility = import("utility/debuff")
 
 local function Describe(inst, context)
 	local description = nil
 
-	local effects = debuffHelper.GetItemEffects(inst, context)
+	local effects = debuffUtility.GetItemEffects(inst, context)
 	if effects and #effects > 0 then
 		description = CombineLines(description, table.concat(effects, "\n"))
 	end

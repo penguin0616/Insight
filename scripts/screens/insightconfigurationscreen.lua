@@ -1086,10 +1086,10 @@ end
 --]]
 
 function InsightConfigurationScreen:OnControl(control, down)
-	--mprint("InsightConfigurationScreen", controlHelper.Prettify(control), down)
+	--mprint("InsightConfigurationScreen", controlUtility.Prettify(control), down)
 	if self._base.OnControl(self, control, down) then return true end
 
-	local scheme = controlHelper.GetCurrentScheme()
+	local scheme = controlUtility.GetCurrentScheme()
 	if not down then
 		if scheme:IsAcceptedControl("exit", control) then
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")

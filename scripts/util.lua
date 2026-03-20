@@ -18,10 +18,9 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
----------------------------------------
--- Utilities.
--- @module util
--- @author penguin0616
+--- Utilities.
+--- @module util
+--- @author penguin0616
 
 local _string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile = string, xpcall, package, tostring, print, os, unpack, require, getfenv, setmetatable, next, assert, tonumber, io, rawequal, collectgarbage, getmetatable, module, rawset, math, debug, pcall, table, newproxy, type, coroutine, _G, select, gcinfo, pairs, rawget, loadstring, ipairs, _VERSION, dofile, setfenv, load, error, loadfile
 local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim = TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, PostProcessor, TheItems, EnvelopeManager, TheRawImgui, ShadowManager, TheSystemService, TheInventory, MapLayerManager, RoadManager, TheLeaderboards, TheSim
@@ -44,44 +43,6 @@ local module = {
 		}
 	}
 }
-
-if IS_DS and not UICOLOURS then
-	_G.GOLD = {202/255, 174/255, 118/255, 255/255}
-	_G.GREY = {.57, .57, .57, 1}
-	_G.BLACK = {.1, .1, .1, 1}
-	_G.WHITE = {1, 1, 1, 1}
-	_G.BROWN = {97/255, 73/255, 46/255, 255/255}
-	_G.RED = {.7, .1, .1, 1}
-	_G.DARKGREY = {.12, .12, .12, 1}
-
-	function _G.RGB(r, g, b)
-		return { r / 255, g / 255, b / 255, 1 }
-	end
-
-	_G.UICOLOURS = {
-		GOLD_CLICKABLE = RGB(215, 210, 157), -- interactive text & menu
-		GOLD_FOCUS = RGB(251, 193, 92), -- menu active item
-		GOLD_SELECTED = RGB(245, 243, 222), -- titles and non-interactive important text
-		GOLD_UNIMPORTANT = RGB(213, 213, 203), -- non-interactive non-important text
-		HIGHLIGHT_GOLD = RGB(243, 217, 161),
-		GOLD = GOLD,
-		BROWN_MEDIUM = RGB(107, 84, 58),
-		BROWN_DARK = RGB(80, 61, 39),
-		BLUE = RGB(80, 143, 244),
-		GREY = GREY,
-		BLACK = BLACK,
-		WHITE = WHITE,
-		BRONZE = RGB(180, 116, 36, 1),
-		EGGSHELL = RGB(252, 230, 201),
-		IVORY = RGB(236, 232, 223, 1),
-		IVORY_70 = RGB(165, 162, 156, 1),
-		PURPLE = RGB(152, 86, 232, 1),
-		RED = RGB(207, 61, 61, 1),
-		SLATE = RGB(155, 170, 177, 1),
-		SILVER = RGB(192, 192, 192, 1),
-	}
-end
-
 --- Returns the default if the number is not a valid number.
 ---@param num number
 ---@param default
@@ -91,40 +52,6 @@ function SanitizeNumber(num, default)
 		return default
 	end
 	return num
-end
-
-if IS_DS then
-	function _G.ClickMouseoverSoundReduction() return nil end
-
-	function isnan(x) return x ~= x end
-	math.inf = 1/0 
-	function isinf(x) return x == math.inf or x == -math.inf end
-	function isbadnumber(x) return isinf(x) or isnan(x) end
-	
-	function _G.FunctionOrValue(func_or_val, ...)
-		if type(func_or_val) == "function" then
-			return func_or_val(...)
-		end
-		return func_or_val
-	end
-
-	-- RunInSandboxSafe uses an empty environement
-	-- By default this function does not assert
-	-- If you wish to run in a safe sandbox, with normal assertions:
-	-- RunInSandboxSafe( untrusted_code, debug.traceback )
-	function _G.RunInSandboxSafe(untrusted_code, error_handler)
-		if untrusted_code:byte(1) == 27 then return nil, "binary bytecode prohibited" end
-		local untrusted_function, message = loadstring(untrusted_code)
-		if not untrusted_function then return nil, message end
-		setfenv(untrusted_function, {} )
-		return xpcall(untrusted_function, error_handler or function() end)
-	end
-
-	function _G.metapairs(t, ...)
-		local m = debug.getmetatable(t)
-		local p = m and m.__pairs or pairs
-		return p(t, ...)
-	end
 end
 
 module.COLORS_ADD = { -- brighter but most color gets siphoned at night
@@ -171,7 +98,7 @@ module.temperature.GAME_FORMAT = "%.1f" .. module.temperature.DEGREE_CHARACTER
 module.temperature.CELSIUS_FORMAT = module.temperature.GAME_FORMAT .. "C"
 module.temperature.FAHRENHEIT_FORMAT = module.temperature.GAME_FORMAT .. "F"
 
-local Reader = import("reader")
+local Reader = import("objects/reader")
 local Text = require("widgets/text") --FIXED_TEXT
 local known_bundles = setmetatable({}, {__mode = "k"})
 
@@ -389,6 +316,7 @@ end
 
 ApplyColour = ApplyColor
 
+--[[
 function front(widget)
 	widget:MoveToFront()
 	for i,v in pairs(widget:GetChildren()) do
@@ -402,6 +330,7 @@ function back(widget)
 		back(v)
 	end
 end
+--]]
 
 function GetPlayerColour(arg)
 	if type(arg) == "string" then
@@ -774,7 +703,7 @@ function module.getupvalues(func)
 	while true do
 		local n, v = debug.getupvalue(func, i)
 		if not n then return upvs end
-		table.insert(upvs, {name=n, value=v}) -- ISSUE:PERFORMANCE (TEST#12)
+		table.insert(upvs, {name=n, value=v, index=i, func=func}) -- ISSUE:PERFORMANCE (TEST#12)
 		i = i + 1
 	end
 	return upvs
@@ -809,48 +738,44 @@ function module.recursive_getupvalues(func)
 	return upvs
 end
 
---[[
-function module.getupvaluesandenvironment(func)
+function module.recursive_setupvalue(func, name, replacement, max_replacements)
+	if type(func) ~= "function" then
+		errorf("argument #1 expected function, got %s", type(func))
+		return
+	end
+
+	if type(name) ~= "string" then
+		errorf("argument #2 expected string, got %s", type(name))
+		return
+	end
+
+	max_replacements = max_replacements or math.huge
+	current_replacements = 0
+
+
 	local checked = {}
-	local stuff = {}
 
-	local function scan(arg)
-		if checked[arg] then
-			return
+	local function scan(fn)
+		if checked[fn] then
+			return nil
 		end
 
-		checked[arg] = true
+		checked[fn] = true
 
-		for i,v in pairs(getfenv(arg)) do
-			table.insert(stuff, {name=i, value=v})
-
-			if type(i) == "function" then
-				scan(i)
-			end
-			if type(v) == "function" then
-				scan(v)
-			end
-		end
-
-		for i, upv in pairs(module.getupvalues(fn)) do
-			table.insert(upvs, upv)
-
-			if type(i) == "function" then -- in case some wise guy decides to store something with the index as a function.
-				scan(i)
-			elseif type(upv.value) == "function" then
+		for _, upv in pairs(module.getupvalues(fn)) do
+			if (type(name) == 'function' and name(upv.name, upv.value)) or upv.name == name then
+				if current_replacements < max_replacements then
+					debug.setupvalue(upv.func, upv.index, replacement)
+					current_replacements = current_replacements + 1
+				end
+			elseif type(upv.value) == 'function' then
 				scan(upv.value)
-			--elseif type(upv.name) == "function" then -- in case some wise guy decides to store something with the index as a function.
-				--scan(upv.name)
 			end
 		end
 	end
 
-
 	scan(func)
-
-	return stuff
 end
---]]
 
 --- Retrives the first upvalue that matches the arguments.
 ---@param func function
@@ -1007,40 +932,7 @@ function module.replaceupvalue(func, name, replacement)
 		i = i + 1
 	end
 	error(string.format("Unable to find upvalue '%s' for replacing.", name))
-end
-
-if not table.invert then
-	-- whatever
-	function table.invert(t)
-		local invt = {}
-		for k, v in pairs(t) do
-			invt[v] = k
-		end
-		return invt
-	end
-end
-
-if not table.reverselookup then
-	function table.reverselookup(t, lookup_value)
-		for k, v in pairs(t) do
-			if v == lookup_value then
-				return k
-			end
-		end
-		return nil
-	end
-end
-
-if not table.getkeys then
-	-- Return an array table of the keys of the input table.
-	function table.getkeys(t)
-		local keys = {}
-		for key,val in pairs(t) do
-			table.insert(keys, key)
-		end
-		return keys
-	end
-end
+end 
 
 -- Sourced from https://web.archive.org/web/20131225070434/http://snippets.luacode.org/snippets/Deep_Comparison_of_Two_Values_3
 function deepcompare(t1, t2, ignore_mt)
@@ -1059,22 +951,6 @@ function deepcompare(t1, t2, ignore_mt)
 		if v1 == nil or not deepcompare(v1,v2) then return false end
 	end
 	return true
-end
-
-if not shallowcopy then
-	-- http://lua-users.org/wiki/CopyTable
-	function shallowcopy(orig, dest)
-		local copy
-		if type(orig) == 'table' then
-			copy = dest or {}
-			for k, v in pairs(orig) do
-				copy[k] = v
-			end
-		else -- number, string, boolean, etc
-			copy = orig
-		end
-		return copy
-	end
 end
 
 if IS_DST then

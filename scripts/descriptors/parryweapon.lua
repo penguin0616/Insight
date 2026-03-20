@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- parryweapon.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local function DescribeParryDuration(self, context, duration, format)
 	-- I was thinking about putting parry duration checks here on parryweapon, 
@@ -32,7 +32,7 @@ local function DescribeParryDuration(self, context, duration, format)
 
 	return {
 		name = "parryweapon_parryduration",
-		priority = combatHelper.DAMAGE_PRIORITY - 5,
+		priority = combatUtility.DAMAGE_PRIORITY - 5,
 		description = description
 	}
 end

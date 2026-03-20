@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- planardamage.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local function DescribeByScrapbook(inst, context)
 	local description = nil
@@ -35,7 +35,7 @@ local function DescribeByScrapbook(inst, context)
 
 	return {
 		name = "planardamage_scrapbook",
-		priority = combatHelper.DAMAGE_PRIORITY - 100,
+		priority = combatUtility.DAMAGE_PRIORITY - 100,
 		description = description,
 		alt_description = alt_description
 	}
@@ -80,7 +80,7 @@ local function Describe(self, context)
 	
 	return {
 		name = "planardamage",
-		priority = combatHelper.DAMAGE_PRIORITY - 100,
+		priority = combatUtility.DAMAGE_PRIORITY - 100,
 		description = description,
 		alt_description = alt_description
 	}

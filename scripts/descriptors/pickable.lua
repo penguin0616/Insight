@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- pickable.lua
-local wsth = import("helpers/worldsettingstimer")
+local wsth = import("utility/worldsettingstimer")
 
 local function Describe(self, context)
 	if not context.config["display_pickable"] then

@@ -21,9 +21,9 @@ directory. If not, please refer to
 -- tradable.lua
 local function Describe(self, context)
 	local description = nil
-	local gold = self.goldvalue > 0 and self.goldvalue
-	local dubloon = self.dubloonvalue and self.dubloonvalue > 0 and self.dubloonvalue
-	local tribute = self.rocktribute and self.rocktribute > 0 and self.rocktribute
+	local gold = type(self.goldvalue) == "number" and self.goldvalue > 0
+	local dubloon = type(self.dubloonvalue) == "number" and self.dubloonvalue > 0
+	local tribute = type(self.rocktribute) == "number" and self.rocktribute > 0
 
 
 	if context.config["item_worth"] then
