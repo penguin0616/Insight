@@ -121,7 +121,7 @@ local function PrimeComplexConfiguration()
 
 	local function_env = setmetatable({}, {
 		__index = function(self, index)
-			-- Check to see if it's somethinng inside modinfo.
+			-- Check to see if it's something inside modinfo.
 			local ret = modinfo[index]
 			if ret ~= nil then
 				return ret

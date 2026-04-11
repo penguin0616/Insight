@@ -34,13 +34,19 @@ local combatUtility = import("utility/combat")
 local function DescribeDamage(self, context, format, combat)
 	local stimuli_data = combatUtility.GetStimuliData(self.stimuli)
 
-	local damage = self.damage
+	-- So it seems that aoeweapon_base doesn't really make use of self.damage beyond using it as a reference
+	-- for setting it for weapon.damage in the lunge & whatnot.
+	-- That means we should be getting the weapon damage instead, if it exists.
+	local damage = self.inst.components.weapon and Insight.descriptors.weapon.GetDamage(self.inst.components.weapon, context.player)
+	-- This should account for most uses. I suspect that if this provdes insufficient, it will be due to a mod using custom weapon logic.
+	-- In which case, I could try mimicing the FunctionOrValue in Weapon:GetDamage(). But we'll see.
+
 	if damage then
 		if stimuli_data.default_damage_modifier then
 			damage = damage * stimuli_data.default_damage_modifier
 		end
 
-		damage = damage * combatUtility.GetOutgoingDamageModifier(combat)
+		damage = Round(damage * combatUtility.GetOutgoingDamageModifier(combat), 1)
 	else
 		damage = "nil"
 	end
