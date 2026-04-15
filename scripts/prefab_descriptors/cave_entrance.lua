@@ -56,7 +56,7 @@ local function Initialize()
 
 	initialized = true
 
-	AddPrefabPostInit("cave_entrace_open", OnMigratorSpawned)
+	AddPrefabPostInit("cave_entrance_open", OnMigratorSpawned)
 	AddPrefabPostInit("cave_exit", OnMigratorSpawned)
 end
 
