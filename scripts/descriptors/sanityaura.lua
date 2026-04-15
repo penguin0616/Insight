@@ -101,7 +101,7 @@ local function Describe(self, context)
 	aura = aura * 60 * (context.player.components.sanity.rate_modifier or 1)
 
 	if aura ~= 0 then
-		description = string.format(context.lstr.sanityaura, FormatDecimal(aura, context.burnable_sanity_aura_round or 1))
+		description = string.format(context.lstr.sanityaura.aura_value, FormatDecimal(aura, context.burnable_sanity_aura_round or 1))
 	end
 
 	return {

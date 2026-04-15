@@ -1197,11 +1197,15 @@ return {
 	sanity = {
 		current_sanity = "<color=SANITY>ค่าสติ</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<color=ENLIGHTENMENT>ค่าปัญญา</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		dapperness_mult = "<color=SANITY>Dapperness Multiplier</color>: <color=SANITY>%+.1f%%</color>",
 		interaction = "<color=SANITY>ค่าสติ</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
-	sanityaura = "<color=SANITY>ออร่าค่าสติ</color>: <color=SANITY>%s/min</color>",
+	sanityaura = {
+		aura_value = "<color=SANITY>ออร่าค่าสติ</color>: <color=SANITY>%s/min</color>",
+		negative_aura_modifier = "Negative <color=SANITY>sanity aura</color> resistance: <color=SANITY>%+.0f%%</color>",
+	},
 
 	-- scenariorunner.lua
 	scenariorunner = {
@@ -1405,6 +1409,7 @@ return {
 	upgrademodule = {
 		module_describers = {
 			maxhealth = "เพิ่ม<color=HEALTH>พลังชีวิตสูงสุด</color> <color=HEALTH>%d</color> หน่วย",
+			maxhealth_armor = "Post-armor combat damage reduction: <color=HEALTH>%.1f%%</color>",
 			maxsanity = "เพิ่ม<color=SANITY>ค่าสติสูงสุด</color> <color=SANITY>%d</color> หน่วย",
 			movespeed = "เพิ่ม<color=DAIRY>ความเร็วเคลื่อนที่</color> %s",
 			heat = "เพิ่ม<color=#cc0000>อุณหภูมิต่ำสุด</color>ขึ้น <color=#cc0000>%d</color> หน่วย",
@@ -1416,6 +1421,9 @@ return {
 			music = "ให้<color=SANITY>ออร่าค่าสติ</color> <color=SANITY>%+.1f/min</color> ในระยะ <color=SANITY>%.1f</color> กระเบื้อง",
 			music_tend = "ถนอมพืชในสวนเป็นระยะ <color=NATURE>%.1f</color> กระเบื้อง",
 			bee = "ฟื้นฟู<color=HEALTH>%d พลังชีวิต/%d วินาที</color> (<color=HEALTH>%d/วัน</color>).",
+			bee_shield = "Max Shield: <color=HEALTH>%d</color> (<color=HEALTH>%d%%</color> of <color=HEALTH>max health</color>)",
+			bee_shield_regen = "Shield charge per second: %.1f",
+			radar = "Bonus Drone Range: %d",
 		},
 	},
 

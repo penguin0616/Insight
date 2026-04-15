@@ -1216,11 +1216,15 @@ return {
 	sanity = {
 		current_sanity = "<icon=sanity> <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<icon=enlightenment> <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		--dapperness_mult = "<color=SANITY>Dapperness Multiplier</color>: <color=SANITY>%+.1f%%</color>",
 		--interaction = "<color=SANITY>Sanity</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
-	sanityaura = "<icon=sanity> <color=SANITY>%s/min</color>",
+	sanityaura = {
+		aura_value = "<icon=sanity> <color=SANITY>%s/min</color>",
+		negative_aura_modifier = "Negative <color=SANITY>sanity aura</color> resistance: <color=SANITY>%+.0f%%</color>",
+	},
 
 	-- scenariorunner.lua
 	scenariorunner = {
@@ -1424,6 +1428,7 @@ return {
 	upgrademodule = {
 		module_describers = {
 			--maxhealth = "Increases <color=HEALTH>max health</color> by <color=HEALTH>%d</color>.",
+			--maxhealth_armor = "Post-armor combat damage reduction: <color=HEALTH>%.1f%%</color>",
 			--maxsanity = "Increases <color=SANITY>max sanity</color> by <color=SANITY>%d</color>.",
 			--movespeed = "Increases <color=DAIRY>speed</color> by %s.",
 			--heat = "Increases <color=#cc0000>minimum temperature</color> by <color=#cc0000>%d</color>.",
@@ -1435,6 +1440,9 @@ return {
 			--music = "Provides a <color=SANITY>sanity aura</color> of <color=SANITY>%+.1f/min</color> within <color=SANITY>%.1f</color> tile(s).",
 			--music_tend = "Tends to plants within <color=NATURE>%.1f</color> tiles.",
 			--bee = "Regenerates <color=HEALTH>%d health/%ds</color> (<color=HEALTH>%d/day</color>).",
+			--bee_shield = "Max Shield: <color=HEALTH>%d</color> (<color=HEALTH>%d%%</color> of <color=HEALTH>max health</color>)",
+			--bee_shield_regen = "Shield charge per second: %.1f",
+			--radar = "Bonus Drone Range: %d",
 		},
 	},
 

@@ -1231,11 +1231,15 @@ return {
 	sanity = {
 		current_sanity = "<color=SANITY>Cordura</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<color=ENLIGHTENMENT>Iluminación</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		dapperness_mult = "<color=SANITY>Dapperness Multiplier</color>: <color=SANITY>%+.1f%%</color>",
 		interaction = "<color=SANITY>Cordura</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
-	sanityaura = "<color=SANITY>Aura de cordura</color>: <color=SANITY>%s/min</color>",
+	sanityaura = {
+		aura_value = "<color=SANITY>Aura de cordura</color>: <color=SANITY>%s/min</color>",
+		negative_aura_modifier = "Negative <color=SANITY>sanity aura</color> resistance: <color=SANITY>%+.0f%%</color>",
+	},
 
 	-- scenariorunner.lua
 	scenariorunner = {
@@ -1439,6 +1443,7 @@ return {
 	upgrademodule = {
 		module_describers = {
 			maxhealth = "Aumenta la <color=HEALTH>salud máxima</color> en <color=HEALTH>%d</color>.",
+			maxhealth_armor = "Post-armor combat damage reduction: <color=HEALTH>%.1f%%</color>",
 			maxsanity = "Aumenta la <color=SANITY>cordura máxima</color> en <color=SANITY>%d</color>.",
 			movespeed = "Aumenta la <color=DAIRY>velocidad</color> en %s.",
 			heat = "Aumenta la <color=#cc0000>temperatura mínima</color> en <color=#cc0000>%d</color>.",
@@ -1450,6 +1455,9 @@ return {
 			music = "Proporciona un <color=SANITY>aura de cordura</color> de <color=SANITY>%+.1f/min</color> en un radio de <color=SANITY>%.1f</color> tile(s).",
 			music_tend = "Atiende plantas en un radio de <color=NATURE>%.1f</color> tile(s).",
 			bee = "Regenera <color=HEALTH>%d de salud/%ds</color> (<color=HEALTH>%d/día</color>).",
+			bee_shield = "Max Shield: <color=HEALTH>%d</color> (<color=HEALTH>%d%%</color> of <color=HEALTH>max health</color>)",
+			bee_shield_regen = "Shield charge per second: %.1f",
+			radar = "Bonus Drone Range: %d",
 		},
 	},
 

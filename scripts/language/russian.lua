@@ -1215,11 +1215,15 @@ return {
 	sanity = {
 		current_sanity = "<color=SANITY>Рассудок</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<color=ENLIGHTENMENT>Просвещение</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		dapperness_mult = "<color=SANITY>Dapperness Multiplier</color>: <color=SANITY>%+.1f%%</color>",
 		interaction = "<color=SANITY>Рассудок</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
-	sanityaura = "<color=SANITY>Аура Рассудка</color>: <color=SANITY>%s/мин</color>",
+	sanityaura = {
+		aura_value = "<color=SANITY>Аура Рассудка</color>: <color=SANITY>%s/мин</color>",
+		negative_aura_modifier = "Negative <color=SANITY>sanity aura</color> resistance: <color=SANITY>%+.0f%%</color>",
+	},
 
 	-- scenariorunner.lua
 	scenariorunner = {
@@ -1423,6 +1427,7 @@ return {
 	upgrademodule = {
 		module_describers = {
 			maxhealth = "Увеличивает <color=HEALTH>максимальное здоровье</color> на <color=HEALTH>%d</color>.",
+			maxhealth_armor = "Post-armor combat damage reduction: <color=HEALTH>%.1f%%</color>",
 			maxsanity = "Увеличивает <color=SANITY>максимальный рассудок</color> на <color=SANITY>%d</color>.",
 			movespeed = "Увеличивает <color=DAIRY>скорость</color> на %s.",
 			heat = "Увеличивает <color=#cc0000>минимальную температуру</color> на <color=#cc0000>%d</color>.",
@@ -1434,6 +1439,9 @@ return {
 			music = "Обеспечивает <color=SANITY>ауру рассудка</color> <color=SANITY>%+.1f/мин</color> в радиусе <color=SANITY>%.1f</color> клеток.",
 			music_tend = "Ухаживает за растениями в радиусе <color=NATURE>%.1f</color> клеток.",
 			bee = "Восстанавливает <color=HEALTH>%d здоровья/%ds</color> (<color=HEALTH>%d в день</color>).",
+			bee_shield = "Max Shield: <color=HEALTH>%d</color> (<color=HEALTH>%d%%</color> of <color=HEALTH>max health</color>)",
+			bee_shield_regen = "Shield charge per second: %.1f",
+			radar = "Bonus Drone Range: %d",
 		},
 	},
 

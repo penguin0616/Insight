@@ -1219,11 +1219,15 @@ return {
 	sanity = {
 		current_sanity = "<color=SANITY>정신력</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<color=ENLIGHTENMENT>계몽</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		dapperness_mult = "<color=SANITY>Dapperness Multiplier</color>: <color=SANITY>%+.1f%%</color>",
 		interaction = "<color=SANITY>정신력</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
-	sanityaura = "<color=SANITY>정신력 오라</color>: <color=SANITY>%s/분</color>",
+	sanityaura = {
+		aura_value = "<color=SANITY>정신력 오라</color>: <color=SANITY>%s/분</color>",
+		negative_aura_modifier = "Negative <color=SANITY>sanity aura</color> resistance: <color=SANITY>%+.0f%%</color>",
+	},
 
 	-- scenariorunner.lua
 	scenariorunner = {
@@ -1427,6 +1431,7 @@ return {
 	upgrademodule = {
 		module_describers = {
 			maxhealth = "<color=HEALTH>최대 체력</color> <color=HEALTH>%d</color> 증가.",
+			maxhealth_armor = "Post-armor combat damage reduction: <color=HEALTH>%.1f%%</color>",
 			maxsanity = "<color=SANITY>최대 정신력</color> <color=SANITY>%d</color> 증가.",
 			movespeed = "<color=DAIRY>이동 속도</color> %s 증가.",
 			heat = "<color=#cc0000>최저 체온</color> <color=#cc0000>%d</color> 증가 (동결 면역).",
@@ -1438,6 +1443,9 @@ return {
 			music = "<color=SANITY>정신력 오라</color> <color=SANITY>%+.1f/분</color> 제공, 범위: <color=SANITY>%.1f</color> 타일.",
 			music_tend = "주변 식물에게 말을 걸어줌, <color=NATURE>%.1f</color> 타일.",
 			bee = "<color=HEALTH>%d 체력 재생/%d초</color> (<color=HEALTH>%d/일</color>).",
+			bee_shield = "Max Shield: <color=HEALTH>%d</color> (<color=HEALTH>%d%%</color> of <color=HEALTH>max health</color>)",
+			bee_shield_regen = "Shield charge per second: %.1f",
+			radar = "Bonus Drone Range: %d",
 		},
 	},
 
