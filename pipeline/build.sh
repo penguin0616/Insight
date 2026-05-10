@@ -14,7 +14,7 @@ STEAM_ROOT="${STEAM_PATH:-$HOME/.steam/steam/steamapps}"
 DS_TARGET="$STEAM_ROOT/common/dont_starve/mods/workshop-2081254154/"
 DST_TARGET="$STEAM_ROOT/workshop/content/322330/2189004162/"
 
-RSYNC_FLAGS="-rP --delete --exclude .git"
+RSYNC_FLAGS="-rP -q --delete --exclude .git"
 
 # --- Validation ---
 
@@ -43,6 +43,10 @@ echo "Insight Root: $SRC_INSIGHT"
 echo "Steam Root: $STEAM_ROOT"
 
 if ! python3 -m "$(basename $SCRIPT_DIR).test_syntax"; then
+    exit 1
+fi
+
+if ! python3 -m "$(basename $SCRIPT_DIR).generate_assets"; then
     exit 1
 fi
 

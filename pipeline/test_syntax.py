@@ -64,7 +64,6 @@ def test_lua_syntax():
 
 
 if __name__ == "__main__":
-	# Configure logging level and format for CLI execution
 	logging.basicConfig(
 		level=logging.INFO,
 		format="%(asctime)s [%(levelname)s] %(message)s",

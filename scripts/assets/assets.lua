@@ -55,9 +55,8 @@ local atlas_inv = "images/inventoryimages.xml"
 --================================================================================================================================================================--
 --= Assets =======================================================================================================================================================--
 --================================================================================================================================================================--
-local BulkAssets = {
-	"Ancient_Herald", "Ancient_Hulk", "Ancient_Robot_Claw", "Ancient_Robot_Head", "Ancient_Robot_Leg", "Antlion", "Antqueen", "Aporkalypse_Clock", "Arrow", "Arrow_Down", "Bat", "Bearger", "Beequeen", "Blueprint", "Chester_Eyebone", "Claywarg", "Crocodog", "Crown", "Daywalker", "Deerclops", "Depths_Worm", "Dirtpile", "Dragonfly", "Dreadstone_Outcrop", "Enlightenment_Meter", "Eyeofterror", "Frog", "Gingerbreadpig", "Gingerbreadwarg", "Health_Meter", "Hound", "Hunger_Meter", "Hutch_Fishbowl", "Insight_Announcement", "Klaus", "Ancient_Robot_Ribs", "Atrium_Gate", "Crabking", "Klaus_Sack", "ladybolt", "Malbatross", "Oar", "Knightboat", "Koalefant_Summer", "Koalefant_Winter", "Kraken", "Krampus", "Leif", "Leif_Sparse", "Lightninggoat", "Lordfruitfly", "Magnifying_Glass", "Mermking", "Mimicreep", "Minotaur", "Moose", "Nightmare_timepiece_dawn", "Oar_Force", "Pigcrownhat", "Pocket_Scale", "Poison", "Pugalisk", "Rabbitking_lucky", "Rift_Split", "Roc", "Sanity_Arrow", "Sanity_Meter", "Shadowthrall_parasite", "Sharkboi", "Skeleton", "Spat", "Spiderqueen", "Stalker", "Stalker_Atrium", "Stalker_Forest", "Stopwatch", "Terrarium", "Tigershark", "Toadstool", "Treeguard", "Twinofterror1", "Twinofterror2", "Twister", "Twister_Seal", "Vampirebat", "Volcano", "Volcano_Active", "Wanderingtrader", "Warg", "Weather_Settings_Icon", "Wetness_Meter", "Whale_Blue", "Whale_Bubbles", "Whale_White", "White_Rounded", "White_Square", "Worm_boss"
-}
+
+local BulkAssets = import("assets/bulkassets")
 
 local SpecificAssets = {
 	"images/dst/avatars", "images/dst/button_icons", "images/dst/button_icons2", "images/dst/global_redux",

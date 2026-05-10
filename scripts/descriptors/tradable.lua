@@ -24,8 +24,6 @@ local function Describe(self, context)
 	local gold = type(self.goldvalue) == "number" and self.goldvalue > 0 and self.goldvalue or nil
 	local dubloon = type(self.dubloonvalue) == "number" and self.dubloonvalue > 0 and self.dubloonvalue or nil
 	local tribute = type(self.rocktribute) == "number" and self.rocktribute > 0 and self.rocktribute or nil
-
-
 	if context.config["item_worth"] then
 		if gold and dubloon then
 			--description = string.format("Worth %s and %s.", gold, dubloon)

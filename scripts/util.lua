@@ -780,7 +780,7 @@ end
 --- Retrives the first upvalue that matches the arguments.
 ---@param func function
 ---@param name string
----@return any, boolean @The boolean indicates whether the serach was successful or not.
+---@return any, boolean @The boolean indicates whether the searcn was successful or not.
 function module.getupvalue(func, name)
 	local i = 1
 	while true do
