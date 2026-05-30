@@ -1,0 +1,15 @@
+﻿<Atlas>
+	<Texture filename="forest.tex" />
+	<Elements>
+		<Element name="cave_open_black.tex" u1="0" u2="0.25" v1="0.79296875" v2="1" />
+		<Element name="cave_open_blue.tex" u1="0" u2="0.25" v1="0.5859375" v2="0.79296875" />
+		<Element name="cave_open_cyan.tex" u1="0.25" u2="0.5" v1="0.79296875" v2="1" />
+		<Element name="cave_open_green.tex" u1="0.25" u2="0.5" v1="0.5859375" v2="0.79296875" />
+		<Element name="cave_open_orange.tex" u1="0.5" u2="0.75" v1="0.79296875" v2="1" />
+		<Element name="cave_open_pink.tex" u1="0.75" u2="1" v1="0.79296875" v2="1" />
+		<Element name="cave_open_purple.tex" u1="0.5" u2="0.75" v1="0.5859375" v2="0.79296875" />
+		<Element name="cave_open_red.tex" u1="0.75" u2="1" v1="0.5859375" v2="0.79296875" />
+		<Element name="cave_open_white.tex" u1="0" u2="0.25" v1="0.37890625" v2="0.5859375" />
+		<Element name="cave_open_yellow.tex" u1="0" u2="0.25" v1="0.171875" v2="0.37890625" />
+	</Elements>
+</Atlas>

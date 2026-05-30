@@ -42,10 +42,12 @@ copy_insight_dst() {
 echo "Insight Root: $SRC_INSIGHT"
 echo "Steam Root: $STEAM_ROOT"
 
+echo "Checking syntax of lua files..."
 if ! python3 -m "$(basename $SCRIPT_DIR).test_syntax"; then
     exit 1
 fi
 
+echo "Generating missing assets..."
 if ! python3 -m "$(basename $SCRIPT_DIR).generate_assets"; then
     exit 1
 fi

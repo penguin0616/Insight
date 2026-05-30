@@ -71,7 +71,7 @@ client_only_mod = false
 all_clients_require_mod = true
 forge_compatible = true
 server_filter_tags = {"insight_" .. version}
-forcemanifest = false -- TODO: REMOVE THIS
+--forcemanifest = false
 
 -- Clear some environment stuff out.
 local a = ChooseTranslationTable
@@ -7050,7 +7050,7 @@ configuration_options = {
 		}, 
 		default = false,
 		client = true,
-		tags = {},
+		tags = {"dst_only"},
 	},
 	{
 		name = "death_indicator",

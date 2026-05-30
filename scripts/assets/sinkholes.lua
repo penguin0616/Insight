@@ -1,0 +1,22 @@
+return {
+"cave_open2_black", 
+"cave_open2_blue", 
+"cave_open2_cyan", 
+"cave_open2_green", 
+"cave_open2_orange", 
+"cave_open2_pink", 
+"cave_open2_purple", 
+"cave_open2_red", 
+"cave_open2_white", 
+"cave_open2_yellow", 
+"cave_open_black", 
+"cave_open_blue", 
+"cave_open_cyan", 
+"cave_open_green", 
+"cave_open_orange", 
+"cave_open_pink", 
+"cave_open_purple", 
+"cave_open_red", 
+"cave_open_white", 
+"cave_open_yellow"
+}

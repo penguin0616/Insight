@@ -1,7 +1,10 @@
-cave_open.pdn
-	- magic wand the arrow with 50% tolerance
-	- move it to a new layer
-	- saturation 200 for all of them unless otherwise stated
+
+# Forest
+
+Base Image: `cave_open.pdn`  
+- magic wand the arrow with 50% tolerance
+- move it to a new layer
+- saturation 200 for all of them unless otherwise stated
 
 1. cave_open_red
 	- literally just cave_open.pdn (0)
@@ -34,16 +37,17 @@ cave_open.pdn
 10. cave_open_black
 	- base form is the cave_open_red
 	- reset sliders, saturation to 0
-	
 
-cave_open2.pdn
-	- magic wand the arrow with 50% tolerance
-	- move to new layer
-	- get same arrow from cave_open.pdn
-	- magic wand it & seperate, flip layer, copy to same session as blue arrow, except new layer
-	- line up position
-	- delete blue arrow
-	- line up the gap in the arrow head on the right
+# Caves
+
+Base Image: `cave_open2.pdn`  
+- magic wand the arrow with 50% tolerance
+- move to new layer
+- get same arrow from cave_open.pdn
+- magic wand it & seperate, flip layer, copy to same session as blue arrow, except new layer
+- line up position
+- delete blue arrow
+- line up the gap in the arrow head on the right
 
 rest of these
 	- follow process and clean up as needed

@@ -21,6 +21,8 @@ directory. If not, please refer to
 -- worldmigrator.lua
 local colors = {}
 
+print'huggy'
+dumptable(FOREST_MIGRATOR_IMAGES)
 for i,v in pairs(FOREST_MIGRATOR_IMAGES) do
 	colors[i] = v[2]:ToHex()
 end
