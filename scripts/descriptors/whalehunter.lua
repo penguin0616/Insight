@@ -18,56 +18,12 @@ directory. If not, please refer to
 <https://raw.githubusercontent.com/Recex/Licenses/master/SharedSourceLicense/LICENSE.txt>
 ]]
 
--- hunter.lua
-local module = {
-	initialized = false,
-	active_hunts = {},
-}
-local world_type = GetWorldType()
-
---- Calculates the chance of getting one of the alternate beasts, i.e. not a Koalefant.
---- @param self table
---- @return number
-function module.GetAlternateBeastChance(self)
-	if world_type == 0 then
-		return nil
-	end
-
-    local day = world_type == -1 and TheWorld.state.cycles or GetClock():GetNumCycles()
-    local chance = Lerp(TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MIN, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MAX, day/100)
-    return math.clamp(chance, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MIN, TUNING.HUNT_ALTERNATE_BEAST_CHANCE_MAX)
+-- whalehunter.lua
+if not Insight.descriptors.hunter then
+	return {}
 end
 
---- Fetches the active hunt data from the dirt track.
---- @param self table
---- @param inst EntityScript The dirt track.
---- @return table @The hunt data.
-function module.GetHuntFromTrack(self, inst)
-	for i = 1, #self.active_hunts do
-		local hunt = self.active_hunts[i]
-		if hunt.lastdirt == inst then
-			return hunt
-		end
-	end
-end
-
---- Fetches the hunt data for the specific track.
---- @param self table
---- @param inst The dirt track.
-function module.GetHuntDataFromTrack(self, inst)
-	local hunt = self:GetHuntFromTrack(inst)
-
-	if not hunt then
-		return
-	end
-
-	return {
-		trackspawned = hunt.trackspawned,
-		numtrackstospawn = hunt.numtrackstospawn,
-		ambush_track_num = hunt.ambush_track_num,
-		chance_of_alternate_beast = self:GetAlternateBeastChance() -- consider caching?
-	}
-end
+local module = deepcopy(Insight.descriptors.hunter)
 
 --- Replacement for the OnDirtInvestigated function.
 --- @param self hunter
@@ -200,7 +156,7 @@ function module.OnServerLoad(self)
 
 	self.initialized = true
 
-	AddComponentPostInit("hunter", OnHunterPostInit)
+	AddComponentPostInit("whalehunter", OnHunterPostInit)
 end
 
 return module

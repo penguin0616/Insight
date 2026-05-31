@@ -20,14 +20,11 @@ directory. If not, please refer to
 
 -- whale_bubbles.lua [Prefab]
 local function Describe(inst, context)
-	local description = "<color=#FF0000>Unable to load hunter descriptor.</color>"
-
-	return {
-		priority = 0,
-		description = description
-	}
+	if Insight.prefab_descriptors.dirtpile then
+		return Insight.prefab_descriptors.dirtpile.DescribeTrack(Insight.descriptors.whalehunter, inst, context)
+	end
 end
 
 return {
-	Describe = Insight.descriptors.hunter and Insight.descriptors.hunter.DescribeTrack or Describe
+	Describe = Describe
 }

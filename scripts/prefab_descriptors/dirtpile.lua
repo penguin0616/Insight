@@ -19,15 +19,50 @@ directory. If not, please refer to
 ]]
 
 -- dirtpile.lua [Prefab]
-local function Describe(inst, context)
-	local description = "<color=#FF0000>Unable to load hunter descriptor.</color>"
+local function DescribeTrack(descriptor, inst, context)
+	--[[
+	for _, hunt in pairs(Insight.active_hunts) do
+			if hunt.lastdirt == inst then
+				local ambush_track_num = hunt.ambush_track_num
+				description = string.format(context.lstr.hunt_progress, hunt.trackspawned + 1, hunt.numtrackstospawn)
+
+				if ambush_track_num == hunt.trackspawned + 1 then
+					description = CombineLines(description, "There is an ambush waiting on the next track.")
+				end
+				break
+			end
+		end
+	--]]
+
+	local hunt_data = descriptor:GetHuntDataFromTrack(inst)
+
+	if not hunt_data then
+		--dprintf("no hunt data found for track %s", inst)
+		return
+	end
+
+	local progress = string.format(context.lstr.hunter.hunt_progress, hunt_data.trackspawned + 1, hunt_data.numtrackstospawn) -- +1 to make it look better
+	local ambush = nil
+	if hunt_data.ambush_track_num and hunt_data.ambush_track_num == hunt_data.trackspawned + 1 then -- will it spawn on the next track?
+		ambush = context.lstr.hunter.impending_ambush
+	end
+	local chance = hunt_data.chance_of_alternate_beast and (hunt_data.trackspawned+1 == hunt_data.numtrackstospawn) and string.format(context.lstr.hunter.alternate_beast_chance, Round(hunt_data.chance_of_alternate_beast * 100, 0)) or nil
+
+	local description = CombineLines(progress, ambush, chance)
 
 	return {
+		name = "hunter",
 		priority = 0,
 		description = description
 	}
 end
 
+
+local function Describe(inst, context)
+	return DescribeTrack(Insight.descriptors.hunter, inst, context)
+end
+
 return {
-	Describe = Insight.descriptors.hunter and Insight.descriptors.hunter.DescribeTrack or Describe
+	Describe = Describe,
+	DescribeTrack = DescribeTrack
 }
