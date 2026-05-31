@@ -45,8 +45,12 @@ end
 
 
 name = "Insight"
--- Major.Minor.Patch
-version = "5.2.0" -- dst is 4.6.2, ds is 4.5.0
+-- SemVer is Major.Minor.Patch
+-- MAJOR version when you make incompatible API changes
+-- MINOR version when you add functionality in a backward compatible manner
+-- PATCH version when you make backward compatible bug fixes
+version = "5.2.0"
+--version_compatible = "0.0.0" -- Oldest version we are still compatible with
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"

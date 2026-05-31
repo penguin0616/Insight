@@ -52,9 +52,7 @@ end
 local function ColorMigratorEntity(inst, insight, context)
 	local icon_table = icon_table_lookup[inst.prefab]
 
-	print("lookup 1")
 	if context.config["sinkhole_marks"] == 0 then
-		print("lookup 2")
 		return
 	end
 
