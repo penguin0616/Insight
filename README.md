@@ -11,7 +11,7 @@ I made this source public to help people who might be trying to figure out how t
 
 I wanted something like [Show Me](https://steamcommunity.com/sharedfiles/filedetails/?id=666155465), but with more *Insight* into the various game systems like health, damage, fuel, food, followers, naughtiness, etc.
 
-My general rule of thumb is that if I can figure it out with a calculator & the wiki, then I probably want it taken care of by Insight.
+My general rule of thumb is that if I can more or less figure it out with a calculator & the wiki, then I probably want it taken care of by Insight.
 
 # Reporting issues
 
