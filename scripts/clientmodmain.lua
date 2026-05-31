@@ -31,9 +31,9 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Variables =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
-local attackRangeHelper = import("helpers/attack_range")
-insightSaveData = import("helpers/savedata")("mod_config_data/Insight_SaveData" .. (IS_DST and "_CLIENT" or ""));
-controlHelper = import("helpers/control")
+local attackRangeUtility = import("utility/attack_range")
+insightSaveData = import("utility/savedata")("mod_config_data/Insight_SaveData" .. (IS_DST and "_CLIENT" or ""));
+controlUtility = import("utility/control")
 localPlayer = nil
 currentlySelectedItem = nil
 shard_players = {}
@@ -46,7 +46,7 @@ insight_subscribed = IS_DS or KnownModIndex.savedata.known_mods["workshop-218900
 
 
 -- Client Event Core
-ClientCoreEventer = import("helpers/eventer")()
+ClientCoreEventer = import("utility/eventer")()
 OnLocalPlayerPostInit = ClientCoreEventer:CreateEvent("OnLocalPlayerPostInit")
 OnLocalPlayerPostInit.onlisteneradded = function(listener)
 	if localPlayer then
@@ -56,7 +56,7 @@ end
 OnLocalPlayerRemove = ClientCoreEventer:CreateEvent("OnLocalPlayerRemove")
 OnContextUpdate = ClientCoreEventer:CreateEvent("OnContextUpdate")
 
-highlighting = import("highlighting")
+highlighting = import("services/highlighting")
 
 --==========================================================================================================================
 --==========================================================================================================================
@@ -121,7 +121,7 @@ local function PrimeComplexConfiguration()
 
 	local function_env = setmetatable({}, {
 		__index = function(self, index)
-			-- Check to see if it's somethinng inside modinfo.
+			-- Check to see if it's something inside modinfo.
 			local ret = modinfo[index]
 			if ret ~= nil then
 				return ret
@@ -353,7 +353,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 	end
 
 	if old and old.insight_combat_range_indicator and old.insight_combat_range_indicator.state_forced then
-		old.insight_combat_range_indicator:ForceStateChange(attackRangeHelper.NET_STATES.NOTHING)
+		old.insight_combat_range_indicator:ForceStateChange(attackRangeUtility.NET_STATES.NOTHING)
 	end
 
 	if old and GetDeployHelper(old) then
@@ -383,7 +383,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 			return	
 		end
 
-		ind:ForceStateChange(attackRangeHelper.NET_STATES.TARGETTING)
+		ind:ForceStateChange(attackRangeUtility.NET_STATES.TARGETTING)
 		return
 	end
 
@@ -800,7 +800,7 @@ end)
 OnLocalPlayerPostInit:AddListener("highlighting_activate", highlighting.Activate)
 OnLocalPlayerRemove:AddListener("highlighting_deactivate", highlighting.Deactivate)
 
-OnLocalPlayerPostInit:AddListener(attackRangeHelper.Activate)
+OnLocalPlayerPostInit:AddListener(attackRangeUtility.Activate)
 
 OnContextUpdate:AddListener("blinkrange_attacher", function(context)
 	if context.config["blink_range"] then
@@ -888,7 +888,7 @@ end
 -- I wonder if I should move keybinds to mod config instead of a persistentstring. 
 -- insightSaveData:Get("keybinds")
 
-insightKeybinds = import("helpers/keybinds")()
+insightKeybinds = import("utility/keybinds")()
 
 if DEBUG_ENABLED then
 	insightKeybinds:Register("test", "TestBind", "This is a test.", nil, function(down)
@@ -1042,7 +1042,7 @@ do
 	local notable = {
 		"chester_eyebone", "hutch_fishbowl",  -- Both
 		
-		"atrium_key", "klaus_sack", "gingerbreadpig", -- DST
+		"atrium_key", "klaus_sack", "gingerbreadpig", "wanderingtrader", -- DST
 
 		-- DS
 	}
@@ -1135,7 +1135,7 @@ AddPrefabPostInit("deerclops", function(inst)
 end)
 --]]
 
-AddPrefabPostInit("insight_combat_range_indicator", import("helpers/attack_range").HookClientIndicator)
+AddPrefabPostInit("insight_combat_range_indicator", import("utility/attack_range").HookClientIndicator)
 AddPrefabPostInit("insight_ghost_klaus_sack", function(inst)
 	OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
 		if not context.config["klaus_sack_markers"] then
@@ -1169,66 +1169,6 @@ AddPrefabPostInit("klaus_sack", function(inst)
 	end)
 end)
 --]]
-
-AddPrefabPostInit("cave_entrance_open", function(inst)
-	if IS_DS then return end -- does this even exist in DS
-	
-	-- This is a client postinit so we can use this config method.
-	local cfg = GetModConfigData("sinkhole_marks", true)
-	if cfg == 0 then return end
-
-	--OnLocalPlayerPostInit:AddWeakListener(function() GetInsight(localPlayer):RequestInformation(inst) end)
-	--dprint('postinit', inst)
-	ListenForEventOnce(inst, "insight_ready", function(inst)
-		dprint(inst, "- migrator has loaded")
-		local info = GetInsight(localPlayer):GetInformation(inst)
-		local id = info.special_data.worldmigrator.receivedPortal
-		--dprint("id:", id)
-
-		if FOREST_MIGRATOR_IMAGES[id] then
-			--inst.MiniMapEntity:SetIcon(FOREST_MIGRATOR_IMAGES[id][1])
-			--inst.MiniMapEntity:SetCanUseCache(false)
-
-			if cfg == 2 then
-				local clr = FOREST_MIGRATOR_IMAGES[id][2]
-				local new = clr
-				inst.AnimState:SetMultColour(unpack(new))
-				--inst.AnimState:SetHighlightColour(unpack(new))
-				--inst.AnimState:SetAddColour(unpack(new))
-			end
-		else
-			--dprint("no icon for", id)
-		end
-	end)
-end)
-
-AddPrefabPostInit("cave_exit", function(inst)
-	if IS_DS then return end
-	-- This is a client postinit so we can use this config method.
-	local cfg = GetModConfigData("sinkhole_marks", true)
-	if cfg == 0 then return end
-
-	ListenForEventOnce(inst, "insight_ready", function(inst)
-		dprint(inst, "- migrator has loaded")
-		local info = GetInsight(localPlayer):GetInformation(inst)
-		local id = info.special_data.worldmigrator.id -- intentional
-		--dprint("id:", id)
-
-		if CAVE_MIGRATOR_IMAGES[id] then
-			--inst.MiniMapEntity:SetIcon(CAVE_MIGRATOR_IMAGES[id][1])
-
-			if cfg == 2 then
-				local clr = CAVE_MIGRATOR_IMAGES[id][2]
-				local new = clr
-				inst.AnimState:SetMultColour(unpack(new))
-				--inst.AnimState:SetHighlightColour(unpack(new))
-				--inst.AnimState:SetAddColour(unpack(new))
-			end
-		else
-			--dprint("no icon for", id)
-		end
-	end)
-end)
 
 --[[
 AddPrefabPostInit("redgem", function(inst) 
@@ -1548,7 +1488,7 @@ end)
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
---AddLocalPlayerPostRemove(attackRangeHelper.Deactivate, true)
+--AddLocalPlayerPostRemove(attackRangeUtility.Deactivate, true)
 
 if IS_DST then
 	--[[

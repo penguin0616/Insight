@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- planardamage.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local function DescribeByScrapbook(inst, context)
 	local description = nil
@@ -35,7 +35,7 @@ local function DescribeByScrapbook(inst, context)
 
 	return {
 		name = "planardamage_scrapbook",
-		priority = combatHelper.DAMAGE_PRIORITY - 100,
+		priority = combatUtility.DAMAGE_PRIORITY - 100,
 		description = description,
 		alt_description = alt_description
 	}
@@ -60,6 +60,11 @@ local function Describe(self, context)
 	end
 
 	local base_damage = self:GetBaseDamage()
+	if type(base_damage) ~= "number" then
+		-- Mods are setting base damage to nil for some reason.
+		return
+	end
+
 	local current_damage = self:GetDamage()
 	
 	local bonus_damage = current_damage - base_damage
@@ -75,7 +80,7 @@ local function Describe(self, context)
 	
 	return {
 		name = "planardamage",
-		priority = combatHelper.DAMAGE_PRIORITY - 100,
+		priority = combatUtility.DAMAGE_PRIORITY - 100,
 		description = description,
 		alt_description = alt_description
 	}

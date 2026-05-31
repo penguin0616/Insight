@@ -1,0 +1,6 @@
+﻿<Atlas>
+  <Texture filename="Wanderingtrader.tex" />
+  <Elements>
+    <Element name="Wanderingtrader.tex" u1="0.076171875" u2="0.943359375" v1="0.00390625" v2="1" />
+  </Elements>
+</Atlas>

@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- skinner_beefalo.lua
-local yotb_helper = import("helpers/yotb")
+local yotbUtility = import("utility/yotb")
 
 -- known categories as of February 9, 2021
 --local CATEGORIES = { "WAR", "DOLL", "FESTIVE", "NATURE", "ROBOT", "ICE", "FORMAL", "VICTORIAN", "BEAST" }

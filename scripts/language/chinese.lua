@@ -134,7 +134,7 @@ return {
 	},
 
 	map = {
-		land_exploration = "Land Explored: <color=%s>%.1f%%</color>",
+		land_exploration = "已探索陆地: <color=%s>%.1f%%</color>",
 	},
 
 	-------------------------------------------------------------------------------------------------------------------------
@@ -1213,11 +1213,15 @@ return {
 	sanity = {
 		current_sanity = "<color=SANITY>理智</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<color=ENLIGHTENMENT>启蒙</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		dapperness_mult = "<color=SANITY>Dapperness Multiplier</color>: <color=SANITY>%+.1f%%</color>",
 		interaction = "<color=SANITY>理智</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
-	sanityaura = "<color=SANITY>理智光环</color>: <color=SANITY>%s/分</color>",
+	sanityaura = {
+		aura_value = "<color=SANITY>理智光环</color>: <color=SANITY>%s/分</color>",
+		negative_aura_modifier = "Negative <color=SANITY>sanity aura</color> resistance: <color=SANITY>%+.0f%%</color>",
+	},
 
 	-- scenariorunner.lua
 	scenariorunner = {
@@ -1421,6 +1425,7 @@ return {
 	upgrademodule = {
 		module_describers = {
 			maxhealth = "增加<color=HEALTH>最大生命值</color> <color=HEALTH>%d</color>",
+			maxhealth_armor = "Post-armor combat damage reduction: <color=HEALTH>%.1f%%</color>",
 			maxsanity = "增加<color=SANITY>最大理智值</color> <color=SANITY>%d</color>",
 			movespeed = "增加<color=DAIRY>移速</color> %s",
 			heat = "提高<color=#cc0000>最低体温</color> <color=#cc0000>%d</color>",
@@ -1432,6 +1437,9 @@ return {
 			music = "提供<color=SANITY>理智光环</color> <color=SANITY>%+.1f/分</color> 在 <color=SANITY>%.1f</color> 个地皮范围内",
 			music_tend = "照料植物在 <color=NATURE>%.1f</color> 个地皮范围内",
 			bee = "回复 <color=HEALTH>%d 生命/%d 秒</color> (<color=HEALTH>%d/天</color>)",
+			bee_shield = "Max Shield: <color=HEALTH>%d</color> (<color=HEALTH>%d%%</color> of <color=HEALTH>max health</color>)",
+			bee_shield_regen = "Shield charge per second: %.1f",
+			radar = "Bonus Drone Range: %d",
 		},
 	},
 
@@ -1535,7 +1543,7 @@ return {
 
 	-- wortox.lua [Prefab]
 	wortox = {
-		time_untl_panflute_inspiration = "Wortox will get a free <prefab=panflute> use in %s",
+		time_untl_panflute_inspiration = "沃拓克斯将会获得一次免费的 <prefab=panflute> 使用机会于\n%s后",
 	},
 
 	-- wx78.lua [Prefab]

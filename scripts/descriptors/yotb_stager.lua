@@ -23,7 +23,7 @@ if not IS_DST then
 	return { Describe = function() end }
 end
 
-local yotbHelper = import("helpers/yotb")
+local yotbUtility = import("utility/yotb")
 
 
 -- tag yotb_stage
@@ -39,9 +39,9 @@ local function GetBeefaloScores(self)
 	for i,v in pairs(self.posts) do
 		local beefalo = v.components.hitcher:GetHitched()
 		if beefalo then
-			local candidate_values = yotbHelper.GetBeefScore(beefalo)
+			local candidate_values = yotbUtility.GetBeefScore(beefalo)
 			local score = 0
-			for i,cat in ipairs(yotbHelper.categories) do
+			for i,cat in ipairs(yotbUtility.categories) do
 				score = score + math.abs(candidate_values[cat] - self.target_values[cat])
 			end
 			table.insert(scores, { post=v, beefalo=beefalo, score=score })

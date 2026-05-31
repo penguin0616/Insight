@@ -1218,11 +1218,15 @@ return {
 	sanity = {
 		current_sanity = "<color=SANITY>Sanidade</color>: <color=SANITY>%s</color> / <color=SANITY>%s</color> (<color=SANITY>%s%%</color>)",
 		current_enlightenment = "<color=ENLIGHTENMENT>Iluminação</color>: <color=ENLIGHTENMENT>%s</color> / <color=ENLIGHTENMENT>%s</color> (<color=ENLIGHTENMENT>%s%%</color>)",
+		dapperness_mult = "<color=SANITY>Dapperness Multiplier</color>: <color=SANITY>%+.1f%%</color>",
 		interaction = "<color=SANITY>Sanidade</color>: <color=SANITY>%+.1f</color>",
 	},
 
 	-- sanityaura.lua
-	sanityaura = "<color=SANITY>Aura de Sanidade</color>: <color=SANITY>%s/min</color>",
+	sanityaura = {
+		aura_value = "<color=SANITY>Aura de Sanidade</color>: <color=SANITY>%s/min</color>",
+		negative_aura_modifier = "Negative <color=SANITY>sanity aura</color> resistance: <color=SANITY>%+.0f%%</color>",
+	},
 
 	-- scenariorunner.lua
 	scenariorunner = {
@@ -1426,7 +1430,8 @@ return {
 	upgrademodule = {
 		module_describers = {
 			maxhealth = "Aumenta a <color=HEALTH>saúde máxima</color> em <color=HEALTH>%d</color>.",
-			maxsanity = "Aumenta  <color=SANITY>sanidade máxima</color> em <color=SANITY>%d</color>.",
+			maxhealth_armor = "Post-armor combat damage reduction: <color=HEALTH>%.1f%%</color>",
+			maxsanity = "Aumenta <color=SANITY>sanidade máxima</color> em <color=SANITY>%d</color>.",
 			movespeed = "Aumenta a <color=DAIRY>velocidade</color> em %s.",
 			heat = "Aumenta a <color=#cc0000>temperatura mínima</color> em <color=#cc0000>%d</color>.",
 			heat_drying = "Aumenta a <color=#cc000>taxa de secagem</color> em <color=#cc0000>%.1f</color>.",
@@ -1437,6 +1442,9 @@ return {
 			music = "Promove uma <color=SANITY>aura de sanidade</color> de <color=SANITY>%+.1f/min</color> dentro de <color=SANITY>%.1f</color> bloco(s).",
 			music_tend = "Cuida de plantas dentro de <color=NATURE>%.1f</color> blocos.",
 			bee = "Regenera <color=HEALTH>%d vida/%ds</color> (<color=HEALTH>%d/day</color>).",
+			bee_shield = "Max Shield: <color=HEALTH>%d</color> (<color=HEALTH>%d%%</color> of <color=HEALTH>max health</color>)",
+			bee_shield_regen = "Shield charge per second: %.1f",
+			radar = "Bonus Drone Range: %d",
 		},
 	},
 

@@ -67,7 +67,7 @@ function InsightMenuScreen:OnControl(control, down)
 
 	-- Trigered from FrontEnd:OnControl
 	--mprint(string.rep("-", 66))
-	--dprint("InsightMenuScreen", controlHelper.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
+	--dprint("InsightMenuScreen", controlUtility.Prettify(control), down, "|", "self", self.focus, "| root", self.root.focus, "| menu", self.menu.focus)
 	if TheFrontEnd.tracking_mouse and self.focus and not self.root.focus then
 		-- Mouse input broke focus or something. Just fix it.
 		dprint("Fixing focus.")
@@ -76,13 +76,13 @@ function InsightMenuScreen:OnControl(control, down)
 	end
 
 	if not down then
-		if controlHelper.controller_scheme:IsAcceptedControl("exit", control) then
+		if controlUtility.controller_scheme:IsAcceptedControl("exit", control) then
 			self:Close()
 			return true
 		end
 	end
 
-	--mprint("Delegating", controlHelper.Prettify(control), down)
+	--mprint("Delegating", controlUtility.Prettify(control), down)
 	return self._base.OnControl(self, control, down)
 end
 
@@ -98,7 +98,7 @@ function InsightMenuScreen:GetHelpText()
 	local tips = {}
 
 	-- CONTROL_MENU_MISC_3
-	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlHelper.controller_scheme.exit:GetPrimaryControl()) .. " Go Back") -- OPEN_MENU
+	table.insert(tips, TheInput:GetLocalizedControl(TheInput:GetControllerID(), controlUtility.controller_scheme.exit:GetPrimaryControl()) .. " Go Back") -- OPEN_MENU
 
 	return table.concat(tips, "   ")
 end

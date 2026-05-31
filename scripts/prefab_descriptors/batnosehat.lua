@@ -19,12 +19,12 @@ directory. If not, please refer to
 ]]
 
 -- batnosehat.lua [Prefab]
-local debuffHelper = import("helpers/debuff")
+local debuffUtility = import("utility/debuff")
 
 local function Describe(inst, context)
 	local description = nil -- string.format(context.lstr.batnosehat, ))
 
-	local effects = debuffHelper.GetItemEffects(inst, context)
+	local effects = debuffUtility.GetItemEffects(inst, context)
 	if effects and #effects > 0 then
 		description = table.concat(effects, "\n")
 	end

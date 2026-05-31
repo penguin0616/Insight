@@ -55,19 +55,62 @@ local atlas_inv = "images/inventoryimages.xml"
 --================================================================================================================================================================--
 --= Assets =======================================================================================================================================================--
 --================================================================================================================================================================--
-local BulkAssets = {
-	"Ancient_Herald", "Ancient_Hulk", "Ancient_Robot_Claw", "Ancient_Robot_Head", "Ancient_Robot_Leg", "Ancient_Robot_Ribs", "Antlion", "Antqueen", "Aporkalypse_Clock", "Arrow", "Arrow_Down", "Atrium_Gate", "Bat", "Bearger", "Beequeen", "Blueprint", "Chester_Eyebone", "Claywarg", "Crabking", "Crocodog", "Crown", "Daywalker", "Deerclops", "Depths_Worm", "Dirtpile", "Dragonfly", "Dreadstone_Outcrop", "Enlightenment_Meter", "Eyeofterror", "Frog", "Gingerbreadpig", "Gingerbreadwarg", "Health_Meter", "Hound", "Hunger_Meter", "Hutch_Fishbowl", "Insight_Announcement", "Klaus", "Klaus_Sack", "Knightboat", "Koalefant_Summer", "Koalefant_Winter", "Kraken", "Krampus", "ladybolt", "Leif", "Leif_Sparse", "Lightninggoat", "Lordfruitfly", "Magnifying_Glass", "Malbatross", "Mermking", "Mimicreep", "Minotaur", "Moose", "Nightmare_timepiece_dawn", "Oar", "Oar_Force", "Pigcrownhat", "Pocket_Scale", "Poison", "Pugalisk", "Rabbitking_lucky", "Rift_Split", "Roc", "Sanity_Arrow", "Sanity_Meter", "Shadowthrall_parasite", "Sharkboi", "Skeleton", "Spat", "Spiderqueen", "Stalker", "Stalker_Atrium", "Stalker_Forest", "Stopwatch", "Terrarium", "Tigershark", "Toadstool", "Treeguard", "Twinofterror1", "Twinofterror2", "Twister", "Twister_Seal", "Vampirebat", "Volcano", "Volcano_Active", "Warg", "Weather_Settings_Icon", "Wetness_Meter", "Whale_Blue", "Whale_Bubbles", "Whale_White", "White_Rounded", "White_Square", "Worm_boss"
-}
-
-local SpecificAssets = {
-	"images/dst/avatars", "images/dst/button_icons", "images/dst/button_icons2", "images/dst/global_redux",
-	"images/misc/dialogrect_9slice_blue", "images/dst/frontend_redux", "images/dst/scoreboard",
-	"images/food_types/food_types", "images/minimap/sinkholes/sinkholes","images/minimap/Possible_Klaus_Sack",
-	"images/dst/frontend", "images/misc/scrollbar_bar", "images/dst/dialogrect_9slice", "images/dst/global_redux",
-	"images/misc/listbox_bg/attempt2_thin_crop",
-}
 
 Assets = {}
+
+-- First, bulk assets. Which is just the bulk of images I have in the images folder.
+local BulkAssets = import("assets/bulkassets")
+
+for i,v in pairs(BulkAssets) do
+	table.insert(Assets, Asset("ATLAS", string.format("images/%s.xml", v)))
+	table.insert(Assets, Asset("IMAGE", string.format("images/%s.tex", v)))
+end
+
+-- Next, we have the food types.
+local FoodTypes = import("assets/food_types")
+
+table.insert(Assets, Asset("ATLAS", "images/food_types/food_types.xml"))
+table.insert(Assets, Asset("IMAGE", "images/food_types/food_types.tex"))
+
+-- Next, we have the sinkholes.
+FOREST_MIGRATOR_IMAGES = import("assets/sinkholes_forest")
+table.insert(Assets, Asset("ATLAS", "images/minimap/sinkholes/forest/forest.xml"))
+table.insert(Assets, Asset("IMAGE", "images/minimap/sinkholes/forest/forest.tex"))
+AddMinimapAtlas("images/minimap/sinkholes/forest/forest.xml")
+
+CAVE_MIGRATOR_IMAGES = import("assets/sinkholes_caves")
+table.insert(Assets, Asset("ATLAS", "images/minimap/sinkholes/caves/caves.xml"))
+table.insert(Assets, Asset("IMAGE", "images/minimap/sinkholes/caves/caves.tex"))
+AddMinimapAtlas("images/minimap/sinkholes/caves/caves.xml")
+
+assert(#FOREST_MIGRATOR_IMAGES == #CAVE_MIGRATOR_IMAGES, "FOREST_MIGRATOR_IMAGES != CAVE_MIGRATOR_IMAGES")
+
+local MIGRATOR_COLORS = {
+    {"RED", Color.fromRGB(255, 0, 0)},
+    {"ORANGE", Color.fromRGB(255, 140, 0)},
+    {"YELLOW", Color.fromRGB(255, 255, 0)},
+    {"GREEN", Color.fromRGB(115, 255, 0)},
+    {"CYAN", Color.fromRGB(0, 255, 213)},
+    {"BLUE", Color.fromRGB(0, 115, 255)},
+    {"PURPLE", Color.fromRGB(124, 26, 255)},
+    {"PINK", Color.fromRGB(253, 0, 255)},
+    {"WHITE", Color.fromRGB(255, 255, 255)},
+    {"BLACK", Color.fromRGB(76, 76, 76)},
+}
+
+for i,v in ipairs(MIGRATOR_COLORS) do
+	FOREST_MIGRATOR_IMAGES[i] = { FOREST_MIGRATOR_IMAGES[i] .. ".tex", v[2]}
+	CAVE_MIGRATOR_IMAGES[i] = { CAVE_MIGRATOR_IMAGES [i] .. ".tex", v[2]}
+end
+
+-- TODO: THESE
+local SpecificAssets = {
+	"images/dst/avatars", "images/dst/button_icons", "images/dst/button_icons2", "images/dst/global_redux",
+	"images/misc/dialogrect_9slice_blue", "images/dst/frontend_redux", "images/dst/scoreboard","images/minimap/Possible_Klaus_Sack",
+	"images/dst/frontend", "images/misc/scrollbar_bar", "images/dst/dialogrect_9slice", "images/dst/global_redux",
+	"images/misc/listbox_bg/attempt2_thin_crop",
+} -- 13
+
 
 --[[
 
@@ -107,47 +150,7 @@ Assets = {
 }
 --]]
 
-local MIGRATOR_COLORS = {
-	RED = Color.fromRGB(255, 0, 0),
-	ORANGE = Color.fromRGB(255, 140, 0),
-	YELLOW = Color.fromRGB(255, 226, 0),
-	GREEN = Color.fromRGB(115, 255, 0),
-	CYAN = Color.fromRGB(0, 255, 213),
-	BLUE = Color.fromRGB(0, 115, 255),
-	PURPLE = Color.fromRGB(124, 26, 255),
-	PINK = Color.fromRGB(253, 0, 255),
-	WHITE = Color.fromRGB(255, 255, 255),
-	BLACK = Color.fromRGB(76, 76, 76),
-}
-
-FOREST_MIGRATOR_IMAGES = {
-	{ "cave_open_red.tex", MIGRATOR_COLORS.RED },
-	{ "cave_open_orange.tex", MIGRATOR_COLORS.ORANGE },
-	{ "cave_open_yellow.tex", MIGRATOR_COLORS.YELLOW },
-	{ "cave_open_green.tex", MIGRATOR_COLORS.GREEN },
-	{ "cave_open_cyan.tex", MIGRATOR_COLORS.CYAN },
-	{ "cave_open_blue.tex", MIGRATOR_COLORS.BLUE },
-	{ "cave_open_purple.tex", MIGRATOR_COLORS.PURPLE },
-	{ "cave_open_pink.tex", MIGRATOR_COLORS.PINK },
-	{ "cave_open_white.tex", MIGRATOR_COLORS.WHITE },
-	{ "cave_open_black.tex", MIGRATOR_COLORS.BLACK }
-}
-
-CAVE_MIGRATOR_IMAGES = {
-	{ "cave_open2_red.tex", MIGRATOR_COLORS.RED },
-	{ "cave_open2_orange.tex", MIGRATOR_COLORS.ORANGE },
-	{ "cave_open2_yellow.tex", MIGRATOR_COLORS.YELLOW },
-	{ "cave_open2_green.tex", MIGRATOR_COLORS.GREEN },
-	{ "cave_open2_cyan.tex", MIGRATOR_COLORS.CYAN },
-	{ "cave_open2_blue.tex", MIGRATOR_COLORS.BLUE },
-	{ "cave_open2_purple.tex", MIGRATOR_COLORS.PURPLE },
-	{ "cave_open2_pink.tex", MIGRATOR_COLORS.PINK },
-	{ "cave_open2_white.tex", MIGRATOR_COLORS.WHITE },
-	{ "cave_open2_black.tex", MIGRATOR_COLORS.BLACK }
-}
-
 --AddMinimapAtlas("images/Volcano.xml")
-AddMinimapAtlas("images/minimap/sinkholes/sinkholes.xml")
 AddMinimapAtlas("images/minimap/Possible_Klaus_Sack.xml")
 
 for i,v in pairs(SpecificAssets) do
@@ -155,15 +158,11 @@ for i,v in pairs(SpecificAssets) do
 	table.insert(Assets, Asset("IMAGE", v .. ".tex"))
 end
 
-for i,v in pairs(BulkAssets) do
-	table.insert(Assets, Asset("ATLAS", string.format("images/%s.xml", v)))
-	table.insert(Assets, Asset("IMAGE", string.format("images/%s.tex", v)))
-end
+
 
 --================================================================================================================================================================--
 --= Icons =======================================================================================================================================================--
 --================================================================================================================================================================--
-local BulkIcons = {"AntiHistamine", "Bugs", "Dairy", "Eggs", "Fat", "Fishes", "Fruit", "Inedible", "Meats", "Monster_Foods", "Sweetener", "Vegetable"}
 
 local icon_list = {
 	["blank"] = {"White_Square.tex", "images/White_Square.xml"},
@@ -201,7 +200,7 @@ local icon_list = {
 	["arrow_down"] = {"Arrow_Down.tex", "images/Arrow_Down.xml"},
 	["krampus"] = {"Krampus.tex", "images/Krampus.xml"},
 	["frog"] = {"Frog.tex", "images/Frog.xml"},
-	["inedible"] = {"Inedible.tex", "images/Inedible.xml"},
+	--["inedible"] = {"Inedible.tex", "images/Inedible.xml"},
 	["antlion"] = {"Antlion.tex", "images/Antlion.xml"},
 	
 
@@ -218,8 +217,8 @@ local icon_list = {
 	["claywarg"] = {"Claywarg.tex", "images/Claywarg.xml"},
 }
 
-for i,v in pairs(BulkIcons) do
-	icon_list[v:lower()] = {string.format("%s.tex", v), string.format("images/food_types/food_types.xml", v)}
+for i,v in pairs(FoodTypes) do
+	icon_list[v:lower()] = {string.format("%s.tex", v), "images/food_types/food_types.xml"}
 end
 
 -- Add all of our bulk assets to the icons if they aren't there already.
@@ -328,3 +327,7 @@ end)
 --print("hey:", PrefabHasIcon("winterometer"))
 
 -- log file says atlases are missing
+
+
+
+

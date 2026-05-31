@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- aoeweapon_lunge.lua (Inherits from aoeweapon_base)
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local function Describe(self, context)
 	local described = Insight.descriptors.aoeweapon_base.DescribeDamage(
@@ -29,7 +29,7 @@ local function Describe(self, context)
 		context.player.components.combat
 	)
 	described.name = "aoeweapon_lunge"
-	described.priority = combatHelper.DAMAGE_PRIORITY - 1
+	described.priority = combatUtility.DAMAGE_PRIORITY - 1
 	
 	return described, Insight.descriptors.aoeweapon_base.Describe(self, context)
 end

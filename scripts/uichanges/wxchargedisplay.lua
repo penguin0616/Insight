@@ -22,7 +22,7 @@ local module = {}
 
 -- Imports
 local RichText = import("widgets/RichText")
-local Reader = import("reader")
+local Reader = import("objects/reader")
 local UpgradeModulesDisplayExists = pcall(function() return require("widgets/recipepopup") end) -- Old recipe popup
 
 -- Constant(s)

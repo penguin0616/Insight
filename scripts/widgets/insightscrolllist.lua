@@ -74,7 +74,7 @@ local InsightScrollList = Class(Widget, function(self, data)
 		self.display_scroll_bar = data.display_scroll_bar
 	end
 	
-	self.controller_scheme = controlHelper.controller_scheme --controlHelper.GetScheme("controller")
+	self.controller_scheme = controlUtility.controller_scheme --controlUtility.GetScheme("controller")
 	
 
 	--[[
@@ -84,8 +84,8 @@ local InsightScrollList = Class(Widget, function(self, data)
 			scroll_down = CONTROL_SCROLLFWD
 		},
 		controller = {
-			scroll_up = controlHelper.KNOWN_CONTROLS.CONTROLLER.SCROLLBACK,
-			scroll_down = controlHelper.KNOWN_CONTROLS.CONTROLLER.SCROLLFWD
+			scroll_up = controlUtility.KNOWN_CONTROLS.CONTROLLER.SCROLLBACK,
+			scroll_down = controlUtility.KNOWN_CONTROLS.CONTROLLER.SCROLLFWD
 		},
 	}
 	--]]
@@ -685,14 +685,14 @@ end
 function InsightScrollList:OnControl(control, down)
 	--mprint('yes')
 	if InsightScrollList._base.OnControl(self, control, down) then return true end
-	--dprint(self.name, controlHelper.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
+	--dprint(self.name, controlUtility.Prettify(control), down, "|", TheInput:GetControlIsMouseWheel(control))
 	--[[
 	This was happening too.
 	CONTROL_ZOOM_IN = 9
 	CONTROL_ZOOM_OUT = 10	
 	]]
 
-	local controls = controlHelper.GetCurrentScheme()
+	local controls = controlUtility.GetCurrentScheme()
 
 	if (self.focus or FunctionOrValue(self.custom_focus_check)) and self:CanScroll() then
 		if down then -- down
@@ -729,7 +729,7 @@ function InsightScrollList:OnControl(control, down)
 			end
 		end
 	end
-	--mprint("Failed ALL:", controlHelper.Prettify(control), down, self.focus, self:CanScroll())
+	--mprint("Failed ALL:", controlUtility.Prettify(control), down, self.focus, self:CanScroll())
 end
 
 function InsightScrollList:GetHelpText()

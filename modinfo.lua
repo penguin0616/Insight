@@ -45,8 +45,12 @@ end
 
 
 name = "Insight"
--- Major.Minor.Patch
-version = "5.2.0" -- dst is 4.6.2, ds is 4.5.0
+-- SemVer is Major.Minor.Patch
+-- MAJOR version when you make incompatible API changes
+-- MINOR version when you add functionality in a backward compatible manner
+-- PATCH version when you make backward compatible bug fixes
+version = "6.0.0"
+--version_compatible = "0.0.0" -- Oldest version we are still compatible with
 author = "penguin0616"
 forumthread = ""
 icon_atlas = "modicon.xml"
@@ -71,7 +75,7 @@ client_only_mod = false
 all_clients_require_mod = true
 forge_compatible = true
 server_filter_tags = {"insight_" .. version}
-forcemanifest = false -- TODO: REMOVE THIS
+forcemanifest = false -- Can't launch server due to kleiloadlua shitting the bed without this.
 
 -- Clear some environment stuff out.
 local a = ChooseTranslationTable
@@ -368,7 +372,7 @@ do
 end
 
 local NOTABLE_INDICATORS = {"chester_eyebone", "hutch_fishbowl"}
-local NOTABLE_INDICATORS_DST = {"atrium_key", "klaus_sack", "gingerbreadpig"}
+local NOTABLE_INDICATORS_DST = {"atrium_key", "klaus_sack", "gingerbreadpig", "wanderingtrader"}
 local NOTABLE_INDICATORS_DS = {} -- TODO: The carrier things in SW and Hamlet
 local NOTABLE_INDICATORS_ALL = {}
 
@@ -3221,7 +3225,7 @@ STRINGS = {
 	food_memory = {
 		label = {
 			"Food Memory", 
-			["zh"] = "瓦力大厨的食物计时", 
+			["zh"] = "食物记忆", 
 			["br"] = "Memória Alimentar", 
 			["es"] = "Memoria de comida",
 			["ru"] = "Память о еде",
@@ -3229,7 +3233,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether your food memory is shown.", 
-			["zh"] = "是否显示瓦力大厨的食物计时。", 
+			["zh"] = "是否显示你的食物记忆。", 
 			["br"] = "Se sua memória alimentar é mostrada.", 
 			["es"] = "Configura si se muestra la memoria de comida (Warly).",
 			["ru"] = "Показывать ли вашу память о еде.",
@@ -3240,7 +3244,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Your food memory will not be shown.",
-					["zh"] = "不显示食物计时。",
+					["zh"] = "不显示食物记忆。",
 					["br"] = "Sua memória alimentar não será exibida.",
 					["es"] = "La memoria de alimentos no se muestra.",
 					["ru"] = "Ваша память о еде не показывается.",
@@ -3251,7 +3255,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Your food memory will be shown.",
-					["zh"] = "显示食物计时。",
+					["zh"] = "显示食物记忆。",
 					["br"] = "Sua memória alimentar será exibida.",
 					["es"] = "Se muestra su memoria de alimentos.",
 					["ru"] = "Ваша память о еде показывается.",
@@ -4451,7 +4455,7 @@ STRINGS = {
 	show_map_info = {
 		label = {
 			"Map Information", 
-			["zh"] = nil, 
+			["zh"] = "地图信息",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4459,7 +4463,7 @@ STRINGS = {
 		},
 		hover = {
 			"Whether to show information relating to the world map.", 
-			["zh"] = nil, 
+			["zh"] = "是否显示与世界地图相关的信息。",
 			["br"] = nil, 
 			["es"] = nil,
 			["ru"] = nil,
@@ -4470,7 +4474,7 @@ STRINGS = {
 				description = COMMON_STRINGS.NO.DESCRIPTION,
 				hover = {
 					"Information relating to the world map is not shown.",
-					["zh"] = nil,
+					["zh"] = "不显示与世界地图相关的信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -4481,7 +4485,7 @@ STRINGS = {
 				description = COMMON_STRINGS.YES.DESCRIPTION,
 				hover = {
 					"Information relating to the world map is shown.",
-					["zh"] = nil,
+					["zh"] = "显示与世界地图相关的信息。",
 					["br"] = nil,
 					["es"] = nil,
 					["ru"] = nil,
@@ -7050,7 +7054,7 @@ configuration_options = {
 		}, 
 		default = false,
 		client = true,
-		tags = {},
+		tags = {"dst_only"},
 	},
 	{
 		name = "death_indicator",

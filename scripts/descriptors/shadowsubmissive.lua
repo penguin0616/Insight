@@ -35,7 +35,7 @@ local function Describe(self, context)
 		-- going to assume that player needs to be valid for network color to be valid too
 		local color = self.inst.spawnedforplayer:IsValid() and GetPlayerColour(self.inst.spawnedforplayer) or "#ffffff"
 
-		local target_string = (self.inst.spawnedforplayer.name or "?") .. " - " .. GetPrefabNameOrElse(self.inst.spawnedforplayer.prefab, "\"%s\"")
+		local target_string = EscapeRichText(self.inst.spawnedforplayer.name or "?") .. " - " .. GetPrefabNameOrElse(self.inst.spawnedforplayer.prefab, "\"%s\"")
 
 		spawnedforplayer_string = string.format(context.lstr.shadowsubmissive.shadowcreature.spawned_for, 
 			ApplyColor(target_string, color)

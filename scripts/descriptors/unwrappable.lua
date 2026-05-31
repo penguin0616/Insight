@@ -26,7 +26,7 @@ local subfmt = subfmt
 
 local function GetItems(self, context)
 	if not processed_bundles[context.player] then
-		processed_bundles[context.player] = {}
+		processed_bundles[context.player] = setmetatable({}, { __mode="k"})
 	end
 
 	if processed_bundles[context.player][self.inst] then
@@ -35,7 +35,7 @@ local function GetItems(self, context)
 
 	local itemdata = self.itemdata
 	if not itemdata then
-		--mprint(self.inst.prefab)
+		dprint(self.inst, "is an unwrappable that is missing itemdata.")
 		processed_bundles[context.player][self.inst] = {}
 		return {}
 	end
@@ -104,7 +104,8 @@ local function GetItems(self, context)
 		items[#items+1] = item
 	end
 
-	processed_bundles[context.player][self.inst] = setmetatable(items, { __mode="kv"})
+	--dumptable(items)
+	processed_bundles[context.player][self.inst] = items
 
 	return items
 end

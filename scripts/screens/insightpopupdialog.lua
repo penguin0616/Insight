@@ -63,11 +63,11 @@ function InsightPopupDialog:Close()
 end
 
 function InsightPopupDialog:OnControl(control, down)
-	--mprint("InsightPopupDialog", controlHelper.Prettify(control), down)
+	--mprint("InsightPopupDialog", controlUtility.Prettify(control), down)
 	-- PopupDialog is just a mess with it trying to infer button usage from input. Complete overwrite of base.
 	if Screen.OnControl(self, control, down) then return true end
 
-	local scheme = controlHelper.GetCurrentScheme()
+	local scheme = controlUtility.GetCurrentScheme()
 	if not down then
 		if scheme:IsAcceptedControl("exit", control) then
 			TheFrontEnd:GetSound():PlaySound("dontstarve/HUD/click_move")
@@ -82,7 +82,7 @@ function InsightPopupDialog:GetHelpText()
 	local controller_id = TheInput:GetControllerID()
 	local t = {}
 
-	table.insert(t, TheInput:GetLocalizedControl(controller_id, controlHelper.GetCurrentScheme().exit:GetPrimaryControl()) .. " " .. STRINGS.UI.HELP.BACK)	
+	table.insert(t, TheInput:GetLocalizedControl(controller_id, controlUtility.GetCurrentScheme().exit:GetPrimaryControl()) .. " " .. STRINGS.UI.HELP.BACK)	
 
 	return table.concat(t, "  ")
 end

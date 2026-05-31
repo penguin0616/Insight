@@ -21,14 +21,17 @@ directory. If not, please refer to
 -- cave_entrance.lua [Prefab]
 local initialized = false
 
+local icon_table_lookup = {
+	["cave_entrance_open"] = FOREST_MIGRATOR_IMAGES,
+	["cave_exit"] = CAVE_MIGRATOR_IMAGES
+}
+
 -- Thought about doing this through shardmigrator, but I'm looking to texture these based off of their prefab.
 -- Which could also be done from the shardmigrator, but ehhhhhhhh.
 local function OnMigrationAvailable(inst)
 	local id = inst.components.worldmigrator.receivedPortal
 
-	local icon_table = (inst.prefab == "cave_entrance_open" and FOREST_MIGRATOR_IMAGES)
-		or (inst.prefab == "cave_exit" and CAVE_MIGRATOR_IMAGES)
-		or nil
+	local icon_table = icon_table_lookup[inst.prefab]
 
 	if not icon_table or not icon_table[id] then
 		dprint(string.format("Migrator [%s] does not have anything color bound to it.", id or "nil"))
@@ -37,6 +40,7 @@ local function OnMigrationAvailable(inst)
 
 	local marker = SpawnPrefab("insight_map_marker")
 	marker:TrackEntity(inst)
+	table.foreach(icon_table[id], print)
 	marker.MiniMapEntity:SetIcon(icon_table[id][1])
 	inst.MiniMapEntity:SetIcon(icon_table[id][1]) -- since marker gets removed when it enters vision, this is used.
 	--marker.MiniMapEntity:SetCanUseCache(false) -- default true
@@ -45,8 +49,51 @@ local function OnMigrationAvailable(inst)
 	dprint(string.format("Migrator [%s] activated.", id))
 end
 
+local function ColorMigratorEntity(inst, insight, context)
+	local icon_table = icon_table_lookup[inst.prefab]
+
+	if context.config["sinkhole_marks"] == 0 then
+		return
+	end
+
+	ListenForEventOnce(inst, "insight_ready", function(inst)
+		dprint(inst, "- migrator has loaded")
+		local info = insight:GetInformation(inst)
+		local id = info.special_data.worldmigrator.id -- intentional
+		--dprint("id:", id)
+
+		if not icon_table then
+			dprint("no icon table for inst", inst)
+			return
+		end
+
+		if not icon_table[id] then
+			dprintf("worldmigrator id is too high: %s - %d", inst, id)
+			return
+		end
+
+		if context.config["sinkhole_marks"] ~= 2 then
+			dprintf("sinkhole color disabled")
+			return
+		end
+
+		--inst.MiniMapEntity:SetIcon(icon_table[id][1])
+		local clr = icon_table[id][2]
+		inst.AnimState:SetMultColour(unpack(clr))
+		
+	end)
+end
+
 local function OnMigratorSpawned(inst)
-	inst:ListenForEvent("migration_available", OnMigrationAvailable)
+	if TheWorld.ismastersim then
+		inst:ListenForEvent("migration_available", OnMigrationAvailable)
+	end
+
+	if (IsClient() or IsClientHost()) then
+		OnLocalPlayerPostInit:AddWeakListener(function(insight, context)
+			ColorMigratorEntity(inst, insight, context)
+		end)
+	end
 end
 
 local function Initialize()
@@ -56,7 +103,7 @@ local function Initialize()
 
 	initialized = true
 
-	AddPrefabPostInit("cave_entrace_open", OnMigratorSpawned)
+	AddPrefabPostInit("cave_entrance_open", OnMigratorSpawned)
 	AddPrefabPostInit("cave_exit", OnMigratorSpawned)
 end
 

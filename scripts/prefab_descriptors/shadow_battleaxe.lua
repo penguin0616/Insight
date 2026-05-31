@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- shadow_battleaxe.lua [Prefab]
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local weak = Color.fromHex("#D08C91")
 local strong = Color.fromHex("#BC4C51")
@@ -74,7 +74,7 @@ local function Describe(inst, context)
 	if inst._lifesteal > 0 then
 		lifesteal_info = {
 			name = "shadow_battleaxe_lifesteal",
-			priority = combatHelper.DAMAGE_PRIORITY - 10,
+			priority = combatUtility.DAMAGE_PRIORITY - 10,
 			description = string.format(context.lstr.shadow_battleaxe.lifesteal, 
 				inst._lifesteal, 
 				-inst._lifesteal * TUNING.SHADOW_BATTLEAXE.LIFE_STEAL_SANITY_LOSS_SCALE

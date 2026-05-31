@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Used for doing stuff with Klei's profiler output.
 """

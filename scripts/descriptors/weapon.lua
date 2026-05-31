@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- weapon.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 local world_type = GetWorldType()
 local WEAPON_CACHE = {
@@ -28,6 +28,15 @@ local WEAPON_CACHE = {
 
 local function DescribeYOTRPillowWeapon(self, context)
 	local description, alt_description
+
+	if type(self.inst._strengthmult) ~= "number" then
+		return
+	end
+
+	if type(self.inst._laglength) ~= "number" then
+		return
+	end
+
 	local knockback = string.format(context.lstr.combat.yotr_pillows.knockback, self.inst._knockback, self.inst._strengthmult * 100)
 	local laglength = string.format(context.lstr.combat.yotr_pillows.laglength, string.format(context.lstr.time_seconds, self.inst._laglength))
 	local prize_value = string.format(context.lstr.combat.yotr_pillows.prize_value, self.inst._prize_value or "?")
@@ -37,7 +46,7 @@ local function DescribeYOTRPillowWeapon(self, context)
 
 	return {
 		name = "weapon_yotr",
-		priority = combatHelper.DAMAGE_PRIORITY + 1,
+		priority = combatUtility.DAMAGE_PRIORITY + 1,
 		description = description,
 		alt_description = alt_description,
 	}
@@ -117,7 +126,7 @@ local function Describe(self, context)
 		return
 	end
 
-	local multiplier = combatHelper.GetOutgoingDamageModifier(owner.components.combat)
+	local multiplier = combatUtility.GetOutgoingDamageModifier(owner.components.combat)
 
 	-- Add obsidian power to multiplier
 	if inst.components.obsidiantool then -- only have to worry about it in sw or hamlet, which already agrees with the number formatting
@@ -134,10 +143,10 @@ local function Describe(self, context)
 		damage = damage * WandaCustomCombatDamage(context.player, nil, self.inst, nil, context.player.components.rider and context.player.components.rider.mount or nil)
 	end
 
-	local stimuli_type = combatHelper.IsPrefabPoisonous(self.inst.prefab) and "poisonous" or self.stimuli
-	local stimuli_data = combatHelper.GetStimuliData(stimuli_type)
+	local stimuli_type = combatUtility.IsPrefabPoisonous(self.inst.prefab) and "poisonous" or self.stimuli
+	local stimuli_data = combatUtility.GetStimuliData(stimuli_type)
 
-	if stimuli_data == combatHelper.WEAPON_STIMULI_DEFS.electric then
+	if stimuli_data == combatUtility.WEAPON_STIMULI_DEFS.electric then
 		-- Check if weapon has custom damage mults for electric.
 		local electric_damage_mult = self.electric_damage_mult or TUNING.ELECTRIC_DAMAGE_MULT
 		local electric_wet_damage_mult = self.electric_wet_damage_mult or TUNING.ELECTRIC_WET_DAMAGE_MULT
@@ -153,7 +162,7 @@ local function Describe(self, context)
 	if inst.components.container and inst:HasTag("slingshot") then -- walter's slingshot
 		local ammo = inst.components.container:GetItemInSlot(1)
 		if ammo then
-			local ammo_data = combatHelper.GetSlingshotAmmoData(ammo.prefab)
+			local ammo_data = combatUtility.GetSlingshotAmmoData(ammo.prefab)
 
 			if ammo_data then
 				damage = ammo_data.damage or damage
@@ -182,7 +191,7 @@ local function Describe(self, context)
 
 	return {
 		name = "weapon",
-		priority = combatHelper.DAMAGE_PRIORITY,
+		priority = combatUtility.DAMAGE_PRIORITY,
 		description = description,
 		attack_range = self.attackrange
 	}, pillow_info

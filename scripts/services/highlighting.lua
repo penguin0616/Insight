@@ -353,7 +353,7 @@ local function GetContainerRelevance(container_inst)
 		
 	elseif activeItem then
 		--push("GCR.activeItem")
-		--dprint(ctr.inst, "searching for:", activeItem)
+		--dprint(container_inst, "searching for:", activeItem)
 		local res = insight:ContainerHas(container_inst, activeItem, isSearchingForFoodTag)
 		--dprint("resx:", res)
 		--pop()
@@ -404,7 +404,7 @@ local function EvaluateRelevance(inst, isApplication)
 
 	local container
 	if prefab then
-		container = (IS_DST and inst.replica.container) or inst.components.container
+		container = (IS_DST and inst.replica.container) or inst.components.container or nil
 
 		if not container and IS_DST then
 			-- Check to see if we have container data still for what is probably a container_proxy

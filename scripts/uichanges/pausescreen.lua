@@ -25,20 +25,25 @@ local function OnPauseScreenPostConstructDST(self)
 end
 
 local function PostButtons(screen, buttons)
-	local ctx = localPlayer and GetPlayerContext(localPlayer)
-	if ctx and not ctx.config["display_insight_menu_button"] then
-		table.insert(buttons, 1, {
-			text = "Insight Menu", 
-			cb = function() 
-				screen:unpause()
-				localPlayer.HUD.controls:ToggleInsightMenu()
-			end 
-		})
-		if screen.pause_button_index then
-			screen.pause_button_index = screen.pause_button_index + 1
-		end
-		screen.options_button_index = screen.options_button_index + 1
+	-- Used to make this only show up if the Insight menu button was hidden, but I've received requests to always show it.
+	table.insert(buttons, 5, {
+		text = "Insight Menu", 
+		cb = function() 
+			screen:unpause()
+			localPlayer.HUD.controls:ToggleInsightMenu()
+		end 
+	})
+
+	-- Needed if we are placing the button before the "Pause" button.
+	--[[
+	if screen.pause_button_index then
+		screen.pause_button_index = screen.pause_button_index + 1
 	end
+	--]]
+
+	-- Needed if we are placing the button before the "Settings" button.
+	--screen.options_button_index = screen.options_button_index + 1
+	
 end
 
 module.Initialize = function()
@@ -67,11 +72,9 @@ module.Initialize = function()
 			end
 		}, { __index=TEMPLATES, __newindex=TEMPLATES })
 
-		util.replaceupvalue(
-			PauseScreen.BuildMenu, 
-			"TEMPLATES",
-			fakeTemplates
-		)
+		-- ADM's winterlands is adding a custom button to the pause menu. 2025-12-07.
+		-- I guess they also added templates to try to fix the incompatibility, 
+		util.recursive_setupvalue(PauseScreen.BuildMenu, "TEMPLATES", fakeTemplates)
 	end
 end
 

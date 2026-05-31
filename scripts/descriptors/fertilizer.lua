@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- fertilizer.lua
-local farmingHelper = import("helpers/farming")
+local farmingUtility = import("utility/farming")
 
 local function Describe(self, context)
 	if not context.config["display_fertilizer"] then
@@ -27,7 +27,7 @@ local function Describe(self, context)
 	end
 	
 	--[[
-	if not farmingHelper.IsInitialized() then
+	if not farmingUtility.IsInitialized() then
 		return { priority = 0; description = "<color=#ff0000>Farming helper not initialized (fertilizer).</color>" }
 	end
 	--]]
@@ -45,12 +45,12 @@ local function Describe(self, context)
 	Friend went to harvest from a Heap of Foods Keg, 
 	suspected to have turned into sludge from being left too long.
 	]]
-	if (IS_DS or farmingHelper.WorldHasOldGrowers()) and self.fertilizervalue then
+	if (IS_DS or farmingUtility.WorldHasOldGrowers()) and self.fertilizervalue then
 		growth_value_string = string.format(context.lstr.fertilizer.growth_value, self.fertilizervalue)
 	end
 
 	if self.inst.GetFertilizerKey then
-		local nutrient_value = farmingHelper.GetNutrientValue(self.inst:GetFertilizerKey())
+		local nutrient_value = farmingUtility.GetNutrientValue(self.inst:GetFertilizerKey())
 		if nutrient_value then
 			local missing = nil --"?"
 			nutrient_value_string = string.format(context.lstr.fertilizer.nutrient_value, nutrient_value[1] or missing, nutrient_value[2] or missing, nutrient_value[3] or missing)

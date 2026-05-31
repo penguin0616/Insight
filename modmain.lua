@@ -74,6 +74,10 @@ local Insight = {
 	descriptors = {}, -- 130 descriptors as of April 17, 2021
 	prefab_descriptors = {},  
 
+	API = {
+		V1 = {}
+	},
+
 	post_inits = {
 		describe = {},
 		prefab_describe = {}
@@ -156,6 +160,13 @@ local Insight = {
 	HOT_RELOAD_FNS = {},
 }
 
+setmetatable(Insight.API, {
+	__index = function(self, index)
+		return Insight.API.V1[index]
+	end,
+	__metatable = "Locked"
+})
+
 -- Provide to Global
 _G.Insight = Insight
 
@@ -200,11 +211,11 @@ if false and DEBUG_ENABLED and (TheSim:GetGameID() == "DS" or false) then
 end
 
 string = setmetatable({}, {__index = function(self, index) local x = _G.string[index]; rawset(self, index, x); return x; end})
-import = kleiloadlua(MODROOT .. "scripts/import.lua")()
-Time = import("time")
-Color = import("helpers/color")
-rpcNetwork = import("rpcnetwork")
-entity_tracker = import("helpers/entitytracker")
+import = kleiloadlua(MODROOT .. "scripts/utility/import.lua")()
+Time = import("objects/time")
+Color = import("objects/color")
+rpcNetwork = import("utility/rpcnetwork")
+entity_tracker = import("utility/entitytracker")
 
 TRACK_INFORMATION_REQUESTS = DEBUG_ENABLED and false
 DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
@@ -212,6 +223,10 @@ DEBUG_SHOW_NOTIMPLEMENTED_MODDED = false
 -- maybe one day i'll do something 64-bit specific or something
 is64bit = #tostring{}:match("(%w+)$") == 16
 is32bit = not is64bit
+
+if TheSim:GetGameID() == "DS" then
+	import("ds_patches/missing_globals")
+end
 
 local CrashReporter -- Initialized later, see comment below
 local player_contexts = {}
@@ -648,7 +663,7 @@ local function GetComponentOrigin(componentname)
 
 	local found, cmp = pcall(require, "components/" .. componentname)
 	if not found or not cmp then
-		mprint("3", componentname, found, cmp)
+		--mprint("3", componentname, found, cmp)
 		mod_component_cache[componentname] = false
 		return GetComponentOrigin(componentname)
 	end
@@ -812,12 +827,18 @@ end
 function errorf(level, error_pattern, ...)
 	local t = type(level)
 
+	local n = select("#", ...)
+	local args = {...}
+	for i = 1, n do
+		args[i] = tostring(args[i])
+	end
+
 	if t == "string" then
 		-- the level is actually the error pattern
-		return error(string.format(level, error_pattern, ...), 2)
+		return error(string.format(level, error_pattern, unpack(args)), 2)
 	elseif t == "number" then
 		-- standard
-		return error(string.format(error_pattern, ...), (level and level+1) or 2)
+		return error(string.format(error_pattern, unpack(args)), (level and level+1) or 2)
 	else
 		error("errorf bad args")
 	end
@@ -873,6 +894,14 @@ function cprint(...)
 	-- _G.Insight.env.rpcNetwork.SendModRPCToClient(GetClientModRPC(_G.Insight.env.modname, "Print"), ThePlayer.userid, "rek"
 end
 
+local function sprint(c)
+	local x = c
+	while #x > 0 do
+		mprint(x:sub(1, 500))
+		x = x:sub(501)
+	end
+end
+
 local function DoNetworkMoonCycle()
 	local moon_cycle = GetMoonCycle()
 	if not moon_cycle then return end
@@ -902,6 +931,81 @@ local function hex_dump(buf)
 		if i % 16 == 0 then s = s .. buf:sub(i-16+1, i):gsub("%c",".") .. "\n" end
 	end
 	return s
+end
+
+--- Loads and returns an Insight descriptor. 
+---@param descriptor_name string Name of the descriptor.
+---@param descriptor_type string The type of descriptor. "component" or "prefab".
+---@return table|false @Returned table from the descriptor, or false if the descriptor failed to load.
+local function LoadDescriptor(descriptor_name, descriptor_type)
+	local folder_name = 
+		(descriptor_type == "component" and "descriptors")
+		or (descriptor_type == "prefab" and "prefab_descriptors")
+		or errorf("attempt to load unknown descriptor type '%s'", descriptor_type)
+
+	local safe, result = pcall(import, string.format("%s/%s", folder_name, descriptor_name))
+	
+	if safe then
+		if type(result) == "table" then
+			-- The following methods MUST be functions if they exist.
+			for _, method_name in ipairs({"Describe", "OnServerLoad", "OnServerUnload", "OnClientLoad", "OnClientUnload"}) do
+				if result[method_name] ~= nil and type(result[method_name]) ~= "function" then
+					errorf("Attempt to return '%s' as a complex descriptor with '%s' as '%s'", descriptor_name, method_name, result[method_name])
+				end
+			end
+		else
+			local source_read, err = pcall(function()
+				local f = io.open(string.format("../mods/%s/scripts/%s/%s.lua", modname, folder_name, descriptor_name))
+				local src = f:read("*a")
+
+				mprint("==================== FILE SOURCE ====================")
+				mprint("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
+
+				mprint("==================== HEX DUMP =======================")
+				local file_fn = import._init_cache[import.ResolvePath(folder_name .. "/" .. descriptor_name)]
+				assert(file_fn, "Missing file FN")
+				mprint("\n" .. hex_dump(file_fn))
+			end)
+
+			if not source_read then
+				mprint("Could not completely read descriptor file:", err)
+			end
+
+			errorf("Attempt to return \"%s\" (type %s) in descriptor '%s'", result, result, descriptor_name)
+			result = {
+				FailedToLoad = true
+			}
+		end
+	else
+		-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
+		local _, en = string.find(result, ":%d+:%s")
+		local error_string = string.sub(result, (en or 0)+1)
+
+		result = {
+			FailedToLoad = true
+		}
+	
+		if error_string:find(string.format("[ERR] File does not exist: %sscripts/%s/%s.lua", MODROOT, folder_name, descriptor_name), 1, true) then
+			-- Failed to load itself since it couldn't find itself
+		else
+			mprint("Failed to load descriptor", descriptor_name, "|", error_string)
+			result.Describe = function() 
+				return {
+					name = descriptor_name .. "_component_insighterror",
+					priority = -0.5, 
+					description = "<color=#ff0000>ERROR LOADING DESCRIPTOR \"" .. descriptor_name .. "\"</color>:\n" .. error_string, 
+					_error = true,
+				} 
+			end 
+		end
+	end
+
+	-- I don't remember what this was for.
+	if getmetatable(result) == nil then
+		setmetatable(result, { })
+	end
+
+	return result
 end
 
 --- Unloads a loaded component descriptor and clears the import cache for the file.
@@ -938,79 +1042,7 @@ function UnloadComponentDescriptor(name)
 	end
 end
 
-_G.UnloadComponentDescriptor = UnloadComponentDescriptor
-
---- Loads and returns a component descriptor. 
----@param name string Name of the component.
----@return table|false @Returned table from the descriptor, or false if the descriptor failed to load.
-local function GetComponentDescriptor(name)
-	local safe, res = pcall(import, "descriptors/" .. name)
-	
-	if safe then
-		if type(res) == "table" then
-			assert(
-				res.Describe == nil or type(res.Describe) == "function", 
-				string.format("[Insight]: attempt to return '%s' as a complex descriptor with Describe as '%s'", 
-					name, tostring(res.Describe)
-				)
-			)
-
-			if getmetatable(res) == nil then
-				res.name = res.name or name
-				setmetatable(res, { })
-			end
-
-			return res
-		else
-			local source_read, err = pcall(function()
-				local f = io.open("../mods/" .. modname .. "/scripts/descriptors/" .. name .. ".lua")
-				local src = f:read("*a")
-
-				mprint("==================== FILE SOURCE ====================")
-				mprint("\n[[" .. src:sub(1, 124) .. "]]\n\n[[" .. src:sub(-124) .. "]]")
-
-				mprint("==================== HEX DUMP =======================")
-				local file_fn = import._init_cache[import.ResolvePath("descriptors/" .. name)]
-				assert(file_fn, "Missing file FN")
-				mprint("\n" .. hex_dump(file_fn))
-			end)
-			if not source_read then
-				mprint("Could not completely read descriptor file:", err)
-			end
-
-			error(string.format("Attempt to return \"%s\" (type %s) in descriptor '%s'", tostring(res), type(res), name))
-			--Insight.descriptors[name] = false
-			return false
-		end
-	else
-		-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
-		
-
-		local _, en = string.find(res, ":%d+:%s")
-		res = string.sub(res, (en or 0)+1)
-	
-		if res:find("[ERR] File does not exist: " .. MODROOT .. "scripts/descriptors/" .. name .. ".lua", 1, true) then
-			-- Failed to load itself since it couldn't find itself
-		else
-			mprint("Failed to load descriptor", name, "|", res)
-			return {
-				FailedToLoad = true, 
-				Describe = function() 
-					return {
-						name = name .. "_component_insighterror",
-						priority = -0.5, 
-						description = "<color=#ff0000>ERROR LOADING COMPONENT DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, 
-						_error = true,
-					} 
-				end 
-			}
-		end
-
-		
-
-		return false
-	end
-end
+Insight.API.V1.UnloadComponentDescriptor = UnloadComponentDescriptor
 
 function AddComponentDescriptor(name, descriptor, metadata)
 	-- Argument validation
@@ -1032,7 +1064,7 @@ function AddComponentDescriptor(name, descriptor, metadata)
 		errorf("invalid metadata.modname (populated string expected, got %s)", type(metadata.modname))
 	end
 
-
+	descriptor.name = descriptor.name or name
 	Insight.descriptors[name] = descriptor
 	if descriptor_type == "table" then
 		descriptor.metadata = metadata
@@ -1049,6 +1081,8 @@ function AddComponentDescriptor(name, descriptor, metadata)
 		end
 	end
 end
+
+Insight.API.V1.AddComponentDescriptor = AddComponentDescriptor
 
 --- Unloads a loaded prefab descriptor and clears the import cache for the file.
 ---@param name string
@@ -1084,58 +1118,7 @@ function UnloadPrefabDescriptor(name)
 	end
 end
 
-_G.UnloadPrefabDescriptor = UnloadPrefabDescriptor
-
---- Loads and returns a prefab descriptor. 
----@param name string Prefab name.
----@return table|false @Returned table from the prefab descriptor, or false if the prefab descriptor failed to load.
-local function GetPrefabDescriptor(name)
-	-- This is like an exact duplicate of GetComponentDescriptor, except prefab_descriptors. pensive.
-	local safe, res = pcall(import, "prefab_descriptors/" .. name)
-	
-	if safe then
-		if type(res) == "table" then
-			assert(
-				res.Describe == nil or type(res.Describe) == "function", 
-				string.format("[Insight]: attempt to return '%s' as a complex prefab descriptor with Describe as '%s'", 
-					name, tostring(res.Describe)
-				)
-			)
-
-			if getmetatable(res) == nil then
-				res.name = res.name or name
-				setmetatable(res, {  })
-			end
-
-			return res
-		else
-			error(string.format("Attempt to return %s '%s' in prefab descriptor '%s'", type(res), tostring(res), name))
-			--Insight.descriptors[name] = false
-			return false
-		end
-	else
-		-- [string "../mods/workshop-2189004162/scripts/import...."]:48: [ERR] File does not exist: ../mods/workshop-2189004162/scripts/descriptors/teamattacker.lua
-		local _, en = string.find(res, ":%d+:%s")
-		res = string.sub(res, (en or 0)+1)
-		if res:find("[ERR] File does not exist: " .. MODROOT .. "scripts/prefab_descriptors/" .. name .. ".lua", 1, true) then
-			-- Failed to load itself since it couldn't find itself
-		else
-			mprint("Failed to load prefab descriptor", name, "|", res)
-			return { 
-				Describe = function() 
-					return {
-						name = name .. "_prefab_insighterror",
-						priority = -0.5, 
-						description = "<color=#ff0000>ERROR LOADING PREFAB DESCRIPTOR \"" .. name .. "\"</color>:\n" .. res, 
-						_error = true,
-					}
-				end 
-			}
-		end
-
-		return false
-	end
-end
+Insight.API.V1.UnloadPrefabDescriptor = UnloadPrefabDescriptor
 
 function AddPrefabDescriptor(name, descriptor, metadata)
 	-- Argument validation
@@ -1157,8 +1140,9 @@ function AddPrefabDescriptor(name, descriptor, metadata)
 		errorf("invalid metadata.modname (populated string expected, got %s)", type(metadata.modname))
 	end
 
-
+	descriptor.name = descriptor.name or name
 	Insight.prefab_descriptors[name] = descriptor
+
 	if descriptor_type == "table" then
 		descriptor.metadata = metadata
 		if descriptor.OnServerLoad then
@@ -1174,6 +1158,8 @@ function AddPrefabDescriptor(name, descriptor, metadata)
 		end
 	end
 end
+
+Insight.API.V1.AddPrefabDescriptor = AddPrefabDescriptor
 
 function ReloadInsightModule(path)
 	if not import.HasLoaded(path) then
@@ -1784,14 +1770,6 @@ function REGISTER_HOT_RELOAD(files_to_clear, callback)
 	dprint("REGISTERED HOT RELOAD:", dbg.source)
 end
 
-local function sprint(c)
-	local x = c
-	while #x > 0 do
-		mprint(x:sub(1, 500))
-		x = x:sub(501)
-	end
-end
-
 local function heckler(f)
 	return f:gsub("%[", "%%["):gsub("%]", "%%]") 
 end
@@ -2081,6 +2059,7 @@ function AddDescriptorPostDescribe(modname, descriptor, callback)
 
 	table.insert(posts, callback)
 end
+Insight.API.V1.AddDescriptorPostDescribe = AddDescriptorPostDescribe
 
 function RemoveClassPostConstruct(package, postfn)
 	local classdef = require(package)
@@ -2228,7 +2207,7 @@ end
 setmetatable(Insight.descriptors, {
 	__index = function(self, index)
 		-- If we're here, this means that we're requesting an unloaded descriptor.
-		local value = GetComponentDescriptor(index)
+		local value = LoadDescriptor(index, "component")
 		AddComponentDescriptor(index, value, { modname=modname })
 		return value
 	end,
@@ -2242,7 +2221,7 @@ setmetatable(Insight.descriptors, {
 setmetatable(Insight.prefab_descriptors, {
 	__index = function(self, index)
 		-- If we're here, this means that we're requesting an unloaded prefab descriptor.
-		local value = GetPrefabDescriptor(index)
+		local value = LoadDescriptor(index, "prefab")
 		AddPrefabDescriptor(index, value, { modname=modname })
 		return value
 	end,
@@ -2711,12 +2690,12 @@ if IS_DST then
 
 	AddComponentPostInit("grower", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end
-		import("helpers/farming").RegisterOldGrower(self)
+		import("utility/farming").RegisterOldGrower(self)
 	end)
 
 	AddComponentPostInit("farming_manager", function(self)
 		if not (TheWorld and TheWorld.ismastersim) then return end
-		import("helpers/farming").Initialize(self)
+		import("utility/farming").Initialize(self)
 	end)
 
 	--[[
@@ -3037,7 +3016,7 @@ else
 end
 
 do
-	local console_commands = import("insight_consolecommands")
+	local console_commands = import("misc/insight_consolecommands")
 	local selected = console_commands[(IS_DST and 1 or 2)]
 
 	for name, fn in pairs(selected) do
@@ -3122,7 +3101,7 @@ end
 --==========================================================================================================================
 --==========================================================================================================================
 -- import assets
-import("assets")
+import("assets/assets")
 
 if IS_DS or IsClient() or IsClientHost() then
 	--[=[
@@ -3163,13 +3142,13 @@ if IS_DS or IsClient() or IsClientHost() then
 		end
 	end
 	--]=]
-	entityManager = import("helpers/entitymanager")
+	entityManager = import("utility/entitymanager")
 	import("clientmodmain")
 end
 
 -- Needs to be done here so UI dependencies have time to load.
 if IS_DST then
-	CrashReporter = import("crashreporter")
+	CrashReporter = import("services/crashreporter")
 	CrashReporter.Initialize()
 end
 

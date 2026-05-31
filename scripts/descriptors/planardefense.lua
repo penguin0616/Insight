@@ -19,7 +19,7 @@ directory. If not, please refer to
 ]]
 
 -- planardefense.lua
-local combatHelper = import("helpers/combat")
+local combatUtility = import("utility/combat")
 
 -- darker #b079e8
 -- lighter #c99cf7
@@ -45,7 +45,7 @@ local function Describe(self, context)
 	end
 	
 	return {
-		priority = combatHelper.DAMAGE_PRIORITY - 101,
+		priority = combatUtility.DAMAGE_PRIORITY - 101,
 		description = description,
 		alt_description = alt_description
 	}

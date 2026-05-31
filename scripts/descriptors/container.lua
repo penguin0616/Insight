@@ -88,12 +88,13 @@ end
 local function GetContainerContents(self, context)
 	if containers[self.inst] then
 		--mprint("reusing old index")
+		--dumptable(containers[self.inst])
 		return containers[self.inst]
 	end
 
 	--mprint("new", self.inst)
 
-	local items = {} -- {prefab, amount}
+	local items = {}
 	context.onlyContents = true -- ISSUE: REFACTOR
 
 	-- so this might not process the container slots in order, but that doesn't really matter here

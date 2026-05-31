@@ -43,7 +43,7 @@ directory. If not, please refer to
 	sporebomb
 ]]
 
-local debuffHelper = import("helpers/debuff")
+local debuffUtility = import("utility/debuff")
 
 -- This table is for purposes of getting an icon for the buffs.
 local debuff_to_prefab = {
@@ -109,7 +109,7 @@ local function GetDebuffRemainingTime(debuffInst, context)
 end
 
 local function DescribeDebuff(debuffName, prefab, remaining_time, context)
-	local known_debuff = debuffHelper.IsKnownDebuff(prefab) --context.lstr.debuffs[prefab] ~= nil
+	local known_debuff = debuffUtility.IsKnownDebuff(prefab) --context.lstr.debuffs[prefab] ~= nil
 
 	-- Make sure name exists, modded prefabs don't have one registered with us.
 	local name
@@ -123,7 +123,7 @@ local function DescribeDebuff(debuffName, prefab, remaining_time, context)
 	local primary_info = string.format(context.lstr.buff_text, name, remaining_time)
 	local description = nil
 	if known_debuff and context.lstr.debuffs[prefab] and context.lstr.debuffs[prefab].description then
-		description = debuffHelper.GetDebuffEffects(prefab, context)
+		description = debuffUtility.GetDebuffEffects(prefab, context)
 	end
 	local text = CombineLines(primary_info, description)
 
@@ -146,7 +146,7 @@ local function DescribeLocalPlayer(self, context)
 		-- v = { inst=inst, onremove=fn }
 		local debuffInst = v.inst
 		if debuffInst then -- this is checked for in debuffable, inst is the actual debuff entity
-			local prefab = debuffHelper.GetRealDebuffPrefab(debuffInst.prefab)
+			local prefab = debuffUtility.GetRealDebuffPrefab(debuffInst.prefab)
 
 			local remaining_time = GetDebuffRemainingTime(debuffInst, context)
 
@@ -171,7 +171,7 @@ local function Describe(self, context)
 			
 			local debuffInst = v.inst
 			if debuffInst then
-				local prefab = debuffHelper.GetRealDebuffPrefab(debuffInst.prefab)
+				local prefab = debuffUtility.GetRealDebuffPrefab(debuffInst.prefab)
 
 				this = string.format("%q\n(<color=#cccccc>%q</color>)", debuffName, prefab)
 			else

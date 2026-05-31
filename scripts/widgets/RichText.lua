@@ -27,7 +27,7 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 local Image = require("widgets/image")
 local Text = require("widgets/text") --FIXED_TEXT
 local Widget = require("widgets/widget")
-local Reader, Chunk = import("reader")
+local Reader, Chunk = import("objects/reader")
 
 local CalculateSize = CalculateSize
 local IS_DST = IS_DST

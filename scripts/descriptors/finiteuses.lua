@@ -45,7 +45,7 @@ local function Describe(self, context)
 
 	-- This was added for the wortox soul jar specifically,
 	-- but this seems reasonable overall?
-	if self.inst.components.container then
+	if inst.components.container then
 		return
 	end
 

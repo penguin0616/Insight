@@ -28,7 +28,9 @@ local function Describe(inst, context)
 	local damagetypebonus_info
 	if inst.components.weapon ~= nil then
 		if context.config["weapon_damage"] then 
-			damagetypebonus_info = Insight.descriptors.damagetypebonus.DescribeModifiers({["shadow_aligned"] = (TUNING.HOUNDSTOOTH_BLOWPIPE_VS_SHADOW_BONUS-1)*100}, context)
+			damagetypebonus_info = Insight.descriptors.damagetypebonus.DescribeModifiers({
+				["shadow_aligned"] = (TUNING.HOUNDSTOOTH_BLOWPIPE_VS_SHADOW_BONUS)
+			}, context)
 		end
 	end
 	
