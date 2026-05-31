@@ -23,7 +23,16 @@ if not Insight.descriptors.hunter then
 	return {}
 end
 
-local module = deepcopy(Insight.descriptors.hunter)
+local module = {
+	initialized = false,
+	active_hunts = {},
+}
+
+for i,v in pairs(Insight.descriptors.hunter) do
+	if type(v) == "function" then
+		module[i] = v
+	end
+end
 
 --- Replacement for the OnDirtInvestigated function.
 --- @param self hunter
