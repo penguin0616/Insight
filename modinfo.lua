@@ -49,7 +49,7 @@ name = "Insight"
 -- MAJOR version when you make incompatible API changes
 -- MINOR version when you add functionality in a backward compatible manner
 -- PATCH version when you make backward compatible bug fixes
-version = "5.2.0"
+version = "6.0.0"
 --version_compatible = "0.0.0" -- Oldest version we are still compatible with
 author = "penguin0616"
 forumthread = ""
