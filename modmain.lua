@@ -265,7 +265,7 @@ local descriptors_ignore = {
 	"economy", "cityalarms", "banditmanager", "quaker_interior", "glowflyspawner", -- world (hamlet) (might be interesting)
 	"nightmareambientsoundmixer", --gamelogic
 	"colourcubemanager", "seasonmanager", "bigfooter", "flowerspawner", "doydoyspawner", "debugger", "rainbowjellymigration", "globalsettings", "flooding", "mosquitospawner", -- specific world types
-	"volcanoambience", "volcanowave", "whalehunter", -- specific world types
+	"volcanoambience", "volcanowave", -- specific world types
 	
 	
 	-- now for DST stuff
@@ -1070,13 +1070,13 @@ function AddComponentDescriptor(name, descriptor, metadata)
 		descriptor.metadata = metadata
 		if descriptor.OnServerLoad then
 			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-				descriptor.OnServerLoad()
+				descriptor:OnServerLoad()
 			end
 		end
 
 		if descriptor.OnClientLoad then
 			if IS_DS or IsClient() or IsClientHost() then
-				descriptor.OnClientLoad()
+				descriptor:OnClientLoad()
 			end
 		end
 	end
@@ -3158,6 +3158,7 @@ Insight.descriptors("clock")
 Insight.descriptors("oceanfishingrod")
 Insight.descriptors("container")
 Insight.descriptors("hunter")
+Insight.descriptors("whalehunter")
 Insight.descriptors("kramped")
 
 
