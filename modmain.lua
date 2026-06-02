@@ -1147,13 +1147,13 @@ function AddPrefabDescriptor(name, descriptor, metadata)
 		descriptor.metadata = metadata
 		if descriptor.OnServerLoad then
 			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-				descriptor.OnServerLoad()
+				descriptor:OnServerLoad()
 			end
 		end
 
 		if descriptor.OnClientLoad then
 			if IS_DS or IsClient() or IsClientHost() then
-				descriptor.OnClientLoad()
+				descriptor:OnClientLoad()
 			end
 		end
 	end
