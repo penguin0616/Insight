@@ -71,9 +71,13 @@ function Event:AddListener(name, fn, weak)
 		if type(name) == "function" and fn == nil then
 			-- This was called with no name.
 			fn = name
-			name = "listener" .. GetTableSize(self.listeners) + 1
+			repeat
+				name = "listener" .. math.random(1, 0xFFFFFF)
+			until self.listeners[name] == nil -- Rare edge case where number was the same
 		elseif name == nil then
-			name = "listener" .. GetTableSize(self.listeners) + 1
+			repeat
+				name = "listener" .. math.random(1, 0xFFFFFF)
+			until self.listeners[name] == nil -- Rare edge case where number was the same
 		else
 			errorf("Adding an event listener requires a name, got '%s'", type(name))
 		end
