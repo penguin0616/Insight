@@ -136,34 +136,227 @@ local function AdjustIndicatorState(inst, state)
 	inst.insight_combat_range_indicator:SetState(state)
 end
 
-local function PushNewIndicatorRange(inst)
+local function IsValidPlayerTarget(target)
+	return target ~= nil
+		and target:IsValid()
+		and target.components.health ~= nil
+		and not target.components.health:IsDead()
+		and target:HasTag("player")
+		and not target:HasTag("playerghost")
+		and not target:IsInLimbo()
+end
+
+local function GetCombat(inst)
+	return inst.insight_combat or inst.components.combat
+end
+
+local function GetStaticRange(inst)
+	local combat = GetCombat(inst)
+	return combat ~= nil and combat:GetAttackRange() or 0, combat ~= nil and combat:GetHitRange() or 0
+end
+
+local function GetGroundPounderDamageRadius(inst)
+	local groundpounder = inst.components.groundpounder
+	if groundpounder == nil then
+		return nil
+	end
+
+	if groundpounder.usePointMode then
+		local radius = groundpounder.initialRadius + groundpounder.radiusStepDistance * math.max(0, groundpounder.damageRings - 1) + groundpounder.ringWidth
+		return radius
+	end
+
+	local radius = groundpounder.initialRadius + groundpounder.radiusStepDistance * math.max(0, math.min(groundpounder.numRings, groundpounder.damageRings) - 1) + groundpounder.ringWidth
+	return radius
+end
+
+local function MaxRange(...)
+	local range
+	for i = 1, select("#", ...) do
+		local value = select(i, ...)
+		if value ~= nil then
+			range = range ~= nil and math.max(range, value) or value
+		end
+	end
+	return range
+end
+
+local BEARGER_ATTACK_ARC_OFFSET = 1
+local BEARGER_COMBO_ARC_OFFSET = 0.5
+
+local function GetBeargerMeleeRange(inst)
+	return (inst.prefab == "mutatedbearger" or inst.prefab == "mutated_bearger") and TUNING.MUTATED_BEARGER_ATTACK_RANGE or TUNING.BEARGER_MELEE_RANGE
+end
+
+local function GetBeargerButtRange(inst)
+	return MaxRange(GetGroundPounderDamageRadius(inst), 4)
+end
+
+local function GetBeargerActiveRange(inst, statename)
+		if statename == "attack" or statename == "attack_action" then
+			return GetBeargerMeleeRange(inst) + BEARGER_ATTACK_ARC_OFFSET
+		elseif string.find(statename or "", "^attack_combo") then
+			return GetBeargerMeleeRange(inst) + BEARGER_COMBO_ARC_OFFSET
+		elseif statename == "pound" then
+			return GetGroundPounderDamageRadius(inst)
+		elseif statename == "butt_pre" or statename == "running_butt_pre" or statename == "butt" or statename == "butt_pst" then
+			return GetBeargerButtRange(inst)
+		end
+end
+
+local ACTIVE_RANGE_PROVIDERS = {
+	bearger = GetBeargerActiveRange,
+
+	mutatedbearger = GetBeargerActiveRange,
+
+	mutated_bearger = function(inst, statename)
+		return GetBeargerActiveRange(inst, statename)
+	end,
+
+	klaus = function(inst, statename)
+		if statename == "attack_chomp" then
+			return inst.chomp_hit_range
+		end
+	end,
+
+	stalker = function(inst, statename)
+		if statename == "snare" or statename == "spikes" then
+			return 3.5
+		end
+	end,
+
+	stalker_atrium = function(inst, statename)
+		if statename == "snare" or statename == "spikes" then
+			return 3.5
+		end
+	end,
+}
+
+local GROUNDPOUNDER_STATES = {
+	pound = true,
+	pound_pre = true,
+	stomp = true,
+	leap_attack = true,
+}
+
+local function GetActiveRange(inst, statename)
+	local provider = ACTIVE_RANGE_PROVIDERS[inst.prefab]
+	local range = provider ~= nil and provider(inst, statename) or nil
+
+	if GROUNDPOUNDER_STATES[statename] then
+		range = MaxRange(range, GetGroundPounderDamageRadius(inst))
+	end
+
+	return range
+end
+
+local function PushIndicatorRange(inst, attack_range, hit_range)
 	if inst.insight_combat_range_indicator then
-		--mprint("pushed indicator range", combat.inst, combat:GetAttackRange(), combat:GetHitRange())
-		--local offset = self.inst.Physics:GetRadius() - 0
+		inst.insight_combat_range_indicator:SetAttackRange(attack_range)
+		inst.insight_combat_range_indicator:SetHitRange(hit_range or attack_range)
+	else
+	end
+end
 
-		-- account for the first half of the hit range here
-		--local offset = self.inst:GetPhysicsRadius(0)
-		--mprint(self.inst, self.attackrange, self.hitrange, offset)
+local function PushStaticIndicatorRange(inst)
+	local attack_range, hit_range = GetStaticRange(inst)
+	PushIndicatorRange(inst, attack_range, hit_range)
+end
 
-		local combat = inst.insight_combat or inst.components.combat
-		inst.insight_combat_range_indicator:SetAttackRange(combat:GetAttackRange())
-		inst.insight_combat_range_indicator:SetHitRange(combat:GetHitRange())
+local function PushCurrentIndicatorRange(inst)
+	local combat = GetCombat(inst)
+	if combat == nil then
+		return
+	end
+
+	local target = combat.target
+	local statename = inst.sg ~= nil and inst.sg.currentstate ~= nil and inst.sg.currentstate.name or nil
+	local active_range = statename ~= nil and GetActiveRange(inst, statename) or nil
+	local target_valid = IsValidPlayerTarget(target)
+
+	if target_valid and active_range ~= nil then
+		PushIndicatorRange(inst, active_range, active_range)
+	else
+		PushStaticIndicatorRange(inst)
+	end
+end
+
+local function SetIndicatorCanDecay(inst, can_decay)
+	if inst.insight_combat_range_indicator ~= nil then
+		inst.insight_combat_range_indicator:SetIndicatorCanDecay(can_decay)
+	end
+end
+
+local function OnNewState(inst, data)
+	local combat = GetCombat(inst)
+	if combat == nil then
+		return
+	end
+
+	local statename = data ~= nil and data.statename or nil
+	local target = combat.target
+	local active_range = statename ~= nil and GetActiveRange(inst, statename) or nil
+	local target_valid = IsValidPlayerTarget(target)
+
+	if target_valid then
+		SetIndicatorCanDecay(inst, false)
+		if active_range ~= nil then
+			PushIndicatorRange(inst, active_range, active_range)
+			AdjustIndicatorState(inst, NET_STATES.ATTACK_BEGIN)
+		elseif inst.sg ~= nil and inst.sg:HasStateTag("attack") then
+			PushStaticIndicatorRange(inst)
+			AdjustIndicatorState(inst, NET_STATES.ATTACK_BEGIN)
+		else
+			PushStaticIndicatorRange(inst)
+			AdjustIndicatorState(inst, NET_STATES.TARGETTING)
+		end
+	else
+		SetIndicatorCanDecay(inst, true)
+		AdjustIndicatorState(inst, NET_STATES.NOTHING)
+	end
+end
+
+local function OnNewCombatTarget(inst, data)
+	local target = data ~= nil and data.target or nil
+	if IsValidPlayerTarget(target) then
+		PushCurrentIndicatorRange(inst)
+		SetIndicatorCanDecay(inst, false)
+		AdjustIndicatorState(inst, NET_STATES.TARGETTING)
+	else
+		SetIndicatorCanDecay(inst, true)
+		AdjustIndicatorState(inst, NET_STATES.NOTHING)
+	end
+end
+
+local function OnDroppedTarget(inst, data)
+	local combat = GetCombat(inst)
+	local target = combat ~= nil and combat.target or nil
+
+	if IsValidPlayerTarget(target) then
+		PushCurrentIndicatorRange(inst)
+		SetIndicatorCanDecay(inst, false)
+		AdjustIndicatorState(inst, NET_STATES.TARGETTING)
+	else
+		SetIndicatorCanDecay(inst, true)
+		AdjustIndicatorState(inst, NET_STATES.NOTHING)
 	end
 end
 
 -- this gets called very repeatedly by players when moving
 local function SetTarget(self, target, ...)
 	--mprint('settarget', self.inst, target)
-	if target == nil then
-		--AdjustIndicator(self.inst, nil, false) -- "#00dd00"
-		AdjustIndicatorState(self.inst, NET_STATES.NOTHING)
-		
-	elseif target.components.health and target.components.health.currenthealth > 0 and target:HasTag("player") and not target:HasTag("playerghost") then
-		--AdjustIndicator(self.inst, Color.fromHex("#e8ca89"), true)
+	local res = pack(self._insightOldSetTarget(self, target, ...))
+
+	if IsValidPlayerTarget(self.target) then
+		PushCurrentIndicatorRange(self.inst)
+		SetIndicatorCanDecay(self.inst, false)
 		AdjustIndicatorState(self.inst, NET_STATES.TARGETTING)
+	else
+		SetIndicatorCanDecay(self.inst, true)
+		AdjustIndicatorState(self.inst, NET_STATES.NOTHING)
 	end
 
-	return self._insightOldSetTarget(self, target, ...)
+	return vararg(res)
 end
 
 --[[
@@ -203,9 +396,11 @@ local function CanAttack(self, target, ...)
 	-- plus, less function calls.
 	local res = pack(self._insightOldCanAttack(self, target, ...))
 
-	if res[1] and target:HasTag("player") then
+	if res[1] and IsValidPlayerTarget(target) then
 		--mprint('\tsafe attack')
 		--AdjustIndicator(self.inst, Color.fromHex("#ff0000"), true)
+		PushCurrentIndicatorRange(self.inst)
+		SetIndicatorCanDecay(self.inst, false)
 		AdjustIndicatorState(self.inst, NET_STATES.ATTACK_BEGIN)
 	end
 
@@ -226,6 +421,7 @@ end
 local function DoAttack(self, target, ...)
 	--mprint('doattack', self.inst, target)
 	--AdjustIndicator(self.inst, Color.fromHex("#b0593a"), true)
+	PushCurrentIndicatorRange(self.inst)
 	AdjustIndicatorState(self.inst, NET_STATES.ATTACK_END)
 
 	return self._insightOldDoAttack(self, target, ...)
@@ -258,6 +454,7 @@ end
 local function GiveUp(self, ...)
 	--mprint('giveup', self.inst)
 	--AdjustIndicator(self.inst, Color.fromHex("#ffffff"), false)
+	SetIndicatorCanDecay(self.inst, true)
 	AdjustIndicatorState(self.inst, NET_STATES.NOTHING)
 
 	return self._insightOldGiveUp(self, ...)
@@ -280,7 +477,7 @@ end
 local function SetRange(self, attack, hit, ...)
 	--mprint("setrange", attack, hit, ...)
 	self._insightOldSetRange(self, attack, hit, ...)
-	PushNewIndicatorRange(self.inst)
+	PushCurrentIndicatorRange(self.inst)
 end
 
 --[[
@@ -290,16 +487,14 @@ end
 local function SetAreaDamage(self, range, percent, areahitcheck, ...)
 	self._insightOldSetAreaDamage(self, range, percent, areahitcheck, ...)
 
-	if self.inst.insight_combat_range_indicator then
-		--self.inst.insight_combat_range_indicator:SetHitRange(self.areahitrange or (self.hitrange + self.inst:GetPhysicsRadius(0)))
-	end
+	PushCurrentIndicatorRange(self.inst)
 end
 
 local function OnEquip(inst, data)
 	-- data = { item = item, eslot = eslot }
 	--mprint("equip", inst, data.item)
 	if inst.components.combat then
-		PushNewIndicatorRange(inst)
+		PushCurrentIndicatorRange(inst)
 	end
 end
 
@@ -307,7 +502,7 @@ local function OnUnequip(inst, data)
 	-- data = {item=item, eslot=equipslot, slip=slip}
 	--mprint("unequip", inst, data.item)
 	if inst.components.combat then
-		PushNewIndicatorRange(inst)
+		PushCurrentIndicatorRange(inst)
 	end
 end
 
@@ -364,6 +559,10 @@ local function HookCombat(self)
 	--mprint("equipped:", self.inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS))
 	self.inst:ListenForEvent("equip", OnEquip)
 	self.inst:ListenForEvent("unequip", OnUnequip)
+	self.inst:ListenForEvent("newstate", OnNewState)
+	self.inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
+	self.inst:ListenForEvent("droppedtarget", OnDroppedTarget)
+	self.inst:ListenForEvent("giveuptarget", OnDroppedTarget)
 	
 	-- meh
 	local indicator = SpawnPrefab("insight_combat_range_indicator")
@@ -375,7 +574,7 @@ local function HookCombat(self)
 	indicator.client_ready = false
 	indicator:Attach(self.inst)
 	self.inst.insight_combat_range_indicator = indicator
-	PushNewIndicatorRange(self.inst)
+	PushStaticIndicatorRange(self.inst)
 	
 	
 
@@ -573,7 +772,7 @@ local function RegisterFalseCombat(inst, data)
 	inst.insight_combat = InsightCombat(inst, data)
 	inst.insight_combat_range_indicator:SetIndicatorCanDecay(false)
 	inst.insight_combat_range_indicator:SetIncludePhysicsRadius(false)
-	PushNewIndicatorRange(inst)
+	PushStaticIndicatorRange(inst)
 
 	AdjustIndicatorState(inst, NET_STATES.ATTACK_BEGIN)
 end
