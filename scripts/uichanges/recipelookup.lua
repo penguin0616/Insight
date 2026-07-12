@@ -237,6 +237,12 @@ local function CraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 	-- Yeah, yeah. No returning...
 	module.oldCraftingMenuDetails_PopulateRecipeDetailPanel(self, ...)
 
+	local context = localPlayer and Insight.API.GetPlayerContext(localPlayer)
+	if not context or not context.config["display_crafting_lookup_button"] then
+		--dprint("rejected, 1", self.recipe and self.recipe.product)
+		return
+	end
+
 	local data = ...
 	if not data then
 		return
