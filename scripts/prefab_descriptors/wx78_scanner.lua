@@ -38,7 +38,7 @@ local function CLIENT_OnWX78ScannerSpawned(inst)
 			inst._insight_scan_label = label
 
 			inst:ListenForEvent("insight_scan_progress_dirty", function(inst)
-				local context = GetPlayerContext(localPlayer)
+				local context = Insight.API.GetPlayerContext(localPlayer)
 				local val = inst.insight_scan_progress:value()
 
 				if not context.config["wx78_scanner_info"] or val < 0 then

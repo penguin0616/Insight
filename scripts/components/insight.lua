@@ -156,7 +156,7 @@ local Insight = Class(function(self, inst)
 
 
 	self.inst:ListenForEvent("newfishingtarget", function(player, data)
-		local context = GetPlayerContext(player)
+		local context = Insight.API.GetPlayerContext(player)
 		
 		if not context.config["display_oceanfishing"] then
 			return
@@ -226,7 +226,7 @@ function Insight:SendNaughtiness()
 		return
 	end
 
-	local data = naughtyFn(self.inst, GetPlayerContext(self.inst))
+	local data = naughtyFn(self.inst, Insight.API.GetPlayerContext(self.inst))
 	-- This will fail intially in client hosted since it'll get called before the player shows up in kramped data.
 	if type(data) ~= "table" or type(data.actions) ~= "number" or type(data.threshold) ~= "number" then
 		mprint("Insight:SendNaughtiness() -> GetPlayerNaughtinessData failed:", tbl)

@@ -50,7 +50,7 @@ local function OnPipspookQuestBegin(inst, doer)
 		return
 	end
 
-	local context = GetPlayerContext(doer)
+	local context = Insight.API.GetPlayerContext(doer)
 	if not context then
 		dprint("pipspook quest missing player context, trying again in 1 second.") -- could i just pass contexts between shards?
 		return inst:DoTaskInTime(1, function() OnPipspookQuestBegin(inst, doer) end)

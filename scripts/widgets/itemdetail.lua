@@ -118,7 +118,7 @@ function ItemDetail:OnControl(control, down)
 			)
 
 			if describer then
-				local data = describer(special_data, GetPlayerContext(localPlayer), TheWorld)
+				local data = describer(special_data, Insight.API.GetPlayerContext(localPlayer), TheWorld)
 				if data and data.description then
 					-- Using self.componentName here so that the cooldown is unique per individual describe from a descriptor, not for the entire descriptor.
 					localPlayer.HUD._StatusAnnouncer:Announce(data.description, self.componentName) 

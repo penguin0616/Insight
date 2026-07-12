@@ -31,6 +31,8 @@ local TheInput, TheInputProxy, TheGameService, TheShard, TheNet, FontManager, Po
 --======================================== Variables =======================================================================
 --==========================================================================================================================
 --==========================================================================================================================
+local playerContextManager = import("services/playercontextmanager")
+
 local attackRangeUtility = import("utility/attack_range")
 insightSaveData = import("utility/savedata")("mod_config_data/Insight_SaveData" .. (IS_DST and "_CLIENT" or ""));
 controlUtility = import("utility/control")
@@ -50,7 +52,7 @@ ClientCoreEventer = import("utility/eventer")()
 OnLocalPlayerPostInit = ClientCoreEventer:CreateEvent("OnLocalPlayerPostInit")
 OnLocalPlayerPostInit.onlisteneradded = function(listener)
 	if localPlayer then
-		listener:Run(GetLocalInsight(localPlayer), GetPlayerContext(localPlayer))
+		listener:Run(GetLocalInsight(localPlayer), playerContextManager:GetContext(localPlayer))
 	end
 end
 OnLocalPlayerRemove = ClientCoreEventer:CreateEvent("OnLocalPlayerRemove")
@@ -320,7 +322,7 @@ local function GenerateConfiguration()
 end
 
 local function IsPlayerClientLoaded(player)
-	return (player and player.HUD and GetLocalInsight(player) and GetPlayerContext(player) and true) or false
+	return (player and player.HUD and GetLocalInsight(player) and playerContextManager:GetContext(player) and true) or false
 end
 
 local function AddDeployHelper(inst)
@@ -368,7 +370,7 @@ function OnCurrentlySelectedItemChanged(old, new, itemInfo)
 		return
 	end
 
-	local context = GetPlayerContext(localPlayer)
+	local context = playerContextManager:GetContext(localPlayer)
 	if not context then
 		return
 	end
@@ -681,7 +683,7 @@ local function LoadLocalPlayer(player)
 	if IsPlayerClientLoaded(player) then
 		localPlayer = player
 		dprint("LOCALPLAYER ADDED", localPlayer)
-		local context = GetPlayerContext(player)
+		local context = playerContextManager:GetContext(player)
 		local insight = GetLocalInsight(localPlayer)
 		insight.context = context
 
@@ -722,7 +724,6 @@ function SendConfigurationToServer()
 			complex = GenerateComplexConfiguration(),
 		},
 		etc = {
-			is_server_owner = TheNet:GetIsServerOwner(),
 			locale = LOC.GetLocaleCode(),
 			DEBUG_ENABLED = DEBUG_ENABLED,
 			server_deaths = GetMorgueDeathsForWorld(TheNet:GetServerName()),
@@ -757,7 +758,7 @@ function NEW_VERSION_INFO_FN(button)
 				end },
 				{ text=presets, cb=function() 
 					popup:Close()
-					local scr = InsightPresetScreen(GetPlayerContext(localPlayer), modname)
+					local scr = InsightPresetScreen(playerContextManager:GetContext(localPlayer), modname)
 					TheFrontEnd:PushScreen(scr)
 				end },
 			}
@@ -781,11 +782,14 @@ ClientCoreEventer:ListenForEvent("configuration_update", function()
 	DEBUG_ENABLED = config["DEBUG_ENABLED"]
 
 	if IS_DS or IsClient() then
-		UpdatePlayerContext(localPlayer, {
-			configs = {
+		playerContextManager:UpdatePlayerContext(localPlayer, {
+			{
 				vanilla = config,
 				external = GenerateExternalConfiguration(),
 				complex = GenerateComplexConfiguration(),
+			},
+			{
+				locale = LOC.GetLocaleCode(),
 			}
 		})
 	end
@@ -794,7 +798,7 @@ ClientCoreEventer:ListenForEvent("configuration_update", function()
 		SendConfigurationToServer()
 	end
 
-	OnContextUpdate:Push(GetPlayerContext(localPlayer))
+	OnContextUpdate:Push(playerContextManager:GetContext(localPlayer))
 end)
 
 OnLocalPlayerPostInit:AddListener("highlighting_activate", highlighting.Activate)
@@ -1262,7 +1266,7 @@ AddPlayerPostInit(function(player)
 		end
 		delayed_actives = {}
 
-		CreatePlayerContext(
+		playerContextManager:CreateContext(
 			player, 
 			{
 				vanilla = GenerateConfiguration(),
@@ -1270,7 +1274,6 @@ AddPlayerPostInit(function(player)
 				complex = GenerateComplexConfiguration(),
 			},
 			{
-				is_server_owner = true,
 				locale = LOC.GetLocaleCode(),
 			}
 		)
@@ -1326,7 +1329,7 @@ AddPlayerPostInit(function(player)
 		end)
 
 		if IsClient() then -- create local copy for clients
-			CreatePlayerContext(
+			playerContextManager:CreateContext(
 				player, 
 				{
 					vanilla = GenerateConfiguration(),
@@ -1334,7 +1337,6 @@ AddPlayerPostInit(function(player)
 					complex = GenerateComplexConfiguration(),
 				},
 				{
-					is_server_owner = TheNet:GetIsServerOwner(),
 					locale = LOC.GetLocaleCode(),
 				}
 			)

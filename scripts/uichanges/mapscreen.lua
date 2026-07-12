@@ -38,7 +38,7 @@ local function OnMapScreenPostInit(self)
 	local text = root:AddChild(RichText(UIFONT, 24))
 	text:SetPosition(0, -12-6, 0)
 	if localPlayer and localPlayer.GetSeeableTilePercent then
-		local context = GetPlayerContext(localPlayer)
+		local context = Insight.API.GetPlayerContext(localPlayer)
 		if context.config["show_map_info"] then
 			local percent = localPlayer:GetSeeableTilePercent()
 			local color = MIN_EXPLORATION_COLOR:Lerp(MAX_EXPLORATION_COLOR, percent)

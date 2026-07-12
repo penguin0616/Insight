@@ -90,7 +90,7 @@ local function Hunter_OnDirtInvestigated(self, pt, doer, ...)
 		return
 	end
 
-	local context = active_player and GetPlayerContext(active_player)
+	local context = active_player and Insight.API.GetPlayerContext(active_player)
 	if not context or not context.config then
 		mprint("player context is invalid. player:", active_player)
 		if context then

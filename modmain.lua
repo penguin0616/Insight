@@ -228,8 +228,10 @@ if TheSim:GetGameID() == "DS" then
 	import("ds_patches/missing_globals")
 end
 
+--- @type PlayerContextManager
+local playerContextManager = import("services/playercontextmanager")
+Insight.API.V1.GetPlayerContext = function(...) return playerContextManager:GetContext(...) end
 local CrashReporter -- Initialized later, see comment below
-local player_contexts = {}
 local mod_component_cache = {}
 
 local log_buffer = ""
@@ -493,155 +495,6 @@ function GetLocalInsight(player)
 	end
 end
 
---- Returns player's insight context.
----@param player EntityScript
----@return table|nil @Wrapper of player's context
-function GetPlayerContext(player)
-	if not IsPrefab(player) then
-		error("[Insight]: GetPlayerContext called on non-player")
-	end
-
-	local context
-	if IS_DST and TheWorld.ismastersim then
-		-- i know we'll have it
-		context = player_contexts[player]
-	else
-		-- will be the only context
-		context = player_contexts[player]
-	end
-
-	if context then
-		return setmetatable({ FROM_INSPECTION=false }, { __index=context })
-	end
-
-	--return context
-end
-
-function ValidateComplexConfiguration(player, complex_config_table)
-	for name, config in pairs(modinfo.complex_configuration_options) do
-		local val = complex_config_table[name]
-		if config.type == "listbox" then
-			if type(val) ~= "table" then
-				complex_config_table[name] = {}
-				mprintf("!!!!!!!!!! %s had an invalid complex config for %s: %s (%s)", tostring(player), name, tostring(val), type(val))
-			end
-		end
-	end
-end
-
-local CONTEXT_META = {
-	__newindex = function()
-		error("context is readonly")
-	end;
-	--__tostring = function(self) return string.format("Player Context (%s): %s", tostring(self.player), self._name or "ADDR") end,
-	__metatable = "[Insight] The metatable is locked"
-}
-
---- Creates player's insight context.
----@param player EntityScript Player to create context for.
----@param configs table Holds the different config types: vanilla, external, complex.
----@param etc table
-function CreatePlayerContext(player, configs, etc)
-	if not player then
-		error("[Insight]: Player is missing!")
-	end
-
-	if type(configs.vanilla) ~= "table" then
-		if IS_DST then TheNet:Kick(player.userid) return end
-		error("[Insight]: Config is invalid!")
-	end
-
-	if type(configs.external) ~= "table" then
-		if IS_DST then TheNet:Kick(player.userid) return end
-		error("[Insight]: external config is invalid!")
-	end
-
-	if type(configs.complex) ~= "table" then
-		if IS_DST then TheNet:Kick(player.userid) return end
-		error("[Insight]: complex config is invalid!")
-	end
-
-	ValidateComplexConfiguration(player, configs.complex)
-	
-
-	local context = {
-		player = player,
-		config = configs.vanilla,
-		external_config = configs.external,
-		complex_config = configs.complex,
-		time = nil,
-		usingIcons = configs.vanilla["info_style"] == "icon",
-		lstr = language(configs.vanilla, etc.locale),
-		is_server_owner = etc.is_server_owner,
-		etc = etc
-	}
-
-	context.time = Time:new({ context=context })
-
-	if context.is_server_owner then
-		if context.config["crash_reporter"] then
-			CrashReporter.server_owner_optin = true
-			SyncSecondaryInsightData({ server_owner_optin=true })
-		end
-	end
-
-	setmetatable(context.config, CONTEXT_META)
-	setmetatable(context.external_config, CONTEXT_META)
-	setmetatable(context.complex_config, CONTEXT_META)
-	setmetatable(context, mt)
-
-
-	player_contexts[player] = context
-	mprint("Created player context for", player)
-end
-
---- Updates a player's context if they already have one.
----@param player EntityScript
----@param data table
-function UpdatePlayerContext(player, data)
-	local context = player_contexts[player]
-	if not context then
-		mprint("Can't update missing player context.")
-		return
-	end
-
-	local oldLang = context.config["language"]
-	if data.configs then
-		if type(data.configs.vanilla) ~= "table" then
-			if IS_DST then TheNet:Kick(player.userid) return end
-			error("[Insight]: UpdatePlayerContext Config is invalid!")
-		end
-
-		if type(data.configs.external) ~= "table" then
-			if IS_DST then TheNet:Kick(player.userid) return end
-			error("[Insight]: UpdatePlayerContext external config is invalid!")
-		end
-
-		if type(data.configs.complex) ~= "table" then
-			if IS_DST then TheNet:Kick(player.userid) return end
-			error("[Insight]: UpdatePlayerContext complex config is invalid!")
-		end
-
-		ValidateComplexConfiguration(player, data.configs.complex)
-
-		context.config = setmetatable(data.configs.vanilla, CONTEXT_META)
-		context.external_config = setmetatable(data.configs.external, CONTEXT_META)
-		context.complex_config = setmetatable(data.configs.complex, CONTEXT_META)
-	end
-	data.configs = nil
-
-	for i,v in pairs(data) do
-		context[i] = v
-	end
-
-	local oldUsingIcons = context.usingIcons
-	context.usingIcons = context.config["info_style"] == "icon"
-
-	if oldLang ~= context.config["language"] or oldUsingIcons ~= context.usingIcons then
-		context.lstr = language(context.config, context.etc.locale)
-		context.etc.locale = context.config["language"]
-	end
-end
 
 --- Returns the component's origin. 
 ---@param componentname string
@@ -842,6 +695,25 @@ function errorf(level, error_pattern, ...)
 	else
 		error("errorf bad args")
 	end
+end
+
+--- Does the bad argument error commonly seen thrown by misuse of native functions, but with more detail.
+--- @param pos number
+--- @param name The name of the function
+--- @param expected @What was expected
+--- @param actual @What was received
+function argerror(pos, name, expected, actual)
+	-- Resolve actual if it is an EntityScript
+	if type(actual) == "table" and type(actual.is_a) == "function" then
+		for name, val in pairs(getfenv(0)) do
+			if type(val) == "table" and type(rawget(val, "is_a")) == "function" and actual:is_a(val) then
+				actual = name .. " [" .. tostring(actual) .. "]"
+				break
+			end
+		end
+	end
+
+	return errorf("bad argument #%d to '%s' (%s expected, got %s)", pos, name, expected, actual)
 end
 
 --- Debug print that only shows if DEBUG_ENABLED is true.
@@ -1282,7 +1154,7 @@ local function GetEntityInformation(entity, player, params)
 	end
 	--]]
 
-	local player_context = GetPlayerContext(player)
+	local player_context = playerContextManager:GetContext(player)
 	if not player_context then
 		assembled.raw_information = nil
 		assembled.information = string.format("missing player context for %s (%s) | requested ent: %s", player.name, tostring(player), tostring(entity))
@@ -1538,7 +1410,7 @@ end
 function GetWorldInformation(player) -- refactor?
 	--if true then return {} end
 	local world = TheWorld or GetWorld() -- implict game check
-	local context = GetPlayerContext(player)
+	local context = playerContextManager:GetContext(player)
 	if not context then
 		return
 	end
@@ -2339,12 +2211,10 @@ if IS_DST then
 	rpcNetwork.AddModRPCHandler(modname, "ProcessConfiguration", function(player, data)
 		mprint("ProcessConfiguration", player)
 		data = json.decode(data)
-		if player_contexts[player] then
-			UpdatePlayerContext(player, {
-				configs = data.configs
-			})
+		if playerContextManager:HasContext(player) then
+			playerContextManager:UpdateContext(player, data.configs, data.etc)
 		else
-			CreatePlayerContext(player, data.configs, data.etc)
+			playerContextManager:CreateContext(player, data.configs, data.etc)
 		end
 	end)
 	
@@ -2436,7 +2306,7 @@ if IS_DST then
 			setfenv(fn, setmetatable({
 				tostr = tostr,
 				me = UserToPlayer(MyKleiID),
-				player_contexts = player_contexts,
+				player_contexts = playerContextManager:GetAllContexts(),
 			}, {
 				__index = Insight.env,
 				__newindex = Insight.env,
@@ -2940,7 +2810,7 @@ if IS_DST then
 
 		TheWorld:ListenForEvent("ms_playerleft", function(_, player)
 			mprintf("Player %s (userid: %s) left, removing context", player, player.userid)
-			player_contexts[player] = nil
+			playerContextManager:RemoveContext(player)
 		end)
 		
 		TheWorld:ListenForEvent("ms_cyclecomplete", function(inst)

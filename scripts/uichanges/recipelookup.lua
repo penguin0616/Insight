@@ -38,7 +38,7 @@ local WikiGGBaseURL = "https://dontstarve.wiki.gg/"
 local function GetBaseWikiURL()
 	local base = WikiGGBaseURL
 
-	local ctx = localPlayer and GetPlayerContext(localPlayer)
+	local ctx = localPlayer and Insight.API.GetPlayerContext(localPlayer)
 	if ctx and ctx.etc.locale ~= "en" then
 		if ctx.etc.locale == "zh" then
 			-- I'll leave this as Fandom for now.
@@ -120,7 +120,7 @@ function CookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
 	-- there's self.details_root, and this details_root, so its technically self.details_root.details_root even though that doesnt actually work
 	local details_root = module.oldCookbookPageCrockPot_PopulateRecipeDetailPanel(self, data)
 
-	local context = localPlayer and GetPlayerContext(localPlayer)
+	local context = localPlayer and Insight.API.GetPlayerContext(localPlayer)
 	if not context or not context.config["display_crafting_lookup_button"] then
 		--dprint("rejected, 1", self.recipe and self.recipe.product)
 		return details_root
@@ -158,7 +158,7 @@ end
 local function RecipePopup_Refresh(self)
 	--mprint"refresh"
 	module.oldRecipePopup_Refresh(self)
-	local context = localPlayer and GetPlayerContext(localPlayer)
+	local context = localPlayer and Insight.API.GetPlayerContext(localPlayer)
 	if not context or not context.config["display_crafting_lookup_button"] then
 		--dprint("rejected, 1", self.recipe and self.recipe.product)
 		return
