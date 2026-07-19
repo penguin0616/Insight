@@ -782,7 +782,7 @@ ClientCoreEventer:ListenForEvent("configuration_update", function()
 	DEBUG_ENABLED = config["DEBUG_ENABLED"]
 
 	if IS_DS or IsClient() then
-		playerContextManager:UpdatePlayerContext(localPlayer, {
+		playerContextManager:UpdateContext(localPlayer, {
 			{
 				vanilla = config,
 				external = GenerateExternalConfiguration(),
