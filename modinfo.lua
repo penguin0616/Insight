@@ -7588,7 +7588,7 @@ configuration_options = {
 			{ data = true },
 		},
 		default = false,
-		tags = { "undefined" },
+		tags = {"undefined"},
 	},
 	{
 		name = "display_mob_attack_damage",
@@ -7616,7 +7616,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "display_harvestable",
@@ -7625,7 +7625,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "display_finiteuses",

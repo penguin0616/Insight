@@ -88,6 +88,7 @@ end
 --- @param etc table etc. I should have named this better :(
 --- @return PlayerContext @The created player context
 function PlayerContextManager:CreateContext(player, configs, etc)
+	mprint("Creating player context for", player)
 	local context = PlayerContext.new(player, configs, etc)
 
 	self.PlayerContexts[player] = context
@@ -101,6 +102,7 @@ end
 --- @param etc table etc. I should have named this better :(
 --- @return PlayerContext @The created player context
 function PlayerContextManager:UpdateContext(player, configs, etc)
+	mprint("Updating player context for", player)
 	if not self.PlayerContexts[player] then
 		mprint("Can't update missing player context.")
 		return
