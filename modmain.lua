@@ -231,7 +231,7 @@ end
 --- @type PlayerContextManager
 local playerContextManager = import("services/playercontextmanager")
 Insight.API.V1.GetPlayerContext = function(...) return playerContextManager:GetContext(...) end
-local CrashReporter -- Initialized later, see comment below
+CrashReporter = nil -- Initialized later, see comment below
 local mod_component_cache = {}
 
 local log_buffer = ""

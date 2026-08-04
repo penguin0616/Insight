@@ -52,9 +52,17 @@ function PlayerContext.new(player, configs, etc)
 		argerror(1, "new", "EntityScript", player)
 	end
 
+	if type(configs) ~= "table" then
+		argerror(2, "new", "table", type(configs))
+	end
+
+	if type(etc) ~= "table" then
+		argerror(3, "new", "table", type(etc))
+	end
+
 	if type(configs.vanilla) ~= "table" then
 		if IS_DST then TheNet:Kick(player.userid) return end -- Only reason this is going to happen in DST is due to someone being naughty.
-		error("[Insight]: Config is invalid!")
+		error("[Insight]: vanilla config is invalid!")
 	end
 
 	if type(configs.external) ~= "table" then
