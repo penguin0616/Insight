@@ -108,7 +108,7 @@ function PlayerContextManager:UpdateContext(player, configs, etc)
 
 	-- I don't quite remember why I made the old UpdatePlayerContext like that.
 	-- Will just rebuild it.
-	return self:CreateContext(player, data, etc)
+	return self:CreateContext(player, configs, etc)
 end
 
 --[[
