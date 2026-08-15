@@ -94,7 +94,7 @@ local Shard_Insight = Class(function(self, inst)
 		"toadstoolspawner",
 		"daywalkerspawner"
 	}) do
-		self.shard_descriptors[value] = Insight.descriptors[value] and Insight.descriptors[value].RemoteDescribe or nil
+		self:RegisterDescriptor(value, Insight.descriptors[value] and Insight.descriptors[value].RemoteDescribe or nil)
 	end
 
 	self.local_data = nil
