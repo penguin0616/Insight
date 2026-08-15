@@ -108,11 +108,11 @@ local function Hunter_OnDirtInvestigated(self, pt, doer, ...)
 	local target = hunt.lastdirt or hunt.huntedbeast
 
 	if not target then
-		mprint(string.format("Hunter '%s' missing target, aborting.", activeplayer.name))
+		mprint(string.format("Hunter '%s' missing target, aborting.", active_player.name))
 		table.foreach(hunt, mprint)
 		return
 	else
-		--dprint("Sending", activeplayer, "on a hunt for:", target, "|", hunt.trackspawned, hunt.numtrackstospawn)
+		--dprint("Sending", active_player, "on a hunt for:", target, "|", hunt.trackspawned, hunt.numtrackstospawn)
 	end
 
 	if target.prefab == "claywarg" or target.prefab == "warg" or target.prefab == "spat" then
