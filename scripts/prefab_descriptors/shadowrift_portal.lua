@@ -28,6 +28,12 @@ local function Describe(inst, context)
 	---------------------------------------
 	-- Stage information
 	---------------------------------------
+	
+	-- Modders will sometimes remove this.
+	if not inst._stage then
+		return
+	end
+
 	local stage_info = string.format(context.lstr.riftspawner.stage, inst._stage, TUNING.RIFT_SHADOW1_MAXSTAGE)
 	local rift_close_time
 
