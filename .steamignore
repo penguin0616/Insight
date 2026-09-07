@@ -1,3 +1,11 @@
+# This is a .gitignore-style intended to filter what gets uploaded to Steam whenever I update this.
+
+cli
+details
+pipeline
+tests
+doc
+
 ##################################################
 # General GitIgnore #
 ##################################################
