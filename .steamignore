@@ -1,10 +1,12 @@
-# This is a .gitignore-style intended to filter what gets uploaded to Steam whenever I update this.
+# This is a .gitignore-style intended to filter what gets uploaded to Steam whenever I push a new release.
 
 cli
 details
 pipeline
 tests
 doc
+images/**/*.png
+images/**/*.pdn
 
 ##################################################
 # General GitIgnore #
