@@ -96,7 +96,9 @@ local function Describe(self, context)
 	end
 
 	local stress_points = string.format(context.lstr.farmplantstress.stress_points, ApplyColor(self.stress_points, STRESS_COLORS[stress_state]))
-	local stress_points_extended = stress_points .. " - " .. string.format(context.lstr.farmplantstress.stress_tier, ApplyColor(context.lstr.farmplantstress.tiers[stress_state], STRESS_COLORS[stress_state]))
+	local stress_points_extended = stress_points .. " - " .. string.format(context.lstr.farmplantstress.stress_tier, 
+		ApplyColor(context.lstr.farmplantstress.tiers[stress_state], STRESS_COLORS[stress_state])
+	)
 	local stressors_string
 
 	if #strs > 0 then
