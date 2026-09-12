@@ -160,7 +160,7 @@ function InsightTargetIndicator:UpdateName()
 	end
 
 	if self.config_data.dismissable then
-		local ctx = self.owner and GetPlayerContext(self.owner) or nil
+		local ctx = self.owner and Insight.API.GetPlayerContext(self.owner) or nil
 		local lang = ctx and ctx.lstr or language.AssumeLanguageTable()
 		self.name = self.name .. "\n" .. string.format(lang.indicators.dismiss, TheInput:GetLocalizedControl(TheInput:GetControllerID(), CONTROL_SECONDARY))
 	end

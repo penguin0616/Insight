@@ -138,6 +138,10 @@ local function Describe(self, context)
 	-- Get Damage
 	local damage = GetDamage(self, owner, nil) or owner.components.combat.defaultdamage
 
+	if type(damage) ~= "number" then
+		return
+	end
+
 	-- i think this goes here?
 	if context.player.prefab == "wanda" then
 		damage = damage * WandaCustomCombatDamage(context.player, nil, self.inst, nil, context.player.components.rider and context.player.components.rider.mount or nil)
@@ -176,9 +180,10 @@ local function Describe(self, context)
 		attack_range = string.format(context.lstr.attack_range, attack_range)
 	end
 
-	local damage_string = string.format(context.lstr.weapon_damage, context.lstr.weapon_damage_type[stimuli_data.name] or context.lstr.weapon_damage_type.normal, Round(damage * multiplier, 1) or "?")
-
-	
+	local damage_string = string.format(context.lstr.weapon_damage, 
+		context.lstr.weapon_damage_type[stimuli_data.name] or context.lstr.weapon_damage_type.normal, 
+		Round(damage * multiplier, 1) or "?"
+	)
 
 	-- Other stuff
 	local pillow_info = self.inst:HasTag("pillow") and DescribeYOTRPillowWeapon(self, context) or nil

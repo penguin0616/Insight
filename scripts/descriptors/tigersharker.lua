@@ -19,6 +19,13 @@ directory. If not, please refer to
 ]]
 
 -- tigershark.lua [Worldly]
+local world_type = GetWorldType()
+
+-- I guess people are creating custom components of this but are removing functions like TimeUntilCanAppear.
+if world_type ~= 2 then
+	return {}
+end
+
 local function Describe(self, context)
 	-- SW only
 	local description = nil

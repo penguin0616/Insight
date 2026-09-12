@@ -59,7 +59,8 @@ local function Describe(self, context)
 		local percent = self.currenthealth / max_health
 		alt_description = description .. string.format(" (<color=HEALTH>%s%%</color>)", Round(percent * 100, 0))
 
-		if self.regen then -- regeneration
+		-- People are screwing with things again, so we have to verify amount and period are actual numbers. Ugh.
+		if type(self.regen) == "table" and type(self.regen.amount) == "number" and type(self.regen.period) == "number" then -- regeneration
 			local regen = string.format(context.lstr.health_regeneration, Round(self.regen.amount, 1), Round(self.regen.period, 1))
 			description = description .. regen
 			alt_description = alt_description .. regen

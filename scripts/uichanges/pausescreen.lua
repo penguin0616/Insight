@@ -30,7 +30,9 @@ local function PostButtons(screen, buttons)
 		text = "Insight Menu", 
 		cb = function() 
 			screen:unpause()
-			localPlayer.HUD.controls:ToggleInsightMenu()
+			if localPlayer then -- Shouldn't ever be nil, but you know how it is.
+				localPlayer.HUD.controls:ToggleInsightMenu()
+			end
 		end 
 	})
 

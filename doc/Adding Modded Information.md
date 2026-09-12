@@ -66,7 +66,6 @@ context = {
 	},
 	usingIcons = false, -- whether the user is using icon formatting
 	lstr = {...}, -- see scripts/language.lua
-	is_server_owner = true/false,
 	etc = {...}
 }
 ```

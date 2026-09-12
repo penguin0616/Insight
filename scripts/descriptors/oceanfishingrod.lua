@@ -37,7 +37,6 @@ directory. If not, please refer to
 local RichFollowText = import("widgets/richfollowtext")
 local followtext = nil
 
-
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Server Logic ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -191,7 +190,7 @@ local function SERVER_UpdateFishingBattleState(player)
 end
 
 local function SERVER_OnFishHooked(player, fish)
-	local context = GetPlayerContext(player)
+	local context = Insight.API.GetPlayerContext(player)
 	--[[
 	if not context.config["display_oceanfishing"] then
 		return
@@ -288,7 +287,7 @@ local function CLIENT_UpdateInterestedFish(player, data)
 		return
 	end
 
-	local context = GetPlayerContext(player)
+	local context = Insight.API.GetPlayerContext(player)
 
 	local interested = data.interested
 
@@ -339,7 +338,7 @@ local function CLIENT_UpdateFishingBattleState(player, data)
 		return
 	end
 
-	local context = GetPlayerContext(player)
+	local context = Insight.API.GetPlayerContext(player)
 
 	-- Tension
 	local tension_color = GREEN:Lerp(RED, math.min(data.tension.current / data.tension.max, 1)):ToHex()

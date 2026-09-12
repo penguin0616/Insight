@@ -89,7 +89,7 @@ local function PlayerDescribe(self, context)
 	local inst = self.inst
 
 	if false and (DEBUG_ENABLED or inst ~= context.player) and inst.userid ~= "" then
-		local their_context = GetPlayerContext(inst)
+		local their_context = Insight.API.GetPlayerContext(inst)
 		if their_context and their_context.etc.server_deaths then
 			table.insert(stuff, GetPlayerServerDeaths(context, #their_context.etc.server_deaths))
 		end

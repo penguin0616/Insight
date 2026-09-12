@@ -49,7 +49,7 @@ name = "Insight"
 -- MAJOR version when you make incompatible API changes
 -- MINOR version when you add functionality in a backward compatible manner
 -- PATCH version when you make backward compatible bug fixes
-version = "6.0.1"
+version = "6.0.2"
 --version_compatible = "0.0.0" -- Oldest version we are still compatible with
 author = "penguin0616"
 forumthread = ""
@@ -60,6 +60,9 @@ priority = -10000 --[[ rezecib's Geometric Placement has -10, chinese++, has -99
 ideally, we come last in the mod loading order to make life easier. 
 that way, I can try to be compatible with other mods without them having to worry about compatibility with Insight. after all, probably better if I handle it.
 --]]
+
+-- Used by klast's mod uploader, not by Klei's
+mod_tags = {"item", "interface", "utility", "tweak"}
 
 -- DS
 api_version = 6
@@ -7588,7 +7591,7 @@ configuration_options = {
 			{ data = true },
 		},
 		default = false,
-		tags = { "undefined" },
+		tags = {"undefined"},
 	},
 	{
 		name = "display_mob_attack_damage",
@@ -7616,7 +7619,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "display_harvestable",
@@ -7625,7 +7628,7 @@ configuration_options = {
 			{data = true},
 		}, 
 		default = true,
-		tags = {},
+		tags = {"undefined"},
 	},
 	{
 		name = "display_finiteuses",

@@ -139,7 +139,7 @@ local function OnLootDirty(inst)
 		return 
 	end
 
-	local context = GetPlayerContext(localPlayer)
+	local context = Insight.API.GetPlayerContext(localPlayer)
 	if not context.config["tumbleweed_info"] then
 		if inst.insight_loot then
 			inst.AnimState:SetAddColour(0, 0, 0, 0)

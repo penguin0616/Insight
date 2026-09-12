@@ -267,6 +267,12 @@ local function GetPerishData(self)
 	end
 
 	local delta = self.updatetask.arg[2]
+
+	if type(delta) ~= "number" then
+		-- People messing with things again.
+		return
+	end
+
 	local max_perish_time = self.perishtime / math.abs(modifier)
 
 	-- account for modifiers and the next task tick, since perishing isn't realtime

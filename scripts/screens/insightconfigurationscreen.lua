@@ -778,7 +778,7 @@ function InsightConfigurationScreen:PopulateKeybinds(tbl)
 
 	table.insert(tbl, {
 		name = "KEYBINDS",
-		label = GetPlayerContext(self.owner).lstr.keybinds.label, 
+		label = Insight.API.GetPlayerContext(self.owner).lstr.keybinds.label, 
 		options = {{description = "", data = 0}},
 		saved = 0,
 		default = 0,

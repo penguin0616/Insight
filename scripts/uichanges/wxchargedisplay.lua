@@ -33,7 +33,7 @@ local statusAnnouncementsPresent = false
 --- Generates the hover text string. 
 ---@param plain boolean Whether formatting tags are included.
 local function GetChargeString(plain)
-	local context = GetPlayerContext(localPlayer)
+	local context = Insight.API.GetPlayerContext(localPlayer)
 	local info = localPlayer.replica.insight:GetInformation(localPlayer)
 
 	-- nil == unregistered, false == full charge, number == time till next charge

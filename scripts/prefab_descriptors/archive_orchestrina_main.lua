@@ -69,7 +69,7 @@ local function OrchestrinaSmallPostInit(inst)
 	end
 
 	inst:ListenForEvent("insight_active_dirty", function(inst)
-		local context = localPlayer and GetPlayerContext(localPlayer)
+		local context = localPlayer and Insight.API.GetPlayerContext(localPlayer)
 
 		if not context or not context.config["orchestrina_indicator"] then
 			return

@@ -378,6 +378,21 @@ return {
 		
 	},
 
+	-- containerinstallableitem.lua
+	containerinstallableitem = {
+		slingshot_band = {
+			range = "Increases range by <color=FRUIT>%s</color>",
+			speed = "Increases projectile speed by <color=FRUIT>%.0f%%</color>",
+			slingshot_band_mimic = "%d%% chance not to consume ammo.",
+		},
+		slingshot_handle = {
+			fire_rate = "%.1f/s",
+			fire_rate_ramping = "%.1f/s → %.1f/s",
+			primary_fire_rate = "Primary fire rate: %s",
+			secondary_fire_rate = "Secondary fire rate: %s",
+		},
+	},
+
 	-- cooldown.lua
 	cooldown = "Перезарядка: %s",
 

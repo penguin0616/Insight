@@ -25,7 +25,7 @@ local function UpdatePlayerListing(self)
 	local font_size = 16
 	local listing = self.widget
 
-	local context = localPlayer and GetPlayerContext(localPlayer)
+	local context = localPlayer and Insight.API.GetPlayerContext(localPlayer)
 
 	if not localPlayer or not context or not context.config["display_shared_stats"] then
 		listing.insight_text:SetString(nil)
