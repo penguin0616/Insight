@@ -782,7 +782,7 @@ ClientCoreEventer:ListenForEvent("configuration_update", function()
 	DEBUG_ENABLED = config["DEBUG_ENABLED"]
 
 	if IS_DS or IsClient() then
-		playerContextManager:UpdateContext(localPlayer, {
+		playerContextManager:UpdateContext(localPlayer, 
 			{
 				vanilla = config,
 				external = GenerateExternalConfiguration(),
@@ -791,7 +791,7 @@ ClientCoreEventer:ListenForEvent("configuration_update", function()
 			{
 				locale = LOC.GetLocaleCode(),
 			}
-		})
+		)
 	end
 
 	if IS_DST then
@@ -904,10 +904,13 @@ end
 
 insightKeybinds:Register("togglemenu", language.en.keybinds.togglemenu.name, language.en.keybinds.togglemenu.description, nil, function(down)
 	if not down and TheFrontEnd:GetActiveScreen() and TheFrontEnd:GetActiveScreen().name == "HUD" and localPlayer.components.playercontroller:IsEnabled() then
+		--[[
 		local insight_menu_toggle = table.getfield(localPlayer, "HUD.controls.insight_menu_toggle")
 		if insight_menu_toggle and insight_menu_toggle.shown and insight_menu_toggle.onclick then
 			insight_menu_toggle.onclick()
 		end
+		--]]
+		localPlayer.HUD.controls:ToggleInsightMenu()
 	end
 end)
 
