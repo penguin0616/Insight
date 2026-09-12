@@ -316,6 +316,8 @@ local function HookCombat(self)
 		return
 	end
 
+	-- TODO: Add some kind of debug anti-hook if already initialized?
+
 	if self.inst:HasTag("player") or self.inst:HasTag("wall") then
 		--[[
 		self.SetTarget = oldSetTarget or self.SetTarget

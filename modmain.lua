@@ -228,9 +228,6 @@ if TheSim:GetGameID() == "DS" then
 	import("ds_patches/missing_globals")
 end
 
---- @type PlayerContextManager
-local playerContextManager = import("services/playercontextmanager")
-Insight.API.V1.GetPlayerContext = function(...) return playerContextManager:GetContext(...) end
 CrashReporter = nil -- Initialized later, see comment below
 local mod_component_cache = {}
 
@@ -1058,6 +1055,11 @@ function ReloadInsightModule(path)
 	mprintf("MODULE '%s' INITIALIZED", path)
 end
 _G.ReloadInsightModule = ReloadInsightModule
+
+-- TODO: I need to probably break out the descriptor logic elsewhere and make this cleaner. But this should work for now.
+--- @type PlayerContextManager
+local playerContextManager = import("services/playercontextmanager")
+Insight.API.V1.GetPlayerContext = function(...) return playerContextManager:GetContext(...) end
 
 --- Picks out a specific data from a describe call.
 ---@param name string The name of the desired data. 
@@ -3029,7 +3031,6 @@ Insight.descriptors("clock")
 Insight.descriptors("oceanfishingrod")
 Insight.descriptors("container")
 Insight.descriptors("hunter")
-Insight.descriptors("whalehunter")
 Insight.descriptors("whalehunter")
 Insight.descriptors("kramped")
 
