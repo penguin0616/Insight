@@ -61,6 +61,9 @@ ideally, we come last in the mod loading order to make life easier.
 that way, I can try to be compatible with other mods without them having to worry about compatibility with Insight. after all, probably better if I handle it.
 --]]
 
+-- Used by klast's mod uploader, not by Klei's
+mod_tags = {"item", "interface", "utility", "tweak"}
+
 -- DS
 api_version = 6
 dont_starve_compatible = true
