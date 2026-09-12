@@ -897,13 +897,13 @@ function UnloadComponentDescriptor(name)
 		if type(descriptor) == "table" then
 			if descriptor.OnServerUnload then
 				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-					descriptor.OnServerUnload()
+					descriptor:OnServerUnload()
 				end
 			end
 
 			if descriptor.OnClientUnload then
 				if IS_DS or IsClient() or IsClientHost() then
-					descriptor.OnClientUnload()
+					descriptor:OnClientUnload()
 				end
 			end
 		end
@@ -944,13 +944,11 @@ function AddComponentDescriptor(name, descriptor, metadata)
 		if descriptor.OnServerLoad then
 			if IS_DS or TheNet:IsDedicated() or IsClientHost() then
 				descriptor:OnServerLoad()
-				descriptor:OnServerLoad()
 			end
 		end
 
 		if descriptor.OnClientLoad then
 			if IS_DS or IsClient() or IsClientHost() then
-				descriptor:OnClientLoad()
 				descriptor:OnClientLoad()
 			end
 		end
@@ -975,13 +973,13 @@ function UnloadPrefabDescriptor(name)
 		if type(descriptor) == "table" then
 			if descriptor.OnServerUnload then
 				if IS_DS or TheNet:IsDedicated() or IsClientHost() then
-					descriptor.OnServerUnload()
+					descriptor:OnServerUnload()
 				end
 			end
 
 			if descriptor.OnClientUnload then
 				if IS_DS or IsClient() or IsClientHost() then
-					descriptor.OnClientUnload()
+					descriptor:OnClientUnload()
 				end
 			end
 		end
