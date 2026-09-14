@@ -960,10 +960,11 @@ if IS_DST then
 	module.MOD_COMPONENT_ACTIONS = module.getupvalue(_G.AddComponentAction, "MOD_COMPONENT_ACTIONS")
 	module.MOD_ACTION_COMPONENT_NAMES = module.getupvalue(_G.AddComponentAction, "MOD_ACTION_COMPONENT_NAMES")
 	module.MOD_ACTION_COMPONENT_IDS = module.getupvalue(_G.AddComponentAction, "MOD_ACTION_COMPONENT_IDS")
-	module.ACTION_COMPONENT_IDS = module.recursive_getupvalue(_G.EntityScript.UnregisterComponentActions, "ACTION_COMPONENT_IDS")
+	module.ACTION_COMPONENT_IDS = module.recursive_getupvalue(_G.EntityScript.HasActionComponent, "ACTION_COMPONENT_IDS")
 
 	if type(module.ACTION_COMPONENT_IDS) ~= "table" then
-		error("Unable to find ACTION_COMPONENT_IDS, probably due to a server mod breaking things.")
+		dumptable(debug.getinfo(_G.EntityScript.HasActionComponent, "Snl"))
+		error("Unable to find ACTION_COMPONENT_IDS, probably due to the above server mod breaking things.")
 	end
 
 	function HasVanillaActionComponent(inst, name)
