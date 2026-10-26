@@ -32,7 +32,8 @@ local function countnewlines(str)
 end
 
 local function IsValidTarget(target)
-	return target ~= localPlayer
+	return target ~= nil 
+		and target ~= localPlayer
 end
 
 local function OnInspectPressed(down)
