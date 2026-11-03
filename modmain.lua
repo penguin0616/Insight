@@ -676,18 +676,19 @@ end
 ---@param level number|string If this is a number, this is the error level. If this is a string, this parameter becomes error_pattern.
 ---@param error_pattern string|... This can be the error pattern if it wasn't used already. Otherwise, it's part of the vararg used for formatting.
 function errorf(level, error_pattern, ...)
-	local t = type(level)
+	local firstArgType = type(level)
 
-	local n = select("#", ...)
+	local numArgs = select("#", ...)
 	local args = {...}
-	for i = 1, n do
+	for i = 1, numArgs do
 		args[i] = tostring(args[i])
 	end
 
-	if t == "string" then
+	if firstArgType == "string" then
 		-- the level is actually the error pattern
+		error_pattern = tostring(error_pattern)
 		return error(string.format(level, error_pattern, unpack(args)), 2)
-	elseif t == "number" then
+	elseif firstArgType == "number" then
 		-- standard
 		return error(string.format(error_pattern, unpack(args)), (level and level+1) or 2)
 	else
@@ -1560,9 +1561,9 @@ function SyncSecondaryInsightData(data)
 	end
 end
 
-function InsightCommandPlayer()
+function InsightCommandPlayer(asd)
 	if ALLOW_SERVER_DEBUGGING then
-		return UserToPlayer(MyKleiID)
+		return UserToPlayer(MyKleiID) or (asd ~= false and ConsoleCommandPlayer())
 	else
 		return ConsoleCommandPlayer()
 	end

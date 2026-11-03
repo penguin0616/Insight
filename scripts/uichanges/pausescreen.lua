@@ -65,10 +65,15 @@ module.Initialize = function()
 			CurlyWindow=function(sizeX, sizeY, title_text, bottom_buttons, button_spacing, body_text)
 				local screen = util.getlocal(2, "self")
 				local buttons = util.getlocal(2, "buttons")
-				PostButtons(screen, buttons)
 
-				local button_h = util.getlocal(2, "button_h")
-				sizeY = button_h * #buttons + 30
+				if type(buttons) ~= "table" then
+					mprint("Unable to register Insight menu button in pause menu. Something else has probably overriden.")
+					dumptable(debug.getinfo(2, "Snfl"))
+				else
+					PostButtons(screen, buttons)
+					local button_h = util.getlocal(2, "button_h")
+					sizeY = button_h * #buttons + 30
+				end
 
 				return TEMPLATES.CurlyWindow(sizeX, sizeY, title_text, bottom_buttons, button_spacing, body_text)
 			end
