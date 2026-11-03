@@ -1561,9 +1561,9 @@ function SyncSecondaryInsightData(data)
 	end
 end
 
-function InsightCommandPlayer()
+function InsightCommandPlayer(asd)
 	if ALLOW_SERVER_DEBUGGING then
-		return UserToPlayer(MyKleiID)
+		return UserToPlayer(MyKleiID) or (asd ~= false and ConsoleCommandPlayer())
 	else
 		return ConsoleCommandPlayer()
 	end
