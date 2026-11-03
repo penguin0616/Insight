@@ -389,8 +389,8 @@ local function SetIndicatorCanDecay(inst, can_decay)
 
 	if inst.net_indicator_can_decay then
 		inst.net_indicator_can_decay:set(can_decay)
-	elseif inst.OnIndicatorStateDirty then
-		inst:OnIndicatorStateDirty()
+	elseif inst.OnCanDecayDirty then
+		inst:OnCanDecayDirty()
 	end
 end
 
@@ -428,7 +428,7 @@ local function combat_fn()
 		
 		inst.net_include_physics_radius = net_bool(inst.GUID, "insight_combat_include_physics_radius", "insight_combat_include_physics_radius_dirty")
 		inst:SetIncludePhysicsRadius(true)
-		inst:ListenForEvent("insight_combat_include_physics_radius", OnCombatIndicatorIncludePhysicsRadiusDirty)
+		inst:ListenForEvent("insight_combat_include_physics_radius_dirty", OnCombatIndicatorIncludePhysicsRadiusDirty)
 		
 
 		
