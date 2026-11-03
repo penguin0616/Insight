@@ -21,6 +21,11 @@ directory. If not, please refer to
 -- deerclopsspawner.lua [Worldly]
 local filename = debug.getinfo(1, "S").source:match("([%w_]+)%.lua$")
 
+if type(filename) ~= "string" then
+	mprint("hmm...")
+	dumptable(debug.getinfo(1, "SnltufL"))
+end
+
 local DEERCLOPS_TIMERNAME
 local function GetDeerclopsData(self)
 	if DEERCLOPS_TIMERNAME == false then
@@ -163,6 +168,7 @@ local function DangerAnnouncementDescribe(special_data, context)
 	if not client_table then
 		description = string.format(context.lstr[filename].deerclops_attack, time_string)
 	else
+		-- todo: if you see that one exception again here, check for the dump at the top of the file.
 		description = string.format(
 			context.lstr[filename].announce_deerclops_target, 
 			EscapeRichText(client_table.name), 
